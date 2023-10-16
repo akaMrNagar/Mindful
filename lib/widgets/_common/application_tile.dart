@@ -79,7 +79,7 @@ class ApplicationTile extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   applyBorder: true,
                   child: timer > 0
-                      ? TitleText(timer.minutes.toTimeShort(), size: 12)
+                      ? TitleText(timer.seconds.toTimeShort(), size: 12)
                       : const Icon(FluentIcons.timer_20_regular),
                   onPressed: () async {
                     await showDurationPicker(

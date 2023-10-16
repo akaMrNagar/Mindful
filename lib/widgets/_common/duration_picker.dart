@@ -13,7 +13,7 @@ Future<int> showDurationPicker({
     context: context,
     builder: (context) {
       return _DurationPicker(
-        initialDuration: Duration(minutes: initialTime),
+        initialDuration: Duration(seconds: initialTime),
         appName: appName,
       );
     },
@@ -88,13 +88,13 @@ class _DurationPicker extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () =>
-                        Navigator.pop(context, initialDuration.inMinutes),
+                        Navigator.pop(context, initialDuration.inSeconds),
                     child: const Text("Cancel"),
                   ),
                   const SizedBox(width: 12),
                   TextButton(
                     onPressed: () =>
-                        Navigator.pop(context, selectedDuration.inMinutes),
+                        Navigator.pop(context, selectedDuration.inSeconds),
                     child: const Text("Done"),
                   ),
                 ],

@@ -3,18 +3,17 @@ import 'package:mindful/models/android_app.dart';
 
 @immutable
 class DeviceUsageInfo {
+  /// Total screen time usage of all the apps in this week as a list of int [in Seconds] for each day of week [7 days]
   final List<int> deviceScreenTimeThisWeek;
-  // int get deviceScreenTimeToday => deviceScreenTimeThisWeek[dayOfWeek];
 
+  /// Total cellular or mobile data usage of all the apps in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> deviceMobileUsageThisWeek;
-  // int get deviceMobileUsageToday => deviceMobileUsageThisWeek[dayOfWeek];
 
+  /// Total wifi data usage of all the apps in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> deviceWifiUsageThisWeek;
-  // int get deviceWifiUsageToday => deviceWifiUsageThisWeek[dayOfWeek];
 
-  /// Total sum of wifi+mobile
+  /// Total sum of mobile and wifi data usage of all the apps in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> deviceDataUsageThisWeek;
-  // int get deviceDataUsageToday => deviceDataUsageThisWeek[dayOfWeek];
 
   const DeviceUsageInfo({
     this.deviceScreenTimeThisWeek = const [0, 0, 0, 0, 0, 0, 0],
