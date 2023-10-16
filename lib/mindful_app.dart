@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/utils/routes.dart';
+import 'package:mindful/providers/mindful_theme_provider.dart';
+
+class MindfulApp extends ConsumerWidget {
+  const MindfulApp({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
+        colorScheme: const ColorScheme.dark(),
+        splashColor: Colors.grey.shade800,
+        splashFactory: InkSparkle.splashFactory,
+        cardColor: const Color(0xFF1D2327),
+        scaffoldBackgroundColor: const Color(0xFF12181C),
+      ),
+      theme: ThemeData.light(useMaterial3: true).copyWith(
+        colorScheme: const ColorScheme.light(),
+        splashColor: Colors.grey.shade400,
+        splashFactory: InkSparkle.splashFactory,
+        cardColor: const Color(0xFFD8DEE2),
+        scaffoldBackgroundColor: const Color(0xFFE3E9ED),
+      ),
+      themeMode: ref.watch(mindfulThemeProvider),
+      initialRoute: AppRoutes.homeScreen,
+      routes: AppRoutes.mindfulRoutes,
+    );
+  }
+}
