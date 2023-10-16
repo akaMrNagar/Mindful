@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
 enum AppCategory {
@@ -16,43 +14,53 @@ enum AppCategory {
   accessibility
 }
 
+@immutable
 class AndroidApp {
+  /// Application label or name
   final String name;
+
+  /// Unique package identifier for the app used by android system
   final String packageName;
 
-  /// Encoded string only used for mapping
-  final String encodedIcon;
+  /// Does the app belong to system default category {Home Launcher, Dialer}
+  /// It also include manually added apps like Tethring and Removed Apps
   final bool isImpSysApp;
+
+  /// Category defined by the app's manifest file used by android system
   final AppCategory category;
 
+  /// Total screen time usage of the app in this week as a list of int [in Seconds] for each day of week [7 days]
   final List<int> screenTimeThisWeek;
+
+  /// Total cellular or mobile data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> mobileUsageThisWeek;
+
+  /// Total wifi data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> wifiUsageThisWeek;
+
+  /// Total sum of mobile and wifi data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> dataUsageThisWeek;
 
-  late Uint8List icon;
+  /// Application icon provided by android system.
+  final Uint8List icon;
 
-  /// Sum of wifi+mobile data usage for this week
-
-  AndroidApp({
+  const AndroidApp({
     required this.name,
     required this.packageName,
-    required this.encodedIcon,
+    required this.icon,
     required this.isImpSysApp,
     required this.category,
     required this.screenTimeThisWeek,
     required this.mobileUsageThisWeek,
     required this.wifiUsageThisWeek,
     required this.dataUsageThisWeek,
-  }) {
-    icon = base64Decode(encodedIcon);
-  }
+  });
 
   factory AndroidApp.fromMap(Map<dynamic, dynamic> map) {
     return AndroidApp(
       name: map['appName'] as String,
       packageName: map['packageName'] as String,
-      encodedIcon: map['appIcon'] as String,
+      icon: base64Decode(map['appIcon'] as String),
       isImpSysApp: map['isImpSysApp'] as bool,
       category: _parseCategory(map['category'] as int),
       screenTimeThisWeek: _parseList(map['screenTimeThisWeek']),
@@ -66,7 +74,7 @@ class AndroidApp {
     String? name,
     String? packageName,
     bool? isImpSysApp,
-    String? encodedIcon,
+    Uint8List? icon,
     AppCategory? category,
     List<int>? screenTimeThisWeek,
     List<int>? mobileUsageThisWeek,
@@ -77,7 +85,7 @@ class AndroidApp {
       name: name ?? this.name,
       packageName: packageName ?? this.packageName,
       isImpSysApp: isImpSysApp ?? this.isImpSysApp,
-      encodedIcon: encodedIcon ?? this.encodedIcon,
+      icon: icon ?? this.icon,
       category: category ?? this.category,
       screenTimeThisWeek: screenTimeThisWeek ?? this.screenTimeThisWeek,
       mobileUsageThisWeek: mobileUsageThisWeek ?? this.mobileUsageThisWeek,
@@ -98,7 +106,7 @@ class AndroidApp {
     return other.name == name &&
         other.packageName == packageName &&
         other.isImpSysApp == isImpSysApp &&
-        other.encodedIcon == encodedIcon &&
+        other.icon == icon &&
         other.category == category &&
         listEquals(other.screenTimeThisWeek, screenTimeThisWeek) &&
         listEquals(other.mobileUsageThisWeek, mobileUsageThisWeek) &&
@@ -111,7 +119,7 @@ class AndroidApp {
     return name.hashCode ^
         packageName.hashCode ^
         isImpSysApp.hashCode ^
-        encodedIcon.hashCode ^
+        icon.hashCode ^
         category.hashCode ^
         screenTimeThisWeek.hashCode ^
         mobileUsageThisWeek.hashCode ^

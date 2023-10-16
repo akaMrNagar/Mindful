@@ -57,8 +57,7 @@ public class MindfulAppsTrackerService extends Service {
                 while (keys.hasNext()) {
                     String key = keys.next();
                     Long value = jsonObject.getLong(key);
-                    /// convert minutes to seconds
-                    appTimers.put(key, value * 60);
+                    appTimers.put(key, value);
                 }
 
                 if (!appTimers.isEmpty()) {

@@ -38,7 +38,7 @@ class AppSettings extends StatelessWidget {
                         0;
                     return _SettingTile(
                       title: "App timer",
-                      subTitle: timer > 0 ? timer.minutes.toTime() : "No timer",
+                      subTitle: timer > 0 ? timer.seconds.toTime() : "No timer",
                       icondata: FluentIcons.time_and_weather_20_regular,
                       onPressed: () async {
                         await showDurationPicker(

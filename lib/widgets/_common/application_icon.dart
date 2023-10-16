@@ -1,7 +1,9 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/providers/purged_apps_provider.dart';
 
 class ApplicationIcon extends StatelessWidget {
   const ApplicationIcon({
@@ -27,10 +29,17 @@ class ApplicationIcon extends StatelessWidget {
         radius: size,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(size),
-          child: Image.memory(
-            app.icon,
-            // color: Colors.grey,
-            // colorBlendMode: BlendMode.saturation,
+          child: Consumer(
+            builder: (_, WidgetRef ref, __) {
+              final isPurged =
+                  ref.watch(purgedAppsProvider).contains(app.packageName);
+
+              return Image.memory(
+                app.icon,
+                color: isPurged ? Colors.grey : null,
+                colorBlendMode: isPurged ? BlendMode.saturation : null,
+              );
+            },
           ),
         ),
       );

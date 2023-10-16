@@ -3,15 +3,14 @@ import 'package:mindful/core/services/local_storage.dart';
 import 'package:mindful/core/services/mindful_native_plugin.dart';
 import 'package:mindful/models/device_focus_info.dart';
 
-/// Apps Timer time in minutes
 final deviceFocusProvider =
     StateNotifierProvider<DeviceFocus, DeviceFocusInfo>((ref) {
   return DeviceFocus();
 });
 
-///TODO: update databade onDestroy and also add autodispose to provider
+/// NOTE Modify the purgedAppsProvider to watch selection if this class grows in future
 class DeviceFocus extends StateNotifier<DeviceFocusInfo> {
-  DeviceFocus() : super(const DeviceFocusInfo(appsTimer: {})) {
+  DeviceFocus() : super(const DeviceFocusInfo()) {
     _init();
   }
 
@@ -29,7 +28,9 @@ class DeviceFocus extends StateNotifier<DeviceFocusInfo> {
       );
     } else {
       /// remove entry
-      state = state.copyWith(appsTimer: state.appsTimer..remove(packageName));
+      state = state.copyWith(
+        appsTimer: state.appsTimer..remove(packageName),
+      );
     }
 
     await LocalStorage.instance.saveAppTimers(state.appsTimer);
