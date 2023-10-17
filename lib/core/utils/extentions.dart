@@ -4,6 +4,8 @@ import 'package:mindful/core/utils/utils.dart';
 extension ExtInt on int {
   int get mb => this ~/ 1024;
   double get gb => this / 1048576;
+  int get inMinutes => this ~/ 60;
+  double get inHours => this / 3600;
 
   String toDateDiffToday() {
     ///TODO: bug in date

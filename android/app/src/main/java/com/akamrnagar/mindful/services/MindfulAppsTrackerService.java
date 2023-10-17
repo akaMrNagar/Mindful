@@ -229,7 +229,7 @@ public class MindfulAppsTrackerService extends Service {
                     if (usedTime > limit) {
                         /// screen time exceeded the limit so it needs to be purged
                         if (!purgedApps.contains(entry.getKey())) {
-                            Log.d(AppConstants.DEBUG_TAG, "App exceeded the time limit: " + entry.getKey() + "time: " + usedTime / 60000);
+                            Log.d(AppConstants.DEBUG_TAG, "App exceeded the time limit: " + entry.getKey());
                             purgedApps.add(entry.getKey());
                             if (Objects.equals(ScreenUsageHelper.getLastActiveApp(usageStatsManager, 3 * 60 * 60), entry.getKey())) {
                                 openTLEDialog(entry.getKey());

@@ -28,10 +28,11 @@ class AppScreenTimeChart extends StatelessWidget {
           child: BaseBarChart(
             selectedDay: day,
             data: app.screenTimeThisWeek,
-            intervalBuilder: (max) => max < 60 ? 60 : null,
-            sideLabelsBuilder: (seconds) => (seconds >= 3600)
-                ? "${(seconds / 3600).ceil()}h"
-                : "${(seconds / 60).ceil()}m",
+            intervalBuilder: (max) =>
+                max.inMinutes > 1 ? (1 + (max * 0.35)) : 3600,
+            sideLabelsBuilder: (seconds) => (seconds.inHours > 1)
+                ? "${(seconds.inHours).round()}h"
+                : "${seconds.inMinutes}m",
           ),
         ),
         const SizedBox(height: 24),
@@ -80,7 +81,7 @@ class AppDataUsageChart extends StatelessWidget {
             child: BaseBarChart(
               selectedDay: day,
               data: app.dataUsageThisWeek,
-              intervalBuilder: (max) => null,
+              intervalBuilder: (max) => max * 0.275,
               sideLabelsBuilder: (kb) => (kb.gb >= 1)
                   ? "${kb.gb.round()}gb"
                   : (kb.mb >= 1)

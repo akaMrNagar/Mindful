@@ -21,7 +21,7 @@ class DeviceTimeStatsScreen extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-       appBar: AppBar(
+      appBar: AppBar(
         scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -64,6 +64,7 @@ class DeviceTimeStatsScreen extends StatelessWidget {
                           child: BaseBarChart(
                             selectedDay: day,
                             data: deviceTime,
+                            intervalBuilder: (max) => max * 0.25,
                             sideLabelsBuilder: (seconds) => (seconds >= 3600)
                                 ? "${(seconds / 3600).ceil()}h"
                                 : "${(seconds / 60).ceil()}m",

@@ -21,7 +21,7 @@ class DeviceNetworkStatsScreen extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-       appBar: AppBar(
+      appBar: AppBar(
         scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -64,6 +64,7 @@ class DeviceNetworkStatsScreen extends StatelessWidget {
                           child: BaseBarChart(
                             selectedDay: day,
                             data: deviceUsage.deviceDataUsageThisWeek,
+                            intervalBuilder: (max) => max * 0.25,
                             sideLabelsBuilder: (kb) => (kb.gb >= 1)
                                 ? "${kb.gb.round()}gb"
                                 : (kb.mb >= 1)
