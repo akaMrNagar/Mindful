@@ -2,14 +2,12 @@ package com.akamrnagar.mindful.helpers;
 
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
-import android.content.Context;
-import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.akamrnagar.mindful.models.AndroidApp;
+import com.akamrnagar.mindful.utils.AppConstants;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -18,7 +16,7 @@ import java.util.Map;
 
 public class ScreenUsageHelper {
 
-    public static List<AndroidApp> generateScreenUsage(List<AndroidApp> apps, UsageStatsManager usageStatsManager) {
+    public static List<AndroidApp> generateScreenUsageForThisWeek(List<AndroidApp> apps, UsageStatsManager usageStatsManager) {
 
         Calendar startCal = Calendar.getInstance();
         Calendar endCal = Calendar.getInstance();
@@ -58,7 +56,7 @@ public class ScreenUsageHelper {
     public static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
 
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
-        UsageEvents.Event prevEvent = null;
+        UsageEvents.Event prevOpenEvent = null;
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
 
 
@@ -67,20 +65,24 @@ public class ScreenUsageHelper {
             usageEvents.getNextEvent(currentEvent);
 
             if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                prevEvent = currentEvent;
-            } else if ((currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_PAUSED)
-                    && prevEvent != null) {
-
-                String packageName = prevEvent.getPackageName();
-                long diff = (currentEvent.getTimeStamp() - prevEvent.getTimeStamp());
-                if (oneDayUsageMap.containsKey(packageName)) {
-                    long currentScreenTime = oneDayUsageMap.get(packageName);
-                    oneDayUsageMap.put(packageName, currentScreenTime + diff);
+                prevOpenEvent = currentEvent;
+            } else if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_PAUSED) {
+                if (prevOpenEvent != null) {
+                    /// This block will run for the apps which have ACTIVITY_RESUMED event after 12 midnight
+                    long diff = (currentEvent.getTimeStamp() - prevOpenEvent.getTimeStamp());
+                    long previousTime = oneDayUsageMap.getOrDefault(prevOpenEvent.getPackageName(), 0L);
+                    oneDayUsageMap.put(prevOpenEvent.getPackageName(), previousTime + diff);
                 } else {
-                    oneDayUsageMap.put(packageName, diff);
+                    /// This block will run for the apps which have ACTIVITY_RESUMED event before 12 midnight
+                    long diff = (currentEvent.getTimeStamp() - start);
+                    long previousTime = oneDayUsageMap.getOrDefault(currentEvent.getPackageName(), 0L);
+                    oneDayUsageMap.put(currentEvent.getPackageName(), previousTime + diff);
                 }
+
             }
         }
+
+        Log.v(AppConstants.LOG_TAG, prevOpenEvent.getPackageName());
 
         /// convert milliseconds to seconds
         for (Map.Entry<String, Long> entry : oneDayUsageMap.entrySet()) {

@@ -160,6 +160,7 @@ public class MindfulAppsTrackerService extends Service {
 
             // Repeated timer for every 5 minutes
             refreshTimer.scheduleAtFixedRate(new TimerTask() {
+                ///TODO: Change the period of timer to 1 minute instead of 5 seconds before release build
                 @Override
                 public void run() {
                     everyFiveMinuteTask();

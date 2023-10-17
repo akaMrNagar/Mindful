@@ -6,7 +6,7 @@ extension ExtInt on int {
   double get gb => this / 1048576;
 
   String toDateDiffToday() {
-    //TODO: bug in date
+    ///TODO: bug in date
     if (toInt() == now.weekday) {
       return "Today";
     } else if (toInt() == now.weekday - 1) {

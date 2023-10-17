@@ -17,5 +17,5 @@ class AppTheme {
     scaffoldBackgroundColor: const Color(0xFFE3E9ED),
   );
 
-  //TODO: Generate diffrenet color schemes from realtime colors both dark and light and map background and secondary to scaffold bg and card bg
+  ///TODO: Generate diffrenet color schemes from realtime colors both dark and light and map background and secondary to scaffold bg and card bg
 }

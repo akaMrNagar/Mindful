@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import io.flutter.Log;
 import io.flutter.plugin.common.MethodChannel;
 
 public class DeviceAppsHelper {
@@ -99,7 +98,7 @@ public class DeviceAppsHelper {
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         /// fetch screen usage
-        deviceApps = ScreenUsageHelper.generateScreenUsage(deviceApps, usageStatsManager);
+        deviceApps = ScreenUsageHelper.generateScreenUsageForThisWeek(deviceApps, usageStatsManager);
 
         /// fetch network usage = mobile+wifi
         deviceApps = NetworkUsageHelper.generateNetworkUsage(deviceApps, packageManager, context);
