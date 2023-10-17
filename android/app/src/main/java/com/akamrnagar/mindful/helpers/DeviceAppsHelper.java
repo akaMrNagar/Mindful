@@ -98,7 +98,7 @@ public class DeviceAppsHelper {
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         /// fetch screen usage
-        deviceApps = ScreenUsageHelper.generateScreenUsageForThisWeek(deviceApps, usageStatsManager);
+        deviceApps = ScreenUsageHelper.generateUsageForThisWeek(deviceApps, usageStatsManager);
 
         /// fetch network usage = mobile+wifi
         deviceApps = NetworkUsageHelper.generateNetworkUsage(deviceApps, packageManager, context);

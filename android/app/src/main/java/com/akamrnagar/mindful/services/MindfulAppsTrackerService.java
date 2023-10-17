@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,17 +18,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-import com.akamrnagar.mindful.helpers.ServiceHelper;
+import com.akamrnagar.mindful.helpers.ScreenUsageHelper;
 import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
@@ -44,38 +39,24 @@ public class MindfulAppsTrackerService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        SharedPreferences preferences = getSharedPreferences(AppConstants.PREFS_FLUTTER, Context.MODE_PRIVATE);
+        String jsonString = preferences.getString(AppConstants.PREF_APP_TIMERS, "");
 
-        try {
-            SharedPreferences preferences = getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE);
-            String jsonString = preferences.getString(AppConstants.PREF_APP_TIMERS, "NULL");
+        if (!jsonString.isEmpty()) {
+            HashMap<String, Long> appTimers = Utils.deserializeMap(jsonString);
 
-            if (!jsonString.equals("NULL")) {
-                HashMap<String, Long> appTimers = new HashMap<>();
-                JSONObject jsonObject = new JSONObject(jsonString);
+            if (!appTimers.isEmpty()) {
+                // Register receiver for screen lock/unlock events
+                lockUnlockReceiver = new LockUnlockReceiver(appTimers, getApplicationContext());
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(Intent.ACTION_USER_PRESENT);
+                filter.addAction(Intent.ACTION_SCREEN_OFF);
+                getApplicationContext().registerReceiver(lockUnlockReceiver, filter);
 
-                Iterator<String> keys = jsonObject.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    Long value = jsonObject.getLong(key);
-                    appTimers.put(key, value);
-                }
-
-                if (!appTimers.isEmpty()) {
-                    // Register receiver for screen lock/unlock events
-                    lockUnlockReceiver = new LockUnlockReceiver(appTimers, getApplicationContext());
-                    IntentFilter filter = new IntentFilter();
-                    filter.addAction(Intent.ACTION_USER_PRESENT);
-                    filter.addAction(Intent.ACTION_SCREEN_OFF);
-                    getApplicationContext().registerReceiver(lockUnlockReceiver, filter);
-
-                    // start foreground service and create notification
-                    startForeGround();
-                    return START_STICKY;
-                }
+                // start foreground service and create notification
+                startForeGround();
+                return START_STICKY;
             }
-        } catch (Exception e) {
-            Log.e(AppConstants.ERROR_TAG, "Unable to serialize or parse apps timer MAP from INTENT");
-            Log.e(AppConstants.ERROR_TAG, "ERROR:" + e.getMessage());
         }
 
         stopSelf();
@@ -118,23 +99,23 @@ public class MindfulAppsTrackerService extends Service {
 
     private static class LockUnlockReceiver extends BroadcastReceiver {
 
+        private final Context context;
+        private final UsageStatsManager usageStatsManager;
+
         // Map of app having timer and their time limit in seconds
-        private HashMap<String, Long> appsTimerMap;
+        private final HashMap<String, Long> appsTimerMap;
+        private long todayMidnightTimeMs;
         private Timer refreshTimer = new Timer();
         private Timer appTrackerTimer = new Timer();
 
-        private Context context;
-        private UsageStatsManager usageStatsManager;
-
         // List of apps whose screen time exceeded the limit and they need to be locked
-        private HashSet<String> purgedApps;
+        private HashSet<String> purgedApps = new HashSet<>(1);
 
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
         public LockUnlockReceiver(@NonNull HashMap<String, Long> appsTimer, @NonNull Context context) {
             this.appsTimerMap = appsTimer;
             this.context = context;
-            purgedApps = new HashSet<>(appsTimerMap.size());
             usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
             onDeviceUnlocked();
         }
@@ -157,6 +138,13 @@ public class MindfulAppsTrackerService extends Service {
         private void onDeviceUnlocked() {
             refreshTimer = new Timer();
             appTrackerTimer = new Timer();
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            todayMidnightTimeMs = cal.getTimeInMillis();
 
             // Repeated timer for every 5 minutes
             refreshTimer.scheduleAtFixedRate(new TimerTask() {
@@ -203,22 +191,23 @@ public class MindfulAppsTrackerService extends Service {
 
         // Repeated timer for every 5 minutes
         private void everyFiveMinuteTask() {
-            Log.e(AppConstants.LOG_TAG, "...................................................... refreshing purged apps list");
+            Log.v(AppConstants.LOG_TAG, "...................................................... refreshing purged apps list");
 
             /// Map of package and their screen time in seconds
-            Map<String, Long> oneDayUsageMap = ServiceHelper.generateUsageTodayTillNow(usageStatsManager, new ArrayList<String>(appsTimerMap.keySet()));
+            Map<String, Long> usageTodayTillNow = ScreenUsageHelper.generateUsageTodayTillNow(usageStatsManager, todayMidnightTimeMs, appsTimerMap.keySet());
 
 
-            for (Map.Entry<String, Long> entry : oneDayUsageMap.entrySet()) {
+            for (Map.Entry<String, Long> entry : usageTodayTillNow.entrySet()) {
                 if (appsTimerMap.containsKey(entry.getKey())) {
                     long limit = appsTimerMap.getOrDefault(entry.getKey(), 0L);
                     long usedTime = entry.getValue();
+
                     if (usedTime > limit) {
                         /// screen time exceeded the limit so it needs to be purged
                         if (!purgedApps.contains(entry.getKey())) {
-                            Log.e(AppConstants.LOG_TAG, "App exceeded the time limit: " + entry.getKey());
+                            Log.v(AppConstants.LOG_TAG, "App exceeded the time limit: " + entry.getKey() + "time: " + usedTime / 60000);
                             purgedApps.add(entry.getKey());
-                            if (Objects.equals(ServiceHelper.getLastActiveAppToday(usageStatsManager), entry.getKey())) {
+                            if (Objects.equals(ScreenUsageHelper.getLastActiveApp(usageStatsManager, 3 * 60 * 60), entry.getKey())) {
                                 openTLEDialog(entry.getKey());
                             }
                         }
@@ -229,30 +218,17 @@ public class MindfulAppsTrackerService extends Service {
 
 
         int counter = 0;
-        private String currentlyActiveApp = "";
 
         // Repeated timer for every second to track opened app
         private void everySecondTask() {
             if (purgedApps.isEmpty()) return;
             Log.e(AppConstants.LOG_TAG, "iteration: " + (counter++));
 
-            UsageEvents usageEvents = usageStatsManager.queryEvents(System.currentTimeMillis() - 1000, System.currentTimeMillis());
-            UsageEvents.Event currentEvent = new UsageEvents.Event();
-
-            do {
-                usageEvents.getNextEvent(currentEvent);
-                if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                    currentlyActiveApp = currentEvent.getPackageName();
-                    Log.e(AppConstants.LOG_TAG, "Active app changed: " + currentlyActiveApp);
-
-                    if (purgedApps.contains(currentlyActiveApp)) {
-                        Log.e(AppConstants.LOG_TAG, "...........................Purged app " + currentEvent.getPackageName() + " is opened ............................................");
-                        openTLEDialog(currentlyActiveApp);
-                    }
-                }
+            String currentlyActiveApp = ScreenUsageHelper.getLastActiveApp(usageStatsManager, 1);
+            if (purgedApps.contains(currentlyActiveApp)) {
+                Log.e(AppConstants.LOG_TAG, "...........................Purged app " + currentlyActiveApp + " is opened ............................................");
+                openTLEDialog(currentlyActiveApp);
             }
-            while (usageEvents.hasNextEvent());
-
         }
 
         private void openTLEDialog(String appPackage) {
@@ -262,7 +238,5 @@ public class MindfulAppsTrackerService extends Service {
                 context.startService(intent);
             }
         }
-
-
     }
 }

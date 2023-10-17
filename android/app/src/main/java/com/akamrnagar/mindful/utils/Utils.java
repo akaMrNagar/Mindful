@@ -14,8 +14,13 @@ import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.services.MindfulAppsTrackerService;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import io.flutter.Log;
 
@@ -86,6 +91,23 @@ public class Utils {
             }
         }
         return isServiceRunning;
+    }
+
+    @NonNull
+    public static HashMap<String, Long> deserializeMap(String jsonString) {
+        HashMap<String, Long> map = new HashMap<>();
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+
+            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                String key = it.next();
+                Long value = jsonObject.getLong(key);
+                map.put(key, value);
+            }
+        } catch (JSONException e) {
+            Log.e(AppConstants.ERROR_TAG, "Error deserializing JSON to a map: " + e.getMessage());
+        }
+        return map;
     }
 
 
