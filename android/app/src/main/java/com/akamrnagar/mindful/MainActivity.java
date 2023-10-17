@@ -1,7 +1,5 @@
 package com.akamrnagar.mindful;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
@@ -10,16 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
-import com.akamrnagar.mindful.helpers.ImpSystemAppsHelper;
-import com.akamrnagar.mindful.models.TimerDataHolder;
 import com.akamrnagar.mindful.services.MindfulAppsTrackerService;
 import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -72,7 +63,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         if (!Utils.isServiceRunning(getApplicationContext(), MindfulAppsTrackerService.class.getName())) {
             Intent intent = new Intent(getApplicationContext(), MindfulAppsTrackerService.class);
             getApplicationContext().startService(intent);
-            Log.e(AppConstants.LOG_TAG, "started service : MindfulAppsTrackerService()");
+            Log.d(AppConstants.DEBUG_TAG, "started service : MindfulAppsTrackerService()");
         }
     }
 
@@ -83,7 +74,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         }
 
         getApplicationContext().startService(intent);
-        Log.e(AppConstants.LOG_TAG, "restarted service : MindfulAppsTrackerService()");
+        Log.d(AppConstants.DEBUG_TAG, "restarted service : MindfulAppsTrackerService()");
     }
 
 }

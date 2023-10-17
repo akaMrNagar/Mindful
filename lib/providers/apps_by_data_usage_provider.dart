@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 
+/// Provides a list of [AndroidApp] filtered & sorted by screen time
+/// for the day provided as parameter.
 final appsByDataUsageProvider =
     Provider.autoDispose.family<AsyncValue<List<AndroidApp>>, int>((ref, day) {
   return ref.watch(appsProvider).when(

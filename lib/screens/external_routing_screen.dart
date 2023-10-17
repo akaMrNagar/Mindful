@@ -7,6 +7,9 @@ import 'package:mindful/screens/home_screen.dart';
 import 'package:mindful/widgets/_common/async_error_indicator.dart';
 import 'package:mindful/widgets/_common/async_loading_indicator.dart';
 
+
+/// This screen is responsible for forwarding the user to [AppStatsScreen] 
+/// when the user clicks on the setting button of the TLE dialog.
 class ExternalRoutingScreen extends ConsumerWidget {
   const ExternalRoutingScreen({super.key});
 
@@ -16,7 +19,7 @@ class ExternalRoutingScreen extends ConsumerWidget {
           loading: () => const AsyncLoadingIndicator(),
           error: (e, st) => AsyncErrorIndicator(e, st),
           data: (apps) {
-            final package = MindfulNativePlugin.instance.goToApp;
+            final package = MindfulNativePlugin.instance.forwardToApp;
             if (package.isNotEmpty) {
               for (var app in apps) {
                 if (app.packageName == package) {

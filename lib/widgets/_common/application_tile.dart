@@ -12,6 +12,7 @@ import 'package:mindful/widgets/_common/custom_text.dart';
 import 'package:mindful/widgets/_common/duration_picker.dart';
 import 'package:mindful/widgets/_common/interactive_card.dart';
 
+/// List tile used for displaying app usage info based on the bool [isDataTile]
 class ApplicationTile extends StatelessWidget {
   const ApplicationTile({
     super.key,

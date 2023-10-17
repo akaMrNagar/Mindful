@@ -8,6 +8,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
 import 'package:mindful/widgets/_common/custom_text.dart';
 
+/// Base bar chart used for diplaying app/device usage
 class BaseBarChart extends ConsumerWidget {
   const BaseBarChart({
     super.key,
@@ -18,7 +19,6 @@ class BaseBarChart extends ConsumerWidget {
   });
 
   final int selectedDay;
-
   final List<int> data;
 
   /// Return type of [yPos]  will be same as provided in [data]
@@ -32,7 +32,7 @@ class BaseBarChart extends ConsumerWidget {
     final maxY = data.fold(0, (p, e) => math.max(p, e));
 
     // adding one to show baar if all values are zeroes
-    final barMaxHeight = (maxY * 1.33) + 1;
+    final barMaxHeight = (maxY * 1.25) + 1;
 
     return Padding(
       padding: const EdgeInsets.only(right: 6),
@@ -90,7 +90,7 @@ class BaseBarChart extends ConsumerWidget {
             },
           ),
         ),
-        // swapAnimationCurve: Curves.easeOutBack,
+        swapAnimationCurve: Curves.ease,
         swapAnimationDuration: 750.ms,
       ),
     );
@@ -121,7 +121,7 @@ class BaseBarChart extends ConsumerWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.topCenter,
-              child: SubtitleText(daysShort[value.toInt()]),
+              child: SubtitleText(AppStrings.daysShort[value.toInt()]),
             ),
           ),
         ),

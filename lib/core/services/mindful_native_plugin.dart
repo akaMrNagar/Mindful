@@ -1,17 +1,19 @@
-// ignore_for_file: prefer_final_fields
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mindful/models/android_app.dart';
 
+/// This class handle flutter method channel and responsible for invoking native android java code
 class MindfulNativePlugin {
   static final MindfulNativePlugin instance = MindfulNativePlugin._();
 
-  String goToApp = "";
+  /// Package of the app whose Time Limit Exceeded dialog is clicked.
+  /// This is forwarded by the tracking service to open the app's stats screen directly.
+  String forwardToApp = "";
   MindfulNativePlugin._() {
+    /// Handle calls from native side
     _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'openAppStats') goToApp = call.arguments;
+      if (call.method == 'openAppStats') forwardToApp = call.arguments;
     });
   }
 
@@ -22,10 +24,14 @@ class MindfulNativePlugin {
   Future<String> getAppDirectoryPath() async =>
       await _methodChannel.invokeMethod('getAppDirectoryPath');
 
+  /// Restart the apps tracking service.
+  /// Should be called when the app timers changes
   Future<bool> restartTrackingService() async =>
       await _methodChannel.invokeMethod('restartService');
 
-  /// Generates list of [AndroidApp] with all the usage info
+  /// Generates a list of [AndroidApp] all the launchable apps
+  /// installed on the user device including their usage
+  /// like screen time, wifi usage, mobile usage for current week per day.
   Future<List<AndroidApp>> getDeviceApps() async {
     try {
       Object result = await _methodChannel.invokeMethod('getDeviceApps');
@@ -40,9 +46,9 @@ class MindfulNativePlugin {
             } catch (e, trace) {
               if (e is AssertionError) {
                 debugPrint(
-                    '[NATIVE PLUGIN] getDeviceApps() : Unable to add the following app: $entry');
+                    'MindfulNativePlugin.getDeviceApps() : Unable to add the following app: $entry');
               } else {
-                debugPrint('[NATIVE PLUGIN] getDeviceApps() : $e $trace');
+                debugPrint('MindfulNativePlugin.getDeviceApps() : $e $trace');
               }
             }
           }
@@ -52,7 +58,7 @@ class MindfulNativePlugin {
         return List<AndroidApp>.empty();
       }
     } catch (e) {
-      debugPrint("Error: $e");
+      debugPrint("MindfulNativePlugin.getDeviceApps() Error: $e");
       return List<AndroidApp>.empty();
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/extentions.dart';
+import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/providers/apps_by_data_usage_provider.dart';
 import 'package:mindful/providers/device_usage_provider.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
@@ -13,6 +14,8 @@ import 'package:mindful/widgets/_common/custom_text.dart';
 import 'package:mindful/widgets/_common/data_usage_info.dart';
 import 'package:mindful/widgets/_common/widgets_revealer.dart';
 
+/// Screen which displays aggregated device network usage and list of apps
+/// whose network usage is more than 0KB
 class DeviceNetworkStatsScreen extends StatelessWidget {
   const DeviceNetworkStatsScreen({super.key});
 
@@ -21,7 +24,7 @@ class DeviceNetworkStatsScreen extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
-       appBar: AppBar(
+      appBar: AppBar(
         scrolledUnderElevation: 0,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -64,6 +67,7 @@ class DeviceNetworkStatsScreen extends StatelessWidget {
                           child: BaseBarChart(
                             selectedDay: day,
                             data: deviceUsage.deviceDataUsageThisWeek,
+                            intervalBuilder: (max) => max * 0.25,
                             sideLabelsBuilder: (kb) => (kb.gb >= 1)
                                 ? "${kb.gb.round()}gb"
                                 : (kb.mb >= 1)
@@ -78,7 +82,7 @@ class DeviceNetworkStatsScreen extends StatelessWidget {
                         ),
 
                         const SizedBox(height: 24),
-                        const TitleText("Most used apps"),
+                        const TitleText(AppStrings.mostUsedApps),
                         const SizedBox(height: 8),
 
                         /// Apps List

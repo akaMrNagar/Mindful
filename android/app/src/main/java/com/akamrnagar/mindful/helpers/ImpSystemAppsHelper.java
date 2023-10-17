@@ -12,10 +12,27 @@ import com.akamrnagar.mindful.utils.AppConstants;
 
 import java.util.HashSet;
 
+/**
+ * ImpSystemAppsHelper is a utility class responsible for identifying and managing important
+ * system applications on an Android device.
+ * It helps to initialize and maintain a list of system applications that are considered essential
+ * for the proper functioning of the device.
+ */
 public class ImpSystemAppsHelper {
+
+    /**
+     * A set containing package names of important system applications.
+     */
     public static HashSet<String> impSystemApps;
 
-        public static void init(@NonNull Context context, @Nullable PackageManager packageManager) {
+
+    /**
+     * Initializes the set of important system applications.
+     *
+     * @param context        The Android application context.
+     * @param packageManager The package manager used for resolving default apps.
+     */
+    public static void init(@NonNull Context context, @Nullable PackageManager packageManager) {
         impSystemApps = new HashSet<>();
         impSystemApps.add(AppConstants.MY_APP_PACKAGE);
 
@@ -23,6 +40,7 @@ public class ImpSystemAppsHelper {
             packageManager = context.getPackageManager();
         }
 
+        // Get and add the package names of the default launcher and caller app.
         @Nullable
         String launcher = getDefaultLauncherPackageName(context, packageManager);
         @Nullable
@@ -32,6 +50,13 @@ public class ImpSystemAppsHelper {
         if (caller != null) impSystemApps.add(caller);
     }
 
+    /**
+     * Gets the package name of the default launcher app.
+     *
+     * @param context        The Android application context.
+     * @param packageManager The package manager used for resolving the default launcher.
+     * @return The package name of the default launcher app or null if not found.
+     */
     @Nullable
     private static String getDefaultLauncherPackageName(@NonNull Context context, @NonNull PackageManager packageManager) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -46,6 +71,13 @@ public class ImpSystemAppsHelper {
     }
 
 
+    /**
+     * Gets the package name of the default caller app.
+     *
+     * @param context        The Android application context.
+     * @param packageManager The package manager used for resolving the default caller app.
+     * @return The package name of the default caller app or null if not found.
+     */
     @Nullable
     private static String getDefaultCallerPackageName(@NonNull Context context, @NonNull PackageManager packageManager) {
         Intent intent = new Intent(Intent.ACTION_DIAL);

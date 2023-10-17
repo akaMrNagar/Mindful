@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+/// Global error widget for async providers
 class AsyncErrorIndicator extends StatelessWidget {
   const AsyncErrorIndicator(
     this.error,

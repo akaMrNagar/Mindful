@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/extentions.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
@@ -12,6 +12,8 @@ import 'package:mindful/widgets/app_stats_screen/app_settings.dart';
 import 'package:mindful/widgets/app_stats_screen/app_stats_charts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+/// Screen which displays all the app usage statistics including screen time,
+/// mobile usage, wifi usage, charts. Also available app settings.
 class AppStatsScreen extends StatelessWidget {
   const AppStatsScreen({
     super.key,
@@ -62,8 +64,8 @@ class AppStatsScreen extends StatelessWidget {
                   /// Settngs
                   const SizedBox(height: 16),
 
-                  if (app.packageName != AppConstants.removedAppPackage &&
-                      app.packageName != AppConstants.tetheringAppPackage)
+                  if (app.packageName != Constants.removedAppPackage &&
+                      app.packageName != Constants.tetheringAppPackage)
                     AppSettings(app: app),
                 ],
               ),

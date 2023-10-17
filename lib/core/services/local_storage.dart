@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:mindful/core/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Responsible for managing application data in SharedPreferences.
 class LocalStorage {
   static final LocalStorage instance = LocalStorage._();
   late SharedPreferences _prefs;
@@ -11,19 +13,20 @@ class LocalStorage {
     _prefs = await SharedPreferences.getInstance();
   }
 
+  /// Save app timers map as json string in shared prefs
   Future<void> saveAppTimers(Map<String, int> appTimers) async {
     String jsonString = jsonEncode(appTimers);
-    await _prefs.setString("AppsTimer", jsonString);
+    await _prefs.setString(Constants.prefAppTimersMap, jsonString);
   }
 
+  /// Fetch saved app timers from shared prefs
   Future<Map<String, int>> loadAppTimers() async {
-    String jsonString = _prefs.getString("AppsTimer") ?? "";
+    String jsonString = _prefs.getString(Constants.prefAppTimersMap) ?? "";
 
-    try {
+    if (jsonString.isNotEmpty) {
       final map = Map<String, int>.from(jsonDecode(jsonString));
       return map;
-      // ignore: empty_catches
-    } catch (e) {}
+    }
 
     return {};
   }

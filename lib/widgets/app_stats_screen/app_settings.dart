@@ -10,6 +10,8 @@ import 'package:mindful/widgets/_common/duration_picker.dart';
 import 'package:mindful/widgets/_common/interactive_card.dart';
 import 'package:mindful/widgets/_common/widgets_revealer.dart';
 
+
+/// Displays available settings for the app in [AppStatsScreen]
 class AppSettings extends StatelessWidget {
   const AppSettings({super.key, required this.app});
 

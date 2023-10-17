@@ -6,6 +6,7 @@ import 'package:mindful/widgets/home_screen/average_stats_cards.dart';
 import 'package:mindful/widgets/home_screen/quick_actions.dart';
 import 'package:mindful/widgets/home_screen/screen_time_pie_chart.dart';
 
+/// Home screen of MINDFUL app
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 

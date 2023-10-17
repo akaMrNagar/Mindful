@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Custom card with inkwell for interactivity.
+/// Returns just card if [onPressed] is null.
+/// This widget is used all over the app wherever needed instead of buttons and tiles
 class InteractiveCard extends StatelessWidget {
   const InteractiveCard({
     super.key,

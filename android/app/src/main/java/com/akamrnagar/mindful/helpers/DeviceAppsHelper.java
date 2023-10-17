@@ -1,6 +1,7 @@
 package com.akamrnagar.mindful.helpers;
 
 import android.app.usage.NetworkStats;
+import android.app.usage.NetworkStatsManager;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -19,15 +20,28 @@ import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.flutter.Log;
 import io.flutter.plugin.common.MethodChannel;
 
+/**
+ * DeviceAppsHelper is a utility class that assists in retrieving information about installed
+ * applications and their usage on an Android device.
+ * It provides functionality for fetching a list of Android apps, including their names, package
+ * names, icons, and various usage statistics.
+ */
 public class DeviceAppsHelper {
 
 
+    /**
+     * Retrieves a list of installed Android apps including their usage statistics.
+     *
+     * @param context       The Android application context.
+     * @param channelResult The MethodChannel result to return the list of apps to Flutter.
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
         AsyncSuccessCallback<List<Map<String, Object>>> callback = new AsyncSuccessCallback<List<Map<String, Object>>>() {
@@ -61,6 +75,12 @@ public class DeviceAppsHelper {
         );
     }
 
+    /**
+     * Fetches a list of installed Android apps and their usage statistics.
+     *
+     * @param context The Android application context.
+     * @return A list of AndroidApp objects representing installed applications.
+     */
     @NonNull
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
@@ -72,6 +92,7 @@ public class DeviceAppsHelper {
 
         /// Create list of android apps
         for (PackageInfo app : fetchedApps) {
+            // If package is launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
                 int category = -1;
 
@@ -80,7 +101,6 @@ public class DeviceAppsHelper {
                 }
 
                 boolean isSysDefault = ImpSystemAppsHelper.impSystemApps.contains(app.packageName);
-
                 deviceApps.add(
                         new AndroidApp(app.applicationInfo.loadLabel(packageManager).toString(), // name
                                 app.packageName, // package name
@@ -94,15 +114,52 @@ public class DeviceAppsHelper {
         }
 
         /// Add additional apps for network usage
-        deviceApps.add(new AndroidApp("Tethering & Hotspot", AppConstants.TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
-        deviceApps.add(new AndroidApp("Removed Apps", AppConstants.REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
+        deviceApps.add(new AndroidApp(AppConstants.TETHERING_APP_NAME, AppConstants.TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
+        deviceApps.add(new AndroidApp(AppConstants.REMOVED_APP_NAME, AppConstants.REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        /// fetch screen usage
-        deviceApps = ScreenUsageHelper.generateScreenUsage(deviceApps, usageStatsManager);
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
 
-        /// fetch network usage = mobile+wifi
-        deviceApps = NetworkUsageHelper.generateNetworkUsage(deviceApps, packageManager, context);
+        Calendar startCal = Calendar.getInstance();
+        Calendar endCal = Calendar.getInstance();
+        int todayOfWeek = startCal.get(Calendar.DAY_OF_WEEK);
+
+        startCal.set(Calendar.HOUR_OF_DAY, 0);
+        startCal.set(Calendar.MINUTE, 0);
+        startCal.set(Calendar.SECOND, 0);
+
+        endCal.set(Calendar.HOUR_OF_DAY, 23);
+        endCal.set(Calendar.MINUTE, 59);
+        endCal.set(Calendar.SECOND, 59);
+
+        /// Loop from first day of week till today of this week
+        for (int i = 1; i <= todayOfWeek; i++) {
+            startCal.set(Calendar.DAY_OF_WEEK, i);
+            endCal.set(Calendar.DAY_OF_WEEK, i);
+
+            long end = 0L;
+            if (i == todayOfWeek) {
+                end = System.currentTimeMillis();
+            } else {
+                end = endCal.getTimeInMillis();
+            }
+
+            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, startCal.getTimeInMillis(), end);
+            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, startCal.getTimeInMillis(), end);
+            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, startCal.getTimeInMillis(), end);
+
+
+            for (AndroidApp app : deviceApps) {
+                app.screenTimeThisWeek.set((i - 1), screenUsageOneDay.getOrDefault(app.packageName, 0L));
+
+                if (mobileUsageOneDay.containsKey(app.appUid)) {
+                    app.mobileUsageThisWeek.set((i - 1), mobileUsageOneDay.getOrDefault(app.appUid, 0L));
+                }
+                if (wifiUsageOneDay.containsKey(app.appUid)) {
+                    app.wifiUsageThisWeek.set((i - 1), wifiUsageOneDay.getOrDefault(app.appUid, 0L));
+                }
+            }
+        }
 
         return deviceApps;
     }

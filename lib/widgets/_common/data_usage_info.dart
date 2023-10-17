@@ -4,6 +4,7 @@ import 'package:mindful/core/utils/extentions.dart';
 import 'package:mindful/widgets/_common/custom_text.dart';
 import 'package:mindful/widgets/_common/interactive_card.dart';
 
+/// Widget used to display two cards in row both for mobile and wifi usage respectively
 class DataUsageInfo extends StatelessWidget {
   const DataUsageInfo({super.key, required this.mobile, required this.wifi});
 
