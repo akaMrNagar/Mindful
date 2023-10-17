@@ -23,9 +23,22 @@ import java.util.Map;
 
 import io.flutter.Log;
 
+/**
+ * NetworkUsageHelper is a utility class responsible for gathering network usage statistics for
+ * Android applications.
+ * It fetches data about the mobile and Wi-Fi data usage of applications and organizes this
+ * information into the provided list of AndroidApp objects.
+ */
 public class NetworkUsageHelper {
 
-
+    /**
+     * Generates network usage statistics (wifi + mobile) for current week based on day for a list of Android apps.
+     *
+     * @param apps           The list of Android apps to which network usage statistics will be added.
+     * @param packageManager The PackageManager for retrieving app information.
+     * @param context        The Android application context.
+     * @return The updated list of Android apps with network usage statistics.
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static List<AndroidApp> generateNetworkUsage(List<AndroidApp> apps, PackageManager packageManager, @NonNull Context context) {
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
@@ -73,6 +86,14 @@ public class NetworkUsageHelper {
     }
 
 
+    /**
+     * Fetches Wi-Fi usage statistics for a specified time interval.
+     *
+     * @param networkStatsManager The NetworkStatsManager used to query network usage.
+     * @param start               The start time of the interval in milliseconds.
+     * @param end                 The end time of the interval in milliseconds.
+     * @return A map with app UIDs as keys and their corresponding Wi-Fi usage in bytes as values.
+     */
     @NonNull
     private static HashMap<Integer, Long> fetchWifiUsageForInterval(@NonNull NetworkStatsManager networkStatsManager, long start, long end) {
         HashMap<Integer, Long> wifiUsageMap = new HashMap<>();
@@ -101,18 +122,27 @@ public class NetworkUsageHelper {
             networkStatsWifi.close();
 
         } catch (RemoteException e) {
-            Log.e(AppConstants.ERROR_TAG, "fetchWifiUsageForInterval():  Error in fetching wifi usage for app ");
+            Log.e(AppConstants.ERROR_TAG, "NetworkUsageHelper.fetchWifiUsageForInterval():  Error in fetching wifi usage for apps ");
+            Log.e(AppConstants.ERROR_TAG, e.toString());
         }
 
         return wifiUsageMap;
     }
 
+    /**
+     * Fetches mobile data usage statistics for a specified time interval.
+     *
+     * @param networkStatsManager The NetworkStatsManager used to query network usage.
+     * @param start               The start time of the interval in milliseconds.
+     * @param end                 The end time of the interval in milliseconds.
+     * @return A map with app UIDs as keys and their corresponding mobile data usage in bytes as values.
+     */
     @NonNull
     private static HashMap<Integer, Long> fetchMobileUsageForInterval(@NonNull NetworkStatsManager networkStatsManager, long start, long end) {
         HashMap<Integer, Long> mobileUsageMap = new HashMap<>();
 
         try {
-            /// fetch wifi usage
+            /// fetch mobile usage
             NetworkStats networkStatsMobile = networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, null, start, end);
             NetworkStats.Bucket bucketMobile = new NetworkStats.Bucket();
 
@@ -135,8 +165,8 @@ public class NetworkUsageHelper {
             networkStatsMobile.close();
 
         } catch (RemoteException e) {
-            Log.e(AppConstants.ERROR_TAG, "fetchMobileUsageForInterval():  Error in fetching wifi usage for app ");
-        }
+            Log.e(AppConstants.ERROR_TAG, "NetworkUsageHelper.fetchMobileUsageForInterval():  Error in fetching mobile usage for apps ");
+            Log.e(AppConstants.ERROR_TAG, e.toString());        }
 
         return mobileUsageMap;
     }

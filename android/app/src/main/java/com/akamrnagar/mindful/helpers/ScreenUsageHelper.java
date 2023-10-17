@@ -2,22 +2,27 @@ package com.akamrnagar.mindful.helpers;
 
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.models.AndroidApp;
-import com.akamrnagar.mindful.utils.AppConstants;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 public class ScreenUsageHelper {
+
+    /**
+     * Generates a list of Android apps with their screen usage data for each day of the current week.
+     *
+     * @param apps              The list of [AndroidApp] objects to be updated.
+     * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
+     * @return The updated list of AndroidApp objects with screen usage data for each day of the week.
+     */
     public static List<AndroidApp> generateUsageForThisWeek(List<AndroidApp> apps, UsageStatsManager usageStatsManager) {
 
         Calendar startCal = Calendar.getInstance();
@@ -53,6 +58,15 @@ public class ScreenUsageHelper {
         return apps;
     }
 
+
+    /**
+     * Generates screen usage data for a specified time interval.
+     *
+     * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
+     * @param start             The start time of the interval in milliseconds.
+     * @param end               The end time of the interval in milliseconds.
+     * @return A map of package names and their screen time in seconds for the specified interval.
+     */
     @NonNull
     private static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
 
@@ -87,6 +101,15 @@ public class ScreenUsageHelper {
         return convertMapMsToSeconds(oneDayUsageMap);
     }
 
+
+    /**
+     * Generates screen usage data for today until the current time.
+     *
+     * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
+     * @param start             The start time of the interval.
+     * @param onlyForApps       Set of package names for which usage data is generated.
+     * @return A map of package names and their screen time in seconds for today till now.
+     */
     @NonNull
     public static HashMap<String, Long> generateUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, long start, @NonNull Set<String> onlyForApps) {
         HashMap<String, Long> usageTodayMap = new HashMap<>(onlyForApps.size());
@@ -135,6 +158,14 @@ public class ScreenUsageHelper {
     }
 
 
+    /**
+     * Retrieves the package name of the last used/active app within a specified time interval.
+     * The final interval will be [ (current time - intervalSec) TO current time ]
+     *
+     * @param usageStatsManager The UsageStatsManager used to retrieve usage events.
+     * @param intervalSec       The length of the time interval in seconds from current time.
+     * @return The package name of the last used/active app within the specified time interval.
+     */
     public static String getLastActiveApp(@NonNull UsageStatsManager usageStatsManager, long intervalSec) {
         UsageEvents usageEvents = usageStatsManager.queryEvents(System.currentTimeMillis() - (intervalSec * 1000), System.currentTimeMillis());
         UsageEvents.Event lastEvent = null;
@@ -151,6 +182,12 @@ public class ScreenUsageHelper {
         return lastEvent == null ? "" : lastEvent.getPackageName();
     }
 
+    /**
+     * Converts a map containing values in milliseconds to seconds.
+     *
+     * @param msMap The map with values in milliseconds.
+     * @return A map with values converted to seconds.
+     */
     private static HashMap<String, Long> convertMapMsToSeconds(@NonNull HashMap<String, Long> msMap) {
         for (Map.Entry<String, Long> entry : msMap.entrySet()) {
             msMap.put(entry.getKey(), entry.getValue() / 1000);

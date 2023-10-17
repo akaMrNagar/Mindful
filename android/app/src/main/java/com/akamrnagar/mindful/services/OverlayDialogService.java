@@ -25,6 +25,9 @@ import androidx.core.view.KeyEventDispatcher;
 import com.akamrnagar.mindful.MainActivity;
 import com.akamrnagar.mindful.utils.AppConstants;
 
+/**
+ * Display a dialog informing user about the app whose timer ran out.
+ */
 public class OverlayDialogService extends Service {
 
     @Override

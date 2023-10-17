@@ -28,43 +28,33 @@ public class Utils {
 
     private static final int SYSTEM_APP_MASK = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
 
-    public static boolean isSystemApp(@NonNull PackageInfo packageInfo) {
-        return (packageInfo.applicationInfo.flags & SYSTEM_APP_MASK) != 0;
-    }
-
-    public static boolean isSystemApp(Context context, String packageName) {
-        PackageManager packageManager = context.getPackageManager();
-
-        PackageInfo info = null;
-        try {
-            info = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
-        } catch (PackageManager.NameNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        return isSystemApp(info);
-    }
-
-    private static String encodeToBase64(Drawable iconData) {
+    /**
+     * Encodes a Drawable (app icon) to a Base64 string.
+     *
+     * @param iconData The Drawable to encode.
+     * @return The Base64 encoded string representing the app icon.
+     */
+    private static String encodeToBase64(@NonNull Drawable iconData) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-        Bitmap image = getBitmapFromDrawable(iconData);
+        final Bitmap image = Bitmap.createBitmap(
+                iconData.getIntrinsicWidth(),
+                iconData.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        final Canvas canvas = new Canvas(image);
+        iconData.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        iconData.draw(canvas);
         image.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOS);
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.NO_WRAP);
     }
 
-    private static Bitmap getBitmapFromDrawable(@NonNull Drawable drawable) {
-        final Bitmap bmp = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
 
-        final Canvas canvas = new Canvas(bmp);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-
-        return bmp;
-    }
-
+    /**
+     * Encodes and returns the Base64 representation of an app icon.
+     *
+     * @param icon The app icon as a Drawable.
+     * @return The Base64 encoded string of the app icon.
+     */
     public static String getEncodedAppIcon(Drawable icon) {
         String appIcon = "";
         try {
@@ -77,9 +67,11 @@ public class Utils {
 
 
     /**
-     * @param context
-     * @param serviceClassName ex: MindfulAppsTrackerService.class.getName()
-     * @return is the given service running
+     * Checks if a service with the given class name is currently running.
+     *
+     * @param context          The application context.
+     * @param serviceClassName The name of the service class (e.g., MindfulAppsTrackerService.class.getName()).
+     * @return True if the service is running, false otherwise.
      */
     public static boolean isServiceRunning(@NonNull Context context, String serviceClassName) {
         boolean isServiceRunning = false;
@@ -93,6 +85,13 @@ public class Utils {
         return isServiceRunning;
     }
 
+
+    /**
+     * Deserializes a JSON string into a HashMap of String keys and Long values.
+     *
+     * @param jsonString The JSON string to deserialize.
+     * @return A HashMap containing the deserialized data.
+     */
     @NonNull
     public static HashMap<String, Long> deserializeMap(String jsonString) {
         HashMap<String, Long> map = new HashMap<>();

@@ -30,6 +30,9 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * This service tracks the usage of apps installed on user device and enforces usage limits.
+ */
 public class MindfulAppsTrackerService extends Service {
     private LockUnlockReceiver lockUnlockReceiver;
 
@@ -39,6 +42,8 @@ public class MindfulAppsTrackerService extends Service {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        /// Load app timers map from shared prefs
         SharedPreferences preferences = getSharedPreferences(AppConstants.PREFS_FLUTTER, Context.MODE_PRIVATE);
         String jsonString = preferences.getString(AppConstants.PREF_APP_TIMERS, "");
 
@@ -65,7 +70,7 @@ public class MindfulAppsTrackerService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e(AppConstants.LOG_TAG, "OnDestroy() called");
+        Log.d(AppConstants.DEBUG_TAG, "OnDestroy() called");
         if (lockUnlockReceiver != null) {
             lockUnlockReceiver.onDestroy();
             getApplicationContext().unregisterReceiver(lockUnlockReceiver);
@@ -78,6 +83,12 @@ public class MindfulAppsTrackerService extends Service {
         return null;
     }
 
+
+    //TODO: Probably move the notification builder to somewhere else
+
+    /**
+     * Start foreground service and creates notification
+     */
     private void startForeGround() {
         // creating notification
         String CHANNEL_ID = "Service Channel";
@@ -101,14 +112,19 @@ public class MindfulAppsTrackerService extends Service {
 
         private final Context context;
         private final UsageStatsManager usageStatsManager;
-
-        // Map of app having timer and their time limit in seconds
-        private final HashMap<String, Long> appsTimerMap;
+        private Timer everySecondTimer = new Timer();
+        private Timer everyMinuteTimer = new Timer();
         private long todayMidnightTimeMs;
-        private Timer refreshTimer = new Timer();
-        private Timer appTrackerTimer = new Timer();
 
-        // List of apps whose screen time exceeded the limit and they need to be locked
+        /**
+         * Map of app package and their timer in seconds set by the user
+         */
+        private final HashMap<String, Long> appsTimerMap;
+
+
+        /**
+         * List of app packages whose timer ran out or whose screen time exceeded the daily limit
+         */
         private HashSet<String> purgedApps = new HashSet<>(1);
 
 
@@ -124,20 +140,22 @@ public class MindfulAppsTrackerService extends Service {
         @Override
         public void onReceive(Context context, @NonNull Intent intent) {
             if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF)) {
-                Log.e(AppConstants.LOG_TAG, "User locked the device and screen is off");
+                Log.d(AppConstants.DEBUG_TAG, "User locked the device and screen is off");
                 onDeviceLocked();
 
             } else if (Objects.equals(intent.getAction(), Intent.ACTION_USER_PRESENT)) {
-                Log.e(AppConstants.LOG_TAG, "User unlocked the device");
+                Log.d(AppConstants.DEBUG_TAG, "User unlocked the device");
                 onDeviceUnlocked();
             }
         }
 
 
-        // will be called when the user unlocks the device
+        /**
+         * This method is called everytime the device is unlocked
+         */
         private void onDeviceUnlocked() {
-            refreshTimer = new Timer();
-            appTrackerTimer = new Timer();
+            everyMinuteTimer = new Timer();
+            everySecondTimer = new Timer();
 
 
             Calendar cal = Calendar.getInstance();
@@ -146,17 +164,15 @@ public class MindfulAppsTrackerService extends Service {
             cal.set(Calendar.SECOND, 0);
             todayMidnightTimeMs = cal.getTimeInMillis();
 
-            // Repeated timer for every 5 minutes
-            refreshTimer.scheduleAtFixedRate(new TimerTask() {
+            everyMinuteTimer.scheduleAtFixedRate(new TimerTask() {
                 ///TODO: Change the period of timer to 1 minute instead of 5 seconds before release build
                 @Override
                 public void run() {
-                    everyFiveMinuteTask();
+                    everyMinuteTask();
                 }
             }, 0, 5 * 1000);
 
-            // Repeated timer for every second to track opened app
-            appTrackerTimer.scheduleAtFixedRate(new TimerTask() {
+            everySecondTimer.scheduleAtFixedRate(new TimerTask() {
                 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
                 @Override
                 public void run() {
@@ -166,32 +182,40 @@ public class MindfulAppsTrackerService extends Service {
         }
 
 
-        // will be called when the user locks the device
+        /**
+         * This method is called everytime the device is locked or screen is turned off
+         */
         private void onDeviceLocked() {
             // release resources held by service
-            if (refreshTimer != null) {
-                refreshTimer.purge();
-                refreshTimer.cancel();
-                refreshTimer = null;
+            if (everyMinuteTimer != null) {
+                everyMinuteTimer.purge();
+                everyMinuteTimer.cancel();
+                everyMinuteTimer = null;
             }
 
-            if (appTrackerTimer != null) {
-                appTrackerTimer.purge();
-                appTrackerTimer.cancel();
-                appTrackerTimer = null;
+            if (everySecondTimer != null) {
+                everySecondTimer.purge();
+                everySecondTimer.cancel();
+                everySecondTimer = null;
             }
 
         }
 
+        /**
+         * Manually created onDestroy() method to release resources because no override found in BroadcastReceiver class
+         */
         private void onDestroy() {
             // purge and cancel all timer tasks
             onDeviceLocked();
 
         }
 
-        // Repeated timer for every 5 minutes
-        private void everyFiveMinuteTask() {
-            Log.v(AppConstants.LOG_TAG, "...................................................... refreshing purged apps list");
+        /**
+         * This method will be called every minute and it is responsible for adding apps to purged list,
+         * when their screen time exceeds the daily timer. It also takes care if the app is running now.
+         */
+        private void everyMinuteTask() {
+            Log.d(AppConstants.DEBUG_TAG, "...................................................... refreshing purged apps list");
 
             /// Map of package and their screen time in seconds
             Map<String, Long> usageTodayTillNow = ScreenUsageHelper.generateUsageTodayTillNow(usageStatsManager, todayMidnightTimeMs, appsTimerMap.keySet());
@@ -205,7 +229,7 @@ public class MindfulAppsTrackerService extends Service {
                     if (usedTime > limit) {
                         /// screen time exceeded the limit so it needs to be purged
                         if (!purgedApps.contains(entry.getKey())) {
-                            Log.v(AppConstants.LOG_TAG, "App exceeded the time limit: " + entry.getKey() + "time: " + usedTime / 60000);
+                            Log.d(AppConstants.DEBUG_TAG, "App exceeded the time limit: " + entry.getKey() + "time: " + usedTime / 60000);
                             purgedApps.add(entry.getKey());
                             if (Objects.equals(ScreenUsageHelper.getLastActiveApp(usageStatsManager, 3 * 60 * 60), entry.getKey())) {
                                 openTLEDialog(entry.getKey());
@@ -219,18 +243,26 @@ public class MindfulAppsTrackerService extends Service {
 
         int counter = 0;
 
-        // Repeated timer for every second to track opened app
+        /**
+         * This method is called every second to track if the user launched a app.
+         * If the purged list contains that app then the user is forwarded to home screen and TLE dialog is displayed.
+         */
         private void everySecondTask() {
             if (purgedApps.isEmpty()) return;
-            Log.e(AppConstants.LOG_TAG, "iteration: " + (counter++));
+            Log.d(AppConstants.DEBUG_TAG, "iteration: " + (counter++));
 
             String currentlyActiveApp = ScreenUsageHelper.getLastActiveApp(usageStatsManager, 1);
             if (purgedApps.contains(currentlyActiveApp)) {
-                Log.e(AppConstants.LOG_TAG, "...........................Purged app " + currentlyActiveApp + " is opened ............................................");
+                Log.d(AppConstants.DEBUG_TAG, "...........................Purged app " + currentlyActiveApp + " is opened ............................................");
                 openTLEDialog(currentlyActiveApp);
             }
         }
 
+        /**
+         * Responsible for starting overlay dialog service which display a dialog for motivation and information, if it is already not running.
+         *
+         * @param appPackage The package of the app whose timer ran out or Time Limit Exceeded
+         */
         private void openTLEDialog(String appPackage) {
             if (!Utils.isServiceRunning(context, OverlayDialogService.class.getName())) {
                 Intent intent = new Intent(context, OverlayDialogService.class);

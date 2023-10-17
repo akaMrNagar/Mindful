@@ -24,9 +24,21 @@ import java.util.Map;
 
 import io.flutter.plugin.common.MethodChannel;
 
+/**
+ * DeviceAppsHelper is a utility class that assists in retrieving information about installed
+ * applications and their usage on an Android device.
+ * It provides functionality for fetching a list of Android apps, including their names, package
+ * names, icons, and various usage statistics.
+ */
 public class DeviceAppsHelper {
 
 
+    /**
+     * Retrieves a list of installed Android apps including their usage statistics.
+     *
+     * @param context       The Android application context.
+     * @param channelResult The MethodChannel result to return the list of apps to Flutter.
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
         AsyncSuccessCallback<List<Map<String, Object>>> callback = new AsyncSuccessCallback<List<Map<String, Object>>>() {
@@ -60,6 +72,12 @@ public class DeviceAppsHelper {
         );
     }
 
+    /**
+     * Fetches a list of installed Android apps and their usage statistics.
+     *
+     * @param context The Android application context.
+     * @return A list of AndroidApp objects representing installed applications.
+     */
     @NonNull
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
@@ -93,14 +111,15 @@ public class DeviceAppsHelper {
         }
 
         /// Add additional apps for network usage
-        deviceApps.add(new AndroidApp("Tethering & Hotspot", AppConstants.TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
-        deviceApps.add(new AndroidApp("Removed Apps", AppConstants.REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
+        deviceApps.add(new AndroidApp(AppConstants.TETHERING_APP_NAME, AppConstants.TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
+        deviceApps.add(new AndroidApp(AppConstants.REMOVED_APP_NAME, AppConstants.REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        /// fetch screen usage
+
+        // Fetch screen usage statistics for the apps.
         deviceApps = ScreenUsageHelper.generateUsageForThisWeek(deviceApps, usageStatsManager);
 
-        /// fetch network usage = mobile+wifi
+        // Fetch network usage statistics (mobile and Wi-Fi) for the apps.
         deviceApps = NetworkUsageHelper.generateNetworkUsage(deviceApps, packageManager, context);
 
         return deviceApps;
