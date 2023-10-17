@@ -1,6 +1,7 @@
 package com.akamrnagar.mindful.helpers;
 
 import android.app.usage.NetworkStats;
+import android.app.usage.NetworkStatsManager;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -19,6 +20,8 @@ import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -89,6 +92,7 @@ public class DeviceAppsHelper {
 
         /// Create list of android apps
         for (PackageInfo app : fetchedApps) {
+            // If package is launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
                 int category = -1;
 
@@ -97,7 +101,6 @@ public class DeviceAppsHelper {
                 }
 
                 boolean isSysDefault = ImpSystemAppsHelper.impSystemApps.contains(app.packageName);
-
                 deviceApps.add(
                         new AndroidApp(app.applicationInfo.loadLabel(packageManager).toString(), // name
                                 app.packageName, // package name
@@ -115,12 +118,48 @@ public class DeviceAppsHelper {
         deviceApps.add(new AndroidApp(AppConstants.REMOVED_APP_NAME, AppConstants.REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
 
-        // Fetch screen usage statistics for the apps.
-        deviceApps = ScreenUsageHelper.generateUsageForThisWeek(deviceApps, usageStatsManager);
+        Calendar startCal = Calendar.getInstance();
+        Calendar endCal = Calendar.getInstance();
+        int todayOfWeek = startCal.get(Calendar.DAY_OF_WEEK);
 
-        // Fetch network usage statistics (mobile and Wi-Fi) for the apps.
-        deviceApps = NetworkUsageHelper.generateNetworkUsage(deviceApps, packageManager, context);
+        startCal.set(Calendar.HOUR_OF_DAY, 0);
+        startCal.set(Calendar.MINUTE, 0);
+        startCal.set(Calendar.SECOND, 0);
+
+        endCal.set(Calendar.HOUR_OF_DAY, 23);
+        endCal.set(Calendar.MINUTE, 59);
+        endCal.set(Calendar.SECOND, 59);
+
+        /// Loop from first day of week till today of this week
+        for (int i = 1; i <= todayOfWeek; i++) {
+            startCal.set(Calendar.DAY_OF_WEEK, i);
+            endCal.set(Calendar.DAY_OF_WEEK, i);
+
+            long end = 0L;
+            if (i == todayOfWeek) {
+                end = System.currentTimeMillis();
+            } else {
+                end = endCal.getTimeInMillis();
+            }
+
+            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, startCal.getTimeInMillis(), end);
+            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, startCal.getTimeInMillis(), end);
+            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, startCal.getTimeInMillis(), end);
+
+
+            for (AndroidApp app : deviceApps) {
+                app.screenTimeThisWeek.set((i - 1), screenUsageOneDay.getOrDefault(app.packageName, 0L));
+
+                if (mobileUsageOneDay.containsKey(app.appUid)) {
+                    app.mobileUsageThisWeek.set((i - 1), mobileUsageOneDay.getOrDefault(app.appUid, 0L));
+                }
+                if (wifiUsageOneDay.containsKey(app.appUid)) {
+                    app.wifiUsageThisWeek.set((i - 1), wifiUsageOneDay.getOrDefault(app.appUid, 0L));
+                }
+            }
+        }
 
         return deviceApps;
     }

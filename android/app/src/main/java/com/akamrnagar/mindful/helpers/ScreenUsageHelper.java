@@ -14,51 +14,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+
+/**
+ * NetworkUsageHelper is a utility class responsible for gathering screen usage statistics for
+ * Android applications.
+ * It fetches data about screen time usage of applications and organizes this
+ * information into HashMap of app's package name and the usage in seconds.
+ */
 public class ScreenUsageHelper {
-
-    /**
-     * Generates a list of Android apps with their screen usage data for each day of the current week.
-     *
-     * @param apps              The list of [AndroidApp] objects to be updated.
-     * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
-     * @return The updated list of AndroidApp objects with screen usage data for each day of the week.
-     */
-    public static List<AndroidApp> generateUsageForThisWeek(List<AndroidApp> apps, UsageStatsManager usageStatsManager) {
-
-        Calendar startCal = Calendar.getInstance();
-        Calendar endCal = Calendar.getInstance();
-
-        int todayOfWeek = startCal.get(Calendar.DAY_OF_WEEK);
-
-        startCal.set(Calendar.HOUR_OF_DAY, 0);
-        startCal.set(Calendar.MINUTE, 0);
-        startCal.set(Calendar.SECOND, 0);
-
-        endCal.set(Calendar.HOUR_OF_DAY, 23);
-        endCal.set(Calendar.MINUTE, 59);
-        endCal.set(Calendar.SECOND, 59);
-
-        for (int i = 1; i <= todayOfWeek; i++) {
-            startCal.set(Calendar.DAY_OF_WEEK, i);
-            endCal.set(Calendar.DAY_OF_WEEK, i);
-
-            long end = 0L;
-            if (i == todayOfWeek) {
-                end = System.currentTimeMillis();
-            } else {
-                end = endCal.getTimeInMillis();
-            }
-
-            HashMap<String, Long> oneDayMap = generateUsageForInterval(usageStatsManager, startCal.getTimeInMillis(), end);
-            for (AndroidApp app : apps) {
-                app.screenTimeThisWeek.set((i - 1), oneDayMap.getOrDefault(app.packageName, 0L));
-            }
-        }
-
-        return apps;
-    }
-
-
     /**
      * Generates screen usage data for a specified time interval.
      *
@@ -68,7 +31,7 @@ public class ScreenUsageHelper {
      * @return A map of package names and their screen time in seconds for the specified interval.
      */
     @NonNull
-    private static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
+    public static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
 
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
         UsageEvents.Event prevOpenEvent = null;

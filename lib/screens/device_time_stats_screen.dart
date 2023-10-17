@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/extentions.dart';
+import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/providers/apps_by_screen_time_provider.dart';
 import 'package:mindful/providers/device_usage_provider.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
@@ -13,6 +14,8 @@ import 'package:mindful/widgets/_common/custom_app_bar.dart';
 import 'package:mindful/widgets/_common/custom_text.dart';
 import 'package:mindful/widgets/_common/widgets_revealer.dart';
 
+/// Screen which displays aggregated device screen time usage and list of apps
+/// whose screen time is more than 0 seconds.
 class DeviceTimeStatsScreen extends StatelessWidget {
   const DeviceTimeStatsScreen({super.key});
 
@@ -72,7 +75,7 @@ class DeviceTimeStatsScreen extends StatelessWidget {
                         ),
 
                         const SizedBox(height: 32),
-                        const TitleText("Most used apps"),
+                        const TitleText(AppStrings.mostUsedApps),
                         const SizedBox(height: 8),
 
                         /// Apps List

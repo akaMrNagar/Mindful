@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// The main widget responsible for animation when user switches the screen
+/// It animates childrens with delay based on index
 class WidgetsRevealer extends ConsumerStatefulWidget {
   const WidgetsRevealer({
     super.key,

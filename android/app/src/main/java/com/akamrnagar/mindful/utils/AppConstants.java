@@ -9,7 +9,9 @@ public class AppConstants {
     public static final String REMOVED_PACKAGE = "com.akamrnagar.mindful.removed";
     public static final String TETHERING_APP_NAME = "Tethering & Hotspot";
     public static final String TETHERING_PACKAGE = "com.akamrnagar.mindful.tethering";
-    public static final String PREFS_FLUTTER = "FlutterSharedPreferences";
-    public static final String PREF_APP_TIMERS = "flutter.AppsTimer";
+
+    // Related to shared preferences
+    public static final String PREFS_FLUTTER_PREFIX = "FlutterSharedPreferences";
+    public static final String PREF_APP_TIMERS = "flutter.appTimersMap";
 
 }

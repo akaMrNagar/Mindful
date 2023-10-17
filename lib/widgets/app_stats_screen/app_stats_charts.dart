@@ -8,6 +8,7 @@ import 'package:mindful/widgets/_common/custom_text.dart';
 import 'package:mindful/widgets/_common/data_usage_info.dart';
 import 'package:mindful/widgets/_common/interactive_card.dart';
 
+/// Screen usage bar chart for specific app
 class AppScreenTimeChart extends StatelessWidget {
   const AppScreenTimeChart({
     super.key,
@@ -60,6 +61,7 @@ class AppScreenTimeChart extends StatelessWidget {
   }
 }
 
+/// Data usage bar chart for specific app
 class AppDataUsageChart extends StatelessWidget {
   const AppDataUsageChart({
     super.key,

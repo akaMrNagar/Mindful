@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:mindful/models/android_app.dart';
 
+/// Responsible for aggregated data usage [screen, mobile, and wifi] of the device in the current week.
 @immutable
 class DeviceUsageInfo {
   /// Total screen time usage of all the apps in this week as a list of int [in Seconds] for each day of week [7 days]

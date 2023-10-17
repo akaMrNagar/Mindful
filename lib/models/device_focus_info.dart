@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
 
+
+/// Responsible for data related to app or device focus like app timers,
+/// bedtime schedules, and more.
 @immutable
 class DeviceFocusInfo {
   /// Map of app packages and their timer [in Seconds]

@@ -8,6 +8,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
 import 'package:mindful/widgets/_common/custom_text.dart';
 
+/// Base bar chart used for diplaying app/device usage
 class BaseBarChart extends ConsumerWidget {
   const BaseBarChart({
     super.key,
@@ -120,7 +121,7 @@ class BaseBarChart extends ConsumerWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.topCenter,
-              child: SubtitleText(daysShort[value.toInt()]),
+              child: SubtitleText(AppStrings.daysShort[value.toInt()]),
             ),
           ),
         ),

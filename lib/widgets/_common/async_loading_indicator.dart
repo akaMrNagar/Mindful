@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Global loading widget for async providers.
 class AsyncLoadingIndicator extends StatelessWidget {
   const AsyncLoadingIndicator({super.key});
 

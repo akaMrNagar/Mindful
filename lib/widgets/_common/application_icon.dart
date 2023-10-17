@@ -1,27 +1,26 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/purged_apps_provider.dart';
 
+/// Display [AndroidApp]'s icon if found else custom icon for specified apps.
 class ApplicationIcon extends StatelessWidget {
   const ApplicationIcon({
     super.key,
     required this.app,
     this.size = 18,
-    // this.backgroundColor = Colors.transparent,
   });
 
   final AndroidApp app;
   final double size;
-  // final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
-    if (app.packageName == AppConstants.removedAppPackage) {
+    if (app.packageName == Constants.removedAppPackage) {
       return _getIcon(FluentIcons.delete_24_regular, context);
-    } else if (app.packageName == AppConstants.tetheringAppPackage) {
+    } else if (app.packageName == Constants.tetheringAppPackage) {
       return _getIcon(FluentIcons.communication_24_regular, context);
     } else {
       return CircleAvatar(

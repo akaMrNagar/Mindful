@@ -44,7 +44,7 @@ public class MindfulAppsTrackerService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         /// Load app timers map from shared prefs
-        SharedPreferences preferences = getSharedPreferences(AppConstants.PREFS_FLUTTER, Context.MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(AppConstants.PREFS_FLUTTER_PREFIX, Context.MODE_PRIVATE);
         String jsonString = preferences.getString(AppConstants.PREF_APP_TIMERS, "");
 
         if (!jsonString.isEmpty()) {

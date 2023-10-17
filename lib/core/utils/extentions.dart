@@ -17,7 +17,7 @@ extension ExtInt on int {
       final dt = DateTime.fromMillisecondsSinceEpoch(
           now.millisecondsSinceEpoch -
               ((now.weekday - toInt()) * 24 * 60 * 60000));
-      return "${daysFull[toInt()]}, ${dt.day} ${monthsShort[dt.month - 1]}";
+      return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsShort[dt.month - 1]}";
     }
   }
 

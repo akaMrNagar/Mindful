@@ -3,6 +3,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/apps_by_screen_time_provider.dart';
 import 'package:mindful/providers/device_focus_provider.dart';
 
+/// Povides a list of app packages whose timer has ran out. 
 final purgedAppsProvider = Provider.autoDispose<List<String>>((ref) {
   final usedApps = ref.watch(appsByScreenTimeProvider(dayOfWeek)).value;
 
