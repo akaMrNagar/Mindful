@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/widgets/_common/custom_app_bar.dart';
-import 'package:mindful/widgets/_common/widgets_revealer.dart';
+import 'package:mindful/widgets/shared/widgets_revealer.dart';
 
 class MindfulSettingsScreen extends StatelessWidget {
   const MindfulSettingsScreen({super.key});
@@ -20,7 +19,6 @@ class MindfulSettingsScreen extends StatelessWidget {
       body: const SingleChildScrollView(
         child: Column(
           children: [
-            CustomAppBar(),
             WidgetsRevealer(children: []),
           ],
         ),

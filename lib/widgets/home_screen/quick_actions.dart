@@ -5,8 +5,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/screens/device_network_stats_screen.dart';
 import 'package:mindful/screens/mindful_settings_screen.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 class QuickActions extends ConsumerWidget {
   const QuickActions({super.key});

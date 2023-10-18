@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 class DangerZone extends StatelessWidget {
   const DangerZone({super.key});

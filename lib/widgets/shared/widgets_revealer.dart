@@ -11,6 +11,7 @@ class WidgetsRevealer extends ConsumerStatefulWidget {
     this.baseDelay = 500,
     this.childDelay = 50,
     this.animDuration = 250,
+    this.hPadding = 12,
     this.onInit,
     this.onInitDelayed,
   });
@@ -18,6 +19,7 @@ class WidgetsRevealer extends ConsumerStatefulWidget {
   final int baseDelay;
   final int childDelay;
   final int animDuration;
+  final double hPadding;
   final List<Widget> children;
   final Function(WidgetRef ref)? onInit;
   final Function(WidgetRef ref)? onInitDelayed;
@@ -54,7 +56,7 @@ class _WidgetListAnimatorState extends ConsumerState<WidgetsRevealer> {
             primary: false,
             shrinkWrap: true,
             itemCount: widget.children.length,
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.symmetric(horizontal: widget.hPadding),
             itemBuilder: (context, index) {
               return RepaintBoundary(
                 child: widget.children[index]

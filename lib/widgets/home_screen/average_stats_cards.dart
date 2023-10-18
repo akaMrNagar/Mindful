@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 class AverageStatsCards extends StatelessWidget {
   const AverageStatsCards({super.key});

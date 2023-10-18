@@ -4,10 +4,10 @@ import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/extentions.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
-import 'package:mindful/widgets/_common/application_icon.dart';
-import 'package:mindful/widgets/_common/custom_app_bar.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
-import 'package:mindful/widgets/_common/widgets_revealer.dart';
+import 'package:mindful/widgets/shared/app_bar.dart';
+import 'package:mindful/widgets/shared/application_icon.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
+import 'package:mindful/widgets/shared/widgets_revealer.dart';
 import 'package:mindful/widgets/app_stats_screen/app_settings.dart';
 import 'package:mindful/widgets/app_stats_screen/app_stats_charts.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -27,28 +27,25 @@ class AppStatsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        surfaceTintColor: Colors.white,
-        toolbarHeight: 0,
-      ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Column(
+      body: CustomScrollView(
+        slivers: [
+          const MindfulAppBar(floating: false),
+          SliverList.list(
             children: [
-              const CustomAppBar(),
               WidgetsRevealer(
+                hPadding: 0,
                 children: [
+                  /// App Icon
                   ApplicationIcon(app: app, size: 32),
                   const SizedBox(height: 8),
+
+                  /// App name
                   Center(
                     child: TitleText(app.name),
                   ),
                   const SizedBox(height: 2),
+
+                  /// Selected Date
                   Center(
                     child: Consumer(
                       builder: (_, WidgetRef ref, __) {
@@ -59,11 +56,13 @@ class AppStatsScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24),
+
+                  /// Usage charts [screen + data]
                   _ChartsPageView(app: app, chartIndex: chartIndex),
 
-                  /// Settngs
                   const SizedBox(height: 16),
 
+                  /// Available app setting or functions
                   if (app.packageName != Constants.removedAppPackage &&
                       app.packageName != Constants.tetheringAppPackage)
                     AppSettings(app: app),
@@ -71,7 +70,7 @@ class AppStatsScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ],
       ),
     );
   }

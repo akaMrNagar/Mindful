@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/utils/extentions.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/widgets/_common/base_bar_chart.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
-import 'package:mindful/widgets/_common/data_usage_info.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/base_bar_chart.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
+import 'package:mindful/widgets/shared/data_usage_info.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 /// Screen usage bar chart for specific app
 class AppScreenTimeChart extends StatelessWidget {
