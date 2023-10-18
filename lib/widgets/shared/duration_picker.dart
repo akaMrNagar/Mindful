@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 /// Returns duration in seconds and take initial time as duration in seconds
 Future<int> showDurationPicker({

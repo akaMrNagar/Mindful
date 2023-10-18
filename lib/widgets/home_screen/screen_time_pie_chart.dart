@@ -12,11 +12,11 @@ import 'package:mindful/providers/device_usage_provider.dart';
 import 'package:mindful/providers/apps_by_screen_time_provider.dart';
 import 'package:mindful/screens/app_stats_screen.dart';
 import 'package:mindful/screens/device_time_stats_screen.dart';
-import 'package:mindful/widgets/_common/application_icon.dart';
-import 'package:mindful/widgets/_common/async_error_indicator.dart';
-import 'package:mindful/widgets/_common/async_loading_indicator.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/application_icon.dart';
+import 'package:mindful/widgets/shared/async_error_indicator.dart';
+import 'package:mindful/widgets/shared/async_loading_indicator.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 final _selectedPieSecProvider = StateProvider.autoDispose<int>((ref) => -1);
 
@@ -40,7 +40,8 @@ class ScreenTimePieChart extends ConsumerWidget {
               return Stack(
                 alignment: Alignment.center,
                 children: [
-                  /// Pie chart for birds eye view
+                  /// Pie chart for birds eye view of device screen usage
+                  /// only top seven app's data is included in chart
                   RepaintBoundary(
                     child: PieChart(
                       PieChartData(
@@ -100,15 +101,15 @@ class ScreenTimePieChart extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        /// Applications icon / pie chart icon
+                        /// Selected app's icon or pie chart icon
                         !selectedPieSec.isNegative
-                            ? ApplicationIcon(
-                                app: apps[selectedPieSec],
-                                size: 24,
-                              )
-                            : const Icon(FluentIcons.data_pie_20_regular),
+                            ? ApplicationIcon(app: apps[selectedPieSec])
+                            : const Icon(
+                                FluentIcons.data_pie_20_regular,
+                                size: 32,
+                              ),
 
-                        /// Application name / Today
+                        /// Selected app's name or "Today"
 
                         const SizedBox(height: 2),
                         SubtitleText(
@@ -118,7 +119,7 @@ class ScreenTimePieChart extends ConsumerWidget {
                         ),
                         const SizedBox(height: 8),
 
-                        /// Application Screen time / total screen time
+                        /// Selected app's Screen time or total device screen time
                         TitleText(
                           selectedPieSec == -1
                               ? totalScreenTimeToday.seconds.toTime()

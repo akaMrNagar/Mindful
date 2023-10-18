@@ -1,18 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-
-enum AppCategory {
-  undefined,
-  game,
-  audio,
-  video,
-  image,
-  social,
-  news,
-  maps,
-  productivity,
-  accessibility
-}
+import 'package:mindful/core/enums/application_category.dart';
 
 @immutable
 class AndroidApp {

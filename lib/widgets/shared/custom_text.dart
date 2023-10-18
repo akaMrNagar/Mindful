@@ -1,5 +1,5 @@
 /// Global widgets for displaying different text in the app
-/// Defined here for better controling and customization.
+/// Defined here for better controlling and customization.
 import 'package:flutter/material.dart';
 
 class TitleText extends StatelessWidget {

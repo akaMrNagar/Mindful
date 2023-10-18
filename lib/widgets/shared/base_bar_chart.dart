@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
 
 /// Base bar chart used for diplaying app/device usage
 class BaseBarChart extends ConsumerWidget {

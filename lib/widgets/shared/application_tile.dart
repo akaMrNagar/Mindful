@@ -7,10 +7,10 @@ import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/device_focus_provider.dart';
 import 'package:mindful/providers/selected_day_provider.dart';
 import 'package:mindful/screens/app_stats_screen.dart';
-import 'package:mindful/widgets/_common/application_icon.dart';
-import 'package:mindful/widgets/_common/custom_text.dart';
-import 'package:mindful/widgets/_common/duration_picker.dart';
-import 'package:mindful/widgets/_common/interactive_card.dart';
+import 'package:mindful/widgets/shared/application_icon.dart';
+import 'package:mindful/widgets/shared/custom_text.dart';
+import 'package:mindful/widgets/shared/duration_picker.dart';
+import 'package:mindful/widgets/shared/interactive_card.dart';
 
 /// List tile used for displaying app usage info based on the bool [isDataTile]
 class ApplicationTile extends StatelessWidget {

@@ -4,8 +4,8 @@ import 'package:mindful/core/services/mindful_native_plugin.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/screens/app_stats_screen.dart';
 import 'package:mindful/screens/home_screen.dart';
-import 'package:mindful/widgets/_common/async_error_indicator.dart';
-import 'package:mindful/widgets/_common/async_loading_indicator.dart';
+import 'package:mindful/widgets/shared/async_error_indicator.dart';
+import 'package:mindful/widgets/shared/async_loading_indicator.dart';
 
 
 /// This screen is responsible for forwarding the user to [AppStatsScreen] 
