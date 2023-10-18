@@ -5,6 +5,7 @@ import 'package:mindful/providers/mindful_theme_provider.dart';
 import 'package:mindful/widgets/shared/custom_text.dart';
 import 'package:mindful/widgets/shared/interactive_card.dart';
 
+/// General purpose app bar for all screens in app
 class MindfulAppBar extends StatelessWidget {
   const MindfulAppBar({
     super.key,
@@ -63,7 +64,6 @@ class _CustomSettingsButton extends ConsumerWidget {
           ref.read(mindfulThemeProvider.notifier).update(
                 (state) => ThemeMode.values[current],
               );
-          // ref.read(appsProvider.notifier).refreshDeviceApps();
         },
       ),
     );

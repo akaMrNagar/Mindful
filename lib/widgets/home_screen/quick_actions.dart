@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/screens/device_network_stats_screen.dart';
+import 'package:mindful/screens/focus_profiles_screen.dart';
 import 'package:mindful/screens/mindful_settings_screen.dart';
 import 'package:mindful/widgets/shared/custom_text.dart';
 import 'package:mindful/widgets/shared/interactive_card.dart';
@@ -51,6 +52,17 @@ class QuickActions extends ConsumerWidget {
           label: "Lock sites",
           iconData: FluentIcons.globe_20_regular,
           // onPressed: () => homeScreenController.goToLockSitesScreen(),
+        ),
+        _GridTile(
+          label: "Profiles",
+          iconData: FluentIcons.people_community_20_regular,
+          onPressed: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (context) => const FocusProfilesScreen(),
+              ),
+            );
+          },
         ),
         _GridTile(
           label: "Data Monitor",
