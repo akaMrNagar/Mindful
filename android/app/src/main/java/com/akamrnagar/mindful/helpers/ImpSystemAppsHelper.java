@@ -40,11 +40,11 @@ public class ImpSystemAppsHelper {
             packageManager = context.getPackageManager();
         }
 
-        // Get and add the package names of the default launcher and caller app.
+        // Get and add the package names of the default launcher and dialer app.
         @Nullable
-        String launcher = getDefaultLauncherPackageName(context, packageManager);
+        String launcher = getDefaultLauncherPackageName(packageManager);
         @Nullable
-        String caller = getDefaultCallerPackageName(context, packageManager);
+        String caller = getDefaultDialerPackageName(packageManager);
 
         if (launcher != null) impSystemApps.add(launcher);
         if (caller != null) impSystemApps.add(caller);
@@ -53,12 +53,11 @@ public class ImpSystemAppsHelper {
     /**
      * Gets the package name of the default launcher app.
      *
-     * @param context        The Android application context.
      * @param packageManager The package manager used for resolving the default launcher.
      * @return The package name of the default launcher app or null if not found.
      */
     @Nullable
-    private static String getDefaultLauncherPackageName(@NonNull Context context, @NonNull PackageManager packageManager) {
+    private static String getDefaultLauncherPackageName(@NonNull PackageManager packageManager) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         ResolveInfo resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
@@ -72,14 +71,13 @@ public class ImpSystemAppsHelper {
 
 
     /**
-     * Gets the package name of the default caller app.
+     * Gets the package name of the default dialer app.
      *
-     * @param context        The Android application context.
-     * @param packageManager The package manager used for resolving the default caller app.
-     * @return The package name of the default caller app or null if not found.
+     * @param packageManager The package manager used for resolving the default dialer app.
+     * @return The package name of the default dialer app or null if not found.
      */
     @Nullable
-    private static String getDefaultCallerPackageName(@NonNull Context context, @NonNull PackageManager packageManager) {
+    private static String getDefaultDialerPackageName(@NonNull PackageManager packageManager) {
         Intent intent = new Intent(Intent.ACTION_DIAL);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         ResolveInfo resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);

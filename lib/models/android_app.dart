@@ -27,7 +27,7 @@ class AndroidApp {
   final List<int> wifiUsageThisWeek;
 
   /// Total sum of mobile and wifi data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
-  final List<int> dataUsageThisWeek;
+  final List<int> networkUsageThisWeek;
 
   /// Application icon provided by android system.
   final Uint8List icon;
@@ -41,7 +41,7 @@ class AndroidApp {
     required this.screenTimeThisWeek,
     required this.mobileUsageThisWeek,
     required this.wifiUsageThisWeek,
-    required this.dataUsageThisWeek,
+    required this.networkUsageThisWeek,
   });
 
   factory AndroidApp.fromMap(Map<dynamic, dynamic> map) {
@@ -54,7 +54,7 @@ class AndroidApp {
       screenTimeThisWeek: _parseList(map['screenTimeThisWeek']),
       mobileUsageThisWeek: _parseList(map['mobileUsageThisWeek']),
       wifiUsageThisWeek: _parseList(map['wifiUsageThisWeek']),
-      dataUsageThisWeek: _parseList(map['dataUsageThisWeek']),
+      networkUsageThisWeek: _parseList(map['dataUsageThisWeek']),
     );
   }
 
@@ -67,7 +67,7 @@ class AndroidApp {
     List<int>? screenTimeThisWeek,
     List<int>? mobileUsageThisWeek,
     List<int>? wifiUsageThisWeek,
-    List<int>? dataUsageThisWeek,
+    List<int>? networkUsageThisWeek,
   }) {
     return AndroidApp(
       name: name ?? this.name,
@@ -78,13 +78,13 @@ class AndroidApp {
       screenTimeThisWeek: screenTimeThisWeek ?? this.screenTimeThisWeek,
       mobileUsageThisWeek: mobileUsageThisWeek ?? this.mobileUsageThisWeek,
       wifiUsageThisWeek: wifiUsageThisWeek ?? this.wifiUsageThisWeek,
-      dataUsageThisWeek: dataUsageThisWeek ?? this.dataUsageThisWeek,
+      networkUsageThisWeek: networkUsageThisWeek ?? this.networkUsageThisWeek,
     );
   }
 
   @override
   String toString() {
-    return 'AndroidApp(name: $name, packageName: $packageName, isImpSysApp: $isImpSysApp, category: $category, screenTimeThisWeek: $screenTimeThisWeek, mobileUsageThisWeek: $mobileUsageThisWeek, wifiUsageThisWeek: $wifiUsageThisWeek, dataUsageThisWeek: $dataUsageThisWeek)';
+    return 'AndroidApp(name: $name, packageName: $packageName, isImpSysApp: $isImpSysApp, category: $category, screenTimeThisWeek: $screenTimeThisWeek, mobileUsageThisWeek: $mobileUsageThisWeek, wifiUsageThisWeek: $wifiUsageThisWeek, networkUsageThisWeek: $networkUsageThisWeek)';
   }
 
   @override
@@ -99,7 +99,7 @@ class AndroidApp {
         listEquals(other.screenTimeThisWeek, screenTimeThisWeek) &&
         listEquals(other.mobileUsageThisWeek, mobileUsageThisWeek) &&
         listEquals(other.wifiUsageThisWeek, wifiUsageThisWeek) &&
-        listEquals(other.dataUsageThisWeek, dataUsageThisWeek);
+        listEquals(other.networkUsageThisWeek, networkUsageThisWeek);
   }
 
   @override
@@ -112,7 +112,7 @@ class AndroidApp {
         screenTimeThisWeek.hashCode ^
         mobileUsageThisWeek.hashCode ^
         wifiUsageThisWeek.hashCode ^
-        dataUsageThisWeek.hashCode;
+        networkUsageThisWeek.hashCode;
   }
 
   static List<int> _parseList(List<Object?> list) {

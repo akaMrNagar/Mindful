@@ -8,12 +8,12 @@ class MindfulNativePlugin {
   static final MindfulNativePlugin instance = MindfulNativePlugin._();
 
   /// Package of the app whose Time Limit Exceeded dialog is clicked.
-  /// This is forwarded by the tracking service to open the app's stats screen directly.
-  String forwardToApp = "";
+  /// This is forwarded by the tracking service to open the app's dashboard screen directly.
+  String targetedAppPackage = "";
   MindfulNativePlugin._() {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'openAppStats') forwardToApp = call.arguments;
+      if (call.method == 'openAppDashboard') targetedAppPackage = call.arguments;
     });
   }
 

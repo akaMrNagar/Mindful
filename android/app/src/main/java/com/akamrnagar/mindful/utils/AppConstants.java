@@ -12,6 +12,6 @@ public class AppConstants {
 
     // Related to shared preferences
     public static final String PREFS_FLUTTER_PREFIX = "FlutterSharedPreferences";
-    public static final String PREF_APP_TIMERS = "flutter.appTimersMap";
+    public static final String PREF_APP_TIMERS = "flutter.mindful.appsTimer";
 
 }

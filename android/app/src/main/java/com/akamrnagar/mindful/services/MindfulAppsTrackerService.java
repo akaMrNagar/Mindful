@@ -1,5 +1,7 @@
 package com.akamrnagar.mindful.services;
 
+import static com.akamrnagar.mindful.utils.Extensions.getOrDefault;
+
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,7 +17,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import com.akamrnagar.mindful.helpers.ScreenUsageHelper;
@@ -31,7 +32,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * This service tracks the usage of apps installed on user device and enforces usage limits.
+ * This service tracks the launch of apps installed on user device and enforces usage limits.
  */
 public class MindfulAppsTrackerService extends Service {
     private LockUnlockReceiver lockUnlockReceiver;
@@ -39,13 +40,15 @@ public class MindfulAppsTrackerService extends Service {
     public MindfulAppsTrackerService() {
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         /// Load app timers map from shared prefs
         SharedPreferences preferences = getSharedPreferences(AppConstants.PREFS_FLUTTER_PREFIX, Context.MODE_PRIVATE);
         String jsonString = preferences.getString(AppConstants.PREF_APP_TIMERS, "");
+
+        Log.d(AppConstants.DEBUG_TAG, jsonString);
+
 
         if (!jsonString.isEmpty()) {
             HashMap<String, Long> appTimers = Utils.deserializeMap(jsonString);
@@ -97,14 +100,14 @@ public class MindfulAppsTrackerService extends Service {
             getSystemService(NotificationManager.class).createNotificationChannel(channel);
             Notification.Builder notification = new Notification.Builder(this, CHANNEL_ID).setContentTitle("Focus Lock").setContentText("Background service is running");
 
-            startForeground(0003, notification.build());
+            startForeground(333, notification.build());
         } else {
             NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("Focus Lock").setContentText("Background service is running").setAutoCancel(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 notification.setPriority(NotificationManager.IMPORTANCE_LOW);
             }
-            startForeground(003, notification.build());
+            startForeground(333, notification.build());
         }
     }
 
@@ -125,10 +128,9 @@ public class MindfulAppsTrackerService extends Service {
         /**
          * List of app packages whose timer ran out or whose screen time exceeded the daily limit
          */
-        private HashSet<String> purgedApps = new HashSet<>(1);
+        protected HashSet<String> purgedApps = new HashSet<>(1);
 
 
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
         public LockUnlockReceiver(@NonNull HashMap<String, Long> appsTimer, @NonNull Context context) {
             this.appsTimerMap = appsTimer;
             this.context = context;
@@ -173,7 +175,6 @@ public class MindfulAppsTrackerService extends Service {
             }, 0, 5 * 1000);
 
             everySecondTimer.scheduleAtFixedRate(new TimerTask() {
-                @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
                 @Override
                 public void run() {
                     everySecondTask();
@@ -223,7 +224,7 @@ public class MindfulAppsTrackerService extends Service {
 
             for (Map.Entry<String, Long> entry : usageTodayTillNow.entrySet()) {
                 if (appsTimerMap.containsKey(entry.getKey())) {
-                    long limit = appsTimerMap.getOrDefault(entry.getKey(), 0L);
+                    long limit = getOrDefault(appsTimerMap, entry.getKey(), 0L);
                     long usedTime = entry.getValue();
 
                     if (usedTime > limit) {

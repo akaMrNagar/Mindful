@@ -1,43 +1,32 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/local_storage.dart';
 import 'package:mindful/core/services/mindful_native_plugin.dart';
-import 'package:mindful/models/device_focus_info.dart';
+import 'package:mindful/models/device_focus.dart';
 
-/// Provides information and data related to device or app focus plans
 final deviceFocusProvider =
-    StateNotifierProvider<DeviceFocus, DeviceFocusInfo>((ref) {
-  return DeviceFocus();
-});
+    StateNotifierProvider<DeviceFocusState, DeviceFocus>(
+  (ref) => DeviceFocusState(),
+);
 
-/// NOTE Modify the purgedAppsProvider to watch selection if the base class grows in future
-class DeviceFocus extends StateNotifier<DeviceFocusInfo> {
-  DeviceFocus() : super(const DeviceFocusInfo()) {
-    _init();
-  }
-
-  void _init() async {
+class DeviceFocusState extends StateNotifier<DeviceFocus> {
+  DeviceFocusState() : super(DeviceFocus(appTimers: {})) {
     state = state.copyWith(
-      appsTimer: await LocalStorage.instance.loadAppTimers(),
+      appTimers: LocalStorage.instance.loadAppTimers(),
     );
   }
 
-  /// Add app timer to timers map also removes timer from map if the timer is 0
-  /// After adding timer to map it also updates the shared pref and
-  /// restart the foreground service
-  Future<void> appendAppTimer(String packageName, int timer) async {
-    if (timer > 0) {
-      state = state.copyWith(
-        appsTimer: state.appsTimer.map((key, value) => MapEntry(key, value))
-          ..update(packageName, (value) => timer, ifAbsent: () => timer),
-      );
-    } else {
-      /// remove entry
-      state = state.copyWith(
-        appsTimer: state.appsTimer..remove(packageName),
-      );
-    }
+  Future<bool> setAppTimer(String appPackage, int timer) async {
+    state = state.copyWith(
+      appTimers: state.appTimers
+        ..update(
+          appPackage,
+          (value) => timer,
+          ifAbsent: () => timer,
+        ),
+    );
 
-    await LocalStorage.instance.saveAppTimers(state.appsTimer);
+    LocalStorage.instance.saveAppTimers(state.appTimers);
     MindfulNativePlugin.instance.restartTrackingService();
+    return true;
   }
 }

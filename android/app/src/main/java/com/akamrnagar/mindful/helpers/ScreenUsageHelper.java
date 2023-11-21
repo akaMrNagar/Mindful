@@ -1,29 +1,27 @@
 package com.akamrnagar.mindful.helpers;
 
+import static com.akamrnagar.mindful.utils.Extensions.getOrDefault;
+
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.models.AndroidApp;
-
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 
 /**
- * NetworkUsageHelper is a utility class responsible for gathering screen usage statistics for
+ * ScreenUsageHelper is a utility class responsible for gathering screen usage statistics for
  * Android applications.
  * It fetches data about screen time usage of applications and organizes this
  * information into HashMap of app's package name and the usage in seconds.
  */
 public class ScreenUsageHelper {
     /**
-     * Generates screen usage data for a specified time interval.
+     * Generates screen usage stats for a specified time interval.
      *
      * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
      * @param start             The start time of the interval in milliseconds.
@@ -48,12 +46,12 @@ public class ScreenUsageHelper {
                 if (prevOpenEvent != null) {
                     /// This block will run for the apps which have ACTIVITY_RESUMED event after 12 midnight
                     long diff = (currentEvent.getTimeStamp() - prevOpenEvent.getTimeStamp());
-                    long previousTime = oneDayUsageMap.getOrDefault(prevOpenEvent.getPackageName(), 0L);
+                    long previousTime = getOrDefault(oneDayUsageMap, prevOpenEvent.getPackageName(), 0L);
                     oneDayUsageMap.put(prevOpenEvent.getPackageName(), previousTime + diff);
                 } else {
                     /// This block will run for the apps which have ACTIVITY_RESUMED event before 12 midnight
                     long diff = (currentEvent.getTimeStamp() - start);
-                    long previousTime = oneDayUsageMap.getOrDefault(currentEvent.getPackageName(), 0L);
+                    long previousTime = getOrDefault(oneDayUsageMap, currentEvent.getPackageName(), 0L);
                     oneDayUsageMap.put(currentEvent.getPackageName(), previousTime + diff);
                 }
 
@@ -66,7 +64,7 @@ public class ScreenUsageHelper {
 
 
     /**
-     * Generates screen usage data for today until the current time.
+     * Generates screen usage stats for today until the current time.
      *
      * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
      * @param start             The start time of the interval.
@@ -98,19 +96,19 @@ public class ScreenUsageHelper {
                 if (prevOpenEvent != null) {
                     /// This block will run for the apps which have ACTIVITY_RESUMED event after 12 midnight
                     long diff = (currentEvent.getTimeStamp() - prevOpenEvent.getTimeStamp());
-                    long previousTime = usageTodayMap.getOrDefault(prevOpenEvent.getPackageName(), 0L);
+                    long previousTime = getOrDefault(usageTodayMap, prevOpenEvent.getPackageName(), 0L);
                     usageTodayMap.put(prevOpenEvent.getPackageName(), previousTime + diff);
                 } else {
                     /// This block will run for the apps which have ACTIVITY_RESUMED event before 12 midnight
                     long diff = (currentEvent.getTimeStamp() - start);
-                    long previousTime = usageTodayMap.getOrDefault(currentEvent.getPackageName(), 0L);
+                    long previousTime = getOrDefault(usageTodayMap, currentEvent.getPackageName(), 0L);
                     usageTodayMap.put(currentEvent.getPackageName(), previousTime + diff);
                 }
             }
         }
 
         if (lastEvent != null && prevOpenEvent != null && Objects.equals(lastEvent.getPackageName(), prevOpenEvent.getPackageName())) {
-            long lastOpenedAppTime = usageTodayMap.getOrDefault(prevOpenEvent.getPackageName(), 0L);
+            long lastOpenedAppTime = getOrDefault(usageTodayMap, prevOpenEvent.getPackageName(), 0L);
             lastOpenedAppTime += (System.currentTimeMillis() - prevOpenEvent.getTimeStamp());
             usageTodayMap.put(prevOpenEvent.getPackageName(), lastOpenedAppTime);
         }
@@ -123,7 +121,7 @@ public class ScreenUsageHelper {
 
     /**
      * Retrieves the package name of the last used/active app within a specified time interval.
-     * The final interval will be [ (current time - intervalSec) TO current time ]
+     * The calculated interval will be [ (current time - intervalSec) TO current time ]
      *
      * @param usageStatsManager The UsageStatsManager used to retrieve usage events.
      * @param intervalSec       The length of the time interval in seconds from current time.
