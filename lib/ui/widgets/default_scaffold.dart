@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindful/models/scaffold_tab_item.dart';
 import 'package:mindful/models/vert_nav_bar_item.dart';
 import 'package:mindful/ui/widgets/vert_nav_bar.dart';
@@ -39,9 +40,8 @@ class _DefaultScaffoldState extends State<DefaultScaffold>
         toolbarHeight: 0,
         elevation: 0,
         scrolledUnderElevation: 0,
-        // backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
       ),
       body: Row(
         children: [

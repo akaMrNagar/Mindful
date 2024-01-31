@@ -2,13 +2,13 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/utils/extentions.dart';
+import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/device_focus_provider.dart';
+import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/ui/widgets/buttons.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
-import 'package:mindful/ui/widgets/interactive_card.dart';
 import 'package:mindful/ui/widgets/widgets_revealer.dart';
 
 /// Displays available settings for the app in [AppDashboard]
@@ -33,8 +33,8 @@ class AppSettings extends StatelessWidget {
               )
             : Consumer(
                 builder: (_, WidgetRef ref, __) {
-                  final timer = ref.watch(deviceFocusProvider.select(
-                          (value) => value.appTimers[app.packageName])) ??
+                  final timer = ref.watch(focusProvider
+                          .select((value) => value[app.packageName]?.timer)) ??
                       0;
 
                   final isPurged =
@@ -53,7 +53,7 @@ class AppSettings extends StatelessWidget {
                         (value) {
                           if (value != timer) {
                             ref
-                                .read(deviceFocusProvider.notifier)
+                                .read(focusProvider.notifier)
                                 .setAppTimer(app.packageName, value);
                           }
                         },
@@ -105,9 +105,8 @@ class _SettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveCard(
+    return SecondaryButton(
       onPressed: onPressed,
-      applyBorder: onPressed == null,
       margin: const EdgeInsets.only(bottom: 4, right: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

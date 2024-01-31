@@ -6,6 +6,7 @@ import 'package:mindful/providers/sorted_apps_provider.dart';
 import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
 import 'package:mindful/ui/widgets/async_error_indicator.dart';
 import 'package:mindful/ui/widgets/async_loading_indicator.dart';
+import 'package:mindful/ui/widgets/buttons.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
 import 'package:mindful/ui/widgets/interactive_card.dart';
 
@@ -96,10 +97,16 @@ class _AppsListState extends ConsumerState<AppsList> {
           },
         ),
         if (!_showAllApps && sortedApps.hasValue)
-          InteractiveCard(
-            margin: const EdgeInsets.symmetric(vertical: 16),
-            onPressed: () => setState(() => _showAllApps = true),
-            child: const TitleText("Show all apps"),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+            child: FractionallySizedBox(
+              widthFactor: 1,
+              child: PrimaryButton(
+                // margin: const EdgeInsets.symmetric(vertical: 16),
+                onPressed: () => setState(() => _showAllApps = true),
+                child: const TitleText("Show all apps"),
+              ),
+            ),
           ),
       ],
     );

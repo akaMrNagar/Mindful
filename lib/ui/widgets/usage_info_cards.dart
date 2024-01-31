@@ -1,8 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/core/utils/extentions.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
-import 'package:mindful/ui/widgets/interactive_card.dart';
 
 /// Widget used to display two cards in row both for mobile and wifi usage respectively
 class DataUsageInfoCard extends StatelessWidget {
@@ -53,9 +52,12 @@ class UsageInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveCard(
-      // margin: const EdgeInsets.symmetric(horizontal: 8),
-      applyBorder: true,
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Row(
         children: [
           Icon(iconData),

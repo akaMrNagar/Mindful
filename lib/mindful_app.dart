@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/utils/routes.dart';
+import 'package:mindful/config/routes.dart';
 import 'package:mindful/providers/mindful_theme_provider.dart';
 
 class MindfulApp extends ConsumerWidget {
@@ -11,16 +11,12 @@ class MindfulApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-        colorScheme: const ColorScheme.dark(),
-        splashColor: Colors.grey.shade800,
-        splashFactory: InkSparkle.splashFactory,
+        colorScheme: const ColorScheme.dark(primary: Colors.white),
         cardColor: const Color(0xFF1D2327),
         scaffoldBackgroundColor: const Color(0xFF12181C),
       ),
       theme: ThemeData.light(useMaterial3: true).copyWith(
-        colorScheme: const ColorScheme.light(),
-        splashColor: Colors.grey.shade400,
-        splashFactory: InkSparkle.splashFactory,
+        colorScheme: const ColorScheme.light(primary: Colors.black),
         cardColor: const Color(0xFFD8DEE2),
         scaffoldBackgroundColor: const Color(0xFFE3E9ED),
       ),

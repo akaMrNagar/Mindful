@@ -1,6 +1,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/models/vert_nav_bar_item.dart';
+import 'package:mindful/providers/mindful_theme_provider.dart';
 
 class VertNavBar extends StatefulWidget {
   const VertNavBar({
@@ -32,9 +34,18 @@ class _VertNavBarState extends State<VertNavBar> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 6),
           child: widget.isHome
-              ? IconButton(
-                  onPressed: () {},
-                  icon: const Icon(FluentIcons.device_eq_20_filled),
+              ? Consumer(
+                  builder: (_, WidgetRef ref, __) {
+                    return IconButton(
+                      onPressed: () =>
+                          ref.read(mindfulThemeProvider.notifier).update(
+                                (state) => state == ThemeMode.dark
+                                    ? ThemeMode.light
+                                    : ThemeMode.dark,
+                              ),
+                      icon: const Icon(FluentIcons.device_eq_20_filled),
+                    );
+                  },
                 )
 
               /// Back button
@@ -85,7 +96,7 @@ class _VertNavBarState extends State<VertNavBar> {
                         widget.tabItems[index].label,
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: isSelected ? FontWeight.w500 : null,
                           color: isSelected
                               ? null
                               : Theme.of(context).disabledColor,

@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/models/scaffold_tab_item.dart';
+import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/widgets/default_scaffold.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 
@@ -20,10 +21,10 @@ class Home extends StatelessWidget {
         icon: FluentIcons.target_arrow_20_filled,
         body: Container(color: Colors.green),
       ),
-      ScaffoldTabItem(
-        title: "Profiles",
-        icon: FluentIcons.person_20_filled,
-        body: Container(color: Colors.blue),
+      const ScaffoldTabItem(
+        title: "Bedtime",
+        icon: FluentIcons.cloud_beaker_20_filled,
+        body: TabBedtime(),
       ),
       ScaffoldTabItem(
         title: "Block sites",

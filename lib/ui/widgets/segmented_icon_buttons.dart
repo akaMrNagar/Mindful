@@ -28,15 +28,11 @@ class SegmentedIconButton extends StatelessWidget {
             right: Radius.circular(index == (segments.length - 1) ? radius : 0),
           );
 
-          return Card(
-            elevation: 0,
-            color:
-                isSelected ? Theme.of(context).cardColor : Colors.transparent,
-            surfaceTintColor: Colors.white,
-            margin: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
+          return Container(
+            decoration: BoxDecoration(
+              color: isSelected ? Theme.of(context).cardColor : null,
               borderRadius: borderRadius,
-              side: BorderSide(
+              border: Border.all(
                 color: isSelected
                     ? Theme.of(context).highlightColor
                     : Theme.of(context).focusColor,
@@ -53,7 +49,7 @@ class SegmentedIconButton extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: Icon(
                   segments[index],
-                  color: isSelected ? null : Theme.of(context).focusColor,
+                  color: isSelected ? null : Theme.of(context).cardColor,
                   size: 20,
                 ),
               ),

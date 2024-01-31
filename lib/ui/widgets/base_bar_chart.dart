@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/utils/extentions.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
 

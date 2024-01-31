@@ -17,6 +17,7 @@ class InteractiveCard extends StatelessWidget {
     this.borderRadius,
     this.height,
     this.width,
+    this.borderColor,
   });
 
   final Widget child;
@@ -30,6 +31,7 @@ class InteractiveCard extends StatelessWidget {
   final double? height;
   final double? width;
   final VoidCallback? onPressed;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,11 @@ class InteractiveCard extends StatelessWidget {
       width: width,
       child: Card(
         elevation: elevation,
-        color: applyBorder ? Colors.transparent : Theme.of(context).cardColor,
+        color: applyBorder
+            ? Colors.transparent
+            : Theme.of(context).cardColor.withOpacity(
+                  onPressed == null ? 0.25 : 1,
+                ),
         // color: Colors.transparent,
         surfaceTintColor: Colors.white,
         margin: margin,
@@ -51,7 +57,7 @@ class InteractiveCard extends StatelessWidget {
           borderRadius: borderRadius ?? BorderRadius.circular(circularRadius),
           side: applyBorder
               ? BorderSide(
-                  color: Theme.of(context).focusColor,
+                  color: borderColor ?? Theme.of(context).focusColor,
                   width: borderWidth,
                   strokeAlign: BorderSide.strokeAlignInside,
                 )
