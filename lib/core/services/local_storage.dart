@@ -14,13 +14,13 @@ class LocalStorage {
   }
 
   /// Save app timers map as json string in shared prefs
-  Future<void> saveAppTimers(Map<String, int> appTimers) async {
+  void saveAppTimers(Map<String, int> appTimers) async {
     String jsonString = jsonEncode(appTimers);
     await _prefs.setString(Constants.prefAppTimersMap, jsonString);
   }
 
   /// Fetch saved app timers from shared prefs
-  Future<Map<String, int>> loadAppTimers() async {
+  Map<String, int> loadAppTimers() {
     String jsonString = _prefs.getString(Constants.prefAppTimersMap) ?? "";
 
     if (jsonString.isNotEmpty) {

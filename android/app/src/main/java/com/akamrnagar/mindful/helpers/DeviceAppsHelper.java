@@ -1,5 +1,7 @@
 package com.akamrnagar.mindful.helpers;
 
+import static com.akamrnagar.mindful.utils.Extensions.getOrDefault;
+
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.app.usage.UsageStatsManager;
@@ -12,7 +14,6 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.akamrnagar.mindful.interfaces.AsyncSuccessCallback;
 import com.akamrnagar.mindful.models.AndroidApp;
@@ -42,7 +43,6 @@ public class DeviceAppsHelper {
      * @param context       The Android application context.
      * @param channelResult The MethodChannel result to return the list of apps to Flutter.
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
         AsyncSuccessCallback<List<Map<String, Object>>> callback = new AsyncSuccessCallback<List<Map<String, Object>>>() {
             @Override
@@ -62,11 +62,9 @@ public class DeviceAppsHelper {
                     public void run() {
                         List<AndroidApp> apps = fetchAppsAndUsage(context);
                         List<Map<String, Object>> resultMap = new ArrayList<>(apps.size());
-//                        Log.e(AppConstants.LOG_TAG, "number of apps: " + apps.size());
 
                         for (AndroidApp app : apps) {
                             resultMap.add(app.toMap());
-//                            Log.e(AppConstants.LOG_TAG, app.toString());
                         }
 
                         callback.onSuccess(resultMap);
@@ -82,17 +80,20 @@ public class DeviceAppsHelper {
      * @return A list of AndroidApp objects representing installed applications.
      */
     @NonNull
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
         PackageManager packageManager = context.getPackageManager();
+
+        // Initialize the set of important apps like Dialer, Launcher etc
         ImpSystemAppsHelper.init(context, packageManager);
 
+        // Fetch package info of installed apps on device
         List<PackageInfo> fetchedApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
         List<AndroidApp> deviceApps = new ArrayList<>();
 
-        /// Create list of android apps
+
         for (PackageInfo app : fetchedApps) {
-            // If package is launchable
+
+            // Only include app which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
                 int category = -1;
 
@@ -100,6 +101,7 @@ public class DeviceAppsHelper {
                     category = app.applicationInfo.category;
                 }
 
+                // Check if the app is important or default to system like dialer and launcher
                 boolean isSysDefault = ImpSystemAppsHelper.impSystemApps.contains(app.packageName);
                 deviceApps.add(
                         new AndroidApp(app.applicationInfo.loadLabel(packageManager).toString(), // name
@@ -132,12 +134,12 @@ public class DeviceAppsHelper {
         endCal.set(Calendar.MINUTE, 59);
         endCal.set(Calendar.SECOND, 59);
 
-        /// Loop from first day of week till today of this week
+        /// Loop from first day of week till today of current week
         for (int i = 1; i <= todayOfWeek; i++) {
             startCal.set(Calendar.DAY_OF_WEEK, i);
             endCal.set(Calendar.DAY_OF_WEEK, i);
 
-            long end = 0L;
+            long end;
             if (i == todayOfWeek) {
                 end = System.currentTimeMillis();
             } else {
@@ -150,13 +152,13 @@ public class DeviceAppsHelper {
 
 
             for (AndroidApp app : deviceApps) {
-                app.screenTimeThisWeek.set((i - 1), screenUsageOneDay.getOrDefault(app.packageName, 0L));
+                app.screenTimeThisWeek.set((i - 1), getOrDefault(screenUsageOneDay, app.packageName, 0L));
 
                 if (mobileUsageOneDay.containsKey(app.appUid)) {
-                    app.mobileUsageThisWeek.set((i - 1), mobileUsageOneDay.getOrDefault(app.appUid, 0L));
+                    app.mobileUsageThisWeek.set((i - 1), getOrDefault(mobileUsageOneDay, app.appUid, 0L));
                 }
                 if (wifiUsageOneDay.containsKey(app.appUid)) {
-                    app.wifiUsageThisWeek.set((i - 1), wifiUsageOneDay.getOrDefault(app.appUid, 0L));
+                    app.wifiUsageThisWeek.set((i - 1), getOrDefault(wifiUsageOneDay, app.appUid, 0L));
                 }
             }
         }

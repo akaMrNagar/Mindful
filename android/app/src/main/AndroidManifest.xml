@@ -19,6 +19,7 @@
         android:name="android.permission.READ_PRIVILEGED_PHONE_STATE"
         tools:ignore="ProtectedPermissions" />
 
+    <!--suppress AndroidDomInspection -->
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"

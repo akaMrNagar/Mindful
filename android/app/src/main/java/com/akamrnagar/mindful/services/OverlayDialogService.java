@@ -7,23 +7,17 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.view.KeyEventDispatcher;
 
 import com.akamrnagar.mindful.MainActivity;
-import com.akamrnagar.mindful.utils.AppConstants;
 
 /**
  * Display a dialog informing user about the app whose timer ran out.
@@ -42,6 +36,7 @@ public class OverlayDialogService extends Service {
                 Drawable icon = packageManager.getApplicationIcon(info);
 
 
+                // TODO: Fix deprecated warnings
                 int sysTheme = AlertDialog.THEME_DEVICE_DEFAULT_DARK;
                 if ((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_NO) {
                     sysTheme = AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;

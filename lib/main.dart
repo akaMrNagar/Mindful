@@ -7,18 +7,10 @@ import 'package:mindful/mindful_app.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await LocalStorage.instance.init();
-  //Setting SysemUIOverlay
-  // SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-  //   systemStatusBarContrastEnforced: false,
-  //   systemNavigationBarColor: Colors.transparent,
-  //   systemNavigationBarDividerColor: Colors.transparent,
-  // ));
 
-  // //Setting SystmeUIMode
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-    overlays: [SystemUiOverlay.top],
-  );
+  /// Setting up SystmeUIMode to draw app behind
+  /// the navigation controls and status bar
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   /// run main app
   runApp(const ProviderScope(child: MindfulApp()));

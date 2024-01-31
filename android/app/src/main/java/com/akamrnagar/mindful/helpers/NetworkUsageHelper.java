@@ -1,29 +1,24 @@
 package com.akamrnagar.mindful.helpers;
 
+import static com.akamrnagar.mindful.utils.Extensions.getOrDefault;
+
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.RemoteException;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
-import com.akamrnagar.mindful.models.AndroidApp;
 import com.akamrnagar.mindful.utils.AppConstants;
 
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 
 import io.flutter.Log;
 
 /**
  * NetworkUsageHelper is a utility class responsible for gathering network usage statistics for
  * Android applications.
- * It fetches data about the mobile and Wi-Fi data usage of applications and organizes this
+ * It fetches stats about the mobile and Wi-Fi data usage of applications and organizes this
  * information into HashMap of app's uid and the usage in bytes.
  */
 public class NetworkUsageHelper {
@@ -48,7 +43,7 @@ public class NetworkUsageHelper {
             do {
                 networkStatsWifi.getNextBucket(bucketWifi);
                 if (wifiUsageMap.containsKey(bucketWifi.getUid())) {
-                    Long previous = wifiUsageMap.getOrDefault(bucketWifi.getUid(), 0L);
+                    Long previous = getOrDefault(wifiUsageMap,bucketWifi.getUid(), 0L);
                     previous += bucketWifi.getRxBytes();
                     previous += bucketWifi.getTxBytes();
                     wifiUsageMap.put(bucketWifi.getUid(), previous);
@@ -91,7 +86,7 @@ public class NetworkUsageHelper {
             do {
                 networkStatsMobile.getNextBucket(bucketMobile);
                 if (mobileUsageMap.containsKey(bucketMobile.getUid())) {
-                    Long previous = mobileUsageMap.getOrDefault(bucketMobile.getUid(), 0L);
+                    Long previous = getOrDefault(mobileUsageMap,bucketMobile.getUid(), 0L);
                     previous += bucketMobile.getRxBytes();
                     previous += bucketMobile.getTxBytes();
                     mobileUsageMap.put(bucketMobile.getUid(), previous);

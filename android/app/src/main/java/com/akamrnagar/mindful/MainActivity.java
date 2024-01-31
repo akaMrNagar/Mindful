@@ -1,11 +1,9 @@
 package com.akamrnagar.mindful;
 
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.services.MindfulAppsTrackerService;
@@ -28,14 +26,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         String appPackage = getIntent().getStringExtra("appPackage");
 
         if (appPackage != null && !appPackage.isEmpty()) {
-            channel.invokeMethod("openAppStats", appPackage);
+            channel.invokeMethod("openAppDashboard", appPackage);
         }
         // check if [MindfulAppsTrackerService] service is running or not
         // if its not running then start it
 //        checkAndStartService();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
