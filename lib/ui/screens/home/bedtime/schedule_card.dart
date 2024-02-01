@@ -1,9 +1,8 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/ui/screens/home/bedtime/days_selector.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
 
 class ScheduleCard extends StatelessWidget {
@@ -12,55 +11,61 @@ class ScheduleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 200,
       padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(horizontal: 6),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         // color: Colors.blueGrey,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           /// Schedule time
-          const Row(
-            children: [
-              _Time(),
-              Spacer(),
-              _Time(),
-            ],
-          ),
-
-          /// Days
-          16.vBox(),
-          FittedBox(
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
             child: Row(
-              children: AppStrings.daysShort
-                  .map(
-                    (e) => IconButton.outlined(
-                      onPressed: () {},
-                      icon: Text(e),
-                    ),
-                  )
-                  .toList(),
+              children: [
+                _SelectedTime(label: "Start"),
+                Spacer(),
+                _SelectedTime(label: "End"),
+              ],
             ),
           ),
 
           /// Total bedtime duration
-          16.vBox(),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(FluentIcons.clock_lock_20_regular),
-              8.hBox(),
+              Expanded(
+                child: Divider(
+                  color: Theme.of(context).focusColor,
+                ),
+              ),
+              12.hBox(),
               Text(10552.minutes.toTimeFull()),
+              12.hBox(),
+              Expanded(
+                child: Divider(
+                  color: Theme.of(context).focusColor,
+                ),
+              ),
             ],
-          )
+          ),
+
+          /// Days
+          const DaysSelector(),
         ],
       ),
     );
   }
 }
 
-class _Time extends StatelessWidget {
-  const _Time();
+class _SelectedTime extends StatelessWidget {
+  const _SelectedTime({required this.label});
+
+  final String label;
 
   @override
   Widget build(BuildContext context) {
@@ -70,13 +75,13 @@ class _Time extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SubtitleText("Start"),
+          SubtitleText(label),
           4.vBox(),
           Row(
             children: [
               const TitleText(
                 "11:00",
-                size: 28,
+                size: 36,
               ),
               6.hBox(),
               const SubtitleText("pm"),
