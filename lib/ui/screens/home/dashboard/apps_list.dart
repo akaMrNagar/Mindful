@@ -8,7 +8,6 @@ import 'package:mindful/ui/widgets/async_error_indicator.dart';
 import 'package:mindful/ui/widgets/async_loading_indicator.dart';
 import 'package:mindful/ui/widgets/buttons.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
-import 'package:mindful/ui/widgets/interactive_card.dart';
 
 class AppsList extends ConsumerStatefulWidget {
   const AppsList({

@@ -13,7 +13,7 @@ class ScheduleCard extends StatelessWidget {
     return Container(
       height: 200,
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.symmetric(horizontal: 6),
+      margin: const EdgeInsets.only(bottom: 4, right: 6),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         // color: Colors.blueGrey,
@@ -44,7 +44,7 @@ class ScheduleCard extends StatelessWidget {
                 ),
               ),
               12.hBox(),
-              Text(10552.minutes.toTimeFull()),
+              SubtitleText(10552.minutes.toTimeFull()),
               12.hBox(),
               Expanded(
                 child: Divider(

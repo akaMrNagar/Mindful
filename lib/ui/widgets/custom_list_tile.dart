@@ -11,6 +11,7 @@ class CustomListTile extends StatelessWidget {
     this.subTitle,
     this.trailing,
     this.onPressed,
+    this.margin = const EdgeInsets.only(bottom: 4, right: 6),
   });
 
   final bool outlined;
@@ -19,12 +20,21 @@ class CustomListTile extends StatelessWidget {
   final Widget? subTitle;
   final Widget? trailing;
   final VoidCallback? onPressed;
+  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
     return outlined
-        ? TertiaryButton(onPressed: onPressed, child: _buildChild())
-        : SecondaryButton(onPressed: onPressed, child: _buildChild());
+        ? TertiaryButton(
+            onPressed: onPressed,
+            margin: margin,
+            child: _buildChild(),
+          )
+        : SecondaryButton(
+            onPressed: onPressed,
+            margin: margin,
+            child: _buildChild(),
+          );
   }
 
   Widget _buildChild() {

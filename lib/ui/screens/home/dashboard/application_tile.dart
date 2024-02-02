@@ -32,53 +32,51 @@ class ApplicationTile extends ConsumerWidget {
             focusProvider.select((value) => value[app.packageName]?.timer)) ??
         0;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4, right: 6),
-      child: CustomListTile(
-        onPressed: () {
-          Navigator.of(context).push(
-            CupertinoPageRoute(
-              builder: (context) => AppDashboard(app: app),
-            ),
-          );
-        },
-        leading: ApplicationIcon(app: app),
+    return CustomListTile(
+      margin: const EdgeInsets.only(bottom: 4, right: 6),
+      onPressed: () {
+        Navigator.of(context).push(
+          CupertinoPageRoute(
+            builder: (context) => AppDashboard(app: app),
+          ),
+        );
+      },
+      leading: ApplicationIcon(app: app),
 
-        /// App Name
-        title: TitleText(app.name, size: 16, weight: FontWeight.normal),
+      /// App Name
+      title: TitleText(app.name, size: 16, weight: FontWeight.normal),
 
-        /// App's Screen Time OR Data Usage
-        subTitle: SubtitleText(
-          isDataTile
-              ? app.networkUsageThisWeek[day].toData()
-              : app.screenTimeThisWeek[day].seconds.toTimeFull(),
-          size: 14,
-        ),
-
-        /// Timer picker button
-        trailing: (!isDataTile && !app.isImpSysApp)
-            ? IconButton(
-                icon: timer > 0
-                    ? TitleText(timer.seconds.toTimeShort(), size: 12)
-                    : const Icon(FluentIcons.timer_20_regular),
-                onPressed: () async {
-                  await showDurationPicker(
-                    context: context,
-                    initialTime: timer,
-                    appName: app.name,
-                  ).then(
-                    (value) {
-                      if (value != timer) {
-                        ref
-                            .read(focusProvider.notifier)
-                            .setAppTimer(app.packageName, value);
-                      }
-                    },
-                  );
-                },
-              )
-            : null,
+      /// App's Screen Time OR Data Usage
+      subTitle: SubtitleText(
+        isDataTile
+            ? app.networkUsageThisWeek[day].toData()
+            : app.screenTimeThisWeek[day].seconds.toTimeFull(),
+        size: 14,
       ),
+
+      /// Timer picker button
+      trailing: (!isDataTile && !app.isImpSysApp)
+          ? IconButton(
+              icon: timer > 0
+                  ? TitleText(timer.seconds.toTimeShort(), size: 12)
+                  : const Icon(FluentIcons.timer_20_regular),
+              onPressed: () async {
+                await showDurationPicker(
+                  context: context,
+                  initialTime: timer,
+                  appName: app.name,
+                ).then(
+                  (value) {
+                    if (value != timer) {
+                      ref
+                          .read(focusProvider.notifier)
+                          .setAppTimer(app.packageName, value);
+                    }
+                  },
+                );
+              },
+            )
+          : null,
     );
   }
 }

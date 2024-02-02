@@ -14,15 +14,13 @@ class TabBedtime extends StatelessWidget {
       children: [
         24.vBox(),
         const ScheduleCard(),
-        const Padding(
-          padding: EdgeInsets.all(12),
-          child: SubtitleText(
-            "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-          ),
+        4.vBox(),
+        const SubtitleText(
+          "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
         ),
 
         /// Settings
-        12.vBox(),
+        24.vBox(),
         const BedtimeSettings(),
       ],
     );
