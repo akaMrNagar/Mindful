@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/providers/schedule_provider.dart';
 
-class DaysSelector extends StatefulWidget {
+class DaysSelector extends ConsumerWidget {
   const DaysSelector({super.key});
 
-  @override
-  State<DaysSelector> createState() => _DaysSelectorState();
-}
-
-class _DaysSelectorState extends State<DaysSelector> {
-  List<int> daysState = [0, 1, 0, 1, 1, 1, 0];
-
-  void _onToggle(int index) {
-    setState(() {
-      daysState[index] = daysState[index] == 1 ? 0 : 1;
-    });
-  }
+  void _toggleDays(WidgetRef ref, int index) =>
+      ref.read(bedtimeProvider.notifier).toggleSelectedDays(index);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedDays =
+        ref.watch(bedtimeProvider.select((value) => value.selectedDays));
+
+    final status =
+        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+
     return Row(
       children: List.generate(
         7,
-        (index) => daysState[index] == 1
+        (index) => selectedDays[index]
             ? IconButton.outlined(
-                onPressed: () => _onToggle(index),
+                onPressed:
+                    status ? () => _toggleDays(ref, index) : null,
                 icon: Text(AppStrings.daysShort[index]),
               )
             : IconButton(
-                onPressed: () => _onToggle(index),
+                onPressed:
+                    status ? () => _toggleDays(ref, index) : null,
                 icon: Text(AppStrings.daysShort[index]),
               ),
       ).toList(),

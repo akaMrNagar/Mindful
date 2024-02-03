@@ -9,25 +9,26 @@ class BedtimeSettings extends ConsumerWidget {
   const BedtimeSettings({super.key});
 
   void _toggleStatus(WidgetRef ref) =>
-      ref.read(scheduleProvider.notifier).toggleStatus();
+      ref.read(bedtimeProvider.notifier).toggleBedtimeStatus();
 
   void _toggleDND(WidgetRef ref) =>
-      ref.read(scheduleProvider.notifier).toggleDND();
+      ref.read(bedtimeProvider.notifier).toggleDND();
 
   void _toggleGreScale(WidgetRef ref) =>
-      ref.read(scheduleProvider.notifier).toggleGreyScale();
+      ref.read(bedtimeProvider.notifier).toggleGreyScale();
 
   void _toggleDarkTheme(WidgetRef ref) =>
-      ref.read(scheduleProvider.notifier).toggleDarkTheme();
+      ref.read(bedtimeProvider.notifier).toggleDarkTheme();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = ref.watch(scheduleProvider.select((value) => value.status));
-    final dnd = ref.watch(scheduleProvider.select((value) => value.dnd));
+    final status =
+        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+    final dnd = ref.watch(bedtimeProvider.select((value) => value.dnd));
     final greyScale =
-        ref.watch(scheduleProvider.select((value) => value.greyScale));
+        ref.watch(bedtimeProvider.select((value) => value.greyScale));
     final darkTheme =
-        ref.watch(scheduleProvider.select((value) => value.darkTheme));
+        ref.watch(bedtimeProvider.select((value) => value.darkTheme));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +52,7 @@ class BedtimeSettings extends ConsumerWidget {
 
         /// DND Mode
         CustomListTile(
-          onPressed: () => _toggleDND(ref),
+          onPressed: status ? () => _toggleDND(ref) : null,
           title: const TitleText("Do Not Disturb", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Only calls from starred contacts, \nrepeat callers and alarms can reach you",
@@ -59,13 +60,13 @@ class BedtimeSettings extends ConsumerWidget {
           trailing: Switch(
             activeColor: const Color(0xFF0EABE1),
             value: dnd,
-            onChanged: (t) => _toggleDND(ref),
+            onChanged: status ? (t) => _toggleDND(ref) : null,
           ),
         ),
 
         /// Greyscale mode
         CustomListTile(
-          onPressed: () => _toggleGreScale(ref),
+          onPressed: status ? () => _toggleGreScale(ref) : null,
           title: const TitleText("Greyscale", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Change the screen to black and white",
@@ -73,13 +74,13 @@ class BedtimeSettings extends ConsumerWidget {
           trailing: Switch(
             activeColor: const Color(0xFF0EABE1),
             value: greyScale,
-            onChanged: (t) => _toggleGreScale(ref),
+            onChanged: status ? (t) => _toggleGreScale(ref) : null,
           ),
         ),
 
         /// Dark Theme
         CustomListTile(
-          onPressed: () => _toggleDarkTheme(ref),
+          onPressed: status ? () => _toggleDarkTheme(ref) : null,
           title: const TitleText("Dark theme", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Enable dark theme at night",
@@ -87,7 +88,7 @@ class BedtimeSettings extends ConsumerWidget {
           trailing: Switch(
             activeColor: const Color(0xFF0EABE1),
             value: darkTheme,
-            onChanged: (t) => _toggleDarkTheme(ref),
+            onChanged: status ? (t) => _toggleDarkTheme(ref) : null,
           ),
         ),
       ],

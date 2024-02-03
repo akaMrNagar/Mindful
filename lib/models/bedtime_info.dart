@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 
-class ScheduleInfo {
-  final bool status;
+class BedtimeInfo {
+  final bool bedtimeStatus;
   final bool dnd;
   final bool greyScale;
   final bool darkTheme;
@@ -10,18 +10,18 @@ class ScheduleInfo {
   final TimeOfDay end;
   final List<bool> selectedDays;
 
-  ScheduleInfo({
-    this.status = false,
+  BedtimeInfo({
+    this.bedtimeStatus = false,
     this.dnd = false,
     this.greyScale = false,
     this.darkTheme = false,
     this.start = const TimeOfDay(hour: 0, minute: 0),
     this.end = const TimeOfDay(hour: 0, minute: 0),
-    this.selectedDays = const [false, false, false, false, false, false, false],
+    this.selectedDays = const [false, true, true, true, true, true, false],
   });
 
-  ScheduleInfo copyWith({
-    bool? status,
+  BedtimeInfo copyWith({
+    bool? bedtimeStatus,
     bool? dnd,
     bool? greyScale,
     bool? darkTheme,
@@ -29,8 +29,8 @@ class ScheduleInfo {
     TimeOfDay? end,
     List<bool>? selectedDays,
   }) {
-    return ScheduleInfo(
-      status: status ?? this.status,
+    return BedtimeInfo(
+      bedtimeStatus: bedtimeStatus ?? this.bedtimeStatus,
       dnd: dnd ?? this.dnd,
       greyScale: greyScale ?? this.greyScale,
       darkTheme: darkTheme ?? this.darkTheme,
