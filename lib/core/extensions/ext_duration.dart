@@ -50,6 +50,7 @@ extension ExtDuration on Duration {
       stringBuffer.write(inMinutes % 60 > 1 ? " minutes" : " minute");
     }
 
+    //FIXME - When hour become 24 it returns 0
     return stringBuffer.toString();
   }
 }

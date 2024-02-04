@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -26,21 +25,28 @@ class BedtimeCard extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           /// Schedule time
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: [
-                _SelectedTime(
-                  label: "Start",
-                  onPressed: () {},
-                ),
-                const Spacer(),
-                _SelectedTime(
-                  label: "End",
-                  onPressed: () {},
-                ),
-              ],
-            ),
+          Consumer(
+            builder: (_, WidgetRef ref, __) {
+              return Row(
+                children: [
+                  _SelectedTime(
+                    label: "Start",
+                    initialTime: ref
+                        .watch(bedtimeProvider.select((value) => value.start)),
+                    onChange: (t) =>
+                        ref.read(bedtimeProvider.notifier).setBedtimeStart(t),
+                  ),
+                  const Spacer(),
+                  _SelectedTime(
+                    label: "End",
+                    initialTime:
+                        ref.watch(bedtimeProvider.select((value) => value.end)),
+                    onChange: (t) =>
+                        ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
+                  ),
+                ],
+              );
+            },
           ),
 
           /// Total bedtime duration
@@ -53,7 +59,14 @@ class BedtimeCard extends StatelessWidget {
                 ),
               ),
               12.hBox(),
-              SubtitleText(10552.minutes.toTimeFull()),
+              Consumer(
+                builder: (_, WidgetRef ref, __) {
+                  final duration = ref
+                      .watch(bedtimeProvider.select((value) => value.duration));
+                  return SubtitleText(duration.toTimeShort());
+                },
+              ),
+              // SubtitleText(10552.minutes.toTimeFull()),
               12.hBox(),
               Expanded(
                 child: Divider(
@@ -74,17 +87,29 @@ class BedtimeCard extends StatelessWidget {
 class _SelectedTime extends ConsumerWidget {
   const _SelectedTime({
     required this.label,
-    required this.onPressed,
+    required this.onChange,
+    required this.initialTime,
   });
 
   final String label;
-  final VoidCallback onPressed;
+  final TimeOfDay initialTime;
+  final Function(TimeOfDay time) onChange;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final status =
+        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+
     return SecondaryButton(
-      onPressed: ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus))
-          ? onPressed
+      onPressed: status
+          ? () {
+              showTimePicker(
+                context: context,
+                initialTime: initialTime,
+              ).then((value) {
+                onChange(value ?? initialTime);
+              });
+            }
           : null,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -93,13 +118,16 @@ class _SelectedTime extends ConsumerWidget {
           SubtitleText(label),
           4.vBox(),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const TitleText(
-                "11:00",
+              TitleText(
+                initialTime.format(context).split(' ').first,
                 size: 36,
               ),
               6.hBox(),
-              const SubtitleText("pm"),
+              SubtitleText(
+                "${initialTime.period.name} ${initialTime.period.index}",
+              ),
             ],
           ),
         ],
