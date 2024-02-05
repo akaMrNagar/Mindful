@@ -63,7 +63,7 @@ class BedtimeCard extends StatelessWidget {
                 builder: (_, WidgetRef ref, __) {
                   final duration = ref
                       .watch(bedtimeProvider.select((value) => value.duration));
-                  return SubtitleText(duration.toTimeShort());
+                  return SubtitleText(duration.toTimeFull());
                 },
               ),
               // SubtitleText(10552.minutes.toTimeFull()),
@@ -97,11 +97,12 @@ class _SelectedTime extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status =
-        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+    final modifiable =
+        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus)) &&
+            !ref.watch(bedtimeProvider.select((value) => value.invincible));
 
     return SecondaryButton(
-      onPressed: status
+      onPressed: modifiable
           ? () {
               showTimePicker(
                 context: context,

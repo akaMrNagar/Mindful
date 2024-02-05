@@ -11,6 +11,12 @@ class BedtimeSettings extends ConsumerWidget {
   void _toggleStatus(WidgetRef ref) =>
       ref.read(bedtimeProvider.notifier).toggleBedtimeStatus();
 
+  void _toggleInvincible(WidgetRef ref) =>
+      ref.read(bedtimeProvider.notifier).toggleInvincibleMode();
+
+  void _togglePauseApps(WidgetRef ref) =>
+      ref.read(bedtimeProvider.notifier).togglePauseApps();
+
   void _toggleDND(WidgetRef ref) =>
       ref.read(bedtimeProvider.notifier).toggleDND();
 
@@ -24,9 +30,20 @@ class BedtimeSettings extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final status =
         ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+
+    final invincible =
+        ref.watch(bedtimeProvider.select((value) => value.invincible));
+
+    final modifiable = status && !invincible;
+
+    final pauseApps =
+        ref.watch(bedtimeProvider.select((value) => value.pauseApps));
+
     final dnd = ref.watch(bedtimeProvider.select((value) => value.dnd));
+
     final greyScale =
         ref.watch(bedtimeProvider.select((value) => value.greyScale));
+
     final darkTheme =
         ref.watch(bedtimeProvider.select((value) => value.darkTheme));
 
@@ -50,9 +67,37 @@ class BedtimeSettings extends ConsumerWidget {
           ),
         ),
 
+        /// Invincible mode
+        CustomListTile(
+          onPressed: status ? () => _toggleInvincible(ref) : null,
+          title: const TitleText("Invincible Mode", weight: FontWeight.normal),
+          subTitle: const SubtitleText(
+            "If enbled, you cannot modify bedtime \nsettings if schedule is active.",
+          ),
+          trailing: Switch(
+            activeColor: const Color(0xFF0EABE1),
+            value: invincible,
+            onChanged: status ? (t) => _toggleInvincible(ref) : null,
+          ),
+        ),
+
+        /// Pause Apps
+        CustomListTile(
+          onPressed: modifiable ? () => _togglePauseApps(ref) : null,
+          title: const TitleText("Pause Apps", weight: FontWeight.normal),
+          subTitle: const SubtitleText(
+            "Pause apps whose timers are running",
+          ),
+          trailing: Switch(
+            activeColor: const Color(0xFF0EABE1),
+            value: pauseApps,
+            onChanged: modifiable ? (t) => _togglePauseApps(ref) : null,
+          ),
+        ),
+
         /// DND Mode
         CustomListTile(
-          onPressed: status ? () => _toggleDND(ref) : null,
+          onPressed: modifiable ? () => _toggleDND(ref) : null,
           title: const TitleText("Do Not Disturb", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Only calls from starred contacts, \nrepeat callers and alarms can reach you",
@@ -60,13 +105,13 @@ class BedtimeSettings extends ConsumerWidget {
           trailing: Switch(
             activeColor: const Color(0xFF0EABE1),
             value: dnd,
-            onChanged: status ? (t) => _toggleDND(ref) : null,
+            onChanged: modifiable ? (t) => _toggleDND(ref) : null,
           ),
         ),
 
         /// Greyscale mode
         CustomListTile(
-          onPressed: status ? () => _toggleGreScale(ref) : null,
+          onPressed: modifiable ? () => _toggleGreScale(ref) : null,
           title: const TitleText("Greyscale", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Change the screen to black and white",
@@ -74,13 +119,13 @@ class BedtimeSettings extends ConsumerWidget {
           trailing: Switch(
             activeColor: const Color(0xFF0EABE1),
             value: greyScale,
-            onChanged: status ? (t) => _toggleGreScale(ref) : null,
+            onChanged: modifiable ? (t) => _toggleGreScale(ref) : null,
           ),
         ),
 
         /// Dark Theme
         CustomListTile(
-          onPressed: status ? () => _toggleDarkTheme(ref) : null,
+          onPressed: modifiable ? () => _toggleDarkTheme(ref) : null,
           title: const TitleText("Dark theme", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Enable dark theme at night",
@@ -88,7 +133,7 @@ class BedtimeSettings extends ConsumerWidget {
           trailing: Switch(
             activeColor: const Color(0xFF0EABE1),
             value: darkTheme,
-            onChanged: status ? (t) => _toggleDarkTheme(ref) : null,
+            onChanged: modifiable ? (t) => _toggleDarkTheme(ref) : null,
           ),
         ),
       ],

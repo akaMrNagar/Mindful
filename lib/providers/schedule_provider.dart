@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
+import 'package:mindful/core/services/local_storage.dart';
 import 'package:mindful/models/bedtime_info.dart';
 
 final bedtimeProvider =
@@ -10,7 +11,14 @@ final bedtimeProvider =
 });
 
 class BedtimeNotifier extends StateNotifier<BedtimeInfo> {
-  BedtimeNotifier() : super(BedtimeInfo());
+  BedtimeNotifier() : super(BedtimeInfo()) {
+    _loadFromLocalStorage();
+  }
+
+  void _loadFromLocalStorage() =>
+      state = LocalStorage.instance.loadBedtimeInfo();
+
+  void _saveToLocalStorage() => LocalStorage.instance.saveBedtimeInfo(state);
 
   void setBedtimeStart(TimeOfDay timeOfDay) {
     state = state.copyWith(
@@ -18,9 +26,7 @@ class BedtimeNotifier extends StateNotifier<BedtimeInfo> {
       duration: state.end.difference(timeOfDay).minutes,
     );
 
-    print(state.start);
-    print(state.end);
-    print(state.duration);
+    _saveToLocalStorage();
   }
 
   void setBedtimeEnd(TimeOfDay timeOfDay) {
@@ -29,20 +35,50 @@ class BedtimeNotifier extends StateNotifier<BedtimeInfo> {
       duration: timeOfDay.difference(state.start).minutes,
     );
 
-    print(state.start);
-    print(state.end);
-    print(state.duration);
+    _saveToLocalStorage();
   }
 
   void toggleSelectedDays(int index) {
     var days = state.selectedDays.toList();
     days[index] = !days[index];
     state = state.copyWith(selectedDays: days);
+
+    _saveToLocalStorage();
   }
 
-  void toggleBedtimeStatus() =>
-      state = state.copyWith(bedtimeStatus: !state.bedtimeStatus);
-  void toggleDND() => state = state.copyWith(dnd: !state.dnd);
-  void toggleGreyScale() => state = state.copyWith(greyScale: !state.greyScale);
-  void toggleDarkTheme() => state = state.copyWith(darkTheme: !state.darkTheme);
+  void toggleBedtimeStatus() {
+    state = state.copyWith(bedtimeStatus: !state.bedtimeStatus);
+
+    _saveToLocalStorage();
+  }
+ 
+  void toggleInvincibleMode() {
+    state = state.copyWith(invincible: !state.invincible);
+
+    _saveToLocalStorage();
+  }
+  
+  void togglePauseApps() {
+    state = state.copyWith(pauseApps: !state.pauseApps);
+
+    _saveToLocalStorage();
+  }
+
+  void toggleDND() {
+    state = state.copyWith(dnd: !state.dnd);
+
+    _saveToLocalStorage();
+  }
+
+  void toggleGreyScale() {
+    state = state.copyWith(greyScale: !state.greyScale);
+
+    _saveToLocalStorage();
+  }
+
+  void toggleDarkTheme() {
+    state = state.copyWith(darkTheme: !state.darkTheme);
+
+    _saveToLocalStorage();
+  }
 }

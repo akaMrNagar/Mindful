@@ -1,8 +1,14 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mindful/core/extensions/ext_time_of_day.dart';
+
+//FIXME - Make invincible mode bool reactive to the state of schedule activity [active, inactive]
 
 class BedtimeInfo {
   final bool bedtimeStatus;
+  final bool invincible;
+  final bool pauseApps;
   final bool dnd;
   final bool greyScale;
   final bool darkTheme;
@@ -13,6 +19,8 @@ class BedtimeInfo {
 
   BedtimeInfo({
     this.bedtimeStatus = false,
+    this.invincible = false,
+    this.pauseApps = true,
     this.dnd = false,
     this.greyScale = false,
     this.darkTheme = false,
@@ -24,6 +32,8 @@ class BedtimeInfo {
 
   BedtimeInfo copyWith({
     bool? bedtimeStatus,
+    bool? invincible,
+    bool? pauseApps,
     bool? dnd,
     bool? greyScale,
     bool? darkTheme,
@@ -34,6 +44,8 @@ class BedtimeInfo {
   }) {
     return BedtimeInfo(
       bedtimeStatus: bedtimeStatus ?? this.bedtimeStatus,
+      invincible: invincible ?? this.invincible,
+      pauseApps: pauseApps ?? this.pauseApps,
       dnd: dnd ?? this.dnd,
       greyScale: greyScale ?? this.greyScale,
       darkTheme: darkTheme ?? this.darkTheme,
@@ -43,4 +55,39 @@ class BedtimeInfo {
       selectedDays: selectedDays ?? this.selectedDays,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'bedtimeStatus': bedtimeStatus,
+      'invincible': invincible,
+      'pauseApps': pauseApps,
+      'dnd': dnd,
+      'greyScale': greyScale,
+      'darkTheme': darkTheme,
+      'start': start.toMinutes(),
+      'end': end.toMinutes(),
+      'duration': duration.inMinutes,
+      'selectedDays': selectedDays,
+    };
+  }
+
+  factory BedtimeInfo.fromMap(Map<String, dynamic> map) {
+    return BedtimeInfo(
+      bedtimeStatus: map['bedtimeStatus'] as bool,
+      invincible: map['invincible'] as bool,
+      pauseApps: map['pauseApps'] as bool,
+      dnd: map['dnd'] as bool,
+      greyScale: map['greyScale'] as bool,
+      darkTheme: map['darkTheme'] as bool,
+      start: TimeOfDay.now().fromMinutes(map['start'] as int),
+      end: TimeOfDay.now().fromMinutes(map['end'] as int),
+      duration: (map['duration'] as int).minutes,
+      selectedDays: List<bool>.from((map['selectedDays'] as List<dynamic>)),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory BedtimeInfo.fromJson(String source) =>
+      BedtimeInfo.fromMap(json.decode(source) as Map<String, dynamic>);
 }

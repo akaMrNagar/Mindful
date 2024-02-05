@@ -14,21 +14,20 @@ class DaysSelector extends ConsumerWidget {
     final selectedDays =
         ref.watch(bedtimeProvider.select((value) => value.selectedDays));
 
-    final status =
-        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+    final modifiable =
+        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus)) &&
+            !ref.watch(bedtimeProvider.select((value) => value.invincible));
 
     return Row(
       children: List.generate(
         7,
         (index) => selectedDays[index]
             ? IconButton.outlined(
-                onPressed:
-                    status ? () => _toggleDays(ref, index) : null,
+                onPressed: modifiable ? () => _toggleDays(ref, index) : null,
                 icon: Text(AppStrings.daysShort[index]),
               )
             : IconButton(
-                onPressed:
-                    status ? () => _toggleDays(ref, index) : null,
+                onPressed: modifiable ? () => _toggleDays(ref, index) : null,
                 icon: Text(AppStrings.daysShort[index]),
               ),
       ).toList(),

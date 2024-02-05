@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:mindful/core/utils/constants.dart';
+import 'package:mindful/models/bedtime_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Responsible for managing application data in SharedPreferences.
@@ -13,7 +14,7 @@ class LocalStorage {
     _prefs = await SharedPreferences.getInstance();
   }
 
-  /// Save app timers map as json string in shared prefs
+  /// Save app timers map as json string to shared prefs
   void saveAppTimers(Map<String, int> appTimers) async {
     String jsonString = jsonEncode(appTimers);
     await _prefs.setString(Constants.prefAppTimersMap, jsonString);
@@ -29,5 +30,20 @@ class LocalStorage {
     }
 
     return {};
+  }
+
+  /// Save bedtime info to shared prefs
+  void saveBedtimeInfo(BedtimeInfo info) async {
+    String jsonString = jsonEncode(info.toJson());
+    await _prefs.setString(Constants.prefBedtimeInfo, jsonString);
+  }
+
+  /// Load bedtime info from shared prefs
+  BedtimeInfo loadBedtimeInfo() {
+    String jsonString = _prefs.getString(Constants.prefBedtimeInfo) ?? "";
+
+    return jsonString.isNotEmpty
+        ? BedtimeInfo.fromJson(jsonDecode(jsonString))
+        : BedtimeInfo();
   }
 }

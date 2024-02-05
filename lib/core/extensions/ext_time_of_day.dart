@@ -4,26 +4,18 @@ extension ExtNum on TimeOfDay {
   /// Converts the time from hour and minutes to minutes only
   int toMinutes() => (hour * 60) + minute;
 
-  /// Returns the difference in minutes (this - b)
-  int difference(TimeOfDay s) {
+  TimeOfDay fromMinutes(int mins) =>
+      TimeOfDay(hour: mins ~/ 60, minute: mins % 60);
+
+  /// Returns the difference in minutes (this - other)
+  int difference(TimeOfDay other) {
     int end = toMinutes();
-    int start = s.toMinutes();
-    int dur = 0;
+    int start = other.toMinutes();
 
-    if (period.index == s.period.index) {
-      return toMinutes() - s.toMinutes();
-    } else if (period.index == 0 && s.period.index == 1) {
-      return toMinutes() + s.toMinutes();
-    } else if (period.index == 1 && s.period.index == 0) {
-      return toMinutes() - s.toMinutes();
-    }
-
-    if (start > end) {
-      dur = (24 * 60) - start + end;
+    if (end < start) {
+      return ((24 * 60) - start) + end;
     } else {
-      dur = end - start;
+      return end - start;
     }
-
-    return dur;
   }
 }
