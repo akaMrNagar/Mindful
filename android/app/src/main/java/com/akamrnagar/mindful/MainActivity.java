@@ -4,11 +4,17 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.services.MindfulAppsTrackerService;
 import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
+import com.akamrnagar.mindful.workers.TaskWorker;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -50,6 +56,21 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 restartService();
                 result.success(true);
                 break;
+            case "updateBedtime": {
+                if (call.hasArgument("hour") && call.hasArgument("minute") && call.hasArgument("duration")) {
+                    //noinspection DataFlowIssue
+                    int hour = call.argument("hour");
+                    //noinspection DataFlowIssue
+                    int minute = call.argument("minute");
+                    //noinspection DataFlowIssue
+                    int duration = call.argument("duration");
+
+                    updateBedtimeTask(hour, minute, duration);
+                    result.success(true);
+                }
+
+                break;
+            }
             default:
                 result.notImplemented();
         }
@@ -72,6 +93,31 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         getApplicationContext().startService(intent);
         Log.d(AppConstants.DEBUG_TAG, "restarted service : MindfulAppsTrackerService()");
+    }
+
+    private void updateBedtimeTask(int hour, int minute, int duration) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+
+        long initialDelay = calendar.getTimeInMillis() - System.currentTimeMillis();
+
+
+        PeriodicWorkRequest request = new PeriodicWorkRequest.Builder(
+                TaskWorker.class, 1, TimeUnit.DAYS)
+                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .addTag(AppConstants.WORKER_TAG_BEDTIME_START)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(request);
+
+
+        Log.d(AppConstants.DEBUG_TAG, "Task scheduled successfully");
+        Log.d(AppConstants.DEBUG_TAG, calendar.getTime().toString());
+
     }
 
 }

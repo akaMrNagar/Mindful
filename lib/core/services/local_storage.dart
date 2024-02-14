@@ -40,10 +40,11 @@ class LocalStorage {
 
   /// Load bedtime info from shared prefs
   BedtimeInfo loadBedtimeInfo() {
+    _prefs.remove(Constants.prefBedtimeInfo);
     String jsonString = _prefs.getString(Constants.prefBedtimeInfo) ?? "";
 
     return jsonString.isNotEmpty
         ? BedtimeInfo.fromJson(jsonDecode(jsonString))
-        : BedtimeInfo();
+        : const BedtimeInfo();
   }
 }

@@ -1,88 +1,66 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 
-//FIXME - Make invincible mode bool reactive to the state of schedule activity [active, inactive]
-
+@immutable
 class BedtimeInfo {
-  final bool bedtimeStatus;
-  final bool invincible;
-  final bool pauseApps;
-  final bool dnd;
-  final bool greyScale;
-  final bool darkTheme;
-  final TimeOfDay start;
-  final TimeOfDay end;
-  final Duration duration;
+  final TimeOfDay startTime;
+  final TimeOfDay endTime;
   final List<bool> selectedDays;
 
-  BedtimeInfo({
-    this.bedtimeStatus = false,
-    this.invincible = false,
-    this.pauseApps = true,
-    this.dnd = false,
-    this.greyScale = false,
-    this.darkTheme = false,
-    this.duration = Duration.zero,
-    this.start = const TimeOfDay(hour: 0, minute: 0),
-    this.end = const TimeOfDay(hour: 0, minute: 0),
-    this.selectedDays = const [false, true, true, true, true, true, false],
-  });
+  final bool bedtimeStatus;
+  final bool pauseApps;
+  final bool enableDND;
 
+  const BedtimeInfo({
+    this.startTime = const TimeOfDay(hour: 0, minute: 0),
+    this.endTime = const TimeOfDay(hour: 0, minute: 0),
+    this.selectedDays = const [false, true, true, true, true, true, false],
+    this.bedtimeStatus = false,
+    this.pauseApps = false,
+    this.enableDND = false,
+  });
+  
   BedtimeInfo copyWith({
-    bool? bedtimeStatus,
-    bool? invincible,
-    bool? pauseApps,
-    bool? dnd,
-    bool? greyScale,
-    bool? darkTheme,
-    TimeOfDay? start,
-    TimeOfDay? end,
-    Duration? duration,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
     List<bool>? selectedDays,
+    bool? bedtimeStatus,
+    bool? pauseApps,
+    bool? enableDND,
   }) {
     return BedtimeInfo(
-      bedtimeStatus: bedtimeStatus ?? this.bedtimeStatus,
-      invincible: invincible ?? this.invincible,
-      pauseApps: pauseApps ?? this.pauseApps,
-      dnd: dnd ?? this.dnd,
-      greyScale: greyScale ?? this.greyScale,
-      darkTheme: darkTheme ?? this.darkTheme,
-      start: start ?? this.start,
-      end: end ?? this.end,
-      duration: duration ?? this.duration,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
       selectedDays: selectedDays ?? this.selectedDays,
+      bedtimeStatus: bedtimeStatus ?? this.bedtimeStatus,
+      pauseApps: pauseApps ?? this.pauseApps,
+      enableDND: enableDND ?? this.enableDND,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'bedtimeStatus': bedtimeStatus,
-      'invincible': invincible,
-      'pauseApps': pauseApps,
-      'dnd': dnd,
-      'greyScale': greyScale,
-      'darkTheme': darkTheme,
-      'start': start.toMinutes(),
-      'end': end.toMinutes(),
-      'duration': duration.inMinutes,
+      'startTime': startTime.toMinutes(),
+      'endTime': endTime.toMinutes(),
       'selectedDays': selectedDays,
+      'bedtimeStatus': bedtimeStatus,
+      'pauseApps': pauseApps,
+      'enableDND': enableDND,
     };
   }
 
   factory BedtimeInfo.fromMap(Map<String, dynamic> map) {
     return BedtimeInfo(
+      startTime: TimeOfDay.now().fromMinutes(map['startTime'] as int),
+      endTime: TimeOfDay.now().fromMinutes(map['endTime'] as int),
+      selectedDays: List<bool>.from(map['selectedDays'] as List<bool>),
       bedtimeStatus: map['bedtimeStatus'] as bool,
-      invincible: map['invincible'] as bool,
       pauseApps: map['pauseApps'] as bool,
-      dnd: map['dnd'] as bool,
-      greyScale: map['greyScale'] as bool,
-      darkTheme: map['darkTheme'] as bool,
-      start: TimeOfDay.now().fromMinutes(map['start'] as int),
-      end: TimeOfDay.now().fromMinutes(map['end'] as int),
-      duration: (map['duration'] as int).minutes,
-      selectedDays: List<bool>.from((map['selectedDays'] as List<dynamic>)),
+      enableDND: map['enableDND'] as bool,
     );
   }
 

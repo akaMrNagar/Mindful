@@ -14,4 +14,9 @@ public class AppConstants {
     public static final String PREFS_FLUTTER_PREFIX = "FlutterSharedPreferences";
     public static final String PREF_APP_TIMERS = "flutter.mindful.appsTimer";
 
+    /// Worker task tags
+    public static final String WORKER_TAG_BEDTIME_START = "mindful.worker.bedtime.task.start";
+    public static final String WORKER_TAG_BEDTIME_END = "mindful.worker.bedtime.task.end";
+
+
 }

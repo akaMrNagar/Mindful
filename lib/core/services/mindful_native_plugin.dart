@@ -13,7 +13,9 @@ class MindfulNativePlugin {
   MindfulNativePlugin._() {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'openAppDashboard') targetedAppPackage = call.arguments;
+      if (call.method == 'openAppDashboard') {
+        targetedAppPackage = call.arguments;
+      }
     });
   }
 
@@ -28,6 +30,15 @@ class MindfulNativePlugin {
   /// Should be called when the app timers changes
   Future<bool> restartTrackingService() async =>
       await _methodChannel.invokeMethod('restartService');
+
+
+  Future<bool> updateBedtimeService(TimeOfDay start, Duration duration) async {
+    return await _methodChannel.invokeMethod('updateBedtime', {
+      "hour": start.hour,
+      "minute": start.minute,
+      "duration": duration.inMinutes,
+    });
+  }
 
   /// Generates a list of [AndroidApp] all the launchable apps
   /// installed on the user device including their usage

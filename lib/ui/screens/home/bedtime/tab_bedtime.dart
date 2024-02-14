@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/mindful_native_plugin.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_card.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_settings.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
