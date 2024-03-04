@@ -24,12 +24,17 @@ import com.akamrnagar.mindful.MainActivity;
  */
 public class OverlayDialogService extends Service {
 
+    public static final int SERVICE_ID = 303;
+    public static final String ACTION_START_SERVICE = "com.akamrnagar.mindful.Overlay.START";
+    public static final String ACTION_STOP_SERVICE = "com.akamrnagar.mindful.Overlay.STOP";
+
+
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         String packageName = intent.getStringExtra("appPackage");
         if (packageName != null) {
             try {
-                PackageManager packageManager = getApplicationContext().getPackageManager();
+                PackageManager packageManager = getPackageManager();
                 ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
 
                 String appName = info.loadLabel(packageManager).toString();
@@ -43,7 +48,7 @@ public class OverlayDialogService extends Service {
                 }
 
 
-                AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext(), sysTheme)
+                AlertDialog alertDialog = new AlertDialog.Builder(this, sysTheme)
                         .setTitle("App Locked")
                         .setMessage(appName + " timer ran out.\nEmbrace this pause to supercharge your productivity.Stay focused, stay motivated.")
                         .setIcon(icon)
@@ -85,7 +90,7 @@ public class OverlayDialogService extends Service {
                         Intent intent = new Intent(Intent.ACTION_MAIN);
                         intent.addCategory(Intent.CATEGORY_HOME);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        getApplicationContext().startActivity(intent);
+                        startActivity(intent);
                     }
                 });
 

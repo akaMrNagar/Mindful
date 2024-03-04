@@ -1,5 +1,7 @@
 package com.akamrnagar.mindful.models;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +19,6 @@ public class AndroidApp {
 
 
     /// Usage info
-    public ArrayList<Integer> launchesThisWeek;
     public ArrayList<Long> screenTimeThisWeek;
     public ArrayList<Long> mobileUsageThisWeek;
     public ArrayList<Long> wifiUsageThisWeek;
@@ -30,7 +31,6 @@ public class AndroidApp {
         this.isImpSysApp = isImpSysApp;
         this.category = category;
         this.appUid = appUid;
-        this.launchesThisWeek = new ArrayList<>(Collections.nCopies(7, 0));
         this.screenTimeThisWeek = new ArrayList<>(Collections.nCopies(7, 0L));
         this.mobileUsageThisWeek = new ArrayList<>(Collections.nCopies(7, 0L));
         this.wifiUsageThisWeek = new ArrayList<>(Collections.nCopies(7, 0L));
@@ -59,7 +59,6 @@ public class AndroidApp {
         appMap.put("appIcon", appIcon);
         appMap.put("isImpSysApp", isImpSysApp);
         appMap.put("category", category);
-        appMap.put("launchesThisWeek", launchesThisWeek);
         appMap.put("screenTimeThisWeek", screenTimeThisWeek);
         appMap.put("mobileUsageThisWeek", mobileUsageThisWeek);
         appMap.put("wifiUsageThisWeek", wifiUsageThisWeek);
@@ -68,6 +67,7 @@ public class AndroidApp {
     }
 
 
+    @NonNull
     @Override
     public String toString() {
         return "AndroidApp{" +
@@ -76,7 +76,6 @@ public class AndroidApp {
                 ", appUid=" + appUid +
                 ", isImpSysApp=" + isImpSysApp +
                 ", category=" + category +
-                ", launchesThisWeek=" + launchesThisWeek +
                 ", screenTimeThisWeek=" + screenTimeThisWeek +
                 ", mobileUsageThisWeek=" + mobileUsageThisWeek +
                 ", wifiUsageThisWeek=" + wifiUsageThisWeek +

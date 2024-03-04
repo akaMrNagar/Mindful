@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
-import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/bedtime_schedule_provider.dart';
 import 'package:mindful/ui/screens/home/bedtime/days_selector.dart';
 import 'package:mindful/ui/widgets/buttons.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
@@ -33,18 +33,20 @@ class BedtimeCard extends StatelessWidget {
                 children: [
                   _SelectedTime(
                     label: "Start",
-                    initialTime: ref.watch(
-                        bedtimeProvider.select((value) => value.startTime)),
-                    onChange: (t) =>
-                        ref.read(bedtimeProvider.notifier).setBedtimeStart(t),
+                    initialTime: ref.watch(bedtimeScheduleProvider
+                        .select((value) => value.startTime)),
+                    onChange: (t) => ref
+                        .read(bedtimeScheduleProvider.notifier)
+                        .setBedtimeStart(t),
                   ),
                   const Spacer(),
                   _SelectedTime(
                     label: "End",
-                    initialTime: ref.watch(
-                        bedtimeProvider.select((value) => value.endTime)),
-                    onChange: (t) =>
-                        ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
+                    initialTime: ref.watch(bedtimeScheduleProvider
+                        .select((value) => value.endTime)),
+                    onChange: (t) => ref
+                        .read(bedtimeScheduleProvider.notifier)
+                        .setBedtimeEnd(t),
                   ),
                 ],
               );
@@ -63,10 +65,10 @@ class BedtimeCard extends StatelessWidget {
               12.hBox(),
               Consumer(
                 builder: (_, WidgetRef ref, __) {
-                  final startT = ref.watch(
-                      bedtimeProvider.select((value) => value.startTime));
-                  final endT = ref
-                      .watch(bedtimeProvider.select((value) => value.endTime));
+                  final startT = ref.watch(bedtimeScheduleProvider
+                      .select((value) => value.startTime));
+                  final endT = ref.watch(
+                      bedtimeScheduleProvider.select((value) => value.endTime));
 
                   return SubtitleText(
                     endT.difference(startT).minutes.toTimeFull(),
@@ -104,20 +106,18 @@ class _SelectedTime extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status =
-        ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+    // final status =
+    //     ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
 
     return SecondaryButton(
-      onPressed: status
-          ? () {
-              showTimePicker(
-                context: context,
-                initialTime: initialTime,
-              ).then((value) {
-                onChange(value ?? initialTime);
-              });
-            }
-          : null,
+      onPressed: () {
+        showTimePicker(
+          context: context,
+          initialTime: initialTime,
+        ).then((value) {
+          onChange(value ?? initialTime);
+        });
+      },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,

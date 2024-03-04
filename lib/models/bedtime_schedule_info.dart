@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 
 @immutable
-class BedtimeInfo {
+class BedtimeScheduleInfo {
   final TimeOfDay startTime;
   final TimeOfDay endTime;
   final List<bool> selectedDays;
@@ -15,7 +15,7 @@ class BedtimeInfo {
   final bool pauseApps;
   final bool enableDND;
 
-  const BedtimeInfo({
+  const BedtimeScheduleInfo({
     this.startTime = const TimeOfDay(hour: 0, minute: 0),
     this.endTime = const TimeOfDay(hour: 0, minute: 0),
     this.selectedDays = const [false, true, true, true, true, true, false],
@@ -23,8 +23,8 @@ class BedtimeInfo {
     this.pauseApps = false,
     this.enableDND = false,
   });
-  
-  BedtimeInfo copyWith({
+
+  BedtimeScheduleInfo copyWith({
     TimeOfDay? startTime,
     TimeOfDay? endTime,
     List<bool>? selectedDays,
@@ -32,7 +32,7 @@ class BedtimeInfo {
     bool? pauseApps,
     bool? enableDND,
   }) {
-    return BedtimeInfo(
+    return BedtimeScheduleInfo(
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       selectedDays: selectedDays ?? this.selectedDays,
@@ -53,8 +53,8 @@ class BedtimeInfo {
     };
   }
 
-  factory BedtimeInfo.fromMap(Map<String, dynamic> map) {
-    return BedtimeInfo(
+  factory BedtimeScheduleInfo.fromMap(Map<String, dynamic> map) {
+    return BedtimeScheduleInfo(
       startTime: TimeOfDay.now().fromMinutes(map['startTime'] as int),
       endTime: TimeOfDay.now().fromMinutes(map['endTime'] as int),
       selectedDays: List<bool>.from(map['selectedDays'] as List<bool>),
@@ -66,6 +66,6 @@ class BedtimeInfo {
 
   String toJson() => json.encode(toMap());
 
-  factory BedtimeInfo.fromJson(String source) =>
-      BedtimeInfo.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory BedtimeScheduleInfo.fromJson(String source) =>
+      BedtimeScheduleInfo.fromMap(json.decode(source) as Map<String, dynamic>);
 }
