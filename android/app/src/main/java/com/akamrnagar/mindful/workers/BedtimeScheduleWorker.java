@@ -31,14 +31,24 @@ public class BedtimeScheduleWorker extends Worker {
     private boolean pauseApps = false;
     private boolean[] selectedDays = new boolean[7];
 
-    private AppsTrackerService mAppsTrackerService;
-
 
     private final ServiceConnection mTrackerServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder binder) {
             AppsTrackerService.TrackerServiceBinder serviceBinder = (AppsTrackerService.TrackerServiceBinder) binder;
-            mAppsTrackerService = serviceBinder.getService();
+
+            Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork() : Executing task");
+            Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: state=" + state);
+            Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: toggleDnd=" + toggleDnd);
+            Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: pauseApps=" + pauseApps);
+            Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: selectedDays=" + Arrays.toString(selectedDays));
+
+
+            int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+            DndHelper.setDndMode(mContext, state && selectedDays[day] && toggleDnd);
+            serviceBinder.getService().onBedtimeWorkerExecute(state && pauseApps && selectedDays[day]);
+
+            mContext.unbindService(mTrackerServiceConnection);
         }
 
         @Override
@@ -59,28 +69,8 @@ public class BedtimeScheduleWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork() : Executing task");
-        Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: state=" + state);
-        Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: toggleDnd=" + toggleDnd);
-        Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: pauseApps=" + pauseApps);
-        Log.d(AppConstants.DEBUG_TAG, "BedtimeWorker.doWork: selectedDays=" + Arrays.toString(selectedDays));
-
-        int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-
-        if (state && selectedDays[day]) {
-            if (toggleDnd) DndHelper.setDndMode(mContext, true);
-        } else {
-            DndHelper.setDndMode(mContext, false);
-        }
-
         Intent intent = new Intent(mContext, AppsTrackerService.class);
-        mContext.bindService(intent, mTrackerServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
-
-        if (mAppsTrackerService != null)
-            mAppsTrackerService.onBedtimeWorkerExecute(state && pauseApps && selectedDays[day]);
-
-        mContext.unbindService(mTrackerServiceConnection);
+        mContext.bindService(intent, mTrackerServiceConnection, Context.BIND_WAIVE_PRIORITY);
         return Result.success();
     }
 }

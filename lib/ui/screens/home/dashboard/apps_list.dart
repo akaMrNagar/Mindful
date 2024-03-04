@@ -43,7 +43,7 @@ class _AppsListState extends ConsumerState<AppsList> {
           data: (packages) {
             /// Update indices of tiles based on packages
             WidgetsBinding.instance.addPostFrameCallback(
-              (timeStamp) {
+              (_) {
                 for (var i = 0; i < packages.length; i++) {
                   _prevIndices.update(
                     packages[i],

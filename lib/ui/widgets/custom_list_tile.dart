@@ -14,17 +14,17 @@ class CustomListTile extends StatelessWidget {
     this.margin = const EdgeInsets.only(bottom: 4, right: 6),
   });
 
-  final bool outlined;
+  final bool? outlined;
   final Widget? leading;
   final Widget? title;
   final Widget? subTitle;
   final Widget? trailing;
   final VoidCallback? onPressed;
-  final EdgeInsets margin;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
-    return outlined
+    return outlined ?? true
         ? TertiaryButton(
             onPressed: onPressed,
             margin: margin,
@@ -54,6 +54,45 @@ class CustomListTile extends StatelessWidget {
         const Spacer(),
         trailing ?? 0.hBox(),
       ],
+    );
+  }
+}
+
+class SwitchableListTile extends StatelessWidget {
+  const SwitchableListTile({
+    super.key,
+    required this.value,
+    this.enabled = true,
+    this.onPressed,
+    this.outlined,
+    this.leading,
+    this.title,
+    this.subTitle,
+  });
+
+  final bool value;
+  final bool enabled;
+  final bool? outlined;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subTitle;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomListTile(
+      leading: leading,
+      title: title,
+      subTitle: subTitle,
+      outlined: outlined,
+      onPressed: enabled ? onPressed : null,
+      trailing: IgnorePointer(
+        child: Switch(
+          activeColor: const Color(0xFF0EABE1),
+          value: value,
+          onChanged: enabled ? (_) {} : null,
+        ),
+      ),
     );
   }
 }

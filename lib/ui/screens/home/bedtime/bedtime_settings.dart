@@ -20,7 +20,7 @@ class BedtimeSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final status = !ref
+    final bedtimeEnabled = ref
         .watch(bedtimeScheduleProvider.select((value) => value.bedtimeStatus));
     final pauseApps =
         ref.watch(bedtimeScheduleProvider.select((value) => value.pauseApps));
@@ -34,44 +34,30 @@ class BedtimeSettings extends ConsumerWidget {
         6.vBox(),
 
         /// Schedule Status
-        CustomListTile(
+        SwitchableListTile(
+          value: bedtimeEnabled,
           onPressed: () => _toggleStatus(ref),
           title: const TitleText("Status", weight: FontWeight.normal),
-          subTitle: const SubtitleText(
-            "Enable or disable daily schedule task",
-          ),
-          trailing: Switch(
-            activeColor: const Color(0xFF0EABE1),
-            value: !status,
-            onChanged: (t) => _toggleStatus(ref),
-          ),
+          subTitle: const SubtitleText("Enable or disable daily schedule task"),
         ),
 
         /// Pause Apps
-        CustomListTile(
-          onPressed: status ? () => _togglePauseApps(ref) : null,
+        SwitchableListTile(
+          value: pauseApps,
+          enabled: !bedtimeEnabled,
+          onPressed: () => _togglePauseApps(ref),
           title: const TitleText("Pause Apps", weight: FontWeight.normal),
-          subTitle: const SubtitleText(
-            "Pause apps with timers On",
-          ),
-          trailing: Switch(
-            activeColor: const Color(0xFF0EABE1),
-            value: pauseApps,
-            onChanged: status ? (t) => _togglePauseApps(ref) : null,
-          ),
+          subTitle: const SubtitleText("Pause apps with timers On"),
         ),
 
         /// DND Mode
-        CustomListTile(
-          onPressed: status ? () => _toggleDND(ref) : null,
+        SwitchableListTile(
+          value: dnd,
+          enabled: !bedtimeEnabled,
+          onPressed: () => _toggleDND(ref),
           title: const TitleText("Do Not Disturb", weight: FontWeight.normal),
           subTitle: const SubtitleText(
             "Only calls from starred contacts, \nrepeat callers and alarms can reach you",
-          ),
-          trailing: Switch(
-            activeColor: const Color(0xFF0EABE1),
-            value: dnd,
-            onChanged: status ? (t) => _toggleDND(ref) : null,
           ),
         ),
 

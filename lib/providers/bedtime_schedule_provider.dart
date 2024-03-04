@@ -18,11 +18,11 @@ class BedtimeNotifier extends StateNotifier<BedtimeScheduleInfo> {
     state = state.copyWith(bedtimeStatus: !state.bedtimeStatus);
     LocalStorage.instance.saveBedtimeInfo(state);
 
-    if (state.bedtimeStatus) {
-      MindfulNativePlugin.instance.scheduleBedtimeTask(info: state);
-    } else {
-      MindfulNativePlugin.instance.cancelBedtimeTask();
-    }
+    // if (state.bedtimeStatus) {
+    //   MindfulNativePlugin.instance.scheduleBedtimeTask(info: state);
+    // } else {
+    //   MindfulNativePlugin.instance.cancelBedtimeTask();
+    // }
   }
 
   void setBedtimeStart(TimeOfDay timeOfDay) =>

@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/models/scaffold_tab_item.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
+import 'package:mindful/ui/screens/home/privacy/tab_privacy.dart';
 import 'package:mindful/ui/widgets/default_scaffold.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 
@@ -17,19 +18,19 @@ class Home extends StatelessWidget {
         body: TabDashboard(),
       ),
       ScaffoldTabItem(
-        title: "Quick Focus",
+        title: "Statistics",
         icon: FluentIcons.target_arrow_20_filled,
         body: Container(color: Colors.green),
       ),
       const ScaffoldTabItem(
         title: "Bedtime",
-        icon: FluentIcons.cloud_beaker_20_filled,
+        icon: FluentIcons.sleep_20_filled,
         body: TabBedtime(),
       ),
-      ScaffoldTabItem(
-        title: "Block sites",
+      const ScaffoldTabItem(
+        title: "Privacy",
         icon: FluentIcons.globe_20_filled,
-        body: Container(color: Colors.cyan),
+        body: TabPrivacy(),
       ),
     ]);
   }
