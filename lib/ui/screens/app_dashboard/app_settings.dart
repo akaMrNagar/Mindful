@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/app_focus_infos_provider.dart';
 import 'package:mindful/ui/widgets/buttons.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
@@ -33,7 +33,7 @@ class AppSettings extends StatelessWidget {
               )
             : Consumer(
                 builder: (_, WidgetRef ref, __) {
-                  final timer = ref.watch(focusProvider
+                  final timer = ref.watch(appFocusInfosProvider
                           .select((value) => value[app.packageName]?.timer)) ??
                       0;
 
@@ -53,7 +53,7 @@ class AppSettings extends StatelessWidget {
                         (value) {
                           if (value != timer) {
                             ref
-                                .read(focusProvider.notifier)
+                                .read(appFocusInfosProvider.notifier)
                                 .setAppTimer(app.packageName, value);
                           }
                         },

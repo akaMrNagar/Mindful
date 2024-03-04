@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
-import 'package:mindful/ui/screens/home/bedtime/settings.dart';
+import 'package:mindful/core/services/mindful_native_plugin.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_card.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_settings.dart';
 import 'package:mindful/ui/widgets/custom_text.dart';
 
 class TabBedtime extends StatelessWidget {
@@ -13,17 +14,14 @@ class TabBedtime extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         24.vBox(),
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(
-            "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-          ),
+        const BedtimeCard(),
+        4.vBox(),
+        const SubtitleText(
+          "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
         ),
-        14.vBox(),
-        const ScheduleCard(),
 
         /// Settings
-        18  .vBox(),
+        24.vBox(),
         const BedtimeSettings(),
       ],
     );

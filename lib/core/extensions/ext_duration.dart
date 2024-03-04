@@ -40,7 +40,7 @@ extension ExtDuration on Duration {
     StringBuffer stringBuffer = StringBuffer();
 
     if (inHours > 0) {
-      stringBuffer.write(inHours % 24);
+      stringBuffer.write(inMinutes ~/ 60);
       stringBuffer.write(inHours > 1 ? " hours" : " hour");
     }
 

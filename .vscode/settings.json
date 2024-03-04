@@ -1,0 +1,4 @@
+{
+    "continue.telemetryEnabled": false,
+    "code-runner.enableAppInsights": false
+}

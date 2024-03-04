@@ -1,10 +1,6 @@
 package com.akamrnagar.mindful.utils;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -12,13 +8,10 @@ import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.services.MindfulAppsTrackerService;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -63,26 +56,6 @@ public class Utils {
             Log.e(AppConstants.ERROR_TAG, "Cannot parse app icon: " + e.getMessage());
         }
         return appIcon;
-    }
-
-
-    /**
-     * Checks if a service with the given class name is currently running.
-     *
-     * @param context          The application context.
-     * @param serviceClassName The name of the service class (e.g., MindfulAppsTrackerService.class.getName()).
-     * @return True if the service is running, false otherwise.
-     */
-    public static boolean isServiceRunning(@NonNull Context context, String serviceClassName) {
-        boolean isServiceRunning = false;
-
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceInfo.service.getClassName().equals(serviceClassName)) {
-                return true;
-            }
-        }
-        return isServiceRunning;
     }
 
 

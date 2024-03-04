@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/app_focus_infos_provider.dart';
 
 /// Display [AndroidApp]'s icon if found else custom icon for specified apps.
 class ApplicationIcon extends StatelessWidget {
@@ -31,7 +31,7 @@ class ApplicationIcon extends StatelessWidget {
           borderRadius: BorderRadius.circular(size),
           child: Consumer(
             builder: (_, WidgetRef ref, __) {
-              final timer = ref.watch(focusProvider
+              final timer = ref.watch(appFocusInfosProvider
                       .select((value) => value[app.packageName]?.timer)) ??
                   0;
               final isPurged =

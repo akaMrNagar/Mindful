@@ -36,7 +36,7 @@ class SubtitleText extends StatelessWidget {
       style: TextStyle(
         fontSize: size ?? 12,
         fontWeight: weight,
-        overflow: TextOverflow.fade,
+        overflow: TextOverflow.fade,  
         color: Theme.of(context).hintColor,
         // color: Colors.red.shade100,
       ),

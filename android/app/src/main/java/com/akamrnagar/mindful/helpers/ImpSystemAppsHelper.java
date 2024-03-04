@@ -34,7 +34,7 @@ public class ImpSystemAppsHelper {
      */
     public static void init(@NonNull Context context, @Nullable PackageManager packageManager) {
         impSystemApps = new HashSet<>();
-        impSystemApps.add(AppConstants.MY_APP_PACKAGE);
+        impSystemApps.add(AppConstants.MINDFUL_APP_PACKAGE);
 
         if (packageManager == null) {
             packageManager = context.getPackageManager();

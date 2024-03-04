@@ -60,6 +60,7 @@ class AppDashboard extends ConsumerWidget {
                             size: 14,
                           ),
                         ),
+                        SubtitleText(app.packageName),
                         const SizedBox(height: 24),
 
                         SegmentedIconButton(

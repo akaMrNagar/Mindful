@@ -94,12 +94,12 @@ public class ScreenUsageHelper {
                 if (!onlyForApps.contains(currentEvent.getPackageName())) continue;
 
                 if (prevOpenEvent != null) {
-                    /// This block will run for the apps which have ACTIVITY_RESUMED event after 12 midnight
+                    /// This block will run for the apps which have ACTIVITY_RESUMED event AFTER 12 midnight
                     long diff = (currentEvent.getTimeStamp() - prevOpenEvent.getTimeStamp());
                     long previousTime = getOrDefault(usageTodayMap, prevOpenEvent.getPackageName(), 0L);
                     usageTodayMap.put(prevOpenEvent.getPackageName(), previousTime + diff);
                 } else {
-                    /// This block will run for the apps which have ACTIVITY_RESUMED event before 12 midnight
+                    /// This block will run for the apps which have ACTIVITY_RESUMED event BEFORE 12 midnight
                     long diff = (currentEvent.getTimeStamp() - start);
                     long previousTime = getOrDefault(usageTodayMap, currentEvent.getPackageName(), 0L);
                     usageTodayMap.put(currentEvent.getPackageName(), previousTime + diff);
@@ -107,6 +107,7 @@ public class ScreenUsageHelper {
             }
         }
 
+        /// Include time from last event till now if the app is currently running
         if (lastEvent != null && prevOpenEvent != null && Objects.equals(lastEvent.getPackageName(), prevOpenEvent.getPackageName())) {
             long lastOpenedAppTime = getOrDefault(usageTodayMap, prevOpenEvent.getPackageName(), 0L);
             lastOpenedAppTime += (System.currentTimeMillis() - prevOpenEvent.getTimeStamp());
@@ -129,18 +130,18 @@ public class ScreenUsageHelper {
      */
     public static String getLastActiveApp(@NonNull UsageStatsManager usageStatsManager, long intervalSec) {
         UsageEvents usageEvents = usageStatsManager.queryEvents(System.currentTimeMillis() - (intervalSec * 1000), System.currentTimeMillis());
-        UsageEvents.Event lastEvent = null;
+        UsageEvents.Event currentEvent = new UsageEvents.Event();
+        String lastEventPackageName = "";
 
         while (usageEvents.hasNextEvent()) {
-            UsageEvents.Event currentEvent = new UsageEvents.Event();
             usageEvents.getNextEvent(currentEvent);
 
             if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                lastEvent = currentEvent;
+                lastEventPackageName = currentEvent.getPackageName();
             }
         }
 
-        return lastEvent == null ? "" : lastEvent.getPackageName();
+        return lastEventPackageName;
     }
 
     /**

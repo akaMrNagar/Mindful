@@ -6,14 +6,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class AsyncThread {
-    private final ThreadPoolExecutor threadPoolExecutor;
+    private final ThreadPoolExecutor mthreadPoolExecutor;
 
     public AsyncThread() {
         BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>();
-        this.threadPoolExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue);
+        this.mthreadPoolExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue);
     }
 
     public void run(Runnable runnable) {
-        threadPoolExecutor.execute(runnable);
+        mthreadPoolExecutor.execute(runnable);
     }
 }
