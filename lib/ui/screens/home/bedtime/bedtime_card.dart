@@ -106,18 +106,20 @@ class _SelectedTime extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final status =
-    //     ref.watch(bedtimeProvider.select((value) => value.bedtimeStatus));
+    final bedtimeEnabled = ref
+        .watch(bedtimeScheduleProvider.select((value) => value.bedtimeStatus));
 
     return SecondaryButton(
-      onPressed: () {
-        showTimePicker(
-          context: context,
-          initialTime: initialTime,
-        ).then((value) {
-          onChange(value ?? initialTime);
-        });
-      },
+      onPressed: bedtimeEnabled
+          ? null
+          : () {
+              showTimePicker(
+                context: context,
+                initialTime: initialTime,
+              ).then((value) {
+                onChange(value ?? initialTime);
+              });
+            },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,

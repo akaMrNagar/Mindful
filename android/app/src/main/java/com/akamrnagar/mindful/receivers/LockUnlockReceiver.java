@@ -73,6 +73,8 @@ public class LockUnlockReceiver extends BroadcastReceiver {
         appsTimerMap = new LocalStorageHelper(mContext).loadAppTimers();
         if (appsTimerMap.isEmpty()) ServicesHelper.stopTrackingService(mContext);
 
+        if (!mIsBedtime) purgedApps.clear();
+
         if (!mIsTrackingOn) onDeviceUnlocked();
         else usageTrackerTimerTask();
 

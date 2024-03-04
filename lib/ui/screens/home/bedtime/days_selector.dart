@@ -22,11 +22,11 @@ class DaysSelector extends ConsumerWidget {
         7,
         (index) => selectedDays[index]
             ? IconButton.outlined(
-                onPressed: status ? () => _toggleDays(ref, index) : null,
+                onPressed: status ? null : () => _toggleDays(ref, index),
                 icon: Text(AppStrings.daysShort[index]),
               )
             : IconButton(
-                onPressed: status ? () => _toggleDays(ref, index) : null,
+                onPressed: status ? null : () => _toggleDays(ref, index),
                 icon: Text(AppStrings.daysShort[index]),
               ),
       ).toList(),

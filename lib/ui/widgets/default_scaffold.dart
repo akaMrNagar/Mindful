@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mindful/models/scaffold_tab_item.dart';
 import 'package:mindful/models/vert_nav_bar_item.dart';
 import 'package:mindful/ui/widgets/vert_nav_bar.dart';

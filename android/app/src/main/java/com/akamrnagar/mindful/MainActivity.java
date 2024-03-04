@@ -44,6 +44,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     protected void onStart() {
         super.onStart();
         NotificationHelper.registerNotificationChannels(this);
+        refreshAppTimers();
     }
 
     @Override
