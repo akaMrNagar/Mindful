@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/apps_provider.dart';
+// import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/protection_provider.dart';
-import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
-import 'package:mindful/ui/widgets/async_error_indicator.dart';
-import 'package:mindful/ui/widgets/async_loading_indicator.dart';
-import 'package:mindful/ui/widgets/custom_list_tile.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/ui/common/components/switchable_list_tile.dart';
+import 'package:mindful/ui/common/custom_text.dart';
 
 class BlockInternet extends ConsumerWidget {
   const BlockInternet({super.key});
@@ -19,9 +16,9 @@ class BlockInternet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final blockApps =
         ref.watch(protectionProvider.select((value) => value.blockApps));
-    final appsMap = ref.watch(appsProvider);
+    // final appsMap = ref.watch(appsProvider);
 
-    print("building whole");
+    // print("building whole");
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,13 +29,6 @@ class BlockInternet extends ConsumerWidget {
           onPressed: () => _toggleBlockApps(ref),
           title: const TitleText("Status", weight: FontWeight.normal),
           subTitle: const SubtitleText("Enable or disable vpn"),
-        ),
-
-        SwitchListTile(
-          title: const TitleText("Status", weight: FontWeight.normal),
-          subtitle: const SubtitleText("Enable or disable vpn"),
-          value: blockApps,
-          onChanged: (_) => _toggleBlockApps(ref),
         ),
 
         /// Info

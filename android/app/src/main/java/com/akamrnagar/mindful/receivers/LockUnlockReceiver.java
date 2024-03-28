@@ -28,7 +28,6 @@ import java.util.TimerTask;
 
 public class LockUnlockReceiver extends BroadcastReceiver {
 
-
     private final Context mContext;
     private final UsageStatsManager usageStatsManager;
     private Timer launchTrackerTimer = new Timer();
@@ -47,7 +46,7 @@ public class LockUnlockReceiver extends BroadcastReceiver {
     private HashSet<String> purgedApps = new HashSet<>(1);
 
     private boolean mIsTrackingOn = false;
-    private boolean mIsBedtime = false;
+    private boolean mIsLockdown = false;
     int counter = 0;
 
 
@@ -73,7 +72,9 @@ public class LockUnlockReceiver extends BroadcastReceiver {
         appsTimerMap = new LocalStorageHelper(mContext).loadAppTimers();
         if (appsTimerMap.isEmpty()) ServicesHelper.stopTrackingService(mContext);
 
-        if (!mIsBedtime) purgedApps.clear();
+
+        // Clear purged list only if not in lockdown mode
+        if (!mIsLockdown) purgedApps.clear();
 
         if (!mIsTrackingOn) onDeviceUnlocked();
         else usageTrackerTimerTask();
@@ -81,16 +82,24 @@ public class LockUnlockReceiver extends BroadcastReceiver {
         Log.d(AppConstants.DEBUG_TAG, "refreshAppTimers: " + appsTimerMap.toString());
     }
 
-    public void changeBedtimeState(boolean state) {
-        if (state) {
-            mIsBedtime = true;
+    public void updateBedtimeLockdownState(boolean isOn) {
+        mIsLockdown = isOn;
+        if (isOn) {
             purgedApps.addAll(appsTimerMap.keySet());
         } else {
-            mIsBedtime = false;
+            // Refresh purged apps list by fetching fresh app usage stats
             purgedApps.clear();
             usageTrackerTimerTask();
         }
-        Log.d(AppConstants.DEBUG_TAG, "LockUnlockReceiver.onBedtimeStateChange(): called in service with state : " + state);
+        Log.d(AppConstants.DEBUG_TAG, "LockUnlockReceiver.onBedtimeStateChange(): called in service with state : " + isOn);
+    }
+
+    public void midnightReset() {
+        // If not in lockdown mode, refresh purged apps list by fetching fresh app usage stats
+        if (!mIsLockdown) {
+            purgedApps.clear();
+            usageTrackerTimerTask();
+        }
     }
 
 
@@ -160,7 +169,7 @@ public class LockUnlockReceiver extends BroadcastReceiver {
      * when their screen time exceeds the daily timer. It also takes care if the app is running now.
      */
     private void usageTrackerTimerTask() {
-        if (appsTimerMap.isEmpty() || mIsBedtime) return;
+        if (appsTimerMap.isEmpty() || mIsLockdown) return;
         Log.d(AppConstants.DEBUG_TAG, "...................................................... refreshing purged apps list");
 
         /// Map of package and their screen time in seconds

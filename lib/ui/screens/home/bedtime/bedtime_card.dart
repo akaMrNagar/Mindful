@@ -4,25 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_schedule_provider.dart';
+import 'package:mindful/ui/common/components/rounded_container.dart';
 import 'package:mindful/ui/screens/home/bedtime/days_selector.dart';
-import 'package:mindful/ui/widgets/buttons.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/ui/common/buttons.dart';
+import 'package:mindful/ui/common/custom_text.dart';
 
 class BedtimeCard extends StatelessWidget {
   const BedtimeCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return RoundedContainer(
       height: 200,
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 4, right: 6),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        // color: Colors.blueGrey,
-        borderRadius: BorderRadius.circular(12),
-      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -75,7 +71,6 @@ class BedtimeCard extends StatelessWidget {
                   );
                 },
               ),
-              // SubtitleText(10552.minutes.toTimeFull()),
               12.hBox(),
               Expanded(
                 child: Divider(
@@ -89,7 +84,7 @@ class BedtimeCard extends StatelessWidget {
           const DaysSelector(),
         ],
       ),
-    );
+    ).toSliverBox();
   }
 }
 

@@ -5,7 +5,7 @@ import 'package:mindful/models/vert_nav_bar_item.dart';
 import 'package:mindful/providers/mindful_theme_provider.dart';
 
 class VertNavBar extends StatefulWidget {
-  const VertNavBar({
+  const   VertNavBar({
     super.key,
     required this.tabItems,
     required this.onPressed,

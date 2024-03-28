@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/sorted_apps_provider.dart';
 import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
-import 'package:mindful/ui/widgets/async_error_indicator.dart';
-import 'package:mindful/ui/widgets/async_loading_indicator.dart';
-import 'package:mindful/ui/widgets/buttons.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/ui/common/async_error_indicator.dart';
+import 'package:mindful/ui/common/async_loading_indicator.dart';
+import 'package:mindful/ui/common/buttons.dart';
+import 'package:mindful/ui/common/custom_text.dart';
 
 class AppsList extends ConsumerStatefulWidget {
   const AppsList({
@@ -87,7 +88,7 @@ class _AppsListState extends ConsumerState<AppsList> {
                             : [],
                         child: ApplicationTile(
                           app: app,
-                          isDataTile: !widget.sortByTime,
+                          usageType: UsageType.screenUsage,
                           day: widget.selectedDay,
                         ),
                       );

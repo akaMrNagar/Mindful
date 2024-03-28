@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/models/scaffold_tab_item.dart';
 import 'package:mindful/models/vert_nav_bar_item.dart';
-import 'package:mindful/ui/widgets/vert_nav_bar.dart';
+import 'package:mindful/ui/common/vert_nav_bar.dart';
 
 class DefaultScaffold extends StatefulWidget {
   const DefaultScaffold({
@@ -24,9 +24,10 @@ class _DefaultScaffoldState extends State<DefaultScaffold>
   @override
   void initState() {
     controller = TabController(
-        length: widget.tabs.length,
-        vsync: this,
-        animationDuration: const Duration(milliseconds: 200));
+      length: widget.tabs.length,
+      vsync: this,
+      animationDuration: const Duration(milliseconds: 250),
+    );
     super.initState();
   }
 
@@ -67,6 +68,7 @@ class _DefaultScaffoldState extends State<DefaultScaffold>
               quarterTurns: 1,
               child: TabBarView(
                 controller: controller,
+                
                 physics: const NeverScrollableScrollPhysics(),
                 children: widget.tabs
                     .map(

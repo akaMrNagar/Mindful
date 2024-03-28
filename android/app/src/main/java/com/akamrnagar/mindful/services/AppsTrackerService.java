@@ -66,12 +66,12 @@ public class AppsTrackerService extends Service {
         if (mLockUnlockReceiver != null) mLockUnlockReceiver.refreshAppTimers();
     }
 
-//    public void checkToStopService() {
-//        if (mLockUnlockReceiver != null) mLockUnlockReceiver.checkToStopService();
-//    }
+    public void updateBedtimeState(boolean state) {
+        if (mLockUnlockReceiver != null) mLockUnlockReceiver.updateBedtimeLockdownState(state);
+    }
 
-    public void onBedtimeWorkerExecute(boolean state) {
-        if (mLockUnlockReceiver != null) mLockUnlockReceiver.changeBedtimeState(state);
+    public void midnightReset() {
+        if (mLockUnlockReceiver != null) mLockUnlockReceiver.midnightReset();
     }
 
     public class TrackerServiceBinder extends Binder {

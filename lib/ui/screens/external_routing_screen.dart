@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/mindful_native_plugin.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard.dart';
-import 'package:mindful/ui/screens/home/home.dart';
+import 'package:mindful/ui/screens/home/home_screen.dart';
 
-import 'package:mindful/ui/widgets/async_error_indicator.dart';
-import 'package:mindful/ui/widgets/async_loading_indicator.dart';
+import 'package:mindful/ui/common/async_error_indicator.dart';
+import 'package:mindful/ui/common/async_loading_indicator.dart';
 
 /// This screen is responsible for forwarding the user to [AppDashboard]
 /// when the user clicks on the setting button of the TLE dialog.
@@ -23,7 +23,7 @@ class ExternalRoutingScreen extends ConsumerWidget {
             if (target.isNotEmpty && appsMap.containsKey(target)) {
               return AppDashboard(app: appsMap[target]!);
             }
-            return const Home();
+            return const HomeScreen();
           },
         );
   }

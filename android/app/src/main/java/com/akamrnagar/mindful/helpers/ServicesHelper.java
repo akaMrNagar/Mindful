@@ -1,11 +1,8 @@
 package com.akamrnagar.mindful.helpers;
 
 import android.app.ActivityManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 
 import androidx.annotation.NonNull;
 
@@ -13,22 +10,6 @@ import com.akamrnagar.mindful.services.AppsTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 
 public class ServicesHelper {
-
-    private AppsTrackerService mTrackerService;
-    private boolean mIsBound = false;
-    private final ServiceConnection mTrackerServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-            AppsTrackerService.TrackerServiceBinder serviceBinder = (AppsTrackerService.TrackerServiceBinder) binder;
-            mTrackerService = serviceBinder.getService();
-            mIsBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mIsBound = false;
-        }
-    };
 
     public static void startTrackingService(Context context) {
         if (!isServiceRunning(context, AppsTrackerService.class.getName())) {

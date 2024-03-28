@@ -11,14 +11,14 @@ class MindfulApp extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-        colorScheme: const ColorScheme.dark(primary: Colors.white),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         cardColor: const Color(0xFF1D2327),
         scaffoldBackgroundColor: const Color(0xFF12181C),
       ),
       theme: ThemeData.light(useMaterial3: true).copyWith(
-        colorScheme: const ColorScheme.light(primary: Colors.black),
-        cardColor: const Color(0xFFD8DEE2),
-        scaffoldBackgroundColor: const Color(0xFFE3E9ED),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        // cardColor: const Color(0xFFD8DEE2),
+        // scaffoldBackgroundColor: const Color(0xFFE3E9ED),
       ),
       themeMode: ref.watch(mindfulThemeProvider),
       initialRoute: AppRoutes.homeScreen,

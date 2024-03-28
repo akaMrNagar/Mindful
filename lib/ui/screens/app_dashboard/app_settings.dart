@@ -6,10 +6,10 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/app_focus_infos_provider.dart';
-import 'package:mindful/ui/widgets/buttons.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/ui/common/buttons.dart';
+import 'package:mindful/ui/common/custom_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
-import 'package:mindful/ui/widgets/widgets_revealer.dart';
+import 'package:mindful/ui/common/widgets_revealer.dart';
 
 /// Displays available settings for the app in [AppDashboard]
 class AppSettings extends StatelessWidget {

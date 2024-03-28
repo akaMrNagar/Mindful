@@ -3,27 +3,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/app_focus_infos_provider.dart';
+import 'package:mindful/ui/common/components/rounded_list_tile.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard.dart';
-import 'package:mindful/ui/widgets/application_icon.dart';
-import 'package:mindful/ui/widgets/custom_list_tile.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/ui/common/components/application_icon.dart';
+import 'package:mindful/ui/common/custom_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
-/// List tile used for displaying app usage info based on the bool [isDataTile]
+/// List tile used for displaying app usage info based on the bool [usageType]
 class ApplicationTile extends ConsumerWidget {
   const ApplicationTile({
     super.key,
     required this.app,
-    required this.isDataTile,
+    required this.usageType,
     required this.day,
   });
 
   final AndroidApp app;
-  final bool isDataTile;
+  final UsageType usageType;
   final int day;
 
   @override
@@ -32,8 +33,9 @@ class ApplicationTile extends ConsumerWidget {
             .select((value) => value[app.packageName]?.timer)) ??
         0;
 
-    return CustomListTile(
-      margin: const EdgeInsets.only(bottom: 4, right: 6),
+    return RoundedListTile(
+      color: Colors.transparent,
+      borderColor: Theme.of(context).hoverColor,
       onPressed: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
@@ -41,6 +43,8 @@ class ApplicationTile extends ConsumerWidget {
           ),
         );
       },
+
+      /// App icon
       leading: ApplicationIcon(app: app),
 
       /// App Name
@@ -48,14 +52,14 @@ class ApplicationTile extends ConsumerWidget {
 
       /// App's Screen Time OR Data Usage
       subTitle: SubtitleText(
-        isDataTile
+        usageType == UsageType.networkUsage
             ? app.networkUsageThisWeek[day].toData()
             : app.screenTimeThisWeek[day].seconds.toTimeFull(),
         size: 14,
       ),
 
       /// Timer picker button
-      trailing: (!isDataTile && !app.isImpSysApp)
+      trailing: (usageType == UsageType.screenUsage && !app.isImpSysApp)
           ? IconButton(
               icon: timer > 0
                   ? TitleText(timer.seconds.toTimeShort(), size: 12)

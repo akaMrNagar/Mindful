@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.flutter.plugin.common.MethodCall;
 
-public class WorkersHelper {
+public class WorkerTasksHelper {
 
     public static void cancelBedtimeTask(Context context) {
         WorkManager.getInstance(context).cancelAllWorkByTag(BEDTIME_WORKER_TAG);

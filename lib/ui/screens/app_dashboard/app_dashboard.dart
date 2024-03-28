@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/constants.dart';
@@ -9,13 +10,13 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/models/scaffold_tab_item.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_settings.dart';
-import 'package:mindful/ui/widgets/application_icon.dart';
-import 'package:mindful/ui/widgets/base_bar_chart.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
-import 'package:mindful/ui/widgets/default_scaffold.dart';
-import 'package:mindful/ui/widgets/segmented_icon_buttons.dart';
-import 'package:mindful/ui/widgets/usage_info_cards.dart';
-import 'package:mindful/ui/widgets/widgets_revealer.dart';
+import 'package:mindful/ui/common/components/application_icon.dart';
+import 'package:mindful/ui/common/base_bar_chart.dart';
+import 'package:mindful/ui/common/custom_text.dart';
+import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/components/segmented_icon_buttons.dart';
+import 'package:mindful/ui/common/usage_info_cards.dart';
+import 'package:mindful/ui/common/widgets_revealer.dart';
 
 final _selectedDayOfWeekProvider = StateProvider<int>((ref) => dayOfWeek);
 final _filterByScreenProvider = StateProvider<bool>((ref) => true);
@@ -79,7 +80,7 @@ class AppDashboard extends ConsumerWidget {
                         SizedBox(
                           height: 208,
                           child: BaseBarChart(
-                            isTimeChart: filterByScreen,
+                            usageType: UsageType.screenUsage,
                             selectedBar: selectedDayBar,
                             intervalBuilder: (max) => max * 0.275,
                             onBarTap: (barIndex) => ref
@@ -98,10 +99,9 @@ class AppDashboard extends ConsumerWidget {
                                 info: app
                                     .screenTimeThisWeek[selectedDayBar].seconds
                                     .toTimeFull(),
-                                iconData:
-                                    FluentIcons.phone_screen_time_20_regular,
+                                icon: FluentIcons.phone_screen_time_20_regular,
                               )
-                            : DataUsageInfoCard(
+                            : NetworkUsageInfoCard(
                                 mobile: app.mobileUsageThisWeek[selectedDayBar],
                                 wifi: app.wifiUsageThisWeek[selectedDayBar],
                               ),

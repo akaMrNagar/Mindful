@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
-import com.akamrnagar.mindful.helpers.WorkersHelper;
+import com.akamrnagar.mindful.helpers.WorkerTasksHelper;
 import com.akamrnagar.mindful.services.AppsTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
@@ -100,24 +100,17 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
             case "scheduleBedtimeTask":
-                WorkersHelper.scheduleBedtimeTask(this, call);
+                WorkerTasksHelper.scheduleBedtimeTask(this, call);
                 result.success(true);
                 break;
             case "cancelBedtimeTask":
-                WorkersHelper.cancelBedtimeTask(this);
+                WorkerTasksHelper.cancelBedtimeTask(this);
                 result.success(true);
                 break;
             default:
                 result.notImplemented();
         }
 
-    }
-
-    @Override
-    protected void onActivityResult(int request, int result, Intent data) {
-        if (result == Activity.RESULT_OK && request == MindfulVpnService.SERVICE_ID) {
-            ServicesHelper.startVpnService(this);
-        }
     }
 
     private void refreshAppTimers() {
@@ -139,4 +132,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             onActivityResult(MindfulVpnService.SERVICE_ID, Activity.RESULT_OK, null);
         }
     }
+
+    @Override
+    protected void onActivityResult(int request, int result, Intent data) {
+        if (result == Activity.RESULT_OK && request == MindfulVpnService.SERVICE_ID) {
+            ServicesHelper.startVpnService(this);
+        }
+    }
+
+
 }

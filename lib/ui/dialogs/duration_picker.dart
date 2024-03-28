@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/widgets/interactive_card.dart';
+import 'package:mindful/ui/common/components/rounded_container.dart';
 
 /// Returns duration in seconds and take initial time as duration in seconds
 Future<int> showDurationPicker({
@@ -38,7 +38,7 @@ class _DurationPicker extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         surfaceTintColor: Colors.white,
-        child: InteractiveCard(
+        child: RoundedContainer(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           circularRadius: 32,
           child: Column(

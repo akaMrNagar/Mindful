@@ -1,7 +1,7 @@
 package com.akamrnagar.mindful.utils;
 
 public class AppConstants {
-    public static final String MINDFUL_APP_PACKAGE = "com.akamrnagar.mindful";
+    public static final String MY_APP_PACKAGE = "com.akamrnagar.mindful";
     public static final String ERROR_TAG = "[MINDFUL NATIVE ERROR]";
     public static final String DEBUG_TAG = "[MINDFUL NATIVE LOG]";
     public static final String METHOD_CHANNEL = "com.akamrnagar.mindful";

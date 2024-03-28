@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/mindful_native_plugin.dart';
 import 'package:mindful/providers/bedtime_schedule_provider.dart';
-import 'package:mindful/ui/widgets/custom_list_tile.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/ui/common/components/switchable_list_tile.dart';
+import 'package:mindful/ui/common/custom_text.dart';
 
 class BedtimeSettings extends ConsumerWidget {
   const BedtimeSettings({super.key});
@@ -30,9 +29,6 @@ class BedtimeSettings extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const TitleText("Settings", size: 14),
-        6.vBox(),
-
         /// Schedule Status
         SwitchableListTile(
           value: bedtimeEnabled,

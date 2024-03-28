@@ -46,7 +46,7 @@ public class BedtimeScheduleWorker extends Worker {
 
             int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
             DndHelper.setDndMode(mContext, state && selectedDays[day] && toggleDnd);
-            serviceBinder.getService().onBedtimeWorkerExecute(state && pauseApps && selectedDays[day]);
+            serviceBinder.getService().updateBedtimeState(state && pauseApps && selectedDays[day]);
 
             mContext.unbindService(mTrackerServiceConnection);
         }

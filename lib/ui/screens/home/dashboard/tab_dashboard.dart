@@ -2,16 +2,26 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
-import 'package:mindful/providers/selected_day_provider.dart';
 import 'package:mindful/providers/sorted_apps_provider.dart';
-import 'package:mindful/ui/screens/home/dashboard/apps_list.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
-import 'package:mindful/ui/widgets/segmented_icon_buttons.dart';
-import 'package:mindful/ui/widgets/base_bar_chart.dart';
-import 'package:mindful/ui/widgets/usage_info_cards.dart';
+import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/flexible_appbar.dart';
+import 'package:mindful/ui/screens/home/dashboard/animated_apps_list.dart';
+import 'package:mindful/ui/common/components/segmented_icon_buttons.dart';
+import 'package:mindful/ui/common/base_bar_chart.dart';
+import 'package:mindful/ui/common/usage_info_cards.dart';
+
+/// Provides usage type for toggling between usages charts
+final _selectedUsageTypeProvider =
+    StateProvider<UsageType>((ref) => UsageType.screenUsage);
+
+/// Provides int which is the selected day of week on bar chart
+final _selectedDayOfWeekProvider = StateProvider<int>((ref) => dayOfWeek);
 
 class TabDashboard extends ConsumerWidget {
   const TabDashboard({super.key});
@@ -19,81 +29,110 @@ class TabDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     debugPrint("Refreshhed");
-    final selectedDayBar = ref.watch(selectedDayProvider);
-    final sortByTime = ref.watch(sortByTimeProvider);
     final aggregatedUsage = ref.watch(aggregatedUsageProvider);
+    final dayOfWeek = ref.watch(_selectedDayOfWeekProvider);
+    final usageType = ref.watch(_selectedUsageTypeProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        /// Padded content
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              /// Date
-              SubtitleText(selectedDayBar.toDateDiffToday(), size: 14),
-              const SizedBox(height: 24),
-              SegmentedIconButton(
-                selected: sortByTime ? 0 : 1,
-                segments: const [
-                  FluentIcons.phone_screen_time_20_regular,
-                  FluentIcons.earth_20_regular,
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, right: 12),
+      child: CustomScrollView(
+        slivers: [
+          /// Appbar
+          const FlexibleAppBar(title: "Dashboard"),
+
+          /// Usage type selector and usage info card
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: PersistentHeader(
+              maxHeight: 120,
+              minHeight: 120,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /// Usage type selector
+                  SegmentedIconButton(
+                    selected: usageType.index,
+                    segments: const [
+                      FluentIcons.phone_screen_time_20_regular,
+                      FluentIcons.earth_20_regular,
+                    ],
+                    onChange: (value) => ref
+                        .read(sortByTimeProvider.notifier)
+                        .update((state) => value == 0),
+                  ),
+                  const SizedBox(height: 8),
+
+                  /// Usage info cards
+                  usageType == UsageType.screenUsage
+                      ? UsageInfoCard(
+                          label: "Screen time",
+                          icon: FluentIcons.phone_20_regular,
+                          info: aggregatedUsage
+                              .screenTimeThisWeek[dayOfWeek].seconds
+                              .toTimeFull(),
+                        )
+                      : NetworkUsageInfoCard(
+                          mobile:
+                              aggregatedUsage.mobileUsageThisWeek[dayOfWeek],
+                          wifi: aggregatedUsage.wifiUsageThisWeek[dayOfWeek],
+                        ),
                 ],
-                onChange: (value) => ref
-                    .read(sortByTimeProvider.notifier)
-                    .update((state) => value == 0),
               ),
-              const SizedBox(height: 48),
-
-              /// Usage Bar Chart
-              SizedBox(
-                height: 232,
-                child: BaseBarChart(
-                  isTimeChart: sortByTime,
-                  selectedBar: selectedDayBar,
-                  intervalBuilder: (max) => max * 0.275,
-                  onBarTap: (barIndex) => ref
-                      .read(selectedDayProvider.notifier)
-                      .update((state) => barIndex),
-                  data: sortByTime
-                      ? aggregatedUsage.screenTimeThisWeek
-                      : aggregatedUsage.networkUsageThisWeek,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              sortByTime
-                  ? UsageInfoCard(
-                      label: "Screen time",
-                      info: aggregatedUsage
-                          .screenTimeThisWeek[selectedDayBar].seconds
-                          .toTimeFull(),
-                      iconData: FluentIcons.phone_screen_time_20_regular,
-                    )
-                  : DataUsageInfoCard(
-                      mobile:
-                          aggregatedUsage.mobileUsageThisWeek[selectedDayBar],
-                      wifi: aggregatedUsage.wifiUsageThisWeek[selectedDayBar],
-                    ),
-            ],
+            ),
           ),
-        ),
 
-        const SizedBox(height: 24),
-        Text(
-          "Most used apps",
-          style: Theme.of(context).textTheme.labelLarge,
-        ),
-        const SizedBox(height: 12),
+          20.vSliverBox(),
 
-        /// Apps list
-        AppsList(selectedDay: selectedDayBar, sortByTime: sortByTime),
+          /// Usage bar chart and selected day changer
+          Column(
+            children: [
+              /// Usage bar chart
+              BaseBarChart(
+                height: 256,
+                usageType: usageType,
+                selectedBar: dayOfWeek,
+                intervalBuilder: (max) => max * 0.275,
+                onBarTap: (barIndex) => ref
+                    .read(_selectedDayOfWeekProvider.notifier)
+                    .update((state) => barIndex),
+                data: usageType == UsageType.screenUsage
+                    ? aggregatedUsage.screenTimeThisWeek
+                    : aggregatedUsage.networkUsageThisWeek,
+              ),
 
-        const SizedBox(height: 20),
-      ],
+              12.vBox(),
+
+              /// Selected day changer
+              Container(
+                height: 48,
+                color: Theme.of(context).cardColor.withOpacity(.3),
+              ),
+            ],
+          ).toSliverBox(),
+
+          /// Most used apps text
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: PersistentHeader(
+              minHeight: 32,
+              maxHeight: 56,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Most used apps",
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+            ),
+          ),
+
+          /// Apps list
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 48),
+            sliver: AnimatedAppsList(
+              usageType: usageType,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
