@@ -54,7 +54,7 @@ class BaseBarChart extends StatelessWidget {
                 x: index,
                 barRods: [
                   BarChartRodData(
-                    width: 20,
+                    width: 24,
                     toY: data[index].toDouble(),
                     gradient: LinearGradient(
                       colors: isSelected ? selectedGrad : unselectedGrad,

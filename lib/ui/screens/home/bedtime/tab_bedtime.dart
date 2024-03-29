@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/ui/common/flexible_appbar.dart';
-import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/components/flexible_appbar.dart';
+import 'package:mindful/ui/common/components/persistent_header.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_card.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_settings.dart';
 import 'package:mindful/ui/common/custom_text.dart';

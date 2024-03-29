@@ -29,7 +29,7 @@ class SwitchableListTile extends StatelessWidget {
       leading: leading,
       title: title,
       subTitle: subTitle,
-      outlined: outlined,
+      applyBorder: outlined,
       onPressed: enabled ? onPressed : null,
       trailing: IgnorePointer(
         child: Switch(

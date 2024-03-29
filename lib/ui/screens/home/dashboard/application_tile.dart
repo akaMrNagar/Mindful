@@ -6,10 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/app_focus_infos_provider.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/components/rounded_list_tile.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_dashboard.dart';
+import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/common/components/application_icon.dart';
 import 'package:mindful/ui/common/custom_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
@@ -18,19 +18,26 @@ import 'package:mindful/ui/dialogs/duration_picker.dart';
 class ApplicationTile extends ConsumerWidget {
   const ApplicationTile({
     super.key,
-    required this.app,
+    required this.appPackage,
     required this.usageType,
     required this.day,
   });
 
-  final AndroidApp app;
+  final String appPackage;
   final UsageType usageType;
   final int day;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    /// Read the app package entry
+    final app = ref.read(appsProvider).value?[appPackage];
+
+    /// Return sizebox if app is null which will always be false
+    if (app == null) return const SizedBox();
+
+    /// Watch timer for the package
     final timer = ref.watch(appFocusInfosProvider
-            .select((value) => value[app.packageName]?.timer)) ??
+            .select((value) => value[appPackage]?.timer)) ??
         0;
 
     return RoundedListTile(
@@ -39,7 +46,7 @@ class ApplicationTile extends ConsumerWidget {
       onPressed: () {
         Navigator.of(context).push(
           CupertinoPageRoute(
-            builder: (context) => AppDashboard(app: app),
+            builder: (context) => AppDashboardScreen(app: app),
           ),
         );
       },

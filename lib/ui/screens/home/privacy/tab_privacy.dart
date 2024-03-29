@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/ui/common/flexible_appbar.dart';
+import 'package:mindful/ui/common/components/flexible_appbar.dart';
 import 'package:mindful/ui/screens/home/privacy/block_internet.dart';
 import 'package:mindful/ui/screens/home/privacy/block_websites.dart';
 import 'package:mindful/ui/common/components/segmented_icon_buttons.dart';

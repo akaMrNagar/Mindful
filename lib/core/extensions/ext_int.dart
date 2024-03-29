@@ -9,7 +9,7 @@ extension ExtInt on int {
   double get inHours => this / 3600;
 
   String toDateDiffToday() {
-    ///TODO: bug in date
+    ///FIXME: bug in date
     if (toInt() == now.weekday) {
       return "Today";
     } else if (toInt() == now.weekday - 1) {

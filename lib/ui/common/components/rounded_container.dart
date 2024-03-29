@@ -10,6 +10,7 @@ class RoundedContainer extends StatelessWidget {
     this.child,
     this.borderRadius,
     this.onPressed,
+    this.elevation = 0,
     this.applyBorder = false,
     this.circularRadius = 12,
     this.margin = EdgeInsets.zero,
@@ -22,6 +23,7 @@ class RoundedContainer extends StatelessWidget {
   final Color? borderColor;
   final BorderRadius? borderRadius;
   final bool applyBorder;
+  final double elevation;
   final double circularRadius;
   final EdgeInsets margin;
   final EdgeInsets padding;
@@ -30,32 +32,52 @@ class RoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      margin: margin,
-      padding: onPressed == null ? padding : null,
-      decoration: BoxDecoration(
-        color: color ?? Theme.of(context).cardColor,
-        borderRadius: borderRadius ?? BorderRadius.circular(circularRadius),
-        border: applyBorder
-            ? Border.all(
-                color: borderColor ?? Theme.of(context).focusColor,
-                strokeAlign: BorderSide.strokeAlignInside,
-              )
-            : null,
-      ),
-      child: onPressed == null
-          ? child
-          : InkWell(
-              onTap: onPressed,
-              borderRadius:
-                  borderRadius ?? BorderRadius.circular(circularRadius),
-              child: Padding(
-                padding: padding,
-                child: child,
+    final bgColor = color ?? Theme.of(context).cardColor;
+    final radius = borderRadius ?? BorderRadius.circular(circularRadius);
+    final borderSide = applyBorder
+        ? BorderSide(
+            color: borderColor ?? Theme.of(context).focusColor,
+            strokeAlign: BorderSide.strokeAlignInside,
+          )
+        : BorderSide.none;
+
+    return onPressed == null
+
+        /// Static container
+        ? Container(
+            width: width,
+            height: height,
+            margin: margin,
+            padding: padding,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: radius,
+              border: Border.fromBorderSide(borderSide),
+            ),
+            child: child,
+          )
+
+        /// Interactive container
+        : Container(
+            height: height,
+            width: width,
+            margin: margin,
+            child: Material(
+              color: bgColor,
+              elevation: elevation,
+              shape: RoundedRectangleBorder(
+                borderRadius: radius,
+                side: borderSide,
+              ),
+              child: InkWell(
+                onTap: onPressed,
+                borderRadius: radius,
+                child: Padding(
+                  padding: padding,
+                  child: child,
+                ),
               ),
             ),
-    );
+          );
   }
 }

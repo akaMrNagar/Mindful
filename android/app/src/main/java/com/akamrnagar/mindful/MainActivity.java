@@ -44,6 +44,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     protected void onStart() {
         super.onStart();
         NotificationHelper.registerNotificationChannels(this);
+        // FIXME :
+        // BUG:  android.app.BackgroundServiceStartNotAllowedException: Not allowed to start service Intent { act=com.akamrnagar.mindful.AppsTrackerService.START cmp=com.akamrnagar.mindful/.services.AppsTrackerService }: app is in background uid UidRecord{9075543 u0a453 TPSL bg:+4m24s224ms idle change:procadj procs:0 seq(37391712,37391453)}
         refreshAppTimers();
     }
 

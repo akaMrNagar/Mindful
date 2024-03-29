@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/routes.dart';
-import 'package:mindful/providers/mindful_theme_provider.dart';
 
 class MindfulApp extends ConsumerWidget {
   const MindfulApp({super.key});
@@ -20,7 +19,7 @@ class MindfulApp extends ConsumerWidget {
         // cardColor: const Color(0xFFD8DEE2),
         // scaffoldBackgroundColor: const Color(0xFFE3E9ED),
       ),
-      themeMode: ref.watch(mindfulThemeProvider),
+      themeMode: ThemeMode.system,
       initialRoute: AppRoutes.homeScreen,
       routes: AppRoutes.mindfulRoutes,
     );

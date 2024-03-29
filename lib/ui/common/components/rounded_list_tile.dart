@@ -13,7 +13,8 @@ class RoundedListTile extends StatelessWidget {
     this.height,
     this.color,
     this.borderColor,
-    this.outlined = true,
+    this.padding,
+    this.applyBorder = true,
     this.bottomGap = 4,
   });
 
@@ -25,7 +26,8 @@ class RoundedListTile extends StatelessWidget {
   final double? height;
   final Color? color;
   final Color? borderColor;
-  final bool outlined;
+  final EdgeInsets? padding;
+  final bool applyBorder;
   final double bottomGap;
 
   @override
@@ -34,11 +36,13 @@ class RoundedListTile extends StatelessWidget {
       color: color,
       borderColor: borderColor,
       height: height,
-      applyBorder: outlined,
+      applyBorder: applyBorder,
       onPressed: onPressed,
       margin: EdgeInsets.only(bottom: bottomGap),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding:
+          padding ?? const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       child: Row(
+        mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           leading ?? 0.hBox(),
@@ -48,6 +52,8 @@ class RoundedListTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               title ?? 0.vBox(),
+
+              /// FIXME: Overflow issue
               subTitle ?? 0.vBox(),
             ],
           ),
