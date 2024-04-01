@@ -1,6 +1,5 @@
 package com.akamrnagar.mindful.helpers;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
@@ -16,15 +15,11 @@ import java.util.Iterator;
 
 import io.flutter.Log;
 
-public class LocalStorageHelper {
-    private final SharedPreferences mSharedPrefs;
+public class SharedPrefsHelper {
 
-    public LocalStorageHelper(@NonNull Context context) {
-        mSharedPrefs = context.getSharedPreferences(AppConstants.PREFS_FLUTTER_PREFIX, Context.MODE_PRIVATE);
-    }
 
-    public HashMap<String, Long> loadAppTimers() {
-        String jsonString = mSharedPrefs.getString(AppConstants.PREF_APP_FOCUS_INFOS, "");
+    public HashMap<String, Long> loadAppTimers(@NonNull SharedPreferences prefs) {
+        String jsonString = prefs.getString(AppConstants.PREF_KEY_APP_TIMERS, "");
         HashMap<String, Long> map = new HashMap<>();
         if (jsonString.isEmpty()) return map;
 

@@ -62,7 +62,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-        MethodChannel channel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.METHOD_CHANNEL);
+        MethodChannel channel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         channel.setMethodCallHandler(this);
 
         /// Check if user launched the app from TLE dialog then go to app dashboard screen

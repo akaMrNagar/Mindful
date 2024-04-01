@@ -6,10 +6,11 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/components/persistent_header.dart';
-import 'package:mindful/ui/common/components/rounded_container.dart';
-import 'package:mindful/ui/common/components/segmented_icon_buttons.dart';
-import 'package:mindful/ui/common/custom_text.dart';
+import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/segmented_icon_buttons.dart';
+import 'package:mindful/ui/common/list_tile_skeleton.dart';
+import 'package:mindful/ui/common/stateful_text.dart';
 
 class UsageCardsSliver extends StatelessWidget {
   /// Persistent pinned header containing segmented buttons to toggle between usage types
@@ -54,69 +55,57 @@ class UsageCardsSliver extends StatelessWidget {
             usageType == UsageType.screenUsage
 
                 /// Screen usage card
-                ? _UsageInfoCard(
-                    label: "Screen time",
+                ? _buildUsageCard(
                     icon: FluentIcons.phone_20_regular,
-                    info: screenUsageInfo.seconds.toTimeFull(),
+                    title: "Screen time",
+                    subtitle: screenUsageInfo.seconds.toTimeFull(),
                   )
 
                 /// Mobile and Wifi usage card
-                : Row(
-                    children: [
-                      Expanded(
-                        child: _UsageInfoCard(
-                          label: "Mobile",
-                          info: mobileUsageInfo.toData(),
-                          icon: FluentIcons.cellular_data_1_20_filled,
+                : SizedBox(
+                    height: 64,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildUsageCard(
+                            icon: FluentIcons.cellular_data_1_20_filled,
+                            title: "Mobile",
+                            subtitle: mobileUsageInfo.toData(),
+                          ),
                         ),
-                      ),
-                      12.hBox(),
-                      Expanded(
-                        child: _UsageInfoCard(
-                          label: "Wifi",
-                          info: wifiUsageInfo.toData(),
-                          icon: FluentIcons.wifi_1_20_filled,
+                        8.hBox(),
+                        Expanded(
+                          child: _buildUsageCard(
+                            icon: FluentIcons.wifi_1_20_filled,
+                            title: "Wifi",
+                            subtitle: wifiUsageInfo.toData(),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
           ],
         ),
       ),
     );
   }
-}
 
-class _UsageInfoCard extends StatelessWidget {
-  const _UsageInfoCard({
-    Key? key,
-    required this.label,
-    required this.info,
-    required this.icon,
-  }) : super(key: key);
-
-  final String label;
-  final String info;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildUsageCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
     return RoundedContainer(
       height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: Row(
-        children: [
-          Icon(icon),
-          12.hBox(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SubtitleText(label),
-              TitleText(info),
-            ],
-          ),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: ListTileSkeleton(
+        leading: Icon(icon),
+        title: StatefulText(title),
+        subtitle: StatefulText(
+          subtitle,
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

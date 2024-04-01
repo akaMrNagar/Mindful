@@ -1,4 +1,4 @@
-
+import 'package:flutter/material.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 
@@ -7,6 +7,9 @@ extension ExtInt on int {
   double get gb => this / 1048576;
   int get inMinutes => this ~/ 60;
   double get inHours => this / 3600;
+
+  /// Converts minutes to [TimeOfDay] hours, and minutes
+  TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
   String toDateDiffToday() {
     ///FIXME: bug in date

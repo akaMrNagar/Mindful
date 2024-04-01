@@ -6,13 +6,13 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/ui/common/components/usage_chart_panel.dart';
-import 'package:mindful/ui/common/components/usage_cards_sliver.dart';
-import 'package:mindful/ui/common/components/flexible_appbar.dart';
-import 'package:mindful/ui/common/components/persistent_header.dart';
+import 'package:mindful/ui/common/usage_chart_panel.dart';
+import 'package:mindful/ui/common/usage_cards_sliver.dart';
+import 'package:mindful/ui/common/flexible_appbar.dart';
+import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
-import 'package:mindful/ui/common/components/application_icon.dart';
-import 'package:mindful/ui/common/custom_text.dart';
+import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_settings.dart';
 
 /// Provides usage type for toggling between usages charts
@@ -64,7 +64,10 @@ class AppDashboardScreen extends ConsumerWidget {
                           4.vBox(),
 
                           /// App package name
-                          SubtitleText(app.packageName),
+                          StatefulText(
+                            app.packageName,
+                            activeColor: Theme.of(context).hintColor,
+                          ),
                         ],
                       ),
                     ),
@@ -96,11 +99,9 @@ class AppDashboardScreen extends ConsumerWidget {
                   ),
 
                   /// Available app setting or functions
-                  if (app.packageName != Constants.removedAppPackage &&
-                      app.packageName != Constants.tetheringAppPackage)
+                  if (app.packageName != AppConstants.removedAppPackage &&
+                      app.packageName != AppConstants.tetheringAppPackage)
                     AppSettings(app: app),
-
-                  560.vSliverBox(),
                 ],
               ),
             ),

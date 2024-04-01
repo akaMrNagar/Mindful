@@ -137,11 +137,11 @@ class _TabBarButton extends StatelessWidget {
           onPressed: onTap,
           style: const ButtonStyle().copyWith(
             padding: const MaterialStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              EdgeInsets.symmetric(horizontal: 20),
             ),
           ),
           icon: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               AnimatedSlide(
                 offset: Offset(0, isSelected ? 0 : -3),
@@ -154,7 +154,10 @@ class _TabBarButton extends StatelessWidget {
               ),
               Text(
                 title,
+                maxLines: 1,
                 style: TextStyle(
+                  height: 1,
+                  overflow: TextOverflow.ellipsis,
                   fontWeight: isSelected ? FontWeight.bold : null,
                   color: isSelected ? null : Theme.of(context).disabledColor,
                 ),

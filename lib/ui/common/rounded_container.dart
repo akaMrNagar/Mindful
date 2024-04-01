@@ -32,11 +32,12 @@ class RoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = color ?? Theme.of(context).cardColor;
+    final bgColor = color ?? Theme.of(context).colorScheme.surfaceVariant;
     final radius = borderRadius ?? BorderRadius.circular(circularRadius);
     final borderSide = applyBorder
         ? BorderSide(
-            color: borderColor ?? Theme.of(context).focusColor,
+            color:
+                borderColor ?? Theme.of(context).colorScheme.onInverseSurface,
             strokeAlign: BorderSide.strokeAlignInside,
           )
         : BorderSide.none;
@@ -49,6 +50,7 @@ class RoundedContainer extends StatelessWidget {
             height: height,
             margin: margin,
             padding: padding,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: radius,
@@ -73,8 +75,12 @@ class RoundedContainer extends StatelessWidget {
                 onTap: onPressed,
                 borderRadius: radius,
                 child: Padding(
-                  padding: padding,
-                  child: child,
+                  /// Added 1px to padding only because the border is 1px and
+                  /// it is stroked inside
+                  padding: applyBorder
+                      ? padding.add(const EdgeInsets.all(1))
+                      : padding,
+                  child: Center(child: child),
                 ),
               ),
             ),

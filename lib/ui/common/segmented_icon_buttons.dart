@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/common/components/rounded_container.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
 
 class SegmentedIconButton extends StatelessWidget {
   const SegmentedIconButton({
@@ -35,13 +35,11 @@ class SegmentedIconButton extends StatelessWidget {
 
           return RoundedContainer(
             height: height,
-            color:
-                isSelected ? Theme.of(context).cardColor : Colors.transparent,
-            borderColor:
-                isSelected ? Colors.transparent : Theme.of(context).cardColor,
+            color: isSelected ? null : Colors.transparent,
+            borderColor: isSelected ? Colors.transparent : null,
             applyBorder: !isSelected,
             borderRadius: borderRadiusG,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             onPressed: () => onChange(index),
             child: Icon(
               segments[index],

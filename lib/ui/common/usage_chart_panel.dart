@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/ui/common/components/base_bar_chart.dart';
+import 'package:mindful/ui/common/base_bar_chart.dart';
 
 class UsageChartPanel extends StatelessWidget {
   /// Sliver box containing base bar chart for usage and

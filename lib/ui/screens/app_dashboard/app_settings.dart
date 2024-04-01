@@ -6,9 +6,10 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/app_focus_infos_provider.dart';
-import 'package:mindful/ui/common/components/rounded_list_tile.dart';
-import 'package:mindful/ui/common/custom_text.dart';
+import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/list_tile_skeleton.dart';
+import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
 /// Displays available settings for the app in [AppDashboard]
@@ -23,7 +24,7 @@ class AppSettings extends StatelessWidget {
       delegate: SliverChildListDelegate.fixed(
         [
           12.vBox(),
-          const TitleText("App settings", size: 14),
+          const Text("App settings"),
           8.vBox(),
 
           /// App Timer Button
@@ -31,11 +32,11 @@ class AppSettings extends StatelessWidget {
               ? const _SettingTile(
                   title: "App timer",
                   subTitle: "Timer not available for important apps",
-                  icondata: FluentIcons.clock_dismiss_20_regular,
+                  icondata: FluentIcons.timer_off_20_regular,
                 )
               : Consumer(
                   builder: (_, WidgetRef ref, __) {
-                    final timer = ref.watch(appFocusInfosProvider.select(
+                    final timer = ref.watch(focusProvider.select(
                             (value) => value[app.packageName]?.timer)) ??
                         0;
 
@@ -43,9 +44,12 @@ class AppSettings extends StatelessWidget {
                         timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
                     return _SettingTile(
                       title: "App timer",
-                      subTitle: timer > 0 ? timer.seconds.toTime() : "No timer",
-                      icondata: FluentIcons.time_and_weather_20_regular,
-                      trailing: isPurged ? const SubtitleText("PAUSED") : null,
+                      subTitle:
+                          timer > 0 ? timer.seconds.toTimeFull() : "No timer",
+                      icondata: isPurged
+                          ? FluentIcons.clock_toolbox_20_regular
+                          : FluentIcons.timer_20_regular,
+                      trailing: isPurged ? const Text("Paused") : null,
                       onPressed: () async {
                         await showDurationPicker(
                           context: context,
@@ -55,7 +59,7 @@ class AppSettings extends StatelessWidget {
                           (value) {
                             if (value != timer) {
                               ref
-                                  .read(appFocusInfosProvider.notifier)
+                                  .read(focusProvider.notifier)
                                   .setAppTimer(app.packageName, value);
                             }
                           },
@@ -108,13 +112,24 @@ class _SettingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RoundedListTile(
-      height: subTitle == null ? 48 : 60,
+    return RoundedContainer(
+      height: subTitle == null ? 52 : 64,
       onPressed: onPressed,
-      leading: Icon(icondata),
-      title: TitleText(title, size: 16, weight: FontWeight.normal),
-      subTitle: subTitle != null ? SubtitleText(subTitle!, size: 14) : null,
-      trailing: trailing ?? const SizedBox(),
+      applyBorder: subTitle != null,
+      color: Colors.transparent,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      margin: const EdgeInsets.only(bottom: 4),
+      child: ListTileSkeleton(
+        leading: Icon(icondata),
+        title: StatefulText(title, fontSize: 16),
+        subtitle: subTitle != null
+            ? StatefulText(
+                subTitle!,
+                activeColor: Theme.of(context).hintColor,
+              )
+            : null,
+        trailing: trailing,
+      ),
     );
   }
 }

@@ -12,7 +12,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.helpers.LocalStorageHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ScreenUsageHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
@@ -53,7 +52,7 @@ public class LockUnlockReceiver extends BroadcastReceiver {
     public LockUnlockReceiver(@NonNull Context context) {
         this.mContext = context;
         usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
-        refreshAppTimers();
+//        refreshAppTimers();
     }
 
 
@@ -68,8 +67,9 @@ public class LockUnlockReceiver extends BroadcastReceiver {
         }
     }
 
-    public void refreshAppTimers() {
-        appsTimerMap = new LocalStorageHelper(mContext).loadAppTimers();
+    public void refreshAppTimers(HashMap<String, Long> map) {
+//        appsTimerMap = new LocalStorageHelper(mContext).loadAppTimers();
+        appsTimerMap = map;
         if (appsTimerMap.isEmpty()) ServicesHelper.stopTrackingService(mContext);
 
 

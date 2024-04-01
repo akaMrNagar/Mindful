@@ -4,10 +4,10 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
-import 'package:mindful/ui/common/components/usage_chart_panel.dart';
-import 'package:mindful/ui/common/components/usage_cards_sliver.dart';
-import 'package:mindful/ui/common/components/persistent_header.dart';
-import 'package:mindful/ui/common/components/flexible_appbar.dart';
+import 'package:mindful/ui/common/usage_chart_panel.dart';
+import 'package:mindful/ui/common/usage_cards_sliver.dart';
+import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/flexible_appbar.dart';
 import 'package:mindful/ui/screens/home/dashboard/animated_apps_list.dart';
 
 /// Provides usage type for toggling between usages charts
@@ -28,7 +28,7 @@ class TabDashboard extends ConsumerWidget {
     final usageType = ref.watch(_selectedUsageTypeProvider);
 
     return Padding(
-      padding: const EdgeInsets.only(left: 4, right: 12),
+      padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
         slivers: [
           /// Appbar
@@ -63,12 +63,9 @@ class TabDashboard extends ConsumerWidget {
             pinned: true,
             delegate: PersistentHeader(
               minHeight: 32,
-              maxHeight: 56,
+              maxHeight: 48,
               alignment: Alignment.centerLeft,
-              child: Text(
-                "Most used apps",
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
+              child: const Text("Most used apps"),
             ),
           ),
 

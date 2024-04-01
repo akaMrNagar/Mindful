@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.interfaces.AsyncSuccessCallback;
 import com.akamrnagar.mindful.models.AndroidApp;
-import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.ArrayList;
@@ -35,6 +34,10 @@ import io.flutter.plugin.common.MethodChannel;
  * names, icons, and various usage statistics.
  */
 public class DeviceAppsHelper {
+    private static final String REMOVED_APP_NAME = "Removed Apps";
+    private static final String REMOVED_PACKAGE = "com.akamrnagar.mindful.removed";
+    private static final String TETHERING_APP_NAME = "Tethering & Hotspot";
+    private static final String TETHERING_PACKAGE = "com.akamrnagar.mindful.tethering";
 
 
     /**
@@ -116,8 +119,8 @@ public class DeviceAppsHelper {
         }
 
         /// Add additional apps for network usage
-        deviceApps.add(new AndroidApp(AppConstants.TETHERING_APP_NAME, AppConstants.TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
-        deviceApps.add(new AndroidApp(AppConstants.REMOVED_APP_NAME, AppConstants.REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
+        deviceApps.add(new AndroidApp(TETHERING_APP_NAME, TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
+        deviceApps.add(new AndroidApp(REMOVED_APP_NAME, REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);

@@ -7,7 +7,8 @@ import 'package:mindful/providers/packages_by_network_usage_provider.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/async_error_indicator.dart';
 import 'package:mindful/ui/common/async_loading_indicator.dart';
-import 'package:mindful/ui/common/components/rounded_list_tile.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
 
 class AnimatedAppsList extends ConsumerStatefulWidget {
@@ -55,12 +56,15 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
 
             /// Show all apps button
             : Padding(
-                padding: const EdgeInsets.only(top: 8, bottom: 12),
-                child: RoundedListTile(
-                  leading: const Icon(FluentIcons.select_all_off_20_regular),
-                  title: const Text("Show all apps"),
-                  trailing: const Icon(FluentIcons.chevron_down_20_filled),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: RoundedContainer(
                   onPressed: () => setState(() => _includeAllApps = true),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: const ListTileSkeleton(
+                    leading: Icon(FluentIcons.select_all_off_20_regular),
+                    title: Text("Show all apps"),
+                    trailing: Icon(FluentIcons.chevron_down_20_filled),
+                  ),
                 ),
               ),
       ),

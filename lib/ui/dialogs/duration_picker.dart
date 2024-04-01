@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/common/components/rounded_container.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
 
 /// Returns duration in seconds and take initial time as duration in seconds
 Future<int> showDurationPicker({

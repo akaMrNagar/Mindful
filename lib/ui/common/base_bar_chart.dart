@@ -5,7 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/strings.dart';
-import 'package:mindful/ui/common/custom_text.dart';
+import 'package:mindful/ui/common/stateful_text.dart';
 
 /// Base bar chart used for diplaying app/device usage
 class BaseBarChart extends StatelessWidget {
@@ -115,8 +115,9 @@ class BaseBarChart extends StatelessWidget {
         getTitlesWidget: (yPos, meta) => FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerRight,
-          child: SubtitleText(
+          child: StatefulText(
             _generateSideLabels(yPos.toInt()),
+            activeColor: Theme.of(context).hintColor,
           ),
         ),
       )),
@@ -129,7 +130,10 @@ class BaseBarChart extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.topCenter,
-              child: SubtitleText(AppStrings.daysShort[value.toInt()]),
+              child: StatefulText(
+                AppStrings.daysShort[value.toInt()],
+                activeColor: Theme.of(context).hintColor,
+              ),
             ),
           ),
         ),

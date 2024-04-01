@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/services/mindful_native_plugin.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
@@ -19,7 +19,7 @@ class ExternalRoutingScreen extends ConsumerWidget {
           loading: () => const AsyncLoadingIndicator(),
           error: (e, st) => AsyncErrorIndicator(e, st),
           data: (appsMap) {
-            final target = MindfulNativePlugin.instance.targetedAppPackage;
+            final target = MethodChannelService.instance.targetedAppPackage;
             if (target.isNotEmpty && appsMap.containsKey(target)) {
               return AppDashboardScreen(app: appsMap[target]!);
             }

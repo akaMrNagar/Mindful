@@ -7,19 +7,24 @@ class MindfulApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const seedColor = Colors.lightBlue;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        cardColor: const Color(0xFF1D2327),
-        scaffoldBackgroundColor: const Color(0xFF12181C),
+      darkTheme: ThemeData.from(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.dark,
+        ),
       ),
-      theme: ThemeData.light(useMaterial3: true).copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        // cardColor: const Color(0xFFD8DEE2),
-        // scaffoldBackgroundColor: const Color(0xFFE3E9ED),
+      theme: ThemeData.from(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: seedColor,
+          brightness: Brightness.light,
+        ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
       initialRoute: AppRoutes.homeScreen,
       routes: AppRoutes.mindfulRoutes,
     );
