@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class FlexibleAppBar extends StatelessWidget {
-  const FlexibleAppBar({
+class SliverFlexibleAppBar extends StatelessWidget {
+  const SliverFlexibleAppBar({
     super.key,
     required this.title,
     this.canCollapse = true,

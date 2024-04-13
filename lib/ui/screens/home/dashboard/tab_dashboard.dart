@@ -4,11 +4,12 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
+import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/usage_chart_panel.dart';
 import 'package:mindful/ui/common/usage_cards_sliver.dart';
-import 'package:mindful/ui/common/persistent_header.dart';
-import 'package:mindful/ui/common/flexible_appbar.dart';
-import 'package:mindful/ui/screens/home/dashboard/animated_apps_list.dart';
+import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
+import 'package:mindful/ui/common/animated_apps_list.dart';
+import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
 
 /// Provides usage type for toggling between usages charts
 final _selectedUsageTypeProvider =
@@ -32,7 +33,7 @@ class TabDashboard extends ConsumerWidget {
       child: CustomScrollView(
         slivers: [
           /// Appbar
-          const FlexibleAppBar(title: "Dashboard"),
+          const SliverFlexibleAppBar(title: "Dashboard"),
 
           /// Usage type selector and usage info card
           UsageCardsSliver(
@@ -59,24 +60,26 @@ class TabDashboard extends ConsumerWidget {
           ),
 
           /// Most used apps text
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: PersistentHeader(
-              minHeight: 32,
-              maxHeight: 48,
-              alignment: Alignment.centerLeft,
-              child: const Text("Most used apps"),
-            ),
+          const SliverFlexiblePinnedHeader(
+            minHeight: 32,
+            maxHeight: 48,
+            alignment: Alignment.centerLeft,
+            child: Text("Most used apps"),
           ),
 
           /// Apps list
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 72),
-            sliver: AnimatedAppsList(
+          AnimatedAppsList(
+            usageType: usageType,
+            selectedDoW: dayOfWeek,
+            itemExtent: 64,
+            itemBuilder: (context, appPackage) => ApplicationTile(
+              appPackage: appPackage,
               usageType: usageType,
-              selectedDoW: dayOfWeek,
+              day: dayOfWeek,
             ),
           ),
+
+          72.vSliverBox(),
         ],
       ),
     );

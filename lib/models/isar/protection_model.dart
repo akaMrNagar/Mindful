@@ -3,7 +3,6 @@ import 'package:isar/isar.dart';
 
 part 'protection_model.g.dart';
 
-
 /// Protection model used for determining the restriction on internet usage
 /// like blocking app's internet and blocking websites
 @immutable
@@ -37,6 +36,22 @@ class ProtectionModel {
     this.blockCustomWebsites = false,
     this.blockNsfwSites = false,
     this.blockedApps = const [],
-    this.blockedWebsites = const [],
+    this.blockedWebsites = const ['google.com', 'instagram.com', 'youtube.com'],
   });
+
+  ProtectionModel copyWith({
+    bool? blockAppsInternet,
+    bool? blockCustomWebsites,
+    bool? blockNsfwSites,
+    List<String>? blockedApps,
+    List<String>? blockedWebsites,
+  }) {
+    return ProtectionModel(
+      blockAppsInternet: blockAppsInternet ?? this.blockAppsInternet,
+      blockCustomWebsites: blockCustomWebsites ?? this.blockCustomWebsites,
+      blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
+      blockedApps: blockedApps ?? this.blockedApps,
+      blockedWebsites: blockedWebsites ?? this.blockedWebsites,
+    );
+  }
 }

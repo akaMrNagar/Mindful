@@ -11,6 +11,7 @@ class StatefulText extends StatelessWidget {
     this.height,
     this.maxLines,
     this.overflow,
+    this.textAlign,
     this.fontSize = 12,
   });
 
@@ -23,12 +24,14 @@ class StatefulText extends StatelessWidget {
   final double? height;
   final int? maxLines;
   final TextOverflow? overflow;
+  final TextAlign? textAlign;
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
       maxLines: maxLines,
+      textAlign: textAlign,
       style: TextStyle(
         color: isActive
             ? activeColor

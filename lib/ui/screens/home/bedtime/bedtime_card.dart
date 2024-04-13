@@ -17,6 +17,7 @@ class BedtimeCard extends StatelessWidget {
     return RoundedContainer(
       height: 208,
       padding: const EdgeInsets.all(12),
+      color: Theme.of(context).colorScheme.surfaceVariant,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -102,6 +103,7 @@ class _SelectedTime extends ConsumerWidget {
     return RoundedContainer(
       height: 80,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      color: Colors.transparent,
       onPressed: isScheduleActive
           ? null
           : () {

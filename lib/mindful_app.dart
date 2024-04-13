@@ -7,7 +7,7 @@ class MindfulApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const seedColor = Colors.lightBlue;
+    const seedColor = Colors.blue;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       darkTheme: ThemeData.from(

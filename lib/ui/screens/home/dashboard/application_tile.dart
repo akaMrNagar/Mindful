@@ -67,7 +67,7 @@ class ApplicationTile extends ConsumerWidget {
           usageType == UsageType.networkUsage
               ? app.networkUsageThisWeek[day].toData()
               : app.screenTimeThisWeek[day].seconds.toTimeFull(),
-          fontSize: 13,
+          fontSize: 14,
           activeColor: Theme.of(context).hintColor,
         ),
 

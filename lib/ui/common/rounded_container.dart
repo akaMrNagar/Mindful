@@ -73,6 +73,7 @@ class RoundedContainer extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: onPressed,
+                splashColor: Theme.of(context).colorScheme.surfaceVariant,
                 borderRadius: radius,
                 child: Padding(
                   /// Added 1px to padding only because the border is 1px and

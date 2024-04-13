@@ -34,8 +34,8 @@ class ScheduleDaysSelector extends ConsumerWidget {
                 circularRadius: 20,
                 margin: const EdgeInsets.symmetric(horizontal: 4),
                 color: scheduleDays[index]
-                    ? Theme.of(context).colorScheme.surfaceVariant
-                    : null,
+                    ? Theme.of(context).colorScheme.surface
+                    : Colors.transparent,
                 onPressed:
                     isScheduleActive ? null : () => _toggleDays(ref, index),
                 child: StatefulText(

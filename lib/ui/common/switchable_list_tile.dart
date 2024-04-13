@@ -27,10 +27,10 @@ class SwitchableListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return RoundedContainer(
       color: isPrimary
-          ? Theme.of(context).colorScheme.secondaryContainer
+          ? Theme.of(context).colorScheme.surfaceVariant
           : Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      onPressed: onPressed,
+      onPressed: enabled ? onPressed : null,
       child: ListTileSkeleton(
         /// Leading icon
         leading: leadingIcon != null ? Icon(leadingIcon) : null,
@@ -39,9 +39,9 @@ class SwitchableListTile extends StatelessWidget {
         title: titleText != null
             ? StatefulText(
                 titleText!,
-                fontSize: 14,
+                fontSize: 16,
                 isActive: enabled,
-                fontWeight: FontWeight.w500,
+                fontWeight: isPrimary ? FontWeight.w500 : null,
               )
             : null,
 
@@ -49,8 +49,8 @@ class SwitchableListTile extends StatelessWidget {
         subtitle: subTitleText != null
             ? StatefulText(
                 subTitleText!,
-                activeColor: Theme.of(context).hintColor,
-                isActive: enabled,
+                isActive: false,
+                fontSize: 14,
               )
             : null,
 

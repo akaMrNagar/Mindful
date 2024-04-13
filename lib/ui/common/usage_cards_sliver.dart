@@ -6,10 +6,10 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/persistent_header.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/segmented_icon_buttons.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
+import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 
 class UsageCardsSliver extends StatelessWidget {
@@ -32,60 +32,56 @@ class UsageCardsSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverPersistentHeader(
-      pinned: true,
-      delegate: PersistentHeader(
-        maxHeight: 120,
-        minHeight: 120,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            /// Usage type selector
-            SegmentedIconButton(
-              selected: usageType.index,
-              onChange: onUsageTypeChanged,
-              segments: const [
-                FluentIcons.phone_screen_time_20_regular,
-                FluentIcons.earth_20_regular,
-              ],
-            ),
-            8.vBox(),
+    return SliverFlexiblePinnedHeader(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          /// Usage type selector
+          SegmentedIconButton(
+            selected: usageType.index,
+            onChange: onUsageTypeChanged,
+            segments: const [
+              FluentIcons.phone_screen_time_20_regular,
+              FluentIcons.earth_20_regular,
+            ],
+          ),
+          8.vBox(),
 
-            /// Usage info cards
-            usageType == UsageType.screenUsage
+          /// Usage info cards
+          usageType == UsageType.screenUsage
 
-                /// Screen usage card
-                ? _buildUsageCard(
-                    icon: FluentIcons.phone_20_regular,
-                    title: "Screen time",
-                    subtitle: screenUsageInfo.seconds.toTimeFull(),
-                  )
+              /// Screen usage card
+              ? _buildUsageCard(
+                  icon: FluentIcons.phone_20_regular,
+                  title: "Screen time",
+                  subtitle: screenUsageInfo.seconds.toTimeFull(),
+                )
 
-                /// Mobile and Wifi usage card
-                : SizedBox(
-                    height: 64,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _buildUsageCard(
-                            icon: FluentIcons.cellular_data_1_20_filled,
-                            title: "Mobile",
-                            subtitle: mobileUsageInfo.toData(),
-                          ),
+              /// Mobile and Wifi usage card
+              : SizedBox(
+                  height: 64,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _buildUsageCard(
+                          icon: FluentIcons.cellular_data_1_20_filled,
+                          title: "Mobile",
+                          subtitle: mobileUsageInfo.toData(),
                         ),
-                        8.hBox(),
-                        Expanded(
-                          child: _buildUsageCard(
-                            icon: FluentIcons.wifi_1_20_filled,
-                            title: "Wifi",
-                            subtitle: wifiUsageInfo.toData(),
-                          ),
+                      ),
+                      8.hBox(),
+                      Expanded(
+                        child: _buildUsageCard(
+                          icon: FluentIcons.wifi_1_20_filled,
+                          title: "Wifi",
+                          subtitle: wifiUsageInfo.toData(),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-          ],
-        ),
+                ),
+        ],
       ),
     );
   }

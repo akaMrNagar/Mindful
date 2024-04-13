@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
-import 'package:mindful/ui/common/flexible_appbar.dart';
-import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
+import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_card.dart';
@@ -21,7 +21,7 @@ class TabBedtime extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           /// Appbar
-          const FlexibleAppBar(title: "Bedtime"),
+          const SliverFlexibleAppBar(title: "Bedtime"),
 
           /// Information about bedtime
           const StatefulText(
@@ -56,29 +56,15 @@ class TabBedtime extends StatelessWidget {
           ).toSliverBox(),
 
           /// Bedtime actions
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: PersistentHeader(
-              minHeight: 32,
-              maxHeight: 42,
-              alignment: const Alignment(-1, 0.75),
-              child: const Text("Actions"),
-            ),
+          const SliverFlexiblePinnedHeader(
+            minHeight: 32,
+            maxHeight: 42,
+            alignment: Alignment(-1, 0.75),
+            child: Text("Actions"),
           ),
 
           /// Actions related to bedtime
           const BedtimeActions(),
-
-          /// Distracting apps
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: PersistentHeader(
-              minHeight: 32,
-              maxHeight: 42,
-              alignment: const Alignment(-1, 0.75),
-              child: const Text("Distracting apps"),
-            ),
-          ),
         ],
       ),
     );

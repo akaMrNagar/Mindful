@@ -6,10 +6,10 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/usage_chart_panel.dart';
 import 'package:mindful/ui/common/usage_cards_sliver.dart';
-import 'package:mindful/ui/common/flexible_appbar.dart';
-import 'package:mindful/ui/common/persistent_header.dart';
+import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
@@ -46,30 +46,26 @@ class AppDashboardScreen extends ConsumerWidget {
               child: CustomScrollView(
                 slivers: [
                   /// App bar
-                  FlexibleAppBar(
+                  SliverFlexibleAppBar(
                     title: app.name,
                     canCollapse: false,
                   ),
 
                   /// App icon and app package name
-                  SliverPersistentHeader(
-                    delegate: PersistentHeader(
-                      maxHeight: 96,
-                      minHeight: 96,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          /// App Icon
-                          ApplicationIcon(app: app, size: 32),
-                          4.vBox(),
+                  SliverFlexiblePinnedHeader(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        /// App Icon
+                        ApplicationIcon(app: app, size: 32),
+                        4.vBox(),
 
-                          /// App package name
-                          StatefulText(
-                            app.packageName,
-                            activeColor: Theme.of(context).hintColor,
-                          ),
-                        ],
-                      ),
+                        /// App package name
+                        StatefulText(
+                          app.packageName,
+                          activeColor: Theme.of(context).hintColor,
+                        ),
+                      ],
                     ),
                   ),
 
