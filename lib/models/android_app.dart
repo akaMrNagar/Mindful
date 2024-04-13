@@ -11,7 +11,7 @@ class AndroidApp {
   final String packageName;
 
   /// Does the app belong to system default category {Home Launcher, Dialer}
-  /// It also include manually added apps like Tethring and Removed Apps
+  /// It also include manually added apps like Tethering and Removed Apps
   final bool isImpSysApp;
 
   /// Category defined by the app's manifest file used by android system

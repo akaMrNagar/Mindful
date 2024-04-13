@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
-import com.akamrnagar.mindful.helpers.WorkersHelper;
+import com.akamrnagar.mindful.helpers.WorkerTasksHelper;
 import com.akamrnagar.mindful.services.AppsTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
@@ -44,6 +44,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     protected void onStart() {
         super.onStart();
         NotificationHelper.registerNotificationChannels(this);
+        // FIXME :
+        // BUG:  android.app.BackgroundServiceStartNotAllowedException: Not allowed to start service Intent { act=com.akamrnagar.mindful.AppsTrackerService.START cmp=com.akamrnagar.mindful/.services.AppsTrackerService }: app is in background uid UidRecord{9075543 u0a453 TPSL bg:+4m24s224ms idle change:procadj procs:0 seq(37391712,37391453)}
         refreshAppTimers();
     }
 
@@ -60,7 +62,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-        MethodChannel channel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.METHOD_CHANNEL);
+        MethodChannel channel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         channel.setMethodCallHandler(this);
 
         /// Check if user launched the app from TLE dialog then go to app dashboard screen
@@ -100,24 +102,17 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
             case "scheduleBedtimeTask":
-                WorkersHelper.scheduleBedtimeTask(this, call);
+                WorkerTasksHelper.scheduleBedtimeTask(this, call);
                 result.success(true);
                 break;
             case "cancelBedtimeTask":
-                WorkersHelper.cancelBedtimeTask(this);
+                WorkerTasksHelper.cancelBedtimeTask(this);
                 result.success(true);
                 break;
             default:
                 result.notImplemented();
         }
 
-    }
-
-    @Override
-    protected void onActivityResult(int request, int result, Intent data) {
-        if (result == Activity.RESULT_OK && request == MindfulVpnService.SERVICE_ID) {
-            ServicesHelper.startVpnService(this);
-        }
     }
 
     private void refreshAppTimers() {
@@ -139,4 +134,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             onActivityResult(MindfulVpnService.SERVICE_ID, Activity.RESULT_OK, null);
         }
     }
+
+    @Override
+    protected void onActivityResult(int request, int result, Intent data) {
+        if (result == Activity.RESULT_OK && request == MindfulVpnService.SERVICE_ID) {
+            ServicesHelper.startVpnService(this);
+        }
+    }
+
+
 }

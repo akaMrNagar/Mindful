@@ -1,0 +1,4 @@
+enum UsageType {
+  screenUsage,
+  networkUsage,
+}

@@ -1,4 +1,4 @@
-
+import 'package:flutter/material.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 
@@ -8,8 +8,11 @@ extension ExtInt on int {
   int get inMinutes => this ~/ 60;
   double get inHours => this / 3600;
 
+  /// Converts minutes to [TimeOfDay] hours, and minutes
+  TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
+
   String toDateDiffToday() {
-    ///TODO: bug in date
+    ///FIXME: bug in date
     if (toInt() == now.weekday) {
       return "Today";
     } else if (toInt() == now.weekday - 1) {

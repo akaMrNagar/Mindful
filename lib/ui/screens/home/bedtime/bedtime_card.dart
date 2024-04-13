@@ -1,95 +1,86 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
-import 'package:mindful/providers/bedtime_schedule_provider.dart';
-import 'package:mindful/ui/screens/home/bedtime/days_selector.dart';
-import 'package:mindful/ui/widgets/buttons.dart';
-import 'package:mindful/ui/widgets/custom_text.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/stateful_text.dart';
+import 'package:mindful/ui/screens/home/bedtime/schedule_days_selector.dart';
 
 class BedtimeCard extends StatelessWidget {
   const BedtimeCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
+    return RoundedContainer(
+      height: 208,
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 4, right: 6),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        // color: Colors.blueGrey,
-        borderRadius: BorderRadius.circular(12),
-      ),
+      color: Theme.of(context).colorScheme.surfaceVariant,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          /// Schedule time
+          /// Schedule time Start and End
           Consumer(
             builder: (_, WidgetRef ref, __) {
+              final startTime =
+                  ref.watch(bedtimeProvider.select((value) => value.startTime));
+              final endTime =
+                  ref.watch(bedtimeProvider.select((value) => value.endTime));
+
               return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  /// Schedule start time
                   _SelectedTime(
                     label: "Start",
-                    initialTime: ref.watch(bedtimeScheduleProvider
-                        .select((value) => value.startTime)),
-                    onChange: (t) => ref
-                        .read(bedtimeScheduleProvider.notifier)
-                        .setBedtimeStart(t),
+                    initialTime: startTime,
+                    onChange: (t) =>
+                        ref.read(bedtimeProvider.notifier).setBedtimeStart(t),
                   ),
-                  const Spacer(),
+
+                  /// Schedule end time
                   _SelectedTime(
                     label: "End",
-                    initialTime: ref.watch(bedtimeScheduleProvider
-                        .select((value) => value.endTime)),
-                    onChange: (t) => ref
-                        .read(bedtimeScheduleProvider.notifier)
-                        .setBedtimeEnd(t),
+                    initialTime: endTime,
+                    onChange: (t) =>
+                        ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
                   ),
                 ],
               );
             },
           ),
 
-          /// Total bedtime duration
+          /// Total calculated bedtime duration
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: Divider(
-                  color: Theme.of(context).focusColor,
-                ),
-              ),
+              Expanded(child: Divider(color: Theme.of(context).focusColor)),
               12.hBox(),
               Consumer(
                 builder: (_, WidgetRef ref, __) {
-                  final startT = ref.watch(bedtimeScheduleProvider
-                      .select((value) => value.startTime));
-                  final endT = ref.watch(
-                      bedtimeScheduleProvider.select((value) => value.endTime));
-
-                  return SubtitleText(
-                    endT.difference(startT).minutes.toTimeFull(),
+                  final startT = ref.watch(
+                    bedtimeProvider.select((value) => value.startTime),
                   );
+                  final endT = ref.watch(
+                    bedtimeProvider.select((value) => value.endTime),
+                  );
+
+                  /// Duration text
+                  return StatefulText(endT.difference(startT).toTimeFull());
                 },
               ),
-              // SubtitleText(10552.minutes.toTimeFull()),
               12.hBox(),
-              Expanded(
-                child: Divider(
-                  color: Theme.of(context).focusColor,
-                ),
-              ),
+              Expanded(child: Divider(color: Theme.of(context).focusColor)),
             ],
           ),
 
-          /// Days
-          const DaysSelector(),
+          /// Schedule selected Days
+          const ScheduleDaysSelector(),
         ],
       ),
-    );
+    ).toSliverBox();
   }
 }
 
@@ -106,11 +97,14 @@ class _SelectedTime extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bedtimeEnabled = ref
-        .watch(bedtimeScheduleProvider.select((value) => value.bedtimeStatus));
+    final isScheduleActive =
+        ref.watch(bedtimeProvider.select((value) => value.scheduleStatus));
 
-    return SecondaryButton(
-      onPressed: bedtimeEnabled
+    return RoundedContainer(
+      height: 80,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      color: Colors.transparent,
+      onPressed: isScheduleActive
           ? null
           : () {
               showTimePicker(
@@ -124,18 +118,30 @@ class _SelectedTime extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SubtitleText(label),
+          /// Labels "START" and "END"
+          StatefulText(
+            label,
+            isActive: !isScheduleActive,
+          ),
           4.vBox(),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              TitleText(
+              /// Time in hour and minutes
+              StatefulText(
                 initialTime.format(context).split(' ').first,
-                size: 36,
+                height: 1,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                isActive: !isScheduleActive,
               ),
-              6.hBox(),
-              SubtitleText(
-                "${initialTime.period.name} ${initialTime.period.index}",
+              4.hBox(),
+
+              /// Time period AM/PM
+              StatefulText(
+                initialTime.period.name,
+                height: 2,
+                isActive: !isScheduleActive,
               ),
             ],
           ),

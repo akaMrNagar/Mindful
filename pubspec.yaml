@@ -3,7 +3,7 @@ description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
-version: 1.0.0+1
+version: 0.0.1
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Manually added dependencies.
+  # Runtime dependencies
   # UI
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
@@ -20,16 +20,25 @@ dependencies:
   # Animation
   flutter_animate: ^4.2.0+1
 
+  # Database and Storage
+  shared_preferences: ^2.2.2
+  isar_flutter_libs: ^3.1.0+1
+  isar: ^3.1.0+1
+
   # Util
   flutter_riverpod: ^2.4.0
-  shared_preferences: ^2.2.2
+  path_provider: ^2.1.2
+  expandable_sliver_list: ^4.1.1
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # Manually added dev dependencies.
+  # Development dependencies.
   flutter_lints: ^2.0.0
+  isar_generator: ^3.1.0+1
+  build_runner: ^2.4.9
 
 # The following section is specific to Flutter packages.
 flutter:

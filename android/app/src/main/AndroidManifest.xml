@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -23,8 +22,10 @@
 
     <application
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="mindful">
+        android:label="mindful"
+        tools:ignore="UnusedAttribute">
 
         <activity
             android:name=".MainActivity"
@@ -54,7 +55,27 @@
         <!-- ________________________________ RECEIVERS _______________________________________ -->
 
         <!-- ________________________________ SERVICES _______________________________________ -->
-        <service android:name=".services.AppsTrackerService" />
+        <service
+            android:name=".services.MindfulAccessibilityService"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/service_config" />
+        </service>
+
+        <service
+            android:name=".services.AppsTrackerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="explanation_for_special_use" />
+        </service>
 
         <service android:name=".services.OverlayDialogService" />
 
