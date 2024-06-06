@@ -1,6 +1,7 @@
 package com.akamrnagar.mindful.helpers;
 
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -13,10 +14,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import io.flutter.Log;
 
 public class SharedPrefsHelper {
 
+    private static final String TAG = "Mindful.SharedPrefsHelper";
 
     public HashMap<String, Long> loadAppTimers(@NonNull SharedPreferences prefs) {
         String jsonString = prefs.getString(AppConstants.PREF_KEY_APP_TIMERS, "");
@@ -32,7 +33,7 @@ public class SharedPrefsHelper {
                 map.put(key, info.getLong("timer"));
             }
         } catch (JSONException e) {
-            Log.d(AppConstants.ERROR_TAG, "Error deserializing JSON to a map: " + e.getMessage());
+            Log.e(TAG, "loadAppTimers: Error while deserializing JSON to a map ",e);
         }
 
         return map;

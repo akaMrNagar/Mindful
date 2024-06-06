@@ -2,8 +2,8 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
-import 'package:mindful/ui/screens/home/privacy/tab_privacy.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
+import 'package:mindful/ui/screens/home/protection/tab_Protection.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
           const VerticalTabItem(
             title: "Protection",
             icon: FluentIcons.shield_lock_20_filled,
-            body: TabPrivacy(),
+            body: TabProtection(),
           ),
         ],
       ),

@@ -23,7 +23,8 @@ public class MindfulVpnService extends android.net.VpnService {
     public static final String ACTION_STOP_SERVICE = "com.akamrnagar.mindful.VpnService.STOP";
     public static final int SERVICE_ID = 302;
     private static final int SERVER_PORT = 3030;
-    private static final String SERVER_ADDRESS = "192.168.2.2";
+//    private static final String SERVER_ADDRESS = "192.168.2.2";
+    private static final String SERVER_ADDRESS = "127.0.0.1";
     private static final String DNS_ADDRESS = "192.168.1.1";
     private static final String ROUTE_ADDRESS = "0.0.0.0";
     private static final String TAG = "com.akamrnagar.mindful.VpnService";
@@ -53,7 +54,7 @@ public class MindfulVpnService extends android.net.VpnService {
         mPackages.add("app.rvx.android.youtube");
 
 
-        final Thread newThread = new Thread(getVpnRunnable(), "ToyVpnThread");
+        final Thread newThread = new Thread(getVpnRunnable(), TAG);
         setVpnThread(newThread);
         newThread.start();
         startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(getApplicationContext()));
@@ -67,9 +68,9 @@ public class MindfulVpnService extends android.net.VpnService {
             setVpnThread(null);
             stopForeground(true);
             stopSelf();
-            Log.d(TAG, "Vpn connection closed successfully");
+            Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
         } catch (IOException e) {
-            Log.e(TAG, "Unable to close interface and stop service", e);
+            Log.e(TAG, "disconnectVpn: Unable to close VPN connection", e);
         }
     }
 
@@ -82,7 +83,7 @@ public class MindfulVpnService extends android.net.VpnService {
                 try (DatagramChannel tunnel = DatagramChannel.open()) {
 
                     if (!MindfulVpnService.this.protect(tunnel.socket())) {
-                        throw new IllegalStateException("Cannot protect the tunnel");
+                        throw new IllegalStateException("Cannot protect the vpn socket tunnel");
                     }
 
                     tunnel.connect(serverAddress);
@@ -98,14 +99,13 @@ public class MindfulVpnService extends android.net.VpnService {
                         try {
                             builder.addAllowedApplication(packageName);
                         } catch (PackageManager.NameNotFoundException e) {
-                            Log.w(TAG, "Package not available: " + packageName, e);
+                            Log.e(TAG, "getVpnRunnable: Cannot find app with package " + packageName, e);
                         }
                     }
 
                     synchronized (MindfulVpnService.this) {
                         mVpnInterface = builder.establish();
-                        // Add log to notify vpn is connected
-                        Log.d(TAG, "run: vpn is connected");
+                        Log.d(TAG, "getVpnRunnable: VPN connected successfully");
                     }
 
                     // start foreground service and create notification
@@ -118,9 +118,9 @@ public class MindfulVpnService extends android.net.VpnService {
 
 
                 } catch (SocketException e) {
-                    Log.e(TAG, "Cannot use socket", e);
+                    Log.e(TAG, "run: Cannot use socket for VPN", e);
                 } catch (IOException | IllegalArgumentException e) {
-                    Log.e(TAG, "Connection failed, exiting", e);
+                    Log.e(TAG, "run: VPN connection failed, exiting", e);
                 }
             }
         };

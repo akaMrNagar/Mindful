@@ -28,8 +28,8 @@ dependencies:
   # Util
   flutter_riverpod: ^2.4.0
   path_provider: ^2.1.2
-  expandable_sliver_list: ^4.1.1
   sliver_tools: ^0.2.12
+  toast: ^0.3.0
 
 dev_dependencies:
   flutter_test:

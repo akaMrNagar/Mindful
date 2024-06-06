@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'protection_model.dart';
+part of 'protection_settings.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,14 @@ part of 'protection_model.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetProtectionModelCollection on Isar {
-  IsarCollection<ProtectionModel> get protectionModels => this.collection();
+extension GetProtectionSettingsCollection on Isar {
+  IsarCollection<ProtectionSettings> get protectionSettings =>
+      this.collection();
 }
 
-const ProtectionModelSchema = CollectionSchema(
-  name: r'ProtectionModel',
-  id: -7327399406332311139,
+const ProtectionSettingsSchema = CollectionSchema(
+  name: r'ProtectionSettings',
+  id: -5914651901244707324,
   properties: {
     r'blockAppsInternet': PropertySchema(
       id: 0,
@@ -43,22 +44,22 @@ const ProtectionModelSchema = CollectionSchema(
       type: IsarType.stringList,
     )
   },
-  estimateSize: _protectionModelEstimateSize,
-  serialize: _protectionModelSerialize,
-  deserialize: _protectionModelDeserialize,
-  deserializeProp: _protectionModelDeserializeProp,
+  estimateSize: _protectionSettingsEstimateSize,
+  serialize: _protectionSettingsSerialize,
+  deserialize: _protectionSettingsDeserialize,
+  deserializeProp: _protectionSettingsDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _protectionModelGetId,
-  getLinks: _protectionModelGetLinks,
-  attach: _protectionModelAttach,
+  getId: _protectionSettingsGetId,
+  getLinks: _protectionSettingsGetLinks,
+  attach: _protectionSettingsAttach,
   version: '3.1.0+1',
 );
 
-int _protectionModelEstimateSize(
-  ProtectionModel object,
+int _protectionSettingsEstimateSize(
+  ProtectionSettings object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -80,8 +81,8 @@ int _protectionModelEstimateSize(
   return bytesCount;
 }
 
-void _protectionModelSerialize(
-  ProtectionModel object,
+void _protectionSettingsSerialize(
+  ProtectionSettings object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -93,23 +94,24 @@ void _protectionModelSerialize(
   writer.writeStringList(offsets[4], object.blockedWebsites);
 }
 
-ProtectionModel _protectionModelDeserialize(
+ProtectionSettings _protectionSettingsDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = ProtectionModel(
+  final object = ProtectionSettings(
     blockAppsInternet: reader.readBoolOrNull(offsets[0]) ?? false,
     blockCustomWebsites: reader.readBoolOrNull(offsets[1]) ?? false,
     blockNsfwSites: reader.readBoolOrNull(offsets[2]) ?? false,
     blockedApps: reader.readStringList(offsets[3]) ?? const [],
-    blockedWebsites: reader.readStringList(offsets[4]) ?? const [],
+    blockedWebsites: reader.readStringList(offsets[4]) ??
+        const ['google.com', 'instagram.com', 'youtube.com'],
   );
   return object;
 }
 
-P _protectionModelDeserializeProp<P>(
+P _protectionSettingsDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -125,36 +127,38 @@ P _protectionModelDeserializeProp<P>(
     case 3:
       return (reader.readStringList(offset) ?? const []) as P;
     case 4:
-      return (reader.readStringList(offset) ?? const []) as P;
+      return (reader.readStringList(offset) ??
+          const ['google.com', 'instagram.com', 'youtube.com']) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _protectionModelGetId(ProtectionModel object) {
+Id _protectionSettingsGetId(ProtectionSettings object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _protectionModelGetLinks(ProtectionModel object) {
+List<IsarLinkBase<dynamic>> _protectionSettingsGetLinks(
+    ProtectionSettings object) {
   return [];
 }
 
-void _protectionModelAttach(
-    IsarCollection<dynamic> col, Id id, ProtectionModel object) {}
+void _protectionSettingsAttach(
+    IsarCollection<dynamic> col, Id id, ProtectionSettings object) {}
 
-extension ProtectionModelQueryWhereSort
-    on QueryBuilder<ProtectionModel, ProtectionModel, QWhere> {
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterWhere> anyId() {
+extension ProtectionSettingsQueryWhereSort
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QWhere> {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension ProtectionModelQueryWhere
-    on QueryBuilder<ProtectionModel, ProtectionModel, QWhereClause> {
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterWhereClause> idEqualTo(
-      Id id) {
+extension ProtectionSettingsQueryWhere
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QWhereClause> {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterWhereClause>
+      idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -163,7 +167,7 @@ extension ProtectionModelQueryWhere
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterWhereClause>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterWhereClause>
       idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -186,7 +190,7 @@ extension ProtectionModelQueryWhere
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterWhereClause>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterWhereClause>
       idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -195,9 +199,8 @@ extension ProtectionModelQueryWhere
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterWhereClause> idLessThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterWhereClause>
+      idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -205,7 +208,8 @@ extension ProtectionModelQueryWhere
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterWhereClause> idBetween(
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterWhereClause>
+      idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -222,9 +226,9 @@ extension ProtectionModelQueryWhere
   }
 }
 
-extension ProtectionModelQueryFilter
-    on QueryBuilder<ProtectionModel, ProtectionModel, QFilterCondition> {
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+extension ProtectionSettingsQueryFilter
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QFilterCondition> {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockAppsInternetEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -234,7 +238,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockCustomWebsitesEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -244,7 +248,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockNsfwSitesEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -254,7 +258,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -268,7 +272,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementGreaterThan(
     String value, {
     bool include = false,
@@ -284,7 +288,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementLessThan(
     String value, {
     bool include = false,
@@ -300,7 +304,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementBetween(
     String lower,
     String upper, {
@@ -320,7 +324,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -334,7 +338,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -348,7 +352,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -359,7 +363,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -370,7 +374,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -380,7 +384,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -390,7 +394,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -403,7 +407,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -416,7 +420,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -429,7 +433,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsLengthLessThan(
     int length, {
     bool include = false,
@@ -445,7 +449,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsLengthGreaterThan(
     int length, {
     bool include = false,
@@ -461,7 +465,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedAppsLengthBetween(
     int lower,
     int upper, {
@@ -479,7 +483,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -493,7 +497,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementGreaterThan(
     String value, {
     bool include = false,
@@ -509,7 +513,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementLessThan(
     String value, {
     bool include = false,
@@ -525,7 +529,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementBetween(
     String lower,
     String upper, {
@@ -545,7 +549,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -559,7 +563,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -573,7 +577,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementContains(String value,
           {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -585,7 +589,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementMatches(String pattern,
           {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -597,7 +601,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -607,7 +611,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -617,7 +621,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -630,7 +634,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -643,7 +647,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -656,7 +660,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesLengthLessThan(
     int length, {
     bool include = false,
@@ -672,7 +676,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesLengthGreaterThan(
     int length, {
     bool include = false,
@@ -688,7 +692,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       blockedWebsitesLengthBetween(
     int lower,
     int upper, {
@@ -706,7 +710,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -716,7 +720,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       idGreaterThan(
     Id value, {
     bool include = false,
@@ -730,7 +734,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       idLessThan(
     Id value, {
     bool include = false,
@@ -744,7 +748,7 @@ extension ProtectionModelQueryFilter
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterFilterCondition>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
       idBetween(
     Id lower,
     Id upper, {
@@ -763,50 +767,50 @@ extension ProtectionModelQueryFilter
   }
 }
 
-extension ProtectionModelQueryObject
-    on QueryBuilder<ProtectionModel, ProtectionModel, QFilterCondition> {}
+extension ProtectionSettingsQueryObject
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QFilterCondition> {}
 
-extension ProtectionModelQueryLinks
-    on QueryBuilder<ProtectionModel, ProtectionModel, QFilterCondition> {}
+extension ProtectionSettingsQueryLinks
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QFilterCondition> {}
 
-extension ProtectionModelQuerySortBy
-    on QueryBuilder<ProtectionModel, ProtectionModel, QSortBy> {
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+extension ProtectionSettingsQuerySortBy
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QSortBy> {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       sortByBlockAppsInternet() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockAppsInternet', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       sortByBlockAppsInternetDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockAppsInternet', Sort.desc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       sortByBlockCustomWebsites() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockCustomWebsites', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       sortByBlockCustomWebsitesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockCustomWebsites', Sort.desc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       sortByBlockNsfwSites() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       sortByBlockNsfwSitesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.desc);
@@ -814,94 +818,96 @@ extension ProtectionModelQuerySortBy
   }
 }
 
-extension ProtectionModelQuerySortThenBy
-    on QueryBuilder<ProtectionModel, ProtectionModel, QSortThenBy> {
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+extension ProtectionSettingsQuerySortThenBy
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QSortThenBy> {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       thenByBlockAppsInternet() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockAppsInternet', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       thenByBlockAppsInternetDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockAppsInternet', Sort.desc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       thenByBlockCustomWebsites() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockCustomWebsites', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       thenByBlockCustomWebsitesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockCustomWebsites', Sort.desc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       thenByBlockNsfwSites() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
       thenByBlockNsfwSitesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.desc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy> thenById() {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
+      thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
+      thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 }
 
-extension ProtectionModelQueryWhereDistinct
-    on QueryBuilder<ProtectionModel, ProtectionModel, QDistinct> {
-  QueryBuilder<ProtectionModel, ProtectionModel, QDistinct>
+extension ProtectionSettingsQueryWhereDistinct
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct> {
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
       distinctByBlockAppsInternet() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockAppsInternet');
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QDistinct>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
       distinctByBlockCustomWebsites() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockCustomWebsites');
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QDistinct>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
       distinctByBlockNsfwSites() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockNsfwSites');
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QDistinct>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
       distinctByBlockedApps() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockedApps');
     });
   }
 
-  QueryBuilder<ProtectionModel, ProtectionModel, QDistinct>
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
       distinctByBlockedWebsites() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockedWebsites');
@@ -909,43 +915,43 @@ extension ProtectionModelQueryWhereDistinct
   }
 }
 
-extension ProtectionModelQueryProperty
-    on QueryBuilder<ProtectionModel, ProtectionModel, QQueryProperty> {
-  QueryBuilder<ProtectionModel, int, QQueryOperations> idProperty() {
+extension ProtectionSettingsQueryProperty
+    on QueryBuilder<ProtectionSettings, ProtectionSettings, QQueryProperty> {
+  QueryBuilder<ProtectionSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<ProtectionModel, bool, QQueryOperations>
+  QueryBuilder<ProtectionSettings, bool, QQueryOperations>
       blockAppsInternetProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockAppsInternet');
     });
   }
 
-  QueryBuilder<ProtectionModel, bool, QQueryOperations>
+  QueryBuilder<ProtectionSettings, bool, QQueryOperations>
       blockCustomWebsitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockCustomWebsites');
     });
   }
 
-  QueryBuilder<ProtectionModel, bool, QQueryOperations>
+  QueryBuilder<ProtectionSettings, bool, QQueryOperations>
       blockNsfwSitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockNsfwSites');
     });
   }
 
-  QueryBuilder<ProtectionModel, List<String>, QQueryOperations>
+  QueryBuilder<ProtectionSettings, List<String>, QQueryOperations>
       blockedAppsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockedApps');
     });
   }
 
-  QueryBuilder<ProtectionModel, List<String>, QQueryOperations>
+  QueryBuilder<ProtectionSettings, List<String>, QQueryOperations>
       blockedWebsitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockedWebsites');

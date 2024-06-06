@@ -87,7 +87,7 @@ class ApplicationTile extends ConsumerWidget {
                       if (value != timer) {
                         ref
                             .read(focusProvider.notifier)
-                            .setAppTimer(app.packageName, value);
+                            .updateAppTimer(app.packageName, value);
                       }
                     },
                   );

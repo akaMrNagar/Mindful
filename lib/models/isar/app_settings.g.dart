@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'settings_model.dart';
+part of 'app_settings.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,37 +9,37 @@ part of 'settings_model.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetSettingsModelCollection on Isar {
-  IsarCollection<SettingsModel> get settingsModels => this.collection();
+extension GetAppSettingsCollection on Isar {
+  IsarCollection<AppSettings> get appSettings => this.collection();
 }
 
-const SettingsModelSchema = CollectionSchema(
-  name: r'SettingsModel',
-  id: 4013777327486952906,
+const AppSettingsSchema = CollectionSchema(
+  name: r'AppSettings',
+  id: -5633561779022347008,
   properties: {
     r'themeMode': PropertySchema(
       id: 0,
       name: r'themeMode',
       type: IsarType.byte,
-      enumMap: _SettingsModelthemeModeEnumValueMap,
+      enumMap: _AppSettingsthemeModeEnumValueMap,
     )
   },
-  estimateSize: _settingsModelEstimateSize,
-  serialize: _settingsModelSerialize,
-  deserialize: _settingsModelDeserialize,
-  deserializeProp: _settingsModelDeserializeProp,
+  estimateSize: _appSettingsEstimateSize,
+  serialize: _appSettingsSerialize,
+  deserialize: _appSettingsDeserialize,
+  deserializeProp: _appSettingsDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _settingsModelGetId,
-  getLinks: _settingsModelGetLinks,
-  attach: _settingsModelAttach,
+  getId: _appSettingsGetId,
+  getLinks: _appSettingsGetLinks,
+  attach: _appSettingsAttach,
   version: '3.1.0+1',
 );
 
-int _settingsModelEstimateSize(
-  SettingsModel object,
+int _appSettingsEstimateSize(
+  AppSettings object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -47,8 +47,8 @@ int _settingsModelEstimateSize(
   return bytesCount;
 }
 
-void _settingsModelSerialize(
-  SettingsModel object,
+void _appSettingsSerialize(
+  AppSettings object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -56,21 +56,21 @@ void _settingsModelSerialize(
   writer.writeByte(offsets[0], object.themeMode.index);
 }
 
-SettingsModel _settingsModelDeserialize(
+AppSettings _appSettingsDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = SettingsModel(
-    themeMode: _SettingsModelthemeModeValueEnumMap[
-            reader.readByteOrNull(offsets[0])] ??
-        ThemeMode.system,
+  final object = AppSettings(
+    themeMode:
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[0])] ??
+            ThemeMode.system,
   );
   return object;
 }
 
-P _settingsModelDeserializeProp<P>(
+P _appSettingsDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -78,7 +78,7 @@ P _settingsModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (_SettingsModelthemeModeValueEnumMap[
+      return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
     default:
@@ -86,41 +86,40 @@ P _settingsModelDeserializeProp<P>(
   }
 }
 
-const _SettingsModelthemeModeEnumValueMap = {
+const _AppSettingsthemeModeEnumValueMap = {
   'system': 0,
   'light': 1,
   'dark': 2,
 };
-const _SettingsModelthemeModeValueEnumMap = {
+const _AppSettingsthemeModeValueEnumMap = {
   0: ThemeMode.system,
   1: ThemeMode.light,
   2: ThemeMode.dark,
 };
 
-Id _settingsModelGetId(SettingsModel object) {
+Id _appSettingsGetId(AppSettings object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _settingsModelGetLinks(SettingsModel object) {
+List<IsarLinkBase<dynamic>> _appSettingsGetLinks(AppSettings object) {
   return [];
 }
 
-void _settingsModelAttach(
-    IsarCollection<dynamic> col, Id id, SettingsModel object) {}
+void _appSettingsAttach(
+    IsarCollection<dynamic> col, Id id, AppSettings object) {}
 
-extension SettingsModelQueryWhereSort
-    on QueryBuilder<SettingsModel, SettingsModel, QWhere> {
-  QueryBuilder<SettingsModel, SettingsModel, QAfterWhere> anyId() {
+extension AppSettingsQueryWhereSort
+    on QueryBuilder<AppSettings, AppSettings, QWhere> {
+  QueryBuilder<AppSettings, AppSettings, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension SettingsModelQueryWhere
-    on QueryBuilder<SettingsModel, SettingsModel, QWhereClause> {
-  QueryBuilder<SettingsModel, SettingsModel, QAfterWhereClause> idEqualTo(
-      Id id) {
+extension AppSettingsQueryWhere
+    on QueryBuilder<AppSettings, AppSettings, QWhereClause> {
+  QueryBuilder<AppSettings, AppSettings, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
         lower: id,
@@ -129,7 +128,7 @@ extension SettingsModelQueryWhere
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterWhereClause> idNotEqualTo(
+  QueryBuilder<AppSettings, AppSettings, QAfterWhereClause> idNotEqualTo(
       Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -152,8 +151,7 @@ extension SettingsModelQueryWhere
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterWhereClause> idGreaterThan(
-      Id id,
+  QueryBuilder<AppSettings, AppSettings, QAfterWhereClause> idGreaterThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -162,8 +160,7 @@ extension SettingsModelQueryWhere
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterWhereClause> idLessThan(
-      Id id,
+  QueryBuilder<AppSettings, AppSettings, QAfterWhereClause> idLessThan(Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -172,7 +169,7 @@ extension SettingsModelQueryWhere
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterWhereClause> idBetween(
+  QueryBuilder<AppSettings, AppSettings, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -189,9 +186,9 @@ extension SettingsModelQueryWhere
   }
 }
 
-extension SettingsModelQueryFilter
-    on QueryBuilder<SettingsModel, SettingsModel, QFilterCondition> {
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition> idEqualTo(
+extension AppSettingsQueryFilter
+    on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -201,8 +198,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition>
-      idGreaterThan(
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> idGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -215,7 +211,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition> idLessThan(
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -228,7 +224,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition> idBetween(
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -245,7 +241,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition>
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeEqualTo(ThemeMode value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -255,7 +251,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition>
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeGreaterThan(
     ThemeMode value, {
     bool include = false,
@@ -269,7 +265,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition>
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeLessThan(
     ThemeMode value, {
     bool include = false,
@@ -283,7 +279,7 @@ extension SettingsModelQueryFilter
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterFilterCondition>
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeBetween(
     ThemeMode lower,
     ThemeMode upper, {
@@ -302,74 +298,72 @@ extension SettingsModelQueryFilter
   }
 }
 
-extension SettingsModelQueryObject
-    on QueryBuilder<SettingsModel, SettingsModel, QFilterCondition> {}
+extension AppSettingsQueryObject
+    on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {}
 
-extension SettingsModelQueryLinks
-    on QueryBuilder<SettingsModel, SettingsModel, QFilterCondition> {}
+extension AppSettingsQueryLinks
+    on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {}
 
-extension SettingsModelQuerySortBy
-    on QueryBuilder<SettingsModel, SettingsModel, QSortBy> {
-  QueryBuilder<SettingsModel, SettingsModel, QAfterSortBy> sortByThemeMode() {
+extension AppSettingsQuerySortBy
+    on QueryBuilder<AppSettings, AppSettings, QSortBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterSortBy>
-      sortByThemeModeDesc() {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByThemeModeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.desc);
     });
   }
 }
 
-extension SettingsModelQuerySortThenBy
-    on QueryBuilder<SettingsModel, SettingsModel, QSortThenBy> {
-  QueryBuilder<SettingsModel, SettingsModel, QAfterSortBy> thenById() {
+extension AppSettingsQuerySortThenBy
+    on QueryBuilder<AppSettings, AppSettings, QSortThenBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterSortBy> thenByThemeMode() {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
     });
   }
 
-  QueryBuilder<SettingsModel, SettingsModel, QAfterSortBy>
-      thenByThemeModeDesc() {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByThemeModeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.desc);
     });
   }
 }
 
-extension SettingsModelQueryWhereDistinct
-    on QueryBuilder<SettingsModel, SettingsModel, QDistinct> {
-  QueryBuilder<SettingsModel, SettingsModel, QDistinct> distinctByThemeMode() {
+extension AppSettingsQueryWhereDistinct
+    on QueryBuilder<AppSettings, AppSettings, QDistinct> {
+  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'themeMode');
     });
   }
 }
 
-extension SettingsModelQueryProperty
-    on QueryBuilder<SettingsModel, SettingsModel, QQueryProperty> {
-  QueryBuilder<SettingsModel, int, QQueryOperations> idProperty() {
+extension AppSettingsQueryProperty
+    on QueryBuilder<AppSettings, AppSettings, QQueryProperty> {
+  QueryBuilder<AppSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<SettingsModel, ThemeMode, QQueryOperations> themeModeProperty() {
+  QueryBuilder<AppSettings, ThemeMode, QQueryOperations> themeModeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'themeMode');
     });

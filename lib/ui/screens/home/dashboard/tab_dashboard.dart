@@ -4,7 +4,6 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
-import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/usage_chart_panel.dart';
 import 'package:mindful/ui/common/usage_cards_sliver.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
@@ -59,19 +58,12 @@ class TabDashboard extends ConsumerWidget {
                 .update((_) => dow),
           ),
 
-          /// Most used apps text
-          const SliverFlexiblePinnedHeader(
-            minHeight: 32,
-            maxHeight: 48,
-            alignment: Alignment.centerLeft,
-            child: Text("Most used apps"),
-          ),
-
-          /// Apps list
+          /// Most used apps list
           AnimatedAppsList(
             usageType: usageType,
             selectedDoW: dayOfWeek,
             itemExtent: 64,
+            listLabel: "Most used apps",
             itemBuilder: (context, appPackage) => ApplicationTile(
               appPackage: appPackage,
               usageType: usageType,

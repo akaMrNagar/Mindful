@@ -18,4 +18,10 @@ class SharePrefsService {
   /// This update will trigger timer refresh in [AppsTrackerService]
   void updateAppTimers(Map<String, int> appTimers) =>
       _prefs.setString(AppConstants.prefKeyAppTimers, jsonEncode(appTimers));
+
+  // void toggleAppTrackingStatus(bool isAppTrackingOn) =>
+  //     _prefs.setBool(AppConstants.prefKeyAppTrackingStatus, isAppTrackingOn);
+
+  void toggleNsfwBlockingStatus(bool isBlockingNsfw) =>
+      _prefs.setBool(AppConstants.prefKeyNsfwBlockingStatus, isBlockingNsfw);
 }

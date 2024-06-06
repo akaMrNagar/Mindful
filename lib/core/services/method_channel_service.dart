@@ -14,26 +14,20 @@ class MethodChannelService {
   MethodChannelService._() {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'openAppDashboard') {
+      if (call.method == 'updateTargetedApp') {
         targetedAppPackage = call.arguments;
       }
     });
   }
 
-  Future<bool> startTrackingService() async =>
-      await _methodChannel.invokeMethod('startTrackingService');
-
-  Future<bool> stopTrackingService() async =>
-      await _methodChannel.invokeMethod('stopTrackingService');
+  Future<bool> refreshTrackerService() async =>
+      await _methodChannel.invokeMethod('refreshTrackerService');
 
   Future<bool> startVpnService() async =>
       await _methodChannel.invokeMethod('startVpnService');
 
   Future<bool> stopVpnService() async =>
       await _methodChannel.invokeMethod('stopVpnService');
-
-  Future<bool> refreshAppTimers() async =>
-      await _methodChannel.invokeMethod('refreshAppTimers');
 
   Future<bool> cancelBedtimeTask() async =>
       await _methodChannel.invokeMethod('cancelBedtimeTask');

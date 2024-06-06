@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
-import 'package:mindful/models/isar/bedtime_model.dart';
+import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/models/isar/bedtime_settings.dart';
 
 final bedtimeProvider =
-    StateNotifierProvider<BedtimeNotifier, BedtimeModel>((ref) {
+    StateNotifierProvider<BedtimeNotifier, BedtimeSettings>((ref) {
   return BedtimeNotifier();
 });
 
-class BedtimeNotifier extends StateNotifier<BedtimeModel> {
-  BedtimeNotifier() : super(const BedtimeModel()) {
-    // state = LocalStorage.instance.loadBedtimeInfo();
+class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
+  BedtimeNotifier() : super(const BedtimeSettings()) {
+    _init();
   }
 
-  void toggleBedtimeScheduleStatus() {
-    state = state.copyWith(scheduleStatus: !state.scheduleStatus);
-    // LocalStorage.instance.saveBedtimeInfo(state);
+  void _init() async {
+    state = await IsarDbService.instance.loadBedtimeSettings();
 
-    // if (state.bedtimeStatus) {
-    //   MindfulNativePlugin.instance.scheduleBedtimeTask(info: state);
-    // } else {
-    //   MindfulNativePlugin.instance.cancelBedtimeTask();
-    // }
+    /// Listen to provider and save changes to isar database
+    addListener((state) async {
+      await IsarDbService.instance.saveBedtimeSettings(state);
+    });
   }
+
+  void toggleBedtimeScheduleStatus() =>
+      state = state.copyWith(scheduleStatus: !state.scheduleStatus);
 
   void setBedtimeStart(TimeOfDay timeOfDay) =>
-      state = state.copyWith(startTimeInMinutes: timeOfDay.toMinutes());
+      state = state.copyWith(startTimeInSec: timeOfDay.toSeconds());
 
   void setBedtimeEnd(TimeOfDay timeOfDay) =>
-      state = state.copyWith(endTimeInMinutes: timeOfDay.toMinutes());
+      state = state.copyWith(endTimeInSec: timeOfDay.toSeconds());
 
   void toggleScheduleDays(int index) {
     var days = state.scheduleDays.toList();

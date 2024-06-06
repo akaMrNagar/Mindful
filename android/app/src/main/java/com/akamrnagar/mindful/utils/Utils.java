@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,12 +13,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
-import io.flutter.Log;
-
 public class Utils {
+    private static final String TAG = "Mindful.Utils";
 
     private static final int SYSTEM_APP_MASK = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
 
@@ -53,7 +56,7 @@ public class Utils {
         try {
             appIcon = encodeToBase64(icon);
         } catch (Exception e) {
-            Log.e(AppConstants.ERROR_TAG, "Cannot parse app icon: " + e.getMessage());
+            Log.e(TAG, "getEncodedAppIcon: Cannot parse app icon from memory", e);
         }
         return appIcon;
     }
@@ -66,8 +69,10 @@ public class Utils {
      * @return A HashMap containing the deserialized data.
      */
     @NonNull
-    public static HashMap<String, Long> deserializeMap(String jsonString) {
+    public static HashMap<String, Long> jsonStrToStringLongHashMap(@NonNull String jsonString) {
         HashMap<String, Long> map = new HashMap<>();
+        if (jsonString.isEmpty()) return map;
+
         try {
             JSONObject jsonObject = new JSONObject(jsonString);
 
@@ -77,9 +82,74 @@ public class Utils {
                 map.put(key, value);
             }
         } catch (JSONException e) {
-            Log.e(AppConstants.ERROR_TAG, "Error deserializing JSON to a map: " + e.getMessage());
+            Log.e(TAG, "jsonStrToAppTimersMap: Error deserializing JSON to timers map ", e);
         }
         return map;
+    }
+
+    /**
+     * Deserializes a JSON string into a HashSet of String.
+     *
+     * @param jsonString The JSON string to deserialize.
+     * @return A HashSet containing the deserialized data.
+     */
+    @NonNull
+    public static HashSet<String> jsonStrToStringHashSet(@NonNull String jsonString) {
+        HashSet<String> set = new HashSet<>();
+        if (jsonString.isEmpty()) return set;
+
+        try {
+            JSONObject jsonObject = new JSONObject(jsonString);
+
+            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                set.add(it.next());
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to locked apps hashset ", e);
+        }
+        return set;
+    }
+
+    public static String parseHostNameFromUrl(String url) {
+        URI uri;
+
+        try {
+            uri = new URI(url);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            return url;
+        }
+
+        String hostName = uri.getHost();
+
+        // If null, then hostname = the original url ?
+        if (hostName == null) {
+            hostName = url;
+        }
+
+        hostName = hostName.replace("https://", "").replace("http://", "").replace("www.", "");
+
+
+        if (hostName.contains("www.")) {
+            hostName = hostName.substring(4);
+        }
+
+        // Fuck you websites that use mobile prefix and break my hashmap
+        if (hostName.contains("mobile.")) {
+            hostName = hostName.substring(7);
+        } else if (hostName.contains("m.") && hostName.indexOf("m.") < 3) {
+            // medium.com => dium.com smh todo?
+            hostName = hostName.substring(2);
+        }
+
+        // Fuck you no path allowed
+        if (hostName.contains("/")) {
+            return hostName.substring(0, hostName.indexOf("/"));
+        }
+
+//        Log.d(TAG, "getHostName: url++ = " + hostName);
+        return hostName;
+
     }
 
 

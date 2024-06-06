@@ -2,10 +2,12 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/providers/protection_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_flexible_header.dart';
-import 'package:mindful/ui/screens/home/privacy/block_internet.dart';
-import 'package:mindful/ui/screens/home/privacy/block_websites.dart';
+import 'package:mindful/ui/dialogs/input_field_dialog.dart';
+import 'package:mindful/ui/screens/home/protection/block_internet.dart';
+import 'package:mindful/ui/screens/home/protection/block_websites.dart';
 import 'package:mindful/ui/common/segmented_icon_buttons.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -13,8 +15,29 @@ final _selectedProvider = StateProvider<int>((ref) {
   return 0;
 });
 
-class TabPrivacy extends ConsumerWidget {
-  const TabPrivacy({super.key});
+class TabProtection extends ConsumerWidget {
+  const TabProtection({super.key});
+
+  void onPressedFab(BuildContext context, WidgetRef ref) async {
+    final url = await showInputWebsiteDialog(context);
+    if (url == null) return;
+    debugPrint("URL: $url");
+
+    try {
+      /// Extract host
+      final host = Uri.parse(url).host;
+      if (host.isEmpty) {
+        throw Exception("Unable to parse url");
+      } else {
+        /// Add to distraction sites list
+        ref.read(protectionProvider.notifier).addSiteToBlockedList(host);
+      }
+
+      debugPrint("HOST: $host");
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -61,8 +84,9 @@ class TabPrivacy extends ConsumerWidget {
               bottom: 48,
               right: 16,
               child: FloatingActionButton(
+                heroTag: 'InputWebsiteDialog',
+                onPressed: () => onPressedFab(context, ref),
                 child: const Icon(FluentIcons.add_20_filled),
-                onPressed: () {},
               ),
             )
         ],

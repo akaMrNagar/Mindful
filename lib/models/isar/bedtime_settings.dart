@@ -1,31 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+
 import 'package:mindful/core/extensions/ext_int.dart';
 
-part 'bedtime_model.g.dart';
+part 'bedtime_settings.g.dart';
 
 /// Bedtime model used for determining the actions to perform when bedtime schedule task starts.
 @immutable
 @collection
-class BedtimeModel {
+class BedtimeSettings {
   /// ID for isar database
   Id get id => 0;
 
-  /// [TimeOfDay] in minutes from where the bedtime schedule task will start.
-  /// It is stored as total minutes.
-  final int startTimeInMinutes;
+  /// [TimeOfDay] in seconds from where the bedtime schedule task will start.
+  /// It is stored as total seconds.
+  final int startTimeInSec;
 
   /// Getter for bedtime start [TimeOfDay]
   @ignore
-  TimeOfDay get startTime => startTimeInMinutes.toTimeOfDay;
+  TimeOfDay get startTime => startTimeInSec.toTimeOfDay;
 
-  /// [TimeOfDay] in minutes when the bedtime schedule task will end
-  /// It is stored as total minutes.
-  final int endTimeInMinutes;
+  /// [TimeOfDay] in seconds when the bedtime schedule task will end
+  /// It is stored as total seconds.
+  final int endTimeInSec;
 
   /// Getter for bedtime end [TimeOfDay]
   @ignore
-  TimeOfDay get endTime => endTimeInMinutes.toTimeOfDay;
+  TimeOfDay get endTime => endTimeInSec.toTimeOfDay;
 
   /// Days on which the task will execute.
   /// The list contains 7 booleans for each day of week.
@@ -53,9 +54,9 @@ class BedtimeModel {
   final List<String> distractionApps;
 
   /// Bedtime model used for determining the actions to perform when bedtime schedule task starts.
-  const BedtimeModel({
-    this.startTimeInMinutes = 0,
-    this.endTimeInMinutes = 0,
+  const BedtimeSettings({
+    this.startTimeInSec = 0,
+    this.endTimeInSec = 0,
     this.scheduleDays = const [false, true, true, true, true, true, false],
     this.scheduleStatus = false,
     this.startScreenLockdown = false,
@@ -64,9 +65,9 @@ class BedtimeModel {
     this.distractionApps = const [],
   });
 
-  BedtimeModel copyWith({
-    int? startTimeInMinutes,
-    int? endTimeInMinutes,
+  BedtimeSettings copyWith({
+    int? startTimeInSec,
+    int? endTimeInSec,
     List<bool>? scheduleDays,
     bool? scheduleStatus,
     bool? startScreenLockdown,
@@ -74,9 +75,9 @@ class BedtimeModel {
     bool? startDnd,
     List<String>? distractionApps,
   }) {
-    return BedtimeModel(
-      startTimeInMinutes: startTimeInMinutes ?? this.startTimeInMinutes,
-      endTimeInMinutes: endTimeInMinutes ?? this.endTimeInMinutes,
+    return BedtimeSettings(
+      startTimeInSec: startTimeInSec ?? this.startTimeInSec,
+      endTimeInSec: endTimeInSec ?? this.endTimeInSec,
       scheduleDays: scheduleDays ?? this.scheduleDays,
       scheduleStatus: scheduleStatus ?? this.scheduleStatus,
       startScreenLockdown: startScreenLockdown ?? this.startScreenLockdown,
@@ -85,5 +86,12 @@ class BedtimeModel {
       startDnd: startDnd ?? this.startDnd,
       distractionApps: distractionApps ?? this.distractionApps,
     );
+  }
+
+  
+
+  @override
+  String toString() {
+    return 'BedtimeSettings(startTimeInSec: $startTimeInSec, endTimeInSec: $endTimeInSec, scheduleDays: $scheduleDays, scheduleStatus: $scheduleStatus, startScreenLockdown: $startScreenLockdown, startInternetLockdown: $startInternetLockdown, startDnd: $startDnd, distractionApps: $distractionApps)';
   }
 }

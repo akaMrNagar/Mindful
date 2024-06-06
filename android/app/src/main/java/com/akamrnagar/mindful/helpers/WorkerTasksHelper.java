@@ -13,7 +13,6 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.workers.BedtimeScheduleWorker;
 
 import java.util.Date;
@@ -23,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 import io.flutter.plugin.common.MethodCall;
 
 public class WorkerTasksHelper {
+
+    private static final String TAG = "Mindful.WorkerTasksHelper";
 
     public static void cancelBedtimeTask(Context context) {
         WorkManager.getInstance(context).cancelAllWorkByTag(BEDTIME_WORKER_TAG);
@@ -37,11 +38,10 @@ public class WorkerTasksHelper {
         List<Boolean> selectedDays = call.argument("selectedDays");
 
         if (startMsEpoch == null || durationMs == null || toggleDnd == null || pauseApps == null || selectedDays == null) {
-            Log.d(AppConstants.DEBUG_TAG, "WorkersHelper.scheduleBedtimeTask(): Arguments not found");
+            Log.w(TAG, "scheduleBedtimeTask: Null argument passed from method call");
             return;
         }
 
-        Log.d(AppConstants.DEBUG_TAG, "WorkerTaskManager.scheduleBedtimeTask(): called");
 
         boolean[] days = new boolean[selectedDays.size()];
         for (int i = 0; i < selectedDays.size(); i++) {
@@ -76,6 +76,6 @@ public class WorkerTasksHelper {
         workManager.enqueueUniquePeriodicWork(BEDTIME_WORKER_ID_STOP, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, stopBedtimeRequest);
 
 
-        Log.d(AppConstants.DEBUG_TAG, "Task scheduled successfully for: " + new Date(startMsEpoch).getTime());
+        Log.d(TAG, "scheduleBedtimeTask: Task scheduled successfully for "+ new Date(startMsEpoch).getTime());
     }
 }

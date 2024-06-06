@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
-part 'settings_model.g.dart';
+part 'app_settings.g.dart';
 
 /// All the global settings for the app is stored in this model
 /// like [themeMode],
 @immutable
 @collection
-class SettingsModel {
+class AppSettings {
   /// ID for isar database
   Id get id => 0;
 
@@ -15,7 +15,7 @@ class SettingsModel {
   @enumerated
   final ThemeMode themeMode;
 
-  const SettingsModel({
+  const AppSettings({
     this.themeMode = ThemeMode.system,
   });
 }

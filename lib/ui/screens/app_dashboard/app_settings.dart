@@ -60,7 +60,7 @@ class AppSettings extends StatelessWidget {
                             if (value != timer) {
                               ref
                                   .read(focusProvider.notifier)
-                                  .setAppTimer(app.packageName, value);
+                                  .updateAppTimer(app.packageName, value);
                             }
                           },
                         );

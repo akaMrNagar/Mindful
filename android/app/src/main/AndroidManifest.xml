@@ -7,12 +7,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-
-
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -26,6 +23,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="mindful"
         tools:ignore="UnusedAttribute">
+        <service
+            android:name=".services.MindfulTrackerService"
+            android:enabled="true"
+            android:exported="false"></service>
 
         <activity
             android:name=".MainActivity"
@@ -48,12 +49,17 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- ________________________________ RECEIVERS _______________________________________ -->
-
+        </activity> <!-- ________________________________ RECEIVERS _______________________________________ -->
+        <!-- <receiver -->
+        <!-- android:name=".receivers.AppLaunchReceiver" -->
+        <!-- android:exported="false"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="com.akamrnagar.mindful.ACTION_APP_LAUNCHED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <!-- ________________________________ SERVICES _______________________________________ -->
         <service
             android:name=".services.MindfulAccessibilityService"
@@ -67,18 +73,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/service_config" />
         </service>
-
-        <service
-            android:name=".services.AppsTrackerService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="explanation_for_special_use" />
-        </service>
-
         <service android:name=".services.OverlayDialogService" />
-
         <service
             android:name=".services.MindfulVpnService"
             android:exported="false"
@@ -86,15 +81,15 @@
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="vpn" />
+
             <intent-filter>
                 <action android:name="android.net.VpnService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
                 android:value="false" />
-        </service>
-
-        <!-- Don't delete the meta-data below.This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        </service> <!-- Don't delete the meta-data below.This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

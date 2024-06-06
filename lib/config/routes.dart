@@ -3,7 +3,7 @@ import 'package:mindful/ui/screens/home/home_screen.dart';
 
 class AppRoutes {
   static const String homeScreen = '/';
-  static const String externalScreen = '/external';
+  static const String externalScreen = '/externalAppDashboard';
 
   static final mindfulRoutes = {
     homeScreen: (context) => const HomeScreen(),

@@ -50,8 +50,6 @@ class BlockInternet extends StatelessWidget {
           ),
         ),
 
-      
-
         /// Selected Apps list
         Consumer(
           builder: (_, WidgetRef ref, __) {
@@ -60,23 +58,26 @@ class BlockInternet extends StatelessWidget {
             return AnimatedAppsList(
               itemExtent: 56,
               selectedDoW: dayOfWeek,
-              usageType: UsageType.screenUsage,
+              usageType: UsageType.networkUsage,
               sortApps: (apps) {
                 return [
                   ...apps.where((e) => selectedApps.contains(e)),
+                  if (selectedApps.isNotEmpty) ...[""],
                   ...apps.where((e) => !selectedApps.contains(e)),
                 ];
               },
-              itemBuilder: (context, appPackage) => SelectableAppTile(
-                appPackage: appPackage,
-                isSelected: selectedApps.contains(appPackage),
-                onSelect: () => ref
-                    .read(protectionProvider.notifier)
-                    .addAppToBlockedList(appPackage),
-                onDeselect: () => ref
-                    .read(protectionProvider.notifier)
-                    .removeAppFromBlockedList(appPackage),
-              ),
+              itemBuilder: (context, appPackage) => appPackage.isEmpty
+                  ? const Divider(indent: 12, endIndent: 12)
+                  : SelectableAppTile(
+                      appPackage: appPackage,
+                      isSelected: selectedApps.contains(appPackage),
+                      onSelect: () => ref
+                          .read(protectionProvider.notifier)
+                          .addAppToBlockedList(appPackage),
+                      onDeselect: () => ref
+                          .read(protectionProvider.notifier)
+                          .removeAppFromBlockedList(appPackage),
+                    ),
             );
           },
         ),

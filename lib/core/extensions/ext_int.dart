@@ -8,8 +8,9 @@ extension ExtInt on int {
   int get inMinutes => this ~/ 60;
   double get inHours => this / 3600;
 
-  /// Converts minutes to [TimeOfDay] hours, and minutes
-  TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
+  /// Converts seconds to [TimeOfDay] hours, and minutes
+  TimeOfDay get toTimeOfDay =>
+      TimeOfDay(hour: this ~/ 3600, minute: (this ~/ 60) % 60);
 
   String toDateDiffToday() {
     ///FIXME: bug in date
