@@ -61,7 +61,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
             }, 0, mTimerRate);
         }
 
-        Log.d(TAG, "onDeviceUnLocked: Tracking timer scheduled.");
+        Log.d(TAG, "onDeviceUnLocked: Repeated timer scheduled for tracking new app launches.");
     }
 
     private void onDeviceLocked() {

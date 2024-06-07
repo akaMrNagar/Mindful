@@ -39,10 +39,7 @@ public class AppLaunchReceiver extends BroadcastReceiver {
     public AppLaunchReceiver(Context context) {
         mContext = context;
         mUsageStatsManager = (UsageStatsManager) mContext.getSystemService(Context.USAGE_STATS_SERVICE);
-
-        // Load data from prefs
         mSharedPrefs = mContext.getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
-        reloadData();
     }
 
     @Override
@@ -98,11 +95,11 @@ public class AppLaunchReceiver extends BroadcastReceiver {
             public void run() {
                 mPurgedApps.add(packageName);
                 openOverlayDialog(packageName);
-                Log.d(TAG, "handleTimerAppLaunch: executed timer task");
+                Log.d(TAG, "handleTimerAppLaunch: Executed timer task for package : " + packageName);
             }
         }, delayMs);
 
-        Log.d(TAG, "handleTimerAppLaunch: Timer task scheduled for :  " + new Date(delayMs + System.currentTimeMillis()));
+        Log.d(TAG, "handleTimerAppLaunch: Timer task scheduled for " + packageName + " :  " + new Date(delayMs + System.currentTimeMillis()));
     }
 
     // TODO : Implement app locking feature using biometrics
@@ -116,7 +113,7 @@ public class AppLaunchReceiver extends BroadcastReceiver {
             intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
             mContext.startService(intent);
 
-            Log.d(TAG, "openOverlayDialog: Displaying TLE dialog for package : " + packageName);
+            Log.d(TAG, "openOverlayDialog: Starting overlay dialog service for package : " + packageName);
         }
     }
 
@@ -138,7 +135,7 @@ public class AppLaunchReceiver extends BroadcastReceiver {
      *
      * @return A boolean FALSE if no timer and locked apps else TRUE
      */
-    public boolean reloadData() {
+    public boolean reloadDataFromSharedPrefs() {
         mAppTimers = Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(AppConstants.PREF_KEY_APP_TIMERS, ""));
         mLockedApps = Utils.jsonStrToStringHashSet(mSharedPrefs.getString(AppConstants.PREF_KEY_LOCKED_APPS, ""));
         mPurgedApps.clear();

@@ -5,6 +5,9 @@ import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/shared_prefs_service.dart';
 import 'package:mindful/mindful_app.dart';
 
+/// TODO - Remove following dependencies from app.gradle
+/// implementation 'com.google.code.gson:gson:2.10.1'
+/// implementation 'com.google.android.material:material:1.12.0'
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,11 +100,15 @@ public class Utils {
         if (jsonString.isEmpty()) return set;
 
         try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-
-            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
-                set.add(it.next());
+            JSONArray jsonArray = new JSONArray(jsonString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                set.add(jsonArray.getString(i));
             }
+//            JSONObject jsonObject = new JSONObject(jsonString);
+//
+//            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+//                set.add(it.next());
+//            }
         } catch (JSONException e) {
             Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to locked apps hashset ", e);
         }

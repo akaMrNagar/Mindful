@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/models/android_app.dart';
 
 /// This class handle flutter method channel and responsible for invoking native android java code
@@ -23,14 +24,29 @@ class MethodChannelService {
   Future<bool> refreshTrackerService() async =>
       await _methodChannel.invokeMethod('refreshTrackerService');
 
+  Future<bool> refreshVpnService() async =>
+      await _methodChannel.invokeMethod('refreshVpnService');
+
   Future<bool> startVpnService() async =>
       await _methodChannel.invokeMethod('startVpnService');
 
   Future<bool> stopVpnService() async =>
       await _methodChannel.invokeMethod('stopVpnService');
 
+  Future<bool> isVpnServiceRunning() async =>
+      await _methodChannel.invokeMethod('isVpnServiceRunning');
+
   Future<bool> cancelBedtimeTask() async =>
       await _methodChannel.invokeMethod('cancelBedtimeTask');
+
+  Future<bool> showToast(
+    String msg, {
+    ToastDuration duration = ToastDuration.short,
+  }) async =>
+      await _methodChannel.invokeMethod('showToast', {
+        'message': msg,
+        'duration': duration.index,
+      });
 
   // Future<bool> scheduleBedtimeTask({
   //   required BedtimeScheduleInfo info,

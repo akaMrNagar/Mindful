@@ -54,4 +54,9 @@ class ProtectionSettings {
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
     );
   }
+
+  @override
+  String toString() {
+    return 'ProtectionSettings(blockAppsInternet: $blockAppsInternet, blockCustomWebsites: $blockCustomWebsites, blockNsfwSites: $blockNsfwSites, blockedApps: $blockedApps, blockedWebsites: $blockedWebsites)';
+  }
 }

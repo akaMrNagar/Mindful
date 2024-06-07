@@ -85,15 +85,15 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
             /// Sort apps if sorting function is not null
             final packages = widget.sortApps?.call(apps) ?? apps;
 
+            /// Update indices of tiles based on packages
+            WidgetsBinding.instance.addPostFrameCallback(
+              (_) => _postFrameCallback(packages),
+            );
+
             return SliverFixedExtentList.builder(
               itemExtent: widget.itemExtent,
               itemCount: packages.length,
               itemBuilder: (context, index) {
-                /// Update indices of tiles based on packages
-                WidgetsBinding.instance.addPostFrameCallback(
-                  (_) => _postFrameCallback(packages),
-                );
-
                 final yOffset = _prevIndices.containsKey(packages[index])
                     ? _prevIndices[packages[index]]! - index
                     : 0;

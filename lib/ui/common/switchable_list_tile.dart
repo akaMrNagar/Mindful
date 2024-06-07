@@ -33,7 +33,12 @@ class SwitchableListTile extends StatelessWidget {
       onPressed: enabled ? onPressed : null,
       child: ListTileSkeleton(
         /// Leading icon
-        leading: leadingIcon != null ? Icon(leadingIcon) : null,
+        leading: leadingIcon != null
+            ? Icon(
+                leadingIcon,
+                color: enabled ? null : Theme.of(context).disabledColor,
+              )
+            : null,
 
         /// Title text
         title: titleText != null

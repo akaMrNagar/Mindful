@@ -17,7 +17,7 @@ import com.akamrnagar.mindful.receivers.DeviceLockUnlockReceiver;
 
 public class MindfulTrackerService extends Service {
 
-    public static final int SERVICE_ID = 301;
+    private static final int SERVICE_ID = 301;
     private final String TAG = "Mindful.MindfulTrackerService";
     public static final String ACTION_START_SERVICE = "com.akamrnagar.mindful.AppsTrackerService.START";
     public static final String ACTION_STOP_SERVICE = "com.akamrnagar.mindful.AppsTrackerService.STOP";
@@ -25,6 +25,7 @@ public class MindfulTrackerService extends Service {
     private AppLaunchReceiver mAppLaunchReceiver;
 
     private boolean areReceiversRegistered = false;
+    private boolean mNeedDataReload = false;
 
     @Override
     public void onCreate() {
@@ -61,17 +62,27 @@ public class MindfulTrackerService extends Service {
         startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this));
 
         areReceiversRegistered = true;
+        reloadDataFromSharedPrefs();
         Log.d(TAG, "startTracking: Foreground service started");
     }
 
-    public void refreshService() {
+    private void reloadDataFromSharedPrefs() {
         if (mAppLaunchReceiver == null) return;
 
         // Stop service if not timer and locked apps
-        if (!mAppLaunchReceiver.reloadData()) {
+        if (!mAppLaunchReceiver.reloadDataFromSharedPrefs()) {
             stopForeground(true);
             stopSelf();
+            return;
         }
+
+        Log.d(TAG, "reloadDataFromSharedPrefs: Reloaded latest data for Tracking service");
+    }
+
+
+    public void flagNeedDataReload() {
+        mNeedDataReload = true;
+        Log.d(TAG, "flagNeedDataReload: Flagged reload in Tracker Service");
     }
 
 
@@ -81,19 +92,27 @@ public class MindfulTrackerService extends Service {
 
         // Dispose and Unregister receiver
         if (areReceiversRegistered) {
-
-            if (mAppLaunchReceiver.reloadData()) {
-                ServicesHelper.startTrackingService(this);
-                Log.d(TAG, "onDestroy: Service stopped forcefully, trying to restart it");
-            }
-
+            boolean isDestroyedForcefully = mAppLaunchReceiver.reloadDataFromSharedPrefs();
             mLockUnlockReceiver.dispose();
             mAppLaunchReceiver.dispose();
             unregisterReceiver(mLockUnlockReceiver);
             unregisterReceiver(mAppLaunchReceiver);
+
+            if (isDestroyedForcefully) {
+                ServicesHelper.startTrackingService(this);
+                Log.d(TAG, "onDestroy: Service stopped forcefully, trying to restart it");
+                return;
+            }
         }
 
         Log.d(TAG, "onDestroy : Foreground service destroyed");
+    }
+
+    public void onApplicationStop() {
+        if (mNeedDataReload) {
+            reloadDataFromSharedPrefs();
+            mNeedDataReload = false;
+        }
     }
 
     @Override

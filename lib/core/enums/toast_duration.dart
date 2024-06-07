@@ -1,0 +1,4 @@
+enum ToastDuration {
+  short,
+  long,
+}

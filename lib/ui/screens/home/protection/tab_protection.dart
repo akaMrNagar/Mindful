@@ -6,9 +6,9 @@ import 'package:mindful/providers/protection_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
-import 'package:mindful/ui/screens/home/protection/block_internet.dart';
-import 'package:mindful/ui/screens/home/protection/block_websites.dart';
+import 'package:mindful/ui/screens/home/protection/block_internet_page.dart';
 import 'package:mindful/ui/common/segmented_icon_buttons.dart';
+import 'package:mindful/ui/screens/home/protection/block_websites_page.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 final _selectedProvider = StateProvider<int>((ref) {
@@ -71,8 +71,8 @@ class TabProtection extends ConsumerWidget {
                 switchInCurve: Curves.ease,
                 switchOutCurve: Curves.ease,
                 child: [
-                  const BlockInternet(),
-                  const BlockWebsites(),
+                  const BlockInternetPage(),
+                  const BlockWebsitesPage(),
                 ][selectedIndex],
               ),
             ],

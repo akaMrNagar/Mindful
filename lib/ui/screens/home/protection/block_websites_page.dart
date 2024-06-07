@@ -10,8 +10,8 @@ import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class BlockWebsites extends ConsumerWidget {
-  const BlockWebsites({super.key});
+class BlockWebsitesPage extends ConsumerWidget {
+  const BlockWebsitesPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

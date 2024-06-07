@@ -22,9 +22,6 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
     addListener((state) async {
       /// save changes to isar database
       await IsarDbService.instance.saveFocusSettings(state.values.toList());
-
-      /// Refresh service
-      MethodChannelService.instance.refreshTrackerService();
     });
   }
 
@@ -37,12 +34,15 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
 
     /// Filter timers
     final appTimers = Map.fromEntries(
-      state.entries.where((element) => element.value.timer > 0).map(
-            (e) => MapEntry(e.key, e.value.timer),
-          ),
+      state.entries
+          .where((i) => i.value.timer > 0)
+          .map((e) => MapEntry(e.key, e.value.timer)),
     );
 
     /// Update shared pref app timers
-    SharePrefsService.instance.updateAppTimers(appTimers);
+    await SharePrefsService.instance.updateAppTimers(appTimers);
+
+    /// Refresh service
+    await MethodChannelService.instance.refreshTrackerService();
   }
 }

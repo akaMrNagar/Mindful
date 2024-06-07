@@ -43,6 +43,7 @@ class IsarDbService {
       _isar.writeTxn(
         () => _isar.bedtimeSettings.put(bedtimeSettings),
       );
+
   Future<BedtimeSettings> loadBedtimeSettings() async =>
       await _isar.bedtimeSettings.where().findFirst() ??
       const BedtimeSettings();
@@ -52,6 +53,7 @@ class IsarDbService {
       _isar.writeTxn(
         () => _isar.protectionSettings.put(protectionSettings),
       );
+
   Future<ProtectionSettings> loadProtectionSettings() async =>
       await _isar.protectionSettings.where().findFirst() ??
       const ProtectionSettings();
