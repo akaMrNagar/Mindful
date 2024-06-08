@@ -33,10 +33,7 @@ public class Utils {
      */
     private static String encodeToBase64(@NonNull Drawable iconData) {
         ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-        final Bitmap image = Bitmap.createBitmap(
-                iconData.getIntrinsicWidth(),
-                iconData.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
+        final Bitmap image = Bitmap.createBitmap(iconData.getIntrinsicWidth(), iconData.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 
         final Canvas canvas = new Canvas(image);
         iconData.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -104,55 +101,44 @@ public class Utils {
             for (int i = 0; i < jsonArray.length(); i++) {
                 set.add(jsonArray.getString(i));
             }
-//            JSONObject jsonObject = new JSONObject(jsonString);
-//
-//            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
-//                set.add(it.next());
-//            }
         } catch (JSONException e) {
             Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to locked apps hashset ", e);
         }
         return set;
     }
 
+    @NonNull
     public static String parseHostNameFromUrl(String url) {
         URI uri;
+        String hostName = null;
 
         try {
             uri = new URI(url);
+            hostName = uri.getHost();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
-            return url;
+            Log.w(TAG, "parseHostNameFromUrl: Cannot parse url using URI method, trying different method", e);
         }
 
-        String hostName = uri.getHost();
+        if (hostName != null) return hostName;
 
-        // If null, then hostname = the original url ?
-        if (hostName == null) {
-            hostName = url;
-        }
+        // If host name is still null then reassign with url
+        hostName = url;
 
+        // Remove prefix from url
         hostName = hostName.replace("https://", "").replace("http://", "").replace("www.", "");
 
-
-        if (hostName.contains("www.")) {
-            hostName = hostName.substring(4);
-        }
-
-        // Fuck you websites that use mobile prefix and break my hashmap
+        // Some websites uses mobile. OR m. prefix
         if (hostName.contains("mobile.")) {
             hostName = hostName.substring(7);
         } else if (hostName.contains("m.") && hostName.indexOf("m.") < 3) {
-            // medium.com => dium.com smh todo?
             hostName = hostName.substring(2);
         }
 
-        // Fuck you no path allowed
+        // If the url still contains / the remove it
         if (hostName.contains("/")) {
             return hostName.substring(0, hostName.indexOf("/"));
         }
 
-//        Log.d(TAG, "getHostName: url++ = " + hostName);
         return hostName;
 
     }

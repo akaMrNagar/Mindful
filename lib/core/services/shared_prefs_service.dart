@@ -17,13 +17,13 @@ class SharePrefsService {
   /// Updates timers map stored in shared prefrences.
   Future<void> updateAppTimers(Map<String, int> appTimers) =>
       _prefs.setString(AppConstants.prefKeyAppTimers, jsonEncode(appTimers));
-  
+
   Future<void> updateBlockedApps(List<String> apps) =>
       _prefs.setString(AppConstants.prefKeyBlockedApps, jsonEncode(apps));
 
-  // void toggleAppTrackingStatus(bool isAppTrackingOn) =>
-  //     _prefs.setBool(AppConstants.prefKeyAppTrackingStatus, isAppTrackingOn);
+  Future<void> updateBlockedSites(List<String> websites) =>
+      _prefs.setString(AppConstants.prefKeyBlockedSites, jsonEncode(websites));
 
-  void toggleNsfwBlockingStatus(bool isBlockingNsfw) =>
+  Future<void> toggleNsfwBlockingStatus(bool isBlockingNsfw) =>
       _prefs.setBool(AppConstants.prefKeyNsfwBlockingStatus, isBlockingNsfw);
 }

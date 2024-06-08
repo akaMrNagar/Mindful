@@ -24,8 +24,17 @@ class MethodChannelService {
   Future<bool> refreshTrackerService() async =>
       await _methodChannel.invokeMethod('refreshTrackerService');
 
-  Future<bool> refreshVpnService() async =>
-      await _methodChannel.invokeMethod('refreshVpnService');
+  Future<bool> isAccessibilityServiceRunning() async =>
+      await _methodChannel.invokeMethod('isAccessibilityServiceRunning');
+
+  Future<bool> startAccessibilityService() async =>
+      await _methodChannel.invokeMethod('startAccessibilityService');
+
+  Future<bool> stopAccessibilityService() async =>
+      await _methodChannel.invokeMethod('stopAccessibilityService');
+
+  Future<bool> isVpnServiceRunning() async =>
+      await _methodChannel.invokeMethod('isVpnServiceRunning');
 
   Future<bool> startVpnService() async =>
       await _methodChannel.invokeMethod('startVpnService');
@@ -33,8 +42,8 @@ class MethodChannelService {
   Future<bool> stopVpnService() async =>
       await _methodChannel.invokeMethod('stopVpnService');
 
-  Future<bool> isVpnServiceRunning() async =>
-      await _methodChannel.invokeMethod('isVpnServiceRunning');
+  Future<bool> refreshVpnService() async =>
+      await _methodChannel.invokeMethod('refreshVpnService');
 
   Future<bool> cancelBedtimeTask() async =>
       await _methodChannel.invokeMethod('cancelBedtimeTask');
@@ -43,10 +52,16 @@ class MethodChannelService {
     String msg, {
     ToastDuration duration = ToastDuration.short,
   }) async =>
-      await _methodChannel.invokeMethod('showToast', {
-        'message': msg,
-        'duration': duration.index,
-      });
+      await _methodChannel.invokeMethod(
+        'showToast',
+        {
+          'message': msg,
+          'duration': duration.index,
+        },
+      );
+
+  Future<String> parseUrl(String url) async =>
+      await _methodChannel.invokeMethod('parseUrl', {'url': url});
 
   // Future<bool> scheduleBedtimeTask({
   //   required BedtimeScheduleInfo info,

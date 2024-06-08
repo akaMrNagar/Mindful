@@ -13,11 +13,11 @@ class ProtectionSettings {
 
   /// Flag denoting if the internet blocker for apps is on or not
   /// i.e if vpn is filtering or not
-  final bool blockAppsInternet;
+  final bool appsInternetBlocker;
 
   /// Flag denoting if the website blocker is on or not
   /// i.e if accessibility service is filtering custom websites from [blockedWebsites] list or not
-  final bool blockCustomWebsites;
+  final bool websitesBlocker;
 
   /// Flag denoting if the nsfw or adult  websites are blocked or not
   /// i.e if accessibility service is filtering websites or not
@@ -32,31 +32,26 @@ class ProtectionSettings {
   /// Protection model used for determining the restriction on internet usage
   /// like blocking app's internet and blocking websites
   const ProtectionSettings({
-    this.blockAppsInternet = false,
-    this.blockCustomWebsites = false,
+    this.appsInternetBlocker = false,
+    this.websitesBlocker = false,
     this.blockNsfwSites = false,
     this.blockedApps = const [],
-    this.blockedWebsites = const ['google.com', 'instagram.com', 'youtube.com'],
+    this.blockedWebsites = const [],
   });
 
   ProtectionSettings copyWith({
-    bool? blockAppsInternet,
-    bool? blockCustomWebsites,
+    bool? appsInternetBlocker,
+    bool? websitesBlocker,
     bool? blockNsfwSites,
     List<String>? blockedApps,
     List<String>? blockedWebsites,
   }) {
     return ProtectionSettings(
-      blockAppsInternet: blockAppsInternet ?? this.blockAppsInternet,
-      blockCustomWebsites: blockCustomWebsites ?? this.blockCustomWebsites,
+      appsInternetBlocker: appsInternetBlocker ?? this.appsInternetBlocker,
+      websitesBlocker: websitesBlocker ?? this.websitesBlocker,
       blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
       blockedApps: blockedApps ?? this.blockedApps,
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
     );
-  }
-
-  @override
-  String toString() {
-    return 'ProtectionSettings(blockAppsInternet: $blockAppsInternet, blockCustomWebsites: $blockCustomWebsites, blockNsfwSites: $blockNsfwSites, blockedApps: $blockedApps, blockedWebsites: $blockedWebsites)';
   }
 }

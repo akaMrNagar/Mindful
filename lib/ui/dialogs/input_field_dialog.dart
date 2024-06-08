@@ -1,5 +1,3 @@
-// ignore_for_file: unused_element
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/hero_page_route.dart';
@@ -12,7 +10,7 @@ Future<String?> showInputWebsiteDialog(BuildContext context) async {
         icon: FluentIcons.globe_search_20_regular,
         heroTag: 'InputWebsiteDialog',
         title: "Distracting website",
-        inputLabel: 'Url',
+        inputLabel: 'URL',
         inputHelperText: "Enter url of a website which you want to block",
         inputHint: "example.com",
         inputType: TextInputType.url,
@@ -32,6 +30,7 @@ class _InputFieldDialog extends StatelessWidget {
     required this.inputHelperText,
     required this.inputType,
     this.leading,
+    // ignore: unused_element
     this.trailing,
   });
 
@@ -49,29 +48,34 @@ class _InputFieldDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = TextEditingController();
 
-    return FractionallySizedBox(
-      widthFactor: 1,
-      child: SingleChildScrollView(
-        child: Hero(
-          tag: heroTag,
+    return Container(
+      margin: const EdgeInsets.all(48),
+      alignment: Alignment.center,
+      child: Hero(
+        tag: heroTag,
+        child: SingleChildScrollView(
           child: AlertDialog(
             icon: Icon(icon),
             title: StatefulText(title),
-            content: TextField(
-              // autofocus: true,
-              scrollPhysics: const AlwaysScrollableScrollPhysics(),
-              controller: controller,
-              onSubmitted: (txt) => Navigator.maybePop(context, txt),
-              keyboardType: inputType,
-              decoration: InputDecoration(
-                label: Text(inputLabel),
-                hintText: inputHint,
-                prefixIcon: leading,
-                helperText: inputHelperText,
-                helperMaxLines: 3,
-                suffixIcon: trailing,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            insetPadding: EdgeInsets.zero,
+            content: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: TextField(
+                // autofocus: true,
+                scrollPhysics: const AlwaysScrollableScrollPhysics(),
+                controller: controller,
+                onSubmitted: (txt) => Navigator.maybePop(context, txt),
+                keyboardType: inputType,
+                decoration: InputDecoration(
+                  label: Text(inputLabel),
+                  hintText: inputHint,
+                  prefixIcon: leading,
+                  helperText: inputHelperText,
+                  helperMaxLines: 3,
+                  suffixIcon: trailing,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
               ),
             ),
             actions: [

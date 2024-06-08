@@ -10,9 +10,9 @@ public class AppConstants {
     public static final String PREF_KEY_APP_TIMERS = "flutter.mindful.appTimers";
     public static final String PREF_KEY_LOCKED_APPS = "flutter.mindful.lockedApps";
     public static final String PREF_KEY_REDIRECT_URL = "flutter.mindful.redirectUrl";
-    public static final String PREF_KEY_BLOCKED_SITES = "flutter.mindful.blockedSites";
     public static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
-    public static final String PREF_KEY_APP_TRACKING_STATUS = "flutter.mindful.isAppTrackingOn";
+    public static final String PREF_KEY_BLOCKED_SITES = "flutter.mindful.blockedSites";
+    public static final String PREF_KEY_BROWSERS = "flutter.mindful.browsers";
     public static final String PREF_KEY_NSFW_BLOCKING_STATUS = "flutter.mindful.isBlockingNsfw";
     public static final String PREF_BEDTIME_INFO = "flutter.mindful.bedtimeInfo";
 

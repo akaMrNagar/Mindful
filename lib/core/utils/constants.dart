@@ -9,7 +9,6 @@ class AppConstants {
   static const prefKeyRedirectUrl = "mindful.redirectUrl";
   static const prefKeyBlockedSites = "mindful.blockedSites";
   static const prefKeyBlockedApps = "mindful.blockedApps";
-  static const prefKeyAppTrackingStatus = "mindful.isAppTrackingOn";
   static const prefKeyNsfwBlockingStatus = "mindful.isBlockingNsfw";
 
   // Misc

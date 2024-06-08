@@ -115,33 +115,33 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActions> {
                     !isDistractingAppsListExpanded,
               ),
               child: ListTileSkeleton(
-                  leading: Icon(
-                    FluentIcons.weather_moon_20_regular,
+                leading: Icon(
+                  FluentIcons.weather_moon_20_regular,
+                  color:
+                      isScheduleActive ? Theme.of(context).disabledColor : null,
+                ),
+                title: StatefulText(
+                  "Distracting apps",
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  isActive: !isScheduleActive,
+                ),
+                subtitle: const StatefulText(
+                  "Manage which app are distracting you from your routine.",
+                  fontSize: 14,
+                  isActive: false,
+                ),
+                trailing: AnimatedRotation(
+                  duration: 250.ms,
+                  turns: isDistractingAppsListExpanded ? 0.5 : 0,
+                  child: Icon(
+                    FluentIcons.chevron_down_20_filled,
                     color: isScheduleActive
                         ? Theme.of(context).disabledColor
                         : null,
                   ),
-                  title: StatefulText(
-                    "Distracting apps",
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    isActive: !isScheduleActive,
-                  ),
-                  subtitle: const StatefulText(
-                    "Manage which app are distracting you from your routine.",
-                    fontSize: 14,
-                    isActive: false,
-                  ),
-                  trailing: AnimatedRotation(
-                    duration: 250.ms,
-                    turns: isDistractingAppsListExpanded ? 0.5 : 0,
-                    child: Icon(
-                      FluentIcons.chevron_down_20_filled,
-                      color: isScheduleActive
-                          ? Theme.of(context).disabledColor
-                          : null,
-                    ),
-                  )),
+                ),
+              ),
             ),
           ],
         ),

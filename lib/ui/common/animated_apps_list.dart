@@ -22,10 +22,12 @@ class AnimatedAppsList extends ConsumerStatefulWidget {
     required this.usageType,
     required this.itemBuilder,
     this.listLabel = 'Select distracting apps',
+    this.showHeader = true,
     this.sortApps,
   });
 
   final int selectedDoW;
+  final bool showHeader;
   final UsageType usageType;
   final double itemExtent;
   final Widget Function(BuildContext context, String appPackage) itemBuilder;
@@ -69,7 +71,9 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
     return MultiSliver(
       children: [
         /// Select distracting apps
-        if (widget.listLabel != null && sortedApps.hasValue)
+        if (widget.showHeader &&
+            widget.listLabel != null &&
+            sortedApps.hasValue)
           SliverFlexiblePinnedHeader(
             minHeight: 32,
             maxHeight: 48,

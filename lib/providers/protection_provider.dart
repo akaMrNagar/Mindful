@@ -16,9 +16,17 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
 
   void _init() async {
     final cache = await IsarDbService.instance.loadProtectionSettings();
+
+    final isAccessibilityRunning =
+        await MethodChannelService.instance.isAccessibilityServiceRunning();
+
+    final isVpnRunning =
+        await MethodChannelService.instance.isVpnServiceRunning();
+
     state = cache.copyWith(
-      blockAppsInternet:
-          await MethodChannelService.instance.isVpnServiceRunning(),
+      appsInternetBlocker: isVpnRunning,
+      websitesBlocker: cache.websitesBlocker && isAccessibilityRunning,
+      blockNsfwSites: cache.blockNsfwSites,
     );
 
     /// Listen to provider and save changes to isar database
@@ -27,9 +35,9 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
     });
   }
 
-  Future<void> toggleBlockApps(bool startBlocking) async {
+  Future<void> toggleAppsInternetBlocker(bool shouldBlock) async {
     /// Show toast if no blocked apps
-    if (startBlocking && state.blockedApps.isEmpty) {
+    if (shouldBlock && state.blockedApps.isEmpty) {
       MethodChannelService.instance.showToast(
         "Select atleast one app to block internet",
       );
@@ -38,7 +46,7 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
     }
 
     bool success = false;
-    if (startBlocking) {
+    if (shouldBlock) {
       /// Start vpn
       await MethodChannelService.instance.startVpnService();
       success = await MethodChannelService.instance.isVpnServiceRunning();
@@ -49,14 +57,42 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
 
     /// Update state only if succes in starting or stopping service
     if (!success) return;
-    state = state.copyWith(blockAppsInternet: startBlocking);
+    state = state.copyWith(appsInternetBlocker: shouldBlock);
   }
 
-  void toggleBlockCustomWebsites() =>
-      state = state.copyWith(blockCustomWebsites: !state.blockCustomWebsites);
+  Future<void> toggleWebsitesBlocker(bool shouldBlock) async {
+    /// Show toast if no blocked apps
+    if (shouldBlock && state.blockedApps.isEmpty && !state.blockNsfwSites) {
+      MethodChannelService.instance.showToast(
+        "Either add atleast one website to block or enable nsfw blocker",
+      );
 
-  void toggleBlockNsfw() =>
-      state = state.copyWith(blockNsfwSites: !state.blockNsfwSites);
+      return;
+    }
+
+    bool success = false;
+    if (shouldBlock) {
+      /// Start accessibility
+      await MethodChannelService.instance.startAccessibilityService();
+      success =
+          await MethodChannelService.instance.isAccessibilityServiceRunning();
+    } else {
+      /// Stop accessibility
+      await MethodChannelService.instance.stopAccessibilityService();
+      success =
+          !await MethodChannelService.instance.isAccessibilityServiceRunning();
+    }
+
+    /// Update state only if succes in starting or stopping service
+    if (!success) return;
+    state = state.copyWith(websitesBlocker: shouldBlock);
+  }
+
+  Future<void> toggleBlockNsfw(bool startBlocking) async {
+    /// Update state
+    await SharePrefsService.instance.toggleNsfwBlockingStatus(startBlocking);
+    state = state.copyWith(blockNsfwSites: startBlocking);
+  }
 
   void addAppToBlockedList(String appPackage) async {
     state = state.copyWith(
@@ -83,4 +119,6 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
   void removeSiteFromBlockedList(String websiteHost) => state = state.copyWith(
         blockedWebsites: [...state.blockedWebsites]..remove(websiteHost),
       );
+
+      
 }

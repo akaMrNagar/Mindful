@@ -18,30 +18,30 @@ const ProtectionSettingsSchema = CollectionSchema(
   name: r'ProtectionSettings',
   id: -5914651901244707324,
   properties: {
-    r'blockAppsInternet': PropertySchema(
+    r'appsInternetBlocker': PropertySchema(
       id: 0,
-      name: r'blockAppsInternet',
-      type: IsarType.bool,
-    ),
-    r'blockCustomWebsites': PropertySchema(
-      id: 1,
-      name: r'blockCustomWebsites',
+      name: r'appsInternetBlocker',
       type: IsarType.bool,
     ),
     r'blockNsfwSites': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'blockNsfwSites',
       type: IsarType.bool,
     ),
     r'blockedApps': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'blockedApps',
       type: IsarType.stringList,
     ),
     r'blockedWebsites': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'blockedWebsites',
       type: IsarType.stringList,
+    ),
+    r'websitesBlocker': PropertySchema(
+      id: 4,
+      name: r'websitesBlocker',
+      type: IsarType.bool,
     )
   },
   estimateSize: _protectionSettingsEstimateSize,
@@ -87,11 +87,11 @@ void _protectionSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.blockAppsInternet);
-  writer.writeBool(offsets[1], object.blockCustomWebsites);
-  writer.writeBool(offsets[2], object.blockNsfwSites);
-  writer.writeStringList(offsets[3], object.blockedApps);
-  writer.writeStringList(offsets[4], object.blockedWebsites);
+  writer.writeBool(offsets[0], object.appsInternetBlocker);
+  writer.writeBool(offsets[1], object.blockNsfwSites);
+  writer.writeStringList(offsets[2], object.blockedApps);
+  writer.writeStringList(offsets[3], object.blockedWebsites);
+  writer.writeBool(offsets[4], object.websitesBlocker);
 }
 
 ProtectionSettings _protectionSettingsDeserialize(
@@ -101,12 +101,12 @@ ProtectionSettings _protectionSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = ProtectionSettings(
-    blockAppsInternet: reader.readBoolOrNull(offsets[0]) ?? false,
-    blockCustomWebsites: reader.readBoolOrNull(offsets[1]) ?? false,
-    blockNsfwSites: reader.readBoolOrNull(offsets[2]) ?? false,
-    blockedApps: reader.readStringList(offsets[3]) ?? const [],
-    blockedWebsites: reader.readStringList(offsets[4]) ??
+    appsInternetBlocker: reader.readBoolOrNull(offsets[0]) ?? false,
+    blockNsfwSites: reader.readBoolOrNull(offsets[1]) ?? false,
+    blockedApps: reader.readStringList(offsets[2]) ?? const [],
+    blockedWebsites: reader.readStringList(offsets[3]) ??
         const ['google.com', 'instagram.com', 'youtube.com'],
+    websitesBlocker: reader.readBoolOrNull(offsets[4]) ?? false,
   );
   return object;
 }
@@ -123,12 +123,12 @@ P _protectionSettingsDeserializeProp<P>(
     case 1:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 3:
       return (reader.readStringList(offset) ?? const []) as P;
-    case 4:
+    case 3:
       return (reader.readStringList(offset) ??
           const ['google.com', 'instagram.com', 'youtube.com']) as P;
+    case 4:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -229,20 +229,10 @@ extension ProtectionSettingsQueryWhere
 extension ProtectionSettingsQueryFilter
     on QueryBuilder<ProtectionSettings, ProtectionSettings, QFilterCondition> {
   QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
-      blockAppsInternetEqualTo(bool value) {
+      appsInternetBlockerEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'blockAppsInternet',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
-      blockCustomWebsitesEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'blockCustomWebsites',
+        property: r'appsInternetBlocker',
         value: value,
       ));
     });
@@ -765,6 +755,16 @@ extension ProtectionSettingsQueryFilter
       ));
     });
   }
+
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterFilterCondition>
+      websitesBlockerEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'websitesBlocker',
+        value: value,
+      ));
+    });
+  }
 }
 
 extension ProtectionSettingsQueryObject
@@ -776,30 +776,16 @@ extension ProtectionSettingsQueryLinks
 extension ProtectionSettingsQuerySortBy
     on QueryBuilder<ProtectionSettings, ProtectionSettings, QSortBy> {
   QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      sortByBlockAppsInternet() {
+      sortByAppsInternetBlocker() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockAppsInternet', Sort.asc);
+      return query.addSortBy(r'appsInternetBlocker', Sort.asc);
     });
   }
 
   QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      sortByBlockAppsInternetDesc() {
+      sortByAppsInternetBlockerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockAppsInternet', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      sortByBlockCustomWebsites() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockCustomWebsites', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      sortByBlockCustomWebsitesDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockCustomWebsites', Sort.desc);
+      return query.addSortBy(r'appsInternetBlocker', Sort.desc);
     });
   }
 
@@ -816,35 +802,35 @@ extension ProtectionSettingsQuerySortBy
       return query.addSortBy(r'blockNsfwSites', Sort.desc);
     });
   }
+
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
+      sortByWebsitesBlocker() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'websitesBlocker', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
+      sortByWebsitesBlockerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'websitesBlocker', Sort.desc);
+    });
+  }
 }
 
 extension ProtectionSettingsQuerySortThenBy
     on QueryBuilder<ProtectionSettings, ProtectionSettings, QSortThenBy> {
   QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      thenByBlockAppsInternet() {
+      thenByAppsInternetBlocker() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockAppsInternet', Sort.asc);
+      return query.addSortBy(r'appsInternetBlocker', Sort.asc);
     });
   }
 
   QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      thenByBlockAppsInternetDesc() {
+      thenByAppsInternetBlockerDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockAppsInternet', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      thenByBlockCustomWebsites() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockCustomWebsites', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
-      thenByBlockCustomWebsitesDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockCustomWebsites', Sort.desc);
+      return query.addSortBy(r'appsInternetBlocker', Sort.desc);
     });
   }
 
@@ -875,21 +861,28 @@ extension ProtectionSettingsQuerySortThenBy
       return query.addSortBy(r'id', Sort.desc);
     });
   }
+
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
+      thenByWebsitesBlocker() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'websitesBlocker', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QAfterSortBy>
+      thenByWebsitesBlockerDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'websitesBlocker', Sort.desc);
+    });
+  }
 }
 
 extension ProtectionSettingsQueryWhereDistinct
     on QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct> {
   QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
-      distinctByBlockAppsInternet() {
+      distinctByAppsInternetBlocker() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'blockAppsInternet');
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
-      distinctByBlockCustomWebsites() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'blockCustomWebsites');
+      return query.addDistinctBy(r'appsInternetBlocker');
     });
   }
 
@@ -913,6 +906,13 @@ extension ProtectionSettingsQueryWhereDistinct
       return query.addDistinctBy(r'blockedWebsites');
     });
   }
+
+  QueryBuilder<ProtectionSettings, ProtectionSettings, QDistinct>
+      distinctByWebsitesBlocker() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'websitesBlocker');
+    });
+  }
 }
 
 extension ProtectionSettingsQueryProperty
@@ -924,16 +924,9 @@ extension ProtectionSettingsQueryProperty
   }
 
   QueryBuilder<ProtectionSettings, bool, QQueryOperations>
-      blockAppsInternetProperty() {
+      appsInternetBlockerProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'blockAppsInternet');
-    });
-  }
-
-  QueryBuilder<ProtectionSettings, bool, QQueryOperations>
-      blockCustomWebsitesProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'blockCustomWebsites');
+      return query.addPropertyName(r'appsInternetBlocker');
     });
   }
 
@@ -955,6 +948,13 @@ extension ProtectionSettingsQueryProperty
       blockedWebsitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockedWebsites');
+    });
+  }
+
+  QueryBuilder<ProtectionSettings, bool, QQueryOperations>
+      websitesBlockerProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'websitesBlocker');
     });
   }
 }

@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/protection_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_flexible_header.dart';
@@ -18,24 +19,24 @@ final _selectedProvider = StateProvider<int>((ref) {
 class TabProtection extends ConsumerWidget {
   const TabProtection({super.key});
 
-  void onPressedFab(BuildContext context, WidgetRef ref) async {
+  void _onPressedFab(BuildContext context, WidgetRef ref) async {
     final url = await showInputWebsiteDialog(context);
-    if (url == null) return;
-    debugPrint("URL: $url");
+    if (url == null || url.isEmpty) return;
 
-    try {
-      /// Extract host
-      final host = Uri.parse(url).host;
-      if (host.isEmpty) {
-        throw Exception("Unable to parse url");
-      } else {
-        /// Add to distraction sites list
-        ref.read(protectionProvider.notifier).addSiteToBlockedList(host);
+    final host = await MethodChannelService.instance.parseUrl(url);
+
+    if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
+      /// Check if url is already blocked
+      if (ref.read(protectionProvider).blockedWebsites.contains(host)) {
+        await MethodChannelService.instance.showToast("Url already added");
+        return;
       }
 
-      debugPrint("HOST: $host");
-    } catch (e) {
-      debugPrint(e.toString());
+      /// Add to blocked sites list
+      ref.read(protectionProvider.notifier).addSiteToBlockedList(host);
+    } else {
+      await MethodChannelService.instance
+          .showToast("Invalid url! cannot parse host name");
     }
   }
 
@@ -81,11 +82,11 @@ class TabProtection extends ConsumerWidget {
           /// Add more distracting websites button
           if (selectedIndex == 1)
             Positioned(
-              bottom: 48,
-              right: 16,
+              bottom: 64,
+              right: 24,
               child: FloatingActionButton(
                 heroTag: 'InputWebsiteDialog',
-                onPressed: () => onPressedFab(context, ref),
+                onPressed: () => _onPressedFab(context, ref),
                 child: const Icon(FluentIcons.add_20_filled),
               ),
             )

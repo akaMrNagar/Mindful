@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,9 +16,11 @@ import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
 import com.akamrnagar.mindful.helpers.WorkerTasksHelper;
+import com.akamrnagar.mindful.services.MindfulAccessibilityService;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
+import com.akamrnagar.mindful.utils.Utils;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -84,12 +87,41 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
+            // Utility calls -----------------------------------------------------------------------
             case "getAppDirectoryPath":
                 result.success(PathUtils.getDataDirectory(this));
                 break;
             case "getDeviceApps":
                 DeviceAppsHelper.getDeviceApps(this, result);
                 break;
+            case "showToast":
+                showToast(call);
+                result.success(true);
+                break;
+            case "parseUrl":
+                result.success(parseHostNameFromUrl(call));
+                break;
+
+            // Accessibility calls -----------------------------------------------------------------
+            case "isAccessibilityServiceRunning":
+                result.success(ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName()));
+                break;
+            case "startAccessibilityService":
+                if (!ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName())) {
+                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                    Toast.makeText(this, "Please enable Mindful accessibility service", Toast.LENGTH_LONG).show();
+                }
+                result.success(true);
+                break;
+            case "stopAccessibilityService":
+                if (ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName())) {
+                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
+                    Toast.makeText(this, "Please disable Mindful accessibility service", Toast.LENGTH_LONG).show();
+                }
+                result.success(true);
+                break;
+
+            // Vpn calls ---------------------------------------------------------------------------
             case "isVpnServiceRunning":
                 result.success(ServicesHelper.isServiceRunning(this, MindfulVpnService.class.getName()));
                 break;
@@ -105,21 +137,21 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (mVpnService != null) mVpnService.flagNeedDataReload();
                 result.success(true);
                 break;
+
+            // App tracking calls ------------------------------------------------------------------
             case "refreshTrackerService":
                 if (mTrackerService != null) mTrackerService.flagNeedDataReload();
                 else startStopBindUnbindTrackerService(true, true);
                 result.success(true);
                 break;
+
+            // Bedtime schedule routine calls ------------------------------------------------------
             case "scheduleBedtimeTask":
                 WorkerTasksHelper.scheduleBedtimeTask(this, call);
                 result.success(true);
                 break;
             case "cancelBedtimeTask":
                 WorkerTasksHelper.cancelBedtimeTask(this);
-                result.success(true);
-                break;
-            case "showToast":
-                showToast(call);
                 result.success(true);
                 break;
             default:
@@ -200,6 +232,18 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         }
 
         Toast.makeText(this, msg, duration).show();
+    }
+
+    @NonNull
+    private String parseHostNameFromUrl(@NonNull MethodCall call) {
+        String url = call.argument("url");
+
+        if (url == null) {
+            Log.w(TAG, "parseHostNameFromUrl: Method called with null arguments");
+            return "";
+        }
+
+        return Utils.parseHostNameFromUrl(url);
     }
 
 }
