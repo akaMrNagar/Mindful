@@ -2,9 +2,13 @@ package com.akamrnagar.mindful.services;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.provider.Browser;
 import android.util.Log;
@@ -20,6 +24,7 @@ import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 public class MindfulAccessibilityService extends AccessibilityService implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -32,9 +37,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private Map<String, Boolean> mNsfwSites = new HashMap<>();
     private boolean mIsBlockingNsfw = false;
     private SharedPreferences mSharedPrefs;
+    private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
 
-
-    /// FIXME: Use custom broadcast receiver if shared prefs listener do not work
     @Override
     public void onCreate() {
         super.onCreate();
@@ -44,14 +48,23 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Initialize variables from shared prefs
         onSharedPreferenceChanged(mSharedPrefs, AppConstants.PREF_KEY_BLOCKED_SITES);
-        onSharedPreferenceChanged(mSharedPrefs, AppConstants.PREF_KEY_BROWSERS);
         onSharedPreferenceChanged(mSharedPrefs, AppConstants.PREF_KEY_REDIRECT_URL);
         onSharedPreferenceChanged(mSharedPrefs, AppConstants.PREF_KEY_NSFW_BLOCKING_STATUS);
 
         // Register shared prefs listener
         mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
 
+
+        // Register listener for install and uninstall events
+        mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        filter.addDataScheme("package");
+        registerReceiver(mAppInstallUninstallReceiver, filter);
+
         Log.d(TAG, "onCreate: Accessibility service started successfully");
+        refreshServiceInfo();
     }
 
     @Override
@@ -109,7 +122,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        // Unregister receivers
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        unregisterReceiver(mAppInstallUninstallReceiver);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }
 
@@ -129,12 +145,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 //                mNsfwSites = Domains.init();
                 break;
 
-            case AppConstants.PREF_KEY_BROWSERS:
-                mSelectedBrowsers =
-                        Utils.jsonStrToStringHashSet(prefs.getString(AppConstants.PREF_KEY_BROWSERS, ""));
-                updateServiceInfo();
-                break;
-
             case AppConstants.PREF_KEY_REDIRECT_URL:
                 mRedirectUrl = prefs.getString(AppConstants.PREF_KEY_REDIRECT_URL, DEFAULT_REDIRECT_URL);
                 break;
@@ -144,7 +154,17 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         }
     }
 
-    private void updateServiceInfo() {
+    private void refreshServiceInfo() {
+        // Fetch installed apps which can handle url or are browsers
+        Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("http://www.example.com"));
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> browsers = pm.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+
+        mSelectedBrowsers.clear();
+        for (ResolveInfo browser : browsers) {
+            mSelectedBrowsers.add(browser.activityInfo.packageName);
+        }
+
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
@@ -153,5 +173,21 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         info.packageNames = mSelectedBrowsers.toArray(new String[0]);
 
         setServiceInfo(info);
+
+        Log.d(TAG, "refreshServiceInfo: Accessibility service updated successfully");
+    }
+
+
+    private class AppInstallUninstallReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent == null || intent.getAction() == null) return;
+            String action = intent.getAction();
+
+            if (Intent.ACTION_PACKAGE_ADDED.equals(action) || Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
+                Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action);
+                refreshServiceInfo();
+            }
+        }
     }
 }

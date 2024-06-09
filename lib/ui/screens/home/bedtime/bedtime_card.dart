@@ -97,14 +97,14 @@ class _SelectedTime extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isScheduleActive =
-        ref.watch(bedtimeProvider.select((value) => value.scheduleStatus));
+    final isScheduleOn =
+        ref.watch(bedtimeProvider.select((value) => value.isScheduleOn));
 
     return RoundedContainer(
       height: 80,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       color: Colors.transparent,
-      onPressed: isScheduleActive
+      onPressed: isScheduleOn
           ? null
           : () {
               showTimePicker(
@@ -121,7 +121,7 @@ class _SelectedTime extends ConsumerWidget {
           /// Labels "START" and "END"
           StatefulText(
             label,
-            isActive: !isScheduleActive,
+            isActive: !isScheduleOn,
           ),
           4.vBox(),
           Row(
@@ -133,7 +133,7 @@ class _SelectedTime extends ConsumerWidget {
                 height: 1,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                isActive: !isScheduleActive,
+                isActive: !isScheduleOn,
               ),
               4.hBox(),
 
@@ -141,7 +141,7 @@ class _SelectedTime extends ConsumerWidget {
               StatefulText(
                 initialTime.period.name,
                 height: 2,
-                isActive: !isScheduleActive,
+                isActive: !isScheduleOn,
               ),
             ],
           ),

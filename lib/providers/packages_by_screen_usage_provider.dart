@@ -11,18 +11,20 @@ final packagesByScreenUsageProvider =
           /// Create list of apps
           var apps = appsMap.values.toList();
 
+          /// Filter out apps if they haven't been used i.e, whose screen time is 0
+          if (!params.includeAll) {
+            apps.removeWhere(
+                (e) => e.screenTimeThisWeek[params.dayOfWeek] == 0);
+          }
+
+          /// Reassign apps if list is empty after filtering out
+          if (apps.isEmpty) apps = appsMap.values.toList();
+
           /// Sort apps
           apps.sort(
             (a, b) => b.screenTimeThisWeek[params.dayOfWeek]
                 .compareTo(a.screenTimeThisWeek[params.dayOfWeek]),
           );
-
-          /// Filter out apps if they haven't been used i.e, whose screen time is 0
-          if (!params.includeAll) {
-            apps = apps
-                .where((e) => e.screenTimeThisWeek[params.dayOfWeek] > 0)
-                .toList();
-          }
 
           /// Map the result
           return AsyncData(apps.map((e) => e.packageName).toList());

@@ -1,45 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/models/android_app.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 
-class SelectableAppTile extends ConsumerWidget {
-  const SelectableAppTile({
+class CheckboxAppTile extends StatelessWidget {
+  const CheckboxAppTile({
     super.key,
+    required this.app,
     required this.isSelected,
-    required this.appPackage,
-    required this.onSelect,
-    required this.onDeselect,
+    required this.onSelectionChanged,
   });
 
-  final String appPackage;
+  final AndroidApp app;
   final bool isSelected;
-  final VoidCallback onSelect;
-  final VoidCallback onDeselect;
+  final ValueChanged<bool> onSelectionChanged;
+
+  void _informAboutImpApps() async {
+    await MethodChannelService.instance
+        .showToast("Can't select important apps");
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final app =
-        ref.watch(appsProvider.select((value) => value.value?[appPackage]));
-    if (app == null) return 0.vBox();
-
+  Widget build(BuildContext context) {
     return RoundedContainer(
-      key: Key(appPackage),
-      color: Colors.transparent,
+      color: isSelected ? Colors.red.withOpacity(0.1) : Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      margin: const EdgeInsets.only(bottom: 2),
       onPressed: app.isImpSysApp
-          ? null
-          : isSelected
-              ? onDeselect
-              : onSelect,
+          ? _informAboutImpApps
+          : () => onSelectionChanged(!isSelected),
       child: ListTileSkeleton(
         /// App icon
         leading: ApplicationIcon(
           app: app,
+          isGreyedOut: isSelected,
           size: 16,
         ),
 

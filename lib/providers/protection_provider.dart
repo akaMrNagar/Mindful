@@ -62,7 +62,7 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
 
   Future<void> toggleWebsitesBlocker(bool shouldBlock) async {
     /// Show toast if no blocked apps
-    if (shouldBlock && state.blockedApps.isEmpty && !state.blockNsfwSites) {
+    if (shouldBlock && state.blockedWebsites.isEmpty && !state.blockNsfwSites) {
       MethodChannelService.instance.showToast(
         "Either add atleast one website to block or enable nsfw blocker",
       );
@@ -90,35 +90,40 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
 
   Future<void> toggleBlockNsfw(bool startBlocking) async {
     /// Update state
-    await SharePrefsService.instance.toggleNsfwBlockingStatus(startBlocking);
+    await SharePrefsService.instance.updateNsfwBlockingStatus(startBlocking);
     state = state.copyWith(blockNsfwSites: startBlocking);
   }
 
-  void addAppToBlockedList(String appPackage) async {
-    state = state.copyWith(
-      blockedApps: [...state.blockedApps, appPackage],
-    );
+  void insertRemoveBlockedApp(String appPackage, bool shouldInsert) async {
+    if (shouldInsert) {
+      state = state.copyWith(
+        blockedApps: state.blockedApps.toList()..add(appPackage),
+      );
+    } else {
+      state = state.copyWith(
+        blockedApps: state.blockedApps.toList()..remove(appPackage),
+      );
+    }
 
     await MethodChannelService.instance.refreshVpnService();
     await SharePrefsService.instance.updateBlockedApps(state.blockedApps);
   }
 
-  void removeAppFromBlockedList(String appPackage) async {
-    state = state.copyWith(
-      blockedApps: [...state.blockedApps]..remove(appPackage),
-    );
+  void insetRemoveBlockedSite(String websiteHost, bool shouldInsert) async {
+    if (shouldInsert) {
+      state = state.copyWith(
+        blockedWebsites: state.blockedWebsites.toList()
+          ..add(websiteHost.toLowerCase()),
+      );
+    } else {
+      state = state.copyWith(
+        blockedWebsites: state.blockedWebsites.toList()
+          ..remove(websiteHost.toLowerCase()),
+      );
+    }
 
-    await MethodChannelService.instance.refreshVpnService();
-    await SharePrefsService.instance.updateBlockedApps(state.blockedApps);
+    /// This will automatically trigger update in accessibility service
+    /// due to shared prefs listener is register in the service.
+    await SharePrefsService.instance.updateBlockedSites(state.blockedWebsites);
   }
-
-  void addSiteToBlockedList(String websiteHost) => state = state.copyWith(
-        blockedWebsites: [...state.blockedWebsites, websiteHost],
-      );
-
-  void removeSiteFromBlockedList(String websiteHost) => state = state.copyWith(
-        blockedWebsites: [...state.blockedWebsites]..remove(websiteHost),
-      );
-
-      
 }

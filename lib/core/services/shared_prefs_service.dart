@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:mindful/core/utils/constants.dart';
+import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharePrefsService {
@@ -24,6 +25,9 @@ class SharePrefsService {
   Future<void> updateBlockedSites(List<String> websites) =>
       _prefs.setString(AppConstants.prefKeyBlockedSites, jsonEncode(websites));
 
-  Future<void> toggleNsfwBlockingStatus(bool isBlockingNsfw) =>
+  Future<void> updateBedtimeSettings(BedtimeSettings settings) => _prefs
+      .setString(AppConstants.prefKeyBedtimeSettings, jsonEncode(settings));
+
+  Future<void> updateNsfwBlockingStatus(bool isBlockingNsfw) =>
       _prefs.setBool(AppConstants.prefKeyNsfwBlockingStatus, isBlockingNsfw);
 }

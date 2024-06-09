@@ -9,15 +9,15 @@ class ScheduleDaysSelector extends ConsumerWidget {
   const ScheduleDaysSelector({super.key});
 
   void _toggleDays(WidgetRef ref, int index) =>
-      ref.read(bedtimeProvider.notifier).toggleScheduleDays(index);
+      ref.read(bedtimeProvider.notifier).toggleScheduleDay(index);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheduleDays =
         ref.watch(bedtimeProvider.select((value) => value.scheduleDays));
 
-    final isScheduleActive =
-        ref.watch(bedtimeProvider.select((value) => value.scheduleStatus));
+    final isScheduleOn =
+        ref.watch(bedtimeProvider.select((value) => value.isScheduleOn));
 
     return SizedBox(
         height: 40,
@@ -37,11 +37,11 @@ class ScheduleDaysSelector extends ConsumerWidget {
                     ? Theme.of(context).colorScheme.surface
                     : Colors.transparent,
                 onPressed:
-                    isScheduleActive ? null : () => _toggleDays(ref, index),
+                    isScheduleOn ? null : () => _toggleDays(ref, index),
                 child: StatefulText(
                   AppStrings.daysShort[index],
                   fontSize: 14,
-                  isActive: !isScheduleActive,
+                  isActive: !isScheduleOn,
                 ),
               ),
             ),

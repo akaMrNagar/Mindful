@@ -22,27 +22,27 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActions> {
   bool isDistractingAppsListExpanded = false;
 
   void _togglePauseApps(WidgetRef ref) =>
-      ref.read(bedtimeProvider.notifier).toggleScreenLockdown();
+      ref.read(bedtimeProvider.notifier).toggleShouldPauseApps();
 
   void _togglePauseInternet(WidgetRef ref) =>
-      ref.read(bedtimeProvider.notifier).toggleInternetLockdown();
+      ref.read(bedtimeProvider.notifier).toggleShouldBlockInternet();
 
   void _toggleDND(WidgetRef ref) =>
-      ref.read(bedtimeProvider.notifier).toggleDND();
+      ref.read(bedtimeProvider.notifier).toggleShouldStartDnd();
 
   @override
   Widget build(BuildContext context) {
-    final isScheduleActive =
-        ref.watch(bedtimeProvider.select((value) => value.scheduleStatus));
+    final isScheduleOn =
+        ref.watch(bedtimeProvider.select((value) => value.isScheduleOn));
 
-    final pauseApps =
-        ref.watch(bedtimeProvider.select((value) => value.startScreenLockdown));
+    final shouldPauseApps =
+        ref.watch(bedtimeProvider.select((value) => value.shouldPauseApps));
 
-    final pauseInternet = ref
-        .watch(bedtimeProvider.select((value) => value.startInternetLockdown));
+    final shouldBlockInternet =
+        ref.watch(bedtimeProvider.select((value) => value.shouldBlockInternet));
 
-    final startDnd =
-        ref.watch(bedtimeProvider.select((value) => value.startDnd));
+    final shouldStartDnd =
+        ref.watch(bedtimeProvider.select((value) => value.shouldStartDnd));
 
     return MultiSliver(
       children: [
@@ -50,26 +50,26 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActions> {
           children: [
             /// Pause Apps
             SwitchableListTile(
-              value: pauseApps,
-              enabled: !isScheduleActive,
+              value: shouldPauseApps,
+              enabled: !isScheduleOn,
               onPressed: () => _togglePauseApps(ref),
               titleText: "Pause apps",
-              subTitleText: "Pause apps with timers On",
+              subTitleText: "Pause distracting apps",
             ),
 
             /// Pause Internet
             SwitchableListTile(
-              value: pauseInternet,
-              enabled: !isScheduleActive,
+              value: shouldBlockInternet,
+              enabled: !isScheduleOn,
               onPressed: () => _togglePauseInternet(ref),
               titleText: "Block internet",
-              subTitleText: "Block internet access for selected apps",
+              subTitleText: "Block distracting app's internet",
             ),
 
             /// DND Mode
             SwitchableListTile(
-              value: startDnd,
-              enabled: !isScheduleActive,
+              value: shouldStartDnd,
+              enabled: !isScheduleOn,
               onPressed: () => _toggleDND(ref),
               titleText: "Start do not disturb",
               subTitleText:
@@ -81,28 +81,19 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActions> {
               color: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               onPressed: () {},
-              child: ListTileSkeleton(
-                leading: Icon(
-                  FluentIcons.alert_20_regular,
-                  color:
-                      isScheduleActive ? Theme.of(context).disabledColor : null,
-                ),
+              child: const ListTileSkeleton(
+                leading: Icon(FluentIcons.alert_20_regular),
                 title: StatefulText(
                   "Do not disturb settings",
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  isActive: !isScheduleActive,
                 ),
-                subtitle: const StatefulText(
+                subtitle: StatefulText(
                   "Manage which app are distracting you from your routine.",
                   fontSize: 14,
                   isActive: false,
                 ),
-                trailing: Icon(
-                  FluentIcons.chevron_right_20_filled,
-                  color:
-                      isScheduleActive ? Theme.of(context).disabledColor : null,
-                ),
+                trailing: Icon(FluentIcons.chevron_right_20_filled),
               ),
             ),
 
@@ -115,31 +106,20 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActions> {
                     !isDistractingAppsListExpanded,
               ),
               child: ListTileSkeleton(
-                leading: Icon(
-                  FluentIcons.weather_moon_20_regular,
-                  color:
-                      isScheduleActive ? Theme.of(context).disabledColor : null,
-                ),
-                title: StatefulText(
+                leading: const Icon(FluentIcons.weather_moon_20_regular),
+                title: const StatefulText(
                   "Distracting apps",
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  isActive: !isScheduleActive,
                 ),
                 subtitle: const StatefulText(
                   "Manage which app are distracting you from your routine.",
                   fontSize: 14,
-                  isActive: false,
                 ),
                 trailing: AnimatedRotation(
                   duration: 250.ms,
                   turns: isDistractingAppsListExpanded ? 0.5 : 0,
-                  child: Icon(
-                    FluentIcons.chevron_down_20_filled,
-                    color: isScheduleActive
-                        ? Theme.of(context).disabledColor
-                        : null,
-                  ),
+                  child: const Icon(FluentIcons.chevron_down_20_filled),
                 ),
               ),
             ),
@@ -147,7 +127,13 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActions> {
         ),
 
         /// Distracting apps list
-        if (isDistractingAppsListExpanded) const DistractingAppsList(),
+        SliverAnimatedPaintExtent(
+          duration: 650.ms,
+          curve: Curves.easeOut,
+          child: isDistractingAppsListExpanded
+              ? const DistractingAppsList()
+              : 0.vSliverBox(),
+        ),
 
         72.vSliverBox(),
       ],

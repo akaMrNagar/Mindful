@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/services/shared_prefs_service.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 
 final bedtimeProvider =
@@ -20,11 +21,13 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
     /// Listen to provider and save changes to isar database
     addListener((state) async {
       await IsarDbService.instance.saveBedtimeSettings(state);
+      // Update shared prefs
+      await SharePrefsService.instance.updateBedtimeSettings(state);
     });
   }
 
-  void toggleBedtimeScheduleStatus() =>
-      state = state.copyWith(scheduleStatus: !state.scheduleStatus);
+  void toggleScheduleStatus() =>
+      state = state.copyWith(isScheduleOn: !state.isScheduleOn);
 
   void setBedtimeStart(TimeOfDay timeOfDay) =>
       state = state.copyWith(startTimeInSec: timeOfDay.toSeconds());
@@ -32,23 +35,28 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   void setBedtimeEnd(TimeOfDay timeOfDay) =>
       state = state.copyWith(endTimeInSec: timeOfDay.toSeconds());
 
-  void toggleScheduleDays(int index) {
+  void toggleScheduleDay(int index) {
     var days = state.scheduleDays.toList();
     days[index] = !days[index];
     state = state.copyWith(scheduleDays: days);
   }
 
-  void toggleScreenLockdown() =>
-      state = state.copyWith(startScreenLockdown: !state.startScreenLockdown);
+  void toggleShouldPauseApps() =>
+      state = state.copyWith(shouldPauseApps: !state.shouldPauseApps);
 
-  void toggleInternetLockdown() => state =
-      state.copyWith(startInternetLockdown: !state.startInternetLockdown);
+  void toggleShouldBlockInternet() =>
+      state = state.copyWith(shouldBlockInternet: !state.shouldBlockInternet);
 
-  void toggleDND() => state = state.copyWith(startDnd: !state.startDnd);
+  void toggleShouldStartDnd() =>
+      state = state.copyWith(shouldStartDnd: !state.shouldStartDnd);
 
-  void addDistractionApp(String appPackage) => state = state.copyWith(
-      distractionApps: state.distractionApps.toList()..add(appPackage));
-
-  void removeDistractionApp(String appPackage) => state = state.copyWith(
-      distractionApps: state.distractionApps.toList()..remove(appPackage));
+  void insertRemoveDistractingApp(String appPackage, bool shouldInsert) async {
+    if (shouldInsert) {
+      state = state.copyWith(
+          distractingApps: state.distractingApps.toList()..add(appPackage));
+    } else {
+      state = state.copyWith(
+          distractingApps: state.distractingApps.toList()..remove(appPackage));
+    }
+  }
 }

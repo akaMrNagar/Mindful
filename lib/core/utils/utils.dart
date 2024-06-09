@@ -1,3 +1,4 @@
+
 final DateTime now = DateTime.now();
 final int dayOfWeek = _formatWeekDayToSunday(now.weekday) - 1;
 

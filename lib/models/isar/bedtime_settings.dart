@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -37,61 +39,73 @@ class BedtimeSettings {
   /// Boolean denoting the status of the bedtime schedule means
   /// [For User] if the schedule is running or not.
   /// [For Developer]  if the task worker is scheduled or cancelled.
-  final bool scheduleStatus;
+  final bool isScheduleOn;
 
-  /// Boolean denoting if to pause app or not when bedtime starts.
-  final bool startScreenLockdown;
+  /// Boolean denoting if to pause [distractingApps] or not when bedtime starts.
+  final bool shouldPauseApps;
 
-  /// Boolean denoting if to pause app's internet or not when bedtime starts.
-  final bool startInternetLockdown;
+  /// Boolean denoting if to block [distractingApps] internet or not when bedtime starts.
+  final bool shouldBlockInternet;
 
   /// Boolean denoting if to start DO NOT DISTURB mode or not when bedtime starts.
-  final bool startDnd;
+  final bool shouldStartDnd;
 
   /// List of app's packages which are selected as distractiong apps.
-  /// The [startScreenLockdown] and [startInternetLockdown] actions will be applied to
+  /// The [shouldPauseApps] and [shouldBlockInternet] actions will be applied to
   /// these apps.
-  final List<String> distractionApps;
+  final List<String> distractingApps;
 
   /// Bedtime model used for determining the actions to perform when bedtime schedule task starts.
   const BedtimeSettings({
     this.startTimeInSec = 0,
     this.endTimeInSec = 0,
     this.scheduleDays = const [false, true, true, true, true, true, false],
-    this.scheduleStatus = false,
-    this.startScreenLockdown = false,
-    this.startInternetLockdown = false,
-    this.startDnd = false,
-    this.distractionApps = const [],
+    this.isScheduleOn = false,
+    this.shouldPauseApps = false,
+    this.shouldBlockInternet = false,
+    this.shouldStartDnd = false,
+    this.distractingApps = const [],
   });
 
   BedtimeSettings copyWith({
     int? startTimeInSec,
     int? endTimeInSec,
     List<bool>? scheduleDays,
-    bool? scheduleStatus,
-    bool? startScreenLockdown,
-    bool? startInternetLockdown,
-    bool? startDnd,
-    List<String>? distractionApps,
+    bool? isScheduleOn,
+    bool? shouldPauseApps,
+    bool? shouldBlockInternet,
+    bool? shouldStartDnd,
+    List<String>? distractingApps,
   }) {
     return BedtimeSettings(
       startTimeInSec: startTimeInSec ?? this.startTimeInSec,
       endTimeInSec: endTimeInSec ?? this.endTimeInSec,
       scheduleDays: scheduleDays ?? this.scheduleDays,
-      scheduleStatus: scheduleStatus ?? this.scheduleStatus,
-      startScreenLockdown: startScreenLockdown ?? this.startScreenLockdown,
-      startInternetLockdown:
-          startInternetLockdown ?? this.startInternetLockdown,
-      startDnd: startDnd ?? this.startDnd,
-      distractionApps: distractionApps ?? this.distractionApps,
+      isScheduleOn: isScheduleOn ?? this.isScheduleOn,
+      shouldPauseApps: shouldPauseApps ?? this.shouldPauseApps,
+      shouldBlockInternet: shouldBlockInternet ?? this.shouldBlockInternet,
+      shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
+      distractingApps: distractingApps ?? this.distractingApps,
     );
   }
 
-  
+  Map<String, dynamic> toMap() {
+    return {
+      'startTimeInSec': startTimeInSec,
+      'endTimeInSec': endTimeInSec,
+      'scheduleDays': scheduleDays,
+      'isScheduleOn': isScheduleOn,
+      'shouldPauseApps': shouldPauseApps,
+      'shouldBlockInternet': shouldBlockInternet,
+      'shouldStartDnd': shouldStartDnd,
+      'distractingApps': distractingApps,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 
   @override
   String toString() {
-    return 'BedtimeSettings(startTimeInSec: $startTimeInSec, endTimeInSec: $endTimeInSec, scheduleDays: $scheduleDays, scheduleStatus: $scheduleStatus, startScreenLockdown: $startScreenLockdown, startInternetLockdown: $startInternetLockdown, startDnd: $startDnd, distractionApps: $distractionApps)';
+    return 'BedtimeSettings(startTimeInSec: $startTimeInSec, endTimeInSec: $endTimeInSec, scheduleDays: $scheduleDays, isScheduleOn: $isScheduleOn, shouldPauseApps: $shouldPauseApps, shouldBlockInternet: $shouldBlockInternet, shouldStartDnd: $shouldStartDnd, distractingApps: $distractingApps)';
   }
 }

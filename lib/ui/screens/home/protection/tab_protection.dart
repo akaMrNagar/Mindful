@@ -33,7 +33,7 @@ class TabProtection extends ConsumerWidget {
       }
 
       /// Add to blocked sites list
-      ref.read(protectionProvider.notifier).addSiteToBlockedList(host);
+      ref.read(protectionProvider.notifier).insertRemoveBlockedApp(host, true);
     } else {
       await MethodChannelService.instance
           .showToast("Invalid url! cannot parse host name");

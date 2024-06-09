@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
-import 'package:mindful/ui/screens/home/protection/tab_Protection.dart';
+import 'package:mindful/ui/screens/home/protection/tab_protection.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});

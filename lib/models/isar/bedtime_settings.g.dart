@@ -17,9 +17,9 @@ const BedtimeSettingsSchema = CollectionSchema(
   name: r'BedtimeSettings',
   id: -8048450760107525397,
   properties: {
-    r'distractionApps': PropertySchema(
+    r'distractingApps': PropertySchema(
       id: 0,
-      name: r'distractionApps',
+      name: r'distractingApps',
       type: IsarType.stringList,
     ),
     r'endTimeInSec': PropertySchema(
@@ -27,29 +27,29 @@ const BedtimeSettingsSchema = CollectionSchema(
       name: r'endTimeInSec',
       type: IsarType.long,
     ),
-    r'scheduleDays': PropertySchema(
+    r'isScheduleOn': PropertySchema(
       id: 2,
+      name: r'isScheduleOn',
+      type: IsarType.bool,
+    ),
+    r'scheduleDays': PropertySchema(
+      id: 3,
       name: r'scheduleDays',
       type: IsarType.boolList,
     ),
-    r'scheduleStatus': PropertySchema(
-      id: 3,
-      name: r'scheduleStatus',
-      type: IsarType.bool,
-    ),
-    r'startDnd': PropertySchema(
+    r'shouldBlockInternet': PropertySchema(
       id: 4,
-      name: r'startDnd',
+      name: r'shouldBlockInternet',
       type: IsarType.bool,
     ),
-    r'startInternetLockdown': PropertySchema(
+    r'shouldPauseApps': PropertySchema(
       id: 5,
-      name: r'startInternetLockdown',
+      name: r'shouldPauseApps',
       type: IsarType.bool,
     ),
-    r'startScreenLockdown': PropertySchema(
+    r'shouldStartDnd': PropertySchema(
       id: 6,
-      name: r'startScreenLockdown',
+      name: r'shouldStartDnd',
       type: IsarType.bool,
     ),
     r'startTimeInSec': PropertySchema(
@@ -78,10 +78,10 @@ int _bedtimeSettingsEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.distractionApps.length * 3;
+  bytesCount += 3 + object.distractingApps.length * 3;
   {
-    for (var i = 0; i < object.distractionApps.length; i++) {
-      final value = object.distractionApps[i];
+    for (var i = 0; i < object.distractingApps.length; i++) {
+      final value = object.distractingApps[i];
       bytesCount += value.length * 3;
     }
   }
@@ -95,13 +95,13 @@ void _bedtimeSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeStringList(offsets[0], object.distractionApps);
+  writer.writeStringList(offsets[0], object.distractingApps);
   writer.writeLong(offsets[1], object.endTimeInSec);
-  writer.writeBoolList(offsets[2], object.scheduleDays);
-  writer.writeBool(offsets[3], object.scheduleStatus);
-  writer.writeBool(offsets[4], object.startDnd);
-  writer.writeBool(offsets[5], object.startInternetLockdown);
-  writer.writeBool(offsets[6], object.startScreenLockdown);
+  writer.writeBool(offsets[2], object.isScheduleOn);
+  writer.writeBoolList(offsets[3], object.scheduleDays);
+  writer.writeBool(offsets[4], object.shouldBlockInternet);
+  writer.writeBool(offsets[5], object.shouldPauseApps);
+  writer.writeBool(offsets[6], object.shouldStartDnd);
   writer.writeLong(offsets[7], object.startTimeInSec);
 }
 
@@ -112,14 +112,14 @@ BedtimeSettings _bedtimeSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = BedtimeSettings(
-    distractionApps: reader.readStringList(offsets[0]) ?? const [],
+    distractingApps: reader.readStringList(offsets[0]) ?? const [],
     endTimeInSec: reader.readLongOrNull(offsets[1]) ?? 0,
-    scheduleDays: reader.readBoolList(offsets[2]) ??
+    isScheduleOn: reader.readBoolOrNull(offsets[2]) ?? false,
+    scheduleDays: reader.readBoolList(offsets[3]) ??
         const [false, true, true, true, true, true, false],
-    scheduleStatus: reader.readBoolOrNull(offsets[3]) ?? false,
-    startDnd: reader.readBoolOrNull(offsets[4]) ?? false,
-    startInternetLockdown: reader.readBoolOrNull(offsets[5]) ?? false,
-    startScreenLockdown: reader.readBoolOrNull(offsets[6]) ?? false,
+    shouldBlockInternet: reader.readBoolOrNull(offsets[4]) ?? false,
+    shouldPauseApps: reader.readBoolOrNull(offsets[5]) ?? false,
+    shouldStartDnd: reader.readBoolOrNull(offsets[6]) ?? false,
     startTimeInSec: reader.readLongOrNull(offsets[7]) ?? 0,
   );
   return object;
@@ -137,10 +137,10 @@ P _bedtimeSettingsDeserializeProp<P>(
     case 1:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 3:
       return (reader.readBoolList(offset) ??
           const [false, true, true, true, true, true, false]) as P;
-    case 3:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
@@ -248,13 +248,13 @@ extension BedtimeSettingsQueryWhere
 extension BedtimeSettingsQueryFilter
     on QueryBuilder<BedtimeSettings, BedtimeSettings, QFilterCondition> {
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementEqualTo(
+      distractingAppsElementEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -262,7 +262,7 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementGreaterThan(
+      distractingAppsElementGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -270,7 +270,7 @@ extension BedtimeSettingsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -278,7 +278,7 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementLessThan(
+      distractingAppsElementLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -286,7 +286,7 @@ extension BedtimeSettingsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -294,7 +294,7 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementBetween(
+      distractingAppsElementBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -303,7 +303,7 @@ extension BedtimeSettingsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'distractionApps',
+        property: r'distractingApps',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -314,13 +314,13 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementStartsWith(
+      distractingAppsElementStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -328,13 +328,13 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementEndsWith(
+      distractingAppsElementEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -342,11 +342,11 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementContains(String value,
+      distractingAppsElementContains(String value,
           {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: value,
         caseSensitive: caseSensitive,
       ));
@@ -354,11 +354,11 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementMatches(String pattern,
+      distractingAppsElementMatches(String pattern,
           {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'distractionApps',
+        property: r'distractingApps',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
@@ -366,30 +366,30 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementIsEmpty() {
+      distractingAppsElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: '',
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsElementIsNotEmpty() {
+      distractingAppsElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'distractionApps',
+        property: r'distractingApps',
         value: '',
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsLengthEqualTo(int length) {
+      distractingAppsLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'distractionApps',
+        r'distractingApps',
         length,
         true,
         length,
@@ -399,10 +399,10 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsIsEmpty() {
+      distractingAppsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'distractionApps',
+        r'distractingApps',
         0,
         true,
         0,
@@ -412,10 +412,10 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsIsNotEmpty() {
+      distractingAppsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'distractionApps',
+        r'distractingApps',
         0,
         false,
         999999,
@@ -425,13 +425,13 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsLengthLessThan(
+      distractingAppsLengthLessThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'distractionApps',
+        r'distractingApps',
         0,
         true,
         length,
@@ -441,13 +441,13 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsLengthGreaterThan(
+      distractingAppsLengthGreaterThan(
     int length, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'distractionApps',
+        r'distractingApps',
         length,
         include,
         999999,
@@ -457,7 +457,7 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      distractionAppsLengthBetween(
+      distractingAppsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -465,7 +465,7 @@ extension BedtimeSettingsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
-        r'distractionApps',
+        r'distractingApps',
         lower,
         includeLower,
         upper,
@@ -587,6 +587,16 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
+      isScheduleOnEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isScheduleOn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
       scheduleDaysElementEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -686,40 +696,30 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      scheduleStatusEqualTo(bool value) {
+      shouldBlockInternetEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'scheduleStatus',
+        property: r'shouldBlockInternet',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startDndEqualTo(bool value) {
+      shouldPauseAppsEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startDnd',
+        property: r'shouldPauseApps',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startInternetLockdownEqualTo(bool value) {
+      shouldStartDndEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startInternetLockdown',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startScreenLockdownEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startScreenLockdown',
+        property: r'shouldStartDnd',
         value: value,
       ));
     });
@@ -805,58 +805,58 @@ extension BedtimeSettingsQuerySortBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByScheduleStatus() {
+      sortByIsScheduleOn() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scheduleStatus', Sort.asc);
+      return query.addSortBy(r'isScheduleOn', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByScheduleStatusDesc() {
+      sortByIsScheduleOnDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scheduleStatus', Sort.desc);
+      return query.addSortBy(r'isScheduleOn', Sort.desc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartDnd() {
+      sortByShouldBlockInternet() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDnd', Sort.asc);
+      return query.addSortBy(r'shouldBlockInternet', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartDndDesc() {
+      sortByShouldBlockInternetDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDnd', Sort.desc);
+      return query.addSortBy(r'shouldBlockInternet', Sort.desc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartInternetLockdown() {
+      sortByShouldPauseApps() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startInternetLockdown', Sort.asc);
+      return query.addSortBy(r'shouldPauseApps', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartInternetLockdownDesc() {
+      sortByShouldPauseAppsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startInternetLockdown', Sort.desc);
+      return query.addSortBy(r'shouldPauseApps', Sort.desc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartScreenLockdown() {
+      sortByShouldStartDnd() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startScreenLockdown', Sort.asc);
+      return query.addSortBy(r'shouldStartDnd', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartScreenLockdownDesc() {
+      sortByShouldStartDndDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startScreenLockdown', Sort.desc);
+      return query.addSortBy(r'shouldStartDnd', Sort.desc);
     });
   }
 
@@ -904,58 +904,58 @@ extension BedtimeSettingsQuerySortThenBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByScheduleStatus() {
+      thenByIsScheduleOn() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scheduleStatus', Sort.asc);
+      return query.addSortBy(r'isScheduleOn', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByScheduleStatusDesc() {
+      thenByIsScheduleOnDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'scheduleStatus', Sort.desc);
+      return query.addSortBy(r'isScheduleOn', Sort.desc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartDnd() {
+      thenByShouldBlockInternet() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDnd', Sort.asc);
+      return query.addSortBy(r'shouldBlockInternet', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartDndDesc() {
+      thenByShouldBlockInternetDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startDnd', Sort.desc);
+      return query.addSortBy(r'shouldBlockInternet', Sort.desc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartInternetLockdown() {
+      thenByShouldPauseApps() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startInternetLockdown', Sort.asc);
+      return query.addSortBy(r'shouldPauseApps', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartInternetLockdownDesc() {
+      thenByShouldPauseAppsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startInternetLockdown', Sort.desc);
+      return query.addSortBy(r'shouldPauseApps', Sort.desc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartScreenLockdown() {
+      thenByShouldStartDnd() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startScreenLockdown', Sort.asc);
+      return query.addSortBy(r'shouldStartDnd', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartScreenLockdownDesc() {
+      thenByShouldStartDndDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startScreenLockdown', Sort.desc);
+      return query.addSortBy(r'shouldStartDnd', Sort.desc);
     });
   }
 
@@ -977,9 +977,9 @@ extension BedtimeSettingsQuerySortThenBy
 extension BedtimeSettingsQueryWhereDistinct
     on QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct> {
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByDistractionApps() {
+      distinctByDistractingApps() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'distractionApps');
+      return query.addDistinctBy(r'distractingApps');
     });
   }
 
@@ -991,6 +991,13 @@ extension BedtimeSettingsQueryWhereDistinct
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
+      distinctByIsScheduleOn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isScheduleOn');
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
       distinctByScheduleDays() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'scheduleDays');
@@ -998,30 +1005,23 @@ extension BedtimeSettingsQueryWhereDistinct
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByScheduleStatus() {
+      distinctByShouldBlockInternet() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'scheduleStatus');
+      return query.addDistinctBy(r'shouldBlockInternet');
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByStartDnd() {
+      distinctByShouldPauseApps() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startDnd');
+      return query.addDistinctBy(r'shouldPauseApps');
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByStartInternetLockdown() {
+      distinctByShouldStartDnd() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startInternetLockdown');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByStartScreenLockdown() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startScreenLockdown');
+      return query.addDistinctBy(r'shouldStartDnd');
     });
   }
 
@@ -1042,15 +1042,21 @@ extension BedtimeSettingsQueryProperty
   }
 
   QueryBuilder<BedtimeSettings, List<String>, QQueryOperations>
-      distractionAppsProperty() {
+      distractingAppsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'distractionApps');
+      return query.addPropertyName(r'distractingApps');
     });
   }
 
   QueryBuilder<BedtimeSettings, int, QQueryOperations> endTimeInSecProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endTimeInSec');
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, bool, QQueryOperations> isScheduleOnProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isScheduleOn');
     });
   }
 
@@ -1062,29 +1068,23 @@ extension BedtimeSettingsQueryProperty
   }
 
   QueryBuilder<BedtimeSettings, bool, QQueryOperations>
-      scheduleStatusProperty() {
+      shouldBlockInternetProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'scheduleStatus');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, bool, QQueryOperations> startDndProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startDnd');
+      return query.addPropertyName(r'shouldBlockInternet');
     });
   }
 
   QueryBuilder<BedtimeSettings, bool, QQueryOperations>
-      startInternetLockdownProperty() {
+      shouldPauseAppsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startInternetLockdown');
+      return query.addPropertyName(r'shouldPauseApps');
     });
   }
 
   QueryBuilder<BedtimeSettings, bool, QQueryOperations>
-      startScreenLockdownProperty() {
+      shouldStartDndProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startScreenLockdown');
+      return query.addPropertyName(r'shouldStartDnd');
     });
   }
 

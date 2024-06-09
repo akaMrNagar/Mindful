@@ -104,8 +104,7 @@ ProtectionSettings _protectionSettingsDeserialize(
     appsInternetBlocker: reader.readBoolOrNull(offsets[0]) ?? false,
     blockNsfwSites: reader.readBoolOrNull(offsets[1]) ?? false,
     blockedApps: reader.readStringList(offsets[2]) ?? const [],
-    blockedWebsites: reader.readStringList(offsets[3]) ??
-        const ['google.com', 'instagram.com', 'youtube.com'],
+    blockedWebsites: reader.readStringList(offsets[3]) ?? const [],
     websitesBlocker: reader.readBoolOrNull(offsets[4]) ?? false,
   );
   return object;
@@ -125,8 +124,7 @@ P _protectionSettingsDeserializeProp<P>(
     case 2:
       return (reader.readStringList(offset) ?? const []) as P;
     case 3:
-      return (reader.readStringList(offset) ??
-          const ['google.com', 'instagram.com', 'youtube.com']) as P;
+      return (reader.readStringList(offset) ?? const []) as P;
     case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:

@@ -43,14 +43,13 @@ class TabBedtime extends StatelessWidget {
               return SwitchableListTile(
                 isPrimary: true,
                 leadingIcon: FluentIcons.sleep_20_regular,
-                titleText: "Status",
-                subTitleText: "Enable or disable daily schedule task",
+                titleText: "Schedule",
+                subTitleText: "Enable or disable daily schedule",
                 value: ref.watch(
-                  bedtimeProvider.select((v) => v.scheduleStatus),
+                  bedtimeProvider.select((v) => v.isScheduleOn),
                 ),
-                onPressed: () => ref
-                    .read(bedtimeProvider.notifier)
-                    .toggleBedtimeScheduleStatus(),
+                onPressed: () =>
+                    ref.read(bedtimeProvider.notifier).toggleScheduleStatus(),
               );
             },
           ).toSliverBox(),
@@ -60,7 +59,7 @@ class TabBedtime extends StatelessWidget {
             minHeight: 32,
             maxHeight: 42,
             alignment: Alignment(-1, 0.75),
-            child: Text("Actions"),
+            child: Text("Quick actions"),
           ),
 
           /// Actions related to bedtime
