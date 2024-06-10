@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -60,15 +59,12 @@ class BedtimeCard extends StatelessWidget {
               12.hBox(),
               Consumer(
                 builder: (_, WidgetRef ref, __) {
-                  final startT = ref.watch(
-                    bedtimeProvider.select((value) => value.startTime),
-                  );
-                  final endT = ref.watch(
-                    bedtimeProvider.select((value) => value.endTime),
+                  final totalDuration = ref.watch(
+                    bedtimeProvider.select((value) => value.totalDuration),
                   );
 
                   /// Duration text
-                  return StatefulText(endT.difference(startT).toTimeFull());
+                  return StatefulText(totalDuration.toTimeFull());
                 },
               ),
               12.hBox(),

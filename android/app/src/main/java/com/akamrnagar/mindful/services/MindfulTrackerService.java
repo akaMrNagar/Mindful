@@ -69,8 +69,8 @@ public class MindfulTrackerService extends Service {
     private void reloadDataFromSharedPrefs() {
         if (mAppLaunchReceiver == null) return;
 
-        // Stop service if not timer and locked apps
-        if (!mAppLaunchReceiver.reloadDataFromSharedPrefs()) {
+        // Stop service if no use
+        if (mAppLaunchReceiver.reloadDataAndCheckToStopService()) {
             stopForeground(true);
             stopSelf();
             return;
@@ -92,7 +92,7 @@ public class MindfulTrackerService extends Service {
 
         // Dispose and Unregister receiver
         if (areReceiversRegistered) {
-            boolean isDestroyedForcefully = mAppLaunchReceiver.reloadDataFromSharedPrefs();
+            boolean isDestroyedForcefully = !mAppLaunchReceiver.reloadDataAndCheckToStopService();
             mLockUnlockReceiver.dispose();
             mAppLaunchReceiver.dispose();
             unregisterReceiver(mLockUnlockReceiver);

@@ -17,11 +17,6 @@ public class ServicesHelper {
         }
     }
 
-    public static void stopTrackingService(Context context) {
-        if (isServiceRunning(context, MindfulTrackerService.class.getName())) {
-            context.startService(new Intent(context, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_SERVICE));
-        }
-    }
 
 
     public static void startVpnService(Context context) {

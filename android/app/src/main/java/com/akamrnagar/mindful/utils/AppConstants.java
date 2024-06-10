@@ -13,12 +13,11 @@ public class AppConstants {
     public static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
     public static final String PREF_KEY_BLOCKED_SITES = "flutter.mindful.blockedSites";
     public static final String PREF_KEY_NSFW_BLOCKING_STATUS = "flutter.mindful.isBlockingNsfw";
-    public static final String PREF_BEDTIME_INFO = "flutter.mindful.bedtimeInfo";
+    public static final String PREF_KEY_BEDTIME_SETTINGS = "flutter.mindful.bedtimeSettings";
 
 
     /// Worker task tags
     public static final String WORKER_TAG_BEDTIME_START = "mindful.worker.bedtime.task.start";
     public static final String WORKER_TAG_BEDTIME_END = "mindful.worker.bedtime.task.end";
-
 
 }

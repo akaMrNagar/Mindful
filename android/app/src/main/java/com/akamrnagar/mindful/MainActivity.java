@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
-import com.akamrnagar.mindful.helpers.WorkerTasksHelper;
+import com.akamrnagar.mindful.helpers.WorkersHelper;
 import com.akamrnagar.mindful.services.MindfulAccessibilityService;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
@@ -146,12 +146,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
 
             // Bedtime schedule routine calls ------------------------------------------------------
-            case "scheduleBedtimeTask":
-                WorkerTasksHelper.scheduleBedtimeTask(this, call);
+            case "scheduleBedtimeRoutine":
+                WorkersHelper.scheduleBedtimeRoutine(this, call);
                 result.success(true);
                 break;
-            case "cancelBedtimeTask":
-                WorkerTasksHelper.cancelBedtimeTask(this);
+            case "cancelBedtimeRoutine":
+                WorkersHelper.cancelBedtimeRoutine(this);
                 result.success(true);
                 break;
             default:
@@ -204,7 +204,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
         } else if (!shouldBind && mTrackerService != null) {
             unbindService(mTrackerServiceConnection);
-            if (interfereService) ServicesHelper.stopTrackingService(this);
             mTrackerService = null;
         }
     }

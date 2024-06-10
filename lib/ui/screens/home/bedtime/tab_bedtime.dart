@@ -40,16 +40,19 @@ class TabBedtime extends StatelessWidget {
           /// Bedtimem schedule status toggler
           Consumer(
             builder: (_, WidgetRef ref, __) {
+              final isScheduleOn = ref.watch(
+                bedtimeProvider.select((v) => v.isScheduleOn),
+              );
+
               return SwitchableListTile(
                 isPrimary: true,
+                value: isScheduleOn,
                 leadingIcon: FluentIcons.sleep_20_regular,
                 titleText: "Schedule",
                 subTitleText: "Enable or disable daily schedule",
-                value: ref.watch(
-                  bedtimeProvider.select((v) => v.isScheduleOn),
-                ),
-                onPressed: () =>
-                    ref.read(bedtimeProvider.notifier).toggleScheduleStatus(),
+                onPressed: () => ref
+                    .read(bedtimeProvider.notifier)
+                    .toggleScheduleStatus(!isScheduleOn),
               );
             },
           ).toSliverBox(),

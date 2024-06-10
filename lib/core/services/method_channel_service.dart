@@ -45,8 +45,11 @@ class MethodChannelService {
   Future<bool> refreshVpnService() async =>
       await _methodChannel.invokeMethod('refreshVpnService');
 
-  Future<bool> cancelBedtimeTask() async =>
-      await _methodChannel.invokeMethod('cancelBedtimeTask');
+  Future<bool> scheduleBedtimeRoutine() async =>
+      await _methodChannel.invokeMethod('scheduleBedtimeRoutine');
+
+  Future<bool> cancelBedtimeRoutine() async =>
+      await _methodChannel.invokeMethod('cancelBedtimeRoutine');
 
   Future<bool> showToast(
     String msg, {

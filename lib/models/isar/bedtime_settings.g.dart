@@ -96,13 +96,13 @@ void _bedtimeSettingsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeStringList(offsets[0], object.distractingApps);
-  writer.writeLong(offsets[1], object.endTimeInSec);
+  writer.writeLong(offsets[1], object.endTimeInMins);
   writer.writeBool(offsets[2], object.isScheduleOn);
   writer.writeBoolList(offsets[3], object.scheduleDays);
   writer.writeBool(offsets[4], object.shouldBlockInternet);
   writer.writeBool(offsets[5], object.shouldPauseApps);
   writer.writeBool(offsets[6], object.shouldStartDnd);
-  writer.writeLong(offsets[7], object.startTimeInSec);
+  writer.writeLong(offsets[7], object.startTimeInMins);
 }
 
 BedtimeSettings _bedtimeSettingsDeserialize(
@@ -113,14 +113,14 @@ BedtimeSettings _bedtimeSettingsDeserialize(
 ) {
   final object = BedtimeSettings(
     distractingApps: reader.readStringList(offsets[0]) ?? const [],
-    endTimeInSec: reader.readLongOrNull(offsets[1]) ?? 0,
+    endTimeInMins: reader.readLongOrNull(offsets[1]) ?? 0,
     isScheduleOn: reader.readBoolOrNull(offsets[2]) ?? false,
     scheduleDays: reader.readBoolList(offsets[3]) ??
         const [false, true, true, true, true, true, false],
     shouldBlockInternet: reader.readBoolOrNull(offsets[4]) ?? false,
     shouldPauseApps: reader.readBoolOrNull(offsets[5]) ?? false,
     shouldStartDnd: reader.readBoolOrNull(offsets[6]) ?? false,
-    startTimeInSec: reader.readLongOrNull(offsets[7]) ?? 0,
+    startTimeInMins: reader.readLongOrNull(offsets[7]) ?? 0,
   );
   return object;
 }

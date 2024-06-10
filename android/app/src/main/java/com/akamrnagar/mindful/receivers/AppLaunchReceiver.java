@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.helpers.ScreenUsageHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
+import com.akamrnagar.mindful.models.BedtimeSettings;
 import com.akamrnagar.mindful.services.OverlayDialogService;
 import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
@@ -32,8 +33,8 @@ public class AppLaunchReceiver extends BroadcastReceiver {
     private final SharedPreferences mSharedPrefs;
     private Timer mAppUsageRecheckTimer;
     private HashMap<String, Long> mAppTimers = new HashMap<>();
-    private HashSet<String> mLockedApps = new HashSet<>();
     private HashSet<String> mPurgedApps = new HashSet<>();
+    private HashSet<String> mDistractingApps = new HashSet<>();
 
 
     public AppLaunchReceiver(Context context) {
@@ -49,22 +50,21 @@ public class AppLaunchReceiver extends BroadcastReceiver {
             // Get the package name of the launched app
             String packageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
             if (packageName == null || packageName.isEmpty()) return;
+            Log.d(TAG, "onReceive: App launch event received with package ** " + packageName + " **");
 
 
             // Cancel running task
             cancelTimers();
 
-            // If app has timer
-            if (mAppTimers.containsKey(packageName)) {
+            if (mDistractingApps.contains(packageName)) {
+                // If bedtime mode is ON
+                openOverlayDialog(packageName);
+            } else if (mAppTimers.containsKey(packageName)) {
+                // Else if app has timerF
                 handleTimerAppLaunch(packageName);
             }
 
-            // If app is locked and timer still left
-            else if (mLockedApps.contains(packageName) && !mPurgedApps.contains(packageName)) {
-                handleLockedAppLaunch(packageName);
-            }
 
-            Log.d(TAG, "onReceive: App launch event received with package ** " + packageName + " **");
         }
     }
 
@@ -129,19 +129,26 @@ public class AppLaunchReceiver extends BroadcastReceiver {
 
 
     /**
-     * This method loads map of app timer and list of locked apps from shared preferences
-     * and check if the MAP and LIST is empty or not.
+     * This method loads map of app timer and bedtime settings from shared preferences.
      * The returned boolean can be used to detect if the service should keep running or stop itself.
      *
-     * @return A boolean FALSE if no timer and locked apps else TRUE
+     * @return TRUE if service can be stopped else FALSE if service can't be stopped
      */
-    public boolean reloadDataFromSharedPrefs() {
+    public boolean reloadDataAndCheckToStopService() {
         mAppTimers = Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(AppConstants.PREF_KEY_APP_TIMERS, ""));
-        mLockedApps = Utils.jsonStrToStringHashSet(mSharedPrefs.getString(AppConstants.PREF_KEY_LOCKED_APPS, ""));
         mPurgedApps.clear();
+        BedtimeSettings bedtimeSettings = new BedtimeSettings(mSharedPrefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, ""));
 
-        // Return FALSE if timers and locked apps list is empty else true
-        return !mAppTimers.isEmpty() || !mLockedApps.isEmpty();
+//        return mAppTimers.isEmpty() && !bedtimeSettings.shouldPauseApps && bedtimeSettings.distractingApps.isEmpty();
+        return mAppTimers.isEmpty() && bedtimeSettings.distractingApps.isEmpty();
+    }
+
+    public void startStopBedtimeMode(HashSet<String> distractingApps, boolean shouldStart) {
+        if (shouldStart) {
+            mDistractingApps = distractingApps;
+        } else {
+            mDistractingApps.clear();
+        }
     }
 
     public void dispose() {
