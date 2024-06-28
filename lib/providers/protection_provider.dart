@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/services/shared_prefs_service.dart';
@@ -64,7 +65,8 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
     /// Show toast if no blocked apps
     if (shouldBlock && state.blockedWebsites.isEmpty && !state.blockNsfwSites) {
       MethodChannelService.instance.showToast(
-        "Either add atleast one website to block or enable nsfw blocker",
+        "Either add atleast one distracting website or enable block nsfw sites",
+        duration: ToastDuration.long,
       );
 
       return;
@@ -105,8 +107,10 @@ class ProtectionNotifier extends StateNotifier<ProtectionSettings> {
       );
     }
 
-    await MethodChannelService.instance.refreshVpnService();
     await SharePrefsService.instance.updateBlockedApps(state.blockedApps);
+    await MethodChannelService.instance.flagVpnRestart();
+
+    if (state.blockedApps.isEmpty) await toggleAppsInternetBlocker(false);
   }
 
   void insetRemoveBlockedSite(String websiteHost, bool shouldInsert) async {

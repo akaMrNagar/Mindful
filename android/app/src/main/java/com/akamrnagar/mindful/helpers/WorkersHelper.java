@@ -30,6 +30,7 @@ public class WorkersHelper {
 
     public static void cancelBedtimeRoutine(Context context) {
         WorkManager.getInstance(context).cancelAllWorkByTag(BEDTIME_WORKER_UNIQUE_TAG);
+        Log.d(TAG, "cancelBedtimeRoutine:  Bedtime routine task cancelled successfully");
     }
 
     public static void scheduleBedtimeRoutine(@NonNull Context context, @NonNull MethodCall call) {
@@ -72,9 +73,9 @@ public class WorkersHelper {
 
 
         Log.d(TAG, "scheduleBedtimeTask: Bedtime routine task scheduled successfully which starts on: "
-                + new Date(cal.getTimeInMillis())
+                + new Date(System.currentTimeMillis() + initialDelay)
                 + " and ends on : "
-                + new Date(cal.getTimeInMillis() + duration)
+                + new Date(System.currentTimeMillis() + initialDelay + duration)
         );
     }
 }

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
+import 'package:mindful/providers/packages_by_network_usage_provider.dart';
 import 'package:mindful/providers/protection_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/async_error_indicator.dart';
@@ -24,7 +24,7 @@ class BlockInternetPage extends ConsumerWidget {
 
     /// Parameters for family provider
     final params = (dayOfWeek: dayOfWeek, includeAll: true);
-    final allApps = ref.watch(packagesByScreenUsageProvider(params));
+    final allApps = ref.watch(packagesByNetworkUsageProvider(params));
 
     final selectedApps =
         ref.watch(protectionProvider.select((v) => v.blockedApps));
@@ -43,6 +43,8 @@ class BlockInternetPage extends ConsumerWidget {
                   isActive: false,
                 ),
                 12.vBox(),
+
+                ///FIXME - Cannot start vpn when internet is off
                 SwitchableListTile(
                   isPrimary: true,
                   leadingIcon: FluentIcons.shield_keyhole_20_regular,
@@ -66,8 +68,12 @@ class BlockInternetPage extends ConsumerWidget {
             itemExtent: 56,
             headerTitle: "Select distracting apps",
             appPackages: [
-              ...apps.where((e) => selectedApps.contains(e)),
+              /// Selected apps which are installed
+              ...selectedApps.where((e) => apps.contains(e)),
+
               if (selectedApps.isNotEmpty) ...["divider"],
+
+              /// Unselected apps which are installed
               ...apps.where((e) => !selectedApps.contains(e)),
             ],
             itemBuilder: (context, app) => CheckboxAppTile(

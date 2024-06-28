@@ -17,8 +17,13 @@ const AppSettingsSchema = CollectionSchema(
   name: r'AppSettings',
   id: -5633561779022347008,
   properties: {
-    r'themeMode': PropertySchema(
+    r'isInvincibleModeOn': PropertySchema(
       id: 0,
+      name: r'isInvincibleModeOn',
+      type: IsarType.bool,
+    ),
+    r'themeMode': PropertySchema(
+      id: 1,
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
@@ -53,7 +58,8 @@ void _appSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeByte(offsets[0], object.themeMode.index);
+  writer.writeBool(offsets[0], object.isInvincibleModeOn);
+  writer.writeByte(offsets[1], object.themeMode.index);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -63,8 +69,9 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings(
+    isInvincibleModeOn: reader.readBoolOrNull(offsets[0]) ?? true,
     themeMode:
-        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[0])] ??
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[1])] ??
             ThemeMode.system,
   );
   return object;
@@ -78,6 +85,8 @@ P _appSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readBoolOrNull(offset) ?? true) as P;
+    case 1:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
@@ -242,6 +251,16 @@ extension AppSettingsQueryFilter
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      isInvincibleModeOnEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isInvincibleModeOn',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeEqualTo(ThemeMode value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -306,6 +325,20 @@ extension AppSettingsQueryLinks
 
 extension AppSettingsQuerySortBy
     on QueryBuilder<AppSettings, AppSettings, QSortBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByIsInvincibleModeOn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvincibleModeOn', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByIsInvincibleModeOnDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvincibleModeOn', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -333,6 +366,20 @@ extension AppSettingsQuerySortThenBy
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByIsInvincibleModeOn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvincibleModeOn', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByIsInvincibleModeOnDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isInvincibleModeOn', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -348,6 +395,13 @@ extension AppSettingsQuerySortThenBy
 
 extension AppSettingsQueryWhereDistinct
     on QueryBuilder<AppSettings, AppSettings, QDistinct> {
+  QueryBuilder<AppSettings, AppSettings, QDistinct>
+      distinctByIsInvincibleModeOn() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isInvincibleModeOn');
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'themeMode');
@@ -360,6 +414,13 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<AppSettings, bool, QQueryOperations>
+      isInvincibleModeOnProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isInvincibleModeOn');
     });
   }
 

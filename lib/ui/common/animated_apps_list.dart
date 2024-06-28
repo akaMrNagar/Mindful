@@ -59,7 +59,7 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
             maxHeight: 48,
             alignment: Alignment.centerLeft,
             child: Text(widget.headerTitle!),
-          ),  
+          ),
 
         /// Apps list
         SliverFixedExtentList.builder(
@@ -89,7 +89,8 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
               /// NOTE: App can't be null in any condition but we put divider
               /// only if we added empty package in list to seperate
               /// selected and unselected apps mainly on
-              /// [TabProtection => Internet Blocker] screen
+              /// [TabProtection => Internet Blocker] screen and
+              /// [TabBedtime => Distracting Apps List] screen
               child: app == null
                   ? const Divider(indent: 12, endIndent: 12)
                   : widget.itemBuilder(context, app),

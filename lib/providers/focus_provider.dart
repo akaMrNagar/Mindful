@@ -42,7 +42,12 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
     /// Update shared pref app timers
     await SharePrefsService.instance.updateAppTimers(appTimers);
 
-    /// Refresh service
-    await MethodChannelService.instance.refreshTrackerService();
+    /// Refresh tracking service
+    await MethodChannelService.instance.refreshAppTimers();
+
+    if (appTimers.isEmpty) {
+      /// Stop service
+      await MethodChannelService.instance.tryToStopTrackingService();
+    }
   }
 }

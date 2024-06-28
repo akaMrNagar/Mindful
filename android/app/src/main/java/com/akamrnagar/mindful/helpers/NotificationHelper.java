@@ -51,7 +51,7 @@ public class NotificationHelper {
                     .setAutoCancel(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                notification.setPriority(NotificationManager.IMPORTANCE_HIGH);
+                notification.setPriority(NotificationManager.IMPORTANCE_MAX);
             }
 
             return notification.build();

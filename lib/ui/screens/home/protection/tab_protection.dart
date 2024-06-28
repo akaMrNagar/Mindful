@@ -23,7 +23,8 @@ class TabProtection extends ConsumerWidget {
     final url = await showInputWebsiteDialog(context);
     if (url == null || url.isEmpty) return;
 
-    final host = await MethodChannelService.instance.parseUrl(url);
+    final host =
+        await MethodChannelService.instance.parseUrl(url.toLowerCase());
 
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
@@ -33,7 +34,7 @@ class TabProtection extends ConsumerWidget {
       }
 
       /// Add to blocked sites list
-      ref.read(protectionProvider.notifier).insertRemoveBlockedApp(host, true);
+      ref.read(protectionProvider.notifier).insetRemoveBlockedSite(host, true);
     } else {
       await MethodChannelService.instance
           .showToast("Invalid url! cannot parse host name");
@@ -49,6 +50,7 @@ class TabProtection extends ConsumerWidget {
       child: Stack(
         children: [
           CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               /// Appbar
               const SliverFlexibleAppBar(title: "Protection"),

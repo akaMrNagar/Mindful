@@ -14,6 +14,12 @@ import java.util.List;
 
 public class BedtimeSettings {
 
+
+    /**
+     * Boolean notifying if the bedtime routine schedule is ON or OFF
+     */
+    public boolean isScheduleOn = false;
+
     /**
      * Time when the bedtime schedule task will starts
      * It is stored as total minutes from midnight 12.
@@ -32,16 +38,6 @@ public class BedtimeSettings {
      */
     public List<Boolean> scheduleDays = Arrays.asList(false, true, true, true, true, true, false);
 
-
-    /**
-     * Boolean denoting if to pause [distractingApps] or not when bedtime starts.
-     */
-    public boolean shouldPauseApps = false;
-
-    /**
-     * Boolean denoting if to block [distractingApps] internet or not when bedtime starts.
-     */
-    public boolean shouldBlockInternet = false;
 
     /**
      * Boolean denoting if to start DO NOT DISTURB mode or not when bedtime starts.
@@ -67,10 +63,9 @@ public class BedtimeSettings {
                 jsonString = jsonString.replace("\\", "");
                 JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
 
+                isScheduleOn = jsonObject.getBoolean("isScheduleOn");
                 startTimeInMins = jsonObject.getInt("startTimeInMins");
                 totalDurationMins = jsonObject.getInt("totalDurationMins");
-                shouldPauseApps = jsonObject.getBoolean("shouldPauseApps");
-                shouldBlockInternet = jsonObject.getBoolean("shouldBlockInternet");
                 shouldStartDnd = jsonObject.getBoolean("shouldStartDnd");
 
                 /// Schedule days
@@ -92,5 +87,18 @@ public class BedtimeSettings {
                 Log.e("Mindful.BedtimeSettings", "Error deserializing JSON to BedtimeSettings model", e);
             }
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "BedtimeSettings{" +
+                "isScheduleOn=" + isScheduleOn +
+                ", startTimeInMins=" + startTimeInMins +
+                ", totalDurationMins=" + totalDurationMins +
+                ", scheduleDays=" + scheduleDays +
+                ", shouldStartDnd=" + shouldStartDnd +
+                ", distractingApps=" + distractingApps +
+                '}';
     }
 }

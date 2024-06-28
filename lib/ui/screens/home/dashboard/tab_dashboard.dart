@@ -52,6 +52,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Dashboard"),
@@ -59,9 +60,9 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
           /// Usage type selector and usage info card
           UsageCardsSliver(
             usageType: _usageType,
-            screenUsageInfo: aggregatedUsage.screenTimeThisWeek[dayOfWeek],
-            wifiUsageInfo: aggregatedUsage.wifiUsageThisWeek[dayOfWeek],
-            mobileUsageInfo: aggregatedUsage.mobileUsageThisWeek[dayOfWeek],
+            screenUsageInfo: aggregatedUsage.screenTimeThisWeek[_dayOfWeek],
+            wifiUsageInfo: aggregatedUsage.wifiUsageThisWeek[_dayOfWeek],
+            mobileUsageInfo: aggregatedUsage.mobileUsageThisWeek[_dayOfWeek],
             onUsageTypeChanged: (i) => setState(
               () => _usageType = UsageType.values[i],
             ),

@@ -26,9 +26,7 @@ class SwitchableListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
-      color: isPrimary
-          ? Theme.of(context).colorScheme.surfaceVariant
-          : Colors.transparent,
+      color: isPrimary ? null : Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       onPressed: enabled ? onPressed : null,
       child: ListTileSkeleton(

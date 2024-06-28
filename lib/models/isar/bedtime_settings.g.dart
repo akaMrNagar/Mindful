@@ -22,39 +22,34 @@ const BedtimeSettingsSchema = CollectionSchema(
       name: r'distractingApps',
       type: IsarType.stringList,
     ),
-    r'endTimeInSec': PropertySchema(
+    r'endTimeInMins': PropertySchema(
       id: 1,
-      name: r'endTimeInSec',
+      name: r'endTimeInMins',
       type: IsarType.long,
     ),
-    r'isScheduleOn': PropertySchema(
+    r'isModifiable': PropertySchema(
       id: 2,
+      name: r'isModifiable',
+      type: IsarType.bool,
+    ),
+    r'isScheduleOn': PropertySchema(
+      id: 3,
       name: r'isScheduleOn',
       type: IsarType.bool,
     ),
     r'scheduleDays': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'scheduleDays',
       type: IsarType.boolList,
     ),
-    r'shouldBlockInternet': PropertySchema(
-      id: 4,
-      name: r'shouldBlockInternet',
-      type: IsarType.bool,
-    ),
-    r'shouldPauseApps': PropertySchema(
-      id: 5,
-      name: r'shouldPauseApps',
-      type: IsarType.bool,
-    ),
     r'shouldStartDnd': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'shouldStartDnd',
       type: IsarType.bool,
     ),
-    r'startTimeInSec': PropertySchema(
-      id: 7,
-      name: r'startTimeInSec',
+    r'startTimeInMins': PropertySchema(
+      id: 6,
+      name: r'startTimeInMins',
       type: IsarType.long,
     )
   },
@@ -97,12 +92,11 @@ void _bedtimeSettingsSerialize(
 ) {
   writer.writeStringList(offsets[0], object.distractingApps);
   writer.writeLong(offsets[1], object.endTimeInMins);
-  writer.writeBool(offsets[2], object.isScheduleOn);
-  writer.writeBoolList(offsets[3], object.scheduleDays);
-  writer.writeBool(offsets[4], object.shouldBlockInternet);
-  writer.writeBool(offsets[5], object.shouldPauseApps);
-  writer.writeBool(offsets[6], object.shouldStartDnd);
-  writer.writeLong(offsets[7], object.startTimeInMins);
+  writer.writeBool(offsets[2], object.isModifiable);
+  writer.writeBool(offsets[3], object.isScheduleOn);
+  writer.writeBoolList(offsets[4], object.scheduleDays);
+  writer.writeBool(offsets[5], object.shouldStartDnd);
+  writer.writeLong(offsets[6], object.startTimeInMins);
 }
 
 BedtimeSettings _bedtimeSettingsDeserialize(
@@ -114,13 +108,12 @@ BedtimeSettings _bedtimeSettingsDeserialize(
   final object = BedtimeSettings(
     distractingApps: reader.readStringList(offsets[0]) ?? const [],
     endTimeInMins: reader.readLongOrNull(offsets[1]) ?? 0,
-    isScheduleOn: reader.readBoolOrNull(offsets[2]) ?? false,
-    scheduleDays: reader.readBoolList(offsets[3]) ??
+    isModifiable: reader.readBoolOrNull(offsets[2]) ?? true,
+    isScheduleOn: reader.readBoolOrNull(offsets[3]) ?? false,
+    scheduleDays: reader.readBoolList(offsets[4]) ??
         const [false, true, true, true, true, true, false],
-    shouldBlockInternet: reader.readBoolOrNull(offsets[4]) ?? false,
-    shouldPauseApps: reader.readBoolOrNull(offsets[5]) ?? false,
-    shouldStartDnd: reader.readBoolOrNull(offsets[6]) ?? false,
-    startTimeInMins: reader.readLongOrNull(offsets[7]) ?? 0,
+    shouldStartDnd: reader.readBoolOrNull(offsets[5]) ?? false,
+    startTimeInMins: reader.readLongOrNull(offsets[6]) ?? 0,
   );
   return object;
 }
@@ -137,17 +130,15 @@ P _bedtimeSettingsDeserializeProp<P>(
     case 1:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readBoolOrNull(offset) ?? true) as P;
     case 3:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 4:
       return (reader.readBoolList(offset) ??
           const [false, true, true, true, true, true, false]) as P;
-    case 4:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 7:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -475,45 +466,45 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      endTimeInSecEqualTo(int value) {
+      endTimeInMinsEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'endTimeInSec',
+        property: r'endTimeInMins',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      endTimeInSecGreaterThan(
+      endTimeInMinsGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'endTimeInSec',
+        property: r'endTimeInMins',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      endTimeInSecLessThan(
+      endTimeInMinsLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'endTimeInSec',
+        property: r'endTimeInMins',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      endTimeInSecBetween(
+      endTimeInMinsBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -521,7 +512,7 @@ extension BedtimeSettingsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'endTimeInSec',
+        property: r'endTimeInMins',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -582,6 +573,16 @@ extension BedtimeSettingsQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
+      isModifiableEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isModifiable',
+        value: value,
       ));
     });
   }
@@ -696,26 +697,6 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      shouldBlockInternetEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'shouldBlockInternet',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      shouldPauseAppsEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'shouldPauseApps',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
       shouldStartDndEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -726,45 +707,45 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startTimeInSecEqualTo(int value) {
+      startTimeInMinsEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startTimeInSec',
+        property: r'startTimeInMins',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startTimeInSecGreaterThan(
+      startTimeInMinsGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'startTimeInSec',
+        property: r'startTimeInMins',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startTimeInSecLessThan(
+      startTimeInMinsLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'startTimeInSec',
+        property: r'startTimeInMins',
         value: value,
       ));
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      startTimeInSecBetween(
+      startTimeInMinsBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -772,7 +753,7 @@ extension BedtimeSettingsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'startTimeInSec',
+        property: r'startTimeInMins',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -791,16 +772,30 @@ extension BedtimeSettingsQueryLinks
 extension BedtimeSettingsQuerySortBy
     on QueryBuilder<BedtimeSettings, BedtimeSettings, QSortBy> {
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByEndTimeInSec() {
+      sortByEndTimeInMins() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeInSec', Sort.asc);
+      return query.addSortBy(r'endTimeInMins', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByEndTimeInSecDesc() {
+      sortByEndTimeInMinsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeInSec', Sort.desc);
+      return query.addSortBy(r'endTimeInMins', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
+      sortByIsModifiable() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isModifiable', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
+      sortByIsModifiableDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isModifiable', Sort.desc);
     });
   }
 
@@ -819,34 +814,6 @@ extension BedtimeSettingsQuerySortBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByShouldBlockInternet() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldBlockInternet', Sort.asc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByShouldBlockInternetDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldBlockInternet', Sort.desc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByShouldPauseApps() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldPauseApps', Sort.asc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByShouldPauseAppsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldPauseApps', Sort.desc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
       sortByShouldStartDnd() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'shouldStartDnd', Sort.asc);
@@ -861,16 +828,16 @@ extension BedtimeSettingsQuerySortBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartTimeInSec() {
+      sortByStartTimeInMins() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimeInSec', Sort.asc);
+      return query.addSortBy(r'startTimeInMins', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByStartTimeInSecDesc() {
+      sortByStartTimeInMinsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimeInSec', Sort.desc);
+      return query.addSortBy(r'startTimeInMins', Sort.desc);
     });
   }
 }
@@ -878,16 +845,16 @@ extension BedtimeSettingsQuerySortBy
 extension BedtimeSettingsQuerySortThenBy
     on QueryBuilder<BedtimeSettings, BedtimeSettings, QSortThenBy> {
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByEndTimeInSec() {
+      thenByEndTimeInMins() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeInSec', Sort.asc);
+      return query.addSortBy(r'endTimeInMins', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByEndTimeInSecDesc() {
+      thenByEndTimeInMinsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeInSec', Sort.desc);
+      return query.addSortBy(r'endTimeInMins', Sort.desc);
     });
   }
 
@@ -900,6 +867,20 @@ extension BedtimeSettingsQuerySortThenBy
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
+      thenByIsModifiable() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isModifiable', Sort.asc);
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
+      thenByIsModifiableDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'isModifiable', Sort.desc);
     });
   }
 
@@ -918,34 +899,6 @@ extension BedtimeSettingsQuerySortThenBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByShouldBlockInternet() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldBlockInternet', Sort.asc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByShouldBlockInternetDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldBlockInternet', Sort.desc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByShouldPauseApps() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldPauseApps', Sort.asc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByShouldPauseAppsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'shouldPauseApps', Sort.desc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
       thenByShouldStartDnd() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'shouldStartDnd', Sort.asc);
@@ -960,16 +913,16 @@ extension BedtimeSettingsQuerySortThenBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartTimeInSec() {
+      thenByStartTimeInMins() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimeInSec', Sort.asc);
+      return query.addSortBy(r'startTimeInMins', Sort.asc);
     });
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByStartTimeInSecDesc() {
+      thenByStartTimeInMinsDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'startTimeInSec', Sort.desc);
+      return query.addSortBy(r'startTimeInMins', Sort.desc);
     });
   }
 }
@@ -984,9 +937,16 @@ extension BedtimeSettingsQueryWhereDistinct
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByEndTimeInSec() {
+      distinctByEndTimeInMins() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'endTimeInSec');
+      return query.addDistinctBy(r'endTimeInMins');
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
+      distinctByIsModifiable() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'isModifiable');
     });
   }
 
@@ -1005,20 +965,6 @@ extension BedtimeSettingsQueryWhereDistinct
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByShouldBlockInternet() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'shouldBlockInternet');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByShouldPauseApps() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'shouldPauseApps');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
       distinctByShouldStartDnd() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'shouldStartDnd');
@@ -1026,9 +972,9 @@ extension BedtimeSettingsQueryWhereDistinct
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByStartTimeInSec() {
+      distinctByStartTimeInMins() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'startTimeInSec');
+      return query.addDistinctBy(r'startTimeInMins');
     });
   }
 }
@@ -1048,9 +994,15 @@ extension BedtimeSettingsQueryProperty
     });
   }
 
-  QueryBuilder<BedtimeSettings, int, QQueryOperations> endTimeInSecProperty() {
+  QueryBuilder<BedtimeSettings, int, QQueryOperations> endTimeInMinsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'endTimeInSec');
+      return query.addPropertyName(r'endTimeInMins');
+    });
+  }
+
+  QueryBuilder<BedtimeSettings, bool, QQueryOperations> isModifiableProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'isModifiable');
     });
   }
 
@@ -1068,20 +1020,6 @@ extension BedtimeSettingsQueryProperty
   }
 
   QueryBuilder<BedtimeSettings, bool, QQueryOperations>
-      shouldBlockInternetProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'shouldBlockInternet');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, bool, QQueryOperations>
-      shouldPauseAppsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'shouldPauseApps');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, bool, QQueryOperations>
       shouldStartDndProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'shouldStartDnd');
@@ -1089,9 +1027,9 @@ extension BedtimeSettingsQueryProperty
   }
 
   QueryBuilder<BedtimeSettings, int, QQueryOperations>
-      startTimeInSecProperty() {
+      startTimeInMinsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'startTimeInSec');
+      return query.addPropertyName(r'startTimeInMins');
     });
   }
 }

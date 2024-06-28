@@ -36,8 +36,7 @@ class RoundedContainer extends StatelessWidget {
     final radius = borderRadius ?? BorderRadius.circular(circularRadius);
     final borderSide = applyBorder
         ? BorderSide(
-            color:
-                borderColor ?? Theme.of(context).colorScheme.onInverseSurface,
+            color: borderColor ?? Theme.of(context).colorScheme.surfaceVariant,
             strokeAlign: BorderSide.strokeAlignInside,
           )
         : BorderSide.none;
@@ -73,6 +72,7 @@ class RoundedContainer extends StatelessWidget {
               ),
               child: InkWell(
                 onTap: onPressed,
+                splashFactory: InkSparkle.splashFactory,
                 splashColor: Theme.of(context).colorScheme.surfaceVariant,
                 borderRadius: radius,
                 child: Padding(

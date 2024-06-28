@@ -21,8 +21,13 @@ class MethodChannelService {
     });
   }
 
-  Future<bool> refreshTrackerService() async =>
-      await _methodChannel.invokeMethod('refreshTrackerService');
+  /// This method will start tracking service if it is already not running
+  /// otherwise will trigger data refresh
+  Future<bool> refreshAppTimers() async =>
+      await _methodChannel.invokeMethod('refreshAppTimers');
+  
+  Future<bool> tryToStopTrackingService() async =>
+      await _methodChannel.invokeMethod('tryToStopTrackingService');
 
   Future<bool> isAccessibilityServiceRunning() async =>
       await _methodChannel.invokeMethod('isAccessibilityServiceRunning');
@@ -42,8 +47,8 @@ class MethodChannelService {
   Future<bool> stopVpnService() async =>
       await _methodChannel.invokeMethod('stopVpnService');
 
-  Future<bool> refreshVpnService() async =>
-      await _methodChannel.invokeMethod('refreshVpnService');
+  Future<bool> flagVpnRestart() async =>
+      await _methodChannel.invokeMethod('flagVpnRestart');
 
   Future<bool> scheduleBedtimeRoutine() async =>
       await _methodChannel.invokeMethod('scheduleBedtimeRoutine');
@@ -105,9 +110,9 @@ class MethodChannelService {
             } catch (e, trace) {
               if (e is AssertionError) {
                 debugPrint(
-                    'MindfulNativePlugin.getDeviceApps() : Unable to add the following app: $entry');
+                    'MethodChannelService.getDeviceApps() : Unable to add the following app: $entry');
               } else {
-                debugPrint('MindfulNativePlugin.getDeviceApps() : $e $trace');
+                debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
               }
             }
           }
@@ -117,7 +122,7 @@ class MethodChannelService {
         return List<AndroidApp>.empty();
       }
     } catch (e) {
-      debugPrint("MindfulNativePlugin.getDeviceApps() Error: $e");
+      debugPrint("MethodChannelService.getDeviceApps() Error: $e");
       return List<AndroidApp>.empty();
     }
   }

@@ -26,7 +26,7 @@ class CheckboxAppTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
-      color: isSelected ? Colors.red.withOpacity(0.1) : Colors.transparent,
+      color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       margin: const EdgeInsets.only(bottom: 2),
       onPressed: app.isImpSysApp

@@ -1,17 +1,13 @@
 package com.akamrnagar.mindful;
 
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.akamrnagar.mindful.generics.SafeServiceConnection;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
@@ -29,36 +25,10 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.util.PathUtils;
 
 public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler {
-    private static String TAG = "Mindful.MainActivity";
-    private MindfulTrackerService mTrackerService = null;
-    private final ServiceConnection mTrackerServiceConnection = new ServiceConnection() {
+    private static final String TAG = "Mindful.MainActivity";
+    private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class);
+    private final SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class);
 
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-            MindfulTrackerService.TrackerServiceBinder serviceBinder = (MindfulTrackerService.TrackerServiceBinder) binder;
-            mTrackerService = serviceBinder.getService();
-            Log.d(TAG, "onServiceConnected: Tracker service bounded");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mTrackerService = null;
-        }
-    };
-    private MindfulVpnService mVpnService = null;
-    private final ServiceConnection mVpnServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder binder) {
-            MindfulVpnService.VpnServiceBinder serviceBinder = (MindfulVpnService.VpnServiceBinder) binder;
-            mVpnService = serviceBinder.getService();
-            Log.d(TAG, "onServiceConnected: Vpn service bounded");
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            mVpnService = null;
-        }
-    };
 
     @Override
     protected void onStart() {
@@ -67,8 +37,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         NotificationHelper.registerNotificationChannels(this);
 
         // Bind to services if already running
-        startStopBindUnbindVpnService(true, false);
-        startStopBindUnbindTrackerService(true, false);
+        mTrackerServiceConn.bindService(this);
+        mVpnServiceConn.bindService(this);
     }
 
     @Override
@@ -102,7 +72,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(parseHostNameFromUrl(call));
                 break;
 
-            // Accessibility calls -----------------------------------------------------------------
+            // Accessibility service calls -----------------------------------------------------------------
             case "isAccessibilityServiceRunning":
                 result.success(ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName()));
                 break;
@@ -121,37 +91,50 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
 
-            // Vpn calls ---------------------------------------------------------------------------
+            // Vpn service calls ---------------------------------------------------------------------------
             case "isVpnServiceRunning":
                 result.success(ServicesHelper.isServiceRunning(this, MindfulVpnService.class.getName()));
                 break;
             case "startVpnService":
-                prepareAndStartVpnService();
+                if (prepareVpn()) mVpnServiceConn.startAndBind(this);
                 result.success(true);
                 break;
             case "stopVpnService":
-                startStopBindUnbindVpnService(false, true);
+                mVpnServiceConn.stopAndUnBind(this);
                 result.success(true);
                 break;
-            case "refreshVpnService":
-                if (mVpnService != null) mVpnService.flagNeedDataReload();
+            case "flagVpnRestart":
+                if (mVpnServiceConn.isConnected()) {
+                    mVpnServiceConn.getService().flagVpnServiceRestart();
+                }
                 result.success(true);
                 break;
 
-            // App tracking calls ------------------------------------------------------------------
-            case "refreshTrackerService":
-                if (mTrackerService != null) mTrackerService.flagNeedDataReload();
-                else startStopBindUnbindTrackerService(true, true);
+            // Tracking service calls ------------------------------------------------------------------
+            case "tryToStopTrackingService":
+                tryToStopTrackingService();
+                result.success(true);
+                break;
+            case "refreshAppTimers":
+                if (mTrackerServiceConn.isConnected()) {
+                    mTrackerServiceConn.getService().refreshAppTimers();
+                } else {
+                    mTrackerServiceConn.startAndBind(this);
+                }
                 result.success(true);
                 break;
 
             // Bedtime schedule routine calls ------------------------------------------------------
             case "scheduleBedtimeRoutine":
                 WorkersHelper.scheduleBedtimeRoutine(this, call);
+                mTrackerServiceConn.startAndBind(this);
+//                startStopBindUnbindTrackerService(true, true);
                 result.success(true);
                 break;
             case "cancelBedtimeRoutine":
                 WorkersHelper.cancelBedtimeRoutine(this);
+                // TODO: what if the schedule is running and user cancels it, but apps remains paused and blocked
+                tryToStopTrackingService();
                 result.success(true);
                 break;
             default:
@@ -160,65 +143,36 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     }
 
-    private void prepareAndStartVpnService() {
+    private boolean prepareVpn() {
         Intent intent = MindfulVpnService.prepare(this);
-        if (intent != null) {
-            startActivityForResult(intent, 0);
+        if (intent == null) {
+            return true;
         } else {
-            /// Manually call if vpn is already configured
-            onActivityResult(MindfulVpnService.SERVICE_ID, Activity.RESULT_OK, null);
+            startActivityForResult(intent, 0);
+            return false;
+        }
+
+    }
+
+    private void tryToStopTrackingService() {
+        if (mTrackerServiceConn.isConnected() && mTrackerServiceConn.getService().canStopTrackingService()) {
+            mTrackerServiceConn.stopAndUnBind(this);
         }
     }
 
-    @Override
-    protected void onActivityResult(int request, int result, Intent data) {
-        if (result == Activity.RESULT_OK && request == MindfulVpnService.SERVICE_ID) {
-            startStopBindUnbindVpnService(true, true);
-        }
-    }
-
-    private void startStopBindUnbindVpnService(boolean shouldBind, boolean interfereService) {
-        if (shouldBind && mVpnService == null) {
-            if (interfereService) ServicesHelper.startVpnService(this);
-
-            // Bind to service if it is running
-            if (ServicesHelper.isServiceRunning(this, MindfulVpnService.class.getName())) {
-                Intent intent = new Intent(this, MindfulVpnService.class);
-                bindService(intent, mVpnServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
-            }
-        } else if (!shouldBind && mVpnService != null) {
-            unbindService(mVpnServiceConnection);
-            if (interfereService) ServicesHelper.stopVpnService(this);
-            mVpnService = null;
-        }
-    }
-
-    private void startStopBindUnbindTrackerService(boolean shouldBind, boolean interfereService) {
-        if (shouldBind && mTrackerService == null) {
-            if (interfereService) ServicesHelper.startTrackingService(this);
-
-            // Bind to service if it is running
-            if (ServicesHelper.isServiceRunning(this, MindfulTrackerService.class.getName())) {
-                Intent intent = new Intent(this, MindfulTrackerService.class);
-                bindService(intent, mTrackerServiceConnection, Context.BIND_ADJUST_WITH_ACTIVITY);
-            }
-        } else if (!shouldBind && mTrackerService != null) {
-            unbindService(mTrackerServiceConnection);
-            mTrackerService = null;
-        }
-    }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        // Let service know that app is stopping and going to background
-        if (mTrackerService != null) mTrackerService.onApplicationStop();
-        if (mVpnService != null) mVpnService.onApplicationStop();
+        // Let VPN service know that it can restart if needed as App is stopping
+        if (mVpnServiceConn.isConnected()) {
+            mVpnServiceConn.getService().onApplicationStop();
+        }
 
-        // Unbind services
-        startStopBindUnbindVpnService(false, false);
-        startStopBindUnbindTrackerService(false, false);
+        /// Unbind services
+        mTrackerServiceConn.unBindService(this);
+        mVpnServiceConn.unBindService(this);
     }
 
     private void showToast(@NonNull MethodCall call) {

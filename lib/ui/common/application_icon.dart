@@ -41,7 +41,7 @@ class ApplicationIcon extends StatelessWidget {
 
               return Image.memory(
                 app.icon,
-                color: isPurged || isGreyedOut ? Colors.grey : null,
+                color: isPurged || isGreyedOut ? Colors.white : null,
                 colorBlendMode:
                     isPurged || isGreyedOut ? BlendMode.saturation : null,
               );

@@ -16,7 +16,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.interfaces.AsyncSuccessCallback;
+import com.akamrnagar.mindful.generics.SuccessCallback;
 import com.akamrnagar.mindful.models.AndroidApp;
 import com.akamrnagar.mindful.utils.Utils;
 
@@ -49,7 +49,7 @@ public class DeviceAppsHelper {
      * @param channelResult The MethodChannel result to return the list of apps to Flutter.
      */
     public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
-        AsyncSuccessCallback<List<Map<String, Object>>> callback = new AsyncSuccessCallback<List<Map<String, Object>>>() {
+        SuccessCallback<List<Map<String, Object>>> callback = new SuccessCallback<List<Map<String, Object>>>() {
             @Override
             public void onSuccess(List<Map<String, Object>> result) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {

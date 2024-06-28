@@ -1,7 +1,7 @@
 package com.akamrnagar.mindful.receivers;
 
-import static com.akamrnagar.mindful.receivers.AppLaunchReceiver.ACTION_APP_LAUNCHED;
-import static com.akamrnagar.mindful.receivers.AppLaunchReceiver.INTENT_EXTRA_PACKAGE_NAME;
+import static com.akamrnagar.mindful.services.MindfulTrackerService.ACTION_APP_LAUNCHED;
+import static com.akamrnagar.mindful.services.MindfulTrackerService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.usage.UsageEvents;
