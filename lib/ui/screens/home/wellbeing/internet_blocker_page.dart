@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/packages_by_network_usage_provider.dart';
-import 'package:mindful/providers/protection_provider.dart';
+import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/async_error_indicator.dart';
 import 'package:mindful/ui/common/async_loading_indicator.dart';
@@ -14,20 +15,32 @@ import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class BlockInternetPage extends ConsumerWidget {
-  const BlockInternetPage({super.key});
+class InternetBlockerPage extends ConsumerWidget {
+  const InternetBlockerPage({super.key});
+
+  void _switchInternetBlocker(WidgetRef ref, bool shouldBlock) async {
+    if (!shouldBlock || ref.read(wellbeingProvider).blockedApps.isNotEmpty) {
+      ref.read(wellbeingProvider.notifier).switchInternetBlocker(shouldBlock);
+      return;
+    }
+
+    /// Show toast if no blocked apps
+    await MethodChannelService.instance.showToast(
+      "Select atleast one app to block internet",
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isBlockerOn = ref
-        .watch(protectionProvider.select((value) => value.appsInternetBlocker));
+    final isInternetBlockerOn = ref
+        .watch(wellbeingProvider.select((value) => value.isInternetBlockerOn));
 
     /// Parameters for family provider
     final params = (dayOfWeek: dayOfWeek, includeAll: true);
     final allApps = ref.watch(packagesByNetworkUsageProvider(params));
 
-    final selectedApps =
-        ref.watch(protectionProvider.select((v) => v.blockedApps));
+    final blockedApps =
+        ref.watch(wellbeingProvider.select((v) => v.blockedApps));
 
     return MultiSliver(
       children: [
@@ -43,17 +56,14 @@ class BlockInternetPage extends ConsumerWidget {
                   isActive: false,
                 ),
                 12.vBox(),
-
-                ///FIXME - Cannot start vpn when internet is off
                 SwitchableListTile(
                   isPrimary: true,
-                  leadingIcon: FluentIcons.shield_keyhole_20_regular,
+                  leadingIcon: FluentIcons.globe_prohibited_20_regular,
                   titleText: "Internet blocker",
-                  subTitleText: "Switch blocker On/Off",
-                  value: isBlockerOn,
-                  onPressed: () => ref
-                      .read(protectionProvider.notifier)
-                      .toggleAppsInternetBlocker(!isBlockerOn),
+                  subTitleText: "Switch  blocker On/Off",
+                  value: isInternetBlockerOn,
+                  onPressed: () =>
+                      _switchInternetBlocker(ref, !isInternetBlockerOn),
                 ),
               ],
             ),
@@ -68,19 +78,19 @@ class BlockInternetPage extends ConsumerWidget {
             itemExtent: 56,
             headerTitle: "Select distracting apps",
             appPackages: [
-              /// Selected apps which are installed
-              ...selectedApps.where((e) => apps.contains(e)),
+              /// Selected (Blocked) apps which are installed
+              ...blockedApps.where((e) => apps.contains(e)),
 
-              if (selectedApps.isNotEmpty) ...["divider"],
+              if (blockedApps.isNotEmpty) ...["divider"],
 
               /// Unselected apps which are installed
-              ...apps.where((e) => !selectedApps.contains(e)),
+              ...apps.where((e) => !blockedApps.contains(e)),
             ],
             itemBuilder: (context, app) => CheckboxAppTile(
               app: app,
-              isSelected: selectedApps.contains(app.packageName),
+              isSelected: blockedApps.contains(app.packageName),
               onSelectionChanged: (v) => ref
-                  .read(protectionProvider.notifier)
+                  .read(wellbeingProvider.notifier)
                   .insertRemoveBlockedApp(app.packageName, v),
             ),
           ),

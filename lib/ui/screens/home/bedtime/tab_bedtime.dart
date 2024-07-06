@@ -32,7 +32,7 @@ class TabBedtime extends StatelessWidget {
       return;
     }
 
-    ref.read(bedtimeProvider.notifier).setScheduleStatus(shouldStart);
+    ref.read(bedtimeProvider.notifier).switchBedtimeSchedule(shouldStart);
   }
 
   @override

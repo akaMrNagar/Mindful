@@ -30,7 +30,7 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
 
         if (mService != null) {
             mIsBound = true;
-            if(mConnectionSuccessCallback != null) mConnectionSuccessCallback.onSuccess(mService);
+            if (mConnectionSuccessCallback != null) mConnectionSuccessCallback.onSuccess(mService);
         }
     }
 

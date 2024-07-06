@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -47,7 +48,8 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActionsSliver> {
         RoundedContainer(
           color: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          onPressed: () {},
+          onPressed: () =>
+              MethodChannelService.instance.openDeviceDndSettings(),
           child: const ListTileSkeleton(
             leading: Icon(FluentIcons.alert_20_regular),
             title: StatefulText(

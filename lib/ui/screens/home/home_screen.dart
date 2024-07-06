@@ -5,7 +5,7 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
-import 'package:mindful/ui/screens/home/protection/tab_protection.dart';
+import 'package:mindful/ui/screens/home/wellbeing/tab_wellbeing.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,7 +13,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
       body: VerticalTabBar(
         onTabChanged: (index) => debugPrint("Tab index : $index"),
         leading: Consumer(
@@ -42,9 +41,9 @@ class HomeScreen extends StatelessWidget {
             body: TabBedtime(),
           ),
           const VerticalTabItem(
-            title: "Protection",
-            icon: FluentIcons.shield_lock_20_filled,
-            body: TabProtection(),
+            title: "Wellbeing",
+            icon: FluentIcons.brain_circuit_20_filled,
+            body: TabWellbeing(),
           ),
         ],
       ),

@@ -46,6 +46,7 @@ class FocusSettings {
       lastEmergencyTime: lastEmergencyTime ?? this.lastEmergencyTime,
     );
   }
+  
 
   @override
   String toString() {

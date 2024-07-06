@@ -31,9 +31,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class MindfulVpnService extends android.net.VpnService {
     public static final int SERVICE_ID = 302;
-    private static final int SERVER_PORT = 3030;
-    private static final String SERVER_ADDRESS = "192.168.2.2";
-    private static final String ROUTE_ADDRESS = "0.0.0.0";
     private static final String TAG = "com.akamrnagar.mindful.VpnService";
     private final AtomicReference<Thread> mVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
@@ -50,9 +47,7 @@ public class MindfulVpnService extends android.net.VpnService {
             connectVpn();
             return START_STICKY;
         } else if (ACTION_STOP_SERVICE.equals(action)) {
-            disconnectVpn();
-            stopForeground(true);
-            stopSelf();
+            stopAndDisposeService();
         }
 
         return START_NOT_STICKY;
@@ -73,8 +68,7 @@ public class MindfulVpnService extends android.net.VpnService {
         // Necessary if the service starts from Boot Receiver
         if (mBlockedApps.isEmpty()) {
             Log.w(TAG, "connectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
-            stopForeground(true);
-            stopSelf();
+            stopAndDisposeService();
             return;
         }
 
@@ -97,33 +91,38 @@ public class MindfulVpnService extends android.net.VpnService {
         }
     }
 
+    private void stopAndDisposeService() {
+        disconnectVpn();
+        stopForeground(true);
+        stopSelf();
+    }
+
     @NonNull
     @Contract(" -> new")
     private Runnable getVpnRunnable() {
         return new Runnable() {
             @Override
             public void run() {
-                final SocketAddress serverAddress = new InetSocketAddress(SERVER_ADDRESS, SERVER_PORT);
-
                 try (DatagramChannel tunnel = DatagramChannel.open()) {
 
                     if (!MindfulVpnService.this.protect(tunnel.socket())) {
                         throw new IllegalStateException("Cannot protect the vpn socket tunnel");
                     }
 
+                    final SocketAddress serverAddress = new InetSocketAddress("localhost", 0);
                     tunnel.connect(serverAddress);
                     tunnel.configureBlocking(false);
 
                     android.net.VpnService.Builder builder = MindfulVpnService.this.new Builder();
-                    builder.addAddress(SERVER_ADDRESS, 24);
-                    builder.addRoute(ROUTE_ADDRESS, 0);
+                    builder.addAddress("192.168.0.0", 24);
+                    builder.addRoute("0.0.0.0", 0);
 
                     // Add blocked app's packages
                     for (String packageName : mBlockedApps) {
                         try {
                             builder.addAllowedApplication(packageName);
                         } catch (PackageManager.NameNotFoundException e) {
-                            Log.e(TAG, "getVpnRunnable: Cannot find app with package " + packageName, e);
+                            Log.w(TAG, "getVpnRunnable: Cannot find app with package " + packageName);
                         }
                     }
 
@@ -135,8 +134,10 @@ public class MindfulVpnService extends android.net.VpnService {
 
                 } catch (SocketException e) {
                     Log.e(TAG, "run: Cannot use socket for VPN", e);
+                    stopAndDisposeService();
                 } catch (IOException | IllegalArgumentException e) {
                     Log.e(TAG, "run: VPN connection failed, exiting", e);
+                    stopAndDisposeService();
                 }
             }
         };

@@ -1,15 +1,16 @@
 package com.akamrnagar.mindful;
 
 import android.content.Intent;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.generics.SafeServiceConnection;
+import com.akamrnagar.mindful.helpers.ActivityNewTaskHelper;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
+import com.akamrnagar.mindful.helpers.PermissionsHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
 import com.akamrnagar.mindful.helpers.WorkersHelper;
 import com.akamrnagar.mindful.services.MindfulAccessibilityService;
@@ -69,7 +70,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
             case "parseUrl":
-                result.success(parseHostNameFromUrl(call));
+                result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
 
             // Accessibility service calls -----------------------------------------------------------------
@@ -77,17 +78,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName()));
                 break;
             case "startAccessibilityService":
-                if (!ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName())) {
-                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                    Toast.makeText(this, "Please enable Mindful accessibility service", Toast.LENGTH_LONG).show();
-                }
-                result.success(true);
-                break;
-            case "stopAccessibilityService":
-                if (ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName())) {
-                    startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-                    Toast.makeText(this, "Please disable Mindful accessibility service", Toast.LENGTH_LONG).show();
-                }
+                ActivityNewTaskHelper.openMindfulAccessibilitySection(this);
                 result.success(true);
                 break;
 
@@ -135,6 +126,35 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 WorkersHelper.cancelBedtimeRoutine(this);
                 // TODO: what if the schedule is running and user cancels it, but apps remains paused and blocked
                 tryToStopTrackingService();
+                result.success(true);
+                break;
+
+
+            // Permissions handler calls ------------------------------------------------------
+            case "getAndAskDndPermission":
+                result.success(PermissionsHelper.getAndAskDndPermission(this));
+                break;
+            case "getAndAskUsageStatesPermission":
+                result.success(PermissionsHelper.getAndAskUsageStatesPermission(this));
+                break;
+            case "getAndAskDisplayOverlayPermission":
+                result.success(PermissionsHelper.getAndAskDisplayOverlayPermission());
+                break;
+            case "getAndAskBatteryOptimizationPermission":
+                result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission());
+                break;
+
+            // New Activity Launch  calls ------------------------------------------------------
+            case "openAppWithPackage":
+                ActivityNewTaskHelper.openAppWithPackage(this, call.arguments());
+                result.success(true);
+                break;
+            case "openAppSettingsForPackage":
+                ActivityNewTaskHelper.openAppSettingsForPackage(this, call.arguments());
+                result.success(true);
+                break;
+            case "openDeviceDndSettings":
+                ActivityNewTaskHelper.openDeviceDndSettings(this);
                 result.success(true);
                 break;
             default:
@@ -186,17 +206,4 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         Toast.makeText(this, msg, duration).show();
     }
-
-    @NonNull
-    private String parseHostNameFromUrl(@NonNull MethodCall call) {
-        String url = call.argument("url");
-
-        if (url == null) {
-            Log.w(TAG, "parseHostNameFromUrl: Method called with null arguments");
-            return "";
-        }
-
-        return Utils.parseHostNameFromUrl(url);
-    }
-
 }

@@ -48,6 +48,7 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
     if (appTimers.isEmpty) {
       /// Stop service
       await MethodChannelService.instance.tryToStopTrackingService();
+      return;
     }
   }
 }

@@ -8,16 +8,14 @@ public class AppConstants {
     // using 'flutter' prefix in each key only in native side but not on flutter side
     public static final String PREFS_SHARED_BOX = "FlutterSharedPreferences";
     public static final String PREF_KEY_APP_TIMERS = "flutter.mindful.appTimers";
-    public static final String PREF_KEY_LOCKED_APPS = "flutter.mindful.lockedApps";
-    public static final String PREF_KEY_REDIRECT_URL = "flutter.mindful.redirectUrl";
-    public static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
-    public static final String PREF_KEY_BLOCKED_SITES = "flutter.mindful.blockedSites";
-    public static final String PREF_KEY_NSFW_BLOCKING_STATUS = "flutter.mindful.isBlockingNsfw";
     public static final String PREF_KEY_BEDTIME_SETTINGS = "flutter.mindful.bedtimeSettings";
 
+    public static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
+    public static final String PREF_KEY_BLOCKED_WEBSITES = "flutter.mindful.blockedWebsites";
+    public static final String PREF_KEY_SHOULD_BLOCK_SHORTS = "flutter.mindful.shouldBlockShorts";
+    public static final String PREF_KEY_SHOULD_BLOCK_NSFW = "flutter.mindful.shouldBlockNsfw";
+    public static final String PREF_KEY_IS_DISTRACTION_BLOCKER_ON = "flutter.mindful.isDistractionBlockerOn";
+    public static final String PREF_KEY_REDIRECT_URL = "flutter.mindful.redirectUrl";
 
-    /// Worker task tags
-    public static final String WORKER_TAG_BEDTIME_START = "mindful.worker.bedtime.task.start";
-    public static final String WORKER_TAG_BEDTIME_END = "mindful.worker.bedtime.task.end";
 
 }

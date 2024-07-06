@@ -21,23 +21,32 @@ class MethodChannelService {
     });
   }
 
+  //
+  // Tracking Service Methods ======================================================================
+  //
+
   /// This method will start tracking service if it is already not running
   /// otherwise will trigger data refresh
   Future<bool> refreshAppTimers() async =>
       await _methodChannel.invokeMethod('refreshAppTimers');
-  
+
   Future<bool> tryToStopTrackingService() async =>
       await _methodChannel.invokeMethod('tryToStopTrackingService');
 
+  //
+  // Accessibility Service Methods ======================================================================
+  //
+
+  ///
   Future<bool> isAccessibilityServiceRunning() async =>
       await _methodChannel.invokeMethod('isAccessibilityServiceRunning');
 
   Future<bool> startAccessibilityService() async =>
       await _methodChannel.invokeMethod('startAccessibilityService');
 
-  Future<bool> stopAccessibilityService() async =>
-      await _methodChannel.invokeMethod('stopAccessibilityService');
-
+  //
+  // VPN Service Methods ======================================================================
+  //
   Future<bool> isVpnServiceRunning() async =>
       await _methodChannel.invokeMethod('isVpnServiceRunning');
 
@@ -49,6 +58,10 @@ class MethodChannelService {
 
   Future<bool> flagVpnRestart() async =>
       await _methodChannel.invokeMethod('flagVpnRestart');
+
+  //
+  // Bedtime Schedule Methods ======================================================================
+  //
 
   Future<bool> scheduleBedtimeRoutine() async =>
       await _methodChannel.invokeMethod('scheduleBedtimeRoutine');
@@ -68,30 +81,12 @@ class MethodChannelService {
         },
       );
 
-  Future<String> parseUrl(String url) async =>
-      await _methodChannel.invokeMethod('parseUrl', {'url': url});
+  //
+  // Utility Methods ======================================================================
+  //
 
-  // Future<bool> scheduleBedtimeTask({
-  //   required BedtimeScheduleInfo info,
-  // }) async =>
-  //     await _methodChannel.invokeMethod(
-  //       'scheduleBedtimeTask',
-  //       {
-  //         'toggleDnd': info.enableDND,
-  //         'pauseApps': info.pauseApps,
-  //         'selectedDays': info.selectedDays,
-  //         'durationMs': info.endTime.difference(info.startTime) * 60000,
-  //         'startMsEpoch': DateTime(
-  //           now.year,
-  //           now.month,
-  //           now.day,
-  //           info.startTime.hour,
-  //           info.startTime.minute,
-  //           0,
-  //           0,
-  //         ).millisecondsSinceEpoch,
-  //       },
-  // );
+  Future<String> parseUrl(String url) async =>
+      await _methodChannel.invokeMethod('parseUrl', url);
 
   /// Generates a list of [AndroidApp] all the launchable apps
   /// installed on the user device including their usage
@@ -126,4 +121,37 @@ class MethodChannelService {
       return List<AndroidApp>.empty();
     }
   }
+
+  //
+  // Permissions Handler Methods ======================================================================
+  //
+
+  Future<bool> getAndAskDndPermission() async =>
+      await _methodChannel.invokeMethod('getAndAskDndPermission');
+
+  Future<bool> getAndAskUsageStatesPermission() async =>
+      await _methodChannel.invokeMethod('getAndAskUsageStatesPermission');
+
+  Future<bool> getAndAskDisplayOverlayPermission() async =>
+      await _methodChannel.invokeMethod('getAndAskDisplayOverlayPermission');
+
+  Future<bool> getAndAskBatteryOptimizationPermission() async =>
+      await _methodChannel
+          .invokeMethod('getAndAskBatteryOptimizationPermission');
+
+  //
+  // New Activity Launch Methods ======================================================================
+  //
+
+  Future<bool> openDeviceDndSettings() async =>
+      await _methodChannel.invokeMethod('openDeviceDndSettings');
+
+  Future<bool> openAppWithPackage(String appPackage) async =>
+      await _methodChannel.invokeMethod('openAppWithPackage', appPackage);
+
+  Future<bool> openAppSettingsForPackage(String appPackage) async =>
+      await _methodChannel.invokeMethod(
+        'openAppSettingsForPackage',
+        appPackage,
+      );
 }

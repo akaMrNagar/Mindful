@@ -38,7 +38,6 @@ public class MindfulTrackerService extends Service {
     private static final int SERVICE_ID = 301;
     private final String TAG = "Mindful.MindfulTrackerService";
     public static final String ACTION_APP_LAUNCHED = "com.akamrnagar.mindful.ACTION_APP_LAUNCHED";
-    public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
     private AppLaunchReceiver mAppLaunchReceiver;
     private SharedPreferences mSharedPrefs;
@@ -74,7 +73,7 @@ public class MindfulTrackerService extends Service {
     }
 
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    @SuppressLint("NewApi")
     private void startTrackingService() {
         // Register lock/unlock receiver
         IntentFilter lockUnlockFilter = new IntentFilter();
@@ -83,24 +82,16 @@ public class MindfulTrackerService extends Service {
         registerReceiver(mLockUnlockReceiver, lockUnlockFilter);
 
         // Register app launch receiver
-        registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_APP_LAUNCHED));
+        registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
 
         // Create notification
         startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this));
+
 
         areReceiversRegistered = true;
         Log.d(TAG, "startTracking: Foreground service started");
 
         refreshAppTimers();
-    }
-
-    private void showOverlayDialog(String packageName) {
-        if (!ServicesHelper.isServiceRunning(this, OverlayDialogService.class.getName())) {
-            Intent intent = new Intent(this, OverlayDialogService.class);
-            intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
-            startService(intent);
-            Log.d(TAG, "showOverlayDialog: Starting overlay dialog service for package : " + packageName);
-        }
     }
 
 
@@ -119,6 +110,9 @@ public class MindfulTrackerService extends Service {
         if (shouldStart && distractingApps != null) {
             mDistractingApps = distractingApps;
             mPurgedApps.clear();
+
+            // Broadcast launch event for last active app is may be restricted in bedtime mode
+            if (mLockUnlockReceiver != null) mLockUnlockReceiver.BroadcastLastAppLaunchEvent();
             Log.d(TAG, "startStopBedtimeLockdown: Bedtime lockdown started successfully");
         } else {
             mDistractingApps.clear();
@@ -163,7 +157,8 @@ public class MindfulTrackerService extends Service {
 
         @Override
         public void onReceive(Context context, @NonNull Intent intent) {
-            if (intent.getAction() != null && ACTION_APP_LAUNCHED.equals(intent.getAction())) {
+            String action = intent.getAction();
+            if (ACTION_APP_LAUNCHED.equals(action)) {
 
                 // Get the package name of the launched app
                 String packageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
@@ -216,6 +211,15 @@ public class MindfulTrackerService extends Service {
             }, delayMs);
 
             Log.d(TAG, "handleTimerAppLaunch: Timer task scheduled for " + packageName + " :  " + new Date(delayMs + System.currentTimeMillis()));
+        }
+
+        private void showOverlayDialog(String packageName) {
+            if (!ServicesHelper.isServiceRunning(MindfulTrackerService.this, OverlayDialogService.class.getName())) {
+                Intent intent = new Intent(MindfulTrackerService.this, OverlayDialogService.class);
+                intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
+                startService(intent);
+                Log.d(TAG, "showOverlayDialog: Starting overlay dialog service for package : " + packageName);
+            }
         }
 
 

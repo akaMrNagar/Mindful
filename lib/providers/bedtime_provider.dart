@@ -50,7 +50,7 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
         now.millisecondsSinceEpoch >= end.millisecondsSinceEpoch;
   }
 
-  void setScheduleStatus(bool shouldStart) async {
+  void switchBedtimeSchedule(bool shouldStart) async {
     state = state.copyWith(isScheduleOn: shouldStart);
 
     // Update shared prefs
@@ -73,21 +73,25 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
     state = state.copyWith(scheduleDays: days);
   }
 
-  void setShouldStartDnd(bool shouldStartDnd) =>
-      state = state.copyWith(shouldStartDnd: shouldStartDnd);
+  void setShouldStartDnd(bool shouldStartDnd) async {
+    if (shouldStartDnd &&
+        !await MethodChannelService.instance.getAndAskDndPermission()) {
+      return;
+    }
+
+    state = state.copyWith(shouldStartDnd: shouldStartDnd);
+  }
 
   void insertRemoveDistractingApp(String appPackage, bool shouldInsert) async {
-    if (shouldInsert) {
-      state = state.copyWith(
-          distractingApps: state.distractingApps.toList()..add(appPackage));
-    } else {
-      state = state.copyWith(
-          distractingApps: state.distractingApps.toList()..remove(appPackage));
+    state = state.copyWith(
+      distractingApps: shouldInsert
+          ? [...state.distractingApps, appPackage]
+          : [...state.distractingApps.where((e) => e != appPackage)],
+    );
 
-      /// Cancel schedule if no distracting apps
-      if (state.distractingApps.isEmpty && state.isScheduleOn) {
-        setScheduleStatus(false);
-      }
+    /// Cancel schedule if no distracting apps
+    if (!shouldInsert && state.distractingApps.isEmpty && state.isScheduleOn) {
+      switchBedtimeSchedule(false);
     }
   }
 }

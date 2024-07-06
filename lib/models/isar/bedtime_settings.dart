@@ -56,8 +56,6 @@ class BedtimeSettings {
   final bool shouldStartDnd;
 
   /// List of app's packages which are selected as distracting apps.
-  /// The [shouldPauseApps] and [shouldBlockInternet] actions will be applied to
-  /// these apps.
   final List<String> distractingApps;
 
   /// Bedtime model used for determining the actions to perform when bedtime schedule task starts.
@@ -74,20 +72,19 @@ class BedtimeSettings {
   /// NOTE: Don't modify this method.
   /// This can lead to json deserializaion error on native side
   /// in [BedtimeSettings] model's constructor
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> _toMapForSharedPrefs() {
     return {
+      'isScheduleOn': isScheduleOn,
       'startTimeInMins': startTimeInMins,
-      'endTimeInMins': endTimeInMins,
-      'scheduleDays': scheduleDays,
       // Added [totalDurationSec] this to map for native worker task
       'totalDurationMins': totalDuration.inMinutes,
-      'isScheduleOn': isScheduleOn,
       'shouldStartDnd': shouldStartDnd,
+      'scheduleDays': scheduleDays,
       'distractingApps': distractingApps,
     };
   }
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(_toMapForSharedPrefs());
 
   BedtimeSettings copyWith({
     int? startTimeInMins,

@@ -19,15 +19,22 @@ class SharePrefsService {
   Future<void> updateAppTimers(Map<String, int> appTimers) =>
       _prefs.setString(AppConstants.prefKeyAppTimers, jsonEncode(appTimers));
 
-  Future<void> updateBlockedApps(List<String> apps) =>
-      _prefs.setString(AppConstants.prefKeyBlockedApps, jsonEncode(apps));
-
-  Future<void> updateBlockedSites(List<String> websites) =>
-      _prefs.setString(AppConstants.prefKeyBlockedSites, jsonEncode(websites));
-
   Future<void> updateBedtimeSettings(BedtimeSettings settings) => _prefs
       .setString(AppConstants.prefKeyBedtimeSettings, jsonEncode(settings));
 
-  Future<void> updateNsfwBlockingStatus(bool isBlockingNsfw) =>
-      _prefs.setBool(AppConstants.prefKeyNsfwBlockingStatus, isBlockingNsfw);
+  Future<void> updateBlockedApps(List<String> blockedApps) => _prefs.setString(
+      AppConstants.prefKeyBlockedApps, jsonEncode(blockedApps));
+
+  Future<void> updateBlockedWebsites(List<String> blockedWebsites) =>
+      _prefs.setString(
+          AppConstants.prefKeyBlockedWebsites, jsonEncode(blockedWebsites));
+
+  Future<void> updateShouldBlockShorts(bool shouldBlock) =>
+      _prefs.setBool(AppConstants.prefKeyShoulBlockShorts, shouldBlock);
+
+  Future<void> updateShouldBlockNsfw(bool shouldBlock) =>
+      _prefs.setBool(AppConstants.prefKeyShoulBlockNsfw, shouldBlock);
+
+  Future<void> updateIsDistractionBlockerOn(bool isBlockerOn) =>
+      _prefs.setBool(AppConstants.prefKeyIsDistractionBlockerOn, isBlockerOn);
 }

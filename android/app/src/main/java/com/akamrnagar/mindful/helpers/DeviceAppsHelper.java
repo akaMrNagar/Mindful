@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -22,7 +21,6 @@ import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,15 +128,12 @@ public class DeviceAppsHelper {
         Calendar startCal = Calendar.getInstance();
         Calendar endCal = Calendar.getInstance();
         int todayOfWeek = startCal.get(Calendar.DAY_OF_WEEK);
-//        int todayOfWeek = 7;
 
-//        startCal.set(Calendar.WEEK_OF_MONTH, 4);
         startCal.set(Calendar.HOUR_OF_DAY, 0);
         startCal.set(Calendar.MINUTE, 0);
         startCal.set(Calendar.SECOND, 0);
         startCal.set(Calendar.MILLISECOND, 0);
 
-//        endCal.set(Calendar.WEEK_OF_MONTH, 4);
         endCal.set(Calendar.HOUR_OF_DAY, 23);
         endCal.set(Calendar.MINUTE, 59);
         endCal.set(Calendar.SECOND, 59);
@@ -151,8 +146,6 @@ public class DeviceAppsHelper {
 
             long start = startCal.getTimeInMillis();
             long end = endCal.getTimeInMillis();
-
-            Log.d("DEVICE APPS", "fetchAppsAndUsage: fetching usage for range " + new Date(start) + " ==> " + new Date(end));
 
             HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, start, end);
             HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, start, end);

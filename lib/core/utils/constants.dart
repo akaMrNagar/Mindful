@@ -5,16 +5,11 @@ class AppConstants {
 
   // Shared prefrences keys
   static const prefKeyAppTimers = "mindful.appTimers";
-  static const prefKeyLockedApps = "mindful.lockedApps";
-  static const prefKeyRedirectUrl = "mindful.redirectUrl";
-  static const prefKeyBlockedSites = "mindful.blockedSites";
-  static const prefKeyBlockedApps = "mindful.blockedApps";
   static const prefKeyBedtimeSettings = "mindful.bedtimeSettings";
-  static const prefKeyNsfwBlockingStatus = "mindful.isBlockingNsfw";
 
-  // Misc
-  static const defaultProfile = "Default";
-
-  // static const prefBedtimeInfo = "mindful.bedtimeInfo";
-  // static const prefAppFocusInfos = "mindful.appFocusInfos";
+  static const prefKeyBlockedApps = "mindful.blockedApps";
+  static const prefKeyBlockedWebsites = "mindful.blockedWebsites";
+  static const prefKeyShoulBlockShorts = "mindful.shouldBlockShorts";
+  static const prefKeyShoulBlockNsfw = "mindful.shouldBlockNsfw";
+  static const prefKeyIsDistractionBlockerOn = "mindful.isDistractionBlockerOn";
 }

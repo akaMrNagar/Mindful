@@ -1,7 +1,7 @@
 import 'package:isar/isar.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/focus_settings.dart';
-import 'package:mindful/models/isar/protection_settings.dart';
+import 'package:mindful/models/isar/wellbeing_settings.dart';
 import 'package:mindful/models/isar/app_settings.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,7 +25,7 @@ class IsarDbService {
         AppSettingsSchema,
         BedtimeSettingsSchema,
         FocusSettingsSchema,
-        ProtectionSettingsSchema,
+        WellbeingSettingsSchema,
       ],
       directory: appDirectory.path,
     );
@@ -48,15 +48,15 @@ class IsarDbService {
       await _isar.bedtimeSettings.where().findFirst() ??
       const BedtimeSettings();
 
-  Future<void> saveProtectionSettings(
-          ProtectionSettings protectionSettings) async =>
+  Future<void> saveWellbeingSettings(
+          WellbeingSettings wellbeingSettings) async =>
       _isar.writeTxn(
-        () => _isar.protectionSettings.put(protectionSettings),
+        () => _isar.wellbeingSettings.put(wellbeingSettings),
       );
 
-  Future<ProtectionSettings> loadProtectionSettings() async =>
-      await _isar.protectionSettings.where().findFirst() ??
-      const ProtectionSettings();
+  Future<WellbeingSettings> loadWellbeingSettings() async =>
+      await _isar.wellbeingSettings.where().findFirst() ??
+      const WellbeingSettings();
 
   Future<void> saveAppSettings(AppSettings appSettings) async => _isar.writeTxn(
         () => _isar.appSettings.put(appSettings),

@@ -1,6 +1,6 @@
 package com.akamrnagar.mindful.services;
 
-import static com.akamrnagar.mindful.services.MindfulTrackerService.INTENT_EXTRA_PACKAGE_NAME;
+import static com.akamrnagar.mindful.receivers.DeviceLockUnlockReceiver.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.app.AlertDialog;
 import android.app.Service;

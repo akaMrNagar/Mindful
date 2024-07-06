@@ -1,11 +1,11 @@
 package com.akamrnagar.mindful.workers;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -16,19 +16,17 @@ import com.akamrnagar.mindful.utils.AppConstants;
 
 import java.util.Calendar;
 
-public class BedtimeWorker extends Worker {
+public class StartBedtimeWorker extends Worker {
 
-    private static final String TAG = "Mindful.BedtimeWorker";
-    public static final String BEDTIME_WORKER_ID_START = "com.akamrnagar.mindful.BedtimeWorker.START";
-    public static final String BEDTIME_WORKER_ID_STOP = "com.akamrnagar.mindful.BedtimeWorker.STOP";
-    public static final String BEDTIME_WORKER_UNIQUE_TAG = "com.akamrnagar.mindful.BedtimeWorker";
+    private static final String TAG = "Mindful.StartBedtimeWorker";
+    public static final String BEDTIME_WORKER_ID_START = "com.akamrnagar.mindful.StartBedtimeWorker";
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class);
     private final Context mContext;
     private BedtimeSettings mBedtimeSettings = null;
-    private boolean mScheduleState = false;
 
-    public BedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    public StartBedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        mContext = context;
 
         // Set callback which will be invoked when the service is connected successfully
         mTrackerServiceConn.setOnConnectedCallback(this::onTrackerServiceConnected);
@@ -36,18 +34,12 @@ public class BedtimeWorker extends Worker {
         SharedPreferences prefs = context.getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
         String jsonString = prefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, "");
         mBedtimeSettings = new BedtimeSettings(jsonString);
-
-        Data data = workerParams.getInputData();
-        mScheduleState = data.getBoolean("STATE", false);
-        mContext = context;
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        if (mScheduleState) startBedtimeLockdown();
-        else stopBedtimeLockdown();
-
+        startBedtimeLockdown();
         return Result.success();
     }
 
@@ -68,20 +60,23 @@ public class BedtimeWorker extends Worker {
 
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) {
-            Log.d(TAG, "startBedtimeLockdown: DND started");
+            NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // Check if have permission
+            if (!notificationManager.isNotificationPolicyAccessGranted()) {
+                Log.d(TAG, "startBedtimeLockdown: Do not have permission to modify DND mode");
+                return;
+            }
+
+            // Else Start DND
+            notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
+            Log.d(TAG, "startBedtimeLockdown: DND mode started");
         }
     }
 
-    private void stopBedtimeLockdown() {
-        // Bind tracking service
-        mTrackerServiceConn.bindService(mContext);
-
-        // Start DND if needed or not
-        Log.d(TAG, "startBedtimeLockdown: DND stopped");
-    }
 
     private void onTrackerServiceConnected(@NonNull MindfulTrackerService service) {
-        // START or STOP bedtime lockdown on the basis of Schedule state i.e, isScheduleOn == TRUE/FALSE
-        service.startStopBedtimeLockdown(mScheduleState, mBedtimeSettings.distractingApps);
+        // START bedtime lockdown
+        service.startStopBedtimeLockdown(true, mBedtimeSettings.distractingApps);
     }
 }

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
@@ -12,9 +13,9 @@ import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
-/// Displays available settings for the app in [AppDashboard]
-class AppSettings extends StatelessWidget {
-  const AppSettings({super.key, required this.app});
+/// Displays available actions for the app in [AppDashboard]
+class AppQuickActions extends StatelessWidget {
+  const AppQuickActions({super.key, required this.app});
 
   final AndroidApp app;
 
@@ -24,7 +25,7 @@ class AppSettings extends StatelessWidget {
       delegate: SliverChildListDelegate.fixed(
         [
           12.vBox(),
-          const Text("App settings"),
+          const Text("Quick actions"),
           8.vBox(),
 
           /// App Timer Button
@@ -72,22 +73,20 @@ class AppSettings extends StatelessWidget {
           /// Launch app button
           _SettingTile(
             title: "Launch App",
+            subTitle: "Open ${app.name}",
             icondata: FluentIcons.rocket_20_regular,
-            onPressed: () {},
-          ),
-
-          /// Launch app notification settings button
-          _SettingTile(
-            title: "Manage notfications",
-            icondata: FluentIcons.alert_on_20_regular,
-            onPressed: () {},
+            onPressed: () async => MethodChannelService.instance
+                .openAppWithPackage(app.packageName),
           ),
 
           /// Launch app settings button
           _SettingTile(
             title: "Go to app settings",
+            subTitle:
+                "Manage app settings like notifications, permissions, storage and more",
             icondata: FluentIcons.launcher_settings_20_regular,
-            onPressed: () {},
+            onPressed: () async => MethodChannelService.instance
+                .openAppSettingsForPackage(app.packageName),
           ),
         ],
       ),
@@ -115,7 +114,7 @@ class _SettingTile extends StatelessWidget {
     return RoundedContainer(
       height: subTitle == null ? 52 : 64,
       onPressed: onPressed,
-      applyBorder: subTitle != null,
+      // applyBorder: subTitle != null,
       color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       margin: const EdgeInsets.only(bottom: 4),
@@ -125,7 +124,9 @@ class _SettingTile extends StatelessWidget {
         subtitle: subTitle != null
             ? StatefulText(
                 subTitle!,
-                activeColor: Theme.of(context).hintColor,
+                fontSize: 14,
+                isActive: false,
+                // activeColor: Theme.of(context).hintColor,
               )
             : null,
         trailing: trailing,

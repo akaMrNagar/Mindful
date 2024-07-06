@@ -1,9 +1,7 @@
 package com.akamrnagar.mindful.receivers;
 
 import static com.akamrnagar.mindful.services.MindfulTrackerService.ACTION_APP_LAUNCHED;
-import static com.akamrnagar.mindful.services.MindfulTrackerService.INTENT_EXTRA_PACKAGE_NAME;
 
-import android.annotation.SuppressLint;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
@@ -23,6 +21,7 @@ import java.util.TimerTask;
 
 public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private final String TAG = "Mindful.DeviceLockUnlockReceiver";
+    public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
     private static final long mTimerRate = 500;
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
@@ -49,11 +48,10 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     }
 
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private void onDeviceUnlocked() {
         if (mTrackerTimer == null) {
             mTrackerTimer = new Timer();
-            mTrackerTimer.scheduleAtFixedRate(new TimerTask() {
+            mTrackerTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     onTrackerTimerRun();
@@ -62,6 +60,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         }
 
         Log.d(TAG, "onDeviceUnLocked: Repeated timer scheduled for tracking new app launches.");
+        BroadcastLastAppLaunchEvent();
     }
 
     private void onDeviceLocked() {
@@ -93,22 +92,31 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
             }
         }
 
+
         if (!mActiveAppsList.isEmpty() && !mLastLaunchedApp.equals(mActiveAppsList.get(0))) {
             mLastLaunchedApp = mActiveAppsList.get(0);
-
-            // Broadcast event
-            Intent eventIntent = new Intent();
-            eventIntent.setAction(ACTION_APP_LAUNCHED);
-            eventIntent.setPackage(AppConstants.MY_APP_PACKAGE);
-            eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedApp);
-            mContext.sendBroadcast(eventIntent);
+            BroadcastLastAppLaunchEvent();
         }
+    }
+
+
+    /**
+     * Broadcast an event of type ACTION_APP_LAUNCHED with the last launched app
+     * package
+     */
+    public void BroadcastLastAppLaunchEvent() {
+        if (mLastLaunchedApp.isEmpty()) return;
+
+        // Broadcast event
+        Intent eventIntent = new Intent();
+        eventIntent.setAction(ACTION_APP_LAUNCHED);
+        eventIntent.setPackage(AppConstants.MY_APP_PACKAGE);
+        eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedApp);
+        mContext.sendBroadcast(eventIntent);
     }
 
 
     public void dispose() {
         onDeviceLocked();
     }
-
-
 }

@@ -1,23 +1,14 @@
 package com.akamrnagar.mindful.utils;
 
-// PorNo!
-// Domains.java THIS FILE WAS GENERATED WITH java.py
-// Thank you:
-// https://github.com/ninjayoto/PornList/blob/master/PornList.txt
-// https://github.com/Bon-Appetit/porn-domains/blob/master/domains.txt
-// https://pastebin.com/gpHmA8X5
-// Alexa web ranking service for that good 7-day free trial
-// People who've triggered PorNo!'s capture system
-//
-// This file looks like this because of https://stackoverflow.com/questions/36797134/
 
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Domains {
-    static Map<String, Boolean> dict = new HashMap<String, Boolean>();
-    static String TAG = "!! Domains";
+public class NsfwDomains {
+    static Map<String, Boolean> dict = new HashMap<>();
+    static String TAG = "Mindful.NsfwDomains";
 
     public static Map<String, Boolean> init() {
         add0();
@@ -57,6 +48,7 @@ public class Domains {
         addY();
         addZ();
 
+        Log.d(TAG, "init: Nsfw domains initialized successfully");
         return dict;
     }
 
