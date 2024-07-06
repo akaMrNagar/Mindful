@@ -1,0 +1,80 @@
+package com.akamrnagar.mindful.helpers;
+
+import static com.akamrnagar.mindful.workers.StartBedtimeWorker.BEDTIME_WORKER_ID_START;
+import static com.akamrnagar.mindful.workers.StopBedtimeWorker.BEDTIME_WORKER_ID_STOP;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
+import com.akamrnagar.mindful.models.BedtimeSettings;
+import com.akamrnagar.mindful.utils.AppConstants;
+import com.akamrnagar.mindful.workers.StartBedtimeWorker;
+import com.akamrnagar.mindful.workers.StopBedtimeWorker;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+import io.flutter.plugin.common.MethodCall;
+
+public class WorkersHelper {
+
+    private static final String TAG = "Mindful.WorkerTasksHelper";
+    private static final String BEDTIME_WORKERS_UNIQUE_TAG = "com.akamrnagar.mindful.BedtimeWorkers";
+
+
+    public static void cancelBedtimeRoutine(Context context) {
+        WorkManager.getInstance(context).cancelAllWorkByTag(BEDTIME_WORKERS_UNIQUE_TAG);
+        Log.d(TAG, "cancelBedtimeRoutine:  Bedtime routine task cancelled successfully");
+    }
+
+    public static void scheduleBedtimeRoutine(@NonNull Context context, @NonNull MethodCall call) {
+
+        SharedPreferences prefs = context.getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
+        String jsonString = prefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, "");
+        BedtimeSettings bedtimeSettings = new BedtimeSettings(jsonString);
+
+
+        int hour = bedtimeSettings.startTimeInMins / 60;
+        int minutes = bedtimeSettings.startTimeInMins % 60;
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, hour);
+        cal.set(Calendar.MINUTE, minutes);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+
+        long initialDelay = cal.getTimeInMillis() - System.currentTimeMillis();
+        long duration = bedtimeSettings.totalDurationMins * 60000L;
+        WorkManager workManager = WorkManager.getInstance(context);
+
+        PeriodicWorkRequest startBedtimeRequest = new PeriodicWorkRequest.Builder(
+                StartBedtimeWorker.class, 1, TimeUnit.DAYS)
+                .setInitialDelay(initialDelay, TimeUnit.MILLISECONDS)
+                .addTag(BEDTIME_WORKERS_UNIQUE_TAG)
+                .build();
+        workManager.enqueueUniquePeriodicWork(BEDTIME_WORKER_ID_START, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, startBedtimeRequest);
+
+
+        PeriodicWorkRequest stopBedtimeRequest = new PeriodicWorkRequest.Builder(
+                StopBedtimeWorker.class, 1, TimeUnit.DAYS)
+                .setInitialDelay(initialDelay + duration, TimeUnit.MILLISECONDS)
+                .addTag(BEDTIME_WORKERS_UNIQUE_TAG)
+                .build();
+        workManager.enqueueUniquePeriodicWork(BEDTIME_WORKER_ID_STOP, ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, stopBedtimeRequest);
+
+
+        Log.d(TAG, "scheduleBedtimeTask: Bedtime routine task scheduled successfully which starts on: "
+                + new Date(System.currentTimeMillis() + initialDelay)
+                + " and ends on : "
+                + new Date(System.currentTimeMillis() + initialDelay + duration)
+        );
+    }
+}

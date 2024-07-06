@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
+import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
-import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
@@ -19,27 +19,21 @@ import 'package:mindful/ui/dialogs/duration_picker.dart';
 class ApplicationTile extends ConsumerWidget {
   const ApplicationTile({
     super.key,
-    required this.appPackage,
+    required this.app,
     required this.usageType,
     required this.day,
   });
 
-  final String appPackage;
+  final AndroidApp app;
   final UsageType usageType;
   final int day;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /// Read the app package entry
-    final app = ref.read(appsProvider).value?[appPackage];
-
-    /// Return sizebox if app is null which will always be false
-    if (app == null) return const SizedBox();
-
     /// Watch timer for the package
-    final timer =
-        ref.watch(focusProvider.select((value) => value[appPackage]?.timer)) ??
-            0;
+    final timer = ref.watch(
+            focusProvider.select((value) => value[app.packageName]?.timer)) ??
+        0;
 
     return RoundedContainer(
       color: Colors.transparent,
@@ -87,7 +81,7 @@ class ApplicationTile extends ConsumerWidget {
                       if (value != timer) {
                         ref
                             .read(focusProvider.notifier)
-                            .setAppTimer(app.packageName, value);
+                            .updateAppTimer(app.packageName, value);
                       }
                     },
                   );

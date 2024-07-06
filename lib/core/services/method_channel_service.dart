@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/models/android_app.dart';
 
 /// This class handle flutter method channel and responsible for invoking native android java code
@@ -14,17 +15,40 @@ class MethodChannelService {
   MethodChannelService._() {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'openAppDashboard') {
+      if (call.method == 'updateTargetedApp') {
         targetedAppPackage = call.arguments;
       }
     });
   }
 
-  Future<bool> startTrackingService() async =>
-      await _methodChannel.invokeMethod('startTrackingService');
+  //
+  // Tracking Service Methods ======================================================================
+  //
 
-  Future<bool> stopTrackingService() async =>
-      await _methodChannel.invokeMethod('stopTrackingService');
+  /// This method will start tracking service if it is already not running
+  /// otherwise will trigger data refresh
+  Future<bool> refreshAppTimers() async =>
+      await _methodChannel.invokeMethod('refreshAppTimers');
+
+  Future<bool> tryToStopTrackingService() async =>
+      await _methodChannel.invokeMethod('tryToStopTrackingService');
+
+  //
+  // Accessibility Service Methods ======================================================================
+  //
+
+  ///
+  Future<bool> isAccessibilityServiceRunning() async =>
+      await _methodChannel.invokeMethod('isAccessibilityServiceRunning');
+
+  Future<bool> startAccessibilityService() async =>
+      await _methodChannel.invokeMethod('startAccessibilityService');
+
+  //
+  // VPN Service Methods ======================================================================
+  //
+  Future<bool> isVpnServiceRunning() async =>
+      await _methodChannel.invokeMethod('isVpnServiceRunning');
 
   Future<bool> startVpnService() async =>
       await _methodChannel.invokeMethod('startVpnService');
@@ -32,33 +56,37 @@ class MethodChannelService {
   Future<bool> stopVpnService() async =>
       await _methodChannel.invokeMethod('stopVpnService');
 
-  Future<bool> refreshAppTimers() async =>
-      await _methodChannel.invokeMethod('refreshAppTimers');
+  Future<bool> flagVpnRestart() async =>
+      await _methodChannel.invokeMethod('flagVpnRestart');
 
-  Future<bool> cancelBedtimeTask() async =>
-      await _methodChannel.invokeMethod('cancelBedtimeTask');
+  //
+  // Bedtime Schedule Methods ======================================================================
+  //
 
-  // Future<bool> scheduleBedtimeTask({
-  //   required BedtimeScheduleInfo info,
-  // }) async =>
-  //     await _methodChannel.invokeMethod(
-  //       'scheduleBedtimeTask',
-  //       {
-  //         'toggleDnd': info.enableDND,
-  //         'pauseApps': info.pauseApps,
-  //         'selectedDays': info.selectedDays,
-  //         'durationMs': info.endTime.difference(info.startTime) * 60000,
-  //         'startMsEpoch': DateTime(
-  //           now.year,
-  //           now.month,
-  //           now.day,
-  //           info.startTime.hour,
-  //           info.startTime.minute,
-  //           0,
-  //           0,
-  //         ).millisecondsSinceEpoch,
-  //       },
-  // );
+  Future<bool> scheduleBedtimeRoutine() async =>
+      await _methodChannel.invokeMethod('scheduleBedtimeRoutine');
+
+  Future<bool> cancelBedtimeRoutine() async =>
+      await _methodChannel.invokeMethod('cancelBedtimeRoutine');
+
+  Future<bool> showToast(
+    String msg, {
+    ToastDuration duration = ToastDuration.short,
+  }) async =>
+      await _methodChannel.invokeMethod(
+        'showToast',
+        {
+          'message': msg,
+          'duration': duration.index,
+        },
+      );
+
+  //
+  // Utility Methods ======================================================================
+  //
+
+  Future<String> parseUrl(String url) async =>
+      await _methodChannel.invokeMethod('parseUrl', url);
 
   /// Generates a list of [AndroidApp] all the launchable apps
   /// installed on the user device including their usage
@@ -77,9 +105,9 @@ class MethodChannelService {
             } catch (e, trace) {
               if (e is AssertionError) {
                 debugPrint(
-                    'MindfulNativePlugin.getDeviceApps() : Unable to add the following app: $entry');
+                    'MethodChannelService.getDeviceApps() : Unable to add the following app: $entry');
               } else {
-                debugPrint('MindfulNativePlugin.getDeviceApps() : $e $trace');
+                debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
               }
             }
           }
@@ -89,8 +117,41 @@ class MethodChannelService {
         return List<AndroidApp>.empty();
       }
     } catch (e) {
-      debugPrint("MindfulNativePlugin.getDeviceApps() Error: $e");
+      debugPrint("MethodChannelService.getDeviceApps() Error: $e");
       return List<AndroidApp>.empty();
     }
   }
+
+  //
+  // Permissions Handler Methods ======================================================================
+  //
+
+  Future<bool> getAndAskDndPermission() async =>
+      await _methodChannel.invokeMethod('getAndAskDndPermission');
+
+  Future<bool> getAndAskUsageStatesPermission() async =>
+      await _methodChannel.invokeMethod('getAndAskUsageStatesPermission');
+
+  Future<bool> getAndAskDisplayOverlayPermission() async =>
+      await _methodChannel.invokeMethod('getAndAskDisplayOverlayPermission');
+
+  Future<bool> getAndAskBatteryOptimizationPermission() async =>
+      await _methodChannel
+          .invokeMethod('getAndAskBatteryOptimizationPermission');
+
+  //
+  // New Activity Launch Methods ======================================================================
+  //
+
+  Future<bool> openDeviceDndSettings() async =>
+      await _methodChannel.invokeMethod('openDeviceDndSettings');
+
+  Future<bool> openAppWithPackage(String appPackage) async =>
+      await _methodChannel.invokeMethod('openAppWithPackage', appPackage);
+
+  Future<bool> openAppSettingsForPackage(String appPackage) async =>
+      await _methodChannel.invokeMethod(
+        'openAppSettingsForPackage',
+        appPackage,
+      );
 }

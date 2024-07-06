@@ -1,3 +1,0 @@
-abstract interface class IFocus{
-  
-}

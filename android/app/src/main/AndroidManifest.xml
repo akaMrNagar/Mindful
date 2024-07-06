@@ -2,16 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ____________________________________________________________________________________ -->
     <!-- ________________________________ PERMISSIONS _______________________________________ -->
+    <!-- ____________________________________________________________________________________ -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -48,15 +49,32 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ RECEIVERS _______________________________________ -->
+        <!-- _________________________________________________________________________________ -->
 
+        <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ SERVICES _______________________________________ -->
+        <!-- _________________________________________________________________________________ -->
+        <service
+            android:name=".services.MindfulTrackerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+        <service
+            android:name=".services.OverlayDialogService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <service
             android:name=".services.MindfulAccessibilityService"
+            android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -65,30 +83,23 @@
 
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/service_config" />
+                android:resource="@xml/accessibility_service_config" />
         </service>
-
-        <service
-            android:name=".services.AppsTrackerService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="explanation_for_special_use" />
-        </service>
-
-        <service android:name=".services.OverlayDialogService" />
 
         <service
             android:name=".services.MindfulVpnService"
             android:exported="false"
+            android:enabled="true"
+            android:foregroundServiceType="specialUse"
             android:permission="android.permission.BIND_VPN_SERVICE">
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="vpn" />
+
             <intent-filter>
                 <action android:name="android.net.VpnService" />
             </intent-filter>
+
             <meta-data
                 android:name="android.net.VpnService.SUPPORTS_ALWAYS_ON"
                 android:value="false" />

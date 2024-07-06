@@ -1,9 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
-import 'package:mindful/ui/screens/home/privacy/tab_privacy.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
+import 'package:mindful/ui/screens/home/wellbeing/tab_wellbeing.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -11,12 +13,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: VerticalTabBar(
         onTabChanged: (index) => debugPrint("Tab index : $index"),
-        leading: IconButton(
-          icon: const Icon(FluentIcons.device_eq_20_filled),
-          onPressed: () {},
+        leading: Consumer(
+          builder: (_, WidgetRef ref, __) {
+            return IconButton(
+              icon: const Icon(FluentIcons.device_eq_20_filled),
+              onPressed: () =>
+                  ref.read(settingsProvider.notifier).toggleThemeMode(),
+            );
+          },
         ),
         tabItems: [
           const VerticalTabItem(
@@ -35,9 +41,9 @@ class HomeScreen extends StatelessWidget {
             body: TabBedtime(),
           ),
           const VerticalTabItem(
-            title: "Protection",
-            icon: FluentIcons.shield_lock_20_filled,
-            body: TabPrivacy(),
+            title: "Wellbeing",
+            icon: FluentIcons.brain_circuit_20_filled,
+            body: TabWellbeing(),
           ),
         ],
       ),

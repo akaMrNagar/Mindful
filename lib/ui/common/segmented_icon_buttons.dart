@@ -43,7 +43,7 @@ class SegmentedIconButton extends StatelessWidget {
             onPressed: () => onChange(index),
             child: Icon(
               segments[index],
-              color: isSelected ? null : Theme.of(context).dividerColor,
+              color: isSelected ? null : Theme.of(context).disabledColor,
               size: 20,
             ),
           );

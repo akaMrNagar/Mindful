@@ -2,15 +2,15 @@ package com.akamrnagar.mindful.helpers;
 
 import static com.akamrnagar.mindful.utils.Extensions.getOrDefault;
 
-import android.app.usage.UsageEvents;
+import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 
 import androidx.annotation.NonNull;
 
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
 
 /**
@@ -20,6 +20,7 @@ import java.util.Set;
  * information into HashMap of app's package name and the usage in seconds.
  */
 public class ScreenUsageHelper {
+
     /**
      * Generates screen usage stats for a specified time interval.
      *
@@ -30,130 +31,70 @@ public class ScreenUsageHelper {
      */
     @NonNull
     public static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
-
-        UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
-        UsageEvents.Event prevOpenEvent = null;
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
 
+        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
 
-        while (usageEvents.hasNextEvent()) {
-            UsageEvents.Event currentEvent = new UsageEvents.Event();
-            usageEvents.getNextEvent(currentEvent);
+        for (UsageStats usageStat : usageStatsList) {
 
-            if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                prevOpenEvent = currentEvent;
-            } else if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_PAUSED) {
-                if (prevOpenEvent != null) {
-                    /// This block will run for the apps which have ACTIVITY_RESUMED event after 12 midnight
-                    long diff = (currentEvent.getTimeStamp() - prevOpenEvent.getTimeStamp());
-                    long previousTime = getOrDefault(oneDayUsageMap, prevOpenEvent.getPackageName(), 0L);
-                    oneDayUsageMap.put(prevOpenEvent.getPackageName(), previousTime + diff);
-                } else {
-                    /// This block will run for the apps which have ACTIVITY_RESUMED event before 12 midnight
-                    long diff = (currentEvent.getTimeStamp() - start);
-                    long previousTime = getOrDefault(oneDayUsageMap, currentEvent.getPackageName(), 0L);
-                    oneDayUsageMap.put(currentEvent.getPackageName(), previousTime + diff);
-                }
+            long last = usageStat.getLastTimeUsed();
+            if (last < start || last > end) continue;
 
+            String packageName = usageStat.getPackageName();
+            long screenTime = getOrDefault(oneDayUsageMap, packageName, 0L);
+            screenTime += usageStat.getTotalTimeInForeground();
+
+            oneDayUsageMap.put(packageName, screenTime);
+        }
+
+
+        // Convert milliseconds to seconds
+        for (Map.Entry<String, Long> entry : oneDayUsageMap.entrySet()) {
+            oneDayUsageMap.put(entry.getKey(), (entry.getValue() / 1000));
+        }
+
+        return oneDayUsageMap;
+    }
+
+
+    public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
+
+        Calendar midNightCal = Calendar.getInstance();
+        midNightCal.set(Calendar.HOUR_OF_DAY, 0);
+        midNightCal.set(Calendar.MINUTE, 0);
+        midNightCal.set(Calendar.SECOND, 0);
+
+        long start = midNightCal.getTimeInMillis();
+        long end = System.currentTimeMillis();
+
+
+        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+        UsageStats prevStat = null;
+        long screenTime = 0;
+
+        for (UsageStats usageStat : usageStatsList) {
+
+            long lastTimeUsed = usageStat.getLastTimeUsed();
+            if (lastTimeUsed < start || lastTimeUsed > end) continue;
+
+            // Record last event between the interval
+            if (prevStat == null || lastTimeUsed > prevStat.getLastTimeUsed()) {
+                prevStat = usageStat;
+            }
+
+            // Get total screen time of the launched app
+            if (usageStat.getPackageName().equals(packageName)) {
+                screenTime += usageStat.getTotalTimeInForeground();
             }
         }
 
-        /// convert milliseconds to seconds
-        return convertMapMsToSeconds(oneDayUsageMap);
-    }
 
-
-    /**
-     * Generates screen usage stats for today until the current time.
-     *
-     * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
-     * @param start             The start time of the interval.
-     * @param onlyForApps       Set of package names for which usage data is generated.
-     * @return A map of package names and their screen time in seconds for today till now.
-     */
-    @NonNull
-    public static HashMap<String, Long> generateUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, long start, @NonNull Set<String> onlyForApps) {
-        HashMap<String, Long> usageTodayMap = new HashMap<>(onlyForApps.size());
-
-        UsageEvents usageEvents = usageStatsManager.queryEvents(start, System.currentTimeMillis());
-        UsageEvents.Event prevOpenEvent = null;
-        UsageEvents.Event lastEvent = null;
-
-
-        while (usageEvents.hasNextEvent()) {
-            UsageEvents.Event currentEvent = new UsageEvents.Event();
-            usageEvents.getNextEvent(currentEvent);
-
-            if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                lastEvent = currentEvent;
-                if (!onlyForApps.contains(currentEvent.getPackageName())) continue;
-
-                prevOpenEvent = currentEvent;
-
-            } else if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_PAUSED) {
-                if (!onlyForApps.contains(currentEvent.getPackageName())) continue;
-
-                if (prevOpenEvent != null) {
-                    /// This block will run for the apps which have ACTIVITY_RESUMED event AFTER 12 midnight
-                    long diff = (currentEvent.getTimeStamp() - prevOpenEvent.getTimeStamp());
-                    long previousTime = getOrDefault(usageTodayMap, prevOpenEvent.getPackageName(), 0L);
-                    usageTodayMap.put(prevOpenEvent.getPackageName(), previousTime + diff);
-                } else {
-                    /// This block will run for the apps which have ACTIVITY_RESUMED event BEFORE 12 midnight
-                    long diff = (currentEvent.getTimeStamp() - start);
-                    long previousTime = getOrDefault(usageTodayMap, currentEvent.getPackageName(), 0L);
-                    usageTodayMap.put(currentEvent.getPackageName(), previousTime + diff);
-                }
-            }
+        // If the last event is same as the launched app means it is opened but not closed which eventually means it is running
+        if (prevStat != null && prevStat.getPackageName().equals(packageName)) {
+            screenTime += (System.currentTimeMillis() - prevStat.getLastTimeUsed());
         }
 
-        /// Include time from last event till now if the app is currently running
-        if (lastEvent != null && prevOpenEvent != null && Objects.equals(lastEvent.getPackageName(), prevOpenEvent.getPackageName())) {
-            long lastOpenedAppTime = getOrDefault(usageTodayMap, prevOpenEvent.getPackageName(), 0L);
-            lastOpenedAppTime += (System.currentTimeMillis() - prevOpenEvent.getTimeStamp());
-            usageTodayMap.put(prevOpenEvent.getPackageName(), lastOpenedAppTime);
-        }
-
-
-        /// convert milliseconds to seconds
-        return convertMapMsToSeconds(usageTodayMap);
+        return (screenTime / 1000);
     }
 
-
-    /**
-     * Retrieves the package name of the last used/active app within a specified time interval.
-     * The calculated interval will be [ (current time - intervalSec) TO current time ]
-     *
-     * @param usageStatsManager The UsageStatsManager used to retrieve usage events.
-     * @param intervalSec       The length of the time interval in seconds from current time.
-     * @return The package name of the last used/active app within the specified time interval.
-     */
-    public static String getLastActiveApp(@NonNull UsageStatsManager usageStatsManager, long intervalSec) {
-        UsageEvents usageEvents = usageStatsManager.queryEvents(System.currentTimeMillis() - (intervalSec * 1000), System.currentTimeMillis());
-        UsageEvents.Event currentEvent = new UsageEvents.Event();
-        String lastEventPackageName = "";
-
-        while (usageEvents.hasNextEvent()) {
-            usageEvents.getNextEvent(currentEvent);
-
-            if (currentEvent.getEventType() == UsageEvents.Event.ACTIVITY_RESUMED) {
-                lastEventPackageName = currentEvent.getPackageName();
-            }
-        }
-
-        return lastEventPackageName;
-    }
-
-    /**
-     * Converts a map containing values in milliseconds to seconds.
-     *
-     * @param msMap The map with values in milliseconds.
-     * @return A map with values converted to seconds.
-     */
-    private static HashMap<String, Long> convertMapMsToSeconds(@NonNull HashMap<String, Long> msMap) {
-        for (Map.Entry<String, Long> entry : msMap.entrySet()) {
-            msMap.put(entry.getKey(), entry.getValue() / 1000);
-        }
-        return msMap;
-    }
 }

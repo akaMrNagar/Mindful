@@ -1,59 +1,79 @@
 package com.akamrnagar.mindful.services;
 
+import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_START_SERVICE;
+import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_STOP_SERVICE;
+
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import com.akamrnagar.mindful.generics.ServiceBinder;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
+import com.akamrnagar.mindful.utils.AppConstants;
+import com.akamrnagar.mindful.utils.Utils;
+
+import org.jetbrains.annotations.Contract;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.net.SocketException;
 import java.nio.channels.DatagramChannel;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 
 public class MindfulVpnService extends android.net.VpnService {
-
-    public static final String ACTION_START_SERVICE = "com.akamrnagar.mindful.VpnService.START";
-    public static final String ACTION_STOP_SERVICE = "com.akamrnagar.mindful.VpnService.STOP";
     public static final int SERVICE_ID = 302;
-    private static final int SERVER_PORT = 3030;
-    private static final String SERVER_ADDRESS = "192.168.2.2";
-    private static final String DNS_ADDRESS = "192.168.1.1";
-    private static final String ROUTE_ADDRESS = "0.0.0.0";
     private static final String TAG = "com.akamrnagar.mindful.VpnService";
     private final AtomicReference<Thread> mVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
-    private Set<String> mPackages;
+    private Set<String> mBlockedApps;
+
+    private boolean mShouldRestartVpn = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null && ACTION_START_SERVICE.equals(intent.getAction())) {
+        if (intent == null) return START_NOT_STICKY;
+        String action = intent.getAction();
+
+        if (ACTION_START_SERVICE.equals(action)) {
             connectVpn();
             return START_STICKY;
-        } else {
-            disconnectVpn();
-            return START_NOT_STICKY;
+        } else if (ACTION_STOP_SERVICE.equals(action)) {
+            stopAndDisposeService();
         }
+
+        return START_NOT_STICKY;
     }
 
-    @Override
-    public void onDestroy() {
+    private void restartVpnService() {
         disconnectVpn();
+        connectVpn();
+        Log.d(TAG, "restartVpnService: Vpn restarted successfully");
     }
 
     private void connectVpn() {
-        mPackages = new HashSet<>();
-        mPackages.add("com.instagram.android");
-        mPackages.add("app.rvx.android.youtube");
+        SharedPreferences sharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
+        String jsonString = sharedPrefs.getString(AppConstants.PREF_KEY_BLOCKED_APPS, "");
+        mBlockedApps = Utils.jsonStrToStringHashSet(jsonString);
+
+        // Check if no blocked apps then STOP service
+        // Necessary if the service starts from Boot Receiver
+        if (mBlockedApps.isEmpty()) {
+            Log.w(TAG, "connectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
+            stopAndDisposeService();
+            return;
+        }
 
 
-        final Thread newThread = new Thread(getVpnRunnable(), "ToyVpnThread");
+        final Thread newThread = new Thread(getVpnRunnable(), TAG);
         setVpnThread(newThread);
         newThread.start();
         startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(getApplicationContext()));
@@ -64,68 +84,64 @@ public class MindfulVpnService extends android.net.VpnService {
             if (mVpnInterface != null) {
                 mVpnInterface.close();
             }
+            Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
             setVpnThread(null);
-            stopForeground(true);
-            stopSelf();
-            Log.d(TAG, "Vpn connection closed successfully");
         } catch (IOException e) {
-            Log.e(TAG, "Unable to close interface and stop service", e);
+            Log.e(TAG, "disconnectVpn: Unable to close VPN connection", e);
         }
     }
 
+    private void stopAndDisposeService() {
+        disconnectVpn();
+        stopForeground(true);
+        stopSelf();
+    }
+
+    @NonNull
+    @Contract(" -> new")
     private Runnable getVpnRunnable() {
         return new Runnable() {
             @Override
             public void run() {
-                final SocketAddress serverAddress = new InetSocketAddress(SERVER_ADDRESS, SERVER_PORT);
-
                 try (DatagramChannel tunnel = DatagramChannel.open()) {
 
                     if (!MindfulVpnService.this.protect(tunnel.socket())) {
-                        throw new IllegalStateException("Cannot protect the tunnel");
+                        throw new IllegalStateException("Cannot protect the vpn socket tunnel");
                     }
 
+                    final SocketAddress serverAddress = new InetSocketAddress("localhost", 0);
                     tunnel.connect(serverAddress);
                     tunnel.configureBlocking(false);
 
                     android.net.VpnService.Builder builder = MindfulVpnService.this.new Builder();
-                    builder.addAddress(SERVER_ADDRESS, 24);
-                    builder.addRoute(ROUTE_ADDRESS, 0);
-                    builder.addDnsServer(DNS_ADDRESS);
+                    builder.addAddress("192.168.0.0", 24);
+                    builder.addRoute("0.0.0.0", 0);
 
-
-                    for (String packageName : mPackages) {
+                    // Add blocked app's packages
+                    for (String packageName : mBlockedApps) {
                         try {
                             builder.addAllowedApplication(packageName);
                         } catch (PackageManager.NameNotFoundException e) {
-                            Log.w(TAG, "Package not available: " + packageName, e);
+                            Log.w(TAG, "getVpnRunnable: Cannot find app with package " + packageName);
                         }
                     }
 
                     synchronized (MindfulVpnService.this) {
                         mVpnInterface = builder.establish();
-                        // Add log to notify vpn is connected
-                        Log.d(TAG, "run: vpn is connected");
+                        Log.d(TAG, "getVpnRunnable: VPN connected successfully");
                     }
-
-                    // start foreground service and create notification
-//                    startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(getApplicationContext()));
-
-//                    while (true) {
-//                        /// created this loop to make sure that vpn service does not stop accidentally.
-//                        Thread.sleep(1000);
-//                    }
 
 
                 } catch (SocketException e) {
-                    Log.e(TAG, "Cannot use socket", e);
+                    Log.e(TAG, "run: Cannot use socket for VPN", e);
+                    stopAndDisposeService();
                 } catch (IOException | IllegalArgumentException e) {
-                    Log.e(TAG, "Connection failed, exiting", e);
+                    Log.e(TAG, "run: VPN connection failed, exiting", e);
+                    stopAndDisposeService();
                 }
             }
         };
     }
-
 
     private void setVpnThread(final Thread thread) {
         final Thread oldThread = mVpnThread.getAndSet(thread);
@@ -133,4 +149,30 @@ public class MindfulVpnService extends android.net.VpnService {
             oldThread.interrupt();
         }
     }
+
+
+    public void flagVpnServiceRestart() {
+        mShouldRestartVpn = true;
+    }
+
+    public void onApplicationStop() {
+        if (mShouldRestartVpn) {
+            restartVpnService();
+            mShouldRestartVpn = false;
+        }
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        disconnectVpn();
+        Log.d(TAG, "onDestroy: Vpn service is destroyed");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return new ServiceBinder<MindfulVpnService>(MindfulVpnService.this);
+    }
+
 }

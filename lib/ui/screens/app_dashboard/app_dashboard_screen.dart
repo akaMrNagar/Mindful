@@ -13,7 +13,7 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_settings.dart';
+import 'package:mindful/ui/screens/app_dashboard/app_quick_actions.dart';
 
 /// Provides usage type for toggling between usages charts
 final _selectedUsageTypeProvider =
@@ -58,13 +58,14 @@ class AppDashboardScreen extends ConsumerWidget {
                       children: [
                         /// App Icon
                         ApplicationIcon(app: app, size: 32),
-                        4.vBox(),
+                        8.vBox(),
 
                         /// App package name
                         StatefulText(
                           app.packageName,
                           activeColor: Theme.of(context).hintColor,
                         ),
+                        8.vBox(),
                       ],
                     ),
                   ),
@@ -97,7 +98,9 @@ class AppDashboardScreen extends ConsumerWidget {
                   /// Available app setting or functions
                   if (app.packageName != AppConstants.removedAppPackage &&
                       app.packageName != AppConstants.tetheringAppPackage)
-                    AppSettings(app: app),
+                    AppQuickActions(app: app),
+
+                  const SliverFillRemaining(hasScrollBody: true),
                 ],
               ),
             ),

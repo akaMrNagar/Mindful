@@ -4,11 +4,12 @@ class AppConstants {
   static const tetheringAppPackage = "com.akamrnagar.mindful.tethering";
 
   // Shared prefrences keys
-  static const prefKeyAppTimers = "mindful.apptimers";
+  static const prefKeyAppTimers = "mindful.appTimers";
+  static const prefKeyBedtimeSettings = "mindful.bedtimeSettings";
 
-  // Misc
-  static const defaultProfile = "Default";
-
-  // static const prefBedtimeInfo = "mindful.bedtimeInfo";
-  // static const prefAppFocusInfos = "mindful.appFocusInfos";
+  static const prefKeyBlockedApps = "mindful.blockedApps";
+  static const prefKeyBlockedWebsites = "mindful.blockedWebsites";
+  static const prefKeyShoulBlockShorts = "mindful.shouldBlockShorts";
+  static const prefKeyShoulBlockNsfw = "mindful.shouldBlockNsfw";
+  static const prefKeyIsDistractionBlockerOn = "mindful.isDistractionBlockerOn";
 }

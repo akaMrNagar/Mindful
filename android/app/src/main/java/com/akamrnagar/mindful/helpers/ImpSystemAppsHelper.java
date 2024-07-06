@@ -8,8 +8,6 @@ import android.content.pm.ResolveInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.akamrnagar.mindful.utils.AppConstants;
-
 import java.util.HashSet;
 
 /**
@@ -34,7 +32,7 @@ public class ImpSystemAppsHelper {
      */
     public static void init(@NonNull Context context, @Nullable PackageManager packageManager) {
         impSystemApps = new HashSet<>();
-        impSystemApps.add(AppConstants.MY_APP_PACKAGE);
+        impSystemApps.add(context.getPackageName());
 
         if (packageManager == null) {
             packageManager = context.getPackageManager();

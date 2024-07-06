@@ -12,10 +12,12 @@ class ApplicationIcon extends StatelessWidget {
     super.key,
     required this.app,
     this.size = 18,
+    this.isGreyedOut = false,
   });
 
   final AndroidApp app;
   final double size;
+  final bool isGreyedOut;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +41,9 @@ class ApplicationIcon extends StatelessWidget {
 
               return Image.memory(
                 app.icon,
-                color: isPurged ? Colors.grey : null,
-                colorBlendMode: isPurged ? BlendMode.saturation : null,
+                color: isPurged || isGreyedOut ? Colors.white : null,
+                colorBlendMode:
+                    isPurged || isGreyedOut ? BlendMode.saturation : null,
               );
             },
           ),

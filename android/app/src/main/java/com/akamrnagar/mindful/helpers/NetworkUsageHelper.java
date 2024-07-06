@@ -6,14 +6,12 @@ import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.net.ConnectivityManager;
 import android.os.RemoteException;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.utils.AppConstants;
-
 import java.util.HashMap;
 
-import io.flutter.Log;
 
 /**
  * NetworkUsageHelper is a utility class responsible for gathering network usage statistics for
@@ -22,6 +20,7 @@ import io.flutter.Log;
  * information into HashMap of app's uid and the usage in bytes.
  */
 public class NetworkUsageHelper {
+    private static final String TAG = "Mindful.NetworkUsageHelper";
 
     /**
      * Fetches Wi-Fi usage statistics for a specified time interval.
@@ -43,7 +42,7 @@ public class NetworkUsageHelper {
             do {
                 networkStatsWifi.getNextBucket(bucketWifi);
                 if (wifiUsageMap.containsKey(bucketWifi.getUid())) {
-                    Long previous = getOrDefault(wifiUsageMap,bucketWifi.getUid(), 0L);
+                    Long previous = getOrDefault(wifiUsageMap, bucketWifi.getUid(), 0L);
                     previous += bucketWifi.getRxBytes();
                     previous += bucketWifi.getTxBytes();
                     wifiUsageMap.put(bucketWifi.getUid(), previous);
@@ -59,8 +58,7 @@ public class NetworkUsageHelper {
             networkStatsWifi.close();
 
         } catch (RemoteException e) {
-            Log.e(AppConstants.ERROR_TAG, "NetworkUsageHelper.fetchWifiUsageForInterval():  Error in fetching wifi usage for apps ");
-            Log.e(AppConstants.ERROR_TAG, e.toString());
+            Log.e(TAG, "fetchWifiUsageForInterval: Error in fetching wifi usage for device apps ", e);
         }
 
         return wifiUsageMap;
@@ -86,7 +84,7 @@ public class NetworkUsageHelper {
             do {
                 networkStatsMobile.getNextBucket(bucketMobile);
                 if (mobileUsageMap.containsKey(bucketMobile.getUid())) {
-                    Long previous = getOrDefault(mobileUsageMap,bucketMobile.getUid(), 0L);
+                    Long previous = getOrDefault(mobileUsageMap, bucketMobile.getUid(), 0L);
                     previous += bucketMobile.getRxBytes();
                     previous += bucketMobile.getTxBytes();
                     mobileUsageMap.put(bucketMobile.getUid(), previous);
@@ -102,8 +100,7 @@ public class NetworkUsageHelper {
             networkStatsMobile.close();
 
         } catch (RemoteException e) {
-            Log.e(AppConstants.ERROR_TAG, "NetworkUsageHelper.fetchMobileUsageForInterval():  Error in fetching mobile usage for apps ");
-            Log.e(AppConstants.ERROR_TAG, e.toString());
+            Log.e(TAG, "fetchMobileUsageForInterval: Error in fetching mobile usage for device apps ", e);
         }
 
         return mobileUsageMap;

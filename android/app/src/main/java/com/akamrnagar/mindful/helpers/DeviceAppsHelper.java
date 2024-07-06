@@ -15,7 +15,7 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.interfaces.AsyncSuccessCallback;
+import com.akamrnagar.mindful.generics.SuccessCallback;
 import com.akamrnagar.mindful.models.AndroidApp;
 import com.akamrnagar.mindful.utils.Utils;
 
@@ -47,7 +47,7 @@ public class DeviceAppsHelper {
      * @param channelResult The MethodChannel result to return the list of apps to Flutter.
      */
     public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
-        AsyncSuccessCallback<List<Map<String, Object>>> callback = new AsyncSuccessCallback<List<Map<String, Object>>>() {
+        SuccessCallback<List<Map<String, Object>>> callback = new SuccessCallback<List<Map<String, Object>>>() {
             @Override
             public void onSuccess(List<Map<String, Object>> result) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -132,26 +132,24 @@ public class DeviceAppsHelper {
         startCal.set(Calendar.HOUR_OF_DAY, 0);
         startCal.set(Calendar.MINUTE, 0);
         startCal.set(Calendar.SECOND, 0);
+        startCal.set(Calendar.MILLISECOND, 0);
 
         endCal.set(Calendar.HOUR_OF_DAY, 23);
         endCal.set(Calendar.MINUTE, 59);
         endCal.set(Calendar.SECOND, 59);
+        endCal.set(Calendar.MILLISECOND, 999);
 
         /// Loop from first day of week till today of current week
         for (int i = 1; i <= todayOfWeek; i++) {
             startCal.set(Calendar.DAY_OF_WEEK, i);
             endCal.set(Calendar.DAY_OF_WEEK, i);
 
-            long end;
-            if (i == todayOfWeek) {
-                end = System.currentTimeMillis();
-            } else {
-                end = endCal.getTimeInMillis();
-            }
+            long start = startCal.getTimeInMillis();
+            long end = endCal.getTimeInMillis();
 
-            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, startCal.getTimeInMillis(), end);
-            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, startCal.getTimeInMillis(), end);
-            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, startCal.getTimeInMillis(), end);
+            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, start, end);
+            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, start, end);
+            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, start, end);
 
 
             for (AndroidApp app : deviceApps) {
