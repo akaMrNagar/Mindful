@@ -25,7 +25,7 @@ class IsarDbService {
         AppSettingsSchema,
         BedtimeSettingsSchema,
         FocusSettingsSchema,
-        WellbeingSettingsSchema,
+        WellBeingSettingsSchema,
       ],
       directory: appDirectory.path,
     );
@@ -48,15 +48,15 @@ class IsarDbService {
       await _isar.bedtimeSettings.where().findFirst() ??
       const BedtimeSettings();
 
-  Future<void> saveWellbeingSettings(
-          WellbeingSettings wellbeingSettings) async =>
+  Future<void> saveWellBeingSettings(
+          WellBeingSettings wellbeingSettings) async =>
       _isar.writeTxn(
-        () => _isar.wellbeingSettings.put(wellbeingSettings),
+        () => _isar.wellBeingSettings.put(wellbeingSettings),
       );
 
-  Future<WellbeingSettings> loadWellbeingSettings() async =>
-      await _isar.wellbeingSettings.where().findFirst() ??
-      const WellbeingSettings();
+  Future<WellBeingSettings> loadWellBeingSettings() async =>
+      await _isar.wellBeingSettings.where().findFirst() ??
+      const WellBeingSettings();
 
   Future<void> saveAppSettings(AppSettings appSettings) async => _isar.writeTxn(
         () => _isar.appSettings.put(appSettings),

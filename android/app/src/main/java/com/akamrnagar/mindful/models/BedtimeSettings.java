@@ -29,7 +29,7 @@ public class BedtimeSettings {
     /**
      * Total duration of schedule between startTime amd endTime
      */
-    public int totalDurationMins = 0;
+    public int totalDurationInMins = 0;
 
     /**
      * Boolean denoting the status of the bedtime schedule means
@@ -65,7 +65,7 @@ public class BedtimeSettings {
 
                 isScheduleOn = jsonObject.getBoolean("isScheduleOn");
                 startTimeInMins = jsonObject.getInt("startTimeInMins");
-                totalDurationMins = jsonObject.getInt("totalDurationMins");
+                totalDurationInMins = jsonObject.getInt("totalDurationInMins");
                 shouldStartDnd = jsonObject.getBoolean("shouldStartDnd");
 
                 /// Schedule days
@@ -95,7 +95,7 @@ public class BedtimeSettings {
         return "BedtimeSettings{" +
                 "isScheduleOn=" + isScheduleOn +
                 ", startTimeInMins=" + startTimeInMins +
-                ", totalDurationMins=" + totalDurationMins +
+                ", totalDurationMins=" + totalDurationInMins +
                 ", scheduleDays=" + scheduleDays +
                 ", shouldStartDnd=" + shouldStartDnd +
                 ", distractingApps=" + distractingApps +

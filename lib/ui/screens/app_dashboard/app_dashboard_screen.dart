@@ -13,7 +13,7 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_quick_actions.dart';
+import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 
 /// Provides usage type for toggling between usages charts
 final _selectedUsageTypeProvider =
@@ -48,7 +48,7 @@ class AppDashboardScreen extends ConsumerWidget {
                   /// App bar
                   SliverFlexibleAppBar(
                     title: app.name,
-                    canCollapse: false,
+                    // canCollapse: false,
                   ),
 
                   /// App icon and app package name
@@ -95,12 +95,13 @@ class AppDashboardScreen extends ConsumerWidget {
                         .update((_) => dow),
                   ),
 
+                  ///TODO - Add some information to let user know that why no quick actions for this apps
                   /// Available app setting or functions
                   if (app.packageName != AppConstants.removedAppPackage &&
                       app.packageName != AppConstants.tetheringAppPackage)
-                    AppQuickActions(app: app),
+                    QuickActions(app: app),
 
-                  const SliverFillRemaining(hasScrollBody: true),
+                  120.vSliverBox(),
                 ],
               ),
             ),

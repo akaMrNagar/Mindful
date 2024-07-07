@@ -51,4 +51,17 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
       return;
     }
   }
+
+  void switchInternetAccess(String appPackage, bool haveInternetAccess) {
+    state = {...state}..update(
+        appPackage,
+        (value) => value.copyWith(internetAccess: haveInternetAccess),
+        ifAbsent: () => FocusSettings(
+          appPackage: appPackage,
+          internetAccess: haveInternetAccess,
+        ),
+      );
+
+    /// start stop vpn
+  }
 }

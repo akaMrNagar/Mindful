@@ -52,7 +52,6 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Dashboard"),
@@ -109,7 +108,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
               ),
             ).toSliverBox(),
 
-          72.vSliverBox(),
+          180.vSliverBox(),
         ],
       ),
     );

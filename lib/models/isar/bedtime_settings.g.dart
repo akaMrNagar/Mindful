@@ -27,28 +27,23 @@ const BedtimeSettingsSchema = CollectionSchema(
       name: r'endTimeInMins',
       type: IsarType.long,
     ),
-    r'isModifiable': PropertySchema(
-      id: 2,
-      name: r'isModifiable',
-      type: IsarType.bool,
-    ),
     r'isScheduleOn': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'isScheduleOn',
       type: IsarType.bool,
     ),
     r'scheduleDays': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'scheduleDays',
       type: IsarType.boolList,
     ),
     r'shouldStartDnd': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'shouldStartDnd',
       type: IsarType.bool,
     ),
     r'startTimeInMins': PropertySchema(
-      id: 6,
+      id: 5,
       name: r'startTimeInMins',
       type: IsarType.long,
     )
@@ -92,11 +87,10 @@ void _bedtimeSettingsSerialize(
 ) {
   writer.writeStringList(offsets[0], object.distractingApps);
   writer.writeLong(offsets[1], object.endTimeInMins);
-  writer.writeBool(offsets[2], object.isModifiable);
-  writer.writeBool(offsets[3], object.isScheduleOn);
-  writer.writeBoolList(offsets[4], object.scheduleDays);
-  writer.writeBool(offsets[5], object.shouldStartDnd);
-  writer.writeLong(offsets[6], object.startTimeInMins);
+  writer.writeBool(offsets[2], object.isScheduleOn);
+  writer.writeBoolList(offsets[3], object.scheduleDays);
+  writer.writeBool(offsets[4], object.shouldStartDnd);
+  writer.writeLong(offsets[5], object.startTimeInMins);
 }
 
 BedtimeSettings _bedtimeSettingsDeserialize(
@@ -108,12 +102,11 @@ BedtimeSettings _bedtimeSettingsDeserialize(
   final object = BedtimeSettings(
     distractingApps: reader.readStringList(offsets[0]) ?? const [],
     endTimeInMins: reader.readLongOrNull(offsets[1]) ?? 0,
-    isModifiable: reader.readBoolOrNull(offsets[2]) ?? true,
-    isScheduleOn: reader.readBoolOrNull(offsets[3]) ?? false,
-    scheduleDays: reader.readBoolList(offsets[4]) ??
+    isScheduleOn: reader.readBoolOrNull(offsets[2]) ?? false,
+    scheduleDays: reader.readBoolList(offsets[3]) ??
         const [false, true, true, true, true, true, false],
-    shouldStartDnd: reader.readBoolOrNull(offsets[5]) ?? false,
-    startTimeInMins: reader.readLongOrNull(offsets[6]) ?? 0,
+    shouldStartDnd: reader.readBoolOrNull(offsets[4]) ?? false,
+    startTimeInMins: reader.readLongOrNull(offsets[5]) ?? 0,
   );
   return object;
 }
@@ -130,15 +123,13 @@ P _bedtimeSettingsDeserializeProp<P>(
     case 1:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:
-      return (reader.readBoolOrNull(offset) ?? true) as P;
-    case 3:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 4:
+    case 3:
       return (reader.readBoolList(offset) ??
           const [false, true, true, true, true, true, false]) as P;
-    case 5:
+    case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 6:
+    case 5:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -578,16 +569,6 @@ extension BedtimeSettingsQueryFilter
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
-      isModifiableEqualTo(bool value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isModifiable',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterFilterCondition>
       isScheduleOnEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -786,20 +767,6 @@ extension BedtimeSettingsQuerySortBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByIsModifiable() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isModifiable', Sort.asc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      sortByIsModifiableDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isModifiable', Sort.desc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
       sortByIsScheduleOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isScheduleOn', Sort.asc);
@@ -871,20 +838,6 @@ extension BedtimeSettingsQuerySortThenBy
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByIsModifiable() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isModifiable', Sort.asc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
-      thenByIsModifiableDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'isModifiable', Sort.desc);
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QAfterSortBy>
       thenByIsScheduleOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isScheduleOn', Sort.asc);
@@ -944,13 +897,6 @@ extension BedtimeSettingsQueryWhereDistinct
   }
 
   QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
-      distinctByIsModifiable() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'isModifiable');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, BedtimeSettings, QDistinct>
       distinctByIsScheduleOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isScheduleOn');
@@ -997,12 +943,6 @@ extension BedtimeSettingsQueryProperty
   QueryBuilder<BedtimeSettings, int, QQueryOperations> endTimeInMinsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'endTimeInMins');
-    });
-  }
-
-  QueryBuilder<BedtimeSettings, bool, QQueryOperations> isModifiableProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'isModifiable');
     });
   }
 

@@ -17,6 +17,7 @@ class TabBedtime extends StatelessWidget {
 
   void _setScheduleStatus(WidgetRef ref, bool shouldStart) async {
     final state = ref.read(bedtimeProvider);
+    final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
 
     if (shouldStart && state.distractingApps.isEmpty) {
       await MethodChannelService.instance.showToast(
@@ -24,7 +25,7 @@ class TabBedtime extends StatelessWidget {
       );
 
       return;
-    } else if (!shouldStart && !state.isModifiable) {
+    } else if (!shouldStart && !isModifiable) {
       await MethodChannelService.instance.showToast(
         "Cannot disable schedule in invincible mode",
       );
@@ -40,18 +41,23 @@ class TabBedtime extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
-          const SliverFlexibleAppBar(title: "Bedtime"),
+          const SliverFlexibleAppBar(
+            title: "Bedtime",
+            canCollapse: false,
+          ),
 
           /// Information about bedtime
-          const StatefulText(
-            "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-            activeColor: Colors.grey,
-          ).toSliverBox(),
-
-          12.vSliverBox(),
+          const SliverFlexiblePinnedHeader(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 12),
+              child: StatefulText(
+                "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
+                activeColor: Colors.grey,
+              ),
+            ),
+          ),
 
           /// Card with start and end time for schedule
           /// also schedule days
@@ -87,6 +93,8 @@ class TabBedtime extends StatelessWidget {
 
           /// Actions related to bedtime
           const BedtimeActionsSliver(),
+
+          180.vSliverBox(),
         ],
       ),
     );

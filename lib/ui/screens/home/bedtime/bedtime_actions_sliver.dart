@@ -102,8 +102,6 @@ class _BedtimeActionsState extends ConsumerState<BedtimeActionsSliver> {
               ? const DistractingAppsList()
               : 0.vSliverBox(),
         ),
-
-        72.vSliverBox(),
       ],
     );
   }

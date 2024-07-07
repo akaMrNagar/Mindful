@@ -1,109 +1,62 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/services/shared_prefs_service.dart';
 import 'package:mindful/models/isar/wellbeing_settings.dart';
 
-final wellbeingProvider =
-    StateNotifierProvider<WellbeingNotifier, WellbeingSettings>((ref) {
-  return WellbeingNotifier();
+final wellBeingProvider =
+    StateNotifierProvider<WellBeingNotifier, WellBeingSettings>((ref) {
+  return WellBeingNotifier();
 });
 
-class WellbeingNotifier extends StateNotifier<WellbeingSettings> {
-  WellbeingNotifier() : super(const WellbeingSettings()) {
+class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
+  WellBeingNotifier() : super(const WellBeingSettings()) {
     _init();
   }
 
   void _init() async {
-    final cache = await IsarDbService.instance.loadWellbeingSettings();
-
-    final isAccessibilityRunning =
-        await MethodChannelService.instance.isAccessibilityServiceRunning();
-
-    final isVpnRunning =
-        await MethodChannelService.instance.isVpnServiceRunning();
-
-    state = cache.copyWith(
-      isInternetBlockerOn: isVpnRunning,
-      isDistractionBlockerOn: isAccessibilityRunning,
-    );
+    state = await IsarDbService.instance.loadWellBeingSettings();
 
     /// Listen to provider and save changes to isar database
-    addListener(
-      (state) async =>
-          await IsarDbService.instance.saveWellbeingSettings(state),
-    );
+    addListener((state) async {
+      await IsarDbService.instance.saveWellBeingSettings(state);
+      await SharePrefsService.instance.updateWellbeingSettings(state);
+    });
   }
 
-  ///
-  // ********************************** Internet Blocker *************************************************
-  ///
+  void switchBlockInstaReels() =>
+      state = state.copyWith(blockInstaReels: !state.blockInstaReels);
 
-  Future<void> switchInternetBlocker(bool shouldBlock) async {
-    /// Start/Stop vpn service
-    shouldBlock
-        ? await MethodChannelService.instance.startVpnService()
-        : await MethodChannelService.instance.stopVpnService();
+  void switchBlockYtShorts() =>
+      state = state.copyWith(blockYtShorts: !state.blockYtShorts);
 
-    final success = await MethodChannelService.instance.isVpnServiceRunning();
+  void switchBlockSnapSpotlight() =>
+      state = state.copyWith(blockSnapSpotlight: !state.blockSnapSpotlight);
 
-    /// Update state only if succes in starting or stopping service
-    if (success != shouldBlock) return;
-    state = state.copyWith(isInternetBlockerOn: shouldBlock);
-  }
+  void switchBlockFbReels() =>
+      state = state.copyWith(blockFbReels: !state.blockFbReels);
 
-  void insertRemoveBlockedApp(String appPackage, bool shouldInsert) async {
-    state = state.copyWith(
-      blockedApps: shouldInsert
-          ? [...state.blockedApps, appPackage]
-          : [...state.blockedApps.where((e) => e != appPackage)],
-    );
+  void switchBlockNsfwSites() =>
+      state = state.copyWith(blockNsfwSites: !state.blockNsfwSites);
 
-    await SharePrefsService.instance.updateBlockedApps(state.blockedApps);
-    await MethodChannelService.instance.flagVpnRestart();
-
-    /// Turn OFF internet blocker if no distraction app selected
-    if (state.blockedApps.isEmpty) await switchInternetBlocker(false);
-  }
-
-  ///
-  // ********************************** Distraction Blocker *************************************************
-  ///
-
-  Future<void> switchDistractionBlocker(bool shouldBlock) async {
-    await SharePrefsService.instance.updateIsDistractionBlockerOn(shouldBlock);
-
-    /// Start/Stop accessibility
-    if (shouldBlock) {
-      await MethodChannelService.instance.startAccessibilityService();
-    }
-
-    final isServiceRunning =
-        await MethodChannelService.instance.isAccessibilityServiceRunning();
-
-    /// Update state only if succes in starting or stopping service
-    if (isServiceRunning != shouldBlock) return;
-    state = state.copyWith(isDistractionBlockerOn: shouldBlock);
-  }
-
-  void switchBlockNsfw(bool shouldBlock) async {
-    await SharePrefsService.instance.updateShouldBlockNsfw(shouldBlock);
-    state = state.copyWith(blockNsfwSites: shouldBlock);
-  }
-
-  void switchBlockShortContent(bool shouldBlock) async {
-    await SharePrefsService.instance.updateShouldBlockShorts(shouldBlock);
-    state = state.copyWith(blockShortContent: shouldBlock);
-  }
-
-  void insertRemoveBlockedSite(String websiteHost, bool shouldInsert) async {
-    state = state.copyWith(
-      blockedWebsites: shouldInsert
-          ? [...state.blockedWebsites, websiteHost]
-          : [...state.blockedWebsites.where((e) => e != websiteHost)],
-    );
-
-    await SharePrefsService.instance
-        .updateBlockedWebsites(state.blockedWebsites);
-  }
+  void insertRemoveBlockedSite(String websiteHost, bool shouldInsert) async =>
+      state = state.copyWith(
+        blockedWebsites: shouldInsert
+            ? [...state.blockedWebsites, websiteHost]
+            : [...state.blockedWebsites.where((e) => e != websiteHost)],
+      );
 }
+
+
+  // void insertRemoveBlockedApp(String appPackage, bool shouldInsert) async {
+  //   state = state.copyWith(
+  //     blockedApps: shouldInsert
+  //         ? [...state.blockedApps, appPackage]
+  //         : [...state.blockedApps.where((e) => e != appPackage)],
+  //   );
+
+  //   await SharePrefsService.instance.updateBlockedApps(state.blockedApps);
+  //   await MethodChannelService.instance.flagVpnRestart();
+
+  //   /// Turn OFF internet blocker if no distraction app selected
+  //   if (state.blockedApps.isEmpty) await switchInternetBlocker(false);
+  // }

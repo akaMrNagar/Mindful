@@ -9,62 +9,65 @@ part of 'wellbeing_settings.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetWellbeingSettingsCollection on Isar {
-  IsarCollection<WellbeingSettings> get wellbeingSettings => this.collection();
+extension GetWellBeingSettingsCollection on Isar {
+  IsarCollection<WellBeingSettings> get wellBeingSettings => this.collection();
 }
 
-const WellbeingSettingsSchema = CollectionSchema(
-  name: r'WellbeingSettings',
-  id: 72725640570335611,
+const WellBeingSettingsSchema = CollectionSchema(
+  name: r'WellBeingSettings',
+  id: 3070160543092878003,
   properties: {
-    r'blockNsfwSites': PropertySchema(
+    r'blockFbReels': PropertySchema(
       id: 0,
+      name: r'blockFbReels',
+      type: IsarType.bool,
+    ),
+    r'blockInstaReels': PropertySchema(
+      id: 1,
+      name: r'blockInstaReels',
+      type: IsarType.bool,
+    ),
+    r'blockNsfwSites': PropertySchema(
+      id: 2,
       name: r'blockNsfwSites',
       type: IsarType.bool,
     ),
-    r'blockShortContent': PropertySchema(
-      id: 1,
-      name: r'blockShortContent',
+    r'blockSnapSpotlight': PropertySchema(
+      id: 3,
+      name: r'blockSnapSpotlight',
       type: IsarType.bool,
     ),
-    r'blockedApps': PropertySchema(
-      id: 2,
-      name: r'blockedApps',
-      type: IsarType.stringList,
+    r'blockYtShorts': PropertySchema(
+      id: 4,
+      name: r'blockYtShorts',
+      type: IsarType.bool,
     ),
     r'blockedWebsites': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'blockedWebsites',
       type: IsarType.stringList,
     )
   },
-  estimateSize: _wellbeingSettingsEstimateSize,
-  serialize: _wellbeingSettingsSerialize,
-  deserialize: _wellbeingSettingsDeserialize,
-  deserializeProp: _wellbeingSettingsDeserializeProp,
+  estimateSize: _wellBeingSettingsEstimateSize,
+  serialize: _wellBeingSettingsSerialize,
+  deserialize: _wellBeingSettingsDeserialize,
+  deserializeProp: _wellBeingSettingsDeserializeProp,
   idName: r'id',
   indexes: {},
   links: {},
   embeddedSchemas: {},
-  getId: _wellbeingSettingsGetId,
-  getLinks: _wellbeingSettingsGetLinks,
-  attach: _wellbeingSettingsAttach,
+  getId: _wellBeingSettingsGetId,
+  getLinks: _wellBeingSettingsGetLinks,
+  attach: _wellBeingSettingsAttach,
   version: '3.1.0+1',
 );
 
-int _wellbeingSettingsEstimateSize(
-  WellbeingSettings object,
+int _wellBeingSettingsEstimateSize(
+  WellBeingSettings object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.blockedApps.length * 3;
-  {
-    for (var i = 0; i < object.blockedApps.length; i++) {
-      final value = object.blockedApps[i];
-      bytesCount += value.length * 3;
-    }
-  }
   bytesCount += 3 + object.blockedWebsites.length * 3;
   {
     for (var i = 0; i < object.blockedWebsites.length; i++) {
@@ -75,34 +78,38 @@ int _wellbeingSettingsEstimateSize(
   return bytesCount;
 }
 
-void _wellbeingSettingsSerialize(
-  WellbeingSettings object,
+void _wellBeingSettingsSerialize(
+  WellBeingSettings object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.blockNsfwSites);
-  writer.writeBool(offsets[1], object.blockShortContent);
-  writer.writeStringList(offsets[2], object.blockedApps);
-  writer.writeStringList(offsets[3], object.blockedWebsites);
+  writer.writeBool(offsets[0], object.blockFbReels);
+  writer.writeBool(offsets[1], object.blockInstaReels);
+  writer.writeBool(offsets[2], object.blockNsfwSites);
+  writer.writeBool(offsets[3], object.blockSnapSpotlight);
+  writer.writeBool(offsets[4], object.blockYtShorts);
+  writer.writeStringList(offsets[5], object.blockedWebsites);
 }
 
-WellbeingSettings _wellbeingSettingsDeserialize(
+WellBeingSettings _wellBeingSettingsDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = WellbeingSettings(
-    blockNsfwSites: reader.readBoolOrNull(offsets[0]) ?? false,
-    blockShortContent: reader.readBoolOrNull(offsets[1]) ?? false,
-    blockedApps: reader.readStringList(offsets[2]) ?? const [],
-    blockedWebsites: reader.readStringList(offsets[3]) ?? const [],
+  final object = WellBeingSettings(
+    blockFbReels: reader.readBoolOrNull(offsets[0]) ?? false,
+    blockInstaReels: reader.readBoolOrNull(offsets[1]) ?? false,
+    blockNsfwSites: reader.readBoolOrNull(offsets[2]) ?? false,
+    blockSnapSpotlight: reader.readBoolOrNull(offsets[3]) ?? false,
+    blockYtShorts: reader.readBoolOrNull(offsets[4]) ?? false,
+    blockedWebsites: reader.readStringList(offsets[5]) ?? const [],
   );
   return object;
 }
 
-P _wellbeingSettingsDeserializeProp<P>(
+P _wellBeingSettingsDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -114,38 +121,42 @@ P _wellbeingSettingsDeserializeProp<P>(
     case 1:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 2:
-      return (reader.readStringList(offset) ?? const []) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 3:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 4:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 5:
       return (reader.readStringList(offset) ?? const []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _wellbeingSettingsGetId(WellbeingSettings object) {
+Id _wellBeingSettingsGetId(WellBeingSettings object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _wellbeingSettingsGetLinks(
-    WellbeingSettings object) {
+List<IsarLinkBase<dynamic>> _wellBeingSettingsGetLinks(
+    WellBeingSettings object) {
   return [];
 }
 
-void _wellbeingSettingsAttach(
-    IsarCollection<dynamic> col, Id id, WellbeingSettings object) {}
+void _wellBeingSettingsAttach(
+    IsarCollection<dynamic> col, Id id, WellBeingSettings object) {}
 
-extension WellbeingSettingsQueryWhereSort
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QWhere> {
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterWhere> anyId() {
+extension WellBeingSettingsQueryWhereSort
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QWhere> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension WellbeingSettingsQueryWhere
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QWhereClause> {
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterWhereClause>
+extension WellBeingSettingsQueryWhere
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QWhereClause> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterWhereClause>
       idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -155,7 +166,7 @@ extension WellbeingSettingsQueryWhere
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterWhereClause>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterWhereClause>
       idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -178,7 +189,7 @@ extension WellbeingSettingsQueryWhere
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterWhereClause>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterWhereClause>
       idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -187,7 +198,7 @@ extension WellbeingSettingsQueryWhere
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterWhereClause>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterWhereClause>
       idLessThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
@@ -196,7 +207,7 @@ extension WellbeingSettingsQueryWhere
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterWhereClause>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterWhereClause>
       idBetween(
     Id lowerId,
     Id upperId, {
@@ -214,9 +225,29 @@ extension WellbeingSettingsQueryWhere
   }
 }
 
-extension WellbeingSettingsQueryFilter
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QFilterCondition> {
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+extension WellBeingSettingsQueryFilter
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QFilterCondition> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      blockFbReelsEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'blockFbReels',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      blockInstaReelsEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'blockInstaReels',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockNsfwSitesEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -226,242 +257,27 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockShortContentEqualTo(bool value) {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      blockSnapSpotlightEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'blockShortContent',
+        property: r'blockSnapSpotlight',
         value: value,
       ));
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementEqualTo(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      blockYtShortsEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'blockedApps',
+        property: r'blockYtShorts',
         value: value,
-        caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementGreaterThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'blockedApps',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'blockedApps',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'blockedApps',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'blockedApps',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'blockedApps',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'blockedApps',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'blockedApps',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'blockedApps',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsElementIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'blockedApps',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'blockedApps',
-        length,
-        true,
-        length,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'blockedApps',
-        0,
-        true,
-        0,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'blockedApps',
-        0,
-        false,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsLengthLessThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'blockedApps',
-        0,
-        true,
-        length,
-        include,
-      );
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsLengthGreaterThan(
-    int length, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'blockedApps',
-        length,
-        include,
-        999999,
-        true,
-      );
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
-      blockedAppsLengthBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(
-        r'blockedApps',
-        lower,
-        includeLower,
-        upper,
-        includeUpper,
-      );
-    });
-  }
-
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -475,7 +291,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementGreaterThan(
     String value, {
     bool include = false,
@@ -491,7 +307,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementLessThan(
     String value, {
     bool include = false,
@@ -507,7 +323,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementBetween(
     String lower,
     String upper, {
@@ -527,7 +343,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -541,7 +357,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -555,7 +371,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementContains(String value,
           {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -567,7 +383,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementMatches(String pattern,
           {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -579,7 +395,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -589,7 +405,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesElementIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -599,7 +415,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesLengthEqualTo(int length) {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -612,7 +428,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -625,7 +441,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.listLength(
@@ -638,7 +454,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesLengthLessThan(
     int length, {
     bool include = false,
@@ -654,7 +470,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesLengthGreaterThan(
     int length, {
     bool include = false,
@@ -670,7 +486,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockedWebsitesLengthBetween(
     int lower,
     int upper, {
@@ -688,7 +504,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -698,7 +514,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       idGreaterThan(
     Id value, {
     bool include = false,
@@ -712,7 +528,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       idLessThan(
     Id value, {
     bool include = false,
@@ -726,7 +542,7 @@ extension WellbeingSettingsQueryFilter
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterFilterCondition>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       idBetween(
     Id lower,
     Id upper, {
@@ -745,80 +561,164 @@ extension WellbeingSettingsQueryFilter
   }
 }
 
-extension WellbeingSettingsQueryObject
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QFilterCondition> {}
+extension WellBeingSettingsQueryObject
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QFilterCondition> {}
 
-extension WellbeingSettingsQueryLinks
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QFilterCondition> {}
+extension WellBeingSettingsQueryLinks
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QFilterCondition> {}
 
-extension WellbeingSettingsQuerySortBy
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QSortBy> {
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
+extension WellBeingSettingsQuerySortBy
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QSortBy> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockFbReels() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockFbReels', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockFbReelsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockFbReels', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockInstaReels() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockInstaReels', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockInstaReelsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockInstaReels', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       sortByBlockNsfwSites() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.asc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       sortByBlockNsfwSitesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.desc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
-      sortByBlockShortContent() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockSnapSpotlight() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockShortContent', Sort.asc);
+      return query.addSortBy(r'blockSnapSpotlight', Sort.asc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
-      sortByBlockShortContentDesc() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockSnapSpotlightDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockShortContent', Sort.desc);
+      return query.addSortBy(r'blockSnapSpotlight', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockYtShorts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockYtShorts', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockYtShortsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockYtShorts', Sort.desc);
     });
   }
 }
 
-extension WellbeingSettingsQuerySortThenBy
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QSortThenBy> {
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
+extension WellBeingSettingsQuerySortThenBy
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QSortThenBy> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockFbReels() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockFbReels', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockFbReelsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockFbReels', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockInstaReels() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockInstaReels', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockInstaReelsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockInstaReels', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       thenByBlockNsfwSites() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.asc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       thenByBlockNsfwSitesDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockNsfwSites', Sort.desc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
-      thenByBlockShortContent() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockSnapSpotlight() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockShortContent', Sort.asc);
+      return query.addSortBy(r'blockSnapSpotlight', Sort.asc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
-      thenByBlockShortContentDesc() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockSnapSpotlightDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'blockShortContent', Sort.desc);
+      return query.addSortBy(r'blockSnapSpotlight', Sort.desc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy> thenById() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockYtShorts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockYtShorts', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockYtShortsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockYtShorts', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QAfterSortBy>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
@@ -826,30 +726,44 @@ extension WellbeingSettingsQuerySortThenBy
   }
 }
 
-extension WellbeingSettingsQueryWhereDistinct
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QDistinct> {
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QDistinct>
+extension WellBeingSettingsQueryWhereDistinct
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
+      distinctByBlockFbReels() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'blockFbReels');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
+      distinctByBlockInstaReels() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'blockInstaReels');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
       distinctByBlockNsfwSites() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockNsfwSites');
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QDistinct>
-      distinctByBlockShortContent() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
+      distinctByBlockSnapSpotlight() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'blockShortContent');
+      return query.addDistinctBy(r'blockSnapSpotlight');
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QDistinct>
-      distinctByBlockedApps() {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
+      distinctByBlockYtShorts() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'blockedApps');
+      return query.addDistinctBy(r'blockYtShorts');
     });
   }
 
-  QueryBuilder<WellbeingSettings, WellbeingSettings, QDistinct>
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
       distinctByBlockedWebsites() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockedWebsites');
@@ -857,36 +771,50 @@ extension WellbeingSettingsQueryWhereDistinct
   }
 }
 
-extension WellbeingSettingsQueryProperty
-    on QueryBuilder<WellbeingSettings, WellbeingSettings, QQueryProperty> {
-  QueryBuilder<WellbeingSettings, int, QQueryOperations> idProperty() {
+extension WellBeingSettingsQueryProperty
+    on QueryBuilder<WellBeingSettings, WellBeingSettings, QQueryProperty> {
+  QueryBuilder<WellBeingSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<WellbeingSettings, bool, QQueryOperations>
+  QueryBuilder<WellBeingSettings, bool, QQueryOperations>
+      blockFbReelsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'blockFbReels');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, bool, QQueryOperations>
+      blockInstaReelsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'blockInstaReels');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, bool, QQueryOperations>
       blockNsfwSitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockNsfwSites');
     });
   }
 
-  QueryBuilder<WellbeingSettings, bool, QQueryOperations>
-      blockShortContentProperty() {
+  QueryBuilder<WellBeingSettings, bool, QQueryOperations>
+      blockSnapSpotlightProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'blockShortContent');
+      return query.addPropertyName(r'blockSnapSpotlight');
     });
   }
 
-  QueryBuilder<WellbeingSettings, List<String>, QQueryOperations>
-      blockedAppsProperty() {
+  QueryBuilder<WellBeingSettings, bool, QQueryOperations>
+      blockYtShortsProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'blockedApps');
+      return query.addPropertyName(r'blockYtShorts');
     });
   }
 
-  QueryBuilder<WellbeingSettings, List<String>, QQueryOperations>
+  QueryBuilder<WellBeingSettings, List<String>, QQueryOperations>
       blockedWebsitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockedWebsites');

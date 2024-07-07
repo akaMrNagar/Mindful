@@ -52,7 +52,7 @@ public class WorkersHelper {
 
 
         long initialDelay = cal.getTimeInMillis() - System.currentTimeMillis();
-        long duration = bedtimeSettings.totalDurationMins * 60000L;
+        long duration = bedtimeSettings.totalDurationInMins * 60000L;
         WorkManager workManager = WorkManager.getInstance(context);
 
         PeriodicWorkRequest startBedtimeRequest = new PeriodicWorkRequest.Builder(

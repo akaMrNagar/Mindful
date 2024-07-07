@@ -20,7 +20,8 @@ class DistractingAppsList extends ConsumerWidget {
     String appPackage,
     bool shouldInsert,
   ) async {
-    if (!shouldInsert && !ref.read(bedtimeProvider).isModifiable) {
+    final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
+    if (!shouldInsert && !isModifiable) {
       // Show snackbar alert
       await MethodChannelService.instance
           .showToast("Cannot remove app in invincible mode");
