@@ -11,6 +11,7 @@ class SwitchableListTile extends StatelessWidget {
     this.onPressed,
     this.isPrimary = false,
     this.leadingIcon,
+    this.leading,
     this.titleText,
     this.subTitleText,
   });
@@ -19,6 +20,7 @@ class SwitchableListTile extends StatelessWidget {
   final bool enabled;
   final bool isPrimary;
   final IconData? leadingIcon;
+  final Widget? leading;
   final String? titleText;
   final String? subTitleText;
   final VoidCallback? onPressed;
@@ -36,7 +38,7 @@ class SwitchableListTile extends StatelessWidget {
                 leadingIcon,
                 color: enabled ? null : Theme.of(context).disabledColor,
               )
-            : null,
+            : leading,
 
         /// Title text
         title: titleText != null

@@ -7,6 +7,6 @@ class AppConstants {
   // Shared preferences keys
   static const prefKeyAppTimers = "mindful.appTimers";
   static const prefKeyBedtimeSettings = "mindful.bedtimeSettings";
-  static const prefKeyWellbeingSettings = "mindful.wellbeingSettings";
+  static const prefKeyWellbeingSettings = "mindful.wellBeingSettings";
   static const prefKeyBlockedApps = "mindful.blockedApps";
 }

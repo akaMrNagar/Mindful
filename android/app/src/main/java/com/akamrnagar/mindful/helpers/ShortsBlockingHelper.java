@@ -2,11 +2,17 @@ package com.akamrnagar.mindful.helpers;
 
 import android.view.accessibility.AccessibilityNodeInfo;
 
-public class ShortsBlockingHelper {
+import androidx.annotation.NonNull;
 
-    // ========================================================================================================================================
-    // =================================== ACCESSIBILITY SERVICE CONSTANTS ====================================================================
-    // ========================================================================================================================================
+import com.akamrnagar.mindful.models.WellBeingSettings;
+
+import org.jetbrains.annotations.Contract;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class ShortsBlockingHelper {
 
     // APP PACKAGES
     public static final String INSTAGRAM_PACKAGE = "com.instagram.android";
@@ -14,58 +20,89 @@ public class ShortsBlockingHelper {
     public static final String SNAPCHAT_PACKAGE = "com.snapchat.android";
     public static final String FACEBOOK_PACKAGE = "com.facebook.katana";
 
-    // APP SHORTS CONTENT SECTION IDS
-    public static final String INSTAGRAM_SECTION_ID = INSTAGRAM_PACKAGE + ":id/clips_viewer_view_pager";
-    public static final String YOUTUBE_SECTION_ID = YOUTUBE_PACKAGE + ":id/reel_recycler";
-    public static final String SNAPCHAT_SECTION_ID = SNAPCHAT_PACKAGE + ":id/opera_content_index";
-    public static final String FACEBOOK_SECTION_ID = FACEBOOK_PACKAGE + ":id/clips_viewer_view_pager";
+    // Possible urls of different short form content platforms
+    private static final List<String> instaReelUrls = new ArrayList<>(Arrays.asList("instagram.com/reels/", "m.instagram.com/reels/"));
+    private static final List<String> ytShortUrls = new ArrayList<>(Arrays.asList("youtube.com/shorts/", "m.youtube.com/shorts/"));
+    private static final List<String> snapSpotlightUrls = new ArrayList<>(Arrays.asList("snapchat.com/spotlight/", "m.snapchat.com/spotlight/", "web.snapchat.com/spotlight/"));
+    private static final List<String> fbReelUrls = new ArrayList<>(Arrays.asList("facebook.com/reel/", "m.facebook.com/reel/"));
 
+    public static boolean isInstaReelsOpen(@NonNull AccessibilityNodeInfo parentNode) {
+        // NOTE: For instagram lite use 'com.instagram.lite:id/video_view'
+        CharSequence parentNodeId = parentNode.getViewIdResourceName();
 
-    public static void blockInstagramReels(AccessibilityNodeInfo node){}
-    public static void blockSnapchatSpotlight(AccessibilityNodeInfo node){}
-    public static void blockYoutubeShorts(AccessibilityNodeInfo node){}
-    public static void blockFacebookReels(AccessibilityNodeInfo node){}
+        // Root node
+        if (parentNodeId != null && (parentNodeId.equals("com.instagram.android:id/clips_viewer_view_pager") || parentNodeId.equals("com.instagram.android:id/scrubber"))) {
+            return true;
+        }
 
+        // Child nodes
+        for (int i = 0; i < parentNode.getChildCount(); i++) {
+            AccessibilityNodeInfo childNode = parentNode.getChild(i);
+            if (childNode == null) continue;
 
-    private void snap() {
-        //com.snapchat.android:id/spotlight_card_carousel
+            CharSequence childNodeId = childNode.getViewIdResourceName();
 
-//        ArrayList<String> ids = new ArrayList<>();
-//
-//        String parentId = node.getViewIdResourceName();
-//        if (parentId != null) ids.add(parentId);
-//
-//
-//        for (int i = 0; i < node.getChildCount(); i++) {
-//            AccessibilityNodeInfo nthChild = node.getChild(i);
-//            String childId = nthChild.getViewIdResourceName();
-//            if (childId != null) ids.add(childId);
-//
-//
-//            for (int j = 0; j < nthChild.getChildCount(); j++) {
-//                String child2Id = nthChild.getChild(j).getViewIdResourceName();
-//                if (child2Id != null) {
-//                    ids.add(child2Id);
-//                    if (child2Id.equals("com.snapchat.android:id/spotlight_view_count")) {
-//                        goBackWithToast("going back");
-//                    }
-//                }
-//            }
-//        }
+            if (childNodeId != null && childNodeId.equals("com.instagram.android:id/reels_touchable_background")) {
+                return true;
+            }
+        }
+
+        return false;
     }
+
+    public static boolean isYoutubeShortsOpen(@NonNull AccessibilityNodeInfo node) {
+        CharSequence nodeId = node.getViewIdResourceName();
+        return nodeId != null
+                && (nodeId.equals("com.google.android.youtube:id/reel_progress_bar")
+                || nodeId.equals("com.google.android.youtube:id/reel_player_page_container")
+                || nodeId.equals("com.google.android.youtube:id/reel_recycler")
+        );
+    }
+
+    public static boolean isSnapchatSpotlightOpen(@NonNull AccessibilityNodeInfo node) {
+        // Find by 'spotlight_view_count' id
+        List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId("com.snapchat.android:id/spotlight_view_count");
+        if (nodes != null && !nodes.isEmpty()) {
+            CharSequence text = nodes.get(0).getText();
+            if (nodes.get(0).getText() != null) return true;
+        }
+
+        // Find by node's classname equal to 'opera_content_index'
+        String id = node.getViewIdResourceName();
+        return id != null && id.equals("com.snapchat.android:id/opera_content_index");
+    }
+
+    public static boolean isFacebookReelsOpen(@NonNull AccessibilityNodeInfo node) {
+        CharSequence txt = node.getText();
+        return txt != null && (txt.equals("Add a comment…") || txt.equals("कमेंट जोड़ें…"));
+    }
+
+
+    /**
+     * @param settings WellBeingSettings model for detecting which platforms are blocked
+     * @param url      The url text from browser
+     * @return Boolean indicating if any blocked short content website is opened or not on the basis of WellBeingSettings
+     */
+    public static boolean isShortContentOpenOnBrowser(@NonNull WellBeingSettings settings, String url) {
+        return (settings.blockInstaReels && doesUrlContainsAnyElement(instaReelUrls, url))
+                || (settings.blockYtShorts && doesUrlContainsAnyElement(ytShortUrls, url))
+                || (settings.blockSnapSpotlight && doesUrlContainsAnyElement(snapSpotlightUrls, url))
+                || (settings.blockFbReels && doesUrlContainsAnyElement(fbReelUrls, url))
+                ;
+    }
+
+
+    /**
+     * @param urlList List of urls which are iterated to check if the item is in passed Url
+     * @param url     The url which may contain any element of urlList
+     * @return Boolean indicating if the url contains any of the element from urlList
+     */
+    @Contract(pure = true)
+    private static boolean doesUrlContainsAnyElement(@NonNull List<String> urlList, String url) {
+        for (String element : urlList) {
+            if (url.contains(element)) return true;
+        }
+        return false;
+    }
+
 }
-
-
-// yt shorts node => "com.google.android.youtube:id/reel_player_underlay"
-// "app.revanced.android.youtube:id/reel_player_underlay"
-// "com.google.android.youtube:id/reel_main_title"
-
-// Instagram reel node => "com.instagram.android:id/clips_video_container"
-// "com.instagram.android:id/clips_viewer_view_pager" // manual
-
-// Snapchat spotlight node => "com.snapchat.android:id/spotlight_view_count"
-// "com.snapchat.android:id/view_profile"
-// "com.snapchat.android:id/spotlight_view_count"
-
-
-// Tiktok  => "com.zhiliaoapp.musically:id/desc"

@@ -24,34 +24,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.akamrnagar.mindful.helpers.ShortsBlockingHelper;
+import com.akamrnagar.mindful.helpers.TestHelper;
+import com.akamrnagar.mindful.models.WellBeingSettings;
 import com.akamrnagar.mindful.utils.AppConstants;
-import com.akamrnagar.mindful.utils.MainThreadDebouncer;
 import com.akamrnagar.mindful.utils.NsfwDomains;
 import com.akamrnagar.mindful.utils.Utils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 public class MindfulAccessibilityService extends AccessibilityService implements SharedPreferences.OnSharedPreferenceChangeListener {
+    // ===================================================================================================================
+    // Tested blocking on following browsers => Chrome, Brave, DuckDuckGo, Edge, Vivaldi, FireFox, WaterFox
+    // ===================================================================================================================
+
     private static final String TAG = "Mindful.MindfulAccessibilityService";
-    private final MainThreadDebouncer mainThreadDebouncer = new MainThreadDebouncer(500);
-
-    private final HashSet<String> mShortContentApps = new HashSet<>(Arrays.asList(INSTAGRAM_PACKAGE, YOUTUBE_PACKAGE, SNAPCHAT_PACKAGE, FACEBOOK_PACKAGE));
-    private HashSet<String> mBrowserApps = new HashSet<>(1);
-
-    private HashSet<String> mBlockedWebsites = new HashSet<>(2);
+    private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
-
-    private boolean mShouldBlockNSFW = false;
-    private boolean mShouldBlockShorts = false;
-
-    private boolean mShouldBlockInstaReels = false;
-    private boolean mShouldBlockYtShorts = false;
-    private boolean mShouldBlockSnapSpotlight = false;
-    private boolean mShouldBlockFbReels = false;
 
     private SharedPreferences mSharedPrefs;
     private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
@@ -63,15 +54,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Get shared prefs
         mSharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
-
-        // Initialize variables from shared prefs
-        mShouldBlockNSFW = mSharedPrefs.getBoolean(AppConstants.PREF_KEY_SHOULD_BLOCK_NSFW, false);
-        mShouldBlockShorts = mSharedPrefs.getBoolean(AppConstants.PREF_KEY_SHOULD_BLOCK_SHORTS, false);
-        mBlockedWebsites = Utils.jsonStrToStringHashSet(mSharedPrefs.getString(AppConstants.PREF_KEY_BLOCKED_WEBSITES, ""));
+        mWellBeingSettings = new WellBeingSettings(mSharedPrefs.getString(AppConstants.PREF_KEY_WELLBEING_SETTINGS, ""));
 
         // Register shared prefs listener
         mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
-
 
         // Register listener for install and uninstall events
         mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
@@ -100,18 +86,28 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
 
+        TestHelper.logNodeInfoRecursively(node);
+
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
-                if (mShouldBlockInstaReels) ShortsBlockingHelper.blockInstagramReels(node);
+                if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
+                    goBackWithToast();
+                }
                 break;
             case YOUTUBE_PACKAGE:
-                if (mShouldBlockYtShorts) ShortsBlockingHelper.blockYoutubeShorts(node);
+                if (mWellBeingSettings.blockYtShorts && ShortsBlockingHelper.isYoutubeShortsOpen(node)) {
+                    goBackWithToast();
+                }
                 break;
             case SNAPCHAT_PACKAGE:
-                if (mShouldBlockSnapSpotlight) ShortsBlockingHelper.blockSnapchatSpotlight(node);
+                if (mWellBeingSettings.blockSnapSpotlight && ShortsBlockingHelper.isSnapchatSpotlightOpen(node)) {
+                    goBackWithToast();
+                }
                 break;
             case FACEBOOK_PACKAGE:
-                if (mShouldBlockFbReels) ShortsBlockingHelper.blockFacebookReels(node);
+                if (mWellBeingSettings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node)) {
+                    goBackWithToast();
+                }
                 break;
             default:
                 blockDistractionOnBrowsers(node, packageName);
@@ -119,99 +115,87 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         }
     }
 
-    private void blockDistractionOnBrowsers(AccessibilityNodeInfo node, String appPackage) {
-    }
 
+    private void blockDistractionOnBrowsers(@NonNull AccessibilityNodeInfo node, String packageName) {
+        String url = extractBrowserUrl(node, packageName);
 
-    // Note: If this doesn't work than recursively find text field in the node's children
-    // But it will cost performance
-    private void handleWebsiteBlocking(@NonNull AccessibilityNodeInfo node, String activeAppPackage) {
+        // Return if url is empty or does not contain dot or have space this basically means its not url
+        if (url.contains(" ") || !url.contains(".")) return;
 
-        // Return if node or classname is null or the node component is not text field
-        if (node == null || node.getClassName() == null || node.getText() == null || (!node.getClassName().equals("android.widget.EditText") && !node.getClassName().equals("android.widget.ListView")))
+        // Block websites
+        String host = Utils.parseHostNameFromUrl(url);
+        if (mWellBeingSettings.blockedWebsites.contains(host) || mNsfwWebsites.get(host) != null) {
+            Log.d(TAG, "blockDistractionOnBrowsers: Blocked website " + host + " opened in " + packageName);
+            goBackWithToast();
             return;
-
-        // Retrieve input text from input field
-        String inputText = node.getText().toString().trim().toLowerCase();
-
-        // If text contains space and does not contain dot then return because it is not a URL
-        if (inputText.contains(" ") || !inputText.contains(".")) return;
-
-        // Parse host name
-        String host = Utils.parseHostNameFromUrl(inputText).trim();
-
-        // Return if host does not match with blocked sites
-        if (!mBlockedWebsites.contains(host) && mNsfwWebsites.get(host) == null) return;
-
-        Log.d(TAG, "Blocked website opened site : " + host + "  in browser: " + activeAppPackage);
-        goBackWithToast("Website blocked!, going back");
-
-    }
-
-    private void goBackWithToast(String toastMsg) {
-        performGlobalAction(GLOBAL_ACTION_BACK);
-        mainThreadDebouncer.call(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(MindfulAccessibilityService.this, toastMsg, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, @Nullable String changedKey) {
-        if (changedKey == null || changedKey.isEmpty()) return;
-        Log.d(TAG, "OnSharedPrefsChanged: Key changed = " + changedKey);
-
-        switch (changedKey) {
-            case AppConstants.PREF_KEY_IS_DISTRACTION_BLOCKER_ON:
-                boolean isBlockerOn = prefs.getBoolean(AppConstants.PREF_KEY_IS_DISTRACTION_BLOCKER_ON, true);
-                if (!isBlockerOn) {
-                    disableSelf();
-                    return;
-                }
-                break;
-
-            case AppConstants.PREF_KEY_SHOULD_BLOCK_NSFW:
-                mShouldBlockNSFW = prefs.getBoolean(AppConstants.PREF_KEY_SHOULD_BLOCK_NSFW, false);
-                mNsfwWebsites = mShouldBlockNSFW ? NsfwDomains.init() : new HashMap<>(0);
-                break;
-
-            case AppConstants.PREF_KEY_SHOULD_BLOCK_SHORTS:
-                mShouldBlockShorts = prefs.getBoolean(AppConstants.PREF_KEY_SHOULD_BLOCK_SHORTS, false);
-                break;
-
-            case AppConstants.PREF_KEY_BLOCKED_WEBSITES:
-                mBlockedWebsites = Utils.jsonStrToStringHashSet(prefs.getString(AppConstants.PREF_KEY_BLOCKED_WEBSITES, ""));
-                break;
-
-            default:
-                break;
         }
 
-        // Refresh
-        refreshServiceInfo();
+        // Block short form content
+        if (ShortsBlockingHelper.isShortContentOpenOnBrowser(mWellBeingSettings, url)) {
+            Log.d(TAG, "blockDistractionOnBrowsers: Blocked short content " + url + " opened in " + packageName);
+            goBackWithToast();
+        }
+
+    }
+
+    @NonNull
+    private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
+
+        // Find by id 'url_bar' on chromium based browsers
+        List<AccessibilityNodeInfo> chromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/url_bar");
+        if (chromiumUrlNodes != null && !chromiumUrlNodes.isEmpty()) {
+            CharSequence txtSequence = chromiumUrlNodes.get(0).getText();
+            if (txtSequence != null) {
+                return txtSequence.toString();
+            }
+        }
+
+        // Find by id 'mozac_browser_toolbar_url_view' on non chromium browsers
+        List<AccessibilityNodeInfo> nonChromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/mozac_browser_toolbar_url_view");
+        if (nonChromiumUrlNodes != null && !nonChromiumUrlNodes.isEmpty()) {
+            CharSequence txtSequence = nonChromiumUrlNodes.get(0).getText();
+            if (txtSequence != null) {
+                return txtSequence.toString();
+            }
+        }
+
+        // Find by input field class
+        if (node.getClassName().equals("android.widget.EditText")) {
+            CharSequence txtSequence = node.getText();
+            if (txtSequence != null) {
+                return txtSequence.toString();
+            }
+        }
+
+
+        return "";
+    }
+
+    private void goBackWithToast() {
+        performGlobalAction(GLOBAL_ACTION_BACK);
+        Toast.makeText(MindfulAccessibilityService.this, "Content blocked!, going back", Toast.LENGTH_SHORT).show();
     }
 
     private void refreshServiceInfo() {
         HashSet<String> allowedAppPackages = new HashSet<>();
 
-        // For websites blocking
-        if (mShouldBlockNSFW || !mBlockedWebsites.isEmpty()) {
-            // Fetch installed browsers
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-            PackageManager pm = getPackageManager();
-            List<ResolveInfo> browsers = pm.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+        // Fetch installed browser packages
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> browsers = pm.queryIntentActivities(intent, PackageManager.MATCH_ALL);
 
-            for (ResolveInfo browser : browsers) {
-                mBrowserApps.add(browser.activityInfo.packageName);
-            }
-            allowedAppPackages.addAll(mBrowserApps);
+        for (ResolveInfo browser : browsers) {
+            allowedAppPackages.add(browser.activityInfo.packageName);
         }
 
-        // For short form content blocking
-        if (mShouldBlockShorts) allowedAppPackages.addAll(mShortContentApps);
+        // For short form content blocking on their native apps
+        if (mWellBeingSettings.blockInstaReels) allowedAppPackages.add(INSTAGRAM_PACKAGE);
+        if (mWellBeingSettings.blockYtShorts) allowedAppPackages.add(YOUTUBE_PACKAGE);
+        if (mWellBeingSettings.blockSnapSpotlight) allowedAppPackages.add(SNAPCHAT_PACKAGE);
+        if (mWellBeingSettings.blockFbReels) allowedAppPackages.add(FACEBOOK_PACKAGE);
+
+        // Load nsfw website domains if needed
+        mNsfwWebsites = mWellBeingSettings.blockNsfwSites ? NsfwDomains.init() : new HashMap<>(0);
 
 
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
@@ -225,6 +209,26 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         Log.d(TAG, "refreshServiceInfo: Accessibility service updated successfully");
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, @Nullable String changedKey) {
+        if (changedKey != null && changedKey.equals(AppConstants.PREF_KEY_WELLBEING_SETTINGS)) {
+            Log.d(TAG, "OnSharedPrefsChanged: Key changed = " + changedKey);
+            mWellBeingSettings = new WellBeingSettings(mSharedPrefs.getString(changedKey, ""));
+
+            // Check if accessibility can be stopped
+            if (!mWellBeingSettings.blockedWebsites.isEmpty()
+                    || mWellBeingSettings.blockInstaReels
+                    || mWellBeingSettings.blockYtShorts
+                    || mWellBeingSettings.blockSnapSpotlight
+                    || mWellBeingSettings.blockFbReels
+                    || mWellBeingSettings.blockNsfwSites
+            ) {
+                refreshServiceInfo();
+            } else {
+                disableSelf();
+            }
+        }
+    }
 
     @Override
     public void onInterrupt() {
@@ -247,9 +251,18 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             String action = intent.getAction();
 
             if (Intent.ACTION_PACKAGE_ADDED.equals(action) || Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-                Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action);
+                Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action
+                        + " for package: " + getPackageName(intent)
+                );
                 refreshServiceInfo();
             }
+        }
+
+
+        @NonNull
+        private String getPackageName(@NonNull Intent intent) {
+            Uri uri = intent.getData();
+            return uri != null ? uri.getSchemeSpecificPart() : "NULL";
         }
     }
 }

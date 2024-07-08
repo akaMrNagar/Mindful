@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -12,6 +13,7 @@ import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
+import 'package:mindful/ui/common/permission_warning.dart';
 
 class TabWellbeing extends ConsumerWidget {
   const TabWellbeing({super.key});
@@ -41,13 +43,15 @@ class TabWellbeing extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wellBeing = ref.watch(wellBeingProvider);
+    final isAccessibilityRunning = ref.watch(
+      permissionProvider.select((value) => value.isAccessibilityServiceRunning),
+    );
 
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: Stack(
         children: [
           CustomScrollView(
-            physics: const BouncingScrollPhysics(),
             slivers: [
               /// Appbar
               const SliverFlexibleAppBar(
@@ -66,6 +70,16 @@ class TabWellbeing extends ConsumerWidget {
                 ),
               ),
 
+              PermissionWarning(
+                title: "Accessibility permission",
+                information:
+                    "Granting accessibility permission allows Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers. Additionally, it filters nsfw websites, promoting a more secure and focused online environment.",
+                havePermission: isAccessibilityRunning,
+                onTapAllow: ref
+                    .read(permissionProvider.notifier)
+                    .askAccessibilityPermission,
+              ),
+
               /// Short content header
               const SliverFlexiblePinnedHeader(
                 minHeight: 32,
@@ -79,7 +93,11 @@ class TabWellbeing extends ConsumerWidget {
                 children: [
                   /// Block instagram reels
                   SwitchableListTile(
-                    leadingIcon: FluentIcons.video_clip_16_regular,
+                    leading: Image.asset(
+                      "assets/images/instaReels.png",
+                      width: 32,
+                    ),
+                    enabled: isAccessibilityRunning,
                     titleText: "Block reels",
                     subTitleText: "Block reels on instagram",
                     value: wellBeing.blockInstaReels,
@@ -90,35 +108,46 @@ class TabWellbeing extends ConsumerWidget {
 
                   /// Block youtube shorts
                   SwitchableListTile(
-                    leadingIcon: FluentIcons.video_clip_16_regular,
+                    leading: Image.asset(
+                      "assets/images/ytShorts.png",
+                      width: 32,
+                    ),
+                    enabled: isAccessibilityRunning,
                     titleText: "Block shorts",
                     subTitleText: "Block shorts on youtube",
-                    value: wellBeing.blockInstaReels,
+                    value: wellBeing.blockYtShorts,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
-                        .switchBlockInstaReels,
+                        .switchBlockYtShorts,
                   ),
 
                   /// Block snapchat spotlight
                   SwitchableListTile(
-                    leadingIcon: FluentIcons.video_clip_16_regular,
+                    leading: Image.asset(
+                      "assets/images/snapSpotlight.png",
+                      width: 32,
+                    ),
+                    enabled: isAccessibilityRunning,
                     titleText: "Block spotlight",
                     subTitleText: "Block spotlight on snapchat",
-                    value: wellBeing.blockInstaReels,
+                    value: wellBeing.blockSnapSpotlight,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
-                        .switchBlockInstaReels,
+                        .switchBlockSnapSpotlight,
                   ),
 
                   /// Block facebook reels
                   SwitchableListTile(
-                    leadingIcon: FluentIcons.video_clip_16_regular,
+                    leading: Image.asset(
+                      "assets/images/fbReels.png",
+                      width: 32,
+                    ),
+                    enabled: isAccessibilityRunning,
                     titleText: "Block reels",
                     subTitleText: "Block reels on facebook",
-                    value: wellBeing.blockInstaReels,
-                    onPressed: ref
-                        .read(wellBeingProvider.notifier)
-                        .switchBlockInstaReels,
+                    value: wellBeing.blockFbReels,
+                    onPressed:
+                        ref.read(wellBeingProvider.notifier).switchBlockFbReels,
                   ),
                 ],
               ),
@@ -133,6 +162,7 @@ class TabWellbeing extends ConsumerWidget {
 
               /// Block NSFW websites
               SwitchableListTile(
+                enabled: isAccessibilityRunning,
                 leadingIcon: FluentIcons.slide_multiple_search_20_regular,
                 titleText: "Block Nsfw",
                 subTitleText:
@@ -195,15 +225,16 @@ class TabWellbeing extends ConsumerWidget {
           ),
 
           /// Add more distracting websites button
-          Positioned(
-            bottom: 64,
-            right: 24,
-            child: FloatingActionButton(
-              heroTag: 'InputWebsiteDialog',
-              onPressed: () => _onPressedFab(context, ref),
-              child: const Icon(FluentIcons.add_20_filled),
-            ),
-          )
+          if (isAccessibilityRunning)
+            Positioned(
+              bottom: 64,
+              right: 24,
+              child: FloatingActionButton(
+                heroTag: 'InputWebsiteDialog',
+                onPressed: () => _onPressedFab(context, ref),
+                child: const Icon(FluentIcons.add_20_filled),
+              ),
+            )
         ],
       ),
     );
