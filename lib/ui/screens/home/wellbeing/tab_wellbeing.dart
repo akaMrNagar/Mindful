@@ -6,14 +6,13 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
-import 'package:mindful/ui/common/list_tile_skeleton.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
-import 'package:mindful/ui/common/switchable_list_tile.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
 
 class TabWellbeing extends ConsumerWidget {
   const TabWellbeing({super.key});
@@ -57,7 +56,7 @@ class TabWellbeing extends ConsumerWidget {
               const SliverFlexibleAppBar(title: "Wellbeing"),
 
               /// Information about bedtime
-              const StatefulText(
+              const StyledText(
                 "Silence your phone, start dnd change screen to black and white at bedtime. Only alarms and important calls can reach you.",
               ).toSliverBox(),
 
@@ -80,60 +79,60 @@ class TabWellbeing extends ConsumerWidget {
               SliverList.list(
                 children: [
                   /// Block instagram reels
-                  SwitchableListTile(
+                  DefaultListTile(
                     leading: Image.asset(
                       "assets/images/instaReels.png",
                       width: 32,
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block reels",
-                    subTitleText: "Restrict reels on instagram",
-                    value: wellBeing.blockInstaReels,
+                    subtitleText: "Restrict reels on instagram",
+                    switchValue: wellBeing.blockInstaReels,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
                         .switchBlockInstaReels,
                   ),
 
                   /// Block youtube shorts
-                  SwitchableListTile(
+                  DefaultListTile(
                     leading: Image.asset(
                       "assets/images/ytShorts.png",
                       width: 32,
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block shorts",
-                    subTitleText: "Restrict shorts on youtube",
-                    value: wellBeing.blockYtShorts,
+                    subtitleText: "Restrict shorts on youtube",
+                    switchValue: wellBeing.blockYtShorts,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
                         .switchBlockYtShorts,
                   ),
 
                   /// Block snapchat spotlight
-                  SwitchableListTile(
+                  DefaultListTile(
                     leading: Image.asset(
                       "assets/images/snapSpotlight.png",
                       width: 32,
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block spotlight",
-                    subTitleText: "Restrict spotlight on snapchat",
-                    value: wellBeing.blockSnapSpotlight,
+                    subtitleText: "Restrict spotlight on snapchat",
+                    switchValue: wellBeing.blockSnapSpotlight,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
                         .switchBlockSnapSpotlight,
                   ),
 
                   /// Block facebook reels
-                  SwitchableListTile(
+                  DefaultListTile(
                     leading: Image.asset(
                       "assets/images/fbReels.png",
                       width: 32,
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block reels",
-                    subTitleText: "Restrict reels on facebook",
-                    value: wellBeing.blockFbReels,
+                    subtitleText: "Restrict reels on facebook",
+                    switchValue: wellBeing.blockFbReels,
                     onPressed:
                         ref.read(wellBeingProvider.notifier).switchBlockFbReels,
                   ),
@@ -144,13 +143,13 @@ class TabWellbeing extends ConsumerWidget {
               const SliverContentTitle(title: "Adult content"),
 
               /// Block NSFW websites
-              SwitchableListTile(
+              DefaultListTile(
                 enabled: isAccessibilityRunning,
                 leadingIcon: FluentIcons.slide_multiple_search_20_regular,
                 titleText: "Block Nsfw",
-                subTitleText:
+                subtitleText:
                     "Restrict browsers from opening adult and porn websites",
-                value: wellBeing.blockNsfwSites,
+                switchValue: wellBeing.blockNsfwSites,
                 onPressed:
                     ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
               ).toSliverBox(),
@@ -165,23 +164,8 @@ class TabWellbeing extends ConsumerWidget {
                       itemCount: wellBeing.blockedWebsites.length,
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: ListTileSkeleton(
-                          leading: const RoundedContainer(width: 8, height: 8),
-                          title: StatefulText(
-                            wellBeing.blockedWebsites[index],
-                            fontSize: 14,
-                            activeColor: Theme.of(context).hintColor,
-                          ),
-                          trailing: IconButton(
-                            iconSize: 16,
-                            icon: const Icon(FluentIcons.dismiss_16_regular),
-                            onPressed: () => ref
-                                .read(wellBeingProvider.notifier)
-                                .insertRemoveBlockedSite(
-                                  wellBeing.blockedWebsites[index],
-                                  false,
-                                ),
-                          ),
+                        child: WebsiteTile(
+                          websitehost: wellBeing.blockedWebsites[index],
                         ),
                       ),
                     )
@@ -189,9 +173,9 @@ class TabWellbeing extends ConsumerWidget {
                       height: 300,
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       alignment: const Alignment(0, 0),
-                      child: const StatefulText(
+                      child: const StyledText(
                         "Click on '+' icon to add distracting website which you wish to block.",
-                        isActive: false,
+                        isSubtitle: false,
                         textAlign: TextAlign.center,
                       ),
                     ).toSliverBox(),

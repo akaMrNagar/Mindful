@@ -6,12 +6,9 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/ui/common/list_tile_skeleton.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_permission_warning.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
-import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/screens/home/bedtime/distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -51,63 +48,45 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
         const SliverContentTitle(title: "Quick actions"),
 
         /// Should start dnd
-        SwitchableListTile(
+        DefaultListTile(
           enabled: haveDndPermission,
-          value: shouldStartDnd,
+          switchValue: shouldStartDnd,
           onPressed: () => ref
               .read(bedtimeProvider.notifier)
               .setShouldStartDnd(!shouldStartDnd),
           titleText: "Start DND",
-          subTitleText: "Start do not disturb mode during \nbedtime",
+          subtitleText: "Start do not disturb mode during \nbedtime",
         ),
 
         /// Manage Dnd settings
-        RoundedContainer(
+        DefaultListTile(
           color: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          leading: const Icon(FluentIcons.alert_20_regular),
+          titleText: "Do not disturb settings",
+          subtitleText:
+              "Manage which app are distracting you from your routine.",
+          trailing: const Icon(FluentIcons.chevron_right_20_filled),
           onPressed: () =>
               MethodChannelService.instance.openDeviceDndSettings(),
-          child: const ListTileSkeleton(
-            leading: Icon(FluentIcons.alert_20_regular),
-            title: StatefulText(
-              "Do not disturb settings",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            subtitle: StatefulText(
-              "Manage which app are distracting you from your routine.",
-              fontSize: 14,
-              isActive: false,
-            ),
-            trailing: Icon(FluentIcons.chevron_right_20_filled),
-          ),
         ),
 
         /// Manage distracting apps
-        RoundedContainer(
+        DefaultListTile(
           color: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          leading: const Icon(FluentIcons.weather_moon_20_regular),
+          titleText: "Distracting apps",
+          subtitleText:
+              "Manage which app are distracting you from your routine.",
+          trailing: AnimatedRotation(
+            duration: 250.ms,
+            turns: isDistractingAppsListExpanded ? 0.5 : 0,
+            child: const Icon(FluentIcons.chevron_down_20_filled),
+          ),
           onPressed: () => setState(
             () =>
                 isDistractingAppsListExpanded = !isDistractingAppsListExpanded,
-          ),
-          child: ListTileSkeleton(
-            leading: const Icon(FluentIcons.weather_moon_20_regular),
-            title: const StatefulText(
-              "Distracting apps",
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-            subtitle: const StatefulText(
-              "Manage which app are distracting you from your routine.",
-              fontSize: 14,
-              isActive: false,
-            ),
-            trailing: AnimatedRotation(
-              duration: 250.ms,
-              turns: isDistractingAppsListExpanded ? 0.5 : 0,
-              child: const Icon(FluentIcons.chevron_down_20_filled),
-            ),
           ),
         ),
 

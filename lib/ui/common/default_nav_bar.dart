@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
 
-class VerticalTabBar extends StatefulWidget {
-  const VerticalTabBar({
+class DefaultNavbar extends StatefulWidget {
+  const DefaultNavbar({
     super.key,
     this.leading,
     this.onTabChanged,
-    required this.tabItems,
+    required this.navbarItems,
   });
 
   /// List of all tab items with title, icon and body
-  final List<VerticalTabItem> tabItems;
+  final List<NavbarItem> navbarItems;
 
   /// If leading is null then it will automatically imply a back button
   final Widget? leading;
@@ -22,10 +22,10 @@ class VerticalTabBar extends StatefulWidget {
   final ValueChanged<int>? onTabChanged;
 
   @override
-  State<VerticalTabBar> createState() => _VerticalTabBarState();
+  State<DefaultNavbar> createState() => _DefaultNavbarState();
 }
 
-class _VerticalTabBarState extends State<VerticalTabBar>
+class _DefaultNavbarState extends State<DefaultNavbar>
     with SingleTickerProviderStateMixin {
   late TabController _controller;
 
@@ -35,7 +35,7 @@ class _VerticalTabBarState extends State<VerticalTabBar>
     _controller = TabController(
       vsync: this,
       initialIndex: 0,
-      length: widget.tabItems.length,
+      length: widget.navbarItems.length,
       animationDuration: const Duration(milliseconds: 250),
     );
   }
@@ -72,12 +72,12 @@ class _VerticalTabBarState extends State<VerticalTabBar>
                 /// Tab buttons
                 Expanded(
                   child: ListView.builder(
-                    itemCount: widget.tabItems.length,
+                    itemCount: widget.navbarItems.length,
                     scrollDirection: Axis.vertical,
                     physics: const ClampingScrollPhysics(),
                     itemBuilder: (context, index) => _TabBarButton(
-                      title: widget.tabItems[index].title,
-                      icon: widget.tabItems[index].icon,
+                      title: widget.navbarItems[index].title,
+                      icon: widget.navbarItems[index].icon,
                       isSelected: _controller.index == index,
                       onTap: () => setState(
                         () {
@@ -101,7 +101,7 @@ class _VerticalTabBarState extends State<VerticalTabBar>
             child: TabBarView(
               controller: _controller,
               physics: const NeverScrollableScrollPhysics(),
-              children: widget.tabItems
+              children: widget.navbarItems
                   .map((e) => RotatedBox(quarterTurns: -1, child: e.body))
                   .toList(),
             ),
@@ -171,12 +171,12 @@ class _TabBarButton extends StatelessWidget {
 }
 
 @immutable
-class VerticalTabItem {
+class NavbarItem {
   final String title;
   final IconData icon;
   final Widget body;
 
-  const VerticalTabItem({
+  const NavbarItem({
     required this.icon,
     required this.title,
     required this.body,

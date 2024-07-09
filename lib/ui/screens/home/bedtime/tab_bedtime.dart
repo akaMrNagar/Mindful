@@ -5,9 +5,9 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/switchable_list_tile.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
 import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
 
@@ -45,7 +45,7 @@ class TabBedtime extends StatelessWidget {
           const SliverFlexibleAppBar(title: "Bedtime"),
 
           /// Information about bedtime
-          const StatefulText(
+          const StyledText(
             "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
           ).toSliverBox(),
 
@@ -64,12 +64,12 @@ class TabBedtime extends StatelessWidget {
                 bedtimeProvider.select((v) => v.isScheduleOn),
               );
 
-              return SwitchableListTile(
+              return DefaultListTile(
                 isPrimary: true,
-                value: isScheduleOn,
+                switchValue: isScheduleOn,
                 leadingIcon: FluentIcons.sleep_20_regular,
                 titleText: "Schedule",
-                subTitleText: "Enable or disable daily schedule",
+                subtitleText: "Enable or disable daily schedule",
                 onPressed: () => _setScheduleStatus(ref, !isScheduleOn),
               );
             },

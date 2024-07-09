@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class AnimatedAppsList extends ConsumerStatefulWidget {
@@ -13,10 +14,12 @@ class AnimatedAppsList extends ConsumerStatefulWidget {
     required this.appPackages,
     required this.itemBuilder,
     this.headerTitle,
+    this.separatorTitle,
   });
 
   final double itemExtent;
   final String? headerTitle;
+  final String? separatorTitle;
   final List<String> appPackages;
   final Widget Function(BuildContext context, AndroidApp app) itemBuilder;
 
@@ -87,7 +90,16 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
               /// [TabProtection => Internet Blocker] screen and
               /// [TabBedtime => Distracting Apps List] screen
               child: app == null
-                  ? const Divider(indent: 12, endIndent: 12)
+                  ? widget.separatorTitle == null
+                      ? const Divider(indent: 12, endIndent: 12)
+                      : Align(
+                          alignment: const Alignment(-0.95, 0.5),
+                          child: StyledText(
+                            widget.separatorTitle!,
+                            color: Theme.of(context).colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
                   : widget.itemBuilder(context, app),
             );
           },

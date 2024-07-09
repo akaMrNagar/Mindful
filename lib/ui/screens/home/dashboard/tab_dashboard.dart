@@ -8,14 +8,13 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
 import 'package:mindful/providers/packages_by_network_usage_provider.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
+import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/async_error_indicator.dart';
 import 'package:mindful/ui/common/async_loading_indicator.dart';
-import 'package:mindful/ui/common/list_tile_skeleton.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
 
 class TabDashboard extends ConsumerStatefulWidget {
@@ -84,8 +83,8 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             error: (e, st) => AsyncErrorIndicator(e, st).toSliverBox(),
             data: (packages) => AnimatedAppsList(
               itemExtent: 64,
-              appPackages: packages,
               headerTitle: "Most used apps",
+              appPackages: packages,
               itemBuilder: (context, app) => ApplicationTile(
                 app: app,
                 usageType: _usageType,
@@ -96,16 +95,15 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
 
           /// Show all apps button
           if (!_includeAllApps && filtered.hasValue)
-            RoundedContainer(
+            DefaultListTile(
               height: 48,
-              onPressed: () => setState(() => _includeAllApps = true),
+              isPrimary: true,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               margin: const EdgeInsets.only(top: 20),
-              child: const ListTileSkeleton(
-                leading: Icon(FluentIcons.select_all_off_20_regular),
-                title: Text("Show all apps"),
-                trailing: Icon(FluentIcons.chevron_down_20_filled),
-              ),
+              leading: const Icon(FluentIcons.select_all_off_20_regular),
+              titleText: "Show all apps",
+              trailing: const Icon(FluentIcons.chevron_down_20_filled),
+              onPressed: () => setState(() => _includeAllApps = true),
             ).toSliverBox(),
 
           180.vSliverBox(),
