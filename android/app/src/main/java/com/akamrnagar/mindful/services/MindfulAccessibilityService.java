@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.akamrnagar.mindful.helpers.ShortsBlockingHelper;
-import com.akamrnagar.mindful.helpers.TestHelper;
 import com.akamrnagar.mindful.models.WellBeingSettings;
 import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.NsfwDomains;
@@ -96,7 +95,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
 
-        TestHelper.logNodeInfoRecursively(node);
+//        TestHelper.logNodeInfoRecursively(node);
 
         switch (packageName) {
             case INSTAGRAM_PACKAGE:

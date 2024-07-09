@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverContentTitle extends StatelessWidget {
   const SliverContentTitle({
@@ -19,9 +19,9 @@ class SliverContentTitle extends StatelessWidget {
     return Container(
       padding: padding,
       alignment: alignment,
-      child: StatefulText(
+      child: StyledText(
         title,
-        activeColor: Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,
       ),
     ).toSliverBox();

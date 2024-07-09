@@ -8,10 +8,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/list_tile_skeleton.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
-import 'package:mindful/ui/common/switchable_list_tile.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
 /// Displays available actions for the app in [AppDashboard]
@@ -38,15 +35,16 @@ class QuickActions extends ConsumerWidget {
       children: [
         /// App Timer Button
         app.isImpSysApp
-            ? const _SettingTile(
-                title: "App timer",
-                subTitle: "Timer not available for important apps",
-                icondata: FluentIcons.timer_off_20_regular,
+            ? const DefaultListTile(
+                titleText: "App timer",
+                subtitleText: "Timer not available for important apps",
+                leadingIcon: FluentIcons.timer_off_20_regular,
               )
-            : _SettingTile(
-                title: "App timer",
-                subTitle: timer > 0 ? timer.seconds.toTimeFull() : "No timer",
-                icondata: isPurged
+            : DefaultListTile(
+                titleText: "App timer",
+                subtitleText:
+                    timer > 0 ? timer.seconds.toTimeFull() : "No timer",
+                leadingIcon: isPurged
                     ? FluentIcons.clock_toolbox_20_regular
                     : FluentIcons.timer_20_regular,
                 trailing: isPurged ? const Text("Paused") : null,
@@ -68,11 +66,11 @@ class QuickActions extends ConsumerWidget {
               ),
 
         /// Internet access
-        SwitchableListTile(
-          value: internetAccess,
+        DefaultListTile(
+          switchValue: internetAccess,
           enabled: haveVpnPermission,
           titleText: "Internet access",
-          subTitleText: "Turn off to block app's internet",
+          subtitleText: "Turn off to block app's internet",
           leadingIcon: FluentIcons.earth_20_regular,
           onPressed: () => ref
               .read(focusProvider.notifier)
@@ -80,65 +78,24 @@ class QuickActions extends ConsumerWidget {
         ),
 
         /// Launch app button
-        _SettingTile(
-          title: "Launch app",
-          subTitle: "Open ${app.name}",
-          icondata: FluentIcons.rocket_20_regular,
+        DefaultListTile(
+          titleText: "Launch app",
+          subtitleText: "Open ${app.name}",
+          leadingIcon: FluentIcons.rocket_20_regular,
           onPressed: () async =>
               MethodChannelService.instance.openAppWithPackage(app.packageName),
         ),
 
         /// Launch app settings button
-        _SettingTile(
-          title: "Go to app settings",
-          subTitle:
+        DefaultListTile(
+          titleText: "Go to app settings",
+          subtitleText:
               "Manage app settings like notifications, permissions, storage and more",
-          icondata: FluentIcons.launcher_settings_20_regular,
+          leadingIcon: FluentIcons.launcher_settings_20_regular,
           onPressed: () async => MethodChannelService.instance
               .openAppSettingsForPackage(app.packageName),
         ),
       ],
-    );
-  }
-}
-
-class _SettingTile extends StatelessWidget {
-  const _SettingTile({
-    required this.title,
-    required this.icondata,
-    this.subTitle,
-    this.onPressed,
-    this.trailing,
-  });
-
-  final String title;
-  final String? subTitle;
-  final IconData icondata;
-  final VoidCallback? onPressed;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return RoundedContainer(
-      height: subTitle == null ? 52 : 64,
-      onPressed: onPressed,
-      // applyBorder: subTitle != null,
-      color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      margin: const EdgeInsets.only(bottom: 4),
-      child: ListTileSkeleton(
-        leading: Icon(icondata),
-        title: StatefulText(title, fontSize: 16),
-        subtitle: subTitle != null
-            ? StatefulText(
-                subTitle!,
-                fontSize: 14,
-                isActive: false,
-                // activeColor: Theme.of(context).hintColor,
-              )
-            : null,
-        trailing: trailing,
-      ),
     );
   }
 }

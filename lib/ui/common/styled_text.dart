@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 
-class StatefulText extends StatelessWidget {
-  const StatefulText(
+class StyledText extends StatelessWidget {
+  const StyledText(
     this.text, {
     super.key,
-    this.isActive = true,
-    this.activeColor,
-    this.inactiveColor,
+    this.color,
     this.fontWeight,
     this.height,
     this.maxLines,
     this.overflow,
     this.textAlign,
+    this.isSubtitle = false,
     this.fontSize = 12,
   });
 
   final String text;
-  final bool isActive;
-  final Color? activeColor;
-  final Color? inactiveColor;
+  final bool isSubtitle;
+  final Color? color;
   final double fontSize;
   final FontWeight? fontWeight;
   final double? height;
@@ -33,9 +31,7 @@ class StatefulText extends StatelessWidget {
       maxLines: maxLines,
       textAlign: textAlign,
       style: TextStyle(
-        color: isActive
-            ? activeColor
-            : inactiveColor ?? Theme.of(context).disabledColor,
+        color: color ?? (isSubtitle ? Theme.of(context).disabledColor : null),
         fontSize: fontSize,
         fontWeight: fontWeight,
         height: height,

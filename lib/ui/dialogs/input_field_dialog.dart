@@ -1,7 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/hero_page_route.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
 Future<String?> showInputWebsiteDialog(BuildContext context) async {
   return await Navigator.of(context).push<String>(
@@ -56,7 +56,7 @@ class _InputFieldDialog extends StatelessWidget {
         child: SingleChildScrollView(
           child: AlertDialog(
             icon: Icon(icon),
-            title: StatefulText(title),
+            title: StyledText(title),
             insetPadding: EdgeInsets.zero,
             content: SizedBox(
               width: MediaQuery.of(context).size.width,

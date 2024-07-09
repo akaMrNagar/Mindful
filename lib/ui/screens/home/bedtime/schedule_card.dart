@@ -5,7 +5,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
 class ScheduleCard extends ConsumerWidget {
   const ScheduleCard({super.key});
@@ -38,7 +38,7 @@ class ScheduleCard extends ConsumerWidget {
               /// Schedule start time
               _SelectedTime(
                 label: "Start",
-                enabled: !isScheduleOn,
+                enabled: isScheduleOn,
                 initialTime: startTime,
                 onChange: (t) =>
                     ref.read(bedtimeProvider.notifier).setBedtimeStart(t),
@@ -47,7 +47,7 @@ class ScheduleCard extends ConsumerWidget {
               /// Schedule end time
               _SelectedTime(
                 label: "End",
-                enabled: !isScheduleOn,
+                enabled: isScheduleOn,
                 initialTime: endTime,
                 onChange: (t) =>
                     ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
@@ -61,7 +61,7 @@ class ScheduleCard extends ConsumerWidget {
             children: [
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
               12.hBox(),
-              StatefulText(totalDuration.toTimeFull()),
+              StyledText(totalDuration.toTimeFull()),
               12.hBox(),
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
             ],
@@ -87,11 +87,11 @@ class ScheduleCard extends ConsumerWidget {
                         : () => ref
                             .read(bedtimeProvider.notifier)
                             .toggleScheduleDay(index),
-                    child: StatefulText(
+                    child: StyledText(
                       AppStrings.daysShort[index],
                       fontSize: 14,
-                      isActive: !isScheduleOn,
-                      activeColor: scheduleDays[index]
+                      isSubtitle: !isScheduleOn,
+                      color: scheduleDays[index]
                           ? Theme.of(context).colorScheme.surface
                           : null,
                     ),
@@ -140,29 +140,29 @@ class _SelectedTime extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Labels "START" and "END"
-          StatefulText(
+          StyledText(
             label,
-            isActive: enabled,
+            isSubtitle: enabled,
           ),
           4.vBox(),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               /// Time in hour and minutes
-              StatefulText(
+              StyledText(
                 initialTime.format(context).split(' ').first,
                 height: 1,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                isActive: enabled,
+                isSubtitle: enabled,
               ),
               4.hBox(),
 
               /// Time period AM/PM
-              StatefulText(
+              StyledText(
                 initialTime.period.name,
                 height: 2,
-                isActive: enabled,
+                isSubtitle: enabled,
               ),
             ],
           ),

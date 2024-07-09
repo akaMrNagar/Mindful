@@ -6,10 +6,9 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/segmented_icon_buttons.dart';
-import 'package:mindful/ui/common/list_tile_skeleton.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverUsageCards extends StatelessWidget {
   /// Persistent pinned header containing segmented buttons to toggle between usage types
@@ -53,6 +52,7 @@ class SliverUsageCards extends StatelessWidget {
 
               /// Screen usage card
               ? _buildUsageCard(
+                  context,
                   icon: FluentIcons.phone_20_regular,
                   title: "Screen time",
                   subtitle: screenUsageInfo.seconds.toTimeFull(),
@@ -65,6 +65,7 @@ class SliverUsageCards extends StatelessWidget {
                     children: [
                       Expanded(
                         child: _buildUsageCard(
+                          context,
                           icon: FluentIcons.cellular_data_1_20_filled,
                           title: "Mobile",
                           subtitle: mobileUsageInfo.toData(),
@@ -73,6 +74,7 @@ class SliverUsageCards extends StatelessWidget {
                       8.hBox(),
                       Expanded(
                         child: _buildUsageCard(
+                          context,
                           icon: FluentIcons.wifi_1_20_filled,
                           title: "Wifi",
                           subtitle: wifiUsageInfo.toData(),
@@ -86,23 +88,24 @@ class SliverUsageCards extends StatelessWidget {
     );
   }
 
-  Widget _buildUsageCard({
+  Widget _buildUsageCard(
+    BuildContext context, {
     required IconData icon,
     required String title,
     required String subtitle,
   }) {
-    return RoundedContainer(
+    return DefaultListTile(
       height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: ListTileSkeleton(
-        leading: Icon(icon),
-        title: StatefulText(title),
-        subtitle: StatefulText(
-          subtitle,
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
+      isPrimary: true,
+      leading: Icon(icon),
+      title: Padding(
+        padding: const EdgeInsets.only(bottom: 2),
+        child: StyledText(
+          title,
+          color: Theme.of(context).hintColor,
         ),
       ),
+      subtitle: StyledText(subtitle, fontSize: 16, fontWeight: FontWeight.w600),
     );
   }
 }

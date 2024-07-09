@@ -13,8 +13,8 @@ import 'package:mindful/ui/common/sliver_permission_warning.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/stateful_text.dart';
-import 'package:mindful/ui/common/vertical_tab_bar.dart';
+import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -42,9 +42,9 @@ class AppDashboardScreen extends ConsumerWidget {
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
     return Scaffold(
-      body: VerticalTabBar(
-        tabItems: [
-          VerticalTabItem(
+      body: DefaultNavbar(
+        navbarItems: [
+          NavbarItem(
             icon: FluentIcons.data_pie_20_filled,
             title: "Dashboard",
             body: Padding(
@@ -63,9 +63,9 @@ class AppDashboardScreen extends ConsumerWidget {
                       8.vBox(),
 
                       /// App package name
-                      StatefulText(
+                      StyledText(
                         app.packageName,
-                        activeColor: Theme.of(context).hintColor,
+                        color: Theme.of(context).hintColor,
                       ),
                       8.vBox(),
                     ],

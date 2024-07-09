@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class SliverPermissionWarning extends StatelessWidget {
@@ -47,24 +48,20 @@ class SliverPermissionWarning extends StatelessWidget {
                 2.vBox(),
 
                 /// Warning title
-                Text(
+                StyledText(
                   title,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
                 6.vBox(),
 
                 /// Wraning info
-                Text(
+                StyledText(
                   information,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
+                  fontSize: 12,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
                 16.vBox(),
