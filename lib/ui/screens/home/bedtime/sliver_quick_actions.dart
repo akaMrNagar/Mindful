@@ -5,15 +5,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/sliver_permission_warning.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/screens/home/bedtime/distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class BedtimeActionsSliver extends ConsumerStatefulWidget {
-  const BedtimeActionsSliver({
+class SliverQuickActions extends ConsumerStatefulWidget {
+  const SliverQuickActions({
     super.key,
   });
 
@@ -21,21 +24,35 @@ class BedtimeActionsSliver extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _BedtimeActionsState();
 }
 
-class _BedtimeActionsState extends ConsumerState<BedtimeActionsSliver> {
+class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
   bool isDistractingAppsListExpanded = false;
 
   @override
   Widget build(BuildContext context) {
-    final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
-
     final shouldStartDnd =
         ref.watch(bedtimeProvider.select((v) => v.shouldStartDnd));
 
+    final haveDndPermission =
+        ref.watch(permissionProvider.select((v) => v.haveDndPermission));
+
     return MultiSliver(
       children: [
+        /// Dnd permission warning
+        SliverPermissionWarning(
+          margin: const EdgeInsets.only(top: 8),
+          havePermission: haveDndPermission,
+          title: "Do not disturb",
+          information:
+              "Granting do not disturb access allows Mindful to start & stop do not disturb mode during the bedtime schedule.",
+          onTapAllow: ref.read(permissionProvider.notifier).askDndPermission,
+        ),
+
+        /// Bedtime actions
+        const SliverContentTitle(title: "Quick actions"),
+
+        /// Should start dnd
         SwitchableListTile(
-          enabled: !isScheduleOn,
+          enabled: haveDndPermission,
           value: shouldStartDnd,
           onPressed: () => ref
               .read(bedtimeProvider.notifier)

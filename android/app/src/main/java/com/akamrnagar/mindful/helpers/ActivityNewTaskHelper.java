@@ -24,6 +24,12 @@ public class ActivityNewTaskHelper {
         }
     }
 
+    public static void openDoNotDisturbAccessSection(@NonNull Context context) {
+        Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
+        context.startActivity(intent);
+        Toast.makeText(context, "Please allow do not disturb access to Mindful", Toast.LENGTH_LONG).show();
+    }
+
     public static void openAppWithPackage(@NonNull Context context, @Nullable String appPackage) {
         if (appPackage == null || appPackage.isEmpty()) {
             Toast.makeText(context, "Package not found, unable to launch app", Toast.LENGTH_SHORT).show();

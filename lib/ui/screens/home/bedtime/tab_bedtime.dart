@@ -6,11 +6,10 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
-import 'package:mindful/ui/screens/home/bedtime/bedtime_card.dart';
-import 'package:mindful/ui/screens/home/bedtime/bedtime_actions_sliver.dart';
+import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
+import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
 
 class TabBedtime extends StatelessWidget {
   const TabBedtime({super.key});
@@ -43,25 +42,18 @@ class TabBedtime extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           /// Appbar
-          const SliverFlexibleAppBar(
-            title: "Bedtime",
-            canCollapse: false,
-          ),
+          const SliverFlexibleAppBar(title: "Bedtime"),
 
           /// Information about bedtime
-          const SliverFlexiblePinnedHeader(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 12),
-              child: StatefulText(
-                "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-                activeColor: Colors.grey,
-              ),
-            ),
-          ),
+          const StatefulText(
+            "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
+          ).toSliverBox(),
+
+          12.vSliverBox(),
 
           /// Card with start and end time for schedule
           /// also schedule days
-          const BedtimeCard().toSliverBox(),
+          const ScheduleCard().toSliverBox(),
 
           8.vSliverBox(),
 
@@ -83,16 +75,8 @@ class TabBedtime extends StatelessWidget {
             },
           ).toSliverBox(),
 
-          /// Bedtime actions
-          const SliverFlexiblePinnedHeader(
-            minHeight: 32,
-            maxHeight: 42,
-            alignment: Alignment.centerLeft,
-            child: Text("Quick actions"),
-          ),
-
           /// Actions related to bedtime
-          const BedtimeActionsSliver(),
+          const SliverQuickActions(),
 
           180.vSliverBox(),
         ],

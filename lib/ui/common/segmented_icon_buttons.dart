@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 
-class SegmentedIconButton extends StatelessWidget {
-  const SegmentedIconButton({
+class SegmentedIconButtons extends StatelessWidget {
+  const SegmentedIconButtons({
     super.key,
     required this.selected,
     required this.segments,

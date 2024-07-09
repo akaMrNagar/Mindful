@@ -8,12 +8,12 @@ import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
-import 'package:mindful/ui/common/permission_warning.dart';
+import 'package:mindful/ui/common/sliver_permission_warning.dart';
 
 class TabWellbeing extends ConsumerWidget {
   const TabWellbeing({super.key});
@@ -44,7 +44,7 @@ class TabWellbeing extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final wellBeing = ref.watch(wellBeingProvider);
     final isAccessibilityRunning = ref.watch(
-      permissionProvider.select((value) => value.isAccessibilityServiceRunning),
+      permissionProvider.select((value) => value.haveAccessibilityPermission),
     );
 
     return Padding(
@@ -54,26 +54,19 @@ class TabWellbeing extends ConsumerWidget {
           CustomScrollView(
             slivers: [
               /// Appbar
-              const SliverFlexibleAppBar(
-                title: "Wellbeing",
-                canCollapse: false,
-              ),
+              const SliverFlexibleAppBar(title: "Wellbeing"),
 
               /// Information about bedtime
-              const SliverFlexiblePinnedHeader(
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 12),
-                  child: StatefulText(
-                    "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-                    activeColor: Colors.grey,
-                  ),
-                ),
-              ),
+              const StatefulText(
+                "Silence your phone, start dnd change screen to black and white at bedtime. Only alarms and important calls can reach you.",
+              ).toSliverBox(),
 
-              PermissionWarning(
-                title: "Accessibility permission",
+              if (!isAccessibilityRunning) 12.vSliverBox(),
+
+              SliverPermissionWarning(
+                title: "Accessibility",
                 information:
-                    "Granting accessibility permission allows Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers. Additionally, it filters nsfw websites, promoting a more secure and focused online environment.",
+                    "Granting accessibility permission allows Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers. Additionally, it filters inappropriate websites, promoting a more secure and focused online environment.",
                 havePermission: isAccessibilityRunning,
                 onTapAllow: ref
                     .read(permissionProvider.notifier)
@@ -81,12 +74,7 @@ class TabWellbeing extends ConsumerWidget {
               ),
 
               /// Short content header
-              const SliverFlexiblePinnedHeader(
-                minHeight: 32,
-                maxHeight: 48,
-                alignment: Alignment.centerLeft,
-                child: Text("Short content"),
-              ),
+              const SliverContentTitle(title: "Short content"),
 
               /// Quick actions
               SliverList.list(
@@ -99,7 +87,7 @@ class TabWellbeing extends ConsumerWidget {
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block reels",
-                    subTitleText: "Block reels on instagram",
+                    subTitleText: "Restrict reels on instagram",
                     value: wellBeing.blockInstaReels,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -114,7 +102,7 @@ class TabWellbeing extends ConsumerWidget {
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block shorts",
-                    subTitleText: "Block shorts on youtube",
+                    subTitleText: "Restrict shorts on youtube",
                     value: wellBeing.blockYtShorts,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -129,7 +117,7 @@ class TabWellbeing extends ConsumerWidget {
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block spotlight",
-                    subTitleText: "Block spotlight on snapchat",
+                    subTitleText: "Restrict spotlight on snapchat",
                     value: wellBeing.blockSnapSpotlight,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -144,7 +132,7 @@ class TabWellbeing extends ConsumerWidget {
                     ),
                     enabled: isAccessibilityRunning,
                     titleText: "Block reels",
-                    subTitleText: "Block reels on facebook",
+                    subTitleText: "Restrict reels on facebook",
                     value: wellBeing.blockFbReels,
                     onPressed:
                         ref.read(wellBeingProvider.notifier).switchBlockFbReels,
@@ -153,12 +141,7 @@ class TabWellbeing extends ConsumerWidget {
               ),
 
               /// Adult content header
-              const SliverFlexiblePinnedHeader(
-                minHeight: 32,
-                maxHeight: 48,
-                alignment: Alignment.centerLeft,
-                child: Text("Adult content"),
-              ),
+              const SliverContentTitle(title: "Adult content"),
 
               /// Block NSFW websites
               SwitchableListTile(
@@ -166,19 +149,14 @@ class TabWellbeing extends ConsumerWidget {
                 leadingIcon: FluentIcons.slide_multiple_search_20_regular,
                 titleText: "Block Nsfw",
                 subTitleText:
-                    "Block browsers from opening adult and porn websites",
+                    "Restrict browsers from opening adult and porn websites",
                 value: wellBeing.blockNsfwSites,
                 onPressed:
                     ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
               ).toSliverBox(),
 
               /// Blocked websites header
-              const SliverFlexiblePinnedHeader(
-                minHeight: 32,
-                maxHeight: 48,
-                alignment: Alignment.centerLeft,
-                child: Text("Blocked websites"),
-              ),
+              const SliverContentTitle(title: "Blocked websites"),
 
               /// Distracting websites list
               wellBeing.blockedWebsites.isNotEmpty
@@ -207,18 +185,16 @@ class TabWellbeing extends ConsumerWidget {
                         ),
                       ),
                     )
-                  : SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24),
-                        alignment: const Alignment(0, -0.5),
-                        child: const StatefulText(
-                          "Click on '+' icon to add distracting website which you wish to block.",
-                          isActive: false,
-                          textAlign: TextAlign.center,
-                        ),
+                  : Container(
+                      height: 300,
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      alignment: const Alignment(0, 0),
+                      child: const StatefulText(
+                        "Click on '+' icon to add distracting website which you wish to block.",
+                        isActive: false,
+                        textAlign: TextAlign.center,
                       ),
-                    ),
+                    ).toSliverBox(),
 
               180.vSliverBox(),
             ],

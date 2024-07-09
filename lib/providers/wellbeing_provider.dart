@@ -19,7 +19,7 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
     /// Listen to provider and save changes to isar database
     addListener((state) async {
       await IsarDbService.instance.saveWellBeingSettings(state);
-      await SharePrefsService.instance.updateWellbeingSettings(state);
+      await SharePrefsService.instance.updateWellBeingSettings(state);
     });
   }
 

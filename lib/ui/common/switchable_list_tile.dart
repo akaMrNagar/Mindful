@@ -56,6 +56,8 @@ class SwitchableListTile extends StatelessWidget {
                 subTitleText!,
                 isActive: false,
                 fontSize: 14,
+                // inactiveColor:
+                //     enabled ? null : Theme.of(context).highlightColor,
               )
             : null,
 

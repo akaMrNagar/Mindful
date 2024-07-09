@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
@@ -15,19 +15,27 @@ import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
 /// Displays available actions for the app in [AppDashboard]
-class QuickActions extends StatelessWidget {
+class QuickActions extends ConsumerWidget {
   const QuickActions({super.key, required this.app});
 
   final AndroidApp app;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final timer = ref.watch(
+            focusProvider.select((value) => value[app.packageName]?.timer)) ??
+        0;
+
+    final isPurged = timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
+    final internetAccess = ref.watch(focusProvider
+            .select((value) => value[app.packageName]?.internetAccess)) ??
+        true;
+
+    final haveVpnPermission =
+        ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
+
     return SliverList.list(
       children: [
-        12.vBox(),
-        const Text("Quick actions"),
-        8.vBox(),
-
         /// App Timer Button
         app.isImpSysApp
             ? const _SettingTile(
@@ -35,57 +43,40 @@ class QuickActions extends StatelessWidget {
                 subTitle: "Timer not available for important apps",
                 icondata: FluentIcons.timer_off_20_regular,
               )
-            : Consumer(
-                builder: (_, WidgetRef ref, __) {
-                  final timer = ref.watch(focusProvider
-                          .select((value) => value[app.packageName]?.timer)) ??
-                      0;
-
-                  final isPurged =
-                      timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
-                  return _SettingTile(
-                    title: "App timer",
-                    subTitle:
-                        timer > 0 ? timer.seconds.toTimeFull() : "No timer",
-                    icondata: isPurged
-                        ? FluentIcons.clock_toolbox_20_regular
-                        : FluentIcons.timer_20_regular,
-                    trailing: isPurged ? const Text("Paused") : null,
-                    onPressed: () async {
-                      await showDurationPicker(
-                        context: context,
-                        initialTime: timer,
-                        appName: app.name,
-                      ).then(
-                        (value) {
-                          if (value != timer) {
-                            ref
-                                .read(focusProvider.notifier)
-                                .updateAppTimer(app.packageName, value);
-                          }
-                        },
-                      );
+            : _SettingTile(
+                title: "App timer",
+                subTitle: timer > 0 ? timer.seconds.toTimeFull() : "No timer",
+                icondata: isPurged
+                    ? FluentIcons.clock_toolbox_20_regular
+                    : FluentIcons.timer_20_regular,
+                trailing: isPurged ? const Text("Paused") : null,
+                onPressed: () async {
+                  await showDurationPicker(
+                    context: context,
+                    initialTime: timer,
+                    appName: app.name,
+                  ).then(
+                    (value) {
+                      if (value != timer) {
+                        ref
+                            .read(focusProvider.notifier)
+                            .updateAppTimer(app.packageName, value);
+                      }
                     },
                   );
                 },
               ),
 
         /// Internet access
-        Consumer(
-          builder: (_, WidgetRef ref, __) {
-            final internetAccess = ref.watch(focusProvider.select(
-                    (value) => value[app.packageName]?.internetAccess)) ??
-                true;
-            return SwitchableListTile(
-              value: internetAccess,
-              titleText: "Internet access",
-              subTitleText: "Turn off to block app's internet",
-              leadingIcon: FluentIcons.earth_20_regular,
-              onPressed: () => ref
-                  .read(focusProvider.notifier)
-                  .switchInternetAccess(app.packageName, !internetAccess),
-            );
-          },
+        SwitchableListTile(
+          value: internetAccess,
+          enabled: haveVpnPermission,
+          titleText: "Internet access",
+          subTitleText: "Turn off to block app's internet",
+          leadingIcon: FluentIcons.earth_20_regular,
+          onPressed: () => ref
+              .read(focusProvider.notifier)
+              .switchInternetAccess(app.packageName, !internetAccess),
         ),
 
         /// Launch app button

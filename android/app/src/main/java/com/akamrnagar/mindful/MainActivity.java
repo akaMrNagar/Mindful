@@ -1,5 +1,6 @@
 package com.akamrnagar.mindful;
 
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -11,9 +12,7 @@ import com.akamrnagar.mindful.helpers.ActivityNewTaskHelper;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.PermissionsHelper;
-import com.akamrnagar.mindful.helpers.ServicesHelper;
 import com.akamrnagar.mindful.helpers.WorkersHelper;
-import com.akamrnagar.mindful.services.MindfulAccessibilityService;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
@@ -30,6 +29,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class);
     private final SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class);
 
+    private MethodChannel mMethodChannel;
 
     @Override
     protected void onStart() {
@@ -40,18 +40,25 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Bind to services if already running
         mTrackerServiceConn.bindService(this);
         mVpnServiceConn.bindService(this);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mMethodChannel != null) mMethodChannel.invokeMethod("onAppResume", true);
     }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-        MethodChannel channel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
-        channel.setMethodCallHandler(this);
+        mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
+        mMethodChannel.setMethodCallHandler(this);
 
         /// Check if user launched the app from TLE dialog then go to app dashboard screen for that update targeted app
         String appPackage = getIntent().getStringExtra("appPackage");
         if (appPackage != null && !appPackage.isEmpty()) {
-            channel.invokeMethod("updateTargetedApp", appPackage);
+            mMethodChannel.invokeMethod("updateTargetedApp", appPackage);
         }
     }
 
@@ -73,32 +80,22 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
 
-            // Accessibility service calls -----------------------------------------------------------------
-            case "isAccessibilityServiceRunning":
-                result.success(ServicesHelper.isServiceRunning(this, MindfulAccessibilityService.class.getName()));
-                break;
-            case "startAccessibilityService":
-                ActivityNewTaskHelper.openMindfulAccessibilitySection(this);
-                result.success(true);
-                break;
-
             // Vpn service calls ---------------------------------------------------------------------------
-            case "isVpnServiceRunning":
-                result.success(ServicesHelper.isServiceRunning(this, MindfulVpnService.class.getName()));
-                break;
-            case "startVpnService":
-                if (prepareVpn()) mVpnServiceConn.startAndBind(this);
-                result.success(true);
-                break;
             case "stopVpnService":
                 mVpnServiceConn.stopAndUnBind(this);
                 result.success(true);
                 break;
+
             case "flagVpnRestart":
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().flagVpnServiceRestart();
+                    result.success(true);
+                } else if (getAndAskVpnPermission(this, true)) {
+                    mVpnServiceConn.startAndBind(this);
+                    result.success(false);
+                } else {
+                    result.success(false);
                 }
-                result.success(true);
                 break;
 
             // Tracking service calls ------------------------------------------------------------------
@@ -131,17 +128,23 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
 
             // Permissions handler calls ------------------------------------------------------
+            case "getAndAskAccessibilityPermission":
+                result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            case "getAndAskVpnPermission":
+                result.success(getAndAskVpnPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
             case "getAndAskDndPermission":
-                result.success(PermissionsHelper.getAndAskDndPermission(this));
+                result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             case "getAndAskUsageStatesPermission":
-                result.success(PermissionsHelper.getAndAskUsageStatesPermission(this));
+                result.success(PermissionsHelper.getAndAskUsageStatesPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             case "getAndAskDisplayOverlayPermission":
-                result.success(PermissionsHelper.getAndAskDisplayOverlayPermission());
+                result.success(PermissionsHelper.getAndAskDisplayOverlayPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             case "getAndAskBatteryOptimizationPermission":
-                result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission());
+                result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
 
             // New Activity Launch  calls ------------------------------------------------------
@@ -163,21 +166,19 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
     }
 
-    private boolean prepareVpn() {
-        Intent intent = MindfulVpnService.prepare(this);
-        if (intent == null) {
-            return true;
-        } else {
-            startActivityForResult(intent, 0);
-            return false;
-        }
-
-    }
-
     private void tryToStopTrackingService() {
         if (mTrackerServiceConn.isConnected() && mTrackerServiceConn.getService().canStopTrackingService()) {
             mTrackerServiceConn.stopAndUnBind(this);
         }
+    }
+
+    private boolean getAndAskVpnPermission(@NonNull Context context, boolean askPermissionToo) {
+        Intent intent = MindfulVpnService.prepare(context);
+        if (askPermissionToo && intent != null) {
+            startActivityForResult(intent, 0);
+        }
+
+        return intent == null;
     }
 
 

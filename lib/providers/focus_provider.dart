@@ -52,7 +52,7 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
     }
   }
 
-  void switchInternetAccess(String appPackage, bool haveInternetAccess) {
+  void switchInternetAccess(String appPackage, bool haveInternetAccess) async {
     state = {...state}..update(
         appPackage,
         (value) => value.copyWith(internetAccess: haveInternetAccess),
@@ -63,5 +63,18 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
       );
 
     /// start stop vpn
+    final blockedApps = state.values
+        .where((e) => !e.internetAccess)
+        .map((e) => e.appPackage)
+        .toList();
+
+    print(blockedApps.toString());
+
+    if (blockedApps.isEmpty) {
+      await MethodChannelService.instance.stopVpnService();
+    } else {
+      await SharePrefsService.instance.updateBlockedApps(blockedApps);
+      await MethodChannelService.instance.flagVpnRestart();
+    }
   }
 }

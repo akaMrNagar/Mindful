@@ -78,6 +78,16 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
+        // Return if no need for blocking
+        if (mWellBeingSettings.blockedWebsites.isEmpty()
+                && !mWellBeingSettings.blockInstaReels
+                && !mWellBeingSettings.blockYtShorts
+                && !mWellBeingSettings.blockSnapSpotlight
+                && !mWellBeingSettings.blockFbReels
+                && !mWellBeingSettings.blockNsfwSites
+        ) return;
+
+
         if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null)
             return;
         String packageName = event.getPackageName().toString();
@@ -214,19 +224,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         if (changedKey != null && changedKey.equals(AppConstants.PREF_KEY_WELLBEING_SETTINGS)) {
             Log.d(TAG, "OnSharedPrefsChanged: Key changed = " + changedKey);
             mWellBeingSettings = new WellBeingSettings(mSharedPrefs.getString(changedKey, ""));
-
-            // Check if accessibility can be stopped
-            if (!mWellBeingSettings.blockedWebsites.isEmpty()
-                    || mWellBeingSettings.blockInstaReels
-                    || mWellBeingSettings.blockYtShorts
-                    || mWellBeingSettings.blockSnapSpotlight
-                    || mWellBeingSettings.blockFbReels
-                    || mWellBeingSettings.blockNsfwSites
-            ) {
-                refreshServiceInfo();
-            } else {
-                disableSelf();
-            }
+            refreshServiceInfo();
         }
     }
 

@@ -26,6 +26,6 @@ class SharePrefsService {
   Future<void> updateBedtimeSettings(BedtimeSettings settings) => _prefs
       .setString(AppConstants.prefKeyBedtimeSettings, jsonEncode(settings));
 
-  Future<void> updateWellbeingSettings(WellBeingSettings settings) => _prefs
+  Future<void> updateWellBeingSettings(WellBeingSettings settings) => _prefs
       .setString(AppConstants.prefKeyWellbeingSettings, jsonEncode(settings));
 }

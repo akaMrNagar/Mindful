@@ -12,8 +12,8 @@ import 'package:mindful/ui/common/async_error_indicator.dart';
 import 'package:mindful/ui/common/async_loading_indicator.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/usage_chart_panel.dart';
-import 'package:mindful/ui/common/usage_cards_sliver.dart';
+import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
+import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
@@ -57,7 +57,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
           const SliverFlexibleAppBar(title: "Dashboard"),
 
           /// Usage type selector and usage info card
-          UsageCardsSliver(
+          SliverUsageCards(
             usageType: _usageType,
             screenUsageInfo: aggregatedUsage.screenTimeThisWeek[_dayOfWeek],
             wifiUsageInfo: aggregatedUsage.wifiUsageThisWeek[_dayOfWeek],
@@ -69,7 +69,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
           20.vSliverBox(),
 
           /// Usage bar chart and selected day changer
-          UsageChartPanel(
+          SliverUsageChartPanel(
             dayOfWeek: _dayOfWeek,
             usageType: _usageType,
             barChartData: _usageType == UsageType.screenUsage

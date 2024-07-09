@@ -4,16 +4,16 @@ class PermissionsModel {
   final bool haveDisplayOverayPermission;
   final bool haveBatteryOptimizationPermission;
 
-  final bool isVpnServiceRunning;
-  final bool isAccessibilityServiceRunning;
+  final bool haveVpnPermission;
+  final bool haveAccessibilityPermission;
 
   PermissionsModel({
-    this.haveUsagePermission = false,
-    this.haveDndPermission = false,
-    this.haveDisplayOverayPermission = false,
-    this.haveBatteryOptimizationPermission = false,
-    this.isVpnServiceRunning = false,
-    this.isAccessibilityServiceRunning = false,
+    this.haveUsagePermission = true,
+    this.haveDndPermission = true,
+    this.haveDisplayOverayPermission = true,
+    this.haveBatteryOptimizationPermission = true,
+    this.haveVpnPermission = true,
+    this.haveAccessibilityPermission = true,
   });
 
   PermissionsModel copyWith({
@@ -21,8 +21,8 @@ class PermissionsModel {
     bool? haveDndPermission,
     bool? haveDisplayOverayPermission,
     bool? haveBatteryOptimizationPermission,
-    bool? isVpnServiceRunning,
-    bool? isAccessibilityServiceRunning,
+    bool? haveVpnPermission,
+    bool? haveAccessibilityPermission,
   }) {
     return PermissionsModel(
       haveUsagePermission: haveUsagePermission ?? this.haveUsagePermission,
@@ -31,9 +31,9 @@ class PermissionsModel {
           haveDisplayOverayPermission ?? this.haveDisplayOverayPermission,
       haveBatteryOptimizationPermission: haveBatteryOptimizationPermission ??
           this.haveBatteryOptimizationPermission,
-      isVpnServiceRunning: isVpnServiceRunning ?? this.isVpnServiceRunning,
-      isAccessibilityServiceRunning:
-          isAccessibilityServiceRunning ?? this.isAccessibilityServiceRunning,
+      haveVpnPermission: haveVpnPermission ?? this.haveVpnPermission,
+      haveAccessibilityPermission:
+          haveAccessibilityPermission ?? this.haveAccessibilityPermission,
     );
   }
 }
