@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/ui/common/sliver_flexible_header.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class AnimatedAppsList extends ConsumerStatefulWidget {
@@ -54,12 +54,7 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
       children: [
         /// Select distracting apps
         if (widget.headerTitle != null)
-          SliverFlexiblePinnedHeader(
-            minHeight: 32,
-            maxHeight: 48,
-            alignment: Alignment.centerLeft,
-            child: Text(widget.headerTitle!),
-          ),
+          SliverContentTitle(title: widget.headerTitle!),
 
         /// Apps list
         SliverFixedExtentList.builder(

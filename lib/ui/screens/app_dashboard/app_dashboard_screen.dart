@@ -3,17 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/ui/common/sliver_flexible_header.dart';
-import 'package:mindful/ui/common/usage_chart_panel.dart';
-import 'package:mindful/ui/common/usage_cards_sliver.dart';
+import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
+import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 import 'package:mindful/ui/common/vertical_tab_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_quick_actions.dart';
+import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 /// Provides usage type for toggling between usages charts
 final _selectedUsageTypeProvider =
@@ -34,6 +38,8 @@ class AppDashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dayOfWeek = ref.watch(_selectedDayOfWeekProvider);
     final usageType = ref.watch(_selectedUsageTypeProvider);
+    final haveVpnPermission =
+        ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
     return Scaffold(
       body: VerticalTabBar(
@@ -46,32 +52,27 @@ class AppDashboardScreen extends ConsumerWidget {
               child: CustomScrollView(
                 slivers: [
                   /// App bar
-                  SliverFlexibleAppBar(
-                    title: app.name,
-                    canCollapse: false,
-                  ),
+                  SliverFlexibleAppBar(title: app.name),
 
                   /// App icon and app package name
-                  SliverFlexiblePinnedHeader(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        /// App Icon
-                        ApplicationIcon(app: app, size: 32),
-                        8.vBox(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// App Icon
+                      ApplicationIcon(app: app, size: 32),
+                      8.vBox(),
 
-                        /// App package name
-                        StatefulText(
-                          app.packageName,
-                          activeColor: Theme.of(context).hintColor,
-                        ),
-                        8.vBox(),
-                      ],
-                    ),
-                  ),
+                      /// App package name
+                      StatefulText(
+                        app.packageName,
+                        activeColor: Theme.of(context).hintColor,
+                      ),
+                      8.vBox(),
+                    ],
+                  ).toSliverBox(),
 
                   /// Usage type selector and usage info card
-                  UsageCardsSliver(
+                  SliverUsageCards(
                     usageType: usageType,
                     screenUsageInfo: app.screenTimeThisWeek[dayOfWeek],
                     wifiUsageInfo: app.wifiUsageThisWeek[dayOfWeek],
@@ -80,10 +81,11 @@ class AppDashboardScreen extends ConsumerWidget {
                         .read(_selectedUsageTypeProvider.notifier)
                         .update((_) => UsageType.values[i]),
                   ),
+
                   20.vSliverBox(),
 
                   /// Usage bar chart and selected day changer
-                  UsageChartPanel(
+                  SliverUsageChartPanel(
                     chartHeight: 212,
                     dayOfWeek: dayOfWeek,
                     usageType: usageType,
@@ -95,12 +97,32 @@ class AppDashboardScreen extends ConsumerWidget {
                         .update((_) => dow),
                   ),
 
+                  const SliverContentTitle(title: "Quick actions"),
+
+                  ///TODO - Add some information to let user know that why no quick actions for this apps
                   /// Available app setting or functions
                   if (app.packageName != AppConstants.removedAppPackage &&
                       app.packageName != AppConstants.tetheringAppPackage)
-                    AppQuickActions(app: app),
+                    MultiSliver(
+                      children: [
+                        /// Quick action for app
+                        QuickActions(app: app),
 
-                  const SliverFillRemaining(hasScrollBody: true),
+                        /// Vpn persmission
+                        SliverPermissionWarning(
+                          title: "Create VPN",
+                          information:
+                              "Granting permission to establish a local virtual private network (VPN) connection enables Mindful to restrict internet access for designated applications.",
+                          havePermission: haveVpnPermission,
+                          margin: const EdgeInsets.only(top: 24),
+                          onTapAllow: ref
+                              .read(permissionProvider.notifier)
+                              .askVpnPermission,
+                        ),
+                      ],
+                    ),
+
+                  120.vSliverBox(),
                 ],
               ),
             ),

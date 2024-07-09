@@ -14,7 +14,6 @@ import java.util.List;
 
 public class BedtimeSettings {
 
-
     /**
      * Boolean notifying if the bedtime routine schedule is ON or OFF
      */
@@ -29,7 +28,7 @@ public class BedtimeSettings {
     /**
      * Total duration of schedule between startTime amd endTime
      */
-    public int totalDurationMins = 0;
+    public int totalDurationInMins = 0;
 
     /**
      * Boolean denoting the status of the bedtime schedule means
@@ -65,7 +64,7 @@ public class BedtimeSettings {
 
                 isScheduleOn = jsonObject.getBoolean("isScheduleOn");
                 startTimeInMins = jsonObject.getInt("startTimeInMins");
-                totalDurationMins = jsonObject.getInt("totalDurationMins");
+                totalDurationInMins = jsonObject.getInt("totalDurationInMins");
                 shouldStartDnd = jsonObject.getBoolean("shouldStartDnd");
 
                 /// Schedule days
@@ -81,8 +80,6 @@ public class BedtimeSettings {
                     distractingApps.add(appsJsonArray.getString(i));
                 }
 
-//                Log.d("Mindful.BedtimeSettings", "Json deserialization completed successfully.");
-
             } catch (JSONException e) {
                 Log.e("Mindful.BedtimeSettings", "Error deserializing JSON to BedtimeSettings model", e);
             }
@@ -95,7 +92,7 @@ public class BedtimeSettings {
         return "BedtimeSettings{" +
                 "isScheduleOn=" + isScheduleOn +
                 ", startTimeInMins=" + startTimeInMins +
-                ", totalDurationMins=" + totalDurationMins +
+                ", totalDurationInMins=" + totalDurationInMins +
                 ", scheduleDays=" + scheduleDays +
                 ", shouldStartDnd=" + shouldStartDnd +
                 ", distractingApps=" + distractingApps +

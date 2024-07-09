@@ -54,7 +54,7 @@ public class MindfulVpnService extends android.net.VpnService {
     }
 
     private void restartVpnService() {
-        disconnectVpn();
+        disconnectVpn();    
         connectVpn();
         Log.d(TAG, "restartVpnService: Vpn restarted successfully");
     }

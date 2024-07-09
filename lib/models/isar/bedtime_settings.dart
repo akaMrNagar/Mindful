@@ -46,12 +46,6 @@ class BedtimeSettings {
   /// [For Developer]  if the task worker is scheduled or cancelled.
   final bool isScheduleOn;
 
-  /// Boolean denoting if bedtime settings can be modified or not.
-  ///
-  /// This will be FALSE if inivincible mode is ON and the user is
-  /// modifiying bedtime setting during the bedtime schedule period
-  final bool isModifiable;
-
   /// Boolean denoting if to start DO NOT DISTURB mode or not when bedtime starts.
   final bool shouldStartDnd;
 
@@ -64,34 +58,15 @@ class BedtimeSettings {
     this.endTimeInMins = 0,
     this.scheduleDays = const [false, true, true, true, true, true, false],
     this.isScheduleOn = false,
-    this.isModifiable = true,
     this.shouldStartDnd = false,
     this.distractingApps = const [],
   });
-
-  /// NOTE: Don't modify this method.
-  /// This can lead to json deserializaion error on native side
-  /// in [BedtimeSettings] model's constructor
-  Map<String, dynamic> _toMapForSharedPrefs() {
-    return {
-      'isScheduleOn': isScheduleOn,
-      'startTimeInMins': startTimeInMins,
-      // Added [totalDurationSec] this to map for native worker task
-      'totalDurationMins': totalDuration.inMinutes,
-      'shouldStartDnd': shouldStartDnd,
-      'scheduleDays': scheduleDays,
-      'distractingApps': distractingApps,
-    };
-  }
-
-  String toJson() => json.encode(_toMapForSharedPrefs());
 
   BedtimeSettings copyWith({
     int? startTimeInMins,
     int? endTimeInMins,
     List<bool>? scheduleDays,
     bool? isScheduleOn,
-    bool? isModifiable,
     bool? shouldStartDnd,
     List<String>? distractingApps,
   }) {
@@ -100,14 +75,30 @@ class BedtimeSettings {
       endTimeInMins: endTimeInMins ?? this.endTimeInMins,
       scheduleDays: scheduleDays ?? this.scheduleDays,
       isScheduleOn: isScheduleOn ?? this.isScheduleOn,
-      isModifiable: isModifiable ?? this.isModifiable,
       shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
       distractingApps: distractingApps ?? this.distractingApps,
     );
   }
 
+  /// NOTE: Don't modify this method.
+  /// This can lead to json deserializaion error on native side
+  /// in [BedtimeSettings] model's constructor
+  Map<String, dynamic> _toMapForSharedPrefs() {
+    return {
+      'isScheduleOn': isScheduleOn,
+      'startTimeInMins': startTimeInMins,
+      // Added [totalDurationInMins] this to map for native worker task
+      'totalDurationInMins': totalDuration.inMinutes,
+      'shouldStartDnd': shouldStartDnd,
+      'scheduleDays': scheduleDays,
+      'distractingApps': distractingApps,
+    };
+  }
+
+  String toJson() => json.encode(_toMapForSharedPrefs());
+
   @override
   String toString() {
-    return 'BedtimeSettings(startTimeInMins: $startTimeInMins, endTimeInMins: $endTimeInMins, scheduleDays: $scheduleDays, isScheduleOn: $isScheduleOn, isModifiable: $isModifiable, shouldStartDnd: $shouldStartDnd, distractingApps: $distractingApps)';
+    return 'BedtimeSettings(startTimeInMins: $startTimeInMins, endTimeInMins: $endTimeInMins, scheduleDays: $scheduleDays, isScheduleOn: $isScheduleOn, shouldStartDnd: $shouldStartDnd, distractingApps: $distractingApps)';
   }
 }

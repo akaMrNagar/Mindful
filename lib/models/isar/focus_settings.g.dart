@@ -22,18 +22,13 @@ const FocusSettingsSchema = CollectionSchema(
       name: r'appPackage',
       type: IsarType.string,
     ),
-    r'emergencyCounter': PropertySchema(
+    r'internetAccess': PropertySchema(
       id: 1,
-      name: r'emergencyCounter',
-      type: IsarType.long,
-    ),
-    r'lastEmergencyTime': PropertySchema(
-      id: 2,
-      name: r'lastEmergencyTime',
-      type: IsarType.dateTime,
+      name: r'internetAccess',
+      type: IsarType.bool,
     ),
     r'timer': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'timer',
       type: IsarType.long,
     )
@@ -83,9 +78,8 @@ void _focusSettingsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.appPackage);
-  writer.writeLong(offsets[1], object.emergencyCounter);
-  writer.writeDateTime(offsets[2], object.lastEmergencyTime);
-  writer.writeLong(offsets[3], object.timer);
+  writer.writeBool(offsets[1], object.internetAccess);
+  writer.writeLong(offsets[2], object.timer);
 }
 
 FocusSettings _focusSettingsDeserialize(
@@ -96,9 +90,8 @@ FocusSettings _focusSettingsDeserialize(
 ) {
   final object = FocusSettings(
     appPackage: reader.readString(offsets[0]),
-    emergencyCounter: reader.readLongOrNull(offsets[1]) ?? 0,
-    lastEmergencyTime: reader.readDateTimeOrNull(offsets[2]),
-    timer: reader.readLongOrNull(offsets[3]) ?? 0,
+    internetAccess: reader.readBoolOrNull(offsets[1]) ?? true,
+    timer: reader.readLongOrNull(offsets[2]) ?? 0,
   );
   return object;
 }
@@ -113,10 +106,8 @@ P _focusSettingsDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readBoolOrNull(offset) ?? true) as P;
     case 2:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    case 3:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -454,62 +445,6 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      emergencyCounterEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'emergencyCounter',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      emergencyCounterGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'emergencyCounter',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      emergencyCounterLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'emergencyCounter',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      emergencyCounterBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'emergencyCounter',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -565,75 +500,11 @@ extension FocusSettingsQueryFilter
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      lastEmergencyTimeIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'lastEmergencyTime',
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      lastEmergencyTimeIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'lastEmergencyTime',
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      lastEmergencyTimeEqualTo(DateTime? value) {
+      internetAccessEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'lastEmergencyTime',
+        property: r'internetAccess',
         value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      lastEmergencyTimeGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'lastEmergencyTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      lastEmergencyTimeLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'lastEmergencyTime',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      lastEmergencyTimeBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'lastEmergencyTime',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
       ));
     });
   }
@@ -717,30 +588,16 @@ extension FocusSettingsQuerySortBy
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      sortByEmergencyCounter() {
+      sortByInternetAccess() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'emergencyCounter', Sort.asc);
+      return query.addSortBy(r'internetAccess', Sort.asc);
     });
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      sortByEmergencyCounterDesc() {
+      sortByInternetAccessDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'emergencyCounter', Sort.desc);
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      sortByLastEmergencyTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastEmergencyTime', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      sortByLastEmergencyTimeDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastEmergencyTime', Sort.desc);
+      return query.addSortBy(r'internetAccess', Sort.desc);
     });
   }
 
@@ -772,20 +629,6 @@ extension FocusSettingsQuerySortThenBy
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      thenByEmergencyCounter() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'emergencyCounter', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      thenByEmergencyCounterDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'emergencyCounter', Sort.desc);
-    });
-  }
-
   QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -799,16 +642,16 @@ extension FocusSettingsQuerySortThenBy
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      thenByLastEmergencyTime() {
+      thenByInternetAccess() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastEmergencyTime', Sort.asc);
+      return query.addSortBy(r'internetAccess', Sort.asc);
     });
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
-      thenByLastEmergencyTimeDesc() {
+      thenByInternetAccessDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'lastEmergencyTime', Sort.desc);
+      return query.addSortBy(r'internetAccess', Sort.desc);
     });
   }
 
@@ -835,16 +678,9 @@ extension FocusSettingsQueryWhereDistinct
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QDistinct>
-      distinctByEmergencyCounter() {
+      distinctByInternetAccess() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'emergencyCounter');
-    });
-  }
-
-  QueryBuilder<FocusSettings, FocusSettings, QDistinct>
-      distinctByLastEmergencyTime() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'lastEmergencyTime');
+      return query.addDistinctBy(r'internetAccess');
     });
   }
 
@@ -869,17 +705,9 @@ extension FocusSettingsQueryProperty
     });
   }
 
-  QueryBuilder<FocusSettings, int, QQueryOperations>
-      emergencyCounterProperty() {
+  QueryBuilder<FocusSettings, bool, QQueryOperations> internetAccessProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'emergencyCounter');
-    });
-  }
-
-  QueryBuilder<FocusSettings, DateTime?, QQueryOperations>
-      lastEmergencyTimeProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'lastEmergencyTime');
+      return query.addPropertyName(r'internetAccess');
     });
   }
 

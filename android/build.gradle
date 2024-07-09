@@ -12,7 +12,7 @@ buildscript {
 }
 
 ext {
-    defaultMinSdkVersion = 23
+    defaultMinSdkVersion = 24
 }
 
 allprojects {

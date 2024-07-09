@@ -7,8 +7,8 @@ import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 
-class BedtimeCard extends ConsumerWidget {
-  const BedtimeCard({super.key});
+class ScheduleCard extends ConsumerWidget {
+  const ScheduleCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

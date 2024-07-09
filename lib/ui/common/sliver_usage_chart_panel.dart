@@ -3,15 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/base_bar_chart.dart';
 import 'package:mindful/ui/common/list_tile_skeleton.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
 
-class UsageChartPanel extends StatelessWidget {
+class SliverUsageChartPanel extends StatelessWidget {
   /// Sliver box containing base bar chart for usage and
   /// selected day of week changer buttons
-  const UsageChartPanel({
+  const SliverUsageChartPanel({
     super.key,
     this.chartHeight = 256,
     required this.dayOfWeek,
@@ -28,7 +27,7 @@ class UsageChartPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return SliverList.list(
       children: [
         /// Usage bar chart
         BaseBarChart(
@@ -66,6 +65,6 @@ class UsageChartPanel extends StatelessWidget {
           ),
         ),
       ],
-    ).toSliverBox();
+    );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mindful/core/enums/toast_duration.dart';
@@ -6,19 +8,37 @@ import 'package:mindful/models/android_app.dart';
 /// This class handle flutter method channel and responsible for invoking native android java code
 class MethodChannelService {
   static final MethodChannelService instance = MethodChannelService._();
+  final _eventStreamController = StreamController<bool>.broadcast();
   final MethodChannel _methodChannel =
       const MethodChannel('com.akamrnagar.mindful.methodchannel');
+
+  //
+  // Method Channel Methods For Native side =================================================================
+  //
 
   /// Package of the app whose Time Limit Exceeded dialog is clicked.
   /// This is forwarded by the tracking service to open the app's dashboard screen directly.
   String targetedAppPackage = "";
   MethodChannelService._() {
     /// Handle calls from native side
-    _methodChannel.setMethodCallHandler((call) async {
-      if (call.method == 'updateTargetedApp') {
-        targetedAppPackage = call.arguments;
-      }
-    });
+    _methodChannel.setMethodCallHandler(
+      (call) async {
+        switch (call.method) {
+          case 'updateTargetedApp':
+            targetedAppPackage = call.arguments;
+            break;
+
+          case 'onAppResume':
+            _eventStreamController.add(true);
+            break;
+          default:
+        }
+      },
+    );
+  }
+
+  void addOnResumeListener(void Function(bool _) callback) {
+    _eventStreamController.stream.listen(callback);
   }
 
   //
@@ -33,25 +53,10 @@ class MethodChannelService {
   Future<bool> tryToStopTrackingService() async =>
       await _methodChannel.invokeMethod('tryToStopTrackingService');
 
-  //
-  // Accessibility Service Methods ======================================================================
-  //
-
-  ///
-  Future<bool> isAccessibilityServiceRunning() async =>
-      await _methodChannel.invokeMethod('isAccessibilityServiceRunning');
-
-  Future<bool> startAccessibilityService() async =>
-      await _methodChannel.invokeMethod('startAccessibilityService');
 
   //
   // VPN Service Methods ======================================================================
   //
-  Future<bool> isVpnServiceRunning() async =>
-      await _methodChannel.invokeMethod('isVpnServiceRunning');
-
-  Future<bool> startVpnService() async =>
-      await _methodChannel.invokeMethod('startVpnService');
 
   Future<bool> stopVpnService() async =>
       await _methodChannel.invokeMethod('stopVpnService');
@@ -69,6 +74,10 @@ class MethodChannelService {
   Future<bool> cancelBedtimeRoutine() async =>
       await _methodChannel.invokeMethod('cancelBedtimeRoutine');
 
+  //
+  // Utility Methods ======================================================================
+  //
+
   Future<bool> showToast(
     String msg, {
     ToastDuration duration = ToastDuration.short,
@@ -80,10 +89,6 @@ class MethodChannelService {
           'duration': duration.index,
         },
       );
-
-  //
-  // Utility Methods ======================================================================
-  //
 
   Future<String> parseUrl(String url) async =>
       await _methodChannel.invokeMethod('parseUrl', url);
@@ -126,18 +131,45 @@ class MethodChannelService {
   // Permissions Handler Methods ======================================================================
   //
 
-  Future<bool> getAndAskDndPermission() async =>
-      await _methodChannel.invokeMethod('getAndAskDndPermission');
+  Future<bool> getAndAskAccessibilityPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskAccessibilityPermission',
+        askPermissionToo,
+      );
 
-  Future<bool> getAndAskUsageStatesPermission() async =>
-      await _methodChannel.invokeMethod('getAndAskUsageStatesPermission');
+  Future<bool> getAndAskVpnPermission({bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskVpnPermission',
+        askPermissionToo,
+      );
 
-  Future<bool> getAndAskDisplayOverlayPermission() async =>
-      await _methodChannel.invokeMethod('getAndAskDisplayOverlayPermission');
+  Future<bool> getAndAskDndPermission({bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskDndPermission',
+        askPermissionToo,
+      );
 
-  Future<bool> getAndAskBatteryOptimizationPermission() async =>
-      await _methodChannel
-          .invokeMethod('getAndAskBatteryOptimizationPermission');
+  Future<bool> getAndAskUsageStatesPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskUsageStatesPermission',
+        askPermissionToo,
+      );
+
+  Future<bool> getAndAskDisplayOverlayPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskDisplayOverlayPermission',
+        askPermissionToo,
+      );
+
+  Future<bool> getAndAskBatteryOptimizationPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskBatteryOptimizationPermission',
+        askPermissionToo,
+      );
 
   //
   // New Activity Launch Methods ======================================================================

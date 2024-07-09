@@ -4,23 +4,18 @@ class SliverFlexibleAppBar extends StatelessWidget {
   const SliverFlexibleAppBar({
     super.key,
     required this.title,
-    this.canCollapse = true,
   });
 
   final String title;
-  final bool canCollapse;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      pinned: true,
-      floating: true,
-      toolbarHeight: canCollapse ? 0 : 96,
+      toolbarHeight: 0,
       expandedHeight: 96,
       elevation: 0,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       flexibleSpace: FlexibleSpaceBar(
         collapseMode: CollapseMode.pin,
         background: SingleChildScrollView(

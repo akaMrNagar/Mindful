@@ -60,7 +60,7 @@ class _VerticalTabBarState extends State<VerticalTabBar>
                 /// Leading widget
                 widget.leading ?? const SizedBox(),
 
-                /// Automatically imply bacck button if leading is null
+                /// Automatically imply back button if leading is null
                 if (widget.leading == null && Navigator.canPop(context))
                   IconButton(
                     onPressed: () => Navigator.maybePop(context),
@@ -136,7 +136,7 @@ class _TabBarButton extends StatelessWidget {
         child: IconButton(
           onPressed: onTap,
           style: const ButtonStyle().copyWith(
-            padding: const MaterialStatePropertyAll(
+            padding: const WidgetStatePropertyAll(
               EdgeInsets.symmetric(horizontal: 20),
             ),
           ),

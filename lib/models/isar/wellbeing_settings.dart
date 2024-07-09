@@ -1,67 +1,74 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
 part 'wellbeing_settings.g.dart';
 
-/// Protection model used for determining the restriction on internet usage
-/// like blocking app's internet and blocking websites
 @immutable
 @collection
-class WellbeingSettings {
+class WellBeingSettings {
   /// ID for isar database
   Id get id => 0;
 
-  /// Flag denoting if the internet blocker for apps is on or not
-  /// i.e if vpn is filtering or not
-  @ignore
-  final bool isInternetBlockerOn;
+  /// Flag denoting if to block instagram reels or not
+  final bool blockInstaReels;
 
-  /// Flag denoting if the distractions blocker is on or not
-  /// i.e if accessibility service is running or not
-  @ignore
-  final bool isDistractionBlockerOn;
+  /// Flag denoting if to block youtube shorts or not
+  final bool blockYtShorts;
+
+  /// Flag denoting if to block snapchat spotlight or not
+  final bool blockSnapSpotlight;
+
+  /// Flag denoting if to block facebook reels or not
+  final bool blockFbReels;
 
   /// Flag denoting if the nsfw or adult  websites are blocked or not
   /// i.e if accessibility service is filtering websites or not
   final bool blockNsfwSites;
 
-  /// Flag denoting if the short content like on instagram, youtube, facebook,
-  ///  and snapchat are blocked or not
-  final bool blockShortContent;
-
-  /// List of packages name of apps whose internet is blocked
-  final List<String> blockedApps;
-
   /// List of website hosts which are blocked.
   final List<String> blockedWebsites;
 
-  /// Protection model used for determining the restriction on internet usage
-  /// like blocking app's internet and blocking websites
-  const WellbeingSettings({
-    this.isInternetBlockerOn = false,
-    this.isDistractionBlockerOn = false,
+  /// Protection model used for determining distraction blocking
+  /// like blocking short form content on different platforms and blocking websites
+  const WellBeingSettings({
+    this.blockInstaReels = false,
+    this.blockYtShorts = false,
+    this.blockSnapSpotlight = false,
+    this.blockFbReels = false,
     this.blockNsfwSites = false,
-    this.blockShortContent = false,
-    this.blockedApps = const [],
     this.blockedWebsites = const [],
   });
 
-  WellbeingSettings copyWith({
-    bool? isInternetBlockerOn,
-    bool? isDistractionBlockerOn,
+  WellBeingSettings copyWith({
+    bool? blockInstaReels,
+    bool? blockYtShorts,
+    bool? blockSnapSpotlight,
+    bool? blockFbReels,
     bool? blockNsfwSites,
-    bool? blockShortContent,
-    List<String>? blockedApps,
     List<String>? blockedWebsites,
   }) {
-    return WellbeingSettings(
-      isInternetBlockerOn: isInternetBlockerOn ?? this.isInternetBlockerOn,
-      isDistractionBlockerOn:
-          isDistractionBlockerOn ?? this.isDistractionBlockerOn,
+    return WellBeingSettings(
+      blockInstaReels: blockInstaReels ?? this.blockInstaReels,
+      blockYtShorts: blockYtShorts ?? this.blockYtShorts,
+      blockSnapSpotlight: blockSnapSpotlight ?? this.blockSnapSpotlight,
+      blockFbReels: blockFbReels ?? this.blockFbReels,
       blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
-      blockShortContent: blockShortContent ?? this.blockShortContent,
-      blockedApps: blockedApps ?? this.blockedApps,
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'blockInstaReels': blockInstaReels,
+      'blockYtShorts': blockYtShorts,
+      'blockSnapSpotlight': blockSnapSpotlight,
+      'blockFbReels': blockFbReels,
+      'blockNsfwSites': blockNsfwSites,
+      'blockedWebsites': blockedWebsites,
+    };
+  }
+
+  String toJson() => json.encode(toMap());
 }

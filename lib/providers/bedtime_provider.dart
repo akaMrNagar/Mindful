@@ -23,14 +23,7 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   bool _isInvincibleModeOn = false;
 
   void _init() async {
-    final cache = await IsarDbService.instance.loadBedtimeSettings();
-    state = cache.copyWith(
-      isModifiable: _isModifiable(
-        cache.isScheduleOn,
-        cache.startTime,
-        cache.endTime,
-      ),
-    );
+    state = await IsarDbService.instance.loadBedtimeSettings();
 
     /// Listen to provider
     addListener((state) async {
@@ -39,12 +32,15 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
     });
   }
 
-  bool _isModifiable(bool isScheduleOn, TimeOfDay startTod, TimeOfDay endTod) {
+  bool isModifiable() {
+    final startTod = state.startTime;
+    final endTod = state.endTime;
     final now = DateTime.now();
+
     final start = now.copyWith(hour: startTod.hour, minute: startTod.minute);
     final end = start.add(endTod.difference(startTod));
 
-    return !isScheduleOn ||
+    return !state.isScheduleOn ||
         !_isInvincibleModeOn ||
         now.millisecondsSinceEpoch <= start.millisecondsSinceEpoch ||
         now.millisecondsSinceEpoch >= end.millisecondsSinceEpoch;

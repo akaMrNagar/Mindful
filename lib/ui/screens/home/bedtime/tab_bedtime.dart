@@ -6,17 +6,17 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/sliver_flexible_header.dart';
 import 'package:mindful/ui/common/switchable_list_tile.dart';
 import 'package:mindful/ui/common/stateful_text.dart';
-import 'package:mindful/ui/screens/home/bedtime/bedtime_card.dart';
-import 'package:mindful/ui/screens/home/bedtime/bedtime_actions_sliver.dart';
+import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
+import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
 
 class TabBedtime extends StatelessWidget {
   const TabBedtime({super.key});
 
   void _setScheduleStatus(WidgetRef ref, bool shouldStart) async {
     final state = ref.read(bedtimeProvider);
+    final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
 
     if (shouldStart && state.distractingApps.isEmpty) {
       await MethodChannelService.instance.showToast(
@@ -24,7 +24,7 @@ class TabBedtime extends StatelessWidget {
       );
 
       return;
-    } else if (!shouldStart && !state.isModifiable) {
+    } else if (!shouldStart && !isModifiable) {
       await MethodChannelService.instance.showToast(
         "Cannot disable schedule in invincible mode",
       );
@@ -40,7 +40,6 @@ class TabBedtime extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Bedtime"),
@@ -48,14 +47,13 @@ class TabBedtime extends StatelessWidget {
           /// Information about bedtime
           const StatefulText(
             "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-            activeColor: Colors.grey,
           ).toSliverBox(),
 
           12.vSliverBox(),
 
           /// Card with start and end time for schedule
           /// also schedule days
-          const BedtimeCard().toSliverBox(),
+          const ScheduleCard().toSliverBox(),
 
           8.vSliverBox(),
 
@@ -77,16 +75,10 @@ class TabBedtime extends StatelessWidget {
             },
           ).toSliverBox(),
 
-          /// Bedtime actions
-          const SliverFlexiblePinnedHeader(
-            minHeight: 32,
-            maxHeight: 42,
-            alignment: Alignment.centerLeft,
-            child: Text("Quick actions"),
-          ),
-
           /// Actions related to bedtime
-          const BedtimeActionsSliver(),
+          const SliverQuickActions(),
+
+          180.vSliverBox(),
         ],
       ),
     );
