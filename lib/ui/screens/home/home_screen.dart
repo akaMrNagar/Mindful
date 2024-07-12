@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
@@ -16,9 +17,11 @@ class HomeScreen extends StatelessWidget {
       body: DefaultNavbar(
         leading: Consumer(
           builder: (_, WidgetRef ref, __) {
-            return IconButton(
-              icon: const Icon(FluentIcons.device_eq_20_filled),
-              onPressed: () =>
+            return GestureDetector(
+              child: const Icon(FluentIcons.device_eq_20_filled),
+              onLongPress: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
+              onTap: () =>
                   ref.read(settingsProvider.notifier).toggleThemeMode(),
             );
           },

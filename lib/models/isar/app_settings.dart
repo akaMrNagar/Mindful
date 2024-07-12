@@ -15,6 +15,12 @@ class AppSettings {
   @enumerated
   final ThemeMode themeMode;
 
+  /// Default material color for app
+  final String color;
+
+  /// Flag denoting if to use system fonts or default app fonts
+  final bool useSystemFont;
+
   /// Is invincible mode on if it is ON then user cannot change following :
   /// 1. App timer if it is purged
   /// 2. Bedtime settings between the scheduled duration
@@ -23,14 +29,20 @@ class AppSettings {
   const AppSettings({
     this.themeMode = ThemeMode.system,
     this.isInvincibleModeOn = true,
+    this.color = 'Light Blue',
+    this.useSystemFont = false,
   });
 
   AppSettings copyWith({
     ThemeMode? themeMode,
+    String? color,
+    bool? useSystemFont,
     bool? isInvincibleModeOn,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
+      color: color ?? this.color,
+      useSystemFont: useSystemFont ?? this.useSystemFont,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
     );
   }

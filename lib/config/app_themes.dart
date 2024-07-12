@@ -9,19 +9,41 @@ class AppTheme {
     builders: {TargetPlatform.android: MindfulTransitionsBuilder()},
   );
 
-  static final darkTheme = ThemeData.from(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: _kSeedColor,
-      brightness: Brightness.dark,
-    ),
-  ).copyWith(pageTransitionsTheme: _kPageTransitionTheme);
+  static final materialColors = <String, MaterialColor>{
+    'Amber': Colors.amber,
+    'Blue': Colors.blue,
+    'Blue Grey': Colors.blueGrey,
+    'Brown': Colors.brown,
+    'Cyan': Colors.cyan,
+    'Deep Orange': Colors.deepOrange,
+    'Deep Purple': Colors.deepPurple,
+    'Green': Colors.green,
+    'Grey': Colors.grey,
+    'Indigo': Colors.indigo,
+    'Light Blue': Colors.lightBlue,
+    'Light Green': Colors.lightGreen,
+    'Lime': Colors.lime,
+    'Orange': Colors.orange,
+    'Pink': Colors.pink,
+    'Purple': Colors.purple,
+    'Red': Colors.red,
+    'Teal': Colors.teal,
+    'Yellow': Colors.yellow,
+  };
 
-  static final lightTheme = ThemeData.from(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: _kSeedColor,
-      brightness: Brightness.light,
-    ),
-  ).copyWith(pageTransitionsTheme: _kPageTransitionTheme);
+  static ThemeData darkTheme(String seedColor) => ThemeData.from(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: materialColors[seedColor] ?? _kSeedColor,
+          brightness: Brightness.dark,
+        ),
+      ).copyWith(pageTransitionsTheme: _kPageTransitionTheme);
+
+  static ThemeData lightTheme(String seedColor) => ThemeData.from(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: materialColors[seedColor] ?? _kSeedColor,
+          brightness: Brightness.light,
+        ),
+      ).copyWith(pageTransitionsTheme: _kPageTransitionTheme);
 }

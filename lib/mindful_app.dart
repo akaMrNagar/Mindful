@@ -10,11 +10,12 @@ class MindfulApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(settingsProvider.select((v) => v.themeMode));
+    final materialColor = ref.watch(settingsProvider.select((v) => v.color));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      darkTheme: AppTheme.darkTheme,
-      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme(materialColor),
+      theme: AppTheme.lightTheme(materialColor),
       themeMode: themeMode,
       routes: AppRoutes.routes,
       initialRoute: AppRoutes.homeScreen,
