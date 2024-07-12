@@ -54,7 +54,7 @@ public class MindfulVpnService extends android.net.VpnService {
     }
 
     private void restartVpnService() {
-        disconnectVpn();    
+        disconnectVpn();
         connectVpn();
         Log.d(TAG, "restartVpnService: Vpn restarted successfully");
     }
@@ -76,7 +76,7 @@ public class MindfulVpnService extends android.net.VpnService {
         final Thread newThread = new Thread(getVpnRunnable(), TAG);
         setVpnThread(newThread);
         newThread.start();
-        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(getApplicationContext()));
+        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this, "Internet blocking service is running"));
     }
 
     private void disconnectVpn() {

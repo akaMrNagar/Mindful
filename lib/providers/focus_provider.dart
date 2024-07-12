@@ -43,12 +43,12 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
     await SharePrefsService.instance.updateAppTimers(appTimers);
 
     /// Refresh tracking service
+    /// Timer must be refreshed before trying to stop service
     await MethodChannelService.instance.refreshAppTimers();
 
+    /// Stop service
     if (appTimers.isEmpty) {
-      /// Stop service
       await MethodChannelService.instance.tryToStopTrackingService();
-      return;
     }
   }
 
@@ -68,12 +68,14 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
         .map((e) => e.appPackage)
         .toList();
 
-    print(blockedApps.toString());
+    /// Update shared pref blocked apps
+    await SharePrefsService.instance.updateBlockedApps(blockedApps);
 
     if (blockedApps.isEmpty) {
+      /// Stop service
       await MethodChannelService.instance.stopVpnService();
     } else {
-      await SharePrefsService.instance.updateBlockedApps(blockedApps);
+      /// Flag refresh  service
       await MethodChannelService.instance.flagVpnRestart();
     }
   }

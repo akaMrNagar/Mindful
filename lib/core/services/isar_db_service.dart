@@ -63,4 +63,20 @@ class IsarDbService {
       );
   Future<AppSettings> loadAppSettings() async =>
       await _isar.appSettings.where().findFirst() ?? const AppSettings();
+
+//
+// ========================== Filtering Methods =====================================
+//
+  Future<Map<String, int>> findTimerApps() async =>
+      _isar.focusSettings.filter().timerGreaterThan(0).findAll().then(
+            (apps) => Map.fromEntries(
+              apps.map((e) => MapEntry(e.appPackage, e.timer)),
+            ),
+          );
+
+  Future<List<String>> findBlockedApps() async => _isar.focusSettings
+      .filter()
+      .internetAccessEqualTo(false)
+      .appPackageProperty()
+      .findAll();
 }

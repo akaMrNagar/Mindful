@@ -103,7 +103,7 @@ public class OverlayDialogService extends Service {
         Intent appIntent = new Intent(getBaseContext(), MainActivity.class);
         appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appIntent.setData(Uri.parse(appIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        appIntent.putExtra("route", "/externalAppDashboard");
+        appIntent.putExtra("route", "/appDashboardRoutingScreen");
         appIntent.putExtra("appPackage", packageName);
 
         startActivity(appIntent);

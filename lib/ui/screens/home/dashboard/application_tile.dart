@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
@@ -10,7 +11,6 @@ import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
@@ -36,11 +36,8 @@ class ApplicationTile extends ConsumerWidget {
 
     return DefaultListTile(
       onPressed: () {
-        Navigator.of(context).push(
-          CupertinoPageRoute(
-            builder: (context) => AppDashboardScreen(app: app),
-          ),
-        );
+        Navigator.of(context)
+            .pushNamed(AppRoutes.appDashboardScreen, arguments: app);
       },
 
       /// App icon

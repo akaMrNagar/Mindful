@@ -2,6 +2,7 @@ package com.akamrnagar.mindful;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,6 +19,9 @@ import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
@@ -29,30 +33,33 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class);
     private final SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class);
 
-    private MethodChannel mMethodChannel;
-
     @Override
     protected void onStart() {
         super.onStart();
         // Register notification channels
         NotificationHelper.registerNotificationChannels(this);
 
-        // Bind to services if already running
-        mTrackerServiceConn.bindService(this);
-        mVpnServiceConn.bindService(this);
+        // Start tracking and vpn service if needed
+        SharedPreferences sharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
+        HashMap<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(sharedPrefs.getString(AppConstants.PREF_KEY_APP_TIMERS, ""));
+        HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(sharedPrefs.getString(AppConstants.PREF_KEY_BLOCKED_APPS, ""));
 
-    }
+        // Try to bind if app timers map is empty but service may be running
+        // else start and bind
+        if (appTimers.isEmpty()) mTrackerServiceConn.bindService(this);
+        else mTrackerServiceConn.startAndBind(this);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mMethodChannel != null) mMethodChannel.invokeMethod("onAppResume", true);
+
+        // Try to bind if blocked apps list is empty but service may be running
+        // else start and bind
+        if (blockedApps.isEmpty()) mVpnServiceConn.bindService(this);
+        else mVpnServiceConn.startAndBind(this);
     }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-        mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
+        MethodChannel mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         mMethodChannel.setMethodCallHandler(this);
 
         /// Check if user launched the app from TLE dialog then go to app dashboard screen for that update targeted app

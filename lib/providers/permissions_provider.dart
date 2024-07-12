@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/permission_type.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -8,14 +9,16 @@ final permissionProvider =
   return PermissionNotifier();
 });
 
-class PermissionNotifier extends StateNotifier<PermissionsModel> {
+class PermissionNotifier extends StateNotifier<PermissionsModel>
+    with WidgetsBindingObserver {
   PermissionNotifier() : super(PermissionsModel()) {
     _init();
   }
 
   void _init() async {
-    // Listen to app resume events
-    MethodChannelService.instance.addOnResumeListener(onAppResume);
+    ///  Add widget bindings observe
+    WidgetsBinding.instance.addObserver(this);
+
     final cache = state.copyWith(
       haveUsagePermission:
           await MethodChannelService.instance.getAndAskUsageStatesPermission(),
@@ -34,9 +37,24 @@ class PermissionNotifier extends StateNotifier<PermissionsModel> {
     state = cache;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+
+    ///  Remove widget bindings observe
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
   PermissionType _askedPermission = PermissionType.none;
 
-  void onAppResume(bool _) async {
+  @override
+  // ignore: avoid_renaming_method_parameters
+  void didChangeAppLifecycleState(AppLifecycleState appState) async {
+    debugPrint("PermissionNotifier: Application state change to : $appState");
+
+    /// Return if app state is not resumed state
+    if (appState != AppLifecycleState.resumed) return;
+
     state = switch (_askedPermission) {
       PermissionType.none => state,
       PermissionType.usageAccess => state.copyWith(

@@ -13,28 +13,34 @@ class WebsiteTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final heroTag = "Remove/$websitehost";
+
     return DefaultListTile(
       height: 50,
       leading: const RoundedContainer(width: 12, height: 12),
       padding: const EdgeInsets.symmetric(horizontal: 12),
       titleText: websitehost,
-      trailing: IconButton(
-        iconSize: 18,
-        icon: const Icon(FluentIcons.delete_dismiss_20_regular),
-        onPressed: () async {
-          final confirm = await showRemoveConfirmDialog(
-            context: context,
-            title: "Remove website",
-            info:
-                "Are you sure? you want to remove \"$websitehost\" from blocked websites.",
-          );
+      trailing: Hero(
+        tag: heroTag,
+        child: IconButton(
+          iconSize: 18,
+          icon: const Icon(FluentIcons.delete_dismiss_20_regular),
+          onPressed: () async {
+            final confirm = await showRemoveConfirmDialog(
+              context: context,
+              heroTag: heroTag,
+              title: "Remove website",
+              info:
+                  "Are you sure? you want to remove \"$websitehost\" from blocked websites.",
+            );
 
-          if (confirm) {
-            ref
-                .read(wellBeingProvider.notifier)
-                .insertRemoveBlockedSite(websitehost, false);
-          }
-        },
+            if (confirm) {
+              ref
+                  .read(wellBeingProvider.notifier)
+                  .insertRemoveBlockedSite(websitehost, false);
+            }
+          },
+        ),
       ),
     );
   }

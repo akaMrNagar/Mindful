@@ -1,17 +1,18 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/common/hero_page_route.dart';
+import 'package:mindful/ui/dialogs/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 Future<bool> showRemoveConfirmDialog({
   required BuildContext context,
   required String title,
   required String info,
+  required Object heroTag,
 }) async {
   return await Navigator.of(context).push<bool>(
         HeroPageRoute(
           builder: (context) => _RemoveConfirmDialog(
-            heroTag: 'RemoveConfirmDialog',
+            heroTag: heroTag,
             title: title,
             info: info,
           ),

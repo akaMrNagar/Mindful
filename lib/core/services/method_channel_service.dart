@@ -2,43 +2,36 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/models/android_app.dart';
 
 /// This class handle flutter method channel and responsible for invoking native android java code
 class MethodChannelService {
+  /// static instance
   static final MethodChannelService instance = MethodChannelService._();
-  final _eventStreamController = StreamController<bool>.broadcast();
-  final MethodChannel _methodChannel =
-      const MethodChannel('com.akamrnagar.mindful.methodchannel');
 
-  //
-  // Method Channel Methods For Native side =================================================================
-  //
+  /// private constructor
+  MethodChannelService._();
+
+  /// Method channel object
+  final MethodChannel _methodChannel = const MethodChannel(
+    'com.akamrnagar.mindful.methodchannel',
+  );
 
   /// Package of the app whose Time Limit Exceeded dialog is clicked.
   /// This is forwarded by the tracking service to open the app's dashboard screen directly.
   String targetedAppPackage = "";
-  MethodChannelService._() {
+
+  Future<void> init() async {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler(
       (call) async {
-        switch (call.method) {
-          case 'updateTargetedApp':
-            targetedAppPackage = call.arguments;
-            break;
-
-          case 'onAppResume':
-            _eventStreamController.add(true);
-            break;
-          default:
+        if (call.method == 'updateTargetedApp') {
+          targetedAppPackage = call.arguments;
         }
       },
     );
-  }
-
-  void addOnResumeListener(void Function(bool _) callback) {
-    _eventStreamController.stream.listen(callback);
   }
 
   //
@@ -52,7 +45,6 @@ class MethodChannelService {
 
   Future<bool> tryToStopTrackingService() async =>
       await _methodChannel.invokeMethod('tryToStopTrackingService');
-
 
   //
   // VPN Service Methods ======================================================================

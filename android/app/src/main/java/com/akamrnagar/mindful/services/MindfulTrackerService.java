@@ -85,7 +85,7 @@ public class MindfulTrackerService extends Service {
         registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
 
         // Create notification
-        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this));
+        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this, "App tracking service is running"));
 
 
         areReceiversRegistered = true;
