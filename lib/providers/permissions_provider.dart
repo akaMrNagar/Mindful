@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/permission_type.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -30,6 +31,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           await MethodChannelService.instance.getAndAskDndPermission(),
       haveAccessibilityPermission: await MethodChannelService.instance
           .getAndAskAccessibilityPermission(),
+      haveAdminPermission:
+          await MethodChannelService.instance.getAndAskAdminPermission(),
       haveVpnPermission:
           await MethodChannelService.instance.getAndAskVpnPermission(),
     );
@@ -77,6 +80,10 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           haveAccessibilityPermission: await MethodChannelService.instance
               .getAndAskAccessibilityPermission(),
         ),
+      PermissionType.admin => state.copyWith(
+          haveAdminPermission:
+              await MethodChannelService.instance.getAndAskAdminPermission(),
+        ),
       PermissionType.vpn => state.copyWith(
           haveVpnPermission:
               await MethodChannelService.instance.getAndAskVpnPermission(),
@@ -90,6 +97,19 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     await MethodChannelService.instance
         .getAndAskAccessibilityPermission(askPermissionToo: true);
     _askedPermission = PermissionType.accessibility;
+  }
+
+  void askAdminPermission() async {
+    await MethodChannelService.instance
+        .getAndAskAdminPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.admin;
+  }
+
+  void revokeAdminPermission() async {
+    await MethodChannelService.instance.revokeAdminPermission();
+    _askedPermission = PermissionType.admin;
+    await Future.delayed(500.milliseconds);
+    didChangeAppLifecycleState(AppLifecycleState.resumed);
   }
 
   void askVpnPermission() async {

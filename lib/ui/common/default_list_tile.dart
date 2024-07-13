@@ -93,6 +93,7 @@ class DefaultListTile extends StatelessWidget {
                   child: Switch(
                     value: switchValue ?? false,
                     splashRadius: 0,
+                    // thumbIcon: const WidgetStatePropertyAll(Icon(FluentIcons.access_time_20_filled)),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     onChanged: enabled ? (_) {} : null,
                   ),

@@ -36,7 +36,6 @@ class DefaultDropdownButton<T> extends StatelessWidget {
       child: Hero(
         tag: heroTag,
         child: DefaultListTile(
-          height: 64,
           leadingIcon: leadingIcon,
           titleText: label,
           subtitleText: selected?.label,
@@ -86,42 +85,47 @@ class _DropdownMenu<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(48),
+      margin: const EdgeInsets.symmetric(horizontal: 48, vertical: 96),
       alignment: Alignment.center,
       child: Hero(
         tag: heroTag,
-        child: SingleChildScrollView(
-          child: AlertDialog(
-            icon: Icon(iconData ?? FluentIcons.info_20_regular),
-            title: StyledText(label, fontSize: 16),
-            insetPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: items
-                      .map(
-                        (e) => DefaultListTile(
-                          leading: Radio(
-                            value: e.value == selected?.value,
-                            groupValue: true,
-                            splashRadius: 0,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            onChanged: (v) {},
-                          ),
-                          title: StyledText(e.label, fontSize: 14),
-                          trailing: trailingBuilder?.call(e.value),
-                          onPressed: () {
-                            onSelected(e.value);
-                            Navigator.of(context).maybePop();
-                          },
-                        ),
-                      )
-                      .toList(),
-                ),
-              ),
+        child: AlertDialog(
+          scrollable: true,
+          icon: Icon(iconData ?? FluentIcons.info_20_regular),
+          title: StyledText(label, fontSize: 16),
+          insetPadding: EdgeInsets.zero,
+          contentPadding: const EdgeInsets.all(12),
+          actionsPadding:
+              const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).maybePop(),
+              child: const Text("Cancel"),
+            ),
+          ],
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: items
+                  .map(
+                    (e) => DefaultListTile(
+                      leading: Radio(
+                        value: e.value == selected?.value,
+                        groupValue: true,
+                        splashRadius: 0,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        onChanged: (v) {},
+                      ),
+                      title: StyledText(e.label, fontSize: 14),
+                      trailing: trailingBuilder?.call(e.value),
+                      onPressed: () {
+                        onSelected(e.value);
+                        Navigator.of(context).maybePop();
+                      },
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ),

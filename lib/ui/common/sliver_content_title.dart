@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/styled_text.dart';

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/dialogs/remove_confirm_dialog.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 
 class WebsiteTile extends ConsumerWidget {
   const WebsiteTile({required this.websitehost, super.key});
@@ -13,7 +13,7 @@ class WebsiteTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final heroTag = "Remove/$websitehost";
+    final heroTag = "remove/$websitehost";
 
     return DefaultListTile(
       height: 50,
@@ -26,9 +26,11 @@ class WebsiteTile extends ConsumerWidget {
           iconSize: 18,
           icon: const Icon(FluentIcons.delete_dismiss_20_regular),
           onPressed: () async {
-            final confirm = await showRemoveConfirmDialog(
+            final confirm = await showConfirmationDialog(
               context: context,
               heroTag: heroTag,
+              icon: FluentIcons.delete_dismiss_20_regular,
+              positiveLabel: "Remove",
               title: "Remove website",
               info:
                   "Are you sure? you want to remove \"$websitehost\" from blocked websites.",

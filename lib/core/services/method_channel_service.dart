@@ -70,6 +70,9 @@ class MethodChannelService {
   // Utility Methods ======================================================================
   //
 
+  Future<bool> restartApp() async =>
+      await _methodChannel.invokeMethod('restartApp');
+
   Future<bool> showToast(
     String msg, {
     ToastDuration duration = ToastDuration.short,
@@ -162,6 +165,16 @@ class MethodChannelService {
         'getAndAskBatteryOptimizationPermission',
         askPermissionToo,
       );
+
+  Future<bool> getAndAskAdminPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskAdminPermission',
+        askPermissionToo,
+      );
+
+  Future<bool> revokeAdminPermission() async =>
+      await _methodChannel.invokeMethod('revokeAdminPermission');
 
   //
   // New Activity Launch Methods ======================================================================

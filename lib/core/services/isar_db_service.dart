@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/focus_settings.dart';
@@ -29,6 +30,19 @@ class IsarDbService {
       ],
       directory: appDirectory.path,
     );
+  }
+
+  Future<void> resetDb() async => _isar.close(deleteFromDisk: true);
+
+  Future<void> backupToFile(String filePath) async =>
+      _isar.copyToFile(filePath);
+
+  Future<void> restoreFromFile(PlatformFile file) async {
+    /// /data/user/0/com.akamrnagar.mindful/app_flutter/default.isar
+    final directory = await getApplicationDocumentsDirectory();
+    final defaultDbPath = "${directory.path}/default.isar";
+    await file.xFile.saveTo(defaultDbPath);
+    await _isar.close();
   }
 
   Future<void> saveFocusSettings(List<FocusSettings> focusItems) async =>
@@ -63,20 +77,4 @@ class IsarDbService {
       );
   Future<AppSettings> loadAppSettings() async =>
       await _isar.appSettings.where().findFirst() ?? const AppSettings();
-
-//
-// ========================== Filtering Methods =====================================
-//
-  Future<Map<String, int>> findTimerApps() async =>
-      _isar.focusSettings.filter().timerGreaterThan(0).findAll().then(
-            (apps) => Map.fromEntries(
-              apps.map((e) => MapEntry(e.appPackage, e.timer)),
-            ),
-          );
-
-  Future<List<String>> findBlockedApps() async => _isar.focusSettings
-      .filter()
-      .internetAccessEqualTo(false)
-      .appPackageProperty()
-      .findAll();
 }

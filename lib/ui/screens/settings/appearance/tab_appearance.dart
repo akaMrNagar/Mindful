@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/settings_provider.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
@@ -57,19 +56,6 @@ class TabAppearance extends ConsumerWidget {
                     ))
                 .toList(),
           ).toSliverBox(),
-
-          /// Fonts
-          const SliverContentTitle(title: "Fonts"),
-
-          /// use system fonts
-          DefaultListTile(
-            height: 64,
-            titleText: "System font",
-            subtitleText: "Use system's default font",
-            switchValue:
-                ref.watch(settingsProvider.select((v) => v.useSystemFont)),
-            onPressed: ref.read(settingsProvider.notifier).switchUseSystemFont,
-          ).toSliverBox()
         ],
       ),
     );

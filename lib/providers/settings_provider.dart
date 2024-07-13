@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
@@ -22,18 +23,19 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     });
   }
 
-  // void toggleThemeMode() => state = state.copyWith(
-  //       isInvincibleModeOn: !state.isInvincibleModeOn,
-  //     );
-
-  void toggleThemeMode() => state = state.copyWith(
-        themeMode: ThemeMode.values[(state.themeMode.index + 1) % 2],
-      );
+  void switchInvincibleMode() =>
+      state = state.copyWith(isInvincibleModeOn: !state.isInvincibleModeOn);
 
   void changeThemeMode(ThemeMode mode) =>
       state = state.copyWith(themeMode: mode);
 
   void changeColor(String color) => state = state.copyWith(color: color);
 
-  void switchUseSystemFont() => state = state.copyWith(useSystemFont: !state.useSystemFont);
+  Future<void> backupDatabase(String filePath) async =>
+      IsarDbService.instance.backupToFile(filePath);
+
+  Future<void> restoreDatabase(PlatformFile file) async =>
+      IsarDbService.instance.restoreFromFile(file);
+
+  Future<void> resetDatabase() async => IsarDbService.instance.resetDb();
 }

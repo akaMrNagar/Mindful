@@ -26,7 +26,6 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.util.PathUtils;
 
 public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler {
     private static final String TAG = "Mindful.MainActivity";
@@ -73,8 +72,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             // Utility calls -----------------------------------------------------------------------
-            case "getAppDirectoryPath":
-                result.success(PathUtils.getDataDirectory(this));
+            case "restartApp":
+                Toast.makeText(this, "Restarting app...", Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(getPackageManager().getLaunchIntentForPackage(AppConstants.MY_APP_PACKAGE));
+                Toast.makeText(this, "Restarted app successfully", Toast.LENGTH_SHORT).show();
+                result.success(true);
                 break;
             case "getDeviceApps":
                 DeviceAppsHelper.getDeviceApps(this, result);
@@ -152,6 +155,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             case "getAndAskBatteryOptimizationPermission":
                 result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            case "getAndAskAdminPermission":
+                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            case "revokeAdminPermission":
+                result.success(PermissionsHelper.revokeAdminPermission(this));
                 break;
 
             // New Activity Launch  calls ------------------------------------------------------
