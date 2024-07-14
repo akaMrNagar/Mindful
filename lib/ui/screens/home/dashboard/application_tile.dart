@@ -1,5 +1,4 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,10 +26,21 @@ class ApplicationTile extends ConsumerWidget {
   final UsageType usageType;
   final int day;
 
+  void _pickAppTimer(BuildContext context, WidgetRef ref, int prevTimer) async {
+    final newTimer = await showDurationPicker(
+      context: context,
+      initialTime: prevTimer,
+      appName: app.name,
+    );
+
+    if (newTimer == prevTimer) return;
+    ref.read(focusProvider.notifier).updateAppTimer(app.packageName, newTimer);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     /// Watch timer for the package
-    final timer = ref.watch(
+    final appTimer = ref.watch(
             focusProvider.select((value) => value[app.packageName]?.timer)) ??
         0;
 
@@ -56,28 +66,14 @@ class ApplicationTile extends ConsumerWidget {
       ),
 
       /// Timer picker button
-      trailing: (!app.isImpSysApp)
-          ? IconButton(
-              icon: timer > 0
-                  ? Text(timer.seconds.toTimeShort())
+      trailing: app.isImpSysApp
+          ? null
+          : IconButton(
+              icon: appTimer > 0
+                  ? StyledText(appTimer.seconds.toTimeShort(), fontSize: 14)
                   : const Icon(FluentIcons.timer_20_regular),
-              onPressed: () async {
-                await showDurationPicker(
-                  context: context,
-                  initialTime: timer,
-                  appName: app.name,
-                ).then(
-                  (value) {
-                    if (value != timer) {
-                      ref
-                          .read(focusProvider.notifier)
-                          .updateAppTimer(app.packageName, value);
-                    }
-                  },
-                );
-              },
-            )
-          : null,
+              onPressed: () => _pickAppTimer(context, ref, appTimer),
+            ),
     );
   }
 }

@@ -16,6 +16,8 @@ class SharePrefsService {
   /// It should be called in main method
   Future<void> init() async => _prefs = await SharedPreferences.getInstance();
 
+  Future<bool> resetPrefs() async => _prefs.clear();
+
   /// Updates timers map stored in shared prefrences.
   Future<void> updateAppTimers(Map<String, int> appTimers) =>
       _prefs.setString(AppConstants.prefKeyAppTimers, jsonEncode(appTimers));

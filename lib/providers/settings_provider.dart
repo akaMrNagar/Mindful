@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/services/shared_prefs_service.dart';
 import 'package:mindful/models/isar/app_settings.dart';
 
 final settingsProvider =
@@ -37,5 +38,11 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   Future<void> restoreDatabase(PlatformFile file) async =>
       IsarDbService.instance.restoreFromFile(file);
 
-  Future<void> resetDatabase() async => IsarDbService.instance.resetDb();
+  Future<void> resetDatabase() async {
+    /// Clear isar db
+    await IsarDbService.instance.resetDb();
+
+    /// Clear sharef pref
+    await SharePrefsService.instance.resetPrefs();
+  }
 }

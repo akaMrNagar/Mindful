@@ -49,6 +49,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
       }
     } catch (e) {
       context.showSnackError(e.toString());
+      debugPrint("Backup Error: ${e.toString()}");
     } finally {
       if (mounted) {
         setState(() => _isBackingUpDb = false);
@@ -73,6 +74,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
       }
     } catch (e) {
       context.showSnackError(e.toString());
+      debugPrint("Restore Error: ${e.toString()}");
     } finally {
       if (mounted) {
         setState(() => _isRestoringDb = false);
@@ -93,12 +95,13 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
       )) return;
 
       setState(() => _isResetingDb = true);
-      
+
       await ref.read(settingsProvider.notifier).resetDatabase();
       await Future.delayed(2.seconds);
       await MethodChannelService.instance.restartApp();
     } catch (e) {
       context.showSnackError(e.toString());
+      debugPrint("Reset Error: ${e.toString()}");
     } finally {
       if (mounted) {
         setState(() => _isResetingDb = false);

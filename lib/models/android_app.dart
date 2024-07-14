@@ -51,10 +51,14 @@ class AndroidApp {
       icon: base64Decode(map['appIcon'] as String),
       isImpSysApp: map['isImpSysApp'] as bool,
       category: _parseCategory(map['category'] as int),
-      screenTimeThisWeek: _parseList(map['screenTimeThisWeek']),
-      mobileUsageThisWeek: _parseList(map['mobileUsageThisWeek']),
-      wifiUsageThisWeek: _parseList(map['wifiUsageThisWeek']),
-      networkUsageThisWeek: _parseList(map['dataUsageThisWeek']),
+      screenTimeThisWeek:
+          List<int>.from(map['screenTimeThisWeek'], growable: false),
+      mobileUsageThisWeek:
+          List<int>.from(map['mobileUsageThisWeek'], growable: false),
+      wifiUsageThisWeek:
+          List<int>.from(map['wifiUsageThisWeek'], growable: false),
+      networkUsageThisWeek:
+          List<int>.from(map['dataUsageThisWeek'], growable: false),
     );
   }
 
@@ -113,10 +117,6 @@ class AndroidApp {
         mobileUsageThisWeek.hashCode ^
         wifiUsageThisWeek.hashCode ^
         networkUsageThisWeek.hashCode;
-  }
-
-  static List<int> _parseList(List<Object?> list) {
-    return list.map((e) => (e ?? 0) as int).toList();
   }
 
   static AppCategory _parseCategory(int index) {
