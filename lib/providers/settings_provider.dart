@@ -35,14 +35,18 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   Future<void> backupDatabase(String filePath) async =>
       IsarDbService.instance.backupToFile(filePath);
 
-  Future<void> restoreDatabase(PlatformFile file) async =>
-      IsarDbService.instance.restoreFromFile(file);
+  Future<void> restoreDatabase(PlatformFile file) async {
+    /// Restore and close previously opened ISAR instance
+    IsarDbService.instance.restoreFromFile(file);
+
+    /// Open new ISAR instance and load data to shared prefs for foreground services
+  }
 
   Future<void> resetDatabase() async {
     /// Clear isar db
     await IsarDbService.instance.resetDb();
 
-    /// Clear sharef pref
+    /// Clear shared pref
     await SharePrefsService.instance.resetPrefs();
   }
 }

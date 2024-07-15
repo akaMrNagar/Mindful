@@ -21,8 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import io.flutter.plugin.common.MethodCall;
-
 public class WorkersHelper {
 
     private static final String TAG = "Mindful.WorkerTasksHelper";
@@ -34,7 +32,7 @@ public class WorkersHelper {
         Log.d(TAG, "cancelBedtimeRoutine:  Bedtime routine task cancelled successfully");
     }
 
-    public static void scheduleBedtimeRoutine(@NonNull Context context, @NonNull MethodCall call) {
+    public static void scheduleBedtimeRoutine(@NonNull Context context) {
 
         SharedPreferences prefs = context.getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
         String jsonString = prefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, "");

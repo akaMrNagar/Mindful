@@ -27,7 +27,7 @@ class TabDatabase extends ConsumerStatefulWidget {
 class _TabDatabaseState extends ConsumerState<TabDatabase> {
   bool _isBackingUpDb = false;
   bool _isRestoringDb = false;
-  bool _isResetingDb = false;
+  bool _isResettingDb = false;
 
   void _backup() async {
     try {
@@ -94,7 +94,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
         positiveLabel: "Reset",
       )) return;
 
-      setState(() => _isResetingDb = true);
+      setState(() => _isResettingDb = true);
 
       await ref.read(settingsProvider.notifier).resetDatabase();
       await Future.delayed(2.seconds);
@@ -104,7 +104,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
       debugPrint("Reset Error: ${e.toString()}");
     } finally {
       if (mounted) {
-        setState(() => _isResetingDb = false);
+        setState(() => _isResettingDb = false);
       }
     }
   }
@@ -124,7 +124,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
           /// Backup
           DefaultListTile(
             titleText: "Backup",
-            subtitleText: "Export databse to the external storage",
+            subtitleText: "Export database to the external storage",
             trailing: _isBackingUpDb
                 ? const SizedBox(
                     height: 20,
@@ -175,7 +175,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
               leadingIcon: FluentIcons.book_database_20_regular,
               titleText: "Reset",
               subtitleText: "Delete app database like a fresh install",
-              trailing: _isResetingDb
+              trailing: _isResettingDb
                   ? const SizedBox(
                       height: 20,
                       width: 20,
@@ -188,7 +188,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
 
           SliverAnimatedPaintExtent(
             duration: 250.ms,
-            child: Visibility(
+            child: const Visibility(
               visible: true,
               child: Column(
                 children: [],

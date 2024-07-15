@@ -145,7 +145,7 @@ public class MindfulTrackerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return new ServiceBinder<MindfulTrackerService>(MindfulTrackerService.this);
+        return new ServiceBinder<>(MindfulTrackerService.this);
     }
 
 

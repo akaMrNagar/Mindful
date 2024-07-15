@@ -39,18 +39,19 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         NotificationHelper.registerNotificationChannels(this);
 
         // Start tracking and vpn service if needed
+        // FIXME: Also check bedtime settings for starting tracking service
         SharedPreferences sharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
         HashMap<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(sharedPrefs.getString(AppConstants.PREF_KEY_APP_TIMERS, ""));
         HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(sharedPrefs.getString(AppConstants.PREF_KEY_BLOCKED_APPS, ""));
 
         // Try to bind if app timers map is empty but service may be running
-        // else start and bind
+        // else if not empty then start and bind
         if (appTimers.isEmpty()) mTrackerServiceConn.bindService(this);
         else mTrackerServiceConn.startAndBind(this);
 
 
         // Try to bind if blocked apps list is empty but service may be running
-        // else start and bind
+        // else if not empty then start and bind
         if (blockedApps.isEmpty()) mVpnServiceConn.bindService(this);
         else mVpnServiceConn.startAndBind(this);
     }
@@ -71,7 +72,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
-            // Utility calls -----------------------------------------------------------------------
+            // SECTION: Utility calls -----------------------------------------------------------------------
             case "restartApp":
                 Toast.makeText(this, "Restarting app...", Toast.LENGTH_SHORT).show();
                 finish();
@@ -90,7 +91,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
 
-            // Vpn service calls ---------------------------------------------------------------------------
+            // SECTION: Vpn service calls ---------------------------------------------------------------------------
             case "stopVpnService":
                 mVpnServiceConn.stopAndUnBind(this);
                 result.success(true);
@@ -108,7 +109,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 }
                 break;
 
-            // Tracking service calls ------------------------------------------------------------------
+            // SECTION: Tracking service calls ------------------------------------------------------------------
             case "tryToStopTrackingService":
                 tryToStopTrackingService();
                 result.success(true);
@@ -122,11 +123,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
 
-            // Bedtime schedule routine calls ------------------------------------------------------
+            // SECTION: Bedtime schedule routine calls ------------------------------------------------------
             case "scheduleBedtimeRoutine":
-                WorkersHelper.scheduleBedtimeRoutine(this, call);
+                WorkersHelper.scheduleBedtimeRoutine(this);
                 mTrackerServiceConn.startAndBind(this);
-//                startStopBindUnbindTrackerService(true, true);
                 result.success(true);
                 break;
             case "cancelBedtimeRoutine":
@@ -137,7 +137,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
 
 
-            // Permissions handler calls ------------------------------------------------------
+            // SECTION: Permissions handler calls ------------------------------------------------------
             case "getAndAskAccessibilityPermission":
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
@@ -163,7 +163,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(PermissionsHelper.revokeAdminPermission(this));
                 break;
 
-            // New Activity Launch  calls ------------------------------------------------------
+            // SECTION: New Activity Launch  calls ------------------------------------------------------
             case "openAppWithPackage":
                 ActivityNewTaskHelper.openAppWithPackage(this, call.arguments());
                 result.success(true);
@@ -196,6 +196,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         return intent == null;
     }
+
+
 
 
     @Override

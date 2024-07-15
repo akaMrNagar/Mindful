@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/config/mindful_transiton_builder.dart';
+import 'package:mindful/config/mindful_transition_builder.dart';
 
 class AppTheme {
   static const _kSeedColor = Colors.lightBlue;
