@@ -17,16 +17,29 @@ class QuickActions extends ConsumerWidget {
 
   final AndroidApp app;
 
+  void _pickAppTimer(BuildContext context, WidgetRef ref, int prevTimer) async {
+    final newTimer = await showDurationPicker(
+      context: context,
+      initialTime: prevTimer,
+      appName: app.name,
+    );
+
+    if (newTimer == prevTimer) return;
+    ref.read(focusProvider.notifier).updateAppTimer(app.packageName, newTimer);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timer = ref.watch(
+    final appTimer = ref.watch(
             focusProvider.select((value) => value[app.packageName]?.timer)) ??
         0;
 
-    final isPurged = timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
     final internetAccess = ref.watch(focusProvider
             .select((value) => value[app.packageName]?.internetAccess)) ??
         true;
+
+    final isPurged =
+        appTimer > 0 && appTimer < app.screenTimeThisWeek[dayOfWeek];
 
     final haveVpnPermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
@@ -34,43 +47,28 @@ class QuickActions extends ConsumerWidget {
     return SliverList.list(
       children: [
         /// App Timer Button
-        app.isImpSysApp
-            ? const DefaultListTile(
-                titleText: "App timer",
-                subtitleText: "Timer not available for important apps",
-                leadingIcon: FluentIcons.timer_off_20_regular,
-              )
-            : DefaultListTile(
-                titleText: "App timer",
-                subtitleText:
-                    timer > 0 ? timer.seconds.toTimeFull() : "No timer",
-                leadingIcon: isPurged
-                    ? FluentIcons.clock_toolbox_20_regular
-                    : FluentIcons.timer_20_regular,
-                trailing: isPurged ? const Text("Paused") : null,
-                onPressed: () async {
-                  await showDurationPicker(
-                    context: context,
-                    initialTime: timer,
-                    appName: app.name,
-                  ).then(
-                    (value) {
-                      if (value != timer) {
-                        ref
-                            .read(focusProvider.notifier)
-                            .updateAppTimer(app.packageName, value);
-                      }
-                    },
-                  );
-                },
-              ),
+        DefaultListTile(
+            titleText: "App timer",
+            enabled: !app.isImpSysApp,
+            subtitleText: app.isImpSysApp
+                ? "Timer not available for important apps"
+                : appTimer > 0
+                    ? appTimer.seconds.toTimeFull()
+                    : "No timer",
+            leadingIcon: isPurged
+                ? FluentIcons.clock_toolbox_20_regular
+                : FluentIcons.timer_20_regular,
+            trailing: isPurged ? const Text("Paused") : null,
+            onPressed: () => _pickAppTimer(context, ref, appTimer)),
 
         /// Internet access
         DefaultListTile(
           switchValue: internetAccess,
-          enabled: haveVpnPermission,
+          enabled: haveVpnPermission && !app.isImpSysApp,
           titleText: "Internet access",
-          subtitleText: "Turn off to block app's internet",
+          subtitleText: app.isImpSysApp
+              ? "Cannot block important app's internet"
+              : "Turn off to block app's internet",
           leadingIcon: FluentIcons.earth_20_regular,
           onPressed: () => ref
               .read(focusProvider.notifier)

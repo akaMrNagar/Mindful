@@ -1,8 +1,8 @@
 class AppConstants {
   ///FIXME - Change package names like com.android.removed
   // Custom packages
-  static const removedAppPackage = "com.akamrnagar.mindful.removed";
-  static const tetheringAppPackage = "com.akamrnagar.mindful.tethering";
+  static const removedAppPackage = "com.android.removed";
+  static const tetheringAppPackage = "com.android.tethering";
 
   // Shared preferences keys
   static const prefKeyAppTimers = "mindful.appTimers";

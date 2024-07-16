@@ -3,9 +3,7 @@ package com.akamrnagar.mindful.services;
 import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_STOP_SERVICE;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
@@ -15,8 +13,7 @@ import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.generics.ServiceBinder;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
-import com.akamrnagar.mindful.utils.AppConstants;
-import com.akamrnagar.mindful.utils.Utils;
+import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 
 import org.jetbrains.annotations.Contract;
 
@@ -35,7 +32,6 @@ public class MindfulVpnService extends android.net.VpnService {
     private final AtomicReference<Thread> mVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
     private Set<String> mBlockedApps;
-
     private boolean mShouldRestartVpn = false;
 
     @Override
@@ -44,6 +40,7 @@ public class MindfulVpnService extends android.net.VpnService {
         String action = intent.getAction();
 
         if (ACTION_START_SERVICE.equals(action)) {
+            mBlockedApps = SharedPrefsHelper.fetchBlockedApps(this);
             connectVpn();
             return START_STICKY;
         } else if (ACTION_STOP_SERVICE.equals(action)) {
@@ -54,16 +51,12 @@ public class MindfulVpnService extends android.net.VpnService {
     }
 
     private void restartVpnService() {
-        disconnectVpn();    
+        disconnectVpn();
         connectVpn();
         Log.d(TAG, "restartVpnService: Vpn restarted successfully");
     }
 
     private void connectVpn() {
-        SharedPreferences sharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
-        String jsonString = sharedPrefs.getString(AppConstants.PREF_KEY_BLOCKED_APPS, "");
-        mBlockedApps = Utils.jsonStrToStringHashSet(jsonString);
-
         // Check if no blocked apps then STOP service
         // Necessary if the service starts from Boot Receiver
         if (mBlockedApps.isEmpty()) {
@@ -72,11 +65,10 @@ public class MindfulVpnService extends android.net.VpnService {
             return;
         }
 
-
         final Thread newThread = new Thread(getVpnRunnable(), TAG);
         setVpnThread(newThread);
         newThread.start();
-        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(getApplicationContext()));
+        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this, "Internet blocking service is running"));
     }
 
     private void disconnectVpn() {
@@ -113,7 +105,7 @@ public class MindfulVpnService extends android.net.VpnService {
                     tunnel.connect(serverAddress);
                     tunnel.configureBlocking(false);
 
-                    android.net.VpnService.Builder builder = MindfulVpnService.this.new Builder();
+                    Builder builder = MindfulVpnService.this.new Builder();
                     builder.addAddress("192.168.0.0", 24);
                     builder.addRoute("0.0.0.0", 0);
 
@@ -151,8 +143,10 @@ public class MindfulVpnService extends android.net.VpnService {
     }
 
 
-    public void flagVpnServiceRestart() {
-        mShouldRestartVpn = true;
+    public void updateBlockedApps() {
+        mBlockedApps = SharedPrefsHelper.fetchBlockedApps(this);
+        if (mBlockedApps.isEmpty()) stopAndDisposeService();
+        else mShouldRestartVpn = true;
     }
 
     public void onApplicationStop() {
@@ -172,7 +166,7 @@ public class MindfulVpnService extends android.net.VpnService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return new ServiceBinder<MindfulVpnService>(MindfulVpnService.this);
+        return new ServiceBinder<>(MindfulVpnService.this);
     }
 
 }

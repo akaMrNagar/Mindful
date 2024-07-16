@@ -22,11 +22,11 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     });
   }
 
-  // void toggleThemeMode() => state = state.copyWith(
-  //       isInvincibleModeOn: !state.isInvincibleModeOn,
-  //     );
+  void switchInvincibleMode() =>
+      state = state.copyWith(isInvincibleModeOn: !state.isInvincibleModeOn);
 
-  void toggleThemeMode() => state = state.copyWith(
-        themeMode: ThemeMode.values[(state.themeMode.index + 1) % 2],
-      );
+  void changeThemeMode(ThemeMode mode) =>
+      state = state.copyWith(themeMode: mode);
+
+  void changeColor(String color) => state = state.copyWith(color: color);
 }

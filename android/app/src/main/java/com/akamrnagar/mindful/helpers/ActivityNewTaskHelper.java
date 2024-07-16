@@ -1,6 +1,8 @@
 package com.akamrnagar.mindful.helpers;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.akamrnagar.mindful.R;
 import com.akamrnagar.mindful.services.MindfulAccessibilityService;
 
 public class ActivityNewTaskHelper {
@@ -22,6 +25,19 @@ public class ActivityNewTaskHelper {
             context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
             Toast.makeText(context, "Please enable Mindful accessibility service", Toast.LENGTH_LONG).show();
         }
+    }
+
+    public static void openMindfulDeviceAdminSection(@NonNull Context context, ComponentName componentName) {
+        try {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_description);
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "openDeviceAdminSettings: Unable to open device ADMIN settings", e);
+            Toast.makeText(context, "Unable to open ADMIN settings", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     public static void openDoNotDisturbAccessSection(@NonNull Context context) {

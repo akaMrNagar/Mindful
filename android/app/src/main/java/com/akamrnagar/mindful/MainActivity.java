@@ -1,6 +1,5 @@
 package com.akamrnagar.mindful;
 
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -12,7 +11,9 @@ import com.akamrnagar.mindful.helpers.ActivityNewTaskHelper;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.PermissionsHelper;
+import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.helpers.WorkersHelper;
+import com.akamrnagar.mindful.models.BedtimeSettings;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
@@ -22,14 +23,11 @@ import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.util.PathUtils;
 
 public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler {
     private static final String TAG = "Mindful.MainActivity";
-    private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class);
-    private final SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class);
-
-    private MethodChannel mMethodChannel;
+    private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
+    private SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
 
     @Override
     protected void onStart() {
@@ -37,22 +35,30 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Register notification channels
         NotificationHelper.registerNotificationChannels(this);
 
-        // Bind to services if already running
-        mTrackerServiceConn.bindService(this);
-        mVpnServiceConn.bindService(this);
+        // Initialize service connections
+        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
+        mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
 
-    }
+        // Start the tracking service if a timer is set or a bedtime schedule is active otherwise, attempt to bind if the service is already running
+        if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty() || SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn) {
+            mTrackerServiceConn.startAndBind(this);
+        } else {
+            mTrackerServiceConn.bindService(this);
+        }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mMethodChannel != null) mMethodChannel.invokeMethod("onAppResume", true);
+        // Start the vpn service if any app is blocked otherwise, attempt to bind if the service is already running
+        if (!SharedPrefsHelper.fetchBlockedApps(this).isEmpty() && getAndAskVpnPermission(false)) {
+            mVpnServiceConn.startAndBind(this);
+        } else {
+            mVpnServiceConn.bindService(this);
+        }
     }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-        mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
+
+        MethodChannel mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         mMethodChannel.setMethodCallHandler(this);
 
         /// Check if user launched the app from TLE dialog then go to app dashboard screen for that update targeted app
@@ -65,119 +71,125 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
-            // Utility calls -----------------------------------------------------------------------
-            case "getAppDirectoryPath":
-                result.success(PathUtils.getDataDirectory(this));
-                break;
-            case "getDeviceApps":
+            // SECTION: Utility methods -----------------------------------------------------------------------
+            case "getDeviceApps": {
                 DeviceAppsHelper.getDeviceApps(this, result);
                 break;
-            case "showToast":
+            }
+            case "showToast": {
                 showToast(call);
                 result.success(true);
                 break;
-            case "parseUrl":
+            }
+            case "parseHostFromUrl": {
                 result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
+            }
 
-            // Vpn service calls ---------------------------------------------------------------------------
-            case "stopVpnService":
-                mVpnServiceConn.stopAndUnBind(this);
-                result.success(true);
-                break;
-
-            case "flagVpnRestart":
-                if (mVpnServiceConn.isConnected()) {
-                    mVpnServiceConn.getService().flagVpnServiceRestart();
-                    result.success(true);
-                } else if (getAndAskVpnPermission(this, true)) {
-                    mVpnServiceConn.startAndBind(this);
-                    result.success(false);
-                } else {
-                    result.success(false);
-                }
-                break;
-
-            // Tracking service calls ------------------------------------------------------------------
-            case "tryToStopTrackingService":
-                tryToStopTrackingService();
-                result.success(true);
-                break;
-            case "refreshAppTimers":
+            // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
+            case "updateAppTimers": {
+                String dartJsonAppTimers = Utils.notNullStr(call.arguments());
+                SharedPrefsHelper.storeAppTimers(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
                 if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().refreshAppTimers();
+                    mTrackerServiceConn.getService().updateAppTimers();
                 } else {
                     mTrackerServiceConn.startAndBind(this);
                 }
                 result.success(true);
                 break;
-
-            // Bedtime schedule routine calls ------------------------------------------------------
-            case "scheduleBedtimeRoutine":
-                WorkersHelper.scheduleBedtimeRoutine(this, call);
-                mTrackerServiceConn.startAndBind(this);
-//                startStopBindUnbindTrackerService(true, true);
+            }
+            case "updateBlockedApps": {
+                String blockedAppsJson = Utils.notNullStr(call.arguments());
+                SharedPrefsHelper.storeBlockedApps(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
+                if (mVpnServiceConn.isConnected()) {
+                    mVpnServiceConn.getService().updateBlockedApps();
+                } else if (getAndAskVpnPermission(true)) {
+                    mVpnServiceConn.startAndBind(this);
+                }
                 result.success(true);
                 break;
-            case "cancelBedtimeRoutine":
-                WorkersHelper.cancelBedtimeRoutine(this);
-                // TODO: what if the schedule is running and user cancels it, but apps remains paused and blocked
-                tryToStopTrackingService();
+            }
+            case "updateBedtimeSchedule": {
+                String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
+                SharedPrefsHelper.storeBedtimeSettings(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
+                BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
+                if (bedtimeSettings.isScheduleOn) {
+                    WorkersHelper.scheduleBedtimeRoutine(this);
+                    mTrackerServiceConn.startAndBind(this); // This will only start service if it is already not running
+                } else {
+                    WorkersHelper.cancelBedtimeRoutine(this);
+                    if (mTrackerServiceConn.isConnected()) {
+                        mTrackerServiceConn.getService().startStopBedtimeLockdown(false, null);
+                        mTrackerServiceConn.getService().stopIfNoUsage();
+                    }
+                }
                 result.success(true);
                 break;
+            }
+            case "updateWellBeingSettings": {
+                // NOTE: Only updating shared prefs because accessibility service have onSharedPrefsChange listener registered which will eventually reload needed data
+                SharedPrefsHelper.storeWellBeingSettings(this, Utils.notNullStr(call.arguments()));
+                break;
+            }
 
-
-            // Permissions handler calls ------------------------------------------------------
-            case "getAndAskAccessibilityPermission":
+            // SECTION: Permissions handler methods ------------------------------------------------------
+            case "getAndAskAccessibilityPermission": {
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
-            case "getAndAskVpnPermission":
-                result.success(getAndAskVpnPermission(this, Boolean.TRUE.equals(call.arguments())));
+            }
+            case "getAndAskVpnPermission": {
+                result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
-            case "getAndAskDndPermission":
+            }
+            case "getAndAskDndPermission": {
                 result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
-            case "getAndAskUsageStatesPermission":
+            }
+            case "getAndAskUsageStatesPermission": {
                 result.success(PermissionsHelper.getAndAskUsageStatesPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
-            case "getAndAskDisplayOverlayPermission":
+            }
+            case "getAndAskDisplayOverlayPermission": {
                 result.success(PermissionsHelper.getAndAskDisplayOverlayPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
-            case "getAndAskBatteryOptimizationPermission":
+            }
+            case "getAndAskBatteryOptimizationPermission": {
                 result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
+            }
+            case "getAndAskAdminPermission": {
+                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
 
-            // New Activity Launch  calls ------------------------------------------------------
-            case "openAppWithPackage":
+            // SECTION: New Activity Launch methods ------------------------------------------------------
+            case "openAppWithPackage": {
                 ActivityNewTaskHelper.openAppWithPackage(this, call.arguments());
                 result.success(true);
                 break;
-            case "openAppSettingsForPackage":
+            }
+            case "openAppSettingsForPackage": {
                 ActivityNewTaskHelper.openAppSettingsForPackage(this, call.arguments());
                 result.success(true);
                 break;
-            case "openDeviceDndSettings":
+            }
+            case "openDeviceDndSettings": {
                 ActivityNewTaskHelper.openDeviceDndSettings(this);
                 result.success(true);
                 break;
+            }
             default:
                 result.notImplemented();
         }
 
     }
 
-    private void tryToStopTrackingService() {
-        if (mTrackerServiceConn.isConnected() && mTrackerServiceConn.getService().canStopTrackingService()) {
-            mTrackerServiceConn.stopAndUnBind(this);
-        }
-    }
 
-    private boolean getAndAskVpnPermission(@NonNull Context context, boolean askPermissionToo) {
-        Intent intent = MindfulVpnService.prepare(context);
+    private boolean getAndAskVpnPermission(boolean askPermissionToo) {
+        Intent intent = MindfulVpnService.prepare(this);
         if (askPermissionToo && intent != null) {
             startActivityForResult(intent, 0);
         }
-
         return intent == null;
     }
 

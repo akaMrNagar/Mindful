@@ -99,28 +99,31 @@ class AppDashboardScreen extends ConsumerWidget {
 
                   const SliverContentTitle(title: "Quick actions"),
 
-                  ///TODO - Add some information to let user know that why no quick actions for this apps
                   /// Available app setting or functions
-                  if (app.packageName != AppConstants.removedAppPackage &&
-                      app.packageName != AppConstants.tetheringAppPackage)
-                    MultiSliver(
-                      children: [
-                        /// Quick action for app
-                        QuickActions(app: app),
+                  app.packageName == AppConstants.removedAppPackage ||
+                          app.packageName == AppConstants.tetheringAppPackage
+                      ? const StyledText(
+                          "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
+                          fontSize: 14,
+                        ).toSliverBox()
+                      : MultiSliver(
+                          children: [
+                            /// Quick action for app
+                            QuickActions(app: app),
 
-                        /// Vpn persmission
-                        SliverPermissionWarning(
-                          title: "Create VPN",
-                          information:
-                              "Granting permission to establish a local virtual private network (VPN) connection enables Mindful to restrict internet access for designated applications.",
-                          havePermission: haveVpnPermission,
-                          margin: const EdgeInsets.only(top: 24),
-                          onTapAllow: ref
-                              .read(permissionProvider.notifier)
-                              .askVpnPermission,
+                            /// Vpn permission
+                            SliverPermissionWarning(
+                              title: "Create VPN",
+                              information:
+                                  "Granting permission to establish a local virtual private network (VPN) connection enables Mindful to restrict internet access for designated applications.",
+                              havePermission: haveVpnPermission,
+                              margin: const EdgeInsets.only(top: 24),
+                              onTapAllow: ref
+                                  .read(permissionProvider.notifier)
+                                  .askVpnPermission,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
 
                   120.vSliverBox(),
                 ],

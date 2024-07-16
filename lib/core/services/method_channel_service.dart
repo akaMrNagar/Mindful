@@ -1,82 +1,43 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/isar/bedtime_settings.dart';
+import 'package:mindful/models/isar/wellbeing_settings.dart';
 
 /// This class handle flutter method channel and responsible for invoking native android java code
 class MethodChannelService {
+  /// static instance
   static final MethodChannelService instance = MethodChannelService._();
-  final _eventStreamController = StreamController<bool>.broadcast();
-  final MethodChannel _methodChannel =
-      const MethodChannel('com.akamrnagar.mindful.methodchannel');
 
-  //
-  // Method Channel Methods For Native side =================================================================
-  //
+  /// private constructor
+  MethodChannelService._();
+
+  /// Method channel object
+  final MethodChannel _methodChannel = const MethodChannel(
+    'com.akamrnagar.mindful.methodchannel',
+  );
 
   /// Package of the app whose Time Limit Exceeded dialog is clicked.
   /// This is forwarded by the tracking service to open the app's dashboard screen directly.
   String targetedAppPackage = "";
-  MethodChannelService._() {
+
+  Future<void> init() async {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler(
       (call) async {
-        switch (call.method) {
-          case 'updateTargetedApp':
-            targetedAppPackage = call.arguments;
-            break;
-
-          case 'onAppResume':
-            _eventStreamController.add(true);
-            break;
-          default:
+        if (call.method == 'updateTargetedApp') {
+          targetedAppPackage = call.arguments;
         }
       },
     );
   }
 
-  void addOnResumeListener(void Function(bool _) callback) {
-    _eventStreamController.stream.listen(callback);
-  }
-
-  //
-  // Tracking Service Methods ======================================================================
-  //
-
-  /// This method will start tracking service if it is already not running
-  /// otherwise will trigger data refresh
-  Future<bool> refreshAppTimers() async =>
-      await _methodChannel.invokeMethod('refreshAppTimers');
-
-  Future<bool> tryToStopTrackingService() async =>
-      await _methodChannel.invokeMethod('tryToStopTrackingService');
-
-
-  //
-  // VPN Service Methods ======================================================================
-  //
-
-  Future<bool> stopVpnService() async =>
-      await _methodChannel.invokeMethod('stopVpnService');
-
-  Future<bool> flagVpnRestart() async =>
-      await _methodChannel.invokeMethod('flagVpnRestart');
-
-  //
-  // Bedtime Schedule Methods ======================================================================
-  //
-
-  Future<bool> scheduleBedtimeRoutine() async =>
-      await _methodChannel.invokeMethod('scheduleBedtimeRoutine');
-
-  Future<bool> cancelBedtimeRoutine() async =>
-      await _methodChannel.invokeMethod('cancelBedtimeRoutine');
-
-  //
-  // Utility Methods ======================================================================
-  //
+  // SECTION: Utility Methods ======================================================================
 
   Future<bool> showToast(
     String msg, {
@@ -90,8 +51,8 @@ class MethodChannelService {
         },
       );
 
-  Future<String> parseUrl(String url) async =>
-      await _methodChannel.invokeMethod('parseUrl', url);
+  Future<String> parseHostFromUrl(String url) async =>
+      await _methodChannel.invokeMethod('parseHostFromUrl', url);
 
   /// Generates a list of [AndroidApp] all the launchable apps
   /// installed on the user device including their usage
@@ -127,9 +88,35 @@ class MethodChannelService {
     }
   }
 
-  //
-  // Permissions Handler Methods ======================================================================
-  //
+  // !SECTION
+  // SECTION: Foreground Service and Background Worker Methods ======================================================================
+  Future<void> updateAppTimers(Map<String, int> appTimers) async =>
+      _methodChannel.invokeMethod(
+        'updateAppTimers',
+        jsonEncode(appTimers),
+      );
+
+  Future<void> updateBlockedApps(List<String> blockedApps) async =>
+      _methodChannel.invokeMethod(
+        'updateBlockedApps',
+        jsonEncode(blockedApps),
+      );
+
+  Future<void> updateWellBeingSettings(
+          WellBeingSettings wellBeingSettings) async =>
+      _methodChannel.invokeMethod(
+        'updateWellBeingSettings',
+        jsonEncode(wellBeingSettings),
+      );
+
+  Future<bool> updateBedtimeSchedule(BedtimeSettings bedtimeSettings) async =>
+      await _methodChannel.invokeMethod(
+        'updateBedtimeSchedule',
+        jsonEncode(bedtimeSettings),
+      );
+
+  // !SECTION
+  // SECTION: Permissions Handler Methods ======================================================================
 
   Future<bool> getAndAskAccessibilityPermission(
           {bool askPermissionToo = false}) async =>
@@ -171,9 +158,16 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  //
-  // New Activity Launch Methods ======================================================================
-  //
+  Future<bool> getAndAskAdminPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskAdminPermission',
+        askPermissionToo,
+      );
+
+
+  // !SECTION
+  // SECTION: New Activity Launch Methods ======================================================================
 
   Future<bool> openDeviceDndSettings() async =>
       await _methodChannel.invokeMethod('openDeviceDndSettings');
@@ -186,4 +180,6 @@ class MethodChannelService {
         'openAppSettingsForPackage',
         appPackage,
       );
+
+  // !SECTION
 }

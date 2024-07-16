@@ -10,7 +10,7 @@ final appsProvider =
 class DeviceAppsList
     extends StateNotifier<AsyncValue<Map<String, AndroidApp>>> {
   DeviceAppsList() : super(const AsyncValue.loading()) {
-    /// inititalization
+    /// initialization
     refreshDeviceApps();
   }
 

@@ -34,26 +34,23 @@ public class NotificationHelper {
 
 
     @NonNull
-    public static Notification createTrackingNotification(Context context) {
+    public static Notification createTrackingNotification(Context context, String info) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             return new Notification.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Focus Lock")
-                    .setContentText("Background service is running")
+                    .setContentTitle("Mindful")
+                    .setContentText(info)
                     .build();
         } else {
             NotificationCompat.Builder notification = new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Focus Lock")
-                    .setContentText("Background service is running")
+                    .setContentTitle("Mindful")
+                    .setContentText(info)
                     .setAutoCancel(true);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                notification.setPriority(NotificationManager.IMPORTANCE_MAX);
-            }
-
+            notification.setPriority(NotificationManager.IMPORTANCE_MAX);
             return notification.build();
         }
     }

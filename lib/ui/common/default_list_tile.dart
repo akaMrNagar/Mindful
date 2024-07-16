@@ -51,7 +51,7 @@ class DefaultListTile extends StatelessWidget {
       padding: padding,
       margin: margin,
       color: isPrimary ? null : color ?? Colors.transparent,
-      onPressed: onPressed,
+      onPressed: enabled ? onPressed : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,6 +72,9 @@ class DefaultListTile extends StatelessWidget {
                         titleText!,
                         fontSize: 16,
                         fontWeight: isPrimary ? FontWeight.w500 : null,
+                        color: enabled
+                            ? null
+                            : Theme.of(context).colorScheme.outline,
                       )
                     : title ?? 0.vBox(),
 
@@ -93,6 +96,7 @@ class DefaultListTile extends StatelessWidget {
                   child: Switch(
                     value: switchValue ?? false,
                     splashRadius: 0,
+                    // thumbIcon: const WidgetStatePropertyAll(Icon(FluentIcons.access_time_20_filled)),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     onChanged: enabled ? (_) {} : null,
                   ),

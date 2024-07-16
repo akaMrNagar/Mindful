@@ -1,35 +1,47 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/common/hero_page_route.dart';
+import 'package:mindful/ui/page_routes/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-Future<bool> showRemoveConfirmDialog({
+Future<bool> showConfirmationDialog({
   required BuildContext context,
+  required Object heroTag,
   required String title,
   required String info,
+  required IconData icon,
+  required String positiveLabel,
+  String negativeLabel = "Cancel",
 }) async {
   return await Navigator.of(context).push<bool>(
         HeroPageRoute(
-          builder: (context) => _RemoveConfirmDialog(
-            heroTag: 'RemoveConfirmDialog',
+          builder: (context) => _ConfirmationDialog(
+            heroTag: heroTag,
             title: title,
             info: info,
+            icon: icon,
+            positiveLabel: positiveLabel,
+            negativeLabel: negativeLabel,
           ),
         ),
       ) ??
       false;
 }
 
-class _RemoveConfirmDialog extends StatelessWidget {
-  const _RemoveConfirmDialog({
+class _ConfirmationDialog extends StatelessWidget {
+  const _ConfirmationDialog({
     required this.heroTag,
     required this.title,
     required this.info,
+    required this.icon,
+    required this.positiveLabel,
+    required this.negativeLabel,
   });
 
-  final String title;
   final Object heroTag;
+  final String title;
   final String info;
+  final IconData icon;
+  final String positiveLabel;
+  final String negativeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,7 @@ class _RemoveConfirmDialog extends StatelessWidget {
         tag: heroTag,
         child: SingleChildScrollView(
           child: AlertDialog(
-            icon: const Icon(FluentIcons.delete_dismiss_20_regular),
+            icon: Icon(icon),
             title: StyledText(title, fontSize: 16),
             insetPadding: EdgeInsets.zero,
             content: SizedBox(
@@ -50,11 +62,11 @@ class _RemoveConfirmDialog extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.maybePop(context, false),
-                child: const Text("Cancel"),
+                child: Text(negativeLabel),
               ),
-              TextButton(
+              FilledButton.tonal(
                 onPressed: () => Navigator.maybePop(context, true),
-                child: const Text("Remove"),
+                child: Text(positiveLabel),
               ),
             ],
           ),

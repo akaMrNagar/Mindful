@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/services/shared_prefs_service.dart';
 import 'package:mindful/models/isar/focus_settings.dart';
 
 final focusProvider =
@@ -39,17 +38,9 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
           .map((e) => MapEntry(e.key, e.value.timer)),
     );
 
-    /// Update shared pref app timers
-    await SharePrefsService.instance.updateAppTimers(appTimers);
-
     /// Refresh tracking service
-    await MethodChannelService.instance.refreshAppTimers();
-
-    if (appTimers.isEmpty) {
-      /// Stop service
-      await MethodChannelService.instance.tryToStopTrackingService();
-      return;
-    }
+    /// Timer must be refreshed before trying to stop service
+    await MethodChannelService.instance.updateAppTimers(appTimers);
   }
 
   void switchInternetAccess(String appPackage, bool haveInternetAccess) async {
@@ -68,13 +59,6 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
         .map((e) => e.appPackage)
         .toList();
 
-    print(blockedApps.toString());
-
-    if (blockedApps.isEmpty) {
-      await MethodChannelService.instance.stopVpnService();
-    } else {
-      await SharePrefsService.instance.updateBlockedApps(blockedApps);
-      await MethodChannelService.instance.flagVpnRestart();
-    }
+    await MethodChannelService.instance.updateBlockedApps(blockedApps);
   }
 }

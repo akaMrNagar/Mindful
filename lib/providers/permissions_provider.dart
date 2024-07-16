@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/permission_type.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -8,18 +9,22 @@ final permissionProvider =
   return PermissionNotifier();
 });
 
-class PermissionNotifier extends StateNotifier<PermissionsModel> {
+class PermissionNotifier extends StateNotifier<PermissionsModel>
+    with WidgetsBindingObserver {
   PermissionNotifier() : super(PermissionsModel()) {
     _init();
   }
 
+  PermissionType _askedPermission = PermissionType.none;
+
   void _init() async {
-    // Listen to app resume events
-    MethodChannelService.instance.addOnResumeListener(onAppResume);
+    ///  Add widget bindings observe
+    WidgetsBinding.instance.addObserver(this);
+
     final cache = state.copyWith(
       haveUsagePermission:
           await MethodChannelService.instance.getAndAskUsageStatesPermission(),
-      haveDisplayOverayPermission: await MethodChannelService.instance
+      haveDisplayOverlayPermission: await MethodChannelService.instance
           .getAndAskDisplayOverlayPermission(),
       haveBatteryOptimizationPermission: await MethodChannelService.instance
           .getAndAskBatteryOptimizationPermission(),
@@ -27,6 +32,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel> {
           await MethodChannelService.instance.getAndAskDndPermission(),
       haveAccessibilityPermission: await MethodChannelService.instance
           .getAndAskAccessibilityPermission(),
+      haveAdminPermission:
+          await MethodChannelService.instance.getAndAskAdminPermission(),
       haveVpnPermission:
           await MethodChannelService.instance.getAndAskVpnPermission(),
     );
@@ -34,9 +41,22 @@ class PermissionNotifier extends StateNotifier<PermissionsModel> {
     state = cache;
   }
 
-  PermissionType _askedPermission = PermissionType.none;
+  @override
+  void dispose() {
+    super.dispose();
 
-  void onAppResume(bool _) async {
+    ///  Remove widget bindings observe
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  @override
+  // ignore: avoid_renaming_method_parameters
+  void didChangeAppLifecycleState(AppLifecycleState appState) async {
+    debugPrint("PermissionNotifier: Application state change to : $appState");
+
+    /// Return if app state is not resumed state
+    if (appState != AppLifecycleState.resumed) return;
+
     state = switch (_askedPermission) {
       PermissionType.none => state,
       PermissionType.usageAccess => state.copyWith(
@@ -44,7 +64,7 @@ class PermissionNotifier extends StateNotifier<PermissionsModel> {
               .getAndAskUsageStatesPermission(),
         ),
       PermissionType.displayOverlay => state.copyWith(
-          haveDisplayOverayPermission: await MethodChannelService.instance
+          haveDisplayOverlayPermission: await MethodChannelService.instance
               .getAndAskDisplayOverlayPermission(),
         ),
       PermissionType.batteryOptimization => state.copyWith(
@@ -59,6 +79,10 @@ class PermissionNotifier extends StateNotifier<PermissionsModel> {
           haveAccessibilityPermission: await MethodChannelService.instance
               .getAndAskAccessibilityPermission(),
         ),
+      PermissionType.admin => state.copyWith(
+          haveAdminPermission:
+              await MethodChannelService.instance.getAndAskAdminPermission(),
+        ),
       PermissionType.vpn => state.copyWith(
           haveVpnPermission:
               await MethodChannelService.instance.getAndAskVpnPermission(),
@@ -72,6 +96,12 @@ class PermissionNotifier extends StateNotifier<PermissionsModel> {
     await MethodChannelService.instance
         .getAndAskAccessibilityPermission(askPermissionToo: true);
     _askedPermission = PermissionType.accessibility;
+  }
+
+  void askAdminPermission() async {
+    await MethodChannelService.instance
+        .getAndAskAdminPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.admin;
   }
 
   void askVpnPermission() async {

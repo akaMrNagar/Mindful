@@ -1,6 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/common/hero_page_route.dart';
+import 'package:mindful/ui/page_routes/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 Future<String?> showInputWebsiteDialog(BuildContext context) async {
@@ -61,7 +61,6 @@ class _InputFieldDialog extends StatelessWidget {
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: TextField(
-                // autofocus: true,
                 scrollPhysics: const AlwaysScrollableScrollPhysics(),
                 controller: controller,
                 onSubmitted: (txt) => Navigator.maybePop(context, txt),

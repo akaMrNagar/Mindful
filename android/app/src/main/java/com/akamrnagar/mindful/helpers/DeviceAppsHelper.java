@@ -35,9 +35,9 @@ import io.flutter.plugin.common.MethodChannel;
  */
 public class DeviceAppsHelper {
     private static final String REMOVED_APP_NAME = "Removed Apps";
-    private static final String REMOVED_PACKAGE = "com.akamrnagar.mindful.removed";
+    private static final String REMOVED_PACKAGE = "com.android.removed";
     private static final String TETHERING_APP_NAME = "Tethering & Hotspot";
-    private static final String TETHERING_PACKAGE = "com.akamrnagar.mindful.tethering";
+    private static final String TETHERING_PACKAGE = "com.android.tethering";
 
 
     /**

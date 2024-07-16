@@ -38,7 +38,7 @@ class ScheduleCard extends ConsumerWidget {
               /// Schedule start time
               _SelectedTime(
                 label: "Start",
-                enabled: isScheduleOn,
+                enabled: !isScheduleOn,
                 initialTime: startTime,
                 onChange: (t) =>
                     ref.read(bedtimeProvider.notifier).setBedtimeStart(t),
@@ -47,7 +47,7 @@ class ScheduleCard extends ConsumerWidget {
               /// Schedule end time
               _SelectedTime(
                 label: "End",
-                enabled: isScheduleOn,
+                enabled: !isScheduleOn,
                 initialTime: endTime,
                 onChange: (t) =>
                     ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
@@ -142,7 +142,7 @@ class _SelectedTime extends StatelessWidget {
           /// Labels "START" and "END"
           StyledText(
             label,
-            isSubtitle: enabled,
+            isSubtitle: !enabled,
           ),
           4.vBox(),
           Row(
@@ -154,7 +154,7 @@ class _SelectedTime extends StatelessWidget {
                 height: 1,
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
-                isSubtitle: enabled,
+                isSubtitle: !enabled,
               ),
               4.hBox(),
 
@@ -162,7 +162,7 @@ class _SelectedTime extends StatelessWidget {
               StyledText(
                 initialTime.period.name,
                 height: 2,
-                isSubtitle: enabled,
+                isSubtitle: !enabled,
               ),
             ],
           ),

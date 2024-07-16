@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/base_bar_chart.dart';
+import 'package:mindful/ui/common/default_bar_chart.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverUsageChartPanel extends StatelessWidget {
@@ -29,7 +29,7 @@ class SliverUsageChartPanel extends StatelessWidget {
     return SliverList.list(
       children: [
         /// Usage bar chart
-        BaseBarChart(
+        DefaultBarChart(
           height: chartHeight,
           usageType: usageType,
           selectedBar: dayOfWeek,

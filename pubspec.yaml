@@ -16,20 +16,19 @@ dependencies:
   # UI
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
+  toast: ^0.3.0
+  flutter_riverpod: ^2.4.0
 
   # Animation
   flutter_animate: ^4.2.0+1
 
   # Database and Storage
-  shared_preferences: ^2.2.2
   isar_flutter_libs: ^3.1.0+1
   isar: ^3.1.0+1
+  path_provider: ^2.1.2
 
   # Util
-  flutter_riverpod: ^2.4.0
-  path_provider: ^2.1.2
   sliver_tools: ^0.2.12
-  toast: ^0.3.0
 
 dev_dependencies:
   flutter_test:

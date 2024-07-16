@@ -32,6 +32,9 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
     final haveDndPermission =
         ref.watch(permissionProvider.select((v) => v.haveDndPermission));
 
+    final isScheduleOn =
+        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+
     return MultiSliver(
       children: [
         /// Dnd permission warning
@@ -49,7 +52,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
 
         /// Should start dnd
         DefaultListTile(
-          enabled: haveDndPermission,
+          enabled: haveDndPermission && !isScheduleOn,
           switchValue: shouldStartDnd,
           onPressed: () => ref
               .read(bedtimeProvider.notifier)

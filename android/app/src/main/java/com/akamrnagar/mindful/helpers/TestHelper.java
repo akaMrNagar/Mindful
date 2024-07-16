@@ -4,7 +4,7 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 
-// TODO: Remove this class if not needed
+// REVIEW: Remove this class if not needed
 public class TestHelper {
 
     private static final String TAG = "Mindful.Test";
