@@ -72,6 +72,9 @@ class DefaultListTile extends StatelessWidget {
                         titleText!,
                         fontSize: 16,
                         fontWeight: isPrimary ? FontWeight.w500 : null,
+                        color: enabled
+                            ? null
+                            : Theme.of(context).colorScheme.outline,
                       )
                     : title ?? 0.vBox(),
 

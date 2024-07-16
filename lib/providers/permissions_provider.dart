@@ -16,6 +16,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     _init();
   }
 
+  PermissionType _askedPermission = PermissionType.none;
+
   void _init() async {
     ///  Add widget bindings observe
     WidgetsBinding.instance.addObserver(this);
@@ -23,7 +25,7 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     final cache = state.copyWith(
       haveUsagePermission:
           await MethodChannelService.instance.getAndAskUsageStatesPermission(),
-      haveDisplayOverayPermission: await MethodChannelService.instance
+      haveDisplayOverlayPermission: await MethodChannelService.instance
           .getAndAskDisplayOverlayPermission(),
       haveBatteryOptimizationPermission: await MethodChannelService.instance
           .getAndAskBatteryOptimizationPermission(),
@@ -48,8 +50,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     WidgetsBinding.instance.removeObserver(this);
   }
 
-  PermissionType _askedPermission = PermissionType.none;
-
   @override
   // ignore: avoid_renaming_method_parameters
   void didChangeAppLifecycleState(AppLifecycleState appState) async {
@@ -65,7 +65,7 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
               .getAndAskUsageStatesPermission(),
         ),
       PermissionType.displayOverlay => state.copyWith(
-          haveDisplayOverayPermission: await MethodChannelService.instance
+          haveDisplayOverlayPermission: await MethodChannelService.instance
               .getAndAskDisplayOverlayPermission(),
         ),
       PermissionType.batteryOptimization => state.copyWith(

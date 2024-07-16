@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
-import 'package:mindful/core/services/shared_prefs_service.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/wellbeing_settings.dart';
 
 final wellBeingProvider =
@@ -19,7 +19,7 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
     /// Listen to provider and save changes to isar database
     addListener((state) async {
       await IsarDbService.instance.saveWellBeingSettings(state);
-      await SharePrefsService.instance.updateWellBeingSettings(state);
+      await MethodChannelService.instance.updateWellBeingSettings(state);
     });
   }
 
@@ -45,18 +45,3 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
             : [...state.blockedWebsites.where((e) => e != websiteHost)],
       );
 }
-
-
-  // void insertRemoveBlockedApp(String appPackage, bool shouldInsert) async {
-  //   state = state.copyWith(
-  //     blockedApps: shouldInsert
-  //         ? [...state.blockedApps, appPackage]
-  //         : [...state.blockedApps.where((e) => e != appPackage)],
-  //   );
-
-  //   await SharePrefsService.instance.updateBlockedApps(state.blockedApps);
-  //   await MethodChannelService.instance.flagVpnRestart();
-
-  //   /// Turn OFF internet blocker if no distraction app selected
-  //   if (state.blockedApps.isEmpty) await switchInternetBlocker(false);
-  // }

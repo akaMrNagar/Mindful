@@ -4,7 +4,6 @@ import static com.akamrnagar.mindful.workers.StartBedtimeWorker.BEDTIME_WORKER_I
 import static com.akamrnagar.mindful.workers.StopBedtimeWorker.BEDTIME_WORKER_ID_STOP;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -13,7 +12,6 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.akamrnagar.mindful.models.BedtimeSettings;
-import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.workers.StartBedtimeWorker;
 import com.akamrnagar.mindful.workers.StopBedtimeWorker;
 
@@ -33,11 +31,7 @@ public class WorkersHelper {
     }
 
     public static void scheduleBedtimeRoutine(@NonNull Context context) {
-
-        SharedPreferences prefs = context.getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
-        String jsonString = prefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, "");
-        BedtimeSettings bedtimeSettings = new BedtimeSettings(jsonString);
-
+        BedtimeSettings bedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
 
         int hour = bedtimeSettings.startTimeInMins / 60;
         int minutes = bedtimeSettings.startTimeInMins % 60;

@@ -23,9 +23,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.helpers.ShortsBlockingHelper;
 import com.akamrnagar.mindful.models.WellBeingSettings;
-import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.NsfwDomains;
 import com.akamrnagar.mindful.utils.Utils;
 
@@ -43,20 +43,16 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
 
-    private SharedPreferences mSharedPrefs;
+    //    private SharedPreferences mSharedPrefs;
     private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
 
-
+    // FIXME: What if device reboots ?
     @Override
     public void onCreate() {
         super.onCreate();
-
-        // Get shared prefs
-        mSharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
-        mWellBeingSettings = new WellBeingSettings(mSharedPrefs.getString(AppConstants.PREF_KEY_WELLBEING_SETTINGS, ""));
-
         // Register shared prefs listener
-        mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        SharedPrefsHelper.registerListener(this);
+        mWellBeingSettings = SharedPrefsHelper.fetchWellBeingSettings(this);
 
         // Register listener for install and uninstall events
         mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
@@ -94,8 +90,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
-
-//        TestHelper.logNodeInfoRecursively(node);
 
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
@@ -220,9 +214,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, @Nullable String changedKey) {
-        if (changedKey != null && changedKey.equals(AppConstants.PREF_KEY_WELLBEING_SETTINGS)) {
+        if (changedKey != null && changedKey.equals(SharedPrefsHelper.PREF_KEY_WELLBEING_SETTINGS)) {
             Log.d(TAG, "OnSharedPrefsChanged: Key changed = " + changedKey);
-            mWellBeingSettings = new WellBeingSettings(mSharedPrefs.getString(changedKey, ""));
+            mWellBeingSettings = SharedPrefsHelper.fetchWellBeingSettings(this);
             refreshServiceInfo();
         }
     }
@@ -234,9 +228,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        // Unregister receivers
-        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        // Remove prefs listener and Unregister receivers
+        SharedPrefsHelper.unregisterListener(this);
         unregisterReceiver(mAppInstallUninstallReceiver);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }

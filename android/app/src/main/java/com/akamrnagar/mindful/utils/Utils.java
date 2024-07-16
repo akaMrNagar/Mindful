@@ -8,6 +8,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -141,6 +142,12 @@ public class Utils {
 
         return hostName;
 
+    }
+
+    @NonNull
+    public static String notNullStr(@Nullable String nullableString) {
+        if (nullableString != null) return nullableString;
+        else return "";
     }
 
 

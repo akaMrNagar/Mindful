@@ -2,17 +2,17 @@ package com.akamrnagar.mindful.workers;
 
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.akamrnagar.mindful.generics.SafeServiceConnection;
+import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.models.BedtimeSettings;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
-import com.akamrnagar.mindful.utils.AppConstants;
 
 import java.util.Calendar;
 
@@ -20,20 +20,18 @@ public class StartBedtimeWorker extends Worker {
 
     private static final String TAG = "Mindful.StartBedtimeWorker";
     public static final String BEDTIME_WORKER_ID_START = "com.akamrnagar.mindful.StartBedtimeWorker";
-    private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class);
+    private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private final Context mContext;
     private BedtimeSettings mBedtimeSettings = null;
 
     public StartBedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        mContext = context;
+        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
 
         // Set callback which will be invoked when the service is connected successfully
         mTrackerServiceConn.setOnConnectedCallback(this::onTrackerServiceConnected);
-
-        SharedPreferences prefs = context.getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
-        String jsonString = prefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, "");
-        mBedtimeSettings = new BedtimeSettings(jsonString);
+        mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
+        mContext = context;
     }
 
     @NonNull
@@ -65,6 +63,7 @@ public class StartBedtimeWorker extends Worker {
             // Check if have permission
             if (!notificationManager.isNotificationPolicyAccessGranted()) {
                 Log.d(TAG, "startBedtimeLockdown: Do not have permission to modify DND mode");
+                Toast.makeText(mContext, "Mindful does not have permission to modify do not disturb", Toast.LENGTH_SHORT).show();
                 return;
             }
 

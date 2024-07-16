@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -67,10 +66,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
 
       if (result != null && result.files.isNotEmpty) {
         final dbFile = result.files.first;
-
         await ref.read(settingsProvider.notifier).restoreDatabase(dbFile);
-        await Future.delayed(2.seconds);
-        await MethodChannelService.instance.restartApp();
       }
     } catch (e) {
       context.showSnackError(e.toString());
@@ -95,10 +91,7 @@ class _TabDatabaseState extends ConsumerState<TabDatabase> {
       )) return;
 
       setState(() => _isResettingDb = true);
-
       await ref.read(settingsProvider.notifier).resetDatabase();
-      await Future.delayed(2.seconds);
-      await MethodChannelService.instance.restartApp();
     } catch (e) {
       context.showSnackError(e.toString());
       debugPrint("Reset Error: ${e.toString()}");

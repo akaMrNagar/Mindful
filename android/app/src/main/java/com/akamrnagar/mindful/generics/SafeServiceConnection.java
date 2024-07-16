@@ -15,13 +15,15 @@ import com.akamrnagar.mindful.helpers.ServicesHelper;
 public class SafeServiceConnection<T extends Service> implements ServiceConnection {
 
     private final Class<T> mServiceClass;
+    private final Context mContext;
     private T mService = null;
     private boolean mIsBound = false;
 
     private SuccessCallback<T> mConnectionSuccessCallback = null;
 
-    public SafeServiceConnection(Class<T> serviceClass) {
+    public SafeServiceConnection(Class<T> serviceClass, Context context) {
         mServiceClass = serviceClass;
+        mContext = context;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        mService = null;
+        unBindService(mContext);
     }
 
     public T getService() {

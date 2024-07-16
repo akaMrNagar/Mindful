@@ -1,8 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
-import 'package:mindful/core/services/shared_prefs_service.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/app_settings.dart';
 
 final settingsProvider =
@@ -38,15 +39,14 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   Future<void> restoreDatabase(PlatformFile file) async {
     /// Restore and close previously opened ISAR instance
     IsarDbService.instance.restoreFromFile(file);
-
-    /// Open new ISAR instance and load data to shared prefs for foreground services
+    await Future.delayed(2.seconds);
+    await MethodChannelService.instance.restartApp();
   }
 
   Future<void> resetDatabase() async {
     /// Clear isar db
     await IsarDbService.instance.resetDb();
-
-    /// Clear shared pref
-    await SharePrefsService.instance.resetPrefs();
+    await Future.delayed(2.seconds);
+    await MethodChannelService.instance.restartApp();
   }
 }

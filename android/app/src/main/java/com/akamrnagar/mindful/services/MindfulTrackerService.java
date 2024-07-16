@@ -11,7 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -22,10 +21,8 @@ import com.akamrnagar.mindful.generics.ServiceBinder;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ScreenUsageHelper;
 import com.akamrnagar.mindful.helpers.ServicesHelper;
-import com.akamrnagar.mindful.models.BedtimeSettings;
+import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.receivers.DeviceLockUnlockReceiver;
-import com.akamrnagar.mindful.utils.AppConstants;
-import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -40,9 +37,7 @@ public class MindfulTrackerService extends Service {
     public static final String ACTION_APP_LAUNCHED = "com.akamrnagar.mindful.ACTION_APP_LAUNCHED";
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
     private AppLaunchReceiver mAppLaunchReceiver;
-    private SharedPreferences mSharedPrefs;
     private UsageStatsManager mUsageStatsManager;
-    private boolean areReceiversRegistered = false;
     private HashMap<String, Long> mAppTimers = new HashMap<>();
     private HashSet<String> mPurgedApps = new HashSet<>();
     private HashSet<String> mDistractingApps = new HashSet<>();
@@ -52,7 +47,6 @@ public class MindfulTrackerService extends Service {
         super.onCreate();
         mLockUnlockReceiver = new DeviceLockUnlockReceiver(this);
         mAppLaunchReceiver = new AppLaunchReceiver();
-        mSharedPrefs = getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE);
         mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
     }
 
@@ -87,23 +81,23 @@ public class MindfulTrackerService extends Service {
         // Create notification
         startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this, "App tracking service is running"));
 
-
-        areReceiversRegistered = true;
         Log.d(TAG, "startTracking: Foreground service started");
-
-        refreshAppTimers();
+        updateAppTimers();
     }
 
-
-    public void refreshAppTimers() {
-        mAppTimers = Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(AppConstants.PREF_KEY_APP_TIMERS, ""));
+    public void updateAppTimers() {
+        mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
         mPurgedApps.clear();
-        Log.d(TAG, "reloadAppTimers: Reloaded latest app timers");
+        Log.d(TAG, "updateAppTimers: App timers updated successfully");
+        stopIfNoUsage();
     }
 
-    public boolean canStopTrackingService() {
-        BedtimeSettings bedtimeSettings = new BedtimeSettings(mSharedPrefs.getString(AppConstants.PREF_KEY_BEDTIME_SETTINGS, ""));
-        return mAppTimers.isEmpty() && (!bedtimeSettings.isScheduleOn || bedtimeSettings.distractingApps.isEmpty());
+    public void stopIfNoUsage() {
+        if (!SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn && mAppTimers.isEmpty()) {
+            Log.d(TAG, "stopIfNoUsage: The service is not required any more therefore, stopping it");
+            stopForeground(true);
+            stopSelf();
+        }
     }
 
     public void startStopBedtimeLockdown(boolean shouldStart, @Nullable HashSet<String> distractingApps) {
@@ -124,21 +118,16 @@ public class MindfulTrackerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         // Dispose and Unregister receiver
-        if (areReceiversRegistered) {
+        if (mLockUnlockReceiver != null) {
             mLockUnlockReceiver.dispose();
-            mAppLaunchReceiver.cancelTimers();
             unregisterReceiver(mLockUnlockReceiver);
+        }
+
+        if (mAppLaunchReceiver != null) {
+            mAppLaunchReceiver.cancelTimers();
             unregisterReceiver(mAppLaunchReceiver);
         }
-
-        if (!canStopTrackingService()) {
-            Log.d(TAG, "onDestroy: Service stopped forcefully, trying to restart it");
-            startService(new Intent(this, MindfulTrackerService.class).setAction(ACTION_START_SERVICE));
-            return;
-        }
-
         Log.d(TAG, "onDestroy : Foreground service destroyed");
     }
 

@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/isar/bedtime_settings.dart';
+import 'package:mindful/models/isar/wellbeing_settings.dart';
 
 /// This class handle flutter method channel and responsible for invoking native android java code
 class MethodChannelService {
@@ -34,41 +37,44 @@ class MethodChannelService {
     );
   }
 
-  //
-  // Tracking Service Methods ======================================================================
-  //
+  // SECTION: Foreground Service Methods ======================================================================
 
-  /// This method will start tracking service if it is already not running
-  /// otherwise will trigger data refresh
-  Future<bool> refreshAppTimers() async =>
-      await _methodChannel.invokeMethod('refreshAppTimers');
+  Future<void> updateAppTimers(Map<String, int> appTimers) async =>
+      _methodChannel.invokeMethod(
+        'updateAppTimers',
+        jsonEncode(appTimers),
+      );
 
-  Future<bool> tryToStopTrackingService() async =>
-      await _methodChannel.invokeMethod('tryToStopTrackingService');
+  Future<void> updateBlockedApps(List<String> blockedApps) async =>
+      _methodChannel.invokeMethod(
+        'updateBlockedApps',
+        jsonEncode(blockedApps),
+      );
 
-  //
-  // VPN Service Methods ======================================================================
-  //
+  Future<void> updateWellBeingSettings(
+          WellBeingSettings wellBeingSettings) async =>
+      _methodChannel.invokeMethod(
+        'updateWellBeingSettings',
+        jsonEncode(wellBeingSettings),
+      );
 
-  Future<bool> stopVpnService() async =>
-      await _methodChannel.invokeMethod('stopVpnService');
+  // !SECTION
+  // SECTION: Bedtime Schedule Methods ======================================================================
 
-  Future<bool> flagVpnRestart() async =>
-      await _methodChannel.invokeMethod('flagVpnRestart');
+  Future<bool> scheduleBedtimeRoutine(BedtimeSettings bedtimeSettings) async =>
+      await _methodChannel.invokeMethod(
+        'scheduleBedtimeRoutine',
+        jsonEncode(bedtimeSettings),
+      );
 
-  //
-  // Bedtime Schedule Methods ======================================================================
-  //
+  Future<bool> cancelBedtimeRoutine(BedtimeSettings bedtimeSettings) async =>
+      await _methodChannel.invokeMethod(
+        'cancelBedtimeRoutine',
+        jsonEncode(bedtimeSettings),
+      );
 
-  Future<bool> scheduleBedtimeRoutine() async =>
-      await _methodChannel.invokeMethod('scheduleBedtimeRoutine');
-
-  Future<bool> cancelBedtimeRoutine() async =>
-      await _methodChannel.invokeMethod('cancelBedtimeRoutine');
-
-  //
-  // Utility Methods ======================================================================
-  //
+  // !SECTION
+  // SECTION: Utility Methods ======================================================================
 
   Future<bool> restartApp() async =>
       await _methodChannel.invokeMethod('restartApp');
@@ -122,9 +128,8 @@ class MethodChannelService {
     }
   }
 
-  //
-  // Permissions Handler Methods ======================================================================
-  //
+  // !SECTION
+  // SECTION: Permissions Handler Methods ======================================================================
 
   Future<bool> getAndAskAccessibilityPermission(
           {bool askPermissionToo = false}) async =>
@@ -176,9 +181,8 @@ class MethodChannelService {
   Future<bool> revokeAdminPermission() async =>
       await _methodChannel.invokeMethod('revokeAdminPermission');
 
-  //
-  // New Activity Launch Methods ======================================================================
-  //
+  // !SECTION
+  // SECTION: New Activity Launch Methods ======================================================================
 
   Future<bool> openDeviceDndSettings() async =>
       await _methodChannel.invokeMethod('openDeviceDndSettings');
@@ -191,4 +195,6 @@ class MethodChannelService {
         'openAppSettingsForPackage',
         appPackage,
       );
+
+  // !SECTION
 }

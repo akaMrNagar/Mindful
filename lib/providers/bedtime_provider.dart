@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/services/shared_prefs_service.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/providers/settings_provider.dart';
 
@@ -49,12 +48,9 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   void switchBedtimeSchedule(bool shouldStart) async {
     state = state.copyWith(isScheduleOn: shouldStart);
 
-    // Update shared prefs
-    await SharePrefsService.instance.updateBedtimeSettings(state);
-
     shouldStart
-        ? await MethodChannelService.instance.scheduleBedtimeRoutine()
-        : await MethodChannelService.instance.cancelBedtimeRoutine();
+        ? await MethodChannelService.instance.scheduleBedtimeRoutine(state)
+        : await MethodChannelService.instance.cancelBedtimeRoutine(state);
   }
 
   void setBedtimeStart(TimeOfDay startTod) =>
