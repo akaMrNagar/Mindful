@@ -1,6 +1,5 @@
 package com.akamrnagar.mindful;
 
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +13,7 @@ import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.PermissionsHelper;
 import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.helpers.WorkersHelper;
+import com.akamrnagar.mindful.models.BedtimeSettings;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
@@ -47,10 +47,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         }
 
         // Start the vpn service if any app is blocked otherwise, attempt to bind if the service is already running
-        if (SharedPrefsHelper.fetchBlockedApps(this).isEmpty()) {
-            mVpnServiceConn.bindService(this);
-        } else {
+        if (!SharedPrefsHelper.fetchBlockedApps(this).isEmpty() && getAndAskVpnPermission(false)) {
             mVpnServiceConn.startAndBind(this);
+        } else {
+            mVpnServiceConn.bindService(this);
         }
     }
 
@@ -71,18 +71,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
-            // SECTION: Utility calls -----------------------------------------------------------------------
-            case "restartApp": {
-                Toast.makeText(this, "Restarting app...", Toast.LENGTH_SHORT).show();
-//                getSharedPreferences(AppConstants.PREFS_SHARED_BOX, Context.MODE_PRIVATE).edit().clear().commit();
-                finish();
-                mTrackerServiceConn.stopAndUnBind(this);
-                mVpnServiceConn.stopAndUnBind(this);
-                startActivity(getPackageManager().getLaunchIntentForPackage(AppConstants.MY_APP_PACKAGE));
-                Toast.makeText(this, "Restarted app successfully", Toast.LENGTH_SHORT).show();
-                result.success(true);
-                break;
-            }
+            // SECTION: Utility methods -----------------------------------------------------------------------
             case "getDeviceApps": {
                 DeviceAppsHelper.getDeviceApps(this, result);
                 break;
@@ -92,12 +81,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
             }
-            case "parseUrl": {
+            case "parseHostFromUrl": {
                 result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
             }
 
-            // SECTION: Foreground services calls ---------------------------------------------------------------------------
+            // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppTimers": {
                 String dartJsonAppTimers = Utils.notNullStr(call.arguments());
                 SharedPrefsHelper.storeAppTimers(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
@@ -114,8 +103,25 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 SharedPrefsHelper.storeBlockedApps(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().updateBlockedApps();
-                } else if (getAndAskVpnPermission(this, true)) {
+                } else if (getAndAskVpnPermission(true)) {
                     mVpnServiceConn.startAndBind(this);
+                }
+                result.success(true);
+                break;
+            }
+            case "updateBedtimeSchedule": {
+                String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
+                SharedPrefsHelper.storeBedtimeSettings(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
+                BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
+                if (bedtimeSettings.isScheduleOn) {
+                    WorkersHelper.scheduleBedtimeRoutine(this);
+                    mTrackerServiceConn.startAndBind(this); // This will only start service if it is already not running
+                } else {
+                    WorkersHelper.cancelBedtimeRoutine(this);
+                    if (mTrackerServiceConn.isConnected()) {
+                        mTrackerServiceConn.getService().startStopBedtimeLockdown(false, null);
+                        mTrackerServiceConn.getService().stopIfNoUsage();
+                    }
                 }
                 result.success(true);
                 break;
@@ -126,35 +132,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
 
-            // SECTION: Bedtime schedule routine calls ------------------------------------------------------
-            case "scheduleBedtimeRoutine": {
-                String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBedtimeSettings(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
-                WorkersHelper.scheduleBedtimeRoutine(this);
-                mTrackerServiceConn.startAndBind(this); // This will only start service if it is already not running
-                result.success(true);
-                break;
-            }
-            case "cancelBedtimeRoutine": {
-                String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBedtimeSettings(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
-                WorkersHelper.cancelBedtimeRoutine(this);
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().startStopBedtimeLockdown(false, null);
-                    mTrackerServiceConn.getService().stopIfNoUsage();
-                }
-                result.success(true);
-                break;
-
-            }
-
-            // SECTION: Permissions handler calls ------------------------------------------------------
+            // SECTION: Permissions handler methods ------------------------------------------------------
             case "getAndAskAccessibilityPermission": {
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskVpnPermission": {
-                result.success(getAndAskVpnPermission(this, Boolean.TRUE.equals(call.arguments())));
+                result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskDndPermission": {
@@ -177,12 +161,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "revokeAdminPermission": {
-                result.success(PermissionsHelper.revokeAdminPermission(this));
-                break;
-            }
 
-            // SECTION: New Activity Launch  calls ------------------------------------------------------
+            // SECTION: New Activity Launch methods ------------------------------------------------------
             case "openAppWithPackage": {
                 ActivityNewTaskHelper.openAppWithPackage(this, call.arguments());
                 result.success(true);
@@ -205,12 +185,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
 
-    private boolean getAndAskVpnPermission(@NonNull Context context, boolean askPermissionToo) {
-        Intent intent = MindfulVpnService.prepare(context);
+    private boolean getAndAskVpnPermission(boolean askPermissionToo) {
+        Intent intent = MindfulVpnService.prepare(this);
         if (askPermissionToo && intent != null) {
             startActivityForResult(intent, 0);
         }
-
         return intent == null;
     }
 

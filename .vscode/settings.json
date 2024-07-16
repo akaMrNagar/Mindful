@@ -1,4 +1,7 @@
 {
     "continue.telemetryEnabled": false,
-    "code-runner.enableAppInsights": false
+    "code-runner.enableAppInsights": false,
+    "cSpell.words": [
+        "endtemplate"
+    ]
 }

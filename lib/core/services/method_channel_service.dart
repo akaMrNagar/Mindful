@@ -37,47 +37,7 @@ class MethodChannelService {
     );
   }
 
-  // SECTION: Foreground Service Methods ======================================================================
-
-  Future<void> updateAppTimers(Map<String, int> appTimers) async =>
-      _methodChannel.invokeMethod(
-        'updateAppTimers',
-        jsonEncode(appTimers),
-      );
-
-  Future<void> updateBlockedApps(List<String> blockedApps) async =>
-      _methodChannel.invokeMethod(
-        'updateBlockedApps',
-        jsonEncode(blockedApps),
-      );
-
-  Future<void> updateWellBeingSettings(
-          WellBeingSettings wellBeingSettings) async =>
-      _methodChannel.invokeMethod(
-        'updateWellBeingSettings',
-        jsonEncode(wellBeingSettings),
-      );
-
-  // !SECTION
-  // SECTION: Bedtime Schedule Methods ======================================================================
-
-  Future<bool> scheduleBedtimeRoutine(BedtimeSettings bedtimeSettings) async =>
-      await _methodChannel.invokeMethod(
-        'scheduleBedtimeRoutine',
-        jsonEncode(bedtimeSettings),
-      );
-
-  Future<bool> cancelBedtimeRoutine(BedtimeSettings bedtimeSettings) async =>
-      await _methodChannel.invokeMethod(
-        'cancelBedtimeRoutine',
-        jsonEncode(bedtimeSettings),
-      );
-
-  // !SECTION
   // SECTION: Utility Methods ======================================================================
-
-  Future<bool> restartApp() async =>
-      await _methodChannel.invokeMethod('restartApp');
 
   Future<bool> showToast(
     String msg, {
@@ -91,8 +51,8 @@ class MethodChannelService {
         },
       );
 
-  Future<String> parseUrl(String url) async =>
-      await _methodChannel.invokeMethod('parseUrl', url);
+  Future<String> parseHostFromUrl(String url) async =>
+      await _methodChannel.invokeMethod('parseHostFromUrl', url);
 
   /// Generates a list of [AndroidApp] all the launchable apps
   /// installed on the user device including their usage
@@ -127,6 +87,33 @@ class MethodChannelService {
       return List<AndroidApp>.empty();
     }
   }
+
+  // !SECTION
+  // SECTION: Foreground Service and Background Worker Methods ======================================================================
+  Future<void> updateAppTimers(Map<String, int> appTimers) async =>
+      _methodChannel.invokeMethod(
+        'updateAppTimers',
+        jsonEncode(appTimers),
+      );
+
+  Future<void> updateBlockedApps(List<String> blockedApps) async =>
+      _methodChannel.invokeMethod(
+        'updateBlockedApps',
+        jsonEncode(blockedApps),
+      );
+
+  Future<void> updateWellBeingSettings(
+          WellBeingSettings wellBeingSettings) async =>
+      _methodChannel.invokeMethod(
+        'updateWellBeingSettings',
+        jsonEncode(wellBeingSettings),
+      );
+
+  Future<bool> updateBedtimeSchedule(BedtimeSettings bedtimeSettings) async =>
+      await _methodChannel.invokeMethod(
+        'updateBedtimeSchedule',
+        jsonEncode(bedtimeSettings),
+      );
 
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
@@ -178,8 +165,6 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  Future<bool> revokeAdminPermission() async =>
-      await _methodChannel.invokeMethod('revokeAdminPermission');
 
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================

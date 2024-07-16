@@ -111,7 +111,7 @@ class AppDashboardScreen extends ConsumerWidget {
                             /// Quick action for app
                             QuickActions(app: app),
 
-                            /// Vpn persmission
+                            /// Vpn permission
                             SliverPermissionWarning(
                               title: "Create VPN",
                               information:

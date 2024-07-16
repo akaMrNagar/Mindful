@@ -22,7 +22,7 @@ class TabWellbeing extends ConsumerWidget {
     if (url == null || url.isEmpty) return;
 
     final host =
-        await MethodChannelService.instance.parseUrl(url.toLowerCase());
+        await MethodChannelService.instance.parseHostFromUrl(url.toLowerCase());
 
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked

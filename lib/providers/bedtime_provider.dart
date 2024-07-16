@@ -47,10 +47,7 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
 
   void switchBedtimeSchedule(bool shouldStart) async {
     state = state.copyWith(isScheduleOn: shouldStart);
-
-    shouldStart
-        ? await MethodChannelService.instance.scheduleBedtimeRoutine(state)
-        : await MethodChannelService.instance.cancelBedtimeRoutine(state);
+    await MethodChannelService.instance.updateBedtimeSchedule(state);
   }
 
   void setBedtimeStart(TimeOfDay startTod) =>

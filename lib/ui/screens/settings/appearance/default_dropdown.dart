@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/hero_page_route.dart';
+import 'package:mindful/ui/page_routes/hero_page_route.dart';
 
 class DefaultDropdownButton<T> extends StatelessWidget {
   const DefaultDropdownButton({

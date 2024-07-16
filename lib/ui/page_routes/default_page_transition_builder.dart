@@ -12,9 +12,9 @@ final Animatable<Offset> _kMiddleLeftTween = Tween<Offset>(
   end: const Offset(-1.0 / 3.0, 0.0),
 );
 
-class MindfulTransitionsBuilder extends PageTransitionsBuilder {
+class DefaultPageTransitionsBuilder extends PageTransitionsBuilder {
   /// Slide page transition like ios for android without any ios dependencies
-  const MindfulTransitionsBuilder();
+  const DefaultPageTransitionsBuilder();
 
   @override
   Widget buildTransitions<T>(

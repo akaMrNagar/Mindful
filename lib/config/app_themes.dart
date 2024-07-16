@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/config/mindful_transition_builder.dart';
+import 'package:mindful/ui/page_routes/default_page_transition_builder.dart';
 
 class AppTheme {
   static const _kSeedColor = Colors.lightBlue;
 
   /// Custom transition for page routes
   static const _kPageTransitionTheme = PageTransitionsTheme(
-    builders: {TargetPlatform.android: MindfulTransitionsBuilder()},
+    builders: {TargetPlatform.android: DefaultPageTransitionsBuilder()},
   );
 
   static final materialColors = <String, MaterialColor>{

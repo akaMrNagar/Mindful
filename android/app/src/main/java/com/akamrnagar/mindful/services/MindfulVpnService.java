@@ -105,7 +105,7 @@ public class MindfulVpnService extends android.net.VpnService {
                     tunnel.connect(serverAddress);
                     tunnel.configureBlocking(false);
 
-                    android.net.VpnService.Builder builder = MindfulVpnService.this.new Builder();
+                    Builder builder = MindfulVpnService.this.new Builder();
                     builder.addAddress("192.168.0.0", 24);
                     builder.addRoute("0.0.0.0", 0);
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/dialogs/hero_page_route.dart';
+import 'package:mindful/ui/page_routes/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 Future<bool> showConfirmationDialog({

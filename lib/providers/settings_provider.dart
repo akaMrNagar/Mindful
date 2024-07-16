@@ -1,9 +1,6 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/app_settings.dart';
 
 final settingsProvider =
@@ -32,21 +29,4 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       state = state.copyWith(themeMode: mode);
 
   void changeColor(String color) => state = state.copyWith(color: color);
-
-  Future<void> backupDatabase(String filePath) async =>
-      IsarDbService.instance.backupToFile(filePath);
-
-  Future<void> restoreDatabase(PlatformFile file) async {
-    /// Restore and close previously opened ISAR instance
-    IsarDbService.instance.restoreFromFile(file);
-    await Future.delayed(2.seconds);
-    await MethodChannelService.instance.restartApp();
-  }
-
-  Future<void> resetDatabase() async {
-    /// Clear isar db
-    await IsarDbService.instance.resetDb();
-    await Future.delayed(2.seconds);
-    await MethodChannelService.instance.restartApp();
-  }
 }

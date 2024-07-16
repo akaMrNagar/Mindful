@@ -25,7 +25,6 @@ dependencies:
   # Database and Storage
   isar_flutter_libs: ^3.1.0+1
   isar: ^3.1.0+1
-  file_picker: ^8.0.6
   path_provider: ^2.1.2
 
   # Util

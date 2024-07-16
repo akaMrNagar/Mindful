@@ -53,7 +53,7 @@ extension ExtBuildContext on BuildContext {
     final bgColor = Theme.of(this).colorScheme.errorContainer;
     final fgColor = Theme.of(this).colorScheme.onErrorContainer;
     _showSnackBar(
-      icon: FluentIcons.error_circle_20_regular,
+      icon: FluentIcons.bug_20_regular,
       error: error,
       fgColor: fgColor,
       bgColor: bgColor,
@@ -66,7 +66,7 @@ extension ExtBuildContext on BuildContext {
     final bgColor = Theme.of(this).colorScheme.secondaryContainer;
     final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
     _showSnackBar(
-      icon: FluentIcons.checkmark_circle_20_regular,
+      icon: FluentIcons.checkmark_20_regular,
       error: error,
       fgColor: fgColor,
       bgColor: bgColor,

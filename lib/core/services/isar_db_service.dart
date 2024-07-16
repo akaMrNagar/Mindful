@@ -1,4 +1,3 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:isar/isar.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/focus_settings.dart';
@@ -32,35 +31,15 @@ class IsarDbService {
     );
   }
 
-  Future<void> resetDb() async => _isar.close(deleteFromDisk: true);
-
-  Future<void> backupToFile(String filePath) async =>
-      _isar.copyToFile(filePath);
-
-  Future<void> restoreFromFile(PlatformFile file) async {
-    /// /data/user/0/com.akamrnagar.mindful/app_flutter/default.isar
-    final directory = await getApplicationDocumentsDirectory();
-    final defaultDbPath = "${directory.path}/default.isar";
-    await file.xFile.saveTo(defaultDbPath);
-    await _isar.close();
-  }
-
   Future<void> saveFocusSettings(List<FocusSettings> focusItems) async =>
       _isar.writeTxn(
         () => _isar.focusSettings.putAllByAppPackage(focusItems),
       );
 
-  Future<List<FocusSettings>> loadFocusSettings() async =>
-      _isar.focusSettings.where().sortByAppPackage().findAll();
-
   Future<void> saveBedtimeSettings(BedtimeSettings bedtimeSettings) async =>
       _isar.writeTxn(
         () => _isar.bedtimeSettings.put(bedtimeSettings),
       );
-
-  Future<BedtimeSettings> loadBedtimeSettings() async =>
-      await _isar.bedtimeSettings.where().findFirst() ??
-      const BedtimeSettings();
 
   Future<void> saveWellBeingSettings(
           WellBeingSettings wellbeingSettings) async =>
@@ -68,13 +47,21 @@ class IsarDbService {
         () => _isar.wellBeingSettings.put(wellbeingSettings),
       );
 
+  Future<void> saveAppSettings(AppSettings appSettings) async => _isar.writeTxn(
+        () => _isar.appSettings.put(appSettings),
+      );
+
+  Future<List<FocusSettings>> loadFocusSettings() async =>
+      _isar.focusSettings.where().sortByAppPackage().findAll();
+
+  Future<BedtimeSettings> loadBedtimeSettings() async =>
+      await _isar.bedtimeSettings.where().findFirst() ??
+      const BedtimeSettings();
+
   Future<WellBeingSettings> loadWellBeingSettings() async =>
       await _isar.wellBeingSettings.where().findFirst() ??
       const WellBeingSettings();
 
-  Future<void> saveAppSettings(AppSettings appSettings) async => _isar.writeTxn(
-        () => _isar.appSettings.put(appSettings),
-      );
   Future<AppSettings> loadAppSettings() async =>
       await _isar.appSettings.where().findFirst() ?? const AppSettings();
 }
