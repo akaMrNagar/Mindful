@@ -13,14 +13,14 @@ class SliverPermissionWarning extends StatelessWidget {
     required this.havePermission,
     required this.title,
     required this.information,
-    required this.onTapAllow,
+    this.onTapAllow,
     this.margin = EdgeInsets.zero,
   });
 
   final bool havePermission;
   final String title;
   final String information;
-  final VoidCallback onTapAllow;
+  final VoidCallback? onTapAllow;
   final EdgeInsets margin;
 
   @override
@@ -57,7 +57,7 @@ class SliverPermissionWarning extends StatelessWidget {
 
                 6.vBox(),
 
-                /// Wraning info
+                /// Warning info
                 StyledText(
                   information,
                   fontSize: 12,
@@ -66,14 +66,15 @@ class SliverPermissionWarning extends StatelessWidget {
 
                 16.vBox(),
 
-                /// Start accessiblity button
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: ElevatedButton(
-                    onPressed: onTapAllow,
-                    child: const Text("Allow"),
+                /// Allow permission button
+                if (onTapAllow != null)
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: ElevatedButton(
+                      onPressed: onTapAllow,
+                      child: const Text("Allow"),
+                    ),
                   ),
-                ),
               ],
             ),
           ),

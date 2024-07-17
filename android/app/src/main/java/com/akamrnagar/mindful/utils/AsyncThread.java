@@ -1,4 +1,4 @@
-package com.akamrnagar.mindful.helpers;
+package com.akamrnagar.mindful.utils;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;

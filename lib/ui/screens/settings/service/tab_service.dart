@@ -1,4 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -35,7 +36,7 @@ class TabService extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isInvincibleModeOn =
-        !ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
+        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
 
     final haveAdminPermission =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
@@ -69,7 +70,9 @@ class TabService extends ConsumerWidget {
               child: DefaultListTile(
                 isPrimary: true,
                 switchValue: isInvincibleModeOn,
-                enabled: haveAdminPermission && !isInvincibleModeOn,
+                enabled: kDebugMode
+                    ? true
+                    : haveAdminPermission && !isInvincibleModeOn,
                 leadingIcon: FluentIcons.animal_cat_20_regular,
                 titleText: "Invincible mode",
                 onPressed: () =>

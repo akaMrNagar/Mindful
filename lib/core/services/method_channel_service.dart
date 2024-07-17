@@ -39,6 +39,11 @@ class MethodChannelService {
 
   // SECTION: Utility Methods ======================================================================
 
+  Future<int> getShortsScreenTimeSec() async {
+    int time = await _methodChannel.invokeMethod('getShortsScreenTimeMs');
+    return time ~/ 1000;
+  }
+
   Future<bool> showToast(
     String msg, {
     ToastDuration duration = ToastDuration.short,
@@ -164,7 +169,6 @@ class MethodChannelService {
         'getAndAskAdminPermission',
         askPermissionToo,
       );
-
 
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================

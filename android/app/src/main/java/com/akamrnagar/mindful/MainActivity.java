@@ -76,6 +76,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 DeviceAppsHelper.getDeviceApps(this, result);
                 break;
             }
+            case "getShortsScreenTimeMs": {
+                result.success(SharedPrefsHelper.fetchShortsScreenTimeMs(this));
+                break;
+            }
             case "showToast": {
                 showToast(call);
                 result.success(true);
@@ -89,7 +93,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppTimers": {
                 String dartJsonAppTimers = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeAppTimers(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
+                SharedPrefsHelper.storeAppTimersJson(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
                 if (mTrackerServiceConn.isConnected()) {
                     mTrackerServiceConn.getService().updateAppTimers();
                 } else {
@@ -100,7 +104,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateBlockedApps": {
                 String blockedAppsJson = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBlockedApps(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
+                SharedPrefsHelper.storeBlockedAppsJson(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().updateBlockedApps();
                 } else if (getAndAskVpnPermission(true)) {
@@ -111,7 +115,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateBedtimeSchedule": {
                 String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBedtimeSettings(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
+                SharedPrefsHelper.storeBedtimeSettingsJson(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
                 BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
                 if (bedtimeSettings.isScheduleOn) {
                     WorkersHelper.scheduleBedtimeRoutine(this);
@@ -128,7 +132,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateWellBeingSettings": {
                 // NOTE: Only updating shared prefs because accessibility service have onSharedPrefsChange listener registered which will eventually reload needed data
-                SharedPrefsHelper.storeWellBeingSettings(this, Utils.notNullStr(call.arguments()));
+                SharedPrefsHelper.storeWellBeingSettingsJson(this, Utils.notNullStr(call.arguments()));
                 break;
             }
 

@@ -27,15 +27,16 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
   Future<void> updateAppTimer(String appPackage, int timerSec) async {
     state = {...state}..update(
         appPackage,
-        (value) => value.copyWith(timer: timerSec),
-        ifAbsent: () => FocusSettings(appPackage: appPackage, timer: timerSec),
+        (value) => value.copyWith(timerSec: timerSec),
+        ifAbsent: () =>
+            FocusSettings(appPackage: appPackage, timerSec: timerSec),
       );
 
     /// Filter timers
     final appTimers = Map.fromEntries(
       state.entries
-          .where((i) => i.value.timer > 0)
-          .map((e) => MapEntry(e.key, e.value.timer)),
+          .where((i) => i.value.timerSec > 0)
+          .map((e) => MapEntry(e.key, e.value.timerSec)),
     );
 
     /// Refresh tracking service

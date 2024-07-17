@@ -37,7 +37,7 @@ class HomeScreen extends StatelessWidget {
           const NavbarItem(
             title: "Wellbeing",
             icon: FluentIcons.brain_circuit_20_filled,
-            body: TabWellbeing(),
+            body: TabWellBeing(),
           ),
         ],
       ),

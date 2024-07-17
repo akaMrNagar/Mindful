@@ -27,9 +27,9 @@ const FocusSettingsSchema = CollectionSchema(
       name: r'internetAccess',
       type: IsarType.bool,
     ),
-    r'timer': PropertySchema(
+    r'timerSec': PropertySchema(
       id: 2,
-      name: r'timer',
+      name: r'timerSec',
       type: IsarType.long,
     )
   },
@@ -79,7 +79,7 @@ void _focusSettingsSerialize(
 ) {
   writer.writeString(offsets[0], object.appPackage);
   writer.writeBool(offsets[1], object.internetAccess);
-  writer.writeLong(offsets[2], object.timer);
+  writer.writeLong(offsets[2], object.timerSec);
 }
 
 FocusSettings _focusSettingsDeserialize(
@@ -91,7 +91,7 @@ FocusSettings _focusSettingsDeserialize(
   final object = FocusSettings(
     appPackage: reader.readString(offsets[0]),
     internetAccess: reader.readBoolOrNull(offsets[1]) ?? true,
-    timer: reader.readLongOrNull(offsets[2]) ?? 0,
+    timerSec: reader.readLongOrNull(offsets[2]) ?? 0,
   );
   return object;
 }
@@ -510,45 +510,45 @@ extension FocusSettingsQueryFilter
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      timerEqualTo(int value) {
+      timerSecEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'timer',
+        property: r'timerSec',
         value: value,
       ));
     });
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      timerGreaterThan(
+      timerSecGreaterThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'timer',
+        property: r'timerSec',
         value: value,
       ));
     });
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      timerLessThan(
+      timerSecLessThan(
     int value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'timer',
+        property: r'timerSec',
         value: value,
       ));
     });
   }
 
   QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
-      timerBetween(
+      timerSecBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -556,7 +556,7 @@ extension FocusSettingsQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'timer',
+        property: r'timerSec',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -601,15 +601,16 @@ extension FocusSettingsQuerySortBy
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> sortByTimer() {
+  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> sortByTimerSec() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timer', Sort.asc);
+      return query.addSortBy(r'timerSec', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> sortByTimerDesc() {
+  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+      sortByTimerSecDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timer', Sort.desc);
+      return query.addSortBy(r'timerSec', Sort.desc);
     });
   }
 }
@@ -655,15 +656,16 @@ extension FocusSettingsQuerySortThenBy
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenByTimer() {
+  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenByTimerSec() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timer', Sort.asc);
+      return query.addSortBy(r'timerSec', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenByTimerDesc() {
+  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+      thenByTimerSecDesc() {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'timer', Sort.desc);
+      return query.addSortBy(r'timerSec', Sort.desc);
     });
   }
 }
@@ -684,9 +686,9 @@ extension FocusSettingsQueryWhereDistinct
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QDistinct> distinctByTimer() {
+  QueryBuilder<FocusSettings, FocusSettings, QDistinct> distinctByTimerSec() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'timer');
+      return query.addDistinctBy(r'timerSec');
     });
   }
 }
@@ -711,9 +713,9 @@ extension FocusSettingsQueryProperty
     });
   }
 
-  QueryBuilder<FocusSettings, int, QQueryOperations> timerProperty() {
+  QueryBuilder<FocusSettings, int, QQueryOperations> timerSecProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'timer');
+      return query.addPropertyName(r'timerSec');
     });
   }
 }

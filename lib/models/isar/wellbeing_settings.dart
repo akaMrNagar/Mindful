@@ -11,6 +11,9 @@ class WellBeingSettings {
   /// ID for isar database
   Id get id => 0;
 
+  /// Allowed time for short content in seconds
+  final int allowedShortContentTimeSec;
+
   /// Flag denoting if to block instagram reels or not
   final bool blockInstaReels;
 
@@ -33,6 +36,7 @@ class WellBeingSettings {
   /// Protection model used for determining distraction blocking
   /// like blocking short form content on different platforms and blocking websites
   const WellBeingSettings({
+    this.allowedShortContentTimeSec = 8 * 60 * 60,
     this.blockInstaReels = false,
     this.blockYtShorts = false,
     this.blockSnapSpotlight = false,
@@ -42,6 +46,7 @@ class WellBeingSettings {
   });
 
   WellBeingSettings copyWith({
+    int? allowedShortContentTimeSec,
     bool? blockInstaReels,
     bool? blockYtShorts,
     bool? blockSnapSpotlight,
@@ -50,6 +55,8 @@ class WellBeingSettings {
     List<String>? blockedWebsites,
   }) {
     return WellBeingSettings(
+      allowedShortContentTimeSec:
+          allowedShortContentTimeSec ?? this.allowedShortContentTimeSec,
       blockInstaReels: blockInstaReels ?? this.blockInstaReels,
       blockYtShorts: blockYtShorts ?? this.blockYtShorts,
       blockSnapSpotlight: blockSnapSpotlight ?? this.blockSnapSpotlight,
@@ -61,6 +68,7 @@ class WellBeingSettings {
 
   Map<String, dynamic> toMap() {
     return {
+      'allowedShortContentTimeSec': allowedShortContentTimeSec,
       'blockInstaReels': blockInstaReels,
       'blockYtShorts': blockYtShorts,
       'blockSnapSpotlight': blockSnapSpotlight,

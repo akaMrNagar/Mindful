@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
@@ -19,21 +19,22 @@ class DistractingAppsList extends ConsumerWidget {
 
   void _insertRemoveDistractingApp(
     WidgetRef ref,
+    BuildContext context,
     AndroidApp app,
     bool shouldInsert,
   ) async {
     if (app.isImpSysApp) {
-      // Show snackbar alert
-      await MethodChannelService.instance
-          .showToast("Cannot select important system apps");
+      context.showSnackWarning(
+        "Adding important system apps to the list of distracting apps is not permitted.",
+      );
       return;
     }
 
     final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
     if (!shouldInsert && !isModifiable) {
-      // Show snackbar alert
-      await MethodChannelService.instance
-          .showToast("Cannot remove app in invincible mode");
+      context.showSnackWarning(
+        "Due to invincible mode, modifications are not allowed during the bedtime period. You can add distracting apps but cannot remove them.",
+      );
       return;
     }
 
@@ -78,7 +79,12 @@ class DistractingAppsList extends ConsumerWidget {
               size: 16,
             ),
             titleText: app.name,
-            onPressed: () => _insertRemoveDistractingApp(ref, app, !isSelected),
+            onPressed: () => _insertRemoveDistractingApp(
+              ref,
+              context,
+              app,
+              !isSelected,
+            ),
           );
         },
       ),

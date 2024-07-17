@@ -10,6 +10,7 @@ class StyledText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.textAlign,
+    this.letterSpacing,
     this.isSubtitle = false,
     this.fontSize = 12,
   });
@@ -20,6 +21,7 @@ class StyledText extends StatelessWidget {
   final double fontSize;
   final FontWeight? fontWeight;
   final double? height;
+  final double? letterSpacing;
   final int? maxLines;
   final TextOverflow? overflow;
   final TextAlign? textAlign;
@@ -36,6 +38,7 @@ class StyledText extends StatelessWidget {
         fontWeight: fontWeight,
         height: height,
         overflow: overflow,
+        letterSpacing: letterSpacing,
       ),
     );
   }

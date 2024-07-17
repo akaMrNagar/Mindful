@@ -34,7 +34,7 @@ class ApplicationIcon extends StatelessWidget {
           child: Consumer(
             builder: (_, WidgetRef ref, __) {
               final timer = ref.watch(focusProvider
-                      .select((value) => value[app.packageName]?.timer)) ??
+                      .select((value) => value[app.packageName]?.timerSec)) ??
                   0;
               final isPurged =
                   timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
