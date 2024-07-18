@@ -17,7 +17,7 @@ public class StopBedtimeWorker extends Worker {
 
 
     private static final String TAG = "Mindful.StopBedtimeWorker";
-    public static final String BEDTIME_WORKER_ID_STOP = "com.akamrnagar.mindful.StopBedtimeWorker";
+    public static final String BEDTIME_WORKER_STOP_ID = "com.akamrnagar.mindful.StopBedtimeWorker";
 
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private final Context mContext;

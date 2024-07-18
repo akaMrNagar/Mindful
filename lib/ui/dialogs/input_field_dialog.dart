@@ -8,7 +8,7 @@ Future<String?> showInputWebsiteDialog(BuildContext context) async {
     HeroPageRoute(
       builder: (context) => const _InputFieldDialog(
         icon: FluentIcons.globe_search_20_regular,
-        heroTag: 'InputWebsiteDialog',
+        heroTag: 'addWebsiteFAB',
         title: "Distracting website",
         inputLabel: 'URL',
         inputHelperText: "Enter url of a website which you want to block",

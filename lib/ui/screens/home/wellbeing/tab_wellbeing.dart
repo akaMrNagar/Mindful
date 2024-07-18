@@ -75,19 +75,20 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 information:
                     "Granting accessibility permission allows Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers. Additionally, it filters inappropriate websites, promoting a more secure and focused online environment.",
                 havePermission: haveAccessibilityPermission,
-                margin: const EdgeInsets.symmetric(vertical: 12),
+                margin: const EdgeInsets.only(top: 12),
                 onTapAllow: ref
                     .read(permissionProvider.notifier)
                     .askAccessibilityPermission,
               ),
 
-              SliverPermissionWarning(
-                havePermission: canModifyShortsSetting,
-                margin: const EdgeInsets.symmetric(vertical: 12),
-                title: "Invincible mode",
-                information:
-                    "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
-              ),
+              if (haveAccessibilityPermission)
+                SliverPermissionWarning(
+                  havePermission: canModifyShortsSetting,
+                  margin: const EdgeInsets.only(top: 12),
+                  title: "Invincible mode",
+                  information:
+                      "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
+                ),
 
               /// Short content header
               const SliverContentTitle(title: "Short content"),
@@ -214,7 +215,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               bottom: 32,
               right: 24,
               child: FloatingActionButton(
-                heroTag: 'InputWebsiteDialog',
+                heroTag: 'addWebsiteFAB',
                 onPressed: () => _onPressedFab(context, ref),
                 child: const Icon(FluentIcons.add_20_filled),
               ),

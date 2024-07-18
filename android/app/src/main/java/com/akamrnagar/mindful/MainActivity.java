@@ -35,6 +35,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Register notification channels
         NotificationHelper.registerNotificationChannels(this);
 
+        // Schedule midnight 12 worker
+        WorkersHelper.scheduleMidnightWorker(this);
+
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
@@ -133,8 +136,26 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             case "updateWellBeingSettings": {
                 // NOTE: Only updating shared prefs because accessibility service have onSharedPrefsChange listener registered which will eventually reload needed data
                 SharedPrefsHelper.storeWellBeingSettingsJson(this, Utils.notNullStr(call.arguments()));
+                result.success(true);
                 break;
             }
+            case "getLeftEmergencyPasses": {
+                result.success(SharedPrefsHelper.fetchEmergencyPassesCount(this));
+                break;
+            }
+
+            case "useEmergencyPass": {
+                int left = SharedPrefsHelper.fetchEmergencyPassesCount(this);
+                if (left > 0) {
+                    SharedPrefsHelper.storeEmergencyPassesCount(this, left - 1);
+                    if (mTrackerServiceConn.isConnected()) {
+                        mTrackerServiceConn.getService().useEmergencyPass();
+                    }
+                }
+                result.success(true);
+                break;
+            }
+
 
             // SECTION: Permissions handler methods ------------------------------------------------------
             case "getAndAskAccessibilityPermission": {

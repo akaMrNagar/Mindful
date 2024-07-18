@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.models.BedtimeSettings;
 import com.akamrnagar.mindful.models.WellBeingSettings;
+import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
 import org.jetbrains.annotations.Contract;
@@ -19,6 +20,7 @@ public class SharedPrefsHelper {
     private static SharedPreferences mSharedPrefs;
 
     private static final String PREFS_SHARED_BOX = "FlutterSharedPreferences";
+    private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "flutter.mindful.emergencyPassesCount";
     private static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
     private static final String PREF_KEY_APP_TIMERS = "flutter.mindful.appTimers";
     private static final String PREF_KEY_BEDTIME_SETTINGS = "flutter.mindful.bedtimeSettings";
@@ -36,6 +38,11 @@ public class SharedPrefsHelper {
 
     public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
+    }
+
+    public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
+        if (mSharedPrefs == null) initialize(context);
+        mSharedPrefs.edit().putInt(PREF_KEY_EMERGENCY_PASSES_COUNT, passesLeftCount).apply();
     }
 
     public static void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
@@ -62,6 +69,11 @@ public class SharedPrefsHelper {
         if (mSharedPrefs == null) initialize(context);
         Log.d("TAG", "storeShortsScreenTimeMs: storing....");
         mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
+    }
+
+    public static int fetchEmergencyPassesCount(@NonNull Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return mSharedPrefs.getInt(PREF_KEY_EMERGENCY_PASSES_COUNT, AppConstants.DEFAULT_EMERGENCY_PASSES_COUNT);
     }
 
     @NonNull

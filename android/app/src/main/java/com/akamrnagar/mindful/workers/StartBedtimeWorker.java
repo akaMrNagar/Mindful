@@ -19,7 +19,7 @@ import java.util.Calendar;
 public class StartBedtimeWorker extends Worker {
 
     private static final String TAG = "Mindful.StartBedtimeWorker";
-    public static final String BEDTIME_WORKER_ID_START = "com.akamrnagar.mindful.StartBedtimeWorker";
+    public static final String BEDTIME_WORKER_START_ID = "com.akamrnagar.mindful.StartBedtimeWorker";
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private final Context mContext;
     private BedtimeSettings mBedtimeSettings = null;
@@ -27,9 +27,9 @@ public class StartBedtimeWorker extends Worker {
     public StartBedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-
         // Set callback which will be invoked when the service is connected successfully
         mTrackerServiceConn.setOnConnectedCallback(this::onTrackerServiceConnected);
+
         mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
         mContext = context;
     }

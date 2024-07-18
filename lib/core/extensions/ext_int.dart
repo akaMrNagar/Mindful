@@ -26,9 +26,6 @@ extension ExtInt on int {
   }
 
   String toData() {
-    if (toInt() == 0) {
-      return "No data used";
-    }
     if (toInt() < 1024) {
       return "${toInt()} KB";
     } else if (toInt().mb >= 1024) {

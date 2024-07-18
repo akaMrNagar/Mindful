@@ -19,25 +19,38 @@ import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-/// Provides usage type for toggling between usages charts
-final _selectedUsageTypeProvider =
-    StateProvider<UsageType>((ref) => UsageType.screenUsage);
-
-/// Provides int which is the selected day of week on bar chart
-final _selectedDayOfWeekProvider = StateProvider<int>((ref) => dayOfWeek);
-
-class AppDashboardScreen extends ConsumerWidget {
+class AppDashboardScreen extends ConsumerStatefulWidget {
   const AppDashboardScreen({
     super.key,
     required this.app,
+    required this.usageType,
+    required this.selectedDoW,
   });
 
   final AndroidApp app;
+  final UsageType usageType;
+  final int selectedDoW;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dayOfWeek = ref.watch(_selectedDayOfWeekProvider);
-    final usageType = ref.watch(_selectedUsageTypeProvider);
+  ConsumerState<AppDashboardScreen> createState() => _AppDashboardScreenState();
+}
+
+class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
+  UsageType _selectedUsageType = UsageType.screenUsage;
+  int _selectedDoW = dayOfWeek;
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      _selectedDoW = widget.selectedDoW;
+      _selectedUsageType = widget.usageType;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final haveVpnPermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
@@ -52,19 +65,19 @@ class AppDashboardScreen extends ConsumerWidget {
               child: CustomScrollView(
                 slivers: [
                   /// App bar
-                  SliverFlexibleAppBar(title: app.name),
+                  SliverFlexibleAppBar(title: widget.app.name),
 
                   /// App icon and app package name
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       /// App Icon
-                      ApplicationIcon(app: app, size: 32),
+                      ApplicationIcon(app: widget.app, size: 32),
                       8.vBox(),
 
                       /// App package name
                       StyledText(
-                        app.packageName,
+                        widget.app.packageName,
                         color: Theme.of(context).hintColor,
                       ),
                       8.vBox(),
@@ -73,13 +86,15 @@ class AppDashboardScreen extends ConsumerWidget {
 
                   /// Usage type selector and usage info card
                   SliverUsageCards(
-                    usageType: usageType,
-                    screenUsageInfo: app.screenTimeThisWeek[dayOfWeek],
-                    wifiUsageInfo: app.wifiUsageThisWeek[dayOfWeek],
-                    mobileUsageInfo: app.mobileUsageThisWeek[dayOfWeek],
-                    onUsageTypeChanged: (i) => ref
-                        .read(_selectedUsageTypeProvider.notifier)
-                        .update((_) => UsageType.values[i]),
+                    usageType: _selectedUsageType,
+                    screenUsageInfo:
+                        widget.app.screenTimeThisWeek[_selectedDoW],
+                    wifiUsageInfo: widget.app.wifiUsageThisWeek[_selectedDoW],
+                    mobileUsageInfo:
+                        widget.app.mobileUsageThisWeek[_selectedDoW],
+                    onUsageTypeChanged: (i) => setState(
+                      () => _selectedUsageType = UsageType.values[i],
+                    ),
                   ),
 
                   20.vSliverBox(),
@@ -87,21 +102,22 @@ class AppDashboardScreen extends ConsumerWidget {
                   /// Usage bar chart and selected day changer
                   SliverUsageChartPanel(
                     chartHeight: 212,
-                    dayOfWeek: dayOfWeek,
-                    usageType: usageType,
-                    barChartData: usageType == UsageType.screenUsage
-                        ? app.screenTimeThisWeek
-                        : app.networkUsageThisWeek,
-                    onDayOfWeekChanged: (dow) => ref
-                        .read(_selectedDayOfWeekProvider.notifier)
-                        .update((_) => dow),
+                    dayOfWeek: _selectedDoW,
+                    usageType: _selectedUsageType,
+                    barChartData: widget.usageType == UsageType.screenUsage
+                        ? widget.app.screenTimeThisWeek
+                        : widget.app.networkUsageThisWeek,
+                    onDayOfWeekChanged: (dow) => setState(
+                      () => _selectedDoW = dow,
+                    ),
                   ),
 
                   const SliverContentTitle(title: "Quick actions"),
 
                   /// Available app setting or functions
-                  app.packageName == AppConstants.removedAppPackage ||
-                          app.packageName == AppConstants.tetheringAppPackage
+                  widget.app.packageName == AppConstants.removedAppPackage ||
+                          widget.app.packageName ==
+                              AppConstants.tetheringAppPackage
                       ? const StyledText(
                           "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
                           fontSize: 14,
@@ -109,7 +125,7 @@ class AppDashboardScreen extends ConsumerWidget {
                       : MultiSliver(
                           children: [
                             /// Quick action for app
-                            QuickActions(app: app),
+                            QuickActions(app: widget.app),
 
                             /// Vpn permission
                             SliverPermissionWarning(

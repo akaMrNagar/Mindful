@@ -25,9 +25,11 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private static final long mTimerRate = 500;
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
-    private Timer mTrackerTimer;
+    private Timer mAppLaunchTrackingTimer;
+    private Timer mEmergencyPauseTimer;
     private List<String> mActiveAppsList = new ArrayList<>(3);
     private String mLastLaunchedApp = "";
+    private boolean mIsTrackingPaused = false;
 
 
     public DeviceLockUnlockReceiver(Context context) {
@@ -49,12 +51,12 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
 
 
     private void onDeviceUnlocked() {
-        if (mTrackerTimer == null) {
-            mTrackerTimer = new Timer();
-            mTrackerTimer.schedule(new TimerTask() {
+        if (mAppLaunchTrackingTimer == null) {
+            mAppLaunchTrackingTimer = new Timer();
+            mAppLaunchTrackingTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    onTrackerTimerRun();
+                    onAppLaunchTrackingTimerRun();
                 }
             }, 0, mTimerRate);
         }
@@ -65,16 +67,18 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
 
     private void onDeviceLocked() {
 
-        if (mTrackerTimer != null) {
-            mTrackerTimer.purge();
-            mTrackerTimer.cancel();
-            mTrackerTimer = null;
+        if (mAppLaunchTrackingTimer != null) {
+            mAppLaunchTrackingTimer.purge();
+            mAppLaunchTrackingTimer.cancel();
+            mAppLaunchTrackingTimer = null;
         }
-        Log.d(TAG, "onDeviceLocked: Tracking timer cancelled.");
+        Log.d(TAG, "onDeviceLocked: App launch tracking timer cancelled.");
     }
 
 
-    private void onTrackerTimerRun() {
+    private void onAppLaunchTrackingTimerRun() {
+        if (mIsTrackingPaused) return;
+
         long now = System.currentTimeMillis();
         UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - mTimerRate, now);
 
@@ -113,6 +117,25 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         eventIntent.setPackage(AppConstants.MY_APP_PACKAGE);
         eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedApp);
         mContext.sendBroadcast(eventIntent);
+    }
+
+    public void useEmergencyPass() {
+        mIsTrackingPaused = true;
+
+        if (mEmergencyPauseTimer != null) {
+            mEmergencyPauseTimer.cancel();
+            mEmergencyPauseTimer = null;
+        }
+
+        mEmergencyPauseTimer = new Timer();
+        mEmergencyPauseTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mIsTrackingPaused = false;
+                mEmergencyPauseTimer.cancel();
+                mEmergencyPauseTimer = null;
+            }
+        }, AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS);
     }
 
 

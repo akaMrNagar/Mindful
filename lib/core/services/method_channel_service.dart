@@ -120,6 +120,13 @@ class MethodChannelService {
         jsonEncode(bedtimeSettings),
       );
 
+  Future<int> getLeftEmergencyPasses() async {
+    return await _methodChannel.invokeMethod('getLeftEmergencyPasses') as int;
+  }
+
+  Future<void> useEmergencyPass() async =>
+      await _methodChannel.invokeMethod('useEmergencyPass');
+
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
 

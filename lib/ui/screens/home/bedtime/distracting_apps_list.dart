@@ -48,9 +48,9 @@ class DistractingAppsList extends ConsumerWidget {
     final distractingApps =
         ref.watch(bedtimeProvider.select((v) => v.distractingApps));
 
-    /// Parameters for family provider
-    final params = (dayOfWeek: dayOfWeek, includeAll: true);
-    final allApps = ref.watch(packagesByScreenUsageProvider(params));
+    /// Arguments for family provider
+    final args = (selectedDoW: dayOfWeek, includeAll: true);
+    final allApps = ref.watch(packagesByScreenUsageProvider(args));
 
     return allApps.when(
       loading: () => const AsyncLoadingIndicator().toSliverBox(),

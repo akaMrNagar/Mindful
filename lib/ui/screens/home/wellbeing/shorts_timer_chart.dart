@@ -117,6 +117,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       isSubtitle: true,
                       fontWeight: FontWeight.w500,
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     32.vBox(),
                     Icon(

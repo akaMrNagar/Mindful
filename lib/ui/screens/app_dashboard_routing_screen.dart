@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
@@ -44,7 +46,11 @@ class _AppDashboardRoutingScreenState
           /// Go to app dashboard
           Navigator.of(context).pushReplacementNamed(
             AppRoutes.appDashboardScreen,
-            arguments: appsMap[target]!,
+            arguments: (
+              app: appsMap[target]!,
+              selectedUsageType: UsageType.screenUsage,
+              selectedDoW: dayOfWeek,
+            ),
           );
         }
       },

@@ -114,6 +114,13 @@ public class MindfulTrackerService extends Service {
         }
     }
 
+    public void onMidnightReset() {
+        mPurgedApps.clear();
+    }
+
+    public void useEmergencyPass() {
+        if (mLockUnlockReceiver != null) mLockUnlockReceiver.useEmergencyPass();
+    }
 
     @Override
     public void onDestroy() {

@@ -17,18 +17,18 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/dialogs/duration_picker.dart';
 
-/// List tile used for displaying app usage info based on the bool [usageType]
+/// List tile used for displaying app usage info based on the bool [selectedUsageType]
 class ApplicationTile extends ConsumerWidget {
   const ApplicationTile({
     super.key,
     required this.app,
-    required this.usageType,
-    required this.day,
+    required this.selectedUsageType,
+    required this.selectedDoW,
   });
 
   final AndroidApp app;
-  final UsageType usageType;
-  final int day;
+  final UsageType selectedUsageType;
+  final int selectedDoW;
 
   void _pickAppTimer(
     BuildContext context,
@@ -40,7 +40,7 @@ class ApplicationTile extends ConsumerWidget {
       settingsProvider.select((v) => v.isInvincibleModeOn),
     );
 
-    if (isInvincibleModeOn && prevTimer>0 && screenTime >= prevTimer) {
+    if (isInvincibleModeOn && prevTimer > 0 && screenTime >= prevTimer) {
       context.showSnackWarning(
         "Due to invincible mode, modifications to paused app's timer is not allowed.",
       );
@@ -66,8 +66,14 @@ class ApplicationTile extends ConsumerWidget {
 
     return DefaultListTile(
       onPressed: () {
-        Navigator.of(context)
-            .pushNamed(AppRoutes.appDashboardScreen, arguments: app);
+        Navigator.of(context).pushNamed(
+          AppRoutes.appDashboardScreen,
+          arguments: (
+            app: app,
+            selectedUsageType: selectedUsageType,
+            selectedDoW: selectedDoW,
+          ),
+        );
       },
 
       /// App icon
@@ -78,9 +84,9 @@ class ApplicationTile extends ConsumerWidget {
 
       /// App's Screen Time OR Data Usage
       subtitle: StyledText(
-        usageType == UsageType.networkUsage
-            ? app.networkUsageThisWeek[day].toData()
-            : app.screenTimeThisWeek[day].seconds.toTimeFull(),
+        selectedUsageType == UsageType.networkUsage
+            ? app.networkUsageThisWeek[selectedDoW].toData()
+            : app.screenTimeThisWeek[selectedDoW].seconds.toTimeFull(),
         fontSize: 14,
         color: Theme.of(context).hintColor,
       ),
