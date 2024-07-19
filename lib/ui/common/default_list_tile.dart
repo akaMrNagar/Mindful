@@ -50,6 +50,7 @@ class DefaultListTile extends StatelessWidget {
       width: width,
       padding: padding,
       margin: margin,
+      circularRadius: (height ?? 64) <= 48 ? 14 : 18,
       color: isPrimary ? null : color ?? Colors.transparent,
       onPressed: enabled ? onPressed : null,
       child: Row(

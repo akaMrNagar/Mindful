@@ -27,7 +27,8 @@ class ScheduleCard extends ConsumerWidget {
 
     return RoundedContainer(
       height: 208,
-      padding: const EdgeInsets.all(12),
+      circularRadius: 24,
+      padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -76,6 +77,7 @@ class ScheduleCard extends ConsumerWidget {
                 7,
                 (index) => Expanded(
                   child: RoundedContainer(
+                    circularRadius: 40,
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     color: scheduleDays[index]
                         ? isScheduleOn

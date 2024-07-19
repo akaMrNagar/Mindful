@@ -1,25 +1,23 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_permission_warning.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
+import 'package:mindful/ui/permissions/vpn_permission.dart';
 import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class AppDashboardScreen extends ConsumerStatefulWidget {
+class AppDashboardScreen extends StatefulWidget {
   const AppDashboardScreen({
     super.key,
     required this.app,
@@ -32,10 +30,10 @@ class AppDashboardScreen extends ConsumerStatefulWidget {
   final int selectedDoW;
 
   @override
-  ConsumerState<AppDashboardScreen> createState() => _AppDashboardScreenState();
+  State<AppDashboardScreen> createState() => _AppDashboardScreenState();
 }
 
-class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
+class _AppDashboardScreenState extends State<AppDashboardScreen> {
   UsageType _selectedUsageType = UsageType.screenUsage;
   int _selectedDoW = dayOfWeek;
 
@@ -51,9 +49,6 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final haveVpnPermission =
-        ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
-
     return Scaffold(
       body: DefaultNavbar(
         navbarItems: [
@@ -63,6 +58,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
             body: Padding(
               padding: const EdgeInsets.only(left: 4, right: 12),
               child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
                 slivers: [
                   /// App bar
                   SliverFlexibleAppBar(title: widget.app.name),
@@ -124,20 +120,11 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                         ).toSliverBox()
                       : MultiSliver(
                           children: [
+                            /// Vpn permission
+                            if (!widget.app.isImpSysApp) const VpnPermission(),
+
                             /// Quick action for app
                             QuickActions(app: widget.app),
-
-                            /// Vpn permission
-                            SliverPermissionWarning(
-                              title: "Create VPN",
-                              information:
-                                  "Granting permission to establish a local virtual private network (VPN) connection enables Mindful to restrict internet access for designated applications.",
-                              havePermission: haveVpnPermission,
-                              margin: const EdgeInsets.only(top: 24),
-                              onTapAllow: ref
-                                  .read(permissionProvider.notifier)
-                                  .askVpnPermission,
-                            ),
                           ],
                         ),
 

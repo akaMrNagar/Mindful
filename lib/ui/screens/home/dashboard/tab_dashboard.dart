@@ -13,7 +13,9 @@ import 'package:mindful/providers/aggregated_usage_provider.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
-import 'package:mindful/ui/screens/home/dashboard/info_card.dart';
+import 'package:mindful/ui/permissions/display_overlay_permission.dart';
+import 'package:mindful/ui/permissions/usage_access_permission.dart';
+import 'package:mindful/ui/screens/home/dashboard/primary_usage_card.dart';
 import 'package:mindful/ui/screens/home/dashboard/sliver_categorical_usage.dart';
 
 class TabDashboard extends ConsumerWidget {
@@ -28,15 +30,20 @@ class TabDashboard extends ConsumerWidget {
       child: Stack(
         children: [
           CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               /// Appbar
               const SliverFlexibleAppBar(title: "Dashboard"),
+
+              const UsageAccessPermission(),
+
+              const DisplayOverlayPermission(),
 
               const SliverContentTitle(title: "Today's usage"),
               8.vSliverBox(),
 
               /// Screen time
-              InfoCard(
+              PrimaryUsageCard(
                 icon: FluentIcons.phone_screen_time_20_regular,
                 title: "Screen time",
                 info: aggregatedUsage.screenTimeThisWeek[dayOfWeek].seconds
@@ -47,7 +54,7 @@ class TabDashboard extends ConsumerWidget {
               Row(
                 children: [
                   Expanded(
-                    child: InfoCard(
+                    child: PrimaryUsageCard(
                       icon: FluentIcons.cellular_data_1_20_regular,
                       title: "Mobile data",
                       info: aggregatedUsage.mobileUsageThisWeek[dayOfWeek]
@@ -56,7 +63,7 @@ class TabDashboard extends ConsumerWidget {
                   ),
                   8.hBox(),
                   Expanded(
-                    child: InfoCard(
+                    child: PrimaryUsageCard(
                       icon: FluentIcons.wifi_1_20_regular,
                       title: "Wifi data",
                       info:
@@ -78,17 +85,17 @@ class TabDashboard extends ConsumerWidget {
           ),
 
           /// Emergency pause button
-          // if (MethodChannelService.instance.targetedAppPackage.isNotEmpty)
-          Positioned(
-            bottom: 32,
-            right: 24,
-            child: FloatingActionButton.extended(
-              heroTag: 'emergencyFAB',
-              label: const Text("Emergency"),
-              icon: const Icon(FluentIcons.rocket_20_regular),
-              onPressed: () => _useEmergency(context, ref),
-            ),
-          )
+          if (MethodChannelService.instance.targetedAppPackage.isNotEmpty)
+            Positioned(
+              bottom: 32,
+              right: 24,
+              child: FloatingActionButton.extended(
+                heroTag: 'emergencyFAB',
+                label: const Text("Emergency"),
+                icon: const Icon(FluentIcons.rocket_20_regular),
+                onPressed: () => _useEmergency(context, ref),
+              ),
+            )
         ],
       ),
     );

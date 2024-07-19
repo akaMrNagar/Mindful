@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: DefaultNavbar(
         leading: IconButton(
-          icon: const Icon(FluentIcons.device_eq_20_filled),
+          icon: const Icon(FluentIcons.settings_20_regular),
           onPressed: () =>
               Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
         ),

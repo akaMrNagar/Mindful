@@ -1,6 +1,7 @@
 package com.akamrnagar.mindful;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -162,28 +163,24 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskVpnPermission": {
-                result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
             case "getAndAskDndPermission": {
                 result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskUsageStatesPermission": {
-                result.success(PermissionsHelper.getAndAskUsageStatesPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskDisplayOverlayPermission": {
-                result.success(PermissionsHelper.getAndAskDisplayOverlayPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskBatteryOptimizationPermission": {
-                result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
+            case "getAndAskUsageAccessPermission": {
+                result.success(PermissionsHelper.getAndAskUsageAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskAdminPermission": {
                 result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskVpnPermission": {
+                result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskDisplayOverlayPermission": {
+                result.success(getAndAskDisplayOverlayPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
             }
 
@@ -216,6 +213,17 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             startActivityForResult(intent, 0);
         }
         return intent == null;
+    }
+
+    private boolean getAndAskDisplayOverlayPermission(boolean askPermissionToo) {
+        if (Settings.canDrawOverlays(this)) return true;
+
+        if (askPermissionToo) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(android.net.Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 0);
+        }
+        return false;
     }
 
 

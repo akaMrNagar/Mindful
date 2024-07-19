@@ -12,7 +12,7 @@ class RoundedContainer extends StatelessWidget {
     this.onPressed,
     this.elevation = 0,
     this.applyBorder = false,
-    this.circularRadius = 12,
+    this.circularRadius = 18,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
   });

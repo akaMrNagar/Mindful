@@ -15,6 +15,7 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
 
@@ -61,6 +62,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       child: Stack(
         children: [
           CustomScrollView(
+            physics: const BouncingScrollPhysics(),
             slivers: [
               /// Appbar
               const SliverFlexibleAppBar(title: "Wellbeing"),
@@ -70,16 +72,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 "Silence your phone, start dnd change screen to black and white at bedtime. Only alarms and important calls can reach you.",
               ).toSliverBox(),
 
-              SliverPermissionWarning(
-                title: "Accessibility",
-                information:
-                    "Granting accessibility permission allows Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers. Additionally, it filters inappropriate websites, promoting a more secure and focused online environment.",
-                havePermission: haveAccessibilityPermission,
-                margin: const EdgeInsets.only(top: 12),
-                onTapAllow: ref
-                    .read(permissionProvider.notifier)
-                    .askAccessibilityPermission,
-              ),
+              const AccessibilityPermission(),
 
               if (haveAccessibilityPermission)
                 SliverPermissionWarning(

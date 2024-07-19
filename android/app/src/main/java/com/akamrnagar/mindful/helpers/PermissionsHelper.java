@@ -2,6 +2,7 @@ package com.akamrnagar.mindful.helpers;
 
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
+import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
 
@@ -35,16 +36,17 @@ public class PermissionsHelper {
     }
 
 
-    public static boolean getAndAskUsageStatesPermission(@NonNull Context context, boolean askPermissionToo) {
-        return true;
-    }
+    public static boolean getAndAskUsageAccessPermission(@NonNull Context context, boolean askPermissionToo) {
+        UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        long now = System.currentTimeMillis();
+        boolean haveUsage = !usageStatsManager.queryAndAggregateUsageStats(now - 24 * 60 * 60 * 1000, now).isEmpty();
 
-    public static boolean getAndAskDisplayOverlayPermission(@NonNull Context context, boolean askPermissionToo) {
-        return true;
-    }
+        if (haveUsage) return true;
+        if (askPermissionToo) {
+            ActivityNewTaskHelper.openDeviceUsageAccessSection(context);
+        }
 
-    public static boolean getAndAskBatteryOptimizationPermission(@NonNull Context context, boolean askPermissionToo) {
-        return true;
+        return false;
     }
 
     public static boolean getAndAskDndPermission(@NonNull Context context, boolean askPermissionToo) {
@@ -53,21 +55,6 @@ public class PermissionsHelper {
 
         /// Ask for permission
         if (askPermissionToo) ActivityNewTaskHelper.openDoNotDisturbAccessSection(context);
-
         return false;
     }
-
-
-    public static boolean revokeAdminPermission(@NonNull Context context) {
-        ComponentName componentName = new ComponentName(context, MindfulAdminReceiver.class);
-        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-
-        if (devicePolicyManager.isAdminActive(componentName)) {
-            devicePolicyManager.removeActiveAdmin(componentName);
-        }
-
-        return true;
-    }
-
-
 }

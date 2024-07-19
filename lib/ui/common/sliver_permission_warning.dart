@@ -26,8 +26,8 @@ class SliverPermissionWarning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAnimatedPaintExtent(
-      duration: 300.ms,
-      curve: Curves.easeOut,
+      duration: 500.ms,
+      curve: Curves.easeOutExpo,
       child: Visibility(
         visible: !havePermission,
         child: RoundedContainer(

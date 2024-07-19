@@ -77,7 +77,7 @@ AppSettings _appSettingsDeserialize(
 ) {
   final object = AppSettings(
     color: reader.readStringOrNull(offsets[0]) ?? 'Light Blue',
-    isInvincibleModeOn: reader.readBoolOrNull(offsets[1]) ?? true,
+    isInvincibleModeOn: reader.readBoolOrNull(offsets[1]) ?? false,
     themeMode:
         _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[2])] ??
             ThemeMode.system,
@@ -95,7 +95,7 @@ P _appSettingsDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset) ?? 'Light Blue') as P;
     case 1:
-      return (reader.readBoolOrNull(offset) ?? true) as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 2:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??

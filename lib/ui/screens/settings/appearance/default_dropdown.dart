@@ -36,6 +36,7 @@ class DefaultDropdownButton<T> extends StatelessWidget {
       child: Hero(
         tag: heroTag,
         child: DefaultListTile(
+          height: 64,
           leadingIcon: leadingIcon,
           titleText: label,
           subtitleText: selected?.label,

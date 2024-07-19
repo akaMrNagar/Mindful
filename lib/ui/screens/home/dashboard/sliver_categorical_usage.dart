@@ -81,11 +81,11 @@ class _UsageContainer extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(icon),
+          Row(children: [Icon(icon)]),
           StyledText(
             title,
             fontSize: 16,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w500,
           ),
           const Row(children: []),
           4.vBox(),

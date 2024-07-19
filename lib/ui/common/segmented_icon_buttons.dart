@@ -7,7 +7,7 @@ class SegmentedIconButtons extends StatelessWidget {
     required this.selected,
     required this.segments,
     required this.onChange,
-    this.borderRadius = 12,
+    this.borderRadius = 14,
     this.height = 40,
     this.alignment = MainAxisAlignment.start,
   });

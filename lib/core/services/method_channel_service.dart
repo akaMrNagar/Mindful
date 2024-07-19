@@ -22,8 +22,8 @@ class MethodChannelService {
     'com.akamrnagar.mindful.methodchannel',
   );
 
-  /// Package of the app whose Time Limit Exceeded dialog is clicked.
-  /// This is forwarded by the tracking service to open the app's dashboard screen directly.
+  /// Package of the app whose Time Limit Exceeded dialog's emergency button is clicked.
+  /// This is forwarded by the overlay dialog service to show emergency button on dashboard.
   String targetedAppPackage = "";
 
   Future<void> init() async {
@@ -149,10 +149,10 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  Future<bool> getAndAskUsageStatesPermission(
+  Future<bool> getAndAskUsageAccessPermission(
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
-        'getAndAskUsageStatesPermission',
+        'getAndAskUsageAccessPermission',
         askPermissionToo,
       );
 
@@ -163,12 +163,6 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  Future<bool> getAndAskBatteryOptimizationPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskBatteryOptimizationPermission',
-        askPermissionToo,
-      );
 
   Future<bool> getAndAskAdminPermission(
           {bool askPermissionToo = false}) async =>

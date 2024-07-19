@@ -1,6 +1,7 @@
 package com.akamrnagar.mindful.receivers;
 
 import static com.akamrnagar.mindful.services.MindfulTrackerService.ACTION_APP_LAUNCHED;
+import static com.akamrnagar.mindful.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
@@ -21,7 +22,6 @@ import java.util.TimerTask;
 
 public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private final String TAG = "Mindful.DeviceLockUnlockReceiver";
-    public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
     private static final long mTimerRate = 500;
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
@@ -114,7 +114,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         // Broadcast event
         Intent eventIntent = new Intent();
         eventIntent.setAction(ACTION_APP_LAUNCHED);
-        eventIntent.setPackage(AppConstants.MY_APP_PACKAGE);
+        eventIntent.setPackage(mContext.getPackageName());
         eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedApp);
         mContext.sendBroadcast(eventIntent);
     }
