@@ -1,7 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -18,7 +17,6 @@ extension ExtBuildContext on BuildContext {
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
             backgroundColor: bgColor,
-            duration: 7.seconds,
             action: showCopyAction
                 ? SnackBarAction(
                     label: "Copy",
@@ -62,12 +60,29 @@ extension ExtBuildContext on BuildContext {
   }
 
   /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
-  void showSnackInfo(String error) {
+  void showSnackInfo(
+    String info, {
+    IconData icon = FluentIcons.info_20_regular,
+  }) {
     final bgColor = Theme.of(this).colorScheme.secondaryContainer;
     final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
     _showSnackBar(
-      icon: FluentIcons.checkmark_20_regular,
-      error: error,
+      icon: icon,
+      error: info,
+      fgColor: fgColor,
+      bgColor: bgColor,
+    );
+  }
+
+  void showSnackWarning(
+    String info, {
+    IconData icon = FluentIcons.prohibited_20_regular,
+  }) {
+    final bgColor = Theme.of(this).colorScheme.errorContainer;
+    final fgColor = Theme.of(this).colorScheme.onErrorContainer;
+    _showSnackBar(
+      icon: icon,
+      error: info,
       fgColor: fgColor,
       bgColor: bgColor,
     );

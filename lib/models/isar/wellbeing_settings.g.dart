@@ -17,33 +17,38 @@ const WellBeingSettingsSchema = CollectionSchema(
   name: r'WellBeingSettings',
   id: 3070160543092878003,
   properties: {
-    r'blockFbReels': PropertySchema(
+    r'allowedShortContentTimeSec': PropertySchema(
       id: 0,
+      name: r'allowedShortContentTimeSec',
+      type: IsarType.long,
+    ),
+    r'blockFbReels': PropertySchema(
+      id: 1,
       name: r'blockFbReels',
       type: IsarType.bool,
     ),
     r'blockInstaReels': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'blockInstaReels',
       type: IsarType.bool,
     ),
     r'blockNsfwSites': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'blockNsfwSites',
       type: IsarType.bool,
     ),
     r'blockSnapSpotlight': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'blockSnapSpotlight',
       type: IsarType.bool,
     ),
     r'blockYtShorts': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'blockYtShorts',
       type: IsarType.bool,
     ),
     r'blockedWebsites': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'blockedWebsites',
       type: IsarType.stringList,
     )
@@ -84,12 +89,13 @@ void _wellBeingSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.blockFbReels);
-  writer.writeBool(offsets[1], object.blockInstaReels);
-  writer.writeBool(offsets[2], object.blockNsfwSites);
-  writer.writeBool(offsets[3], object.blockSnapSpotlight);
-  writer.writeBool(offsets[4], object.blockYtShorts);
-  writer.writeStringList(offsets[5], object.blockedWebsites);
+  writer.writeLong(offsets[0], object.allowedShortContentTimeSec);
+  writer.writeBool(offsets[1], object.blockFbReels);
+  writer.writeBool(offsets[2], object.blockInstaReels);
+  writer.writeBool(offsets[3], object.blockNsfwSites);
+  writer.writeBool(offsets[4], object.blockSnapSpotlight);
+  writer.writeBool(offsets[5], object.blockYtShorts);
+  writer.writeStringList(offsets[6], object.blockedWebsites);
 }
 
 WellBeingSettings _wellBeingSettingsDeserialize(
@@ -99,12 +105,14 @@ WellBeingSettings _wellBeingSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = WellBeingSettings(
-    blockFbReels: reader.readBoolOrNull(offsets[0]) ?? false,
-    blockInstaReels: reader.readBoolOrNull(offsets[1]) ?? false,
-    blockNsfwSites: reader.readBoolOrNull(offsets[2]) ?? false,
-    blockSnapSpotlight: reader.readBoolOrNull(offsets[3]) ?? false,
-    blockYtShorts: reader.readBoolOrNull(offsets[4]) ?? false,
-    blockedWebsites: reader.readStringList(offsets[5]) ?? const [],
+    allowedShortContentTimeSec:
+        reader.readLongOrNull(offsets[0]) ?? 8 * 60 * 60,
+    blockFbReels: reader.readBoolOrNull(offsets[1]) ?? false,
+    blockInstaReels: reader.readBoolOrNull(offsets[2]) ?? false,
+    blockNsfwSites: reader.readBoolOrNull(offsets[3]) ?? false,
+    blockSnapSpotlight: reader.readBoolOrNull(offsets[4]) ?? false,
+    blockYtShorts: reader.readBoolOrNull(offsets[5]) ?? false,
+    blockedWebsites: reader.readStringList(offsets[6]) ?? const [],
   );
   return object;
 }
@@ -117,7 +125,7 @@ P _wellBeingSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readLongOrNull(offset) ?? 8 * 60 * 60) as P;
     case 1:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 2:
@@ -127,6 +135,8 @@ P _wellBeingSettingsDeserializeProp<P>(
     case 4:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 6:
       return (reader.readStringList(offset) ?? const []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -227,6 +237,62 @@ extension WellBeingSettingsQueryWhere
 
 extension WellBeingSettingsQueryFilter
     on QueryBuilder<WellBeingSettings, WellBeingSettings, QFilterCondition> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      allowedShortContentTimeSecEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'allowedShortContentTimeSec',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      allowedShortContentTimeSecGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'allowedShortContentTimeSec',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      allowedShortContentTimeSecLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'allowedShortContentTimeSec',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      allowedShortContentTimeSecBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'allowedShortContentTimeSec',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
       blockFbReelsEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
@@ -570,6 +636,20 @@ extension WellBeingSettingsQueryLinks
 extension WellBeingSettingsQuerySortBy
     on QueryBuilder<WellBeingSettings, WellBeingSettings, QSortBy> {
   QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByAllowedShortContentTimeSec() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'allowedShortContentTimeSec', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByAllowedShortContentTimeSecDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'allowedShortContentTimeSec', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       sortByBlockFbReels() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockFbReels', Sort.asc);
@@ -642,6 +722,20 @@ extension WellBeingSettingsQuerySortBy
 
 extension WellBeingSettingsQuerySortThenBy
     on QueryBuilder<WellBeingSettings, WellBeingSettings, QSortThenBy> {
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByAllowedShortContentTimeSec() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'allowedShortContentTimeSec', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByAllowedShortContentTimeSecDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'allowedShortContentTimeSec', Sort.desc);
+    });
+  }
+
   QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       thenByBlockFbReels() {
     return QueryBuilder.apply(this, (query) {
@@ -729,6 +823,13 @@ extension WellBeingSettingsQuerySortThenBy
 extension WellBeingSettingsQueryWhereDistinct
     on QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct> {
   QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
+      distinctByAllowedShortContentTimeSec() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'allowedShortContentTimeSec');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
       distinctByBlockFbReels() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockFbReels');
@@ -776,6 +877,13 @@ extension WellBeingSettingsQueryProperty
   QueryBuilder<WellBeingSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, int, QQueryOperations>
+      allowedShortContentTimeSecProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'allowedShortContentTimeSec');
     });
   }
 

@@ -10,6 +10,7 @@ class TabAbout extends ConsumerWidget {
     return const Padding(
       padding: EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
+        physics: BouncingScrollPhysics(),
         slivers: [
           /// Appbar
           SliverFlexibleAppBar(title: "About"),
@@ -22,7 +23,7 @@ class TabAbout extends ConsumerWidget {
 
           /// Permissions
 
-          /// Opensource license
+          /// Open source license
         ],
       ),
     );

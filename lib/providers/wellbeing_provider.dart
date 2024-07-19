@@ -44,4 +44,7 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
             ? [...state.blockedWebsites, websiteHost]
             : [...state.blockedWebsites.where((e) => e != websiteHost)],
       );
+
+  void setAllowedShortContentTime(int timeSec) =>
+      state = state.copyWith(allowedShortContentTimeSec: timeSec);
 }

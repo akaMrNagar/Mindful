@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 part 'focus_settings.g.dart';
 
 /// Focus info model used in mapping app package to its focus settings like
-/// [timer], [emergencyCounter] and [lastEmergencyTime]
+/// [timerSec], [emergencyCounter] and [lastEmergencyTime]
 @immutable
 @collection
 class FocusSettings {
@@ -16,7 +16,7 @@ class FocusSettings {
   final String appPackage;
 
   /// App timer in seconds
-  final int timer;
+  final int timerSec;
 
   /// Flag denoting if this app's can access internet or not
   final bool internetAccess;
@@ -24,18 +24,18 @@ class FocusSettings {
   /// Focus settings for each installed app
   const FocusSettings({
     required this.appPackage,
-    this.timer = 0,
+    this.timerSec = 0,
     this.internetAccess = true,
   });
 
   FocusSettings copyWith({
     String? appPackage,
-    int? timer,
+    int? timerSec,
     bool? internetAccess,
   }) {
     return FocusSettings(
       appPackage: appPackage ?? this.appPackage,
-      timer: timer ?? this.timer,
+      timerSec: timerSec ?? this.timerSec,
       internetAccess: internetAccess ?? this.internetAccess,
     );
   }

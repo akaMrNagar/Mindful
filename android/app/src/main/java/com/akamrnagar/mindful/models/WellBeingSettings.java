@@ -40,6 +40,11 @@ public class WellBeingSettings {
     public boolean blockNsfwSites = false;
 
     /**
+     * Allowed time for short content in milliseconds (Calculated from seconds in constructor)
+     */
+    public long allowedShortContentTimeMs = 8 * 60 * 60;
+
+    /**
      * List of website hosts which are blocked.
      */
     public List<String> blockedWebsites = new ArrayList<>(0);
@@ -66,6 +71,7 @@ public class WellBeingSettings {
                 blockSnapSpotlight = jsonObject.getBoolean("blockSnapSpotlight");
                 blockFbReels = jsonObject.getBoolean("blockFbReels");
                 blockNsfwSites = jsonObject.getBoolean("blockNsfwSites");
+                allowedShortContentTimeMs = jsonObject.getInt("allowedShortContentTimeSec") * 1000L;
 
 
                 /// Blocked websites

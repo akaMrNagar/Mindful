@@ -2,6 +2,8 @@ package com.akamrnagar.mindful.services;
 
 import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_STOP_SERVICE;
+import static com.akamrnagar.mindful.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
+import static com.akamrnagar.mindful.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 import static com.akamrnagar.mindful.utils.Extensions.getOrDefault;
 
 import android.annotation.SuppressLint;
@@ -114,6 +116,13 @@ public class MindfulTrackerService extends Service {
         }
     }
 
+    public void onMidnightReset() {
+        mPurgedApps.clear();
+    }
+
+    public void useEmergencyPass() {
+        if (mLockUnlockReceiver != null) mLockUnlockReceiver.useEmergencyPass();
+    }
 
     @Override
     public void onDestroy() {
@@ -140,8 +149,6 @@ public class MindfulTrackerService extends Service {
 
     private class AppLaunchReceiver extends BroadcastReceiver {
         private final String TAG = "Mindful.AppLaunchReceiver";
-        public static final String ACTION_APP_LAUNCHED = "com.akamrnagar.mindful.ACTION_APP_LAUNCHED";
-        public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
         private Timer mAppUsageRecheckTimer;
 
         @Override
@@ -206,6 +213,7 @@ public class MindfulTrackerService extends Service {
             if (!ServicesHelper.isServiceRunning(MindfulTrackerService.this, OverlayDialogService.class.getName())) {
                 Intent intent = new Intent(MindfulTrackerService.this, OverlayDialogService.class);
                 intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
+                intent.putExtra(INTENT_EXTRA_IS_THIS_BEDTIME, mDistractingApps.contains(packageName));
                 startService(intent);
                 Log.d(TAG, "showOverlayDialog: Starting overlay dialog service for package : " + packageName);
             }

@@ -26,7 +26,7 @@ class AppSettings {
   const AppSettings({
     this.themeMode = ThemeMode.system,
     this.color = 'Light Blue',
-    this.isInvincibleModeOn = true,
+    this.isInvincibleModeOn = false,
   });
 
   AppSettings copyWith({

@@ -1,6 +1,10 @@
 package com.akamrnagar.mindful.services;
 
-import static com.akamrnagar.mindful.receivers.DeviceLockUnlockReceiver.INTENT_EXTRA_PACKAGE_NAME;
+
+import static com.akamrnagar.mindful.utils.AppConstants.BEDTIME_APP_PAUSE_MESSAGE;
+import static com.akamrnagar.mindful.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
+import static com.akamrnagar.mindful.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
+import static com.akamrnagar.mindful.utils.AppConstants.TIMER_APP_PAUSE_MESSAGE;
 
 import android.app.AlertDialog;
 import android.app.Service;
@@ -23,22 +27,22 @@ import androidx.annotation.Nullable;
 
 import com.akamrnagar.mindful.MainActivity;
 
-import java.util.Objects;
-
 /**
  * Display a dialog informing user about the app whose timer ran out.
  */
 public class OverlayDialogService extends Service {
 
     public static final String TAG = "Mindful.OverlayDialogService";
-    private static String packageName;
+    private String mPackageName;
+    private boolean mIsThisBedtime = false;
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        packageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
+        mPackageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
+        mIsThisBedtime = intent.getBooleanExtra(INTENT_EXTRA_IS_THIS_BEDTIME, false);
         Log.d(TAG, "onStartCommand: Started overlay dialog service");
 
-        if (packageName == null) {
+        if (mPackageName == null) {
             stopSelf();
             return START_NOT_STICKY;
         }
@@ -47,7 +51,7 @@ public class OverlayDialogService extends Service {
         try {
             showAlertDialog();
         } catch (Exception e) {
-            Log.e(TAG, "onStartCommand: Error starting overlay dialog service for app: " + packageName, e);
+            Log.e(TAG, "onStartCommand: Error starting overlay dialog service for app: " + mPackageName, e);
             stopSelf();
         }
 
@@ -61,10 +65,12 @@ public class OverlayDialogService extends Service {
             @Override
             public void run() {
 
+                if (alertDialog.getWindow() == null) return;
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Objects.requireNonNull(alertDialog.getWindow()).setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                    alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
                 } else {
-                    Objects.requireNonNull(alertDialog.getWindow()).setType(WindowManager.LayoutParams.TYPE_PHONE);
+                    alertDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
                 }
 
                 alertDialog.show();
@@ -76,7 +82,7 @@ public class OverlayDialogService extends Service {
 
     private AlertDialog createDialog() throws PackageManager.NameNotFoundException {
         PackageManager packageManager = getPackageManager();
-        ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+        ApplicationInfo info = packageManager.getApplicationInfo(mPackageName, PackageManager.GET_META_DATA);
 
         String appName = info.loadLabel(packageManager).toString();
         Drawable icon = packageManager.getApplicationIcon(info);
@@ -89,27 +95,25 @@ public class OverlayDialogService extends Service {
         }
 
         return new AlertDialog.Builder(this, sysTheme)
-                .setTitle("App Locked")
-                .setMessage(appName + "'s timer ran out.\n\nEmbrace this pause to supercharge your productivity. Stay mindful, stay focused.")
+                .setTitle(appName)
+                .setMessage(mIsThisBedtime? BEDTIME_APP_PAUSE_MESSAGE: TIMER_APP_PAUSE_MESSAGE)
                 .setIcon(icon)
                 .setCancelable(false)
-                .setNeutralButton("Settings", this::onClickSettings)
-                .setPositiveButton("Ok", this::onClickOk)
+                .setNegativeButton("Close", this::onClickClose)
+                .setPositiveButton("Emergency", this::onClickEmergency)
                 .setOnDismissListener(this::onDialogDismiss)
                 .create();
     }
 
-    private void onClickSettings(DialogInterface dialog, int which) {
+    private void onClickEmergency(DialogInterface dialog, int which) {
         Intent appIntent = new Intent(getBaseContext(), MainActivity.class);
         appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appIntent.setData(Uri.parse(appIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        appIntent.putExtra("route", "/appDashboardRoutingScreen");
-        appIntent.putExtra("appPackage", packageName);
-
+        appIntent.putExtra("appPackage", mPackageName);
         startActivity(appIntent);
     }
 
-    private void onClickOk(DialogInterface dialog, int which) {
+    private void onClickClose(DialogInterface dialog, int which) {
         goToHome();
     }
 

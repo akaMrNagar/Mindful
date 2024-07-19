@@ -22,12 +22,10 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     WidgetsBinding.instance.addObserver(this);
 
     final cache = state.copyWith(
-      haveUsagePermission:
-          await MethodChannelService.instance.getAndAskUsageStatesPermission(),
+      haveUsageAccessPermission:
+          await MethodChannelService.instance.getAndAskUsageAccessPermission(),
       haveDisplayOverlayPermission: await MethodChannelService.instance
           .getAndAskDisplayOverlayPermission(),
-      haveBatteryOptimizationPermission: await MethodChannelService.instance
-          .getAndAskBatteryOptimizationPermission(),
       haveDndPermission:
           await MethodChannelService.instance.getAndAskDndPermission(),
       haveAccessibilityPermission: await MethodChannelService.instance
@@ -60,16 +58,12 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     state = switch (_askedPermission) {
       PermissionType.none => state,
       PermissionType.usageAccess => state.copyWith(
-          haveUsagePermission: await MethodChannelService.instance
-              .getAndAskUsageStatesPermission(),
+          haveUsageAccessPermission: await MethodChannelService.instance
+              .getAndAskUsageAccessPermission(),
         ),
       PermissionType.displayOverlay => state.copyWith(
           haveDisplayOverlayPermission: await MethodChannelService.instance
               .getAndAskDisplayOverlayPermission(),
-        ),
-      PermissionType.batteryOptimization => state.copyWith(
-          haveBatteryOptimizationPermission: await MethodChannelService.instance
-              .getAndAskBatteryOptimizationPermission(),
         ),
       PermissionType.doNotDisturb => state.copyWith(
           haveDndPermission:
@@ -90,6 +84,18 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     };
 
     _askedPermission = PermissionType.none;
+  }
+
+  void askUsageAccessPermission() async {
+    await MethodChannelService.instance
+        .getAndAskUsageAccessPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.usageAccess;
+  }
+
+  void askDisplayOverlayPermission() async {
+    await MethodChannelService.instance
+        .getAndAskDisplayOverlayPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.displayOverlay;
   }
 
   void askAccessibilityPermission() async {

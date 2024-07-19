@@ -1,114 +1,129 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_duration.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
-import 'package:mindful/providers/packages_by_network_usage_provider.dart';
-import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
-import 'package:mindful/ui/common/animated_apps_list.dart';
-import 'package:mindful/ui/common/async_error_indicator.dart';
-import 'package:mindful/ui/common/async_loading_indicator.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
-import 'package:mindful/ui/common/sliver_usage_cards.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/permissions/display_overlay_permission.dart';
+import 'package:mindful/ui/permissions/usage_access_permission.dart';
+import 'package:mindful/ui/screens/home/dashboard/primary_usage_card.dart';
+import 'package:mindful/ui/screens/home/dashboard/sliver_categorical_usage.dart';
 
-class TabDashboard extends ConsumerStatefulWidget {
+class TabDashboard extends ConsumerWidget {
   const TabDashboard({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TabDashboardState();
-}
-
-class _TabDashboardState extends ConsumerState<TabDashboard> {
-  UsageType _usageType = UsageType.screenUsage;
-  int _dayOfWeek = 1;
-  bool _includeAllApps = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _dayOfWeek = dayOfWeek;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    /// Aggregated usage for whole week on the basis of full day
+  Widget build(BuildContext context, WidgetRef ref) {
     final aggregatedUsage = ref.watch(aggregatedUsageProvider);
-
-    /// Parameters for family provider
-    final params = (dayOfWeek: _dayOfWeek, includeAll: _includeAllApps);
-
-    /// Filtered and sorted apps based on usage type and day of this week
-    final filtered = _usageType == UsageType.screenUsage
-        ? ref.watch(packagesByScreenUsageProvider(params))
-        : ref.watch(packagesByNetworkUsageProvider(params));
 
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
-      child: CustomScrollView(
-        slivers: [
-          /// Appbar
-          const SliverFlexibleAppBar(title: "Dashboard"),
+      child: Stack(
+        children: [
+          CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              /// Appbar
+              const SliverFlexibleAppBar(title: "Dashboard"),
 
-          /// Usage type selector and usage info card
-          SliverUsageCards(
-            usageType: _usageType,
-            screenUsageInfo: aggregatedUsage.screenTimeThisWeek[_dayOfWeek],
-            wifiUsageInfo: aggregatedUsage.wifiUsageThisWeek[_dayOfWeek],
-            mobileUsageInfo: aggregatedUsage.mobileUsageThisWeek[_dayOfWeek],
-            onUsageTypeChanged: (i) => setState(
-              () => _usageType = UsageType.values[i],
-            ),
+              const UsageAccessPermission(),
+
+              const DisplayOverlayPermission(),
+
+              const SliverContentTitle(title: "Today's usage"),
+              8.vSliverBox(),
+
+              /// Screen time
+              PrimaryUsageCard(
+                icon: FluentIcons.phone_screen_time_20_regular,
+                title: "Screen time",
+                info: aggregatedUsage.screenTimeThisWeek[dayOfWeek].seconds
+                    .toTimeFull(),
+              ).toSliverBox(),
+
+              /// Data usage mobile + wifi
+              Row(
+                children: [
+                  Expanded(
+                    child: PrimaryUsageCard(
+                      icon: FluentIcons.cellular_data_1_20_regular,
+                      title: "Mobile data",
+                      info: aggregatedUsage.mobileUsageThisWeek[dayOfWeek]
+                          .toData(),
+                    ),
+                  ),
+                  8.hBox(),
+                  Expanded(
+                    child: PrimaryUsageCard(
+                      icon: FluentIcons.wifi_1_20_regular,
+                      title: "Wifi data",
+                      info:
+                          aggregatedUsage.wifiUsageThisWeek[dayOfWeek].toData(),
+                    ),
+                  ),
+                ],
+              ).toSliverBox(),
+
+              /// Category wise usage
+              const SliverContentTitle(title: "Categorical usage"),
+              8.vSliverBox(),
+
+              /// Category wise usage
+              const SliverCategoricalUsage(),
+
+              180.vSliverBox(),
+            ],
           ),
-          20.vSliverBox(),
 
-          /// Usage bar chart and selected day changer
-          SliverUsageChartPanel(
-            dayOfWeek: _dayOfWeek,
-            usageType: _usageType,
-            barChartData: _usageType == UsageType.screenUsage
-                ? aggregatedUsage.screenTimeThisWeek
-                : aggregatedUsage.networkUsageThisWeek,
-            onDayOfWeekChanged: (dow) => setState(() => _dayOfWeek = dow),
-          ),
-
-          /// Most used apps list
-          filtered.when(
-            loading: () => const AsyncLoadingIndicator().toSliverBox(),
-            error: (e, st) => AsyncErrorIndicator(e, st).toSliverBox(),
-            data: (packages) => AnimatedAppsList(
-              itemExtent: 64,
-              headerTitle: "Most used apps",
-              appPackages: packages,
-              itemBuilder: (context, app) => ApplicationTile(
-                app: app,
-                usageType: _usageType,
-                day: _dayOfWeek,
+          /// Emergency pause button
+          if (MethodChannelService.instance.targetedAppPackage.isNotEmpty)
+            Positioned(
+              bottom: 32,
+              right: 24,
+              child: FloatingActionButton.extended(
+                heroTag: 'emergencyFAB',
+                label: const Text("Emergency"),
+                icon: const Icon(FluentIcons.rocket_20_regular),
+                onPressed: () => _useEmergency(context, ref),
               ),
-            ),
-          ),
-
-          /// Show all apps button
-          if (!_includeAllApps && filtered.hasValue)
-            DefaultListTile(
-              height: 48,
-              isPrimary: true,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              margin: const EdgeInsets.only(top: 20),
-              leading: const Icon(FluentIcons.select_all_off_20_regular),
-              titleText: "Show all apps",
-              trailing: const Icon(FluentIcons.chevron_down_20_filled),
-              onPressed: () => setState(() => _includeAllApps = true),
-            ).toSliverBox(),
-
-          180.vSliverBox(),
+            )
         ],
       ),
     );
+  }
+
+  void _useEmergency(BuildContext context, WidgetRef ref) async {
+    int leftPasses =
+        await MethodChannelService.instance.getLeftEmergencyPasses();
+
+    if (!context.mounted) return;
+
+    if (leftPasses <= 0) {
+      context.showSnackWarning(
+        "You have used all your emergency passes. The blocked apps cannot be unblocked until midnight.",
+      );
+      return;
+    }
+
+    final confirmed = await showConfirmationDialog(
+      context: context,
+      icon: FluentIcons.rocket_20_regular,
+      heroTag: "emergencyFAB",
+      title: "Emergency",
+      info:
+          "This will pause the app blocker for 5 minutes. You have $leftPasses emergency passes remaining. After using all passes, the app cannot be unblocked until midnight. Do you still want to proceed?",
+      positiveLabel: "Use anyway",
+    );
+
+    if (confirmed) await MethodChannelService.instance.useEmergencyPass();
   }
 }

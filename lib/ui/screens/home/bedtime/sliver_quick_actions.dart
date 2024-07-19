@@ -8,7 +8,7 @@ import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/permissions/dnd_permission.dart';
 import 'package:mindful/ui/screens/home/bedtime/distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -38,14 +38,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
     return MultiSliver(
       children: [
         /// Dnd permission warning
-        SliverPermissionWarning(
-          margin: const EdgeInsets.only(top: 8),
-          havePermission: haveDndPermission,
-          title: "Do not disturb",
-          information:
-              "Granting do not disturb access allows Mindful to start & stop do not disturb mode during the bedtime schedule.",
-          onTapAllow: ref.read(permissionProvider.notifier).askDndPermission,
-        ),
+        const DndPermission(),
 
         /// Bedtime actions
         const SliverContentTitle(title: "Quick actions"),

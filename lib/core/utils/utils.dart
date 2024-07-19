@@ -17,11 +17,3 @@ int _formatWeekDayToSunday(int weekDay) {
     int() => 1,
   };
 }
-
-/// Parameters used in the family provider to sort and filter apps package based on the params.
-/// Mainly used by [packagesByScreenUsageProvider] and [packagesByNetworkUsageProvider].
-/// Params contains bool [includeAll] and int [dayOfWeek]
-typedef FilterParams = ({
-  bool includeAll,
-  int dayOfWeek,
-});

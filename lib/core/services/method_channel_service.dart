@@ -22,8 +22,8 @@ class MethodChannelService {
     'com.akamrnagar.mindful.methodchannel',
   );
 
-  /// Package of the app whose Time Limit Exceeded dialog is clicked.
-  /// This is forwarded by the tracking service to open the app's dashboard screen directly.
+  /// Package of the app whose Time Limit Exceeded dialog's emergency button is clicked.
+  /// This is forwarded by the overlay dialog service to show emergency button on dashboard.
   String targetedAppPackage = "";
 
   Future<void> init() async {
@@ -38,6 +38,11 @@ class MethodChannelService {
   }
 
   // SECTION: Utility Methods ======================================================================
+
+  Future<int> getShortsScreenTimeSec() async {
+    int time = await _methodChannel.invokeMethod('getShortsScreenTimeMs');
+    return time ~/ 1000;
+  }
 
   Future<bool> showToast(
     String msg, {
@@ -115,6 +120,13 @@ class MethodChannelService {
         jsonEncode(bedtimeSettings),
       );
 
+  Future<int> getLeftEmergencyPasses() async {
+    return await _methodChannel.invokeMethod('getLeftEmergencyPasses') as int;
+  }
+
+  Future<void> useEmergencyPass() async =>
+      await _methodChannel.invokeMethod('useEmergencyPass');
+
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
 
@@ -137,10 +149,10 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  Future<bool> getAndAskUsageStatesPermission(
+  Future<bool> getAndAskUsageAccessPermission(
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
-        'getAndAskUsageStatesPermission',
+        'getAndAskUsageAccessPermission',
         askPermissionToo,
       );
 
@@ -151,12 +163,6 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  Future<bool> getAndAskBatteryOptimizationPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskBatteryOptimizationPermission',
-        askPermissionToo,
-      );
 
   Future<bool> getAndAskAdminPermission(
           {bool askPermissionToo = false}) async =>
@@ -164,7 +170,6 @@ class MethodChannelService {
         'getAndAskAdminPermission',
         askPermissionToo,
       );
-
 
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================

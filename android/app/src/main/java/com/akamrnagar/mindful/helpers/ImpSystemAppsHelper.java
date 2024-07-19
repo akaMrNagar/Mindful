@@ -18,11 +18,6 @@ import java.util.HashSet;
  */
 public class ImpSystemAppsHelper {
 
-    /**
-     * A set containing package names of important system applications.
-     */
-    public static HashSet<String> impSystemApps;
-
 
     /**
      * Initializes the set of important system applications.
@@ -30,8 +25,8 @@ public class ImpSystemAppsHelper {
      * @param context        The Android application context.
      * @param packageManager The package manager used for resolving default apps.
      */
-    public static void init(@NonNull Context context, @Nullable PackageManager packageManager) {
-        impSystemApps = new HashSet<>();
+    public static HashSet<String> fetchImpApps(@NonNull Context context, @Nullable PackageManager packageManager) {
+        HashSet<String> impSystemApps = new HashSet<>();
         impSystemApps.add(context.getPackageName());
 
         if (packageManager == null) {
@@ -46,6 +41,8 @@ public class ImpSystemAppsHelper {
 
         if (launcher != null) impSystemApps.add(launcher);
         if (caller != null) impSystemApps.add(caller);
+
+        return impSystemApps;
     }
 
     /**

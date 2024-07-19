@@ -40,6 +40,12 @@ public class ActivityNewTaskHelper {
 
     }
 
+    public static void openDeviceUsageAccessSection(@NonNull Context context) {
+        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+        context.startActivity(intent);
+        Toast.makeText(context, "Please allow usage access to Mindful", Toast.LENGTH_LONG).show();
+    }
+
     public static void openDoNotDisturbAccessSection(@NonNull Context context) {
         Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         context.startActivity(intent);

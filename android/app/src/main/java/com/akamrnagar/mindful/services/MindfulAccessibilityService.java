@@ -40,11 +40,17 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     // ===================================================================================================================
 
     private static final String TAG = "Mindful.MindfulAccessibilityService";
+    private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 5000L; // 5 seconds
+    private static final long BACK_ACTION_INVOKE_INTERVAL_MS = 500L; // half second
+
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
-
-    //    private SharedPreferences mSharedPrefs;
     private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
+
+    private long mLastTimeShortsCheck = 0L;
+    private long mLastTimeSharedPrefInvoked = 0L;
+    private long mLastTimeBackActionInvoked = 0L;
+    private long mTotalShortsScreenTimeMs = 0L;
 
     // FIXME: What if device reboots ?
     @Override
@@ -53,6 +59,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Register shared prefs listener
         SharedPrefsHelper.registerListener(this);
         mWellBeingSettings = SharedPrefsHelper.fetchWellBeingSettings(this);
+        mTotalShortsScreenTimeMs = SharedPrefsHelper.fetchShortsScreenTimeMs(this);
 
         // Register listener for install and uninstall events
         mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
@@ -74,13 +81,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
         // Return if no need for blocking
-        if (mWellBeingSettings.blockedWebsites.isEmpty()
-                && !mWellBeingSettings.blockInstaReels
-                && !mWellBeingSettings.blockYtShorts
-                && !mWellBeingSettings.blockSnapSpotlight
-                && !mWellBeingSettings.blockFbReels
-                && !mWellBeingSettings.blockNsfwSites
-        ) return;
+        if (mWellBeingSettings.blockedWebsites.isEmpty() && !mWellBeingSettings.blockInstaReels && !mWellBeingSettings.blockYtShorts && !mWellBeingSettings.blockSnapSpotlight && !mWellBeingSettings.blockFbReels && !mWellBeingSettings.blockNsfwSites)
+            return;
 
 
         if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null)
@@ -94,22 +96,22 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
                 if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
-                    goBackWithToast();
+                    checkTimerAndBlockShortContent();
                 }
                 break;
             case YOUTUBE_PACKAGE:
                 if (mWellBeingSettings.blockYtShorts && ShortsBlockingHelper.isYoutubeShortsOpen(node)) {
-                    goBackWithToast();
+                    checkTimerAndBlockShortContent();
                 }
                 break;
             case SNAPCHAT_PACKAGE:
                 if (mWellBeingSettings.blockSnapSpotlight && ShortsBlockingHelper.isSnapchatSpotlightOpen(node)) {
-                    goBackWithToast();
+                    checkTimerAndBlockShortContent();
                 }
                 break;
             case FACEBOOK_PACKAGE:
                 if (mWellBeingSettings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node)) {
-                    goBackWithToast();
+                    checkTimerAndBlockShortContent();
                 }
                 break;
             default:
@@ -136,7 +138,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Block short form content
         if (ShortsBlockingHelper.isShortContentOpenOnBrowser(mWellBeingSettings, url)) {
             Log.d(TAG, "blockDistractionOnBrowsers: Blocked short content " + url + " opened in " + packageName);
-            goBackWithToast();
+            checkTimerAndBlockShortContent();
         }
 
     }
@@ -174,9 +176,34 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         return "";
     }
 
+    private void checkTimerAndBlockShortContent() {
+        if (mTotalShortsScreenTimeMs > mWellBeingSettings.allowedShortContentTimeMs) {
+            goBackWithToast();
+        } else {
+            long currentTime = System.currentTimeMillis();
+            // Calculate screen time since last check
+            if (mLastTimeShortsCheck != 0) {
+                long elapsedTime = currentTime - mLastTimeShortsCheck;
+                mTotalShortsScreenTimeMs += elapsedTime;
+            }
+            // Update last check time
+            mLastTimeShortsCheck = currentTime;
+
+            // Check if the minimum interval has passed before calling shared preferences
+            if (currentTime - mLastTimeSharedPrefInvoked > SHARED_PREF_INVOKE_INTERVAL_MS) {
+                SharedPrefsHelper.storeShortsScreenTimeMs(this, mTotalShortsScreenTimeMs);
+                mLastTimeSharedPrefInvoked = currentTime;
+            }
+        }
+    }
+
     private void goBackWithToast() {
-        performGlobalAction(GLOBAL_ACTION_BACK);
-        Toast.makeText(MindfulAccessibilityService.this, "Content blocked!, going back", Toast.LENGTH_SHORT).show();
+        long currentTime = System.currentTimeMillis();
+        if (currentTime - mLastTimeBackActionInvoked >= BACK_ACTION_INVOKE_INTERVAL_MS) {
+            mLastTimeBackActionInvoked = currentTime;
+            performGlobalAction(GLOBAL_ACTION_BACK);
+            Toast.makeText(MindfulAccessibilityService.this, "Content blocked!, going back", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void refreshServiceInfo() {
@@ -241,9 +268,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             String action = intent.getAction();
 
             if (Intent.ACTION_PACKAGE_ADDED.equals(action) || Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
-                Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action
-                        + " for package: " + getPackageName(intent)
-                );
+                Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action + " for package: " + getPackageName(intent));
                 refreshServiceInfo();
             }
         }

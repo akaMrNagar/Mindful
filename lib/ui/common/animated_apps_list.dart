@@ -77,15 +77,15 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
               key: Key(widget.appPackages[index]),
               effects: [
                 MoveEffect(
-                  duration: 250.ms,
-                  curve: Curves.easeOut,
+                  duration: 300.ms,
+                  curve: Curves.easeOutExpo,
                   begin: Offset(0, yOffset * widget.itemExtent),
                   end: const Offset(0, 0),
                 ),
               ],
 
               /// NOTE: App can't be null in any condition but we put divider
-              /// only if we added empty package in list to seperate
+              /// only if we added empty package in list to separate
               /// selected and unselected apps mainly on
               /// [TabProtection => Internet Blocker] screen and
               /// [TabBedtime => Distracting Apps List] screen

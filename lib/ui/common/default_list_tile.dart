@@ -50,6 +50,7 @@ class DefaultListTile extends StatelessWidget {
       width: width,
       padding: padding,
       margin: margin,
+      circularRadius: (height ?? 64) <= 48 ? 14 : 18,
       color: isPrimary ? null : color ?? Colors.transparent,
       onPressed: enabled ? onPressed : null,
       child: Row(
@@ -57,7 +58,12 @@ class DefaultListTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           /// Leading widget
-          leadingIcon != null ? Icon(leadingIcon) : leading ?? 0.hBox(),
+          leadingIcon != null
+              ? Icon(
+                  leadingIcon,
+                  color: enabled ? null : Theme.of(context).colorScheme.outline,
+                )
+              : leading ?? 0.hBox(),
 
           /// leading space
           if (leading != null || leadingIcon != null) const SizedBox(width: 16),

@@ -2,11 +2,13 @@ package com.akamrnagar.mindful.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.models.BedtimeSettings;
 import com.akamrnagar.mindful.models.WellBeingSettings;
+import com.akamrnagar.mindful.utils.AppConstants;
 import com.akamrnagar.mindful.utils.Utils;
 
 import org.jetbrains.annotations.Contract;
@@ -18,10 +20,12 @@ public class SharedPrefsHelper {
     private static SharedPreferences mSharedPrefs;
 
     private static final String PREFS_SHARED_BOX = "FlutterSharedPreferences";
+    private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "flutter.mindful.emergencyPassesCount";
     private static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
     private static final String PREF_KEY_APP_TIMERS = "flutter.mindful.appTimers";
     private static final String PREF_KEY_BEDTIME_SETTINGS = "flutter.mindful.bedtimeSettings";
     public static final String PREF_KEY_WELLBEING_SETTINGS = "flutter.mindful.wellBeingSettings";
+    public static final String PREF_KEY_SHORTS_SCREEN_TIME = "flutter.mindful.shortsScreenTime";
 
 
     private static void initialize(@NonNull Context context) {
@@ -36,24 +40,40 @@ public class SharedPrefsHelper {
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
     }
 
-    public static void storeBlockedApps(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
+    public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
+        if (mSharedPrefs == null) initialize(context);
+        mSharedPrefs.edit().putInt(PREF_KEY_EMERGENCY_PASSES_COUNT, passesLeftCount).apply();
+    }
+
+    public static void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_BLOCKED_APPS, dartJsonBlockedApps).apply();
     }
 
-    public static void storeAppTimers(@NonNull Context context, @NonNull String dartJsonAppTimers) {
+    public static void storeAppTimersJson(@NonNull Context context, @NonNull String dartJsonAppTimers) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_APP_TIMERS, dartJsonAppTimers).apply();
     }
 
-    public static void storeBedtimeSettings(@NonNull Context context, @NonNull String dartJsonBedtimeSettings) {
+    public static void storeBedtimeSettingsJson(@NonNull Context context, @NonNull String dartJsonBedtimeSettings) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_BEDTIME_SETTINGS, dartJsonBedtimeSettings).apply();
     }
 
-    public static void storeWellBeingSettings(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {
+    public static void storeWellBeingSettingsJson(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_WELLBEING_SETTINGS, dartJsonWellBeingSettings).apply();
+    }
+
+    public static void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
+        if (mSharedPrefs == null) initialize(context);
+        Log.d("TAG", "storeShortsScreenTimeMs: storing....");
+        mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
+    }
+
+    public static int fetchEmergencyPassesCount(@NonNull Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return mSharedPrefs.getInt(PREF_KEY_EMERGENCY_PASSES_COUNT, AppConstants.DEFAULT_EMERGENCY_PASSES_COUNT);
     }
 
     @NonNull
@@ -80,5 +100,10 @@ public class SharedPrefsHelper {
     public static WellBeingSettings fetchWellBeingSettings(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
         return new WellBeingSettings(mSharedPrefs.getString(PREF_KEY_WELLBEING_SETTINGS, ""));
+    }
+
+    public static long fetchShortsScreenTimeMs(@NonNull Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return mSharedPrefs.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L);
     }
 }

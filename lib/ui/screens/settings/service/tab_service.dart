@@ -1,4 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -8,9 +9,9 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/sliver_permission_warning.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/permissions/admin_permission.dart';
 
 class TabService extends ConsumerWidget {
   const TabService({super.key});
@@ -35,7 +36,7 @@ class TabService extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isInvincibleModeOn =
-        !ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
+        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
 
     final haveAdminPermission =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
@@ -43,6 +44,7 @@ class TabService extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Service"),
@@ -51,15 +53,7 @@ class TabService extends ConsumerWidget {
           const SliverContentTitle(title: "Invincible mode"),
 
           /// Admin permission warning
-          SliverPermissionWarning(
-            havePermission: haveAdminPermission,
-            margin: const EdgeInsets.symmetric(vertical: 12),
-            title: "Admin",
-            information:
-                "Our application does not collect, store, or transmit any user data. As Free and Open Source Software (FOSS), you can review and modify the source code. Administrative privileges are required solely for essential system operations, ensuring the app functions correctly without compromising your privacy.",
-            onTapAllow:
-                ref.read(permissionProvider.notifier).askAdminPermission,
-          ),
+          const AdminPermission(),
 
           /// Invincible mode
           Hero(
@@ -69,7 +63,9 @@ class TabService extends ConsumerWidget {
               child: DefaultListTile(
                 isPrimary: true,
                 switchValue: isInvincibleModeOn,
-                enabled: haveAdminPermission && !isInvincibleModeOn,
+                enabled: kDebugMode
+                    ? true
+                    : haveAdminPermission && !isInvincibleModeOn,
                 leadingIcon: FluentIcons.animal_cat_20_regular,
                 titleText: "Invincible mode",
                 onPressed: () =>

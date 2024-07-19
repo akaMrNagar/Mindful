@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/providers/apps_provider.dart';
 
 final packagesByNetworkUsageProvider =
-    Provider.family<AsyncValue<List<String>>, FilterParams>((ref, params) {
+    Provider.family<AsyncValue<List<String>>, FilterArgs>((ref, params) {
   return ref.watch(appsProvider).when(
         loading: () => const AsyncLoading(),
         error: (e, st) => const AsyncLoading(),
@@ -14,7 +14,7 @@ final packagesByNetworkUsageProvider =
           /// Filter out apps if they haven't been used i.e, whose screen time is 0
           if (!params.includeAll) {
             apps.removeWhere(
-                (e) => e.networkUsageThisWeek[params.dayOfWeek] == 0);
+                (e) => e.networkUsageThisWeek[params.selectedDoW] == 0);
           }
 
           /// Repopulate apps list if list is empty after filtering out
@@ -22,8 +22,8 @@ final packagesByNetworkUsageProvider =
 
           /// Sort apps
           apps.sort(
-            (a, b) => b.networkUsageThisWeek[params.dayOfWeek]
-                .compareTo(a.networkUsageThisWeek[params.dayOfWeek]),
+            (a, b) => b.networkUsageThisWeek[params.selectedDoW]
+                .compareTo(a.networkUsageThisWeek[params.selectedDoW]),
           );
 
           /// Map the result

@@ -1,6 +1,7 @@
 package com.akamrnagar.mindful;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -34,6 +35,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         super.onStart();
         // Register notification channels
         NotificationHelper.registerNotificationChannels(this);
+
+        // Schedule midnight 12 worker
+        WorkersHelper.scheduleMidnightWorker(this);
 
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
@@ -76,6 +80,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 DeviceAppsHelper.getDeviceApps(this, result);
                 break;
             }
+            case "getShortsScreenTimeMs": {
+                result.success(SharedPrefsHelper.fetchShortsScreenTimeMs(this));
+                break;
+            }
             case "showToast": {
                 showToast(call);
                 result.success(true);
@@ -89,7 +97,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppTimers": {
                 String dartJsonAppTimers = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeAppTimers(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
+                SharedPrefsHelper.storeAppTimersJson(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
                 if (mTrackerServiceConn.isConnected()) {
                     mTrackerServiceConn.getService().updateAppTimers();
                 } else {
@@ -100,7 +108,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateBlockedApps": {
                 String blockedAppsJson = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBlockedApps(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
+                SharedPrefsHelper.storeBlockedAppsJson(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().updateBlockedApps();
                 } else if (getAndAskVpnPermission(true)) {
@@ -111,7 +119,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateBedtimeSchedule": {
                 String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBedtimeSettings(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
+                SharedPrefsHelper.storeBedtimeSettingsJson(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
                 BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
                 if (bedtimeSettings.isScheduleOn) {
                     WorkersHelper.scheduleBedtimeRoutine(this);
@@ -128,37 +136,51 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateWellBeingSettings": {
                 // NOTE: Only updating shared prefs because accessibility service have onSharedPrefsChange listener registered which will eventually reload needed data
-                SharedPrefsHelper.storeWellBeingSettings(this, Utils.notNullStr(call.arguments()));
+                SharedPrefsHelper.storeWellBeingSettingsJson(this, Utils.notNullStr(call.arguments()));
+                result.success(true);
                 break;
             }
+            case "getLeftEmergencyPasses": {
+                result.success(SharedPrefsHelper.fetchEmergencyPassesCount(this));
+                break;
+            }
+
+            case "useEmergencyPass": {
+                int left = SharedPrefsHelper.fetchEmergencyPassesCount(this);
+                if (left > 0) {
+                    SharedPrefsHelper.storeEmergencyPassesCount(this, left - 1);
+                    if (mTrackerServiceConn.isConnected()) {
+                        mTrackerServiceConn.getService().useEmergencyPass();
+                    }
+                }
+                result.success(true);
+                break;
+            }
+
 
             // SECTION: Permissions handler methods ------------------------------------------------------
             case "getAndAskAccessibilityPermission": {
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskVpnPermission": {
-                result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
             case "getAndAskDndPermission": {
                 result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskUsageStatesPermission": {
-                result.success(PermissionsHelper.getAndAskUsageStatesPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskDisplayOverlayPermission": {
-                result.success(PermissionsHelper.getAndAskDisplayOverlayPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskBatteryOptimizationPermission": {
-                result.success(PermissionsHelper.getAndAskBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
+            case "getAndAskUsageAccessPermission": {
+                result.success(PermissionsHelper.getAndAskUsageAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskAdminPermission": {
                 result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskVpnPermission": {
+                result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskDisplayOverlayPermission": {
+                result.success(getAndAskDisplayOverlayPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
             }
 
@@ -191,6 +213,17 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             startActivityForResult(intent, 0);
         }
         return intent == null;
+    }
+
+    private boolean getAndAskDisplayOverlayPermission(boolean askPermissionToo) {
+        if (Settings.canDrawOverlays(this)) return true;
+
+        if (askPermissionToo) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(android.net.Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, 0);
+        }
+        return false;
     }
 
 

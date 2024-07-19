@@ -7,7 +7,7 @@ import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-/// Base bar chart used for diplaying app/device usage
+/// Base bar chart used for displaying app/device usage
 class DefaultBarChart extends StatelessWidget {
   const DefaultBarChart({
     super.key,
@@ -36,7 +36,7 @@ class DefaultBarChart extends StatelessWidget {
     final unselectedGrad = [Colors.blue, Colors.cyan];
     final selectedGrad = [Colors.red, Colors.pink];
     final maxY = data.fold(0, (p, e) => math.max(p, e));
-    // adding one to show baar chart if all values are zeroes
+    // adding one to show bar chart if all values are zeroes
     final barMaxHeight = (maxY * 1.1) + 1.0;
 
     return Container(

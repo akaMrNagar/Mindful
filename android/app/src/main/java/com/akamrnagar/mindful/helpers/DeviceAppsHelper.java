@@ -17,11 +17,13 @@ import androidx.annotation.NonNull;
 
 import com.akamrnagar.mindful.generics.SuccessCallback;
 import com.akamrnagar.mindful.models.AndroidApp;
+import com.akamrnagar.mindful.utils.AsyncThread;
 import com.akamrnagar.mindful.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -86,8 +88,8 @@ public class DeviceAppsHelper {
     private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
         PackageManager packageManager = context.getPackageManager();
 
-        // Initialize the set of important apps like Dialer, Launcher etc
-        ImpSystemAppsHelper.init(context, packageManager);
+        // Fetch set of important apps like Dialer, Launcher etc
+        HashSet<String> impSystemApps = ImpSystemAppsHelper.fetchImpApps(context, packageManager);
 
         // Fetch package info of installed apps on device
         List<PackageInfo> fetchedApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
@@ -105,7 +107,7 @@ public class DeviceAppsHelper {
                 }
 
                 // Check if the app is important or default to system like dialer and launcher
-                boolean isSysDefault = ImpSystemAppsHelper.impSystemApps.contains(app.packageName);
+                boolean isSysDefault = impSystemApps.contains(app.packageName);
                 deviceApps.add(
                         new AndroidApp(app.applicationInfo.loadLabel(packageManager).toString(), // name
                                 app.packageName, // package name

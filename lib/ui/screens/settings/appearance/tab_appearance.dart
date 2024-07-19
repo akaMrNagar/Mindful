@@ -17,6 +17,7 @@ class TabAppearance extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Appearance"),
