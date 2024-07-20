@@ -1,4 +1,5 @@
 class PermissionsModel {
+  final bool haveNotificationPermission;
   final bool haveUsageAccessPermission;
   final bool haveDndPermission;
   final bool haveDisplayOverlayPermission;
@@ -7,6 +8,7 @@ class PermissionsModel {
   final bool haveAdminPermission;
 
   PermissionsModel({
+    this.haveNotificationPermission = true,
     this.haveUsageAccessPermission = true,
     this.haveDndPermission = true,
     this.haveDisplayOverlayPermission = true,
@@ -16,6 +18,7 @@ class PermissionsModel {
   });
 
   PermissionsModel copyWith({
+    bool? haveNotificationPermission,
     bool? haveUsageAccessPermission,
     bool? haveDndPermission,
     bool? haveDisplayOverlayPermission,
@@ -24,6 +27,8 @@ class PermissionsModel {
     bool? haveAdminPermission,
   }) {
     return PermissionsModel(
+      haveNotificationPermission:
+          haveNotificationPermission ?? this.haveNotificationPermission,
       haveUsageAccessPermission:
           haveUsageAccessPermission ?? this.haveUsageAccessPermission,
       haveDndPermission: haveDndPermission ?? this.haveDndPermission,

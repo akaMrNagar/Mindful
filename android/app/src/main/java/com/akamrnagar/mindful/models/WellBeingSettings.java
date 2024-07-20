@@ -56,7 +56,7 @@ public class WellBeingSettings {
 
     public WellBeingSettings(@NonNull String jsonString) {
         if (jsonString.isEmpty()) {
-            Log.e("Mindful.WellBeingSettings", "JSON string passed to the constructor is empty");
+            Log.d("Mindful.WellBeingSettings", "JSON string passed to the constructor is empty");
         } else {
             try {
 

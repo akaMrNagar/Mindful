@@ -14,6 +14,7 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission.dart';
+import 'package:mindful/ui/permissions/notification_permission.dart';
 import 'package:mindful/ui/permissions/usage_access_permission.dart';
 import 'package:mindful/ui/screens/home/dashboard/primary_usage_card.dart';
 import 'package:mindful/ui/screens/home/dashboard/sliver_categorical_usage.dart';
@@ -36,6 +37,8 @@ class TabDashboard extends ConsumerWidget {
               const SliverFlexibleAppBar(title: "Dashboard"),
 
               const UsageAccessPermission(),
+
+              const NotificationPermission(),
 
               const DisplayOverlayPermission(),
 

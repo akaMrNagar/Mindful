@@ -1,7 +1,6 @@
 package com.akamrnagar.mindful.generics;
 
 import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_START_SERVICE;
-import static com.akamrnagar.mindful.generics.ServiceBinder.ACTION_STOP_SERVICE;
 
 import android.app.Service;
 import android.content.ComponentName;
@@ -38,7 +37,7 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        unBindService(mContext);
+        unBindService();
     }
 
     public T getService() {
@@ -49,34 +48,32 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
         return mService != null;
     }
 
-    public void bindService(Context context) {
-        if (!mIsBound && ServicesHelper.isServiceRunning(context, mServiceClass.getName())) {
-            context.bindService(new Intent(context, mServiceClass), this, Context.BIND_WAIVE_PRIORITY);
+    public void bindService() {
+        if (!mIsBound && ServicesHelper.isServiceRunning(mContext, mServiceClass.getName())) {
+            mContext.bindService(new Intent(mContext, mServiceClass), this, Context.BIND_WAIVE_PRIORITY);
         }
     }
 
-    public void unBindService(Context context) {
+    public void unBindService() {
         if (mIsBound) {
-            context.unbindService(this);
+            mContext.unbindService(this);
             mIsBound = false;
             mService = null;
         }
     }
 
 
-    public void startAndBind(Context context) {
-        if (!ServicesHelper.isServiceRunning(context, mServiceClass.getName())) {
-            context.startService(new Intent(context, mServiceClass).setAction(ACTION_START_SERVICE));
+    public void startOnly() {
+        if (!ServicesHelper.isServiceRunning(mContext, mServiceClass.getName())) {
+            mContext.startService(new Intent(mContext, mServiceClass).setAction(ACTION_START_SERVICE));
         }
-        bindService(context);
     }
 
-    public void stopAndUnBind(Context context) {
-        unBindService(context);
-
-        if (ServicesHelper.isServiceRunning(context, mServiceClass.getName())) {
-            context.startService(new Intent(context, mServiceClass).setAction(ACTION_STOP_SERVICE));
+    public void startAndBind() {
+        if (!ServicesHelper.isServiceRunning(mContext, mServiceClass.getName())) {
+            mContext.startService(new Intent(mContext, mServiceClass).setAction(ACTION_START_SERVICE));
         }
+        bindService();
     }
 
     public void setOnConnectedCallback(SuccessCallback<T> callback) {

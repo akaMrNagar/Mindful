@@ -54,7 +54,7 @@ public class PermissionsHelper {
         if (notificationManager.isNotificationPolicyAccessGranted()) return true;
 
         /// Ask for permission
-        if (askPermissionToo) ActivityNewTaskHelper.openDoNotDisturbAccessSection(context);
+        if (askPermissionToo) ActivityNewTaskHelper.openDeviceDoNotDisturbAccessSection(context);
         return false;
     }
 }

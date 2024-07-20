@@ -22,6 +22,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     WidgetsBinding.instance.addObserver(this);
 
     final cache = state.copyWith(
+      haveNotificationPermission:
+          await MethodChannelService.instance.getAndAskNotificationPermission(),
       haveUsageAccessPermission:
           await MethodChannelService.instance.getAndAskUsageAccessPermission(),
       haveDisplayOverlayPermission: await MethodChannelService.instance
@@ -50,13 +52,17 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
   @override
   // ignore: avoid_renaming_method_parameters
   void didChangeAppLifecycleState(AppLifecycleState appState) async {
-    debugPrint("PermissionNotifier: Application state change to : $appState");
+    debugPrint("PermissionNotifier: Application lifecycle state : $appState");
 
     /// Return if app state is not resumed state
     if (appState != AppLifecycleState.resumed) return;
 
     state = switch (_askedPermission) {
       PermissionType.none => state,
+      PermissionType.notification => state.copyWith(
+          haveNotificationPermission: await MethodChannelService.instance
+              .getAndAskNotificationPermission(),
+        ),
       PermissionType.usageAccess => state.copyWith(
           haveUsageAccessPermission: await MethodChannelService.instance
               .getAndAskUsageAccessPermission(),
@@ -86,6 +92,12 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     _askedPermission = PermissionType.none;
   }
 
+  void askNotificationPermission() async {
+    await MethodChannelService.instance
+        .getAndAskNotificationPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.notification;
+  }
+  
   void askUsageAccessPermission() async {
     await MethodChannelService.instance
         .getAndAskUsageAccessPermission(askPermissionToo: true);

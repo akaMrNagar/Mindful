@@ -54,7 +54,7 @@ public class StartBedtimeWorker extends Worker {
 
 
         // Bind tracking service
-        mTrackerServiceConn.bindService(mContext);
+        mTrackerServiceConn.bindService();
 
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) {

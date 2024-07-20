@@ -10,7 +10,9 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
+import com.akamrnagar.mindful.R;
 import com.akamrnagar.mindful.generics.ServiceBinder;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
@@ -27,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 public class MindfulVpnService extends android.net.VpnService {
-    public static final int SERVICE_ID = 302;
+    private static final int SERVICE_ID = 302;
     private static final String TAG = "com.akamrnagar.mindful.VpnService";
     private final AtomicReference<Thread> mVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
@@ -68,7 +70,14 @@ public class MindfulVpnService extends android.net.VpnService {
         final Thread newThread = new Thread(getVpnRunnable(), TAG);
         setVpnThread(newThread);
         newThread.start();
-        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this, "Internet blocking service is running"));
+        startForeground(
+                SERVICE_ID,
+                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_OTHER_CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentText("Mindful is now managing internet access to help you stay focused.")
+                        .setAutoCancel(true)
+                        .build()
+        );
     }
 
     private void disconnectVpn() {

@@ -41,7 +41,7 @@ public class StopBedtimeWorker extends Worker {
 
     private void stopBedtimeLockdown() {
         // Bind tracking service
-        mTrackerServiceConn.bindService(mContext);
+        mTrackerServiceConn.bindService();
 
         // Sop DND
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

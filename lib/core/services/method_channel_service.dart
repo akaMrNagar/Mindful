@@ -24,14 +24,15 @@ class MethodChannelService {
 
   /// Package of the app whose Time Limit Exceeded dialog's emergency button is clicked.
   /// This is forwarded by the overlay dialog service to show emergency button on dashboard.
-  String targetedAppPackage = "";
+  String get targetedAppPackage => _targetedAppPackage;
+  String _targetedAppPackage = "";
 
   Future<void> init() async {
     /// Handle calls from native side
     _methodChannel.setMethodCallHandler(
       (call) async {
         if (call.method == 'updateTargetedApp') {
-          targetedAppPackage = call.arguments;
+          _targetedAppPackage = call.arguments;
         }
       },
     );
@@ -130,6 +131,13 @@ class MethodChannelService {
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
 
+  Future<bool> getAndAskNotificationPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskNotificationPermission',
+        askPermissionToo,
+      );
+
   Future<bool> getAndAskAccessibilityPermission(
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
@@ -162,7 +170,6 @@ class MethodChannelService {
         'getAndAskDisplayOverlayPermission',
         askPermissionToo,
       );
-
 
   Future<bool> getAndAskAdminPermission(
           {bool askPermissionToo = false}) async =>

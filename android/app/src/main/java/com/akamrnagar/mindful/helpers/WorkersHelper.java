@@ -51,7 +51,7 @@ public class WorkersHelper {
                 .build();
         workManager.enqueueUniquePeriodicWork(MIDNIGHT_WORKER_ID, ExistingPeriodicWorkPolicy.UPDATE, midnightRequest);
 
-        Log.d(TAG, "scheduleMidnightWorker: Midnight worker is scheduled successfully for "
+        Log.d(TAG, "scheduleMidnightWorker: Repeated midnight worker is scheduled/updated successfully from "
                 + new Date(System.currentTimeMillis() + initialDelay));
     }
 

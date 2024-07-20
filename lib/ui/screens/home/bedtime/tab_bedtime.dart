@@ -79,6 +79,8 @@ class TabBedtime extends StatelessWidget {
             },
           ).toSliverBox(),
 
+          12.vSliverBox(),
+
           /// Actions related to bedtime
           const SliverQuickActions(),
 

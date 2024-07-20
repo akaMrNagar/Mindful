@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -56,19 +55,28 @@
         <!-- ________________________________ RECEIVERS _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <receiver
+            android:name=".receivers.DeviceBootReceiver"
+            android:enabled="true"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".receivers.MindfulAdminReceiver"
             android:enabled="true"
             android:exported="false"
             android:label="@string/app_name"
-            android:name=".receivers.MindfulAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin_config" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
-
         <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ SERVICES _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
@@ -81,7 +89,12 @@
             android:name=".services.OverlayDialogService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:foregroundServiceType="shortService" />
+        <service
+            android:name=".services.EmergencyTimerService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="shortService" />
         <service
             android:name=".services.MindfulAccessibilityService"
             android:enabled="true"

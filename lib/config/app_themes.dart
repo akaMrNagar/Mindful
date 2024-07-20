@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mindful/ui/page_routes/default_page_transition_builder.dart';
+import 'package:mindful/ui/transitions/default_page_transition_builder.dart';
 
 class AppTheme {
   static const _kSeedColor = Colors.lightBlue;

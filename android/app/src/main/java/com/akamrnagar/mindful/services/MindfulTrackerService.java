@@ -18,7 +18,9 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
+import com.akamrnagar.mindful.R;
 import com.akamrnagar.mindful.generics.ServiceBinder;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.ScreenUsageHelper;
@@ -81,7 +83,14 @@ public class MindfulTrackerService extends Service {
         registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
 
         // Create notification
-        startForeground(SERVICE_ID, NotificationHelper.createTrackingNotification(this, "App tracking service is running"));
+        startForeground(
+                SERVICE_ID,
+                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_OTHER_CHANNEL_ID)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentText("Mindful is now tracking app usage to help you stay focused and manage your digital habits.")
+                        .setAutoCancel(true)
+                        .build()
+        );
 
         Log.d(TAG, "startTracking: Foreground service started");
         updateAppTimers();
@@ -187,7 +196,7 @@ public class MindfulTrackerService extends Service {
             long screenTimeSec = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager, packageName);
             long appTimerSec = getOrDefault(mAppTimers, packageName, 0L);
 
-            if (screenTimeSec >= appTimerSec) {
+            if (screenTimeSec > 0 && screenTimeSec >= appTimerSec) {
                 mPurgedApps.add(packageName);
                 showOverlayDialog(packageName);
                 return;

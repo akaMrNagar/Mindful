@@ -2,7 +2,6 @@ package com.akamrnagar.mindful.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -29,7 +28,7 @@ public class SharedPrefsHelper {
 
 
     private static void initialize(@NonNull Context context) {
-        mSharedPrefs = context.getSharedPreferences(PREFS_SHARED_BOX, Context.MODE_PRIVATE);
+        mSharedPrefs = context.getApplicationContext().getSharedPreferences(PREFS_SHARED_BOX, Context.MODE_PRIVATE);
     }
 
     public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
@@ -67,7 +66,6 @@ public class SharedPrefsHelper {
 
     public static void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
         if (mSharedPrefs == null) initialize(context);
-        Log.d("TAG", "storeShortsScreenTimeMs: storing....");
         mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
     }
 

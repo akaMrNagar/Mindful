@@ -10,5 +10,5 @@ public class AppConstants {
     public static final String BEDTIME_APP_PAUSE_MESSAGE = "It's bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.";
 
     public static final int DEFAULT_EMERGENCY_PASSES_COUNT = 3;
-    public static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 2 * 60 * 1000;
+    public static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
 }

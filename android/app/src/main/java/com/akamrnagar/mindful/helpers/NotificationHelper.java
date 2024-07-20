@@ -1,84 +1,69 @@
 package com.akamrnagar.mindful.helpers;
 
-import android.app.Notification;
+import android.Manifest;
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-
-import com.akamrnagar.mindful.R;
+import androidx.core.app.ActivityCompat;
 
 public class NotificationHelper {
+    // Channels
+    private static final String NOTIFICATION_IMPORTANT_CHANNEL_NAME = "Important";
+    private static final String NOTIFICATION_OTHER_CHANNEL_NAME = "Other";
+    public static final String NOTIFICATION_IMPORTANT_CHANNEL_ID = "mindful.notification.channel.important";
+    public static final String NOTIFICATION_OTHER_CHANNEL_ID = "mindful.notification.channel.other";
 
-    private static final String NOTIFICATION_SERVICE_CHANNEL_NAME = "Service Channel";
-    private static final String NOTIFICATION_GENERAL_CHANNEL_NAME = "General Channel";
-    private static final String NOTIFICATION_SERVICE_CHANNEL_ID = "com.akamrnagar.mindful.notification.services.channel";
-    private static final String NOTIFICATION_GENERAL_CHANNEL_ID = "com.akamrnagar.mindful.notification.general.channel";
+    public static void registerNotificationGroupAndChannels(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Channels
+            NotificationChannel importantChannel = new NotificationChannel(NOTIFICATION_IMPORTANT_CHANNEL_ID, NOTIFICATION_IMPORTANT_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel otherChannel = new NotificationChannel(NOTIFICATION_OTHER_CHANNEL_ID, NOTIFICATION_OTHER_CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN);
+            importantChannel.setDescription("These notifications include crucial reminders and updates, designed to help you stay on track.");
+            otherChannel.setDescription("These are non-critical updates. They can be disabled but are included to comply with Android requirements.");
 
-    public static void registerNotificationChannels(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel generalChannel = new NotificationChannel(NOTIFICATION_GENERAL_CHANNEL_ID, NOTIFICATION_GENERAL_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            generalChannel.setDescription("Desc");
 
-            NotificationChannel serviceChannel = new NotificationChannel(NOTIFICATION_SERVICE_CHANNEL_ID, NOTIFICATION_SERVICE_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
-            serviceChannel.setDescription("Desc");
-
+            // Register
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(generalChannel);
-            notificationManager.createNotificationChannel(serviceChannel);
+            notificationManager.createNotificationChannel(otherChannel);
+            notificationManager.createNotificationChannel(importantChannel);
         }
     }
 
-
-    @NonNull
-    public static Notification createTrackingNotification(Context context, String info) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            return new Notification.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Mindful")
-                    .setContentText(info)
-                    .build();
-        } else {
-            NotificationCompat.Builder notification = new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Mindful")
-                    .setContentText(info)
-                    .setAutoCancel(true);
-
-            notification.setPriority(NotificationManager.IMPORTANCE_MAX);
-            return notification.build();
-        }
-    }
-
-    public static void sendPushNotification(Context context, String title, String content) {
-        Notification notification;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notification = new Notification.Builder(context, NOTIFICATION_GENERAL_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
-                    .setContentText(content)
-                    .build();
-
-        } else {
-            NotificationCompat.Builder notificationCompat = new NotificationCompat.Builder(context, NOTIFICATION_GENERAL_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(title)
-                    .setContentText(content)
-                    .setAutoCancel(true);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                notificationCompat.setPriority(NotificationManager.IMPORTANCE_HIGH);
+    public static boolean getAndAskNotificationPermission(@NonNull Context context, @NonNull Activity activity, boolean askPermissionToo) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            final int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
+            if (status == PackageManager.PERMISSION_GRANTED) {
+                return true;
             }
-
-            notification = notificationCompat.build();
+        } else {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager.areNotificationsEnabled()) {
+                return true;
+            }
         }
 
-        context.getSystemService(NotificationManager.class).notify(0, notification);
+        if (askPermissionToo) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)) {
+                    ActivityCompat.requestPermissions(
+                            activity,
+                            new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                            0
+                    );
+                } else {
+                    ActivityNewTaskHelper.openMindfulNotificationSection(context);
+                }
+            } else {
+                ActivityNewTaskHelper.openMindfulNotificationSection(context);
+            }
+        }
+        return false;
     }
 
 }

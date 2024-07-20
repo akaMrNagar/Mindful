@@ -35,7 +35,7 @@ public class MidnightWorker extends Worker {
 
     private void startMidnightWork() {
         // Bind tracking service
-        mTrackerServiceConn.bindService(mContext);
+        mTrackerServiceConn.bindService();
 
         // Reset emergency passes
         SharedPrefsHelper.storeEmergencyPassesCount(mContext, AppConstants.DEFAULT_EMERGENCY_PASSES_COUNT);

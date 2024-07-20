@@ -6,6 +6,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 public class ServicesHelper {
+
     /**
      * Checks if a service with the given class name is currently running.
      *

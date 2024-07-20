@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ public class ActivityNewTaskHelper {
 
     private static final String TAG = "Mindful.ActivityNewTaskHelper";
 
+    // SECTION: For MINDFUL app ====================================================================
     public static void openMindfulAccessibilitySection(@NonNull Context context) {
         if (!ServicesHelper.isServiceRunning(context, MindfulAccessibilityService.class.getName())) {
             context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
@@ -40,18 +42,43 @@ public class ActivityNewTaskHelper {
 
     }
 
+    public static void openMindfulNotificationSection(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+
+        } else {
+            openSettingsForPackage(context, context.getPackageName());
+        }
+        Toast.makeText(context, "Please enable notification", Toast.LENGTH_LONG).show();
+    }
+
+    // SECTION: For device setting sections or pages app ===========================================
     public static void openDeviceUsageAccessSection(@NonNull Context context) {
         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         context.startActivity(intent);
         Toast.makeText(context, "Please allow usage access to Mindful", Toast.LENGTH_LONG).show();
     }
 
-    public static void openDoNotDisturbAccessSection(@NonNull Context context) {
+    public static void openDeviceDoNotDisturbAccessSection(@NonNull Context context) {
         Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         context.startActivity(intent);
         Toast.makeText(context, "Please allow do not disturb access to Mindful", Toast.LENGTH_LONG).show();
     }
 
+    public static void openDeviceDndSettings(@NonNull Context context) {
+        try {
+            context.startActivity(new Intent("android.settings.ZEN_MODE_SETTINGS"));
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "openDeviceDndSettings: Unable to open device DND settings", e);
+            Toast.makeText(context, "Unable to open DND settings", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // SECTION: For different app packages =========================================================
     public static void openAppWithPackage(@NonNull Context context, @Nullable String appPackage) {
         if (appPackage == null || appPackage.isEmpty()) {
             Toast.makeText(context, "Package not found, unable to launch app", Toast.LENGTH_SHORT).show();
@@ -71,7 +98,7 @@ public class ActivityNewTaskHelper {
 
     }
 
-    public static void openAppSettingsForPackage(@NonNull Context context, @Nullable String appPackage) {
+    public static void openSettingsForPackage(@NonNull Context context, @Nullable String appPackage) {
         if (appPackage == null || appPackage.isEmpty()) {
             Toast.makeText(context, "Package not found, unable to launch app settings", Toast.LENGTH_SHORT).show();
             return;
@@ -87,19 +114,10 @@ public class ActivityNewTaskHelper {
 
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "openAppSettingsForPackage: Unable to launch app settings for " + appPackage, e);
-            Toast.makeText(context, "Package not found, unable to launch app settings", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Unable to launch app settings", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public static void openDeviceDndSettings(@NonNull Context context) {
-        try {
-            context.startActivity(new Intent("android.settings.ZEN_MODE_SETTINGS"));
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "openDeviceDndSettings: Unable to open device DND settings", e);
-            Toast.makeText(context, "Unable to open DND settings", Toast.LENGTH_SHORT).show();
-        }
-
-    }
 
 }

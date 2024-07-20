@@ -53,7 +53,7 @@ public class BedtimeSettings {
 
     public BedtimeSettings(@NonNull String jsonString) {
         if (jsonString.isEmpty()) {
-            Log.e("Mindful.BedtimeSettings", "JSON string passed to the constructor is empty");
+            Log.d("Mindful.BedtimeSettings", "JSON string passed to the constructor is empty");
         } else {
             try {
 

@@ -12,9 +12,11 @@ import com.akamrnagar.mindful.helpers.ActivityNewTaskHelper;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.PermissionsHelper;
+import com.akamrnagar.mindful.helpers.ServicesHelper;
 import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.helpers.WorkersHelper;
 import com.akamrnagar.mindful.models.BedtimeSettings;
+import com.akamrnagar.mindful.services.EmergencyTimerService;
 import com.akamrnagar.mindful.services.MindfulTrackerService;
 import com.akamrnagar.mindful.services.MindfulVpnService;
 import com.akamrnagar.mindful.utils.AppConstants;
@@ -34,9 +36,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     protected void onStart() {
         super.onStart();
         // Register notification channels
-        NotificationHelper.registerNotificationChannels(this);
+        NotificationHelper.registerNotificationGroupAndChannels(this);
 
-        // Schedule midnight 12 worker
+        // Schedule or update midnight 12 worker
         WorkersHelper.scheduleMidnightWorker(this);
 
         // Initialize service connections
@@ -45,16 +47,16 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         // Start the tracking service if a timer is set or a bedtime schedule is active otherwise, attempt to bind if the service is already running
         if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty() || SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn) {
-            mTrackerServiceConn.startAndBind(this);
+            mTrackerServiceConn.startAndBind();
         } else {
-            mTrackerServiceConn.bindService(this);
+            mTrackerServiceConn.bindService();
         }
 
         // Start the vpn service if any app is blocked otherwise, attempt to bind if the service is already running
         if (!SharedPrefsHelper.fetchBlockedApps(this).isEmpty() && getAndAskVpnPermission(false)) {
-            mVpnServiceConn.startAndBind(this);
+            mVpnServiceConn.startAndBind();
         } else {
-            mVpnServiceConn.bindService(this);
+            mVpnServiceConn.bindService();
         }
     }
 
@@ -101,7 +103,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (mTrackerServiceConn.isConnected()) {
                     mTrackerServiceConn.getService().updateAppTimers();
                 } else {
-                    mTrackerServiceConn.startAndBind(this);
+                    mTrackerServiceConn.startAndBind();
                 }
                 result.success(true);
                 break;
@@ -112,7 +114,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().updateBlockedApps();
                 } else if (getAndAskVpnPermission(true)) {
-                    mVpnServiceConn.startAndBind(this);
+                    mVpnServiceConn.startAndBind();
                 }
                 result.success(true);
                 break;
@@ -123,7 +125,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
                 if (bedtimeSettings.isScheduleOn) {
                     WorkersHelper.scheduleBedtimeRoutine(this);
-                    mTrackerServiceConn.startAndBind(this); // This will only start service if it is already not running
+                    mTrackerServiceConn.startAndBind(); // This will only start service if it is already not running
                 } else {
                     WorkersHelper.cancelBedtimeRoutine(this);
                     if (mTrackerServiceConn.isConnected()) {
@@ -147,11 +149,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
             case "useEmergencyPass": {
                 int left = SharedPrefsHelper.fetchEmergencyPassesCount(this);
-                if (left > 0) {
+                if (left > 0 && mTrackerServiceConn.isConnected() && !ServicesHelper.isServiceRunning(this, EmergencyTimerService.class.getName())) {
                     SharedPrefsHelper.storeEmergencyPassesCount(this, left - 1);
-                    if (mTrackerServiceConn.isConnected()) {
-                        mTrackerServiceConn.getService().useEmergencyPass();
-                    }
+                    startService(new Intent(this, EmergencyTimerService.class));
+                    mTrackerServiceConn.getService().useEmergencyPass();
                 }
                 result.success(true);
                 break;
@@ -159,6 +160,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
 
             // SECTION: Permissions handler methods ------------------------------------------------------
+            case "getAndAskNotificationPermission": {
+                result.success(NotificationHelper.getAndAskNotificationPermission(this, this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
             case "getAndAskAccessibilityPermission": {
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
@@ -191,7 +196,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "openAppSettingsForPackage": {
-                ActivityNewTaskHelper.openAppSettingsForPackage(this, call.arguments());
+                ActivityNewTaskHelper.openSettingsForPackage(this, call.arguments());
                 result.success(true);
                 break;
             }
@@ -237,8 +242,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         }
 
         /// Unbind services
-        mTrackerServiceConn.unBindService(this);
-        mVpnServiceConn.unBindService(this);
+        mTrackerServiceConn.unBindService();
+        mVpnServiceConn.unBindService();
     }
 
     private void showToast(@NonNull MethodCall call) {
