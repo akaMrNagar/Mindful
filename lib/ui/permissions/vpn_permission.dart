@@ -13,7 +13,7 @@ class VpnPermission extends ConsumerWidget {
 
     return SliverPermissionWarning(
       havePermission: havePermission,
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(top: 4, bottom: 12),
       title: "Create VPN",
       information:
           "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",

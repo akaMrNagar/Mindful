@@ -1,48 +1,24 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-Future<String?> showInputWebsiteDialog(BuildContext context) async {
+Future<String?> showWebsiteInputDialog({
+  required BuildContext context,
+  required Object heroTag,
+}) async {
   return await Navigator.of(context).push<String>(
     HeroPageRoute(
-      builder: (context) => const _InputFieldDialog(
-        icon: FluentIcons.globe_search_20_regular,
-        heroTag: 'addWebsiteFAB',
-        title: "Distracting website",
-        inputLabel: 'URL',
-        inputHelperText: "Enter url of a website which you want to block",
-        inputHint: "example.com",
-        inputType: TextInputType.url,
-        leading: Icon(FluentIcons.globe_20_regular),
-      ),
+      builder: (context) => _InputFieldDialog(heroTag),
     ),
   );
 }
 
 class _InputFieldDialog extends StatelessWidget {
-  const _InputFieldDialog({
-    required this.icon,
-    required this.title,
-    required this.heroTag,
-    required this.inputLabel,
-    required this.inputHint,
-    required this.inputHelperText,
-    required this.inputType,
-    this.leading,
-    // ignore: unused_element
-    this.trailing,
-  });
+  const _InputFieldDialog(this.heroTag);
 
-  final String title;
   final Object heroTag;
-  final String inputLabel;
-  final String inputHint;
-  final String inputHelperText;
-  final TextInputType inputType;
-  final IconData icon;
-  final Widget? trailing;
-  final Widget? leading;
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +27,12 @@ class _InputFieldDialog extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(48),
       alignment: Alignment.center,
-      child: Hero(
+      child: DefaultHero(
         tag: heroTag,
         child: SingleChildScrollView(
           child: AlertDialog(
-            icon: Icon(icon),
-            title: StyledText(title),
+            icon: const Icon(FluentIcons.globe_search_20_regular),
+            title: const StyledText("Distracting website"),
             insetPadding: EdgeInsets.zero,
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -64,16 +40,16 @@ class _InputFieldDialog extends StatelessWidget {
                 scrollPhysics: const AlwaysScrollableScrollPhysics(),
                 controller: controller,
                 onSubmitted: (txt) => Navigator.maybePop(context, txt),
-                keyboardType: inputType,
+                keyboardType: TextInputType.url,
                 decoration: InputDecoration(
-                  label: Text(inputLabel),
-                  hintText: inputHint,
-                  prefixIcon: leading,
-                  helperText: inputHelperText,
+                  label: const Text("Url"),
+                  hintText: "example.com",
+                  prefixIcon: const Icon(FluentIcons.globe_20_regular),
+                  helperText: "Enter url of a website which you want to block",
                   helperMaxLines: 3,
-                  suffixIcon: trailing,
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12)),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
                 ),
               ),
             ),
@@ -84,7 +60,7 @@ class _InputFieldDialog extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () => Navigator.maybePop(context, controller.text),
-                child: const Text("Add"),
+                child: const Text("Block"),
               ),
             ],
           ),

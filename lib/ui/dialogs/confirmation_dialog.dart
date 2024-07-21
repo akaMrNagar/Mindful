@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -48,7 +49,7 @@ class _ConfirmationDialog extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.all(48),
       alignment: Alignment.center,
-      child: Hero(
+      child: DefaultHero(
         tag: heroTag,
         child: SingleChildScrollView(
           child: AlertDialog(

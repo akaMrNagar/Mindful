@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/tags.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
@@ -13,7 +13,8 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/input_field_dialog.dart';
+import 'package:mindful/ui/common/tabs_bottom_padding.dart';
+import 'package:mindful/ui/dialogs/website_input_dialog.dart';
 import 'package:mindful/ui/common/sliver_permission_warning.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
@@ -69,7 +70,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
               /// Information about bedtime
               const StyledText(
-                "Silence your phone, start dnd change screen to black and white at bedtime. Only alarms and important calls can reach you.",
+                "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
               ).toSliverBox(),
 
               const AccessibilityPermission(),
@@ -166,7 +167,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 leadingIcon: FluentIcons.slide_multiple_search_20_regular,
                 titleText: "Block Nsfw",
                 subtitleText:
-                    "Restrict browsers from opening adult and porn websites",
+                    "Restrict browsers from opening predefined adult and porn websites",
                 switchValue: wellBeing.blockNsfwSites,
                 onPressed:
                     ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
@@ -198,7 +199,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       ),
                     ).toSliverBox(),
 
-              180.vSliverBox(),
+              const TabsBottomPadding(),
             ],
           ),
 
@@ -208,7 +209,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               bottom: 32,
               right: 24,
               child: FloatingActionButton(
-                heroTag: 'addWebsiteFAB',
+                heroTag: AppTags.addDistractingSiteFABTag,
                 onPressed: () => _onPressedFab(context, ref),
                 child: const Icon(FluentIcons.add_20_filled),
               ),
@@ -219,7 +220,11 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
   }
 
   void _onPressedFab(BuildContext context, WidgetRef ref) async {
-    final url = await showInputWebsiteDialog(context);
+    final url = await showWebsiteInputDialog(
+      context: context,
+      heroTag: AppTags.addDistractingSiteFABTag,
+    );
+
     if (url == null || url.isEmpty) return;
 
     final host =

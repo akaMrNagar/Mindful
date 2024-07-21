@@ -6,11 +6,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/tags.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/duration_picker.dart';
+import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class ShortsTimerChart extends ConsumerWidget {
   const ShortsTimerChart({
@@ -24,11 +26,12 @@ class ShortsTimerChart extends ConsumerWidget {
   final int allowedTimeSec;
   final int remainingTimeSec;
 
-  void _editAllowedTime(BuildContext context, WidgetRef ref) async {
-    final newTime = await showDurationPicker(
+  void _editAllowedTime(
+      BuildContext context, WidgetRef ref) async {
+    final newTime = await showShortsTimerPicker(
       context: context,
+      heroTag: AppTags.shortContentTimerPickerTag,
       initialTime: allowedTimeSec,
-      appName: "Short content",
     );
 
     if (newTime != allowedTimeSec) {
@@ -93,8 +96,9 @@ class ShortsTimerChart extends ConsumerWidget {
                 margin: const EdgeInsets.all(20),
                 padding: const EdgeInsets.all(12),
                 color: lerpedColor,
-                onPressed:
-                    isModifiable ? () => _editAllowedTime(context, ref) : null,
+                onPressed: isModifiable
+                    ? () => _editAllowedTime(context, ref)
+                    : null,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -120,9 +124,13 @@ class ShortsTimerChart extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     32.vBox(),
-                    Icon(
-                      FluentIcons.edit_20_regular,
-                      color: isModifiable ? null : Theme.of(context).focusColor,
+                    DefaultHero(
+                      tag: AppTags.shortContentTimerPickerTag,
+                      child: Icon(
+                        FluentIcons.edit_20_regular,
+                        color:
+                            isModifiable ? null : Theme.of(context).focusColor,
+                      ),
                     ),
                   ],
                 ),

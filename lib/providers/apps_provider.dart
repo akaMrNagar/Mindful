@@ -16,11 +16,12 @@ class DeviceAppsList
 
   /// Refresh list of [AndroidApp] including their usage
   Future<bool> refreshDeviceApps() async {
-    await MethodChannelService.instance.getDeviceApps().then(
-          (value) => state = AsyncData(
-            Map.fromEntries(value.map((e) => MapEntry(e.packageName, e))),
-          ),
-        );
+    final appsList = await MethodChannelService.instance.getDeviceApps();
+    state = AsyncData(
+      Map.fromEntries(
+        appsList.map((e) => MapEntry(e.packageName, e)),
+      ),
+    );
     return true;
   }
 }

@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 
 public class Utils {
     private static final String TAG = "Mindful.Utils";
@@ -150,5 +151,7 @@ public class Utils {
         else return "";
     }
 
-
+    public static <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
+        return map.getOrDefault(key, defaultValue);
+    }
 }

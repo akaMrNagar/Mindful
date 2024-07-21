@@ -13,7 +13,7 @@ class DndPermission extends ConsumerWidget {
 
     return SliverPermissionWarning(
       havePermission: havePermission,
-      margin: const EdgeInsets.only(top: 8),
+      margin: const EdgeInsets.only(top: 4, bottom: 12),
       title: "Do not disturb",
       information:
           "Please grant Do Not Disturb access. This will allow Mindful to start and stop Do Not Disturb mode during the bedtime schedule.",

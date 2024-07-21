@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverFlexibleAppBar extends StatelessWidget {
   const SliverFlexibleAppBar({
@@ -23,14 +24,12 @@ class SliverFlexibleAppBar extends StatelessWidget {
           child: Container(
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(bottom: 12),
-            child: Text(
+            child: StyledText(
               title,
               maxLines: 1,
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w500,
-                overflow: TextOverflow.ellipsis,
-              ),
+              fontSize: 32,
+              fontWeight: FontWeight.w600,
+              overflow: TextOverflow.fade,
             ),
           ),
         ),

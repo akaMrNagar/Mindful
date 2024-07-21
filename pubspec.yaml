@@ -16,7 +16,6 @@ dependencies:
   # UI
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
-  toast: ^0.3.0
   flutter_riverpod: ^2.4.0
 
   # Animation

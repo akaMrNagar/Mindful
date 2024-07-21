@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 
-class DefaultDropdownButton<T> extends StatelessWidget {
-  const DefaultDropdownButton({
+class DefaultDropdownTile<T> extends StatelessWidget {
+  const DefaultDropdownTile({
     super.key,
     required this.value,
     required this.items,
@@ -33,7 +34,7 @@ class DefaultDropdownButton<T> extends StatelessWidget {
         items.isNotEmpty ? items.firstWhere((e) => e.value == value) : null;
 
     return Material(
-      child: Hero(
+      child: DefaultHero(
         tag: heroTag,
         child: DefaultListTile(
           height: 64,

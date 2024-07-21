@@ -5,13 +5,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/dialogs/duration_picker.dart';
+import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 /// Displays available actions for the app in [AppDashboard]
 class QuickActions extends ConsumerWidget {
@@ -36,10 +38,11 @@ class QuickActions extends ConsumerWidget {
       return;
     }
 
-    final newTimer = await showDurationPicker(
+    final newTimer = await showAppTimerPicker(
+      app: app,
+      heroTag: AppTags.appTimerTileTag(app.packageName),
       context: context,
       initialTime: prevTimer,
-      appName: app.name,
     );
 
     if (newTimer == prevTimer) return;
@@ -65,21 +68,24 @@ class QuickActions extends ConsumerWidget {
     return SliverList.list(
       children: [
         /// App Timer Button
-        DefaultListTile(
-          titleText: "App timer",
-          enabled: !app.isImpSysApp,
-          subtitleText: app.isImpSysApp
-              ? "Timer not available for important apps"
-              : appTimer > 0
-                  ? appTimer.seconds.toTimeFull()
-                  : "No timer",
-          leadingIcon: FluentIcons.timer_20_regular,
-          trailing: isPurged ? const Text("Paused") : null,
-          onPressed: () => _pickAppTimer(
-            context,
-            ref,
-            appTimer,
-            app.screenTimeThisWeek[dayOfWeek],
+        DefaultHero(
+          tag: AppTags.appTimerTileTag(app.packageName),
+          child: DefaultListTile(
+            titleText: "App timer",
+            enabled: !app.isImpSysApp,
+            subtitleText: app.isImpSysApp
+                ? "Timer not available for important apps"
+                : appTimer > 0
+                    ? appTimer.seconds.toTimeFull()
+                    : "No timer",
+            leadingIcon: FluentIcons.timer_20_regular,
+            trailing: isPurged ? const Text("Paused") : null,
+            onPressed: () => _pickAppTimer(
+              context,
+              ref,
+              appTimer,
+              app.screenTimeThisWeek[dayOfWeek],
+            ),
           ),
         ),
 

@@ -37,11 +37,11 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
 
     return MultiSliver(
       children: [
-        /// Dnd permission warning
-        const DndPermission(),
-
         /// Bedtime actions
         const SliverContentTitle(title: "Quick actions"),
+
+        /// Dnd permission warning
+        const DndPermission(),
 
         /// Should start dnd
         DefaultListTile(

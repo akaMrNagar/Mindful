@@ -7,7 +7,7 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/screens/settings/appearance/default_dropdown.dart';
+import 'package:mindful/ui/common/default_dropdown_tile.dart';
 
 class TabAppearance extends ConsumerWidget {
   const TabAppearance({super.key});
@@ -26,7 +26,7 @@ class TabAppearance extends ConsumerWidget {
           const SliverContentTitle(title: "Colors"),
 
           /// Theme mode
-          DefaultDropdownButton<ThemeMode>(
+          DefaultDropdownTile<ThemeMode>(
             value: ref.watch(settingsProvider.select((v) => v.themeMode)),
             dialogIcon: FluentIcons.dark_theme_20_regular,
             label: "Theme mode",
@@ -39,7 +39,7 @@ class TabAppearance extends ConsumerWidget {
           ).toSliverBox(),
 
           /// Material Color
-          DefaultDropdownButton<String>(
+          DefaultDropdownTile<String>(
             label: "Material color",
             dialogIcon: FluentIcons.color_20_regular,
             value: ref.watch(settingsProvider.select((v) => v.color)),

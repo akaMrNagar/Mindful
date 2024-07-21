@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -32,13 +31,17 @@ public class ScreenUsageHelper {
     @NonNull
     public static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
-
         List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
+        UsageStats prevStat = null;
 
         for (UsageStats usageStat : usageStatsList) {
+            long lastTimeUsed = usageStat.getLastTimeUsed();
+            if (lastTimeUsed < start || lastTimeUsed > end) continue;
 
-            long last = usageStat.getLastTimeUsed();
-            if (last < start || last > end) continue;
+            // Record last event between the interval
+            if (prevStat == null || lastTimeUsed > prevStat.getLastTimeUsed()) {
+                prevStat = usageStat;
+            }
 
             String packageName = usageStat.getPackageName();
             long screenTime = getOrDefault(oneDayUsageMap, packageName, 0L);
@@ -47,12 +50,16 @@ public class ScreenUsageHelper {
             oneDayUsageMap.put(packageName, screenTime);
         }
 
-
-        // Convert milliseconds to seconds
-        for (Map.Entry<String, Long> entry : oneDayUsageMap.entrySet()) {
-            oneDayUsageMap.put(entry.getKey(), (entry.getValue() / 1000));
+        // If the last event is same as the launched app means it is opened but not closed which eventually means it is running
+        if (prevStat != null) {
+            Long calcTime = oneDayUsageMap.getOrDefault(prevStat.getPackageName(), 0L);
+            calcTime += (System.currentTimeMillis() - prevStat.getLastTimeUsed());
+            oneDayUsageMap.put(prevStat.getPackageName(), calcTime);
         }
 
+
+        // Convert milliseconds to seconds
+        oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
         return oneDayUsageMap;
     }
 

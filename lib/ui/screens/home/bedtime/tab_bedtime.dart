@@ -6,8 +6,10 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/common/tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
 import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
 
@@ -46,10 +48,10 @@ class TabBedtime extends StatelessWidget {
 
           /// Information about bedtime
           const StyledText(
-            "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
+            "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
           ).toSliverBox(),
 
-          12.vSliverBox(),
+          const SliverContentTitle(title: "Schedule"),
 
           /// Card with start and end time for schedule
           /// also schedule days
@@ -79,12 +81,12 @@ class TabBedtime extends StatelessWidget {
             },
           ).toSliverBox(),
 
-          12.vSliverBox(),
+          8.vSliverBox(),
 
           /// Actions related to bedtime
           const SliverQuickActions(),
 
-          180.vSliverBox(),
+          const TabsBottomPadding()
         ],
       ),
     );
