@@ -12,8 +12,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.akamrnagar.mindful.utils.AppConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,9 +24,8 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
     private Timer mAppLaunchTrackingTimer;
-    private Timer mEmergencyPauseTimer;
     private List<String> mActiveAppsList = new ArrayList<>(3);
-    private String mLastLaunchedApp = "";
+    private String mLastLaunchedAppPackage = "";
     private boolean mIsTrackingPaused = false;
 
 
@@ -61,8 +58,8 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
             }, 0, mTimerRate);
         }
 
-        Log.d(TAG, "onDeviceUnLocked: Repeated timer scheduled for tracking new app launches.");
-        BroadcastLastAppLaunchEvent();
+        Log.d(TAG, "onDeviceUnLocked: Repeated task scheduled for tracking new app launches.");
+        broadcastLastAppLaunchEvent();
     }
 
     private void onDeviceLocked() {
@@ -72,13 +69,11 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
             mAppLaunchTrackingTimer.cancel();
             mAppLaunchTrackingTimer = null;
         }
-        Log.d(TAG, "onDeviceLocked: App launch tracking timer cancelled.");
+        Log.d(TAG, "onDeviceLocked: App launch tracking task cancelled.");
     }
 
 
     private void onAppLaunchTrackingTimerRun() {
-        if (mIsTrackingPaused) return;
-
         long now = System.currentTimeMillis();
         UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - mTimerRate, now);
 
@@ -97,9 +92,9 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         }
 
 
-        if (!mActiveAppsList.isEmpty() && !mLastLaunchedApp.equals(mActiveAppsList.get(0))) {
-            mLastLaunchedApp = mActiveAppsList.get(0);
-            BroadcastLastAppLaunchEvent();
+        if (!mActiveAppsList.isEmpty() && !mLastLaunchedAppPackage.equals(mActiveAppsList.get(0))) {
+            mLastLaunchedAppPackage = mActiveAppsList.get(0);
+            broadcastLastAppLaunchEvent();
         }
     }
 
@@ -108,34 +103,20 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
      * Broadcast an event of type ACTION_APP_LAUNCHED with the last launched app
      * package
      */
-    public void BroadcastLastAppLaunchEvent() {
-        if (mLastLaunchedApp.isEmpty()) return;
+    public void broadcastLastAppLaunchEvent() {
+        if (mLastLaunchedAppPackage.isEmpty() || mIsTrackingPaused) return;
 
         // Broadcast event
         Intent eventIntent = new Intent();
         eventIntent.setAction(ACTION_APP_LAUNCHED);
         eventIntent.setPackage(mContext.getPackageName());
-        eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedApp);
+        eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedAppPackage);
         mContext.sendBroadcast(eventIntent);
     }
 
-    public void useEmergencyPass() {
-        mIsTrackingPaused = true;
-
-        if (mEmergencyPauseTimer != null) {
-            mEmergencyPauseTimer.cancel();
-            mEmergencyPauseTimer = null;
-        }
-
-        mEmergencyPauseTimer = new Timer();
-        mEmergencyPauseTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mIsTrackingPaused = false;
-                mEmergencyPauseTimer.cancel();
-                mEmergencyPauseTimer = null;
-            }
-        }, AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS);
+    public void pauseResumeTracking(boolean shouldPause) {
+        mIsTrackingPaused = shouldPause;
+        if(!shouldPause) broadcastLastAppLaunchEvent();
     }
 
 

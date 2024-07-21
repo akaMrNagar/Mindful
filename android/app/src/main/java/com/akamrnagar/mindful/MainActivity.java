@@ -12,7 +12,6 @@ import com.akamrnagar.mindful.helpers.ActivityNewTaskHelper;
 import com.akamrnagar.mindful.helpers.DeviceAppsHelper;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
 import com.akamrnagar.mindful.helpers.PermissionsHelper;
-import com.akamrnagar.mindful.helpers.ServicesHelper;
 import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.helpers.WorkersHelper;
 import com.akamrnagar.mindful.models.BedtimeSettings;
@@ -148,12 +147,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
 
             case "useEmergencyPass": {
-                int left = SharedPrefsHelper.fetchEmergencyPassesCount(this);
-                if (left > 0 && mTrackerServiceConn.isConnected() && !ServicesHelper.isServiceRunning(this, EmergencyTimerService.class.getName())) {
-                    SharedPrefsHelper.storeEmergencyPassesCount(this, left - 1);
-                    startService(new Intent(this, EmergencyTimerService.class));
-                    mTrackerServiceConn.getService().useEmergencyPass();
-                }
+                startService(new Intent(this, EmergencyTimerService.class));
                 result.success(true);
                 break;
             }

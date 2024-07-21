@@ -74,6 +74,7 @@ public class MindfulVpnService extends android.net.VpnService {
                 SERVICE_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_OTHER_CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Mindful service")
                         .setContentText("Mindful is now managing internet access to help you stay focused.")
                         .setAutoCancel(true)
                         .build()

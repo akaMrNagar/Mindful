@@ -23,38 +23,34 @@ public class StartBedtimeWorker extends Worker {
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private final Context mContext;
     private BedtimeSettings mBedtimeSettings = null;
+    private boolean mCanStartRoutineToday = false;
 
     public StartBedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-        // Set callback which will be invoked when the service is connected successfully
-        mTrackerServiceConn.setOnConnectedCallback(this::onTrackerServiceConnected);
-
-        mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
         mContext = context;
+
+        // NOTE: (dayOfWeek -1) for zero based indexing(0-6) of week days (1-7)
+        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
+        mCanStartRoutineToday = !mBedtimeSettings.scheduleDays.get(dayOfWeek - 1);
+
+        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
+        mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopBedtimeLockdown(true, mBedtimeSettings.distractingApps));
+        if (mCanStartRoutineToday) mTrackerServiceConn.bindService();
     }
 
     @NonNull
     @Override
     public Result doWork() {
         startBedtimeLockdown();
+        mTrackerServiceConn.unBindService();
         return Result.success();
     }
 
 
     private void startBedtimeLockdown() {
-        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-        // Execute task only if day of week is selected else return
-        // NOTE: (dayOfWeek -1) for zero based indexing(0-6) of week days (1-7)
-        if (mBedtimeSettings == null
-                || mContext == null
-                || !mBedtimeSettings.scheduleDays.get(dayOfWeek - 1))
+        if (!mCanStartRoutineToday)
             return;
-
-
-        // Bind tracking service
-        mTrackerServiceConn.bindService();
 
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) {
@@ -63,7 +59,7 @@ public class StartBedtimeWorker extends Worker {
             // Check if have permission
             if (!notificationManager.isNotificationPolicyAccessGranted()) {
                 Log.d(TAG, "startBedtimeLockdown: Do not have permission to modify DND mode");
-                Toast.makeText(mContext, "Mindful does not have permission to modify do not disturb", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "Please allow do not disturb access to Mindful", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -71,11 +67,5 @@ public class StartBedtimeWorker extends Worker {
             notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
             Log.d(TAG, "startBedtimeLockdown: DND mode started");
         }
-    }
-
-
-    private void onTrackerServiceConnected(@NonNull MindfulTrackerService service) {
-        // START bedtime lockdown
-        service.startStopBedtimeLockdown(true, mBedtimeSettings.distractingApps);
     }
 }

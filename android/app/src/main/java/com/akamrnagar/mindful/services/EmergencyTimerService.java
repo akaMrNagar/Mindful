@@ -7,12 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.IBinder;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.akamrnagar.mindful.R;
+import com.akamrnagar.mindful.generics.SafeServiceConnection;
 import com.akamrnagar.mindful.helpers.NotificationHelper;
+import com.akamrnagar.mindful.helpers.SharedPrefsHelper;
 import com.akamrnagar.mindful.utils.AppConstants;
 
 public class EmergencyTimerService extends Service {
@@ -21,17 +24,34 @@ public class EmergencyTimerService extends Service {
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
+    private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
 
 
     @Override
     public void onCreate() {
         super.onCreate();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Bind to tracking service
+        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
+        mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
+        mTrackerServiceConn.bindService();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        int leftPasses = SharedPrefsHelper.fetchEmergencyPassesCount(this);
+
+        // Stop if no passes left
+        if (leftPasses <= 0) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
+//        SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
         startTimer();
+
+        Log.d(TAG, "onStartCommand: Emergency timer service started successfully");
         return START_STICKY;
     }
 
@@ -45,6 +65,9 @@ public class EmergencyTimerService extends Service {
 
             @Override
             public void onFinish() {
+                if (mTrackerServiceConn.isConnected()) {
+                    mTrackerServiceConn.getService().pauseResumeTracking(false);
+                }
                 stopSelf();
             }
         }.start();
@@ -72,10 +95,12 @@ public class EmergencyTimerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mTrackerServiceConn.unBindService();
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
         stopForeground(true);
+        Log.d(TAG, "onDestroy: Emergency timer service destroyed");
     }
 
 

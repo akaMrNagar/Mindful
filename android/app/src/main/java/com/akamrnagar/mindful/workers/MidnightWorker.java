@@ -21,31 +21,24 @@ public class MidnightWorker extends Worker {
     public MidnightWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-        // Set callback which will be invoked when the service is connected successfully
-        mTrackerServiceConn.setOnConnectedCallback(this::onTrackerServiceConnected);
+        mTrackerServiceConn.setOnConnectedCallback(MindfulTrackerService::onMidnightReset);
+        mTrackerServiceConn.bindService();
         mContext = context;
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        startMidnightWork();
-        return Result.success();
-    }
-
-    private void startMidnightWork() {
-        // Bind tracking service
-        mTrackerServiceConn.bindService();
-
         // Reset emergency passes
         SharedPrefsHelper.storeEmergencyPassesCount(mContext, AppConstants.DEFAULT_EMERGENCY_PASSES_COUNT);
 
         // Reset short content screen time usage
         SharedPrefsHelper.storeShortsScreenTimeMs(mContext, 0L);
+
+        // Unbind tracking service
+        mTrackerServiceConn.unBindService();
+
+        return Result.success();
     }
 
-    private void onTrackerServiceConnected(@NonNull MindfulTrackerService service) {
-        // Reset purged apps
-        service.onMidnightReset();
-    }
 }

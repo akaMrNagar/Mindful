@@ -49,8 +49,6 @@ public class MindfulTrackerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mLockUnlockReceiver = new DeviceLockUnlockReceiver(this);
-        mAppLaunchReceiver = new AppLaunchReceiver();
         mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
     }
 
@@ -77,9 +75,11 @@ public class MindfulTrackerService extends Service {
         IntentFilter lockUnlockFilter = new IntentFilter();
         lockUnlockFilter.addAction(Intent.ACTION_USER_PRESENT);
         lockUnlockFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        mLockUnlockReceiver = new DeviceLockUnlockReceiver(this);
         registerReceiver(mLockUnlockReceiver, lockUnlockFilter);
 
         // Register app launch receiver
+        mAppLaunchReceiver = new AppLaunchReceiver();
         registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
 
         // Create notification
@@ -87,6 +87,7 @@ public class MindfulTrackerService extends Service {
                 SERVICE_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_OTHER_CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Mindful service")
                         .setContentText("Mindful is now tracking app usage to help you stay focused and manage your digital habits.")
                         .setAutoCancel(true)
                         .build()
@@ -117,7 +118,7 @@ public class MindfulTrackerService extends Service {
             mPurgedApps.clear();
 
             // Broadcast launch event for last active app is may be restricted in bedtime mode
-            if (mLockUnlockReceiver != null) mLockUnlockReceiver.BroadcastLastAppLaunchEvent();
+            if (mLockUnlockReceiver != null) mLockUnlockReceiver.broadcastLastAppLaunchEvent();
             Log.d(TAG, "startStopBedtimeLockdown: Bedtime lockdown started successfully");
         } else {
             mDistractingApps.clear();
@@ -129,8 +130,8 @@ public class MindfulTrackerService extends Service {
         mPurgedApps.clear();
     }
 
-    public void useEmergencyPass() {
-        if (mLockUnlockReceiver != null) mLockUnlockReceiver.useEmergencyPass();
+    public void pauseResumeTracking(boolean shouldPause) {
+        if (mLockUnlockReceiver != null) mLockUnlockReceiver.pauseResumeTracking(shouldPause);
     }
 
     @Override

@@ -24,42 +24,35 @@ public class StopBedtimeWorker extends Worker {
 
     public StopBedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-
-        // Set callback which will be invoked when the service is connected successfully
-        mTrackerServiceConn.setOnConnectedCallback(this::onTrackerServiceConnected);
         mContext = context;
+
+        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
+        mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopBedtimeLockdown(false, null));
+        mTrackerServiceConn.bindService();
     }
 
     @NonNull
     @Override
     public ListenableWorker.Result doWork() {
         stopBedtimeLockdown();
+        mTrackerServiceConn.unBindService();
         return ListenableWorker.Result.success();
     }
 
 
     private void stopBedtimeLockdown() {
-        // Bind tracking service
-        mTrackerServiceConn.bindService();
-
         // Sop DND
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Check if have permission
         if (!notificationManager.isNotificationPolicyAccessGranted()) {
             Log.d(TAG, "startBedtimeLockdown: Do not have permission to modify DND mode");
-            Toast.makeText(mContext, "Mindful does not have permission to modify do not disturb", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Please allow do not disturb access to Mindful", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Else Start DND
+        // Else Stop DND
         notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
         Log.d(TAG, "startBedtimeLockdown: DND mode stopped");
-    }
-
-    private void onTrackerServiceConnected(@NonNull MindfulTrackerService service) {
-        // STOP bedtime lockdown
-        service.startStopBedtimeLockdown(false, null);
     }
 }
