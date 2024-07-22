@@ -112,12 +112,15 @@ class _DropdownMenu<T> extends StatelessWidget {
               children: items
                   .map(
                     (e) => DefaultListTile(
-                      leading: Radio(
-                        value: e.value == selected?.value,
-                        groupValue: true,
-                        splashRadius: 0,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        onChanged: (v) {},
+                      leading: IgnorePointer(
+                        child: Radio(
+                          value: e.value == selected?.value,
+                          groupValue: true,
+                          splashRadius: 0,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          onChanged: (v) {},
+                        ),
                       ),
                       title: StyledText(e.label, fontSize: 14),
                       trailing: trailingBuilder?.call(e.value),

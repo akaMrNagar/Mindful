@@ -25,7 +25,7 @@ class SettingsScreen extends StatelessWidget {
           ),
           NavbarItem(
             title: "About",
-            icon: FluentIcons.person_info_20_filled,
+            icon: FluentIcons.info_20_regular,
             body: TabAbout(),
           ),
         ],

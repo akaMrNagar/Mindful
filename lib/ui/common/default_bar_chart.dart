@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 /// Base bar chart used for displaying app/device usage
@@ -85,7 +86,9 @@ class DefaultBarChart extends StatelessWidget {
             touchCallback: (tEvent, tResponse) {
               if (!tEvent.isInterestedForInteractions) {
                 final touchedIndex = tResponse?.spot?.touchedBarGroupIndex;
-                if (touchedIndex != null && touchedIndex != selectedBar) {
+                if (touchedIndex != null &&
+                    touchedIndex != selectedBar &&
+                    touchedIndex <= todayOfWeek) {
                   onBarTap(touchedIndex);
                 }
               }

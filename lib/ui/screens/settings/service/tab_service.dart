@@ -59,7 +59,7 @@ class TabService extends ConsumerWidget {
           /// Information about invincible mode
           const StyledText(
             "When Invincible Mode is enabled, you cannot modify app's timer once it runs out, change bedtime routine settings during the bedtime schedule period, or modify shorts blocker settings after reaching the daily limit.\n\nEnjoy a distraction-free experience!",
-          ).toSliverBox(),
+          ).sliverBox,
           12.vSliverBox,
 
           /// Admin permission warning
@@ -82,7 +82,7 @@ class TabService extends ConsumerWidget {
                     _turnOnInvincibleMode(context, ref, isInvincibleModeOn),
               ),
             ),
-          ).toSliverBox(),
+          ).sliverBox,
         ],
       ),
     );

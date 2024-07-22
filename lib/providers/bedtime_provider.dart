@@ -51,10 +51,10 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   }
 
   void setBedtimeStart(TimeOfDay startTod) =>
-      state = state.copyWith(startTimeInMins: startTod.toMinutes());
+      state = state.copyWith(startTimeInMins: startTod.minutes);
 
   void setBedtimeEnd(TimeOfDay endTod) =>
-      state = state.copyWith(endTimeInMins: endTod.toMinutes());
+      state = state.copyWith(endTimeInMins: endTod.minutes);
 
   void toggleScheduleDay(int index) {
     var days = state.scheduleDays.toList();

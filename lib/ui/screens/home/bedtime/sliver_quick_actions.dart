@@ -51,7 +51,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
               .read(bedtimeProvider.notifier)
               .setShouldStartDnd(!shouldStartDnd),
           titleText: "Start DND",
-          subtitleText: "Start do not disturb mode during \nbedtime",
+          subtitleText: "Start do not disturb mode during \nbedtime.",
         ),
 
         /// Manage Dnd settings

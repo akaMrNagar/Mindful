@@ -94,6 +94,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
             }
+            case "launchUrl": {
+                ActivityNewTaskHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
+                result.success(true);
+                break;
+            }
 
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppTimers": {

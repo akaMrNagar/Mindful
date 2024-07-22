@@ -14,7 +14,7 @@ import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission.dart';
 import 'package:mindful/ui/permissions/notification_permission.dart';
@@ -42,7 +42,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
   @override
   Widget build(BuildContext context) {
     final aggregatedUsage = ref.watch(aggregatedUsageProvider);
-    final isLoading = _isRefreshing || ref.watch(appsProvider).hasValue;
+    final isLoading = _isRefreshing || !ref.watch(appsProvider).hasValue;
 
     return DefaultRefreshIndicator(
       onRefresh: _refresh,
@@ -74,7 +74,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
                         icon: FluentIcons.phone_screen_time_20_regular,
                         title: "Screen time",
                         info: aggregatedUsage
-                            .screenTimeThisWeek[dayOfWeek].seconds
+                            .screenTimeThisWeek[todayOfWeek].seconds
                             .toTimeFull(),
                       ),
 
@@ -86,7 +86,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
                               icon: FluentIcons.cellular_data_1_20_regular,
                               title: "Mobile data",
                               info: aggregatedUsage
-                                  .mobileUsageThisWeek[dayOfWeek]
+                                  .mobileUsageThisWeek[todayOfWeek]
                                   .toData(),
                             ),
                           ),
@@ -95,7 +95,8 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
                             child: PrimaryUsageCard(
                               icon: FluentIcons.wifi_1_20_regular,
                               title: "Wifi data",
-                              info: aggregatedUsage.wifiUsageThisWeek[dayOfWeek]
+                              info: aggregatedUsage
+                                  .wifiUsageThisWeek[todayOfWeek]
                                   .toData(),
                             ),
                           ),
@@ -115,7 +116,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
                   child: const SliverCategoricalUsage(),
                 ),
 
-                const TabsBottomPadding(),
+                const SliverTabsBottomPadding(),
               ],
             ),
 

@@ -60,6 +60,9 @@ class MethodChannelService {
   Future<String> parseHostFromUrl(String url) async =>
       await _methodChannel.invokeMethod('parseHostFromUrl', url);
 
+  Future<bool> launchUrl(String siteUrl) async =>
+      await _methodChannel.invokeMethod('launchUrl', siteUrl);
+
   /// Generates a list of [AndroidApp] all the launchable apps
   /// installed on the user device including their usage
   /// like screen time, wifi usage, mobile usage for current week per day.

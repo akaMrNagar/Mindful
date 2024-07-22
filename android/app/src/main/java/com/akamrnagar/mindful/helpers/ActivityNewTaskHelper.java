@@ -21,6 +21,17 @@ public class ActivityNewTaskHelper {
 
     private static final String TAG = "Mindful.ActivityNewTaskHelper";
 
+    public static void launchUrl(@NonNull Context context, @NonNull String url) {
+        try {
+            Intent urlIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(url));
+            context.startActivity(urlIntent);
+        } catch (Exception e) {
+            Log.e(TAG, "launchUrl: Unable to launch url: " + url, e);
+            Toast.makeText(context, "Invalid url", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
     // SECTION: For MINDFUL app ====================================================================
     public static void openMindfulAccessibilitySection(@NonNull Context context) {
         if (!ServicesHelper.isServiceRunning(context, MindfulAccessibilityService.class.getName())) {
@@ -116,7 +127,6 @@ public class ActivityNewTaskHelper {
             Log.e(TAG, "openAppSettingsForPackage: Unable to launch app settings for " + appPackage, e);
             Toast.makeText(context, "Unable to launch app settings", Toast.LENGTH_SHORT).show();
         }
-
     }
 
 

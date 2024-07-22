@@ -13,7 +13,7 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/website_input_dialog.dart';
 import 'package:mindful/ui/common/sliver_permission_warning.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
@@ -71,7 +71,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               /// Information about bedtime
               const StyledText(
                 "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
-              ).toSliverBox(),
+              ).sliverBox,
 
               const AccessibilityPermission(),
 
@@ -92,7 +92,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 isModifiable: canModifyShortsSetting,
                 allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
                 remainingTimeSec: remainingTimeSec,
-              ).toSliverBox(),
+              ).sliverBox,
 
               /// Quick actions
               SliverList.list(
@@ -105,7 +105,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                     ),
                     enabled: canModifyShortsSetting,
                     titleText: "Block reels",
-                    subtitleText: "Restrict reels on instagram",
+                    subtitleText: "Restrict reels on instagram.",
                     switchValue: wellBeing.blockInstaReels,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -120,7 +120,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                     ),
                     enabled: canModifyShortsSetting,
                     titleText: "Block shorts",
-                    subtitleText: "Restrict shorts on youtube",
+                    subtitleText: "Restrict shorts on youtube.",
                     switchValue: wellBeing.blockYtShorts,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -135,7 +135,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                     ),
                     enabled: canModifyShortsSetting,
                     titleText: "Block spotlight",
-                    subtitleText: "Restrict spotlight on snapchat",
+                    subtitleText: "Restrict spotlight on snapchat.",
                     switchValue: wellBeing.blockSnapSpotlight,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -150,7 +150,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                     ),
                     enabled: canModifyShortsSetting,
                     titleText: "Block reels",
-                    subtitleText: "Restrict reels on facebook",
+                    subtitleText: "Restrict reels on facebook.",
                     switchValue: wellBeing.blockFbReels,
                     onPressed:
                         ref.read(wellBeingProvider.notifier).switchBlockFbReels,
@@ -167,11 +167,11 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 leadingIcon: FluentIcons.slide_multiple_search_20_regular,
                 titleText: "Block Nsfw",
                 subtitleText:
-                    "Restrict browsers from opening predefined adult and porn websites",
+                    "Restrict browsers from opening predefined adult and porn websites.",
                 switchValue: wellBeing.blockNsfwSites,
                 onPressed:
                     ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
-              ).toSliverBox(),
+              ).sliverBox,
 
               /// Blocked websites header
               const SliverContentTitle(title: "Blocked websites"),
@@ -197,9 +197,9 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                         isSubtitle: false,
                         textAlign: TextAlign.center,
                       ),
-                    ).toSliverBox(),
+                    ).sliverBox,
 
-              const TabsBottomPadding(),
+              const SliverTabsBottomPadding(),
             ],
           ),
 

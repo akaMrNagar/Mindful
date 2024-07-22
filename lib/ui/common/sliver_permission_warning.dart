@@ -79,7 +79,7 @@ class SliverPermissionWarning extends StatelessWidget {
             ),
           ),
         ),
-      ).toSliverBox(),
+      ).sliverBox,
     );
   }
 }

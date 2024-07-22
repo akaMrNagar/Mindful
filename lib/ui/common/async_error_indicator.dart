@@ -1,6 +1,9 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -38,8 +41,12 @@ class AsyncErrorIndicator extends StatelessWidget {
           ElevatedButton.icon(
             icon: const Icon(FluentIcons.bug_20_regular),
             label: const Text("Copy and report"),
-            // FIXME: Copy stack trace and report to github
-            onPressed: () {},
+            onPressed: () async {
+              await Clipboard.setData(
+                  ClipboardData(text: stackTrace.toString()));
+              MethodChannelService.instance
+                  .launchUrl(AppConstants.githubIssueUrl);
+            },
           )
         ],
       ),

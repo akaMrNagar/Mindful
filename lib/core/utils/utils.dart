@@ -1,6 +1,8 @@
-
 final DateTime now = DateTime.now();
-final int dayOfWeek = _formatWeekDayToSunday(now.weekday) - 1;
+
+/// Day index for today in the current week after formatting
+/// i,e, java and dart have different first day of week
+int get todayOfWeek => _formatWeekDayToSunday(now.weekday) - 1;
 
 /// In java first day of week is SUNDAY but in dart fist day of week is MONDAY
 /// so offset days

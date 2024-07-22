@@ -37,7 +37,7 @@ class ApplicationIcon extends StatelessWidget {
                       .select((value) => value[app.packageName]?.timerSec)) ??
                   0;
               final isPurged =
-                  timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
+                  timer > 0 && timer < app.screenTimeThisWeek[todayOfWeek];
 
               return Image.memory(
                 app.icon,

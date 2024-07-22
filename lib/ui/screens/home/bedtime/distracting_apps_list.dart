@@ -51,14 +51,14 @@ class DistractingAppsList extends ConsumerWidget {
         ref.watch(bedtimeProvider.select((v) => v.distractingApps));
 
     /// Arguments for family provider
-    final args = (selectedDoW: dayOfWeek, includeAll: true);
+    final args = (selectedDoW: todayOfWeek, includeAll: true);
     final allApps = ref.watch(packagesByScreenUsageProvider(args));
 
     return MultiSliver(
       children: [
         const SliverContentTitle(title: "Selected apps"),
         allApps.when(
-          error: (e, st) => AsyncErrorIndicator(e, st).toSliverBox(),
+          error: (e, st) => AsyncErrorIndicator(e, st).sliverBox,
           loading: () => const SliverShimmerList(),
           data: (apps) => AnimatedAppsList(
             itemExtent: 56,

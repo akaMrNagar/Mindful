@@ -4,19 +4,19 @@ import 'package:flutter_animate/flutter_animate.dart';
 class DefaultEffects {
   static List<Effect> get transitionIn => [
         MoveEffect(
-          duration: 750.ms,
-          curve: Curves.decelerate,
+          duration: 1000.ms,
+          curve: Curves.fastEaseInToSlowEaseOut,
           begin: const Offset(0, 100),
           end: Offset.zero,
         ),
         ScaleEffect(
-          duration: 750.ms,
+          duration: 1000.ms,
           curve: Curves.decelerate,
           begin: const Offset(0.9, 0.9),
           end: const Offset(1, 1),
         ),
         FadeEffect(
-          duration: 1000.ms,
+          duration: 1250.ms,
           curve: Curves.decelerate,
           begin: 0,
           end: 1,

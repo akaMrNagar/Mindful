@@ -11,8 +11,8 @@ extension ExtInt on int {
   /// Converts minutes to [TimeOfDay] hours, and minutes
   TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
-  String toDateDiffToday() {
-    ///FIXME: bug in date
+  /// Generates day or date string based on the current day of week
+  String dateFromDoW() {
     if (toInt() == now.weekday) {
       return "Today";
     } else if (toInt() == now.weekday - 1) {
@@ -25,6 +25,7 @@ extension ExtInt on int {
     }
   }
 
+  /// Generates data usage string from data in KBs
   String toData() {
     if (toInt() < 1024) {
       return "${toInt()} KB";

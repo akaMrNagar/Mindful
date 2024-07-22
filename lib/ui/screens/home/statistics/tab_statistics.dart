@@ -17,7 +17,7 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
-import 'package:mindful/ui/common/tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/statistics/application_tile.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 
@@ -36,7 +36,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
   @override
   void initState() {
     super.initState();
-    _selectedDayOfWeek = dayOfWeek;
+    _selectedDayOfWeek = todayOfWeek;
   }
 
   @override
@@ -79,7 +79,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
             /// Usage bar chart and selected day changer
             SliverUsageChartPanel(
-              dayOfWeek: _selectedDayOfWeek,
+              selectedDoW: _selectedDayOfWeek,
               usageType: _usageType,
               barChartData: _usageType == UsageType.screenUsage
                   ? aggregatedUsage.screenTimeThisWeek
@@ -92,7 +92,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
             /// Most used apps list
             filtered.when(
-              error: (e, st) => AsyncErrorIndicator(e, st).toSliverBox(),
+              error: (e, st) => AsyncErrorIndicator(e, st).sliverBox,
               loading: () => const SliverShimmerList(includeSubtitle: true),
               data: (packages) => AnimatedAppsList(
                 itemExtent: 64,
@@ -116,9 +116,9 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 titleText: "Show all apps",
                 trailing: const Icon(FluentIcons.chevron_down_20_filled),
                 onPressed: () => setState(() => _includeAllApps = true),
-              ).toSliverBox(),
+              ).sliverBox,
 
-            const TabsBottomPadding(),
+            const SliverTabsBottomPadding(),
           ],
         ),
       ),

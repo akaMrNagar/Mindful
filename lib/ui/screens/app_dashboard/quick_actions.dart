@@ -60,7 +60,7 @@ class QuickActions extends ConsumerWidget {
         true;
 
     final isPurged =
-        appTimer > 0 && appTimer < app.screenTimeThisWeek[dayOfWeek];
+        appTimer > 0 && appTimer < app.screenTimeThisWeek[todayOfWeek];
 
     final haveVpnPermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
@@ -84,7 +84,7 @@ class QuickActions extends ConsumerWidget {
               context,
               ref,
               appTimer,
-              app.screenTimeThisWeek[dayOfWeek],
+              app.screenTimeThisWeek[todayOfWeek],
             ),
           ),
         ),

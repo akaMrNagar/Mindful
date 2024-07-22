@@ -47,41 +47,41 @@ class CategoricalUsageModel {
         case AppCategory.video:
         case AppCategory.image:
           {
-            entertainmentScreenTime += app.screenTimeThisWeek[dayOfWeek];
-            entertainmentDataUsage += app.wifiUsageThisWeek[dayOfWeek] +
-                app.mobileUsageThisWeek[dayOfWeek];
+            entertainmentScreenTime += app.screenTimeThisWeek[todayOfWeek];
+            entertainmentDataUsage += app.wifiUsageThisWeek[todayOfWeek] +
+                app.mobileUsageThisWeek[todayOfWeek];
 
             break;
           }
         case AppCategory.productivity:
         case AppCategory.news:
           {
-            productivityScreenTime += app.screenTimeThisWeek[dayOfWeek];
-            productivityDataUsage += app.wifiUsageThisWeek[dayOfWeek] +
-                app.mobileUsageThisWeek[dayOfWeek];
+            productivityScreenTime += app.screenTimeThisWeek[todayOfWeek];
+            productivityDataUsage += app.wifiUsageThisWeek[todayOfWeek] +
+                app.mobileUsageThisWeek[todayOfWeek];
             break;
           }
         case AppCategory.social:
           {
-            socialScreenTime += app.screenTimeThisWeek[dayOfWeek];
-            socialDataUsage += app.wifiUsageThisWeek[dayOfWeek] +
-                app.mobileUsageThisWeek[dayOfWeek];
+            socialScreenTime += app.screenTimeThisWeek[todayOfWeek];
+            socialDataUsage += app.wifiUsageThisWeek[todayOfWeek] +
+                app.mobileUsageThisWeek[todayOfWeek];
             break;
           }
         case AppCategory.game:
           {
-            gameScreenTime += app.screenTimeThisWeek[dayOfWeek];
-            gameDataUsage += app.wifiUsageThisWeek[dayOfWeek] +
-                app.mobileUsageThisWeek[dayOfWeek];
+            gameScreenTime += app.screenTimeThisWeek[todayOfWeek];
+            gameDataUsage += app.wifiUsageThisWeek[todayOfWeek] +
+                app.mobileUsageThisWeek[todayOfWeek];
             break;
           }
         case AppCategory.maps:
         case AppCategory.accessibility:
         case AppCategory.undefined:
           {
-            otherScreenTime += app.screenTimeThisWeek[dayOfWeek];
-            otherDataUsage += app.wifiUsageThisWeek[dayOfWeek] +
-                app.mobileUsageThisWeek[dayOfWeek];
+            otherScreenTime += app.screenTimeThisWeek[todayOfWeek];
+            otherDataUsage += app.wifiUsageThisWeek[todayOfWeek] +
+                app.mobileUsageThisWeek[todayOfWeek];
             break;
           }
       }

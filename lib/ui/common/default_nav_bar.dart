@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
 
@@ -36,7 +37,7 @@ class _DefaultNavbarState extends State<DefaultNavbar>
       vsync: this,
       initialIndex: 0,
       length: widget.navbarItems.length,
-      animationDuration: const Duration(milliseconds: 250),
+      animationDuration: 300.ms,
     );
   }
 
@@ -81,7 +82,10 @@ class _DefaultNavbarState extends State<DefaultNavbar>
                       isSelected: _controller.index == index,
                       onTap: () => setState(
                         () {
-                          _controller.animateTo(index);
+                          _controller.animateTo(
+                            index,
+                            curve: Curves.fastEaseInToSlowEaseOut,
+                          );
                           widget.onTabChanged?.call(index);
                         },
                       ),

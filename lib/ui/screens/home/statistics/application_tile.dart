@@ -67,7 +67,6 @@ class ApplicationTile extends ConsumerWidget {
             .select((value) => value[app.packageName]?.timerSec)) ??
         0;
 
-
     return DefaultHero(
       tag: AppTags.applicationTileTag(app.packageName),
       child: DefaultListTile(
@@ -108,7 +107,7 @@ class ApplicationTile extends ConsumerWidget {
                   context,
                   ref,
                   appTimer,
-                  app.screenTimeThisWeek[dayOfWeek],
+                  app.screenTimeThisWeek[todayOfWeek],
                 ),
               ),
       ),
