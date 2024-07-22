@@ -6,7 +6,6 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/tags.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -22,16 +21,31 @@ import 'package:mindful/ui/permissions/notification_permission.dart';
 import 'package:mindful/ui/permissions/usage_access_permission.dart';
 import 'package:mindful/ui/screens/home/dashboard/primary_usage_card.dart';
 import 'package:mindful/ui/screens/home/dashboard/sliver_categorical_usage.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-class TabDashboard extends ConsumerWidget {
+class TabDashboard extends ConsumerStatefulWidget {
   const TabDashboard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TabDashboard> createState() => _TabDashboardState();
+}
+
+class _TabDashboardState extends ConsumerState<TabDashboard> {
+  bool _isRefreshing = false;
+
+  Future<void> _refresh() async {
+    if (mounted) setState(() => _isRefreshing = true);
+    await ref.read(appsProvider.notifier).refreshDeviceApps();
+    if (mounted) setState(() => _isRefreshing = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final aggregatedUsage = ref.watch(aggregatedUsageProvider);
+    final isLoading = _isRefreshing || ref.watch(appsProvider).hasValue;
 
     return DefaultRefreshIndicator(
-      onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
+      onRefresh: _refresh,
       child: Padding(
         padding: const EdgeInsets.only(left: 4, right: 8),
         child: Stack(
@@ -49,45 +63,57 @@ class TabDashboard extends ConsumerWidget {
                 const DisplayOverlayPermission(),
 
                 const SliverContentTitle(title: "Today's usage"),
-                8.vSliverBox(),
+                8.vSliverBox,
 
-                /// Screen time
-                PrimaryUsageCard(
-                  icon: FluentIcons.phone_screen_time_20_regular,
-                  title: "Screen time",
-                  info: aggregatedUsage.screenTimeThisWeek[dayOfWeek].seconds
-                      .toTimeFull(),
-                ).toSliverBox(),
+                SliverSkeletonizer.zone(
+                  enabled: isLoading,
+                  child: SliverList.list(
+                    children: [
+                      /// Screen time
+                      PrimaryUsageCard(
+                        icon: FluentIcons.phone_screen_time_20_regular,
+                        title: "Screen time",
+                        info: aggregatedUsage
+                            .screenTimeThisWeek[dayOfWeek].seconds
+                            .toTimeFull(),
+                      ),
 
-                /// Data usage mobile + wifi
-                Row(
-                  children: [
-                    Expanded(
-                      child: PrimaryUsageCard(
-                        icon: FluentIcons.cellular_data_1_20_regular,
-                        title: "Mobile data",
-                        info: aggregatedUsage.mobileUsageThisWeek[dayOfWeek]
-                            .toData(),
+                      /// Data usage mobile + wifi
+                      Row(
+                        children: [
+                          Expanded(
+                            child: PrimaryUsageCard(
+                              icon: FluentIcons.cellular_data_1_20_regular,
+                              title: "Mobile data",
+                              info: aggregatedUsage
+                                  .mobileUsageThisWeek[dayOfWeek]
+                                  .toData(),
+                            ),
+                          ),
+                          8.hBox,
+                          Expanded(
+                            child: PrimaryUsageCard(
+                              icon: FluentIcons.wifi_1_20_regular,
+                              title: "Wifi data",
+                              info: aggregatedUsage.wifiUsageThisWeek[dayOfWeek]
+                                  .toData(),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    8.hBox(),
-                    Expanded(
-                      child: PrimaryUsageCard(
-                        icon: FluentIcons.wifi_1_20_regular,
-                        title: "Wifi data",
-                        info: aggregatedUsage.wifiUsageThisWeek[dayOfWeek]
-                            .toData(),
-                      ),
-                    ),
-                  ],
-                ).toSliverBox(),
+                    ],
+                  ),
+                ),
 
                 /// Category wise usage
                 const SliverContentTitle(title: "Categorical usage"),
-                8.vSliverBox(),
+                8.vSliverBox,
 
                 /// Category wise usage
-                const SliverCategoricalUsage(),
+                SliverSkeletonizer.zone(
+                  enabled: isLoading,
+                  child: const SliverCategoricalUsage(),
+                ),
 
                 const TabsBottomPadding(),
               ],

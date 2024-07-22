@@ -6,7 +6,7 @@ final packagesByNetworkUsageProvider =
     Provider.family<AsyncValue<List<String>>, FilterArgs>((ref, params) {
   return ref.watch(appsProvider).when(
         loading: () => const AsyncLoading(),
-        error: (e, st) => const AsyncLoading(),
+        error: (e, st) => AsyncError(e,st),
         data: (appsMap) {
           /// Create list of apps
           var apps = appsMap.values.toList();

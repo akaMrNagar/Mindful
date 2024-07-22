@@ -225,7 +225,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         return false;
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();

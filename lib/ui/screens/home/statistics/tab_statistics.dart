@@ -11,14 +11,15 @@ import 'package:mindful/providers/packages_by_network_usage_provider.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/async_error_indicator.dart';
-import 'package:mindful/ui/common/async_loading_indicator.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/statistics/application_tile.dart';
+import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 
 class TabStatistics extends ConsumerStatefulWidget {
   const TabStatistics({super.key});
@@ -74,7 +75,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 () => _usageType = UsageType.values[i],
               ),
             ),
-            20.vSliverBox(),
+            20.vSliverBox,
 
             /// Usage bar chart and selected day changer
             SliverUsageChartPanel(
@@ -87,13 +88,14 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                   setState(() => _selectedDayOfWeek = dow),
             ),
 
+            const SliverContentTitle(title: "Most used apps"),
+
             /// Most used apps list
             filtered.when(
-              loading: () => const AsyncLoadingIndicator().toSliverBox(),
               error: (e, st) => AsyncErrorIndicator(e, st).toSliverBox(),
+              loading: () => const SliverShimmerList(includeSubtitle: true),
               data: (packages) => AnimatedAppsList(
                 itemExtent: 64,
-                headerTitle: "Most used apps",
                 appPackages: packages,
                 itemBuilder: (context, app) => ApplicationTile(
                   app: app,

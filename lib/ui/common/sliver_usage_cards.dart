@@ -41,49 +41,44 @@ class SliverUsageCards extends StatelessWidget {
             FluentIcons.earth_20_regular,
           ],
         ),
-        8.vBox(),
+        8.vBox,
 
         /// Usage info cards
-        AnimatedSwitcher(
-          duration: 250.ms,
-          switchInCurve: Curves.ease,
-          switchOutCurve: Curves.ease,
-          child: usageType == UsageType.screenUsage
+        usageType == UsageType.screenUsage
 
-              /// Screen usage card
-              ? _buildUsageCard(
-                  context,
-                  icon: FluentIcons.phone_20_regular,
-                  title: "Screen time",
-                  subtitle: screenUsageInfo.seconds.toTimeFull(),
-                )
+            /// Screen usage card
+            ? _buildUsageCard(
+                context,
+                icon: FluentIcons.phone_20_regular,
+                title: "Screen time",
+                subtitle: screenUsageInfo.seconds.toTimeFull(),
+              )
 
-              /// Mobile and Wifi usage card
-              : SizedBox(
-                  height: 64,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildUsageCard(
-                          context,
-                          icon: FluentIcons.cellular_data_1_20_filled,
-                          title: "Mobile",
-                          subtitle: mobileUsageInfo.toData(),
-                        ),
+            /// Mobile and Wifi usage card
+            : SizedBox(
+                height: 64,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _buildUsageCard(
+                        context,
+                        icon: FluentIcons.cellular_data_1_20_filled,
+                        title: "Mobile",
+                        subtitle: mobileUsageInfo.toData(),
                       ),
-                      8.hBox(),
-                      Expanded(
-                        child: _buildUsageCard(
-                          context,
-                          icon: FluentIcons.wifi_1_20_filled,
-                          title: "Wifi",
-                          subtitle: wifiUsageInfo.toData(),
-                        ),
+                    ),
+                    8.hBox,
+                    Expanded(
+                      child: _buildUsageCard(
+                        context,
+                        icon: FluentIcons.wifi_1_20_filled,
+                        title: "Wifi",
+                        subtitle: wifiUsageInfo.toData(),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-        ),
+              ),
       ],
     );
   }

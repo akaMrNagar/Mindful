@@ -15,6 +15,7 @@ class RoundedContainer extends StatelessWidget {
     this.circularRadius = 18,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
+    this.alignment = Alignment.center,
   });
 
   final double? height;
@@ -29,6 +30,7 @@ class RoundedContainer extends StatelessWidget {
   final EdgeInsets padding;
   final Widget? child;
   final VoidCallback? onPressed;
+  final AlignmentGeometry alignment;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,7 @@ class RoundedContainer extends StatelessWidget {
             height: height,
             margin: margin,
             padding: padding,
-            alignment: Alignment.center,
+            alignment: alignment,
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: radius,
@@ -82,7 +84,10 @@ class RoundedContainer extends StatelessWidget {
                   padding: applyBorder
                       ? padding.add(const EdgeInsets.all(1))
                       : padding,
-                  child: Center(child: child),
+                  child: Align(
+                    alignment: alignment,
+                    child: child,
+                  ),
                 ),
               ),
             ),

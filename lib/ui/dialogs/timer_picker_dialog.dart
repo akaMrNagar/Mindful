@@ -95,7 +95,7 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                       onTimerDurationChanged: (val) => _selectedDuration = val,
                     ),
                   ),
-                  18.vBox(),
+                  18.vBox,
                   FilledButton.icon(
                     icon: const Icon(FluentIcons.delete_20_regular),
                     label: const Text("Delete timer"),

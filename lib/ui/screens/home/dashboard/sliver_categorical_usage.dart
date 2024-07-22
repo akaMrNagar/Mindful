@@ -4,13 +4,19 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
+import 'package:mindful/core/extensions/ext_list.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/categorical_usage_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/transitions/default_effects.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SliverCategoricalUsage extends ConsumerWidget {
-  const SliverCategoricalUsage({super.key});
+  const SliverCategoricalUsage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,42 +28,55 @@ class SliverCategoricalUsage extends ConsumerWidget {
       crossAxisSpacing: 8,
       childAspectRatio: 1.25,
       children: [
+        /// Entertainment Card
         _UsageContainer(
           icon: FluentIcons.video_clip_multiple_20_regular,
           title: "Entertainment",
           screenUsage: usage.entertainmentScreenTime.seconds.toTimeShort(),
           dataUsage: usage.entertainmentDataUsage.toData(),
         ),
+
+        /// Productivity Card
         _UsageContainer(
           icon: FluentIcons.production_20_regular,
           title: "Productivity",
           screenUsage: usage.productivityScreenTime.seconds.toTimeShort(),
           dataUsage: usage.productivityDataUsage.toData(),
         ),
+
+        /// Social Card
         _UsageContainer(
           icon: FluentIcons.chat_multiple_20_regular,
           title: "Social",
           screenUsage: usage.socialScreenTime.seconds.toTimeShort(),
           dataUsage: usage.socialDataUsage.toData(),
         ),
+
+        /// Games Card
         _UsageContainer(
           icon: FluentIcons.games_20_regular,
           title: "Game",
           screenUsage: usage.gameScreenTime.seconds.toTimeShort(),
           dataUsage: usage.gameDataUsage.toData(),
         ),
+
+        /// Other Card
         _UsageContainer(
           icon: FluentIcons.app_recent_20_regular,
           title: "other",
           screenUsage: usage.otherScreenTime.seconds.toTimeShort(),
           dataUsage: usage.otherDataUsage.toData(),
         ),
-      ],
+      ].animateListWhen(
+        when: !ref.watch(appsProvider).hasValue,
+        interval: 100.ms,
+        effects: DefaultEffects.transitionIn,
+      ),
     );
   }
 }
 
-class _UsageContainer extends StatelessWidget {
+class _UsageContainer extends ConsumerWidget {
   const _UsageContainer({
     required this.icon,
     required this.title,
@@ -71,7 +90,7 @@ class _UsageContainer extends StatelessWidget {
   final String dataUsage;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return RoundedContainer(
       applyBorder: true,
       circularRadius: 24,
@@ -88,17 +107,21 @@ class _UsageContainer extends StatelessWidget {
             fontWeight: FontWeight.w500,
           ),
           const Row(children: []),
-          4.vBox(),
-          StyledText(
-            "Data: $dataUsage",
-            fontSize: 14,
-            isSubtitle: true,
+          4.vBox,
+          Skeleton.leaf(
+            child: StyledText(
+              "Data: $dataUsage",
+              fontSize: 14,
+              isSubtitle: true,
+            ),
           ),
-          StyledText(
-            "Screen: $screenUsage",
-            fontSize: 14,
-            isSubtitle: true,
-          ),
+          Skeleton.leaf(
+            child: StyledText(
+              "Screen: $screenUsage",
+              fontSize: 14,
+              isSubtitle: true,
+            ),
+          )
         ],
       ),
     );

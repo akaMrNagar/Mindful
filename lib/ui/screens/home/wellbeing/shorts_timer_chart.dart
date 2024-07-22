@@ -26,8 +26,7 @@ class ShortsTimerChart extends ConsumerWidget {
   final int allowedTimeSec;
   final int remainingTimeSec;
 
-  void _editAllowedTime(
-      BuildContext context, WidgetRef ref) async {
+  void _editAllowedTime(BuildContext context, WidgetRef ref) async {
     final newTime = await showShortsTimerPicker(
       context: context,
       heroTag: AppTags.shortContentTimerPickerTag,
@@ -96,9 +95,8 @@ class ShortsTimerChart extends ConsumerWidget {
                 margin: const EdgeInsets.all(20),
                 padding: const EdgeInsets.all(12),
                 color: lerpedColor,
-                onPressed: isModifiable
-                    ? () => _editAllowedTime(context, ref)
-                    : null,
+                onPressed:
+                    isModifiable ? () => _editAllowedTime(context, ref) : null,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -106,7 +104,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       FluentIcons.beach_20_regular,
                       size: 56,
                     ),
-                    12.vBox(),
+                    12.vBox,
 
                     /// Remaining Time text
                     TimeTextShort(
@@ -114,7 +112,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
                     ),
-                    2.vBox(),
+                    2.vBox,
                     StyledText(
                       "Left from ${allowedTimeSec.seconds.toTimeShort()}",
                       fontSize: 14,
@@ -123,7 +121,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    32.vBox(),
+                    32.vBox,
                     DefaultHero(
                       tag: AppTags.shortContentTimerPickerTag,
                       child: Icon(

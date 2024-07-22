@@ -63,7 +63,7 @@ class DefaultListTile extends StatelessWidget {
                   leadingIcon,
                   color: enabled ? null : Theme.of(context).colorScheme.outline,
                 )
-              : leading ?? 0.hBox(),
+              : leading ?? 0.hBox,
 
           /// leading space
           if (leading != null || leadingIcon != null) const SizedBox(width: 16),
@@ -82,7 +82,7 @@ class DefaultListTile extends StatelessWidget {
                             ? null
                             : Theme.of(context).colorScheme.outline,
                       )
-                    : title ?? 0.vBox(),
+                    : title ?? 0.vBox,
 
                 /// Subtitle widget
                 subtitleText != null
@@ -91,7 +91,7 @@ class DefaultListTile extends StatelessWidget {
                         fontSize: 14,
                         isSubtitle: true,
                       )
-                    : subtitle ?? 0.vBox(),
+                    : subtitle ?? 0.vBox,
               ],
             ),
           ),
@@ -116,7 +116,7 @@ class DefaultListTile extends StatelessWidget {
                         onChanged: enabled ? (_) {} : null,
                       ),
                     )
-                  : trailing ?? 0.hBox(),
+                  : trailing ?? 0.hBox,
         ],
       ),
     );

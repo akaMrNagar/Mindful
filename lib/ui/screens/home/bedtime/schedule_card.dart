@@ -61,9 +61,9 @@ class ScheduleCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
-              12.hBox(),
+              12.hBox,
               StyledText(totalDuration.toTimeFull()),
-              12.hBox(),
+              12.hBox,
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
             ],
           ),
@@ -146,7 +146,7 @@ class _SelectedTime extends StatelessWidget {
             label,
             isSubtitle: !enabled,
           ),
-          4.vBox(),
+          4.vBox,
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -158,7 +158,7 @@ class _SelectedTime extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 isSubtitle: !enabled,
               ),
-              4.hBox(),
+              4.hBox,
 
               /// Time period AM/PM
               StyledText(

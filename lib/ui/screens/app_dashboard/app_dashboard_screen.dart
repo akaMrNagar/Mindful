@@ -69,14 +69,14 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                     children: [
                       /// App Icon
                       ApplicationIcon(app: widget.app, size: 32),
-                      8.vBox(),
+                      8.vBox,
 
                       /// App package name
                       StyledText(
                         widget.app.packageName,
                         color: Theme.of(context).hintColor,
                       ),
-                      8.vBox(),
+                      8.vBox,
                     ],
                   ).toSliverBox(),
 
@@ -93,7 +93,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                     ),
                   ),
 
-                  20.vSliverBox(),
+                  20.vSliverBox,
 
                   /// Usage bar chart and selected day changer
                   SliverUsageChartPanel(
@@ -128,7 +128,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                           ],
                         ),
 
-                  120.vSliverBox(),
+                  120.vSliverBox,
                 ],
               ),
             ),

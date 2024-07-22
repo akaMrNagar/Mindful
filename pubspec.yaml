@@ -20,6 +20,7 @@ dependencies:
 
   # Animation
   flutter_animate: ^4.2.0+1
+  skeletonizer: ^1.4.1+1
 
   # Database and Storage
   isar_flutter_libs: ^3.1.0+1

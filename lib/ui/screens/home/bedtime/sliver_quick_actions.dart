@@ -92,10 +92,10 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           curve: Curves.easeOut,
           child: isDistractingAppsListExpanded
               ? const DistractingAppsList()
-              : 0.vSliverBox(),
+              : 0.vSliverBox,
         ),
 
-        if (!isDistractingAppsListExpanded) 108.vSliverBox(),
+        if (!isDistractingAppsListExpanded) 108.vSliverBox,
       ],
     );
   }

@@ -57,7 +57,7 @@ class TabBedtime extends StatelessWidget {
           /// also schedule days
           const ScheduleCard().toSliverBox(),
 
-          8.vSliverBox(),
+          8.vSliverBox,
 
           /// Bedtime schedule status toggler
           Consumer(
@@ -81,7 +81,7 @@ class TabBedtime extends StatelessWidget {
             },
           ).toSliverBox(),
 
-          8.vSliverBox(),
+          8.vSliverBox,
 
           /// Actions related to bedtime
           const SliverQuickActions(),

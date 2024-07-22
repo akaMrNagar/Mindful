@@ -55,7 +55,7 @@ class _DefaultNavbarState extends State<DefaultNavbar>
           child: SafeArea(
             child: Column(
               children: [
-                40.vBox(),
+                40.vBox,
 
                 /// Leading widget
                 widget.leading ?? const SizedBox(),
@@ -67,7 +67,7 @@ class _DefaultNavbarState extends State<DefaultNavbar>
                     icon: const Icon(FluentIcons.chevron_left_20_filled),
                   ),
 
-                40.vBox(),
+                40.vBox,
 
                 /// Tab buttons
                 Expanded(

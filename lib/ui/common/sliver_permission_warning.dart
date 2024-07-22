@@ -45,7 +45,7 @@ class SliverPermissionWarning extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
-                2.vBox(),
+                2.vBox,
 
                 /// Warning title
                 StyledText(
@@ -55,7 +55,7 @@ class SliverPermissionWarning extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
-                6.vBox(),
+                6.vBox,
 
                 /// Warning info
                 StyledText(
@@ -64,7 +64,7 @@ class SliverPermissionWarning extends StatelessWidget {
                   color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
-                16.vBox(),
+                16.vBox,
 
                 /// Allow permission button
                 if (onTapAllow != null)

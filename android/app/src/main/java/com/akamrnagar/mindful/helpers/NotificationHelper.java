@@ -49,8 +49,11 @@ public class NotificationHelper {
         }
 
         if (askPermissionToo) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.POST_NOTIFICATIONS)) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+                ActivityNewTaskHelper.openMindfulNotificationSection(context);
+            } else {
+                int count = SharedPrefsHelper.fetchNotificationAskCount(context);
+                if (count < 2) {
                     ActivityCompat.requestPermissions(
                             activity,
                             new String[]{Manifest.permission.POST_NOTIFICATIONS},
@@ -59,8 +62,8 @@ public class NotificationHelper {
                 } else {
                     ActivityNewTaskHelper.openMindfulNotificationSection(context);
                 }
-            } else {
-                ActivityNewTaskHelper.openMindfulNotificationSection(context);
+
+                SharedPrefsHelper.storeNotificationAskCount(context, count + 1);
             }
         }
         return false;

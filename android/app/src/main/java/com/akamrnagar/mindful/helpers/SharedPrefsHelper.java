@@ -18,13 +18,14 @@ import java.util.HashSet;
 public class SharedPrefsHelper {
     private static SharedPreferences mSharedPrefs;
 
-    private static final String PREFS_SHARED_BOX = "FlutterSharedPreferences";
-    private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "flutter.mindful.emergencyPassesCount";
-    private static final String PREF_KEY_BLOCKED_APPS = "flutter.mindful.blockedApps";
-    private static final String PREF_KEY_APP_TIMERS = "flutter.mindful.appTimers";
-    private static final String PREF_KEY_BEDTIME_SETTINGS = "flutter.mindful.bedtimeSettings";
-    public static final String PREF_KEY_WELLBEING_SETTINGS = "flutter.mindful.wellBeingSettings";
-    public static final String PREF_KEY_SHORTS_SCREEN_TIME = "flutter.mindful.shortsScreenTime";
+    private static final String PREFS_SHARED_BOX = "MindfulSharedPreferences";
+    private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "mindful.emergencyPassesCount";
+    private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
+    private static final String PREF_KEY_BLOCKED_APPS = "mindful.blockedApps";
+    private static final String PREF_KEY_APP_TIMERS = "mindful.appTimers";
+    private static final String PREF_KEY_BEDTIME_SETTINGS = "mindful.bedtimeSettings";
+    public static final String PREF_KEY_WELLBEING_SETTINGS = "mindful.wellBeingSettings";
+    public static final String PREF_KEY_SHORTS_SCREEN_TIME = "mindful.shortsScreenTime";
 
 
     private static void initialize(@NonNull Context context) {
@@ -37,6 +38,11 @@ public class SharedPrefsHelper {
 
     public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
+    }
+
+    public static void storeNotificationAskCount(@NonNull Context context, int count) {
+        if (mSharedPrefs == null) initialize(context);
+        mSharedPrefs.edit().putInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, count).apply();
     }
 
     public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
@@ -67,6 +73,11 @@ public class SharedPrefsHelper {
     public static void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
+    }
+
+    public static int fetchNotificationAskCount(@NonNull Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return mSharedPrefs.getInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, 0);
     }
 
     public static int fetchEmergencyPassesCount(@NonNull Context context) {

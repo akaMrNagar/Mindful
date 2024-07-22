@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class PrimaryUsageCard extends StatelessWidget {
   const PrimaryUsageCard({
@@ -30,16 +31,18 @@ class PrimaryUsageCard extends StatelessWidget {
           Row(children: [Icon(icon)]),
           StyledText(
             title,
+            height: 1,
             fontSize: 14,
-            height: 1,
           ),
-          4.vBox(),
-          StyledText(
-            info,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            height: 1,
-            overflow: TextOverflow.ellipsis,
+          4.vBox,
+          Skeleton.leaf(
+            child: StyledText(
+              info,
+              height: 1,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.ellipsis,
+            ),
           )
         ],
       ),

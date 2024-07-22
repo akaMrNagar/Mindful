@@ -38,7 +38,7 @@ class SliverUsageChartPanel extends StatelessWidget {
           data: barChartData,
         ),
 
-        8.vBox(),
+        8.vBox,
 
         /// Selected day changer
         Container(

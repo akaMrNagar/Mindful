@@ -6,6 +6,6 @@ class TabsBottomPadding extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 256.vSliverBox();
+    return 256.vSliverBox;
   }
 }

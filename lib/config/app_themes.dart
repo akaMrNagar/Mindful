@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/transitions/default_page_transition_builder.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class AppTheme {
   static const _kSeedColor = Colors.lightBlue;
@@ -37,7 +38,17 @@ class AppTheme {
           seedColor: materialColors[seedColor] ?? _kSeedColor,
           brightness: Brightness.dark,
         ),
-      ).copyWith(pageTransitionsTheme: _kPageTransitionTheme);
+      ).copyWith(
+        pageTransitionsTheme: _kPageTransitionTheme,
+        extensions: [
+          SkeletonizerConfigData.dark(
+              effect: ShimmerEffect(
+            baseColor: (materialColors[seedColor] ?? _kSeedColor)
+                .shade50
+                .withOpacity(0.1),
+          )),
+        ],
+      );
 
   static ThemeData lightTheme(String seedColor) => ThemeData.from(
         useMaterial3: true,
@@ -45,5 +56,16 @@ class AppTheme {
           seedColor: materialColors[seedColor] ?? _kSeedColor,
           brightness: Brightness.light,
         ),
-      ).copyWith(pageTransitionsTheme: _kPageTransitionTheme);
+      ).copyWith(
+        pageTransitionsTheme: _kPageTransitionTheme,
+        extensions: [
+          SkeletonizerConfigData(
+            effect: ShimmerEffect(
+              baseColor: (materialColors[seedColor] ?? _kSeedColor)
+                  .shade900
+                  .withOpacity(0.1),
+            ),
+          ),
+        ],
+      );
 }

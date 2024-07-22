@@ -34,7 +34,7 @@ extension ExtBuildContext on BuildContext {
             content: Row(
               children: [
                 Icon(icon, color: fgColor),
-                12.hBox(),
+                12.hBox,
                 Expanded(child: StyledText(error, color: fgColor))
               ],
             ),
