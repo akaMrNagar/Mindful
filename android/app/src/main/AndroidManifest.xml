@@ -23,7 +23,7 @@
         android:name="${applicationName}"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="mindful"
+        android:label="Mindful"
         tools:ignore="UnusedAttribute">
         <receiver
             android:name=".widgets.DeviceUsageWidget"
@@ -58,10 +58,10 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- _________________________________________________________________________________ -->
+        </activity>
+        <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ RECEIVERS _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <receiver
@@ -85,7 +85,8 @@
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
-        </receiver> <!-- _________________________________________________________________________________ -->
+        </receiver>
+        <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ SERVICES _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <service

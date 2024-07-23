@@ -19,7 +19,7 @@ class MethodChannelService {
 
   /// Method channel object
   final MethodChannel _methodChannel = const MethodChannel(
-    'com.akamrnagar.mindful.methodchannel',
+    'com.mindful.android.methodchannel',
   );
 
   /// Package of the app whose Time Limit Exceeded dialog's emergency button is clicked.
