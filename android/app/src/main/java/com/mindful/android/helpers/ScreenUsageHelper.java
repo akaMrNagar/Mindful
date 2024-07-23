@@ -1,7 +1,5 @@
 package com.mindful.android.helpers;
 
-import static com.mindful.android.utils.Extensions.getOrDefault;
-
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 
@@ -21,8 +19,8 @@ public class ScreenUsageHelper {
      * Generates screen usage statistics for a specified time interval.
      *
      * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param start The start time of the interval in milliseconds.
-     * @param end The end time of the interval in milliseconds.
+     * @param start             The start time of the interval in milliseconds.
+     * @param end               The end time of the interval in milliseconds.
      * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
      */
     @NonNull
@@ -41,7 +39,7 @@ public class ScreenUsageHelper {
             }
 
             String packageName = usageStat.getPackageName();
-            long screenTime = getOrDefault(oneDayUsageMap, packageName, 0L);
+            long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
             screenTime += usageStat.getTotalTimeInForeground();
 
             oneDayUsageMap.put(packageName, screenTime);
@@ -63,7 +61,7 @@ public class ScreenUsageHelper {
      * Fetches the screen usage time of a specific application for the current day until now.
      *
      * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param packageName The package name of the application whose usage time is to be fetched.
+     * @param packageName       The package name of the application whose usage time is to be fetched.
      * @return The total screen usage time of the specified application in seconds.
      */
     public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {

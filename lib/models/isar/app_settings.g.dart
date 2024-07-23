@@ -82,7 +82,7 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings(
-    color: reader.readStringOrNull(offsets[0]) ?? 'Light Blue',
+    color: reader.readStringOrNull(offsets[0]) ?? 'Teal',
     dataResetTimeMins: reader.readLongOrNull(offsets[1]) ?? 0,
     isInvincibleModeOn: reader.readBoolOrNull(offsets[2]) ?? false,
     themeMode:
@@ -100,7 +100,7 @@ P _appSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset) ?? 'Light Blue') as P;
+      return (reader.readStringOrNull(offset) ?? 'Teal') as P;
     case 1:
       return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:

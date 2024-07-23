@@ -33,9 +33,9 @@ class AppSettings {
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
-    this.color = 'Light Blue',
+    this.color = 'Teal',
     this.isInvincibleModeOn = false,
-    this.dataResetTimeMins = 0,
+    this.dataResetTimeMins = 0, // 12:00 AM
   });
 
   AppSettings copyWith({

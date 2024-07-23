@@ -14,7 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.akamrnagar.mindful.R;
+import com.mindful.android.R;
 import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
 

@@ -27,7 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.akamrnagar.mindful.R;
+import com.mindful.android.R;
 import com.mindful.android.MainActivity;
 import com.mindful.android.helpers.NotificationHelper;
 

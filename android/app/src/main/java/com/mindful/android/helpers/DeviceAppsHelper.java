@@ -1,6 +1,5 @@
 package com.mindful.android.helpers;
 
-import static com.mindful.android.utils.Extensions.getOrDefault;
 
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
@@ -141,13 +140,13 @@ public class DeviceAppsHelper {
             HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
 
             for (AndroidApp app : deviceApps) {
-                app.screenTimeThisWeek.set((i - 1), getOrDefault(screenUsageOneDay, app.packageName, 0L));
+                app.screenTimeThisWeek.set((i - 1), screenUsageOneDay.getOrDefault(app.packageName, 0L));
 
                 if (mobileUsageOneDay.containsKey(app.appUid)) {
-                    app.mobileUsageThisWeek.set((i - 1), getOrDefault(mobileUsageOneDay, app.appUid, 0L));
+                    app.mobileUsageThisWeek.set((i - 1), mobileUsageOneDay.getOrDefault(app.appUid, 0L));
                 }
                 if (wifiUsageOneDay.containsKey(app.appUid)) {
-                    app.wifiUsageThisWeek.set((i - 1), getOrDefault(wifiUsageOneDay, app.appUid, 0L));
+                    app.wifiUsageThisWeek.set((i - 1), wifiUsageOneDay.getOrDefault(app.appUid, 0L));
                 }
             }
         }
