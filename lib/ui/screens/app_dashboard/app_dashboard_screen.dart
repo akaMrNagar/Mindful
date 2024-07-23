@@ -79,7 +79,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                       ),
                       8.vBox,
                     ],
-                  ).sliverBox,
+                  ).sliver,
 
                   /// Usage type selector and usage info card
                   SliverUsageCards(
@@ -118,7 +118,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                       ? const StyledText(
                           "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
                           fontSize: 14,
-                        ).sliverBox
+                        ).sliver
                       : MultiSliver(
                           children: [
                             /// Vpn permission

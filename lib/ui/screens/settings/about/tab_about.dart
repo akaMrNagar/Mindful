@@ -7,8 +7,8 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_donation_card.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
+import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 
@@ -26,11 +26,20 @@ class TabAbout extends ConsumerWidget {
           const SliverFlexibleAppBar(title: "About"),
 
           /// Donation box
-          const SliverDonationCard(),
+          SliverPrimaryActionContainer(
+            isVisible: true,
+            title: "Thank you",
+            information:
+                "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
+            actionBtnLabel: "Donate",
+            actionBtnIcon: const Icon(FluentIcons.heart_20_filled),
+            onTapAction: () => MethodChannelService.instance
+                .launchUrl(AppConstants.donationUrl),
+          ),
           12.vSliverBox,
 
           /// Social
-          const SliverContentTitle(title: "Social"),
+          const SliverContentTitle(title: "Contribute"),
 
           /// Source code
           DefaultListTile(
@@ -39,7 +48,7 @@ class TabAbout extends ConsumerWidget {
             subtitleText: "View the source code.",
             onPressed: () =>
                 MethodChannelService.instance.launchUrl(AppConstants.githubUrl),
-          ).sliverBox,
+          ).sliver,
 
           /// Issue
           DefaultListTile(
@@ -48,7 +57,7 @@ class TabAbout extends ConsumerWidget {
             subtitleText: "You will be redirected to GitHub.",
             onPressed: () => MethodChannelService.instance
                 .launchUrl(AppConstants.githubIssueUrl),
-          ).sliverBox,
+          ).sliver,
 
           /// Idea
           DefaultListTile(
@@ -57,7 +66,7 @@ class TabAbout extends ConsumerWidget {
             subtitleText: "You will be redirected to GitHub.",
             onPressed: () => MethodChannelService.instance
                 .launchUrl(AppConstants.githubSuggestionUrl),
-          ).sliverBox,
+          ).sliver,
 
           /// Privacy police
           const SliverContentTitle(title: "Privacy"),
@@ -65,7 +74,7 @@ class TabAbout extends ConsumerWidget {
             "Mindful is committed to protecting your privacy.We do not collect any type of data. The app operates entirely offline and does not require an internet connection.",
             fontSize: 14,
             // isSubtitle: true,
-          ).sliverBox,
+          ).sliver,
           12.vSliverBox,
           Align(
             alignment: Alignment.centerRight,
@@ -75,49 +84,49 @@ class TabAbout extends ConsumerWidget {
               onPressed: () => MethodChannelService.instance
                   .launchUrl(AppConstants.privacyPolicyUrl),
             ),
-          ).sliverBox,
+          ).sliver,
 
           /// Permissions
           const SliverContentTitle(title: "Permissions"),
           const DefaultListTile(
             titleText: "Usage access",
             subtitleText: "Allows to fetch screen and data usage.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "Display over other apps",
             subtitleText:
                 "Allows to show an overlay when paused apps are opened.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "Accessibility",
             subtitleText:
                 "Allows to detect opened website and short content on different platforms.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "Do not disturb",
             subtitleText:
                 "Allows to start and stop dnd during bedtime schedule.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "Admin",
             subtitleText:
                 "Allows to restrict user from uninstalling during invincible mode.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "VPN",
             subtitleText:
                 "Allows to restrict internet access to specified apps.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "Internet",
             subtitleText:
                 "Allows to create and protect local vpn socket when blocking app's internet.",
-          ).sliverBox,
+          ).sliver,
           const DefaultListTile(
             titleText: "Notification",
             subtitleText:
                 "Allows to remind and alert about important information and events.",
-          ).sliverBox,
+          ).sliver,
 
           const SliverTabsBottomPadding(),
         ],

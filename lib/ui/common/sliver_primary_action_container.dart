@@ -7,21 +7,25 @@ import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class SliverPermissionWarning extends StatelessWidget {
-  const SliverPermissionWarning({
+class SliverPrimaryActionContainer extends StatelessWidget {
+  const SliverPrimaryActionContainer({
     super.key,
-    required this.havePermission,
+    required this.isVisible,
     required this.title,
     required this.information,
-    this.onTapAllow,
+    this.onTapAction,
+    this.actionBtnLabel,
+    this.actionBtnIcon,
     this.margin = EdgeInsets.zero,
   });
 
-  final bool havePermission;
+  final bool isVisible;
   final String title;
   final String information;
-  final VoidCallback? onTapAllow;
   final EdgeInsets margin;
+  final String? actionBtnLabel;
+  final VoidCallback? onTapAction;
+  final Widget? actionBtnIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class SliverPermissionWarning extends StatelessWidget {
       duration: 500.ms,
       curve: Curves.easeOutExpo,
       child: Visibility(
-        visible: !havePermission,
+        visible: isVisible,
         child: RoundedContainer(
           circularRadius: 24,
           color: Theme.of(context).colorScheme.primary,
@@ -67,19 +71,20 @@ class SliverPermissionWarning extends StatelessWidget {
                 16.vBox,
 
                 /// Allow permission button
-                if (onTapAllow != null)
+                if (onTapAction != null)
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: ElevatedButton(
-                      onPressed: onTapAllow,
-                      child: const Text("Allow"),
+                    child: ElevatedButton.icon(
+                      onPressed: onTapAction,
+                      label: Text(actionBtnLabel ?? "Allow"),
+                      icon: actionBtnIcon,
                     ),
                   ),
               ],
             ),
           ),
         ),
-      ).sliverBox,
+      ).sliver,
     );
   }
 }

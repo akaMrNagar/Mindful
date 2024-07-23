@@ -15,7 +15,7 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/website_input_dialog.dart';
-import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
@@ -71,13 +71,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               /// Information about bedtime
               const StyledText(
                 "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
-              ).sliverBox,
+              ).sliver,
 
               const AccessibilityPermission(),
 
               if (haveAccessibilityPermission)
-                SliverPermissionWarning(
-                  havePermission: canModifyShortsSetting,
+                SliverPrimaryActionContainer(
+                  isVisible: !canModifyShortsSetting,
                   margin: const EdgeInsets.only(top: 12),
                   title: "Invincible mode",
                   information:
@@ -92,7 +92,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 isModifiable: canModifyShortsSetting,
                 allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
                 remainingTimeSec: remainingTimeSec,
-              ).sliverBox,
+              ).sliver,
 
               /// Quick actions
               SliverList.list(
@@ -171,7 +171,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 switchValue: wellBeing.blockNsfwSites,
                 onPressed:
                     ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
-              ).sliverBox,
+              ).sliver,
 
               /// Blocked websites header
               const SliverContentTitle(title: "Blocked websites"),
@@ -197,7 +197,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                         isSubtitle: false,
                         textAlign: TextAlign.center,
                       ),
-                    ).sliverBox,
+                    ).sliver,
 
               const SliverTabsBottomPadding(),
             ],

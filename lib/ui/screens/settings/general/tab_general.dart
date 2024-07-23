@@ -15,8 +15,8 @@ import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/permissions/admin_permission.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
-class TabService extends ConsumerWidget {
-  const TabService({super.key});
+class TabGeneral extends ConsumerWidget {
+  const TabGeneral({super.key});
 
   void _turnOnInvincibleMode(
       BuildContext context, WidgetRef ref, bool isInvincibleModeOn) async {
@@ -43,23 +43,52 @@ class TabService extends ConsumerWidget {
     final haveAdminPermission =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
 
+    final dataUsageResetTime =
+        ref.watch(settingsProvider.select((v) => v.dataResetToD));
+
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
-          const SliverFlexibleAppBar(title: "Service"),
+          const SliverFlexibleAppBar(title: "General"),
+
+          /// Default settings
+          const SliverContentTitle(title: "Defaults"),
+
+          /// Data reset time
+          DefaultListTile(
+            titleText: "Daily data usage reset time",
+            subtitleText:
+                "Specify the time when your daily data cycle renews based on your recharge plan.",
+            trailing: StyledText(
+              " ${dataUsageResetTime.format(context)}",
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+            onPressed: () async {
+              final pickedTime = await showTimePicker(
+                context: context,
+                initialTime: dataUsageResetTime,
+                helpText: "Select daily data usage reset time",
+              );
+
+              if (pickedTime != null && context.mounted) {
+                ref
+                    .read(settingsProvider.notifier)
+                    .changeDataResetTime(pickedTime);
+              }
+            },
+          ).sliver,
 
           /// Invincible
           const SliverContentTitle(title: "Invincible mode"),
 
-          4.vSliverBox,
-
           /// Information about invincible mode
           const StyledText(
             "When Invincible Mode is enabled, you cannot modify app's timer once it runs out, change bedtime routine settings during the bedtime schedule period, or modify shorts blocker settings after reaching the daily limit.\n\nEnjoy a distraction-free experience!",
-          ).sliverBox,
+          ).sliver,
           12.vSliverBox,
 
           /// Admin permission warning
@@ -82,7 +111,15 @@ class TabService extends ConsumerWidget {
                     _turnOnInvincibleMode(context, ref, isInvincibleModeOn),
               ),
             ),
-          ).sliverBox,
+          ).sliver,
+
+          12.vSliverBox,
+          if (isInvincibleModeOn && haveAdminPermission)
+            const StyledText(
+              "Note: If you wish to uninstall this app due to an emergency while Invincible Mode is on, please follow these steps:\n\n1. Go to Settings > Security & Privacy > More Security & Privacy > Device Admin Apps.\n2. Find Mindful in the list and disable it.\n\nYou can now uninstall the app in the usual way.",
+              // "Note: If you wish to uninstall this app app due to some emergency when invincible mode is On then go to Setting > Security & privacy > More security and privacy > Device admin apps and find mindful in the list and disable it. Now you can uninstall this app in usual way.",
+              isSubtitle: true,
+            ).sliver,
         ],
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 
 class VpnPermission extends ConsumerWidget {
   const VpnPermission({super.key});
@@ -11,13 +11,13 @@ class VpnPermission extends ConsumerWidget {
     final havePermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
-    return SliverPermissionWarning(
-      havePermission: havePermission,
+    return SliverPrimaryActionContainer(
+      isVisible: !havePermission,
       margin: const EdgeInsets.only(top: 4, bottom: 12),
       title: "Create VPN",
       information:
           "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
-      onTapAllow: ref.read(permissionProvider.notifier).askVpnPermission,
+      onTapAction: ref.read(permissionProvider.notifier).askVpnPermission,
     );
   }
 }

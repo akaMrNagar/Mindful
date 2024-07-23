@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/app_settings.dart';
 
 final settingsProvider =
@@ -29,4 +31,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       state = state.copyWith(themeMode: mode);
 
   void changeColor(String color) => state = state.copyWith(color: color);
+
+  void changeDataResetTime(TimeOfDay time) async {
+    state = state.copyWith(dataResetTimeMins: time.minutes);
+
+    /// Update native side
+    await MethodChannelService.instance
+        .setDataResetTime(state.dataResetTimeMins);
+  }
 }

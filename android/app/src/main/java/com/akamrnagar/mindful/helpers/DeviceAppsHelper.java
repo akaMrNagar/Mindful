@@ -127,31 +127,34 @@ public class DeviceAppsHelper {
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getSystemService(Context.NETWORK_STATS_SERVICE);
 
-        Calendar startCal = Calendar.getInstance();
-        Calendar endCal = Calendar.getInstance();
-        int todayOfWeek = startCal.get(Calendar.DAY_OF_WEEK);
+        Calendar screenUsageCal = Calendar.getInstance();
+        screenUsageCal.set(Calendar.HOUR_OF_DAY, 0);
+        screenUsageCal.set(Calendar.MINUTE, 0);
+        screenUsageCal.set(Calendar.SECOND, 0);
+        screenUsageCal.set(Calendar.MILLISECOND, 0);
 
-        startCal.set(Calendar.HOUR_OF_DAY, 0);
-        startCal.set(Calendar.MINUTE, 0);
-        startCal.set(Calendar.SECOND, 0);
-        startCal.set(Calendar.MILLISECOND, 0);
+        // Users may have different timings for their data renewal or reset so keeping it in mind
+        int dataResetTimeMins = SharedPrefsHelper.fetchDataResetTimeMins(context);
+        Calendar dataUsageCal = Calendar.getInstance();
+        dataUsageCal.set(Calendar.HOUR_OF_DAY, dataResetTimeMins / 60);
+        dataUsageCal.set(Calendar.MINUTE, dataResetTimeMins % 60);
+        dataUsageCal.set(Calendar.SECOND, 0);
+        dataUsageCal.set(Calendar.MILLISECOND, 0);
 
-        endCal.set(Calendar.HOUR_OF_DAY, 23);
-        endCal.set(Calendar.MINUTE, 59);
-        endCal.set(Calendar.SECOND, 59);
-        endCal.set(Calendar.MILLISECOND, 999);
+        int todayOfWeek = screenUsageCal.get(Calendar.DAY_OF_WEEK);
+        long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
         /// Loop from first day of week till today of current week
         for (int i = 1; i <= todayOfWeek; i++) {
-            startCal.set(Calendar.DAY_OF_WEEK, i);
-            endCal.set(Calendar.DAY_OF_WEEK, i);
+            screenUsageCal.set(Calendar.DAY_OF_WEEK, i);
+            dataUsageCal.set(Calendar.DAY_OF_WEEK, i);
 
-            long start = startCal.getTimeInMillis();
-            long end = endCal.getTimeInMillis();
+            long screenUsageStart = screenUsageCal.getTimeInMillis();
+            long dataUsageStart = dataUsageCal.getTimeInMillis();
 
-            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, start, end);
-            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, start, end);
-            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, start, end);
+            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours);
+            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
+            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
 
 
             for (AndroidApp app : deviceApps) {

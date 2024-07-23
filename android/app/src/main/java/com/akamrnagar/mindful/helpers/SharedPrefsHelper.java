@@ -21,6 +21,7 @@ public class SharedPrefsHelper {
     private static final String PREFS_SHARED_BOX = "MindfulSharedPreferences";
     private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "mindful.emergencyPassesCount";
     private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
+    private static final String PREF_KEY_DATA_RESET_TIME_MINS = "mindful.dataResetTimeMins";
     private static final String PREF_KEY_BLOCKED_APPS = "mindful.blockedApps";
     private static final String PREF_KEY_APP_TIMERS = "mindful.appTimers";
     private static final String PREF_KEY_BEDTIME_SETTINGS = "mindful.bedtimeSettings";
@@ -40,10 +41,16 @@ public class SharedPrefsHelper {
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
     }
 
+    public static void storeDataResetTimeMins(@NonNull Context context, int timeInMins) {
+        if (mSharedPrefs == null) initialize(context);
+        mSharedPrefs.edit().putInt(PREF_KEY_DATA_RESET_TIME_MINS, timeInMins).apply();
+    }
+
     public static void storeNotificationAskCount(@NonNull Context context, int count) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, count).apply();
     }
+
 
     public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
         if (mSharedPrefs == null) initialize(context);
@@ -73,6 +80,11 @@ public class SharedPrefsHelper {
     public static void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
+    }
+
+    public static int fetchDataResetTimeMins(@NonNull Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return mSharedPrefs.getInt(PREF_KEY_DATA_RESET_TIME_MINS, 0);
     }
 
     public static int fetchNotificationAskCount(@NonNull Context context) {

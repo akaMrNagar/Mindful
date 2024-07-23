@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/screens/settings/about/tab_about.dart';
 import 'package:mindful/ui/screens/settings/appearance/tab_appearance.dart';
-import 'package:mindful/ui/screens/settings/service/tab_service.dart';
+import 'package:mindful/ui/screens/settings/general/tab_general.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -19,9 +19,9 @@ class SettingsScreen extends StatelessWidget {
             body: TabAppearance(),
           ),
           NavbarItem(
-            title: "Service",
-            icon: FluentIcons.server_multiple_20_filled,
-            body: TabService(),
+            title: "General",
+            icon: FluentIcons.window_dev_tools_20_regular,
+            body: TabGeneral(),
           ),
           NavbarItem(
             title: "About",

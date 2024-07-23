@@ -58,7 +58,7 @@ class DistractingAppsList extends ConsumerWidget {
       children: [
         const SliverContentTitle(title: "Selected apps"),
         allApps.when(
-          error: (e, st) => AsyncErrorIndicator(e, st).sliverBox,
+          error: (e, st) => AsyncErrorIndicator(e, st).sliver,
           loading: () => const SliverShimmerList(),
           data: (apps) => AnimatedAppsList(
             itemExtent: 56,

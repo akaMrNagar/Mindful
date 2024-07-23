@@ -94,6 +94,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
             }
+            case "setDataResetTime": {
+                SharedPrefsHelper.storeDataResetTimeMins(this, call.arguments() == null ? 0 : (int) call.arguments());
+                result.success(true);
+                break;
+            }
             case "launchUrl": {
                 ActivityNewTaskHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
                 result.success(true);

@@ -36,7 +36,7 @@ class TabAppearance extends ConsumerWidget {
               DefaultDropdownItem(label: "Dark", value: ThemeMode.dark),
               DefaultDropdownItem(label: "Light", value: ThemeMode.light),
             ],
-          ).sliverBox,
+          ).sliver,
 
           /// Material Color
           DefaultDropdownTile<String>(
@@ -56,7 +56,7 @@ class TabAppearance extends ConsumerWidget {
                       value: e.key,
                     ))
                 .toList(),
-          ).sliverBox,
+          ).sliver,
         ],
       ),
     );

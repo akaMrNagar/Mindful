@@ -45,6 +45,9 @@ class MethodChannelService {
     return time ~/ 1000;
   }
 
+  Future<bool> setDataResetTime(int timeOfDayInMins) async =>
+      await _methodChannel.invokeMethod('setDataResetTime', timeOfDayInMins);
+
   Future<bool> showToast(
     String msg, {
     ToastDuration duration = ToastDuration.short,

@@ -49,13 +49,13 @@ class TabBedtime extends StatelessWidget {
           /// Information about bedtime
           const StyledText(
             "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
-          ).sliverBox,
+          ).sliver,
 
           const SliverContentTitle(title: "Schedule"),
 
           /// Card with start and end time for schedule
           /// also schedule days
-          const ScheduleCard().sliverBox,
+          const ScheduleCard().sliver,
 
           8.vSliverBox,
 
@@ -79,7 +79,7 @@ class TabBedtime extends StatelessWidget {
                 ),
               );
             },
-          ).sliverBox,
+          ).sliver,
 
           8.vSliverBox,
 

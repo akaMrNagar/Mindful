@@ -24,6 +24,6 @@ class SliverContentTitle extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,
       ),
-    ).sliverBox;
+    ).sliver;
   }
 }

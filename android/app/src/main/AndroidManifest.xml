@@ -10,8 +10,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
-    <!-- The app does not need this permission but it is declared only to create vpn socket -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" /> <!-- The app does not need this permission but it is declared only to create vpn socket -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
@@ -26,6 +25,17 @@
         android:icon="@mipmap/ic_launcher"
         android:label="mindful"
         tools:ignore="UnusedAttribute">
+        <receiver
+            android:name=".widgets.DeviceUsageWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/device_usage_widget_info" />
+        </receiver>
 
         <activity
             android:name=".MainActivity"
@@ -51,19 +61,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!-- _________________________________________________________________________________ -->
+        </activity> <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ RECEIVERS _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <receiver
             android:name=".receivers.DeviceBootReceiver"
             android:enabled="true"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".receivers.MindfulAdminReceiver"
             android:enabled="true"
@@ -77,8 +85,7 @@
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
-        </receiver>
-        <!-- _________________________________________________________________________________ -->
+        </receiver> <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ SERVICES _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <service

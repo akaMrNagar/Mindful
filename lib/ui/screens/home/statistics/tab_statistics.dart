@@ -92,7 +92,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
             /// Most used apps list
             filtered.when(
-              error: (e, st) => AsyncErrorIndicator(e, st).sliverBox,
+              error: (e, st) => AsyncErrorIndicator(e, st).sliver,
               loading: () => const SliverShimmerList(includeSubtitle: true),
               data: (packages) => AnimatedAppsList(
                 itemExtent: 64,
@@ -116,7 +116,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 titleText: "Show all apps",
                 trailing: const Icon(FluentIcons.chevron_down_20_filled),
                 onPressed: () => setState(() => _includeAllApps = true),
-              ).sliverBox,
+              ).sliver,
 
             const SliverTabsBottomPadding(),
           ],
