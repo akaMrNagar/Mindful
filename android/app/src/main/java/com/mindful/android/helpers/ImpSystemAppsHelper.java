@@ -11,27 +11,22 @@ import androidx.annotation.Nullable;
 import java.util.HashSet;
 
 /**
- * ImpSystemAppsHelper is a utility class responsible for identifying and managing important
- * system applications on an Android device.
- * It helps to initialize and maintain a list of system applications that are considered essential
- * for the proper functioning of the device.
+ * ImpSystemAppsHelper provides utility methods for identifying important system applications on the device.
+ * These include the default launcher and dialer apps.
  */
 public class ImpSystemAppsHelper {
 
-
     /**
-     * Initializes the set of important system applications.
+     * Fetches a set of important system apps, including the default launcher and dialer apps.
      *
-     * @param context        The Android application context.
-     * @param packageManager The package manager used for resolving default apps.
+     * @param context The context to use for fetching the default apps.
+     * @param packageManager The package manager used to resolve the default apps.
+     * @return A HashSet containing the package names of important system apps.
      */
-    public static HashSet<String> fetchImpApps(@NonNull Context context, @Nullable PackageManager packageManager) {
+    @NonNull
+    public static HashSet<String> fetchImpApps(@NonNull Context context, @NonNull PackageManager packageManager) {
         HashSet<String> impSystemApps = new HashSet<>();
         impSystemApps.add(context.getPackageName());
-
-        if (packageManager == null) {
-            packageManager = context.getPackageManager();
-        }
 
         // Get and add the package names of the default launcher and dialer app.
         @Nullable
@@ -63,7 +58,6 @@ public class ImpSystemAppsHelper {
             return null;
         }
     }
-
 
     /**
      * Gets the package name of the default dialer app.

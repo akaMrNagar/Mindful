@@ -1,6 +1,7 @@
 package com.mindful.android.utils;
 
-import android.content.pm.ApplicationInfo;
+import android.app.ActivityManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -20,12 +21,31 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 
+/**
+ * A utility class containing static helper methods for various common tasks such as
+ * checking if a service is running, encoding images, parsing JSON strings, and manipulating URLs.
+ */
 public class Utils {
     private static final String TAG = "Mindful.Utils";
 
-    private static final int SYSTEM_APP_MASK = ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP;
+    /**
+     * Checks if a service with the given class name is currently running.
+     *
+     * @param context          The application context.
+     * @param serviceClassName The name of the service class (e.g., MindfulAppsTrackerService.class.getName()).
+     * @return True if the service is running, false otherwise.
+     */
+    public static boolean isServiceRunning(@NonNull Context context, String serviceClassName) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceInfo.service.getClassName().equals(serviceClassName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Encodes a Drawable (app icon) to a Base64 string.
@@ -44,7 +64,6 @@ public class Utils {
         return Base64.encodeToString(byteArrayOS.toByteArray(), Base64.NO_WRAP);
     }
 
-
     /**
      * Encodes and returns the Base64 representation of an app icon.
      *
@@ -60,7 +79,6 @@ public class Utils {
         }
         return appIcon;
     }
-
 
     /**
      * Deserializes a JSON string into a HashMap of String keys and Long values.
@@ -109,6 +127,12 @@ public class Utils {
         return set;
     }
 
+    /**
+     * Parses the host name from a URL string.
+     *
+     * @param url The URL string to parse.
+     * @return The host name extracted from the URL.
+     */
     @NonNull
     public static String parseHostNameFromUrl(String url) {
         URI uri;
@@ -129,29 +153,30 @@ public class Utils {
         // Remove prefix from url
         hostName = hostName.replace("https://", "").replace("http://", "").replace("www.", "");
 
-        // Some websites uses mobile. OR m. prefix
+        // Some websites use mobile. OR m. prefix
         if (hostName.contains("mobile.")) {
             hostName = hostName.substring(7);
         } else if (hostName.contains("m.") && hostName.indexOf("m.") < 3) {
             hostName = hostName.substring(2);
         }
 
-        // If the url still contains / the remove it
+        // If the url still contains / then remove it
         if (hostName.contains("/")) {
             return hostName.substring(0, hostName.indexOf("/"));
         }
 
         return hostName;
-
     }
 
+    /**
+     * Returns an empty string if the provided string is null.
+     *
+     * @param nullableString The string to check.
+     * @return The original string if it's not null, otherwise an empty string.
+     */
     @NonNull
     public static String notNullStr(@Nullable String nullableString) {
         if (nullableString != null) return nullableString;
         else return "";
-    }
-
-    public static <K, V> V getOrDefault(@NonNull Map<K, V> map, K key, V defaultValue) {
-        return map.getOrDefault(key, defaultValue);
     }
 }

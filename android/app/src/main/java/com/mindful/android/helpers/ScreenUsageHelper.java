@@ -11,22 +11,19 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-
 /**
- * ScreenUsageHelper is a utility class responsible for gathering screen usage statistics for
- * Android applications.
- * It fetches data about screen time usage of applications and organizes this
- * information into HashMap of app's package name and the usage in seconds.
+ * ScreenUsageHelper provides utility methods for gathering and calculating screen usage statistics
+ * for Android applications. It interacts with the UsageStatsManager to query and process usage data.
  */
 public class ScreenUsageHelper {
 
     /**
-     * Generates screen usage stats for a specified time interval.
+     * Generates screen usage statistics for a specified time interval.
      *
-     * @param usageStatsManager The UsageStatsManager used to retrieve screen usage data.
-     * @param start             The start time of the interval in milliseconds.
-     * @param end               The end time of the interval in milliseconds.
-     * @return A map of package names and their screen time in seconds for the specified interval.
+     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
+     * @param start The start time of the interval in milliseconds.
+     * @param end The end time of the interval in milliseconds.
+     * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
      */
     @NonNull
     public static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
@@ -57,13 +54,18 @@ public class ScreenUsageHelper {
             oneDayUsageMap.put(prevStat.getPackageName(), calcTime);
         }
 
-
         // Convert milliseconds to seconds
         oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
         return oneDayUsageMap;
     }
 
-
+    /**
+     * Fetches the screen usage time of a specific application for the current day until now.
+     *
+     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
+     * @param packageName The package name of the application whose usage time is to be fetched.
+     * @return The total screen usage time of the specified application in seconds.
+     */
     public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
 
         Calendar midNightCal = Calendar.getInstance();
@@ -73,7 +75,6 @@ public class ScreenUsageHelper {
 
         long start = midNightCal.getTimeInMillis();
         long end = System.currentTimeMillis();
-
 
         List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
         UsageStats prevStat = null;
@@ -94,7 +95,6 @@ public class ScreenUsageHelper {
                 screenTime += usageStat.getTotalTimeInForeground();
             }
         }
-
 
         // If the last event is same as the launched app means it is opened but not closed which eventually means it is running
         if (prevStat != null && prevStat.getPackageName().equals(packageName)) {

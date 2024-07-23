@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SuccessCallback;
 import com.mindful.android.models.AndroidApp;
-import com.mindful.android.utils.AsyncThread;
 import com.mindful.android.utils.Utils;
 
 import java.util.ArrayList;
@@ -30,75 +29,59 @@ import java.util.Map;
 import io.flutter.plugin.common.MethodChannel;
 
 /**
- * DeviceAppsHelper is a utility class that assists in retrieving information about installed
- * applications and their usage on an Android device.
- * It provides functionality for fetching a list of Android apps, including their names, package
- * names, icons, and various usage statistics.
+ * DeviceAppsHelper provides methods for retrieving information about the apps installed on a device,
+ * including their usage statistics and other relevant details.
  */
 public class DeviceAppsHelper {
+
     private static final String REMOVED_APP_NAME = "Removed Apps";
     private static final String REMOVED_PACKAGE = "com.android.removed";
     private static final String TETHERING_APP_NAME = "Tethering & Hotspot";
     private static final String TETHERING_PACKAGE = "com.android.tethering";
 
-
     /**
-     * Retrieves a list of installed Android apps including their usage statistics.
+     * Retrieves a list of installed device apps along with their usage statistics and sends the result
+     * to the specified MethodChannel.Result.
      *
-     * @param context       The Android application context.
-     * @param channelResult The MethodChannel result to return the list of apps to Flutter.
+     * @param context       The context to use for fetching app information.
+     * @param channelResult The result channel to which the app data will be sent.
      */
     public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
         SuccessCallback<List<Map<String, Object>>> callback = new SuccessCallback<List<Map<String, Object>>>() {
             @Override
             public void onSuccess(List<Map<String, Object>> result) {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        channelResult.success(result);
-                    }
-                });
+                new Handler(Looper.getMainLooper()).post(() -> channelResult.success(result));
             }
         };
 
-        new AsyncThread().run(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        List<AndroidApp> apps = fetchAppsAndUsage(context);
-                        List<Map<String, Object>> resultMap = new ArrayList<>(apps.size());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<AndroidApp> apps = fetchAppsAndUsage(context);
+                List<Map<String, Object>> resultMap = new ArrayList<>(apps.size());
 
-                        for (AndroidApp app : apps) {
-                            resultMap.add(app.toMap());
-                        }
-
-                        callback.onSuccess(resultMap);
-                    }
+                for (AndroidApp app : apps) {
+                    resultMap.add(app.toMap());
                 }
-        );
+
+                callback.onSuccess(resultMap);
+            }
+        }).start();
     }
 
-    /**
-     * Fetches a list of installed Android apps and their usage statistics.
-     *
-     * @param context The Android application context.
-     * @return A list of AndroidApp objects representing installed applications.
-     */
     @NonNull
     private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
         PackageManager packageManager = context.getPackageManager();
 
-        // Fetch set of important apps like Dialer, Launcher etc
+        // Fetch set of important apps like Dialer, Launcher etc.
         HashSet<String> impSystemApps = ImpSystemAppsHelper.fetchImpApps(context, packageManager);
 
         // Fetch package info of installed apps on device
         List<PackageInfo> fetchedApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
         List<AndroidApp> deviceApps = new ArrayList<>();
 
-
         for (PackageInfo app : fetchedApps) {
-
-            // Only include app which are launchable
+            // Only include apps which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
                 int category = -1;
 
@@ -109,7 +92,8 @@ public class DeviceAppsHelper {
                 // Check if the app is important or default to system like dialer and launcher
                 boolean isSysDefault = impSystemApps.contains(app.packageName);
                 deviceApps.add(
-                        new AndroidApp(app.applicationInfo.loadLabel(packageManager).toString(), // name
+                        new AndroidApp(
+                                app.applicationInfo.loadLabel(packageManager).toString(), // name
                                 app.packageName, // package name
                                 Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app.applicationInfo)), // icon
                                 isSysDefault, // is default app used by system like dialer or launcher
@@ -120,7 +104,7 @@ public class DeviceAppsHelper {
             }
         }
 
-        /// Add additional apps for network usage
+        // Add additional apps for network usage
         deviceApps.add(new AndroidApp(TETHERING_APP_NAME, TETHERING_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_TETHERING));
         deviceApps.add(new AndroidApp(REMOVED_APP_NAME, REMOVED_PACKAGE, Utils.getEncodedAppIcon(packageManager.getApplicationIcon(new ApplicationInfo())), true, -1, NetworkStats.Bucket.UID_REMOVED));
 
@@ -144,7 +128,7 @@ public class DeviceAppsHelper {
         int todayOfWeek = screenUsageCal.get(Calendar.DAY_OF_WEEK);
         long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
-        /// Loop from first day of week till today of current week
+        // Loop from first day of week till today of current week
         for (int i = 1; i <= todayOfWeek; i++) {
             screenUsageCal.set(Calendar.DAY_OF_WEEK, i);
             dataUsageCal.set(Calendar.DAY_OF_WEEK, i);
@@ -155,7 +139,6 @@ public class DeviceAppsHelper {
             HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.generateUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours);
             HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
             HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
-
 
             for (AndroidApp app : deviceApps) {
                 app.screenTimeThisWeek.set((i - 1), getOrDefault(screenUsageOneDay, app.packageName, 0L));
@@ -171,6 +154,4 @@ public class DeviceAppsHelper {
 
         return deviceApps;
     }
-
-
 }

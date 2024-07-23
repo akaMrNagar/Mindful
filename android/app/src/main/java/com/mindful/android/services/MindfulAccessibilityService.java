@@ -34,11 +34,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
+ */
 public class MindfulAccessibilityService extends AccessibilityService implements SharedPreferences.OnSharedPreferenceChangeListener {
-    // ===================================================================================================================
-    // Tested blocking on following browsers => Chrome, Brave, DuckDuckGo, Edge, Vivaldi, FireFox, WaterFox
-    // ===================================================================================================================
-
     private static final String TAG = "Mindful.MindfulAccessibilityService";
     private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 5000L; // 5 seconds
     private static final long BACK_ACTION_INVOKE_INTERVAL_MS = 500L; // half second
@@ -52,7 +51,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private long mLastTimeBackActionInvoked = 0L;
     private long mTotalShortsScreenTimeMs = 0L;
 
-    // FIXME: What if device reboots ?
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -84,9 +83,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         if (mWellBeingSettings.blockedWebsites.isEmpty() && !mWellBeingSettings.blockInstaReels && !mWellBeingSettings.blockYtShorts && !mWellBeingSettings.blockSnapSpotlight && !mWellBeingSettings.blockFbReels && !mWellBeingSettings.blockNsfwSites)
             return;
 
-
         if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null)
             return;
+
         String packageName = event.getPackageName().toString();
         AccessibilityNodeInfo node = event.getSource();
 
@@ -120,7 +119,12 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         }
     }
 
-
+    /**
+     * Blocks access to websites and short-form content based on current settings.
+     *
+     * @param node        The AccessibilityNodeInfo of the current view.
+     * @param packageName The package name of the app.
+     */
     private void blockDistractionOnBrowsers(@NonNull AccessibilityNodeInfo node, String packageName) {
         String url = extractBrowserUrl(node, packageName);
 
@@ -140,12 +144,17 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             Log.d(TAG, "blockDistractionOnBrowsers: Blocked short content " + url + " opened in " + packageName);
             checkTimerAndBlockShortContent();
         }
-
     }
 
+    /**
+     * Extracts the URL from the given AccessibilityNodeInfo based on the app package name.
+     *
+     * @param node        The AccessibilityNodeInfo of the current view.
+     * @param packageName The package name of the app.
+     * @return The extracted URL as a string.
+     */
     @NonNull
     private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
-
         // Find by id 'url_bar' on chromium based browsers
         List<AccessibilityNodeInfo> chromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/url_bar");
         if (chromiumUrlNodes != null && !chromiumUrlNodes.isEmpty()) {
@@ -172,10 +181,12 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             }
         }
 
-
         return "";
     }
 
+    /**
+     * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
+     */
     private void checkTimerAndBlockShortContent() {
         if (mTotalShortsScreenTimeMs > mWellBeingSettings.allowedShortContentTimeMs) {
             goBackWithToast();
@@ -197,6 +208,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         }
     }
 
+    /**
+     * Performs the back action and shows a toast message indicating that the content is blocked.
+     */
     private void goBackWithToast() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - mLastTimeBackActionInvoked >= BACK_ACTION_INVOKE_INTERVAL_MS) {
@@ -206,6 +220,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         }
     }
 
+    /**
+     * Updates the service info with the latest settings and registered packages.
+     */
     private void refreshServiceInfo() {
         HashSet<String> allowedAppPackages = new HashSet<>();
 
@@ -226,7 +243,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Load nsfw website domains if needed
         mNsfwWebsites = mWellBeingSettings.blockNsfwSites ? NsfwDomains.init() : new HashMap<>(0);
-
 
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
@@ -250,6 +266,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public void onInterrupt() {
+        // No-op
     }
 
     @Override
@@ -261,6 +278,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }
 
+    /**
+     * BroadcastReceiver to listen for app install/uninstall events and update service info accordingly.
+     */
     private class AppInstallUninstallReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -272,7 +292,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
                 refreshServiceInfo();
             }
         }
-
 
         @NonNull
         private String getPackageName(@NonNull Intent intent) {

@@ -12,69 +12,70 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Represents the bedtime settings configuration for the application.
+ */
 public class BedtimeSettings {
 
     /**
-     * Boolean notifying if the bedtime routine schedule is ON or OFF
+     * Boolean indicating if the bedtime routine schedule is ON or OFF.
      */
     public boolean isScheduleOn = false;
 
     /**
-     * Time when the bedtime schedule task will starts
-     * It is stored as total minutes from midnight 12.
+     * The time when the bedtime schedule task will start, represented as total minutes from midnight (00:00).
      */
     public int startTimeInMins = 0;
 
     /**
-     * Total duration of schedule between startTime amd endTime
+     * The total duration of the schedule from startTime to endTime, in minutes.
      */
     public int totalDurationInMins = 0;
 
     /**
-     * Boolean denoting the status of the bedtime schedule means
-     * [For User] if the schedule is running or not.
-     * [For Developer]  if the task worker is scheduled or cancelled.
+     * List of booleans indicating the days of the week when the schedule should be active.
+     * [0] - Sunday, [1] - Monday, ..., [6] - Saturday.
      */
     public List<Boolean> scheduleDays = Arrays.asList(false, true, true, true, true, true, false);
 
-
     /**
-     * Boolean denoting if to start DO NOT DISTURB mode or not when bedtime starts.
+     * Boolean indicating if Do Not Disturb (DND) mode should be started when the bedtime routine begins.
      */
     public boolean shouldStartDnd = false;
 
     /**
-     * List of app's packages which are selected as distracting apps.
-     * The [shouldPauseApps] and [shouldBlockInternet] actions will be applied to
-     * these apps.
+     * Set of app package names identified as distracting apps.
+     * Actions like pausing apps or blocking the internet will be applied to these apps.
      */
     public HashSet<String> distractingApps = new HashSet<>(0);
 
-
+    /**
+     * Constructs a BedtimeSettings instance from a JSON string.
+     *
+     * @param jsonString JSON representation of BedtimeSettings.
+     */
     public BedtimeSettings(@NonNull String jsonString) {
         if (jsonString.isEmpty()) {
             Log.d("Mindful.BedtimeSettings", "JSON string passed to the constructor is empty");
         } else {
             try {
-
-                // Below logic fix the following exception :
-                // org.json.JSONException: Value of type java.lang.String cannot be converted to JSONObject
+                // Clean the JSON string and parse it
                 jsonString = jsonString.replace("\\", "");
                 JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
 
+                // Deserialize fields
                 isScheduleOn = jsonObject.getBoolean("isScheduleOn");
                 startTimeInMins = jsonObject.getInt("startTimeInMins");
                 totalDurationInMins = jsonObject.getInt("totalDurationInMins");
                 shouldStartDnd = jsonObject.getBoolean("shouldStartDnd");
 
-                /// Schedule days
+                // Deserialize schedule days
                 JSONArray daysJsonArray = jsonObject.getJSONArray("scheduleDays");
-
                 for (int i = 0; i < daysJsonArray.length(); i++) {
                     scheduleDays.set(i, daysJsonArray.getBoolean(i));
                 }
 
-                // Distracting apps
+                // Deserialize distracting apps
                 JSONArray appsJsonArray = jsonObject.getJSONArray("distractingApps");
                 for (int i = 0; i < appsJsonArray.length(); i++) {
                     distractingApps.add(appsJsonArray.getString(i));
@@ -86,6 +87,11 @@ public class BedtimeSettings {
         }
     }
 
+    /**
+     * Provides a string representation of the BedtimeSettings object.
+     *
+     * @return A string representing the BedtimeSettings object.
+     */
     @NonNull
     @Override
     public String toString() {

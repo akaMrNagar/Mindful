@@ -18,9 +18,12 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * BroadcastReceiver that monitors device lock/unlock events and tracks app launches while the device is unlocked.
+ */
 public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private final String TAG = "Mindful.DeviceLockUnlockReceiver";
-    private static final long mTimerRate = 500;
+    private static final long mTimerRate = 500; // Interval for tracking app launches in milliseconds
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
     private Timer mAppLaunchTrackingTimer;
@@ -28,7 +31,11 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private String mLastLaunchedAppPackage = "";
     private boolean mIsTrackingPaused = false;
 
-
+    /**
+     * Constructs a DeviceLockUnlockReceiver instance.
+     *
+     * @param context The application context.
+     */
     public DeviceLockUnlockReceiver(Context context) {
         mContext = context;
         mUsageStatsManager = (UsageStatsManager) mContext.getSystemService(Context.USAGE_STATS_SERVICE);
@@ -39,14 +46,16 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     public void onReceive(Context context, @NonNull Intent intent) {
         if (intent.getAction() != null && Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
             onDeviceUnlocked();
-            Log.d(TAG, "onDeviceUnLocked: User UNLOCKED the device and device is ACTIVE");
+            Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE");
         } else if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF)) {
             onDeviceLocked();
             Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE");
         }
     }
 
-
+    /**
+     * Initializes app launch tracking when the device is unlocked.
+     */
     private void onDeviceUnlocked() {
         if (mAppLaunchTrackingTimer == null) {
             mAppLaunchTrackingTimer = new Timer();
@@ -58,12 +67,14 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
             }, 0, mTimerRate);
         }
 
-        Log.d(TAG, "onDeviceUnLocked: Repeated task scheduled for tracking new app launches.");
+        Log.d(TAG, "onDeviceUnlocked: Repeated task scheduled for tracking new app launches.");
         broadcastLastAppLaunchEvent();
     }
 
+    /**
+     * Stops app launch tracking when the device is locked.
+     */
     private void onDeviceLocked() {
-
         if (mAppLaunchTrackingTimer != null) {
             mAppLaunchTrackingTimer.purge();
             mAppLaunchTrackingTimer.cancel();
@@ -72,7 +83,9 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         Log.d(TAG, "onDeviceLocked: App launch tracking task cancelled.");
     }
 
-
+    /**
+     * Periodically checks for new app launches and broadcasts an event if a new app is detected.
+     */
     private void onAppLaunchTrackingTimerRun() {
         long now = System.currentTimeMillis();
         UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - mTimerRate, now);
@@ -91,22 +104,19 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
             }
         }
 
-
         if (!mActiveAppsList.isEmpty() && !mLastLaunchedAppPackage.equals(mActiveAppsList.get(0))) {
             mLastLaunchedAppPackage = mActiveAppsList.get(0);
             broadcastLastAppLaunchEvent();
         }
     }
 
-
     /**
-     * Broadcast an event of type ACTION_APP_LAUNCHED with the last launched app
-     * package
+     * Broadcasts an event indicating the last launched app package name.
      */
     public void broadcastLastAppLaunchEvent() {
         if (mLastLaunchedAppPackage.isEmpty() || mIsTrackingPaused) return;
 
-        // Broadcast event
+        // Create and send the broadcast intent
         Intent eventIntent = new Intent();
         eventIntent.setAction(ACTION_APP_LAUNCHED);
         eventIntent.setPackage(mContext.getPackageName());
@@ -114,12 +124,19 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         mContext.sendBroadcast(eventIntent);
     }
 
+    /**
+     * Pauses or resumes app launch tracking.
+     *
+     * @param shouldPause True to pause tracking, false to resume.
+     */
     public void pauseResumeTracking(boolean shouldPause) {
         mIsTrackingPaused = shouldPause;
-        if(!shouldPause) broadcastLastAppLaunchEvent();
+        if (!shouldPause) broadcastLastAppLaunchEvent();
     }
 
-
+    /**
+     * Cleans up resources and stops tracking when no longer needed.
+     */
     public void dispose() {
         onDeviceLocked();
     }

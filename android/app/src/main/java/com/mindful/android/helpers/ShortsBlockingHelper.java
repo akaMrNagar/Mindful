@@ -12,30 +12,39 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Helper class to handle blocking of short-form content platforms
+ * and detect when such content is open based on accessibility node information.
+ */
 public class ShortsBlockingHelper {
 
-    // APP PACKAGES
+    // App package names
     public static final String INSTAGRAM_PACKAGE = "com.instagram.android";
     public static final String YOUTUBE_PACKAGE = "com.google.android.youtube";
     public static final String SNAPCHAT_PACKAGE = "com.snapchat.android";
     public static final String FACEBOOK_PACKAGE = "com.facebook.katana";
 
-    // Possible urls of different short form content platforms
+    // Possible URLs of different short-form content platforms
     private static final List<String> instaReelUrls = new ArrayList<>(Arrays.asList("instagram.com/reels/", "m.instagram.com/reels/"));
     private static final List<String> ytShortUrls = new ArrayList<>(Arrays.asList("youtube.com/shorts/", "m.youtube.com/shorts/"));
     private static final List<String> snapSpotlightUrls = new ArrayList<>(Arrays.asList("snapchat.com/spotlight/", "m.snapchat.com/spotlight/", "web.snapchat.com/spotlight/"));
     private static final List<String> fbReelUrls = new ArrayList<>(Arrays.asList("facebook.com/reel/", "m.facebook.com/reel/"));
 
+    /**
+     * Checks if Instagram Reels is currently open based on accessibility node information.
+     *
+     * @param parentNode The root AccessibilityNodeInfo of the view hierarchy.
+     * @return True if Instagram Reels is open, false otherwise.
+     */
     public static boolean isInstaReelsOpen(@NonNull AccessibilityNodeInfo parentNode) {
-        // NOTE: For instagram lite use 'com.instagram.lite:id/video_view'
         CharSequence parentNodeId = parentNode.getViewIdResourceName();
 
-        // Root node
+        // Check root node
         if (parentNodeId != null && (parentNodeId.equals("com.instagram.android:id/clips_viewer_view_pager") || parentNodeId.equals("com.instagram.android:id/scrubber"))) {
             return true;
         }
 
-        // Child nodes
+        // Check child nodes
         for (int i = 0; i < parentNode.getChildCount(); i++) {
             AccessibilityNodeInfo childNode = parentNode.getChild(i);
             if (childNode == null) continue;
@@ -50,21 +59,32 @@ public class ShortsBlockingHelper {
         return false;
     }
 
+    /**
+     * Checks if YouTube Shorts is currently open based on accessibility node information.
+     *
+     * @param node The AccessibilityNodeInfo of the view.
+     * @return True if YouTube Shorts is open, false otherwise.
+     */
     public static boolean isYoutubeShortsOpen(@NonNull AccessibilityNodeInfo node) {
         CharSequence nodeId = node.getViewIdResourceName();
         return nodeId != null
                 && (nodeId.equals("com.google.android.youtube:id/reel_progress_bar")
                 || nodeId.equals("com.google.android.youtube:id/reel_player_page_container")
-                || nodeId.equals("com.google.android.youtube:id/reel_recycler")
-        );
+                || nodeId.equals("com.google.android.youtube:id/reel_recycler"));
     }
 
+    /**
+     * Checks if Snapchat Spotlight is currently open based on accessibility node information.
+     *
+     * @param node The AccessibilityNodeInfo of the view.
+     * @return True if Snapchat Spotlight is open, false otherwise.
+     */
     public static boolean isSnapchatSpotlightOpen(@NonNull AccessibilityNodeInfo node) {
         // Find by 'spotlight_view_count' id
         List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId("com.snapchat.android:id/spotlight_view_count");
         if (nodes != null && !nodes.isEmpty()) {
             CharSequence text = nodes.get(0).getText();
-            if (nodes.get(0).getText() != null) return true;
+            if (text != null) return true;
         }
 
         // Find by node's classname equal to 'opera_content_index'
@@ -72,30 +92,37 @@ public class ShortsBlockingHelper {
         return id != null && id.equals("com.snapchat.android:id/opera_content_index");
     }
 
+    /**
+     * Checks if Facebook Reels is currently open based on accessibility node information.
+     *
+     * @param node The AccessibilityNodeInfo of the view.
+     * @return True if Facebook Reels is open, false otherwise.
+     */
     public static boolean isFacebookReelsOpen(@NonNull AccessibilityNodeInfo node) {
         CharSequence txt = node.getText();
         return txt != null && (txt.equals("Add a comment…") || txt.equals("कमेंट जोड़ें…"));
     }
 
-
     /**
-     * @param settings WellBeingSettings model for detecting which platforms are blocked
-     * @param url      The url text from browser
-     * @return Boolean indicating if any blocked short content website is opened or not on the basis of WellBeingSettings
+     * Checks if a short-form content website is open in the browser based on WellBeingSettings.
+     *
+     * @param settings The WellBeingSettings model indicating which platforms are blocked.
+     * @param url      The URL text from the browser.
+     * @return True if a blocked short-form content website is open, false otherwise.
      */
     public static boolean isShortContentOpenOnBrowser(@NonNull WellBeingSettings settings, String url) {
         return (settings.blockInstaReels && doesUrlContainsAnyElement(instaReelUrls, url))
                 || (settings.blockYtShorts && doesUrlContainsAnyElement(ytShortUrls, url))
                 || (settings.blockSnapSpotlight && doesUrlContainsAnyElement(snapSpotlightUrls, url))
-                || (settings.blockFbReels && doesUrlContainsAnyElement(fbReelUrls, url))
-                ;
+                || (settings.blockFbReels && doesUrlContainsAnyElement(fbReelUrls, url));
     }
 
-
     /**
-     * @param urlList List of urls which are iterated to check if the item is in passed Url
-     * @param url     The url which may contain any element of urlList
-     * @return Boolean indicating if the url contains any of the element from urlList
+     * Checks if the URL contains any of the elements from the provided list of URLs.
+     *
+     * @param urlList The list of URL substrings to check against.
+     * @param url     The URL to check.
+     * @return True if the URL contains any element from the list, false otherwise.
      */
     @Contract(pure = true)
     private static boolean doesUrlContainsAnyElement(@NonNull List<String> urlList, String url) {
@@ -104,5 +131,4 @@ public class ShortsBlockingHelper {
         }
         return false;
     }
-
 }

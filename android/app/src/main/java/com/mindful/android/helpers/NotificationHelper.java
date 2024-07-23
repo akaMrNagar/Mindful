@@ -11,32 +11,52 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
+/**
+ * NotificationHelper provides utility methods for managing notification channels and permissions
+ * in an Android application.
+ * It includes functionalities to register notification channels and request notification permissions.
+ */
 public class NotificationHelper {
-    // Channels
+    // Notification channel names
     private static final String NOTIFICATION_IMPORTANT_CHANNEL_NAME = "Important";
     private static final String NOTIFICATION_OTHER_CHANNEL_NAME = "Other";
+
+    // Notification channel IDs
     public static final String NOTIFICATION_IMPORTANT_CHANNEL_ID = "mindful.notification.channel.important";
     public static final String NOTIFICATION_OTHER_CHANNEL_ID = "mindful.notification.channel.other";
 
+    /**
+     * Registers notification channels for the application. This method creates and registers
+     * channels for important and other notifications, specifying their importance and descriptions.
+     *
+     * @param context The application context used to access system services.
+     */
     public static void registerNotificationGroupAndChannels(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Channels
+            // Create channels
             NotificationChannel importantChannel = new NotificationChannel(NOTIFICATION_IMPORTANT_CHANNEL_ID, NOTIFICATION_IMPORTANT_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
             NotificationChannel otherChannel = new NotificationChannel(NOTIFICATION_OTHER_CHANNEL_ID, NOTIFICATION_OTHER_CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN);
             importantChannel.setDescription("These notifications include crucial reminders and updates, designed to help you stay on track.");
             otherChannel.setDescription("These are non-critical updates. They can be disabled but are included to comply with Android requirements.");
 
-
-            // Register
+            // Register channels
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(otherChannel);
             notificationManager.createNotificationChannel(importantChannel);
         }
     }
 
+    /**
+     * Checks if notification permissions are granted and optionally asks for it if not granted.
+     *
+     * @param context The application context used to check notification permissions.
+     * @param activity The activity used to request notification permissions if needed.
+     * @param askPermissionToo Whether to request notification permission if not already granted.
+     * @return True if notification permissions are granted, false otherwise.
+     */
     public static boolean getAndAskNotificationPermission(@NonNull Context context, @NonNull Activity activity, boolean askPermissionToo) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            final int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
+            int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
             if (status == PackageManager.PERMISSION_GRANTED) {
                 return true;
             }
@@ -68,5 +88,4 @@ public class NotificationHelper {
         }
         return false;
     }
-
 }

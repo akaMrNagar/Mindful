@@ -12,7 +12,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
+import com.akamrnagar.mindful.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -27,10 +27,12 @@ import java.nio.channels.DatagramChannel;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
-
+/**
+ * A VPN service that manages internet access by blocking specified apps.
+ */
 public class MindfulVpnService extends android.net.VpnService {
     private static final int SERVICE_ID = 302;
-    private static final String TAG = "com.mindful.android.VpnService";
+    private static final String TAG = "Mindful.VpnService";
     private final AtomicReference<Thread> mVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
     private Set<String> mBlockedApps;
@@ -52,12 +54,19 @@ public class MindfulVpnService extends android.net.VpnService {
         return START_NOT_STICKY;
     }
 
+    /**
+     * Restarts the VPN service by disconnecting and then reconnecting the VPN.
+     */
     private void restartVpnService() {
         disconnectVpn();
         connectVpn();
-        Log.d(TAG, "restartVpnService: Vpn restarted successfully");
+        Log.d(TAG, "restartVpnService: VPN restarted successfully");
     }
 
+    /**
+     * Establishes a VPN connection based on blocked apps.
+     * If there are no blocked apps, the service will stop itself.
+     */
     private void connectVpn() {
         // Check if no blocked apps then STOP service
         // Necessary if the service starts from Boot Receiver
@@ -82,6 +91,9 @@ public class MindfulVpnService extends android.net.VpnService {
         );
     }
 
+    /**
+     * Disconnects the VPN connection if established.
+     */
     private void disconnectVpn() {
         try {
             if (mVpnInterface != null) {
@@ -94,12 +106,20 @@ public class MindfulVpnService extends android.net.VpnService {
         }
     }
 
+    /**
+     * Stops the foreground service and disconnects the VPN.
+     */
     private void stopAndDisposeService() {
         disconnectVpn();
         stopForeground(true);
         stopSelf();
     }
 
+    /**
+     * Returns a Runnable that configures and establishes the VPN connection.
+     *
+     * @return A Runnable that sets up the VPN connection.
+     */
     @NonNull
     @Contract(" -> new")
     private Runnable getVpnRunnable() {
@@ -146,6 +166,11 @@ public class MindfulVpnService extends android.net.VpnService {
         };
     }
 
+    /**
+     * Sets the current VPN thread, interrupting the previous thread if necessary.
+     *
+     * @param thread The new thread to be set.
+     */
     private void setVpnThread(final Thread thread) {
         final Thread oldThread = mVpnThread.getAndSet(thread);
         if (oldThread != null) {
@@ -153,13 +178,18 @@ public class MindfulVpnService extends android.net.VpnService {
         }
     }
 
-
+    /**
+     * Updates the list of blocked apps and restarts the VPN service if needed.
+     */
     public void updateBlockedApps() {
         mBlockedApps = SharedPrefsHelper.fetchBlockedApps(this);
         if (mBlockedApps.isEmpty()) stopAndDisposeService();
         else mShouldRestartVpn = true;
     }
 
+    /**
+     * Restarts the VPN service if it should be restarted.
+     */
     public void onApplicationStop() {
         if (mShouldRestartVpn) {
             restartVpnService();
@@ -167,17 +197,15 @@ public class MindfulVpnService extends android.net.VpnService {
         }
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         disconnectVpn();
-        Log.d(TAG, "onDestroy: Vpn service is destroyed");
+        Log.d(TAG, "onDestroy: VPN service is destroyed");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return new ServiceBinder<>(MindfulVpnService.this);
     }
-
 }

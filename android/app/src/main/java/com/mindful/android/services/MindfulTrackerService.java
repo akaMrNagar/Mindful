@@ -4,7 +4,6 @@ import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.mindful.android.generics.ServiceBinder.ACTION_STOP_SERVICE;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
-import static com.mindful.android.utils.Extensions.getOrDefault;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -20,13 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
+import com.akamrnagar.mindful.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
-import com.mindful.android.helpers.ServicesHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.receivers.DeviceLockUnlockReceiver;
+import com.mindful.android.utils.Utils;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +33,9 @@ import java.util.HashSet;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * A service that tracks app usage, manages timers for app usage limits, and handles bedtime lockdowns.
+ */
 public class MindfulTrackerService extends Service {
 
     private static final int SERVICE_ID = 301;
@@ -68,7 +70,6 @@ public class MindfulTrackerService extends Service {
         return START_NOT_STICKY;
     }
 
-
     @SuppressLint("NewApi")
     private void startTrackingService() {
         // Register lock/unlock receiver
@@ -93,10 +94,13 @@ public class MindfulTrackerService extends Service {
                         .build()
         );
 
-        Log.d(TAG, "startTracking: Foreground service started");
+        Log.d(TAG, "startTrackingService: Foreground service started");
         updateAppTimers();
     }
 
+    /**
+     * Updates app timers from shared preferences and stops the service if no timers are active.
+     */
     public void updateAppTimers() {
         mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
         mPurgedApps.clear();
@@ -104,6 +108,9 @@ public class MindfulTrackerService extends Service {
         stopIfNoUsage();
     }
 
+    /**
+     * Stops the service if no timers are active and bedtime schedule is off.
+     */
     public void stopIfNoUsage() {
         if (!SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn && mAppTimers.isEmpty()) {
             Log.d(TAG, "stopIfNoUsage: The service is not required any more therefore, stopping it");
@@ -112,12 +119,18 @@ public class MindfulTrackerService extends Service {
         }
     }
 
+    /**
+     * Starts or stops bedtime lockdown mode.
+     *
+     * @param shouldStart     True to start, false to stop.
+     * @param distractingApps Set of apps to monitor during bedtime mode.
+     */
     public void startStopBedtimeLockdown(boolean shouldStart, @Nullable HashSet<String> distractingApps) {
         if (shouldStart && distractingApps != null) {
             mDistractingApps = distractingApps;
             mPurgedApps.clear();
 
-            // Broadcast launch event for last active app is may be restricted in bedtime mode
+            // Broadcast launch event for last active app if restricted in bedtime mode
             if (mLockUnlockReceiver != null) mLockUnlockReceiver.broadcastLastAppLaunchEvent();
             Log.d(TAG, "startStopBedtimeLockdown: Bedtime lockdown started successfully");
         } else {
@@ -126,10 +139,18 @@ public class MindfulTrackerService extends Service {
         }
     }
 
+    /**
+     * Resets the list of purged apps at midnight.
+     */
     public void onMidnightReset() {
         mPurgedApps.clear();
     }
 
+    /**
+     * Pauses or resumes tracking based on the given flag.
+     *
+     * @param shouldPause True to pause, false to resume.
+     */
     public void pauseResumeTracking(boolean shouldPause) {
         if (mLockUnlockReceiver != null) mLockUnlockReceiver.pauseResumeTracking(shouldPause);
     }
@@ -147,16 +168,17 @@ public class MindfulTrackerService extends Service {
             mAppLaunchReceiver.cancelTimers();
             unregisterReceiver(mAppLaunchReceiver);
         }
-        Log.d(TAG, "onDestroy : Foreground service destroyed");
+        Log.d(TAG, "onDestroy: Foreground service destroyed");
     }
-
 
     @Override
     public IBinder onBind(Intent intent) {
         return new ServiceBinder<>(MindfulTrackerService.this);
     }
 
-
+    /**
+     * BroadcastReceiver that listens for app launch events and manages app timers.
+     */
     private class AppLaunchReceiver extends BroadcastReceiver {
         private final String TAG = "Mindful.AppLaunchReceiver";
         private Timer mAppUsageRecheckTimer;
@@ -171,7 +193,6 @@ public class MindfulTrackerService extends Service {
                 if (packageName == null || packageName.isEmpty()) return;
                 Log.d(TAG, "onReceive: App launch event received with package ** " + packageName + " **");
 
-
                 // Cancel running task
                 cancelTimers();
 
@@ -182,20 +203,23 @@ public class MindfulTrackerService extends Service {
                     // Else if app has timer
                     onTimerAppLaunched(packageName);
                 }
-
             }
         }
 
-
+        /**
+         * Handles the case where an app with a timer is launched.
+         *
+         * @param packageName The package name of the launched app.
+         */
         private void onTimerAppLaunched(String packageName) {
             if (mPurgedApps.contains(packageName)) {
                 showOverlayDialog(packageName);
                 return;
             }
 
-            // fetch usage and check if timer ran out then start overlay dialog service
+            // Fetch usage and check if timer ran out then start overlay dialog service
             long screenTimeSec = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager, packageName);
-            long appTimerSec = getOrDefault(mAppTimers, packageName, 0L);
+            long appTimerSec = mAppTimers.getOrDefault(packageName, 0L);
 
             if (screenTimeSec > 0 && screenTimeSec >= appTimerSec) {
                 mPurgedApps.add(packageName);
@@ -203,7 +227,7 @@ public class MindfulTrackerService extends Service {
                 return;
             }
 
-            // schedule timer for rechecking the app if it is still running
+            // Schedule timer for rechecking the app if it is still running
             long delayMs = (appTimerSec - screenTimeSec) * 1000;
 
             mAppUsageRecheckTimer = new Timer();
@@ -219,8 +243,13 @@ public class MindfulTrackerService extends Service {
             Log.d(TAG, "handleTimerAppLaunch: Timer task scheduled for " + packageName + " :  " + new Date(delayMs + System.currentTimeMillis()));
         }
 
+        /**
+         * Shows an overlay dialog for the given app package.
+         *
+         * @param packageName The package name of the app.
+         */
         private void showOverlayDialog(String packageName) {
-            if (!ServicesHelper.isServiceRunning(MindfulTrackerService.this, OverlayDialogService.class.getName())) {
+            if (!Utils.isServiceRunning(MindfulTrackerService.this, OverlayDialogService.class.getName())) {
                 Intent intent = new Intent(MindfulTrackerService.this, OverlayDialogService.class);
                 intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
                 intent.putExtra(INTENT_EXTRA_IS_THIS_BEDTIME, mDistractingApps.contains(packageName));
@@ -229,7 +258,9 @@ public class MindfulTrackerService extends Service {
             }
         }
 
-
+        /**
+         * Cancels any scheduled timers for app usage rechecking.
+         */
         protected void cancelTimers() {
             if (mAppUsageRecheckTimer != null) {
                 mAppUsageRecheckTimer.purge();

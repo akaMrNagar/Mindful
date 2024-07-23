@@ -12,12 +12,15 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
+import com.akamrnagar.mindful.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.AppConstants;
 
+/**
+ * A Service that provides an emergency timer for pausing app tracking.
+ */
 public class EmergencyTimerService extends Service {
     private static final String TAG = "Mindful.EmergencyTimerService";
     private static final int SERVICE_ID = 304;
@@ -25,7 +28,6 @@ public class EmergencyTimerService extends Service {
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
-
 
     @Override
     public void onCreate() {
@@ -48,13 +50,16 @@ public class EmergencyTimerService extends Service {
             return START_NOT_STICKY;
         }
 
-//        SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
+        SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
         startTimer();
 
         Log.d(TAG, "onStartCommand: Emergency timer service started successfully");
         return START_STICKY;
     }
 
+    /**
+     * Starts the countdown timer and updates the notification with the remaining time.
+     */
     private void startTimer() {
         startForeground(SERVICE_ID, createNotification(AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS));
         mCountDownTimer = new CountDownTimer(AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
@@ -73,7 +78,12 @@ public class EmergencyTimerService extends Service {
         }.start();
     }
 
-
+    /**
+     * Creates a notification for the emergency timer with the remaining time.
+     *
+     * @param millisUntilFinished The remaining time in milliseconds.
+     * @return The notification object.
+     */
     @NonNull
     private Notification createNotification(long millisUntilFinished) {
         int totalSeconds = (int) (millisUntilFinished / 1000);
@@ -83,7 +93,7 @@ public class EmergencyTimerService extends Service {
         String msg = "The app blocker will resume after " + leftMinutes + ":" + leftSeconds + " minutes";
 
         return new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentTitle("Emergency pause")
@@ -92,6 +102,10 @@ public class EmergencyTimerService extends Service {
                 .build();
     }
 
+    /**
+     * Called when the service is destroyed. Unbinds from the tracking service,
+     * cancels the countdown timer, and stops the foreground notification.
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -103,11 +117,8 @@ public class EmergencyTimerService extends Service {
         Log.d(TAG, "onDestroy: Emergency timer service destroyed");
     }
 
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 }
-
-

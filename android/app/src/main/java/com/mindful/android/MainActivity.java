@@ -27,6 +27,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler {
+
     private static final String TAG = "Mindful.MainActivity";
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
@@ -44,14 +45,14 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
 
-        // Start the tracking service if a timer is set or a bedtime schedule is active otherwise, attempt to bind if the service is already running
+        // Start or bind the tracking service based on app timers or bedtime schedule
         if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty() || SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn) {
             mTrackerServiceConn.startAndBind();
         } else {
             mTrackerServiceConn.bindService();
         }
 
-        // Start the vpn service if any app is blocked otherwise, attempt to bind if the service is already running
+        // Start or bind the VPN service based on blocked apps and VPN permissions
         if (!SharedPrefsHelper.fetchBlockedApps(this).isEmpty() && getAndAskVpnPermission(false)) {
             mVpnServiceConn.startAndBind();
         } else {
@@ -66,7 +67,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         MethodChannel mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         mMethodChannel.setMethodCallHandler(this);
 
-        /// Check if user launched the app from TLE dialog then go to app dashboard screen for that update targeted app
+        // Check if the app was launched from TLE dialog and update the targeted app
         String appPackage = getIntent().getStringExtra("appPackage");
         if (appPackage != null && !appPackage.isEmpty()) {
             mMethodChannel.invokeMethod("updateTargetedApp", appPackage);
@@ -134,7 +135,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
                 if (bedtimeSettings.isScheduleOn) {
                     WorkersHelper.scheduleBedtimeRoutine(this);
-                    mTrackerServiceConn.startAndBind(); // This will only start service if it is already not running
+                    mTrackerServiceConn.startAndBind(); // Start service if it is not already running
                 } else {
                     WorkersHelper.cancelBedtimeRoutine(this);
                     if (mTrackerServiceConn.isConnected()) {
@@ -155,13 +156,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(SharedPrefsHelper.fetchEmergencyPassesCount(this));
                 break;
             }
-
             case "useEmergencyPass": {
                 startService(new Intent(this, EmergencyTimerService.class));
                 result.success(true);
                 break;
             }
-
 
             // SECTION: Permissions handler methods ------------------------------------------------------
             case "getAndAskNotificationPermission": {
@@ -212,10 +211,14 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             default:
                 result.notImplemented();
         }
-
     }
 
-
+    /**
+     * Requests VPN permission if needed.
+     *
+     * @param askPermissionToo Whether to ask for permission if not already granted.
+     * @return True if permission is already granted, false otherwise.
+     */
     private boolean getAndAskVpnPermission(boolean askPermissionToo) {
         Intent intent = MindfulVpnService.prepare(this);
         if (askPermissionToo && intent != null) {
@@ -224,6 +227,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         return intent == null;
     }
 
+    /**
+     * Requests display overlay permission if needed.
+     *
+     * @param askPermissionToo Whether to ask for permission if not already granted.
+     * @return True if permission is already granted, false otherwise.
+     */
     private boolean getAndAskDisplayOverlayPermission(boolean askPermissionToo) {
         if (Settings.canDrawOverlays(this)) return true;
 
@@ -239,16 +248,21 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     protected void onStop() {
         super.onStop();
 
-        // Let VPN service know that it can restart if needed as App is stopping
+        // Notify VPN service that it can restart if needed
         if (mVpnServiceConn.isConnected()) {
             mVpnServiceConn.getService().onApplicationStop();
         }
 
-        /// Unbind services
+        // Unbind services
         mTrackerServiceConn.unBindService();
         mVpnServiceConn.unBindService();
     }
 
+    /**
+     * Shows a toast message.
+     *
+     * @param call The method call containing the message and duration.
+     */
     private void showToast(@NonNull MethodCall call) {
         String msg = call.argument("message");
         Integer duration = call.argument("duration");
