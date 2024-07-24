@@ -7,6 +7,7 @@ import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 
 class DefaultDropdownTile<T> extends StatelessWidget {
+  /// Custom dropdown list tile when clicked displays alert dialog with list items
   const DefaultDropdownTile({
     super.key,
     required this.value,

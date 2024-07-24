@@ -7,8 +7,8 @@ import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-/// Global error widget for async providers
 class AsyncErrorIndicator extends StatelessWidget {
+  /// Global error widget for async providers
   const AsyncErrorIndicator(
     this.error,
     this.stackTrace, {

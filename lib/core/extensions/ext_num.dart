@@ -17,6 +17,7 @@ extension ExtNum on num {
   Widget get vSliverBox =>
       SliverToBoxAdapter(child: SizedBox(height: toDouble()));
 
+  /// Generates a random number between the range [NUMBER/2 - NUMBER]
   num get randomHalf =>
       ((this ~/ 2) + Random().nextInt((toInt() - (toInt() ~/ 2) + 1)));
 }

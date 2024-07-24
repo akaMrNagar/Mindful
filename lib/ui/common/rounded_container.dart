@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class RoundedContainer extends StatelessWidget {
+  /// A decorated container with the provided properties
+  ///
+  /// If [onPressed] is not null then it build a inkwell widget, otherwise build a normal container with the decorations
   const RoundedContainer({
     super.key,
     this.height,

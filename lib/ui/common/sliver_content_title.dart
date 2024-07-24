@@ -3,6 +3,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverContentTitle extends StatelessWidget {
+  /// Global title text with primary accent mainly used as a header for different sections in a list of widgets
   const SliverContentTitle({
     super.key,
     required this.title,

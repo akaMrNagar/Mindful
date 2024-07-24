@@ -4,6 +4,9 @@ import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
+/// Animates the hero widget to a alert dialog with input field to enter website url
+///
+/// Returns the entered text
 Future<String?> showWebsiteInputDialog({
   required BuildContext context,
   required Object heroTag,

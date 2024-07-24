@@ -100,7 +100,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block instagram reels
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/instaReels.png",
+                      "assets/icons/instaReels.png",
                       width: 32,
                     ),
                     enabled: canModifyShortsSetting,
@@ -115,7 +115,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block youtube shorts
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/ytShorts.png",
+                      "assets/icons/ytShorts.png",
                       width: 32,
                     ),
                     enabled: canModifyShortsSetting,
@@ -130,7 +130,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block snapchat spotlight
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/snapSpotlight.png",
+                      "assets/icons/snapSpotlight.png",
                       width: 32,
                     ),
                     enabled: canModifyShortsSetting,
@@ -145,7 +145,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block facebook reels
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/fbReels.png",
+                      "assets/icons/fbReels.png",
                       width: 32,
                     ),
                     enabled: canModifyShortsSetting,

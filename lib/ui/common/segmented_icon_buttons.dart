@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 
 class SegmentedIconButtons extends StatelessWidget {
+  /// Alternative to native [SegmentedButton] but only for icons
   const SegmentedIconButtons({
     super.key,
     required this.selected,

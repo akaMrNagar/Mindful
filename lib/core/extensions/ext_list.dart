@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-extension ExtList on List<Widget> {
-  /// Equivalent to [AnimateList] but with target for animation
+extension ExtWidgetList on List<Widget> {
+  /// Equivalent to [AnimateSliverList] but with target for animation
   /// Animates list of widgets moving up, scaling and fading in based on the when condition
   /// other wise returns the original list of widgets
   List<Widget> animateListWhen({

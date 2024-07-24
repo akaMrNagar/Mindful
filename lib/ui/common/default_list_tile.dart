@@ -4,6 +4,9 @@ import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class DefaultListTile extends StatelessWidget {
+  /// Global list tile used throughout the app
+  ///
+  /// Alternative to [ListTile] as the list tile widget have some artifact when scrolling while in focus state
   const DefaultListTile({
     super.key,
     this.height,

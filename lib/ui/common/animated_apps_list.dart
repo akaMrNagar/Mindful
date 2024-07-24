@@ -7,6 +7,8 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class AnimatedAppsList extends ConsumerStatefulWidget {
+  /// Animated list of android apps keyed to app packages
+  /// The list automatically animates children based on their previous position or index
   const AnimatedAppsList({
     super.key,
     required this.itemExtent,

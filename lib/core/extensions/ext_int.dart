@@ -3,15 +3,22 @@ import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 
 extension ExtInt on int {
+  /// Converts KB to MB
   int get mb => this ~/ 1024;
+
+  /// Converts KB to GB
   double get gb => this / 1048576;
+
+  /// Converts Seconds to Minutes
   int get inMinutes => this ~/ 60;
+
+  /// Converts Seconds to Hours
   double get inHours => this / 3600;
 
-  /// Converts minutes to [TimeOfDay] hours, and minutes
+  /// Converts minutes to [TimeOfDay]
   TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
-  /// Generates day or date string based on the current day of week
+  /// Generates day's date string based on the current day of week
   String dateFromDoW() {
     if (toInt() == now.weekday) {
       return "Today";
@@ -25,7 +32,7 @@ extension ExtInt on int {
     }
   }
 
-  /// Generates data usage string from data in KBs
+  /// Generates data usage string from data in KBs like 356 KB, 456 MB, 2.56 GB
   String toData() {
     if (toInt() < 1024) {
       return "${toInt()} KB";

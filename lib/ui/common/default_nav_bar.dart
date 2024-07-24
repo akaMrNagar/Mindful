@@ -5,6 +5,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 
 class DefaultNavbar extends StatefulWidget {
+  /// Global navigation bar or vertical tab bar used throughout the app for consistent ui/ux
   const DefaultNavbar({
     super.key,
     this.leading,
@@ -64,8 +65,8 @@ class _DefaultNavbarState extends State<DefaultNavbar>
                 /// Automatically imply back button if leading is null
                 if (widget.leading == null && Navigator.canPop(context))
                   IconButton(
-                    onPressed: () => Navigator.maybePop(context),
                     icon: const Icon(FluentIcons.chevron_left_20_filled),
+                    onPressed: () => Navigator.maybePop(context),
                   ),
 
                 40.vBox,

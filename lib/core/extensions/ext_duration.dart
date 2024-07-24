@@ -1,55 +1,34 @@
 extension ExtDuration on Duration {
+  /// Formats the duration into time like '5h 45m' or '54m'
   String toTimeShort() {
-    if (inMinutes >= 60) {
-      if (inMinutes % 60 == 0) {
-        return "${inMinutes ~/ 60}h";
-      } else {
-        return "${inMinutes ~/ 60}h ${inMinutes % 60}m";
-      }
-    } else {
-      return "${inMinutes}m";
-    }
+    return inMinutes >= 60
+        ? inMinutes % 60 == 0
+            ? "${inHours}h"
+            : "${inHours}h  ${inMinutes % 60}m"
+        : "${inMinutes}m";
   }
 
-  String toTime() {
-    if (inSeconds < 60) {
-      return "$inSeconds ${inSeconds > 1 ? "secs" : "sec"}";
-    }
-
-    StringBuffer stringBuffer = StringBuffer();
-
-    if (inHours > 0) {
-      stringBuffer.write(inHours % 24);
-      stringBuffer.write(inHours > 1 ? " hrs" : " hr");
-    }
-
-    if (inMinutes > 0 && inMinutes % 60 != 0) {
-      if (inMinutes > 60) stringBuffer.write(", ");
-      stringBuffer.write(inMinutes % 60);
-      stringBuffer.write(inMinutes % 60 > 1 ? " mins" : " min");
-    }
-
-    return stringBuffer.toString();
-  }
-
+  /// Formats the duration into time like '5 hours, 45 minutes'
   String toTimeFull() {
-    if (inSeconds < 60) {
-      return "$inSeconds ${inSeconds > 1 ? "seconds" : "second"}";
+    final hours = inHours;
+    final minutes = inMinutes % 60;
+    final seconds = inSeconds % 60;
+
+    final buffer = StringBuffer();
+
+    if (hours > 0) {
+      buffer.write('$hours ${hours > 1 ? 'hours' : 'hour'}');
     }
 
-    StringBuffer stringBuffer = StringBuffer();
-
-    if (inHours > 0) {
-      stringBuffer.write(inMinutes ~/ 60);
-      stringBuffer.write(inHours > 1 ? " hours" : " hour");
+    if (minutes > 0) {
+      if (buffer.isNotEmpty) buffer.write(', ');
+      buffer.write('$minutes ${minutes > 1 ? 'minutes' : 'minute'}');
     }
 
-    if (inMinutes > 0 && inMinutes % 60 != 0) {
-      if (inMinutes > 60) stringBuffer.write(", ");
-      stringBuffer.write(inMinutes % 60);
-      stringBuffer.write(inMinutes % 60 > 1 ? " minutes" : " minute");
+    if (buffer.isEmpty) {
+      buffer.write('$seconds ${seconds > 1 ? 'seconds' : 'second'}');
     }
 
-    return stringBuffer.toString();
+    return buffer.toString();
   }
 }

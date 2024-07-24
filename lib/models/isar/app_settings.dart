@@ -5,7 +5,7 @@ import 'package:mindful/core/extensions/ext_int.dart';
 part 'app_settings.g.dart';
 
 /// All the global settings for the app is stored in this model
-/// like [themeMode],
+/// like themeMode, material color, invincible mode and more,
 @immutable
 @collection
 class AppSettings {
@@ -20,6 +20,7 @@ class AppSettings {
   final String color;
 
   /// Is invincible mode on if it is ON then user cannot change following :
+  /// 
   /// 1. App timer if it is purged
   /// 2. Bedtime settings between the scheduled duration
   final bool isInvincibleModeOn;

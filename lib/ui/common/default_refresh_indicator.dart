@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class DefaultRefreshIndicator extends StatelessWidget {
+  /// Global pull to refresh widget
   const DefaultRefreshIndicator({
     super.key,
     this.edgeOffset = 124,

@@ -9,7 +9,9 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 
-/// Returns timer in seconds and take initial timer in seconds
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+/// 
+/// Returns time in seconds and take initial time in seconds
 Future<int> showAppTimerPicker({
   required AndroidApp app,
   required BuildContext context,
@@ -96,12 +98,14 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                     ),
                   ),
                   18.vBox,
-                  FilledButton.icon(
-                    icon: const Icon(FluentIcons.delete_20_regular),
-                    label: const Text("Delete timer"),
-                    onPressed: () => Navigator.maybePop(
-                      context,
-                      0,
+                  FittedBox(
+                    child: FilledButton.icon(
+                      icon: const Icon(FluentIcons.delete_20_regular),
+                      label: const Text("Delete timer"),
+                      onPressed: () => Navigator.maybePop(
+                        context,
+                        0,
+                      ),
                     ),
                   )
                 ],
@@ -127,76 +131,3 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
     );
   }
 }
-
-    // return FractionallySizedBox(
-    //   widthFactor: 0.9,
-    //   heightFactor: 0.375,
-    //   child: Material(
-    //     color: Colors.transparent,
-    //     surfaceTintColor: Colors.white,
-    //     child: RoundedContainer(
-    //       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    //       circularRadius: 32,
-    //       child: Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         mainAxisAlignment: MainAxisAlignment.start,
-    //         children: [
-    //           const SizedBox(height: 12),
-
-    //           /// Title
-    //           const Text(
-    //             "Set timer",
-    //             style: TextStyle(fontSize: 18),
-    //           ),
-
-    //           /// Subtitle
-    //           const SizedBox(height: 4),
-    //           Text(
-    //             "The timer for $appName will restart from midnight everyday",
-    //             style: TextStyle(
-    //               fontSize: 14,
-    //               color: Theme.of(context)
-    //                   .textTheme
-    //                   .titleLarge
-    //                   ?.color
-    //                   ?.withOpacity(0.7),
-    //             ),
-    //           ),
-
-    //           /// Time picker
-    //           const Spacer(),
-    //           SizedBox(
-    //             height: 120,
-    //             child: CupertinoTimerPicker(
-    //               itemExtent: 32,
-    //               // minuteInterval: 1,
-    //               mode: CupertinoTimerPickerMode.hm,
-    //               initialTimerDuration: initialDuration,
-    //               onTimerDurationChanged: (val) => selectedDuration = val,
-    //             ),
-    //           ),
-
-    //           /// Cancel done buttons
-    //           const Spacer(),
-    //           Row(
-    //             mainAxisAlignment: MainAxisAlignment.end,
-    //             crossAxisAlignment: CrossAxisAlignment.end,
-    //             children: [
-    //               TextButton(
-    //                 onPressed: () =>
-    //                     Navigator.pop(context, initialDuration.inSeconds),
-    //                 child: const Text("Cancel"),
-    //               ),
-    //               const SizedBox(width: 12),
-    //               TextButton(
-    //                 onPressed: () =>
-    //                     Navigator.pop(context, selectedDuration.inSeconds),
-    //                 child: const Text("Done"),
-    //               ),
-    //             ],
-    //           )
-    //         ],
-    //       ),
-    //     ),
-    //   ),
-    // );

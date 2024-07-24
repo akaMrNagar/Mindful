@@ -19,6 +19,7 @@ import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class AppDashboardScreen extends StatefulWidget {
+  /// App dashboard screen containing detailed usage along with quick actions based on the provided app
   const AppDashboardScreen({
     super.key,
     required this.app,

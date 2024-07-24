@@ -8,7 +8,7 @@ import 'package:mindful/ui/common/default_bar_chart.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverUsageChartPanel extends StatelessWidget {
-  /// Sliver box containing base bar chart for usage and
+  /// Sliver list containing base bar chart for usage and
   /// selected day of week changer buttons
   const SliverUsageChartPanel({
     super.key,

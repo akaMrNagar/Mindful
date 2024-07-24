@@ -4,6 +4,8 @@ import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 
 class DisplayOverlayPermission extends ConsumerWidget {
+  /// Creates a animated [SliverPrimaryActionContainer] for asking permission from user
+  /// with self handled state and automatically hides itself if the user have granted the permission
   const DisplayOverlayPermission({super.key});
 
   @override

@@ -240,6 +240,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
             intent.setData(android.net.Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, 0);
+            Toast.makeText(this, "Please allow Mindful to display overlay", Toast.LENGTH_LONG).show();
         }
         return false;
     }

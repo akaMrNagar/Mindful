@@ -8,8 +8,8 @@ import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-/// Base bar chart used for displaying app/device usage
 class DefaultBarChart extends StatelessWidget {
+  /// Base bar chart used for displaying app/device usage
   const DefaultBarChart({
     super.key,
     required this.usageType,

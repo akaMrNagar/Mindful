@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class TimeTextShort extends StatelessWidget {
+  /// Rich text widget for displaying [Duration] in hours and minutes
   const TimeTextShort({
     super.key,
     required this.timeDuration,
@@ -53,9 +54,8 @@ class TimeTextShort extends StatelessWidget {
                       style: numericStyle,
                     ),
                     TextSpan(text: "H", style: alphaStyle),
-                    TextSpan(text: " ", style: numericStyle),
                     TextSpan(
-                      text: (timeDuration.inMinutes % 60).toString(),
+                      text: " ${timeDuration.inMinutes % 60}",
                       style: numericStyle,
                     ),
                     TextSpan(text: "M", style: alphaStyle),
@@ -64,7 +64,7 @@ class TimeTextShort extends StatelessWidget {
             /// Less than an hour
             : [
                 TextSpan(
-                  text: (timeDuration.inSeconds / 60).ceil().toString(),
+                  text: (timeDuration.inSeconds ~/ 60).toString(),
                   style: numericStyle,
                 ),
                 TextSpan(text: "M", style: alphaStyle),

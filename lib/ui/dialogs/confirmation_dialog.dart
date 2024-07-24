@@ -3,6 +3,9 @@ import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
+/// Animates the hero widget to a alert dialog for the confirmation with the provided configurations
+/// 
+/// Returns a boolean indicating the user's intention TRUE if confirm otherwise FALSE
 Future<bool> showConfirmationDialog({
   required BuildContext context,
   required Object heroTag,

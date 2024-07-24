@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverFlexibleAppBar extends StatelessWidget {
+  /// Pre-configured default app bar used globally
   const SliverFlexibleAppBar({
     super.key,
     required this.title,

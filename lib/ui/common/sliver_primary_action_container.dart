@@ -8,6 +8,7 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class SliverPrimaryActionContainer extends StatelessWidget {
+  /// [RoundedContainer] with primary accent and a CTA button
   const SliverPrimaryActionContainer({
     super.key,
     required this.isVisible,
@@ -32,9 +33,9 @@ class SliverPrimaryActionContainer extends StatelessWidget {
     return SliverAnimatedPaintExtent(
       duration: 500.ms,
       curve: Curves.easeOutExpo,
-      child: Visibility(
+      child: SliverVisibility(
         visible: isVisible,
-        child: RoundedContainer(
+        sliver: RoundedContainer(
           circularRadius: 24,
           color: Theme.of(context).colorScheme.primary,
           padding: const EdgeInsets.all(16),
@@ -83,8 +84,8 @@ class SliverPrimaryActionContainer extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ).sliver,
+        ).sliver,
+      ),
     );
   }
 }

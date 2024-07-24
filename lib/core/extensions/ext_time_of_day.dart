@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 extension ExtNum on TimeOfDay {
-  /// Converts the time from hour and minutes to minutes only
+  /// Converts the [TimeOfDay] from hour and minutes to minutes only
   int get minutes => (hour * 60) + minute;
 
   /// Returns the difference in Duration

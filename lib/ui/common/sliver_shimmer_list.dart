@@ -4,6 +4,7 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SliverShimmerList extends StatelessWidget {
+  /// Placeholder shimmer list while the data is loading
   const SliverShimmerList({
     super.key,
     this.includeSubtitle = false,

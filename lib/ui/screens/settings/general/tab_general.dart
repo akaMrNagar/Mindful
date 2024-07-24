@@ -23,7 +23,7 @@ class TabGeneral extends ConsumerWidget {
     final isConfirm = await showConfirmationDialog(
       context: context,
       icon: FluentIcons.animal_cat_20_regular,
-      heroTag: AppTags.invincibleModeTag,
+      heroTag: AppTags.invincibleModeTileTag,
       title: "Invincible mode",
       info:
           "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device. ",
@@ -96,7 +96,7 @@ class TabGeneral extends ConsumerWidget {
 
           /// Invincible mode
           DefaultHero(
-            tag: AppTags.invincibleModeTag,
+            tag: AppTags.invincibleModeTileTag,
             child: Material(
               color: Colors.transparent,
               child: DefaultListTile(

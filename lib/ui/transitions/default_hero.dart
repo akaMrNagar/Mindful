@@ -26,13 +26,7 @@ class DefaultHero extends StatelessWidget {
   }
 }
 
-/// {@template custom_rect_tween}
-/// Linear RectTween with a [Curves.easeOut] curve.
-///
-/// Less dramatic that the regular [RectTween] used in [Hero] animations.
-/// {@endtemplate}
 class _DefaultRectTween extends RectTween {
-  /// {@macro custom_rect_tween}
   _DefaultRectTween(
     Rect? begin,
     Rect? end,

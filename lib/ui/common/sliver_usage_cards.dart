@@ -11,7 +11,7 @@ import 'package:mindful/ui/common/segmented_icon_buttons.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class SliverUsageCards extends StatelessWidget {
-  /// Persistent pinned header containing segmented buttons to toggle between usage types
+  /// Sliver list containing segmented buttons to toggle between usage types
   /// and cards for displaying relevant selected usage like screen time, mobile and wifi usage
   const SliverUsageCards({
     super.key,
