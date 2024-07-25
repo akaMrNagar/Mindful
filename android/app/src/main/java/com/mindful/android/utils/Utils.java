@@ -11,6 +11,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.Contract;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 
 /**
  * A utility class containing static helper methods for various common tasks such as
@@ -179,4 +181,47 @@ public class Utils {
         if (nullableString != null) return nullableString;
         else return "";
     }
+
+    /**
+     * Formats the total screen usage time into a human-readable string.
+     *
+     * @param totalMinutes The total screen usage time in minutes.
+     * @return A string representing the formatted screen usage time.
+     * @throws IllegalArgumentException if totalMinutes is negative.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String formatScreenTime(int totalMinutes) {
+        if (totalMinutes < 0) {
+            throw new IllegalArgumentException("Total minutes cannot be negative");
+        }
+        return totalMinutes > 60
+                ? totalMinutes % 60 == 0
+                ? totalMinutes / 60 + "h"
+                : totalMinutes / 60 + "h " + totalMinutes % 60 + "m"
+                : totalMinutes + "m";
+    }
+
+    /**
+     * Formats the total data usage into a human-readable string.
+     *
+     * @param totalMBs The total data usage in megabytes (MB).
+     * @return A string representing the formatted data usage.
+     * @throws IllegalArgumentException if totalMBs is negative.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String formatDataMBs(int totalMBs) {
+        if (totalMBs < 0) {
+            throw new IllegalArgumentException("Total MBs cannot be negative");
+        }
+        if (totalMBs >= 1024) {
+            float GBs = totalMBs / 1024f;
+            String formattedGBs = String.format(Locale.US, "%.2f", GBs);
+            return formattedGBs + " GB";
+        } else {
+            return totalMBs + " MB";
+        }
+    }
+
 }

@@ -24,7 +24,7 @@ public class NetworkUsageHelper {
      * @param networkStatsManager The NetworkStatsManager used to query network usage.
      * @param start               The start time of the interval in milliseconds.
      * @param end                 The end time of the interval in milliseconds.
-     * @return A map where keys are app UIDs and values are the corresponding Wi-Fi usage in bytes.
+     * @return A map where keys are app UIDs and values are the corresponding Wi-Fi usage in KBs.
      */
     @NonNull
     public static HashMap<Integer, Long> fetchWifiUsageForInterval(@NonNull NetworkStatsManager networkStatsManager, long start, long end) {
@@ -48,6 +48,8 @@ public class NetworkUsageHelper {
             Log.e(TAG, "fetchWifiUsageForInterval: Error in fetching Wi-Fi usage for device apps", e);
         }
 
+        // Convert bytes to KBs
+        wifiUsageMap.replaceAll((k, v) -> (v / 1024));
         return wifiUsageMap;
     }
 
@@ -57,7 +59,7 @@ public class NetworkUsageHelper {
      * @param networkStatsManager The NetworkStatsManager used to query network usage.
      * @param start               The start time of the interval in milliseconds.
      * @param end                 The end time of the interval in milliseconds.
-     * @return A map where keys are app UIDs and values are the corresponding mobile data usage in bytes.
+     * @return A map where keys are app UIDs and values are the corresponding mobile data usage in KBs.
      */
     @NonNull
     public static HashMap<Integer, Long> fetchMobileUsageForInterval(@NonNull NetworkStatsManager networkStatsManager, long start, long end) {
@@ -81,6 +83,8 @@ public class NetworkUsageHelper {
             Log.e(TAG, "fetchMobileUsageForInterval: Error in fetching mobile usage for device apps", e);
         }
 
+        // Convert bytes to KBs
+        mobileUsageMap.replaceAll((k, v) -> (v / 1024));
         return mobileUsageMap;
     }
 }

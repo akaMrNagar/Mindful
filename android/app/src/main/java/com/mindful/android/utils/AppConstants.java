@@ -11,4 +11,5 @@ public class AppConstants {
 
     public static final int DEFAULT_EMERGENCY_PASSES_COUNT = 3;
     public static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
+    public static final long WIDGET_MANUAL_REFRESH_INTERVAL = 60 * 1000; // 1 minute
 }

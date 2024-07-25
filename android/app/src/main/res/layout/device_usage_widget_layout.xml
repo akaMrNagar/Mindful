@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Android.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:theme="@style/Theme.Android.AppWidgetContainer">
+
+    <FrameLayout
+        android:id="@+id/widgetRoot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!--   Usage layer     -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Screen Usage -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Widget.Android.AppWidget.UsageLabel"
+                    android:text="@string/widget_screen_time_label" />
+
+                <TextView
+                    android:id="@+id/widgetScreenUsage"
+                    style="@style/Widget.Android.AppWidget.UsageInfo"
+                    android:text="@string/widget_screen_time_usage"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <!-- Network Usage -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <!-- Mobile Usage -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Widget.Android.AppWidget.UsageLabel"
+                        android:text="@string/widget_mobile_data_label" />
+
+                    <TextView
+                        android:id="@+id/widgetMobileUsage"
+                        style="@style/Widget.Android.AppWidget.UsageInfo"
+                        android:text="@string/widget_mobile_data_usage" />
+                </LinearLayout>
+
+                <!-- Wifi Usage -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/Widget.Android.AppWidget.UsageLabel"
+                        android:text="@string/widget_wifi_data_label" />
+
+                    <TextView
+                        android:id="@+id/widgetWifiUsage"
+                        style="@style/Widget.Android.AppWidget.UsageInfo"
+                        android:text="@string/widget_wifi_data_usage" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!--    Refresh icon layer  -->
+        <ImageView
+            android:id="@+id/widgetRefreshIcon"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_gravity="top|end"
+            android:clickable="true"
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:padding="16dp"
+            android:src="@drawable/ic_refresh"
+            tools:ignore="RtlSymmetry" />
+    </FrameLayout>
+</LinearLayout>

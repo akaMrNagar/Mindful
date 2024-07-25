@@ -24,7 +24,7 @@ public class ScreenUsageHelper {
      * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
      */
     @NonNull
-    public static HashMap<String, Long> generateUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
+    public static HashMap<String, Long> fetchUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
         List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
         UsageStats prevStat = null;
@@ -39,14 +39,14 @@ public class ScreenUsageHelper {
             }
 
             String packageName = usageStat.getPackageName();
-            long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
+            Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
             screenTime += usageStat.getTotalTimeInForeground();
 
             oneDayUsageMap.put(packageName, screenTime);
         }
 
-        // If the last event is same as the launched app means it is opened but not closed which eventually means it is running
-        if (prevStat != null) {
+        // If the last event is the Mindful app that means user is refreshing usage
+        if (prevStat != null && prevStat.getPackageName().equals("com.mindful.android")) {
             Long calcTime = oneDayUsageMap.getOrDefault(prevStat.getPackageName(), 0L);
             calcTime += (System.currentTimeMillis() - prevStat.getLastTimeUsed());
             oneDayUsageMap.put(prevStat.getPackageName(), calcTime);
@@ -101,5 +101,4 @@ public class ScreenUsageHelper {
 
         return (screenTime / 1000);
     }
-
 }

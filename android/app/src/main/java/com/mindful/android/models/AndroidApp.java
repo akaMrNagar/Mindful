@@ -29,12 +29,12 @@ public class AndroidApp {
     /**
      * Constructs an AndroidApp instance with specified parameters.
      *
-     * @param appName       The name of the application.
-     * @param packageName   The package name of the application.
-     * @param appIcon       The icon of the application.
-     * @param isImpSysApp   Indicates if the application is an important system app.
-     * @param category      The category of the application.
-     * @param appUid        The UID of the application.
+     * @param appName     The name of the application.
+     * @param packageName The package name of the application.
+     * @param appIcon     The icon of the application.
+     * @param isImpSysApp Indicates if the application is an important system app.
+     * @param category    The category of the application.
+     * @param appUid      The UID of the application.
      */
     public AndroidApp(String appName, String packageName, String appIcon, boolean isImpSysApp, int category, int appUid) {
         this.appName = appName;
@@ -51,18 +51,10 @@ public class AndroidApp {
     }
 
     /**
-     * Converts usage data from bytes to kilobytes for mobile and wifi usage.
      * Updates the dataUsageThisWeek as the sum of mobile and wifi usage.
      */
-    private void convertBytesToKB() {
+    private void calculateTotalDataUsage() {
         for (int i = 0; i < 7; i++) {
-            if (mobileUsageThisWeek.get(i) > 0) {
-                mobileUsageThisWeek.set(i, mobileUsageThisWeek.get(i) / 1024);
-            }
-            if (wifiUsageThisWeek.get(i) > 0) {
-                wifiUsageThisWeek.set(i, wifiUsageThisWeek.get(i) / 1024);
-            }
-
             // Calculate total data usage as the sum of mobile and wifi usage
             dataUsageThisWeek.set(i, mobileUsageThisWeek.get(i) + wifiUsageThisWeek.get(i));
         }
@@ -75,7 +67,7 @@ public class AndroidApp {
      * @return A map representing the AndroidApp object.
      */
     public Map<String, Object> toMap() {
-        convertBytesToKB(); // Ensure data is in kilobytes
+        calculateTotalDataUsage();
         Map<String, Object> appMap = new HashMap<>();
         appMap.put("appName", appName);
         appMap.put("packageName", packageName);
