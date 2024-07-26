@@ -98,7 +98,7 @@
             android:name=".services.OverlayDialogService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="shortService" />
+            android:foregroundServiceType="specialUse" />
         <service
             android:name=".services.EmergencyTimerService"
             android:enabled="true"

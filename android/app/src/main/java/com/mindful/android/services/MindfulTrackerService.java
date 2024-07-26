@@ -47,6 +47,7 @@ public class MindfulTrackerService extends Service {
     private HashMap<String, Long> mAppTimers = new HashMap<>();
     private HashSet<String> mPurgedApps = new HashSet<>();
     private HashSet<String> mDistractingApps = new HashSet<>();
+    private boolean mIsStoppedForcefully = true;
 
     @Override
     public void onCreate() {
@@ -113,6 +114,7 @@ public class MindfulTrackerService extends Service {
      */
     public void stopIfNoUsage() {
         if (!SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn && mAppTimers.isEmpty()) {
+            mIsStoppedForcefully = false;
             Log.d(TAG, "stopIfNoUsage: The service is not required any more therefore, stopping it");
             stopForeground(true);
             stopSelf();
@@ -168,7 +170,16 @@ public class MindfulTrackerService extends Service {
             mAppLaunchReceiver.cancelTimers();
             unregisterReceiver(mAppLaunchReceiver);
         }
-        Log.d(TAG, "onDestroy: Foreground service destroyed");
+
+        if (mIsStoppedForcefully) {
+            Log.d(TAG, "onDestroy: Tracking service destroyed forcefully. Trying to restart it");
+            if (!Utils.isServiceRunning(this, MindfulTrackerService.class.getName())) {
+                startService(new Intent(this, MindfulTrackerService.class).setAction(ACTION_START_SERVICE));
+            }
+            return;
+        }
+
+        Log.d(TAG, "onDestroy: Tracking service destroyed");
     }
 
     @Override

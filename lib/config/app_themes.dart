@@ -43,6 +43,7 @@ class AppTheme {
         extensions: [
           SkeletonizerConfigData.dark(
               effect: ShimmerEffect(
+            highlightColor: Colors.white.withOpacity(0.3),
             baseColor: (materialColors[seedColor] ?? _kSeedColor)
                 .shade50
                 .withOpacity(0.1),
@@ -61,6 +62,7 @@ class AppTheme {
         extensions: [
           SkeletonizerConfigData(
             effect: ShimmerEffect(
+              highlightColor: Colors.black.withOpacity(0.3),
               baseColor: (materialColors[seedColor] ?? _kSeedColor)
                   .shade900
                   .withOpacity(0.1),

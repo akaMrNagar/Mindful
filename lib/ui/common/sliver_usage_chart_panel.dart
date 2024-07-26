@@ -34,7 +34,6 @@ class SliverUsageChartPanel extends StatelessWidget {
           height: chartHeight,
           usageType: usageType,
           selectedBar: selectedDoW,
-          intervalBuilder: (max) => max * 0.275,
           onBarTap: onDayOfWeekChanged,
           data: barChartData,
         ),

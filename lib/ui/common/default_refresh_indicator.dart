@@ -5,7 +5,7 @@ class DefaultRefreshIndicator extends StatelessWidget {
   const DefaultRefreshIndicator({
     super.key,
     this.edgeOffset = 124,
-    this.displacement = 172,
+    this.displacement = 156,
     required this.onRefresh,
     required this.child,
   });

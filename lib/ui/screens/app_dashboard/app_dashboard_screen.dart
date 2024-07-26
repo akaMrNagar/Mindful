@@ -23,12 +23,12 @@ class AppDashboardScreen extends StatefulWidget {
   const AppDashboardScreen({
     super.key,
     required this.app,
-    required this.usageType,
+    required this.initialUsageType,
     required this.selectedDoW,
   });
 
   final AndroidApp app;
-  final UsageType usageType;
+  final UsageType initialUsageType;
   final int selectedDoW;
 
   @override
@@ -45,7 +45,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
 
     setState(() {
       _selectedDoW = widget.selectedDoW;
-      _selectedUsageType = widget.usageType;
+      _selectedUsageType = widget.initialUsageType;
     });
   }
 
@@ -78,9 +78,10 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                         widget.app.packageName,
                         color: Theme.of(context).hintColor,
                       ),
-                      8.vBox,
                     ],
                   ).sliver,
+
+                  12.vSliverBox,
 
                   /// Usage type selector and usage info card
                   SliverUsageCards(
@@ -90,8 +91,8 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                     wifiUsageInfo: widget.app.wifiUsageThisWeek[_selectedDoW],
                     mobileUsageInfo:
                         widget.app.mobileUsageThisWeek[_selectedDoW],
-                    onUsageTypeChanged: (i) => setState(
-                      () => _selectedUsageType = UsageType.values[i],
+                    onUsageTypeChanged: (type) => setState(
+                      () => _selectedUsageType = type,
                     ),
                   ),
 
@@ -102,7 +103,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                     chartHeight: 212,
                     selectedDoW: _selectedDoW,
                     usageType: _selectedUsageType,
-                    barChartData: widget.usageType == UsageType.screenUsage
+                    barChartData: _selectedUsageType == UsageType.screenUsage
                         ? widget.app.screenTimeThisWeek
                         : widget.app.networkUsageThisWeek,
                     onDayOfWeekChanged: (dow) => setState(
