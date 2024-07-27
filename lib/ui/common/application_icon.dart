@@ -6,8 +6,8 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
 
-/// Display [AndroidApp]'s icon if found else custom icon for specified apps.
 class ApplicationIcon extends StatelessWidget {
+  /// Display [AndroidApp]'s icon if found else custom icon for specified apps.
   const ApplicationIcon({
     super.key,
     required this.app,
@@ -37,7 +37,7 @@ class ApplicationIcon extends StatelessWidget {
                       .select((value) => value[app.packageName]?.timerSec)) ??
                   0;
               final isPurged =
-                  timer > 0 && timer < app.screenTimeThisWeek[dayOfWeek];
+                  timer > 0 && timer < app.screenTimeThisWeek[todayOfWeek];
 
               return Image.memory(
                 app.icon,

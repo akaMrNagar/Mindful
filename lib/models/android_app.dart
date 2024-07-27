@@ -2,34 +2,35 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:mindful/core/enums/application_category.dart';
 
+/// Represents an Android application with detailed information and usage statistics.
 @immutable
 class AndroidApp {
-  /// Application label or name
+  /// The application's name or label displayed to the user.
   final String name;
 
-  /// Unique package identifier for the app used by android system
+  /// The unique package identifier used by the Android system to identify the app.
   final String packageName;
 
-  /// Does the app belong to system default category {Home Launcher, Dialer}
-  /// It also include manually added apps like Tethering and Removed Apps
+  /// Indicates whether the app belongs to the system's default category (e.g., Home Launcher, Dialer) or 
+  /// includes manually added apps like Tethering and Removed Apps.
   final bool isImpSysApp;
 
-  /// Category defined by the app's manifest file used by android system
+  /// The application category as defined within its manifest file used by the Android system.
   final AppCategory category;
 
-  /// Total screen time usage of the app in this week as a list of int [in Seconds] for each day of week [7 days]
+  /// A list containing the total screen time usage for the app in milliseconds for each day of the current week (7 entries).
   final List<int> screenTimeThisWeek;
 
-  /// Total cellular or mobile data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
+  /// A list containing the total mobile data usage for the app in kilobytes for each day of the current week (7 entries).
   final List<int> mobileUsageThisWeek;
 
-  /// Total wifi data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
+  /// A list containing the total Wi-Fi data usage for the app in kilobytes for each day of the current week (7 entries).
   final List<int> wifiUsageThisWeek;
 
-  /// Total sum of mobile and wifi data usage of the app in this week as a list of int [in KBs] for each day of week [7 days]
+  /// A list containing the combined total data usage (mobile + Wi-Fi) for the app in kilobytes for each day of the current week (7 entries).
   final List<int> networkUsageThisWeek;
 
-  /// Application icon provided by android system.
+  /// The application icon as a byte array provided by the Android system.
   final Uint8List icon;
 
   const AndroidApp({
@@ -44,6 +45,11 @@ class AndroidApp {
     required this.networkUsageThisWeek,
   });
 
+  /// Creates an `AndroidApp` instance from a JSON-like map representation.
+  ///
+  /// This factory constructor expects the map to contain keys matching the property names 
+  /// of this class (e.g., 'appName', 'packageName', etc.). It parses the values and creates the 
+  /// corresponding `AndroidApp` object.
   factory AndroidApp.fromMap(Map<dynamic, dynamic> map) {
     return AndroidApp(
       name: map['appName'] as String,
@@ -51,17 +57,18 @@ class AndroidApp {
       icon: base64Decode(map['appIcon'] as String),
       isImpSysApp: map['isImpSysApp'] as bool,
       category: _parseCategory(map['category'] as int),
-      screenTimeThisWeek:
-          List<int>.from(map['screenTimeThisWeek'], growable: false),
-      mobileUsageThisWeek:
-          List<int>.from(map['mobileUsageThisWeek'], growable: false),
-      wifiUsageThisWeek:
-          List<int>.from(map['wifiUsageThisWeek'], growable: false),
-      networkUsageThisWeek:
-          List<int>.from(map['dataUsageThisWeek'], growable: false),
+      screenTimeThisWeek: List<int>.from(map['screenTimeThisWeek'], growable: false),
+      mobileUsageThisWeek: List<int>.from(map['mobileUsageThisWeek'], growable: false),
+      wifiUsageThisWeek: List<int>.from(map['wifiUsageThisWeek'], growable: false),
+      networkUsageThisWeek: List<int>.from(map['dataUsageThisWeek'], growable: false),
     );
   }
 
+  /// Creates a copy of the `AndroidApp` object with potentially modified properties.
+  ///
+  /// This method allows updating specific properties of an existing `AndroidApp` instance. 
+  /// You can provide new values for any or none of the properties. If a property is not 
+  /// provided, the original value from the existing object will be used in the copy.
   AndroidApp copyWith({
     String? name,
     String? packageName,
@@ -96,29 +103,30 @@ class AndroidApp {
     if (identical(this, other)) return true;
 
     return other.name == name &&
-        other.packageName == packageName &&
-        other.isImpSysApp == isImpSysApp &&
-        other.icon == icon &&
-        other.category == category &&
-        listEquals(other.screenTimeThisWeek, screenTimeThisWeek) &&
-        listEquals(other.mobileUsageThisWeek, mobileUsageThisWeek) &&
-        listEquals(other.wifiUsageThisWeek, wifiUsageThisWeek) &&
-        listEquals(other.networkUsageThisWeek, networkUsageThisWeek);
+           other.packageName == packageName &&
+           other.isImpSysApp == isImpSysApp &&
+           other.icon == icon &&
+           other.category == category &&
+           listEquals(other.screenTimeThisWeek, screenTimeThisWeek) &&
+           listEquals(other.mobileUsageThisWeek, mobileUsageThisWeek) &&
+           listEquals(other.wifiUsageThisWeek, wifiUsageThisWeek) &&
+           listEquals(other.networkUsageThisWeek, networkUsageThisWeek);
   }
 
   @override
   int get hashCode {
     return name.hashCode ^
-        packageName.hashCode ^
-        isImpSysApp.hashCode ^
-        icon.hashCode ^
-        category.hashCode ^
-        screenTimeThisWeek.hashCode ^
-        mobileUsageThisWeek.hashCode ^
-        wifiUsageThisWeek.hashCode ^
-        networkUsageThisWeek.hashCode;
+           packageName.hashCode ^
+           isImpSysApp.hashCode ^
+           icon.hashCode ^
+           category.hashCode ^
+           screenTimeThisWeek.hashCode ^
+           mobileUsageThisWeek.hashCode ^
+           wifiUsageThisWeek.hashCode ^
+           networkUsageThisWeek.hashCode;
   }
 
+  /// Parses an integer representing an app category index into an `AppCategory` enum value.
   static AppCategory _parseCategory(int index) {
     return switch (index) {
       -1 => AppCategory.undefined,
@@ -131,7 +139,7 @@ class AndroidApp {
       6 => AppCategory.maps,
       7 => AppCategory.productivity,
       8 => AppCategory.accessibility,
-      int() => AppCategory.undefined,
+      _ => AppCategory.undefined,
     };
   }
 }

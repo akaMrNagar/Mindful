@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 class StyledText extends StatelessWidget {
+  /// Globally used text widget with provided configurations.
+  ///
+  /// Shades the text color to disabled color if [isSubtitle] is set to TRUE
   const StyledText(
     this.text, {
     super.key,

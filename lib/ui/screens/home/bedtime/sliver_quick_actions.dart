@@ -37,11 +37,11 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
 
     return MultiSliver(
       children: [
-        /// Dnd permission warning
-        const DndPermission(),
-
         /// Bedtime actions
         const SliverContentTitle(title: "Quick actions"),
+
+        /// Dnd permission warning
+        const DndPermission(),
 
         /// Should start dnd
         DefaultListTile(
@@ -51,7 +51,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
               .read(bedtimeProvider.notifier)
               .setShouldStartDnd(!shouldStartDnd),
           titleText: "Start DND",
-          subtitleText: "Start do not disturb mode during \nbedtime",
+          subtitleText: "Start do not disturb mode during \nbedtime.",
         ),
 
         /// Manage Dnd settings
@@ -77,7 +77,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
               "Manage which app are distracting you from your routine.",
           trailing: AnimatedRotation(
             duration: 250.ms,
-            turns: isDistractingAppsListExpanded ? 0.5 : 0,
+            turns: isDistractingAppsListExpanded ? 0.5 : 1,
             child: const Icon(FluentIcons.chevron_down_20_filled),
           ),
           onPressed: () => setState(
@@ -89,11 +89,13 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
         /// Distracting apps list
         SliverAnimatedPaintExtent(
           duration: 500.ms,
-          curve: Curves.easeInOut,
+          curve: Curves.easeOut,
           child: isDistractingAppsListExpanded
               ? const DistractingAppsList()
-              : 0.vSliverBox(),
+              : 0.vSliverBox,
         ),
+
+        if (!isDistractingAppsListExpanded) 108.vSliverBox,
       ],
     );
   }

@@ -6,11 +6,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/tags.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/duration_picker.dart';
+import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class ShortsTimerChart extends ConsumerWidget {
   const ShortsTimerChart({
@@ -25,10 +27,10 @@ class ShortsTimerChart extends ConsumerWidget {
   final int remainingTimeSec;
 
   void _editAllowedTime(BuildContext context, WidgetRef ref) async {
-    final newTime = await showDurationPicker(
+    final newTime = await showShortsTimerPicker(
       context: context,
+      heroTag: AppTags.shortContentTimerPickerTag,
       initialTime: allowedTimeSec,
-      appName: "Short content",
     );
 
     if (newTime != allowedTimeSec) {
@@ -102,7 +104,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       FluentIcons.beach_20_regular,
                       size: 56,
                     ),
-                    12.vBox(),
+                    12.vBox,
 
                     /// Remaining Time text
                     TimeTextShort(
@@ -110,7 +112,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       fontWeight: FontWeight.bold,
                       fontSize: 32,
                     ),
-                    2.vBox(),
+                    2.vBox,
                     StyledText(
                       "Left from ${allowedTimeSec.seconds.toTimeShort()}",
                       fontSize: 14,
@@ -119,10 +121,14 @@ class ShortsTimerChart extends ConsumerWidget {
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    32.vBox(),
-                    Icon(
-                      FluentIcons.edit_20_regular,
-                      color: isModifiable ? null : Theme.of(context).focusColor,
+                    32.vBox,
+                    DefaultHero(
+                      tag: AppTags.shortContentTimerPickerTag,
+                      child: Icon(
+                        FluentIcons.edit_20_regular,
+                        color:
+                            isModifiable ? null : Theme.of(context).focusColor,
+                      ),
                     ),
                   ],
                 ),

@@ -6,8 +6,10 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
 import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
 
@@ -46,16 +48,16 @@ class TabBedtime extends StatelessWidget {
 
           /// Information about bedtime
           const StyledText(
-            "Silence your phone, change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-          ).toSliverBox(),
+            "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
+          ).sliver,
 
-          12.vSliverBox(),
+          const SliverContentTitle(title: "Schedule"),
 
           /// Card with start and end time for schedule
           /// also schedule days
-          const ScheduleCard().toSliverBox(),
+          const ScheduleCard().sliver,
 
-          8.vSliverBox(),
+          8.vSliverBox,
 
           /// Bedtime schedule status toggler
           Consumer(
@@ -69,7 +71,7 @@ class TabBedtime extends StatelessWidget {
                 switchValue: isScheduleOn,
                 leadingIcon: FluentIcons.sleep_20_regular,
                 titleText: "Schedule",
-                subtitleText: "Enable or disable daily schedule",
+                subtitleText: "Enable or disable daily schedule.",
                 onPressed: () => _setScheduleStatus(
                   ref,
                   context,
@@ -77,12 +79,14 @@ class TabBedtime extends StatelessWidget {
                 ),
               );
             },
-          ).toSliverBox(),
+          ).sliver,
+
+          8.vSliverBox,
 
           /// Actions related to bedtime
           const SliverQuickActions(),
 
-          180.vSliverBox(),
+          const SliverTabsBottomPadding()
         ],
       ),
     );

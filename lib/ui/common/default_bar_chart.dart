@@ -5,10 +5,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-/// Base bar chart used for displaying app/device usage
 class DefaultBarChart extends StatelessWidget {
+  /// Base bar chart used for displaying app/device usage convert the [data] to percentage range from 0% - 100%
   const DefaultBarChart({
     super.key,
     required this.usageType,
@@ -18,7 +19,6 @@ class DefaultBarChart extends StatelessWidget {
     this.height = 232,
     this.width = double.infinity,
     this.padding = const EdgeInsets.symmetric(vertical: 12),
-    this.intervalBuilder,
   });
 
   final double height;
@@ -29,15 +29,25 @@ class DefaultBarChart extends StatelessWidget {
   final UsageType usageType;
   final int selectedBar;
   final Function(int barIndex) onBarTap;
-  final double? Function(int max)? intervalBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final unselectedGrad = [Colors.blue, Colors.cyan];
-    final selectedGrad = [Colors.red, Colors.pink];
-    final maxY = data.fold(0, (p, e) => math.max(p, e));
+    // final unselectedGrad = [Colors.blue, Colors.cyan];
+    // final selectedGrad = [Colors.red, Colors.pink];
+    final unselectedGrad = [
+      Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
+      Theme.of(context).colorScheme.secondaryContainer,
+    ];
+    final selectedGrad = [
+      Theme.of(context).colorScheme.primary.withOpacity(0.7),
+      Theme.of(context).colorScheme.primary,
+    ];
+    // final unselectedGrad = Theme.of(context).colorScheme.secondaryContainer;
+    // final selectedGrad = Theme.of(context).colorScheme.primary;
+
+    final dataMax = data.fold(0, (p, e) => math.max(p, e));
     // adding one to show bar chart if all values are zeroes
-    final barMaxHeight = (maxY * 1.1) + 1.0;
+    final barMaxHeight = (dataMax * 1.1) + 1.0;
 
     return Container(
       height: height,
@@ -49,13 +59,15 @@ class DefaultBarChart extends StatelessWidget {
             data.length,
             (index) {
               final isSelected = selectedBar == index;
+              final toPercentY = data[index] / barMaxHeight * 100;
               return BarChartGroupData(
                 groupVertically: true,
                 x: index,
                 barRods: [
                   BarChartRodData(
                     width: 24,
-                    toY: data[index].toDouble(),
+                    toY: toPercentY,
+                    // color: isSelected ? selectedGrad : unselectedGrad,
                     gradient: LinearGradient(
                       colors: isSelected ? selectedGrad : unselectedGrad,
                       begin: Alignment.bottomCenter,
@@ -66,14 +78,14 @@ class DefaultBarChart extends StatelessWidget {
               );
             },
           ),
-          maxY: barMaxHeight,
-          gridData: FlGridData(
+          maxY: 100,
+          gridData: const FlGridData(
             show: true,
             drawVerticalLine: false,
-            horizontalInterval: maxY > 0 ? intervalBuilder?.call(maxY) : 1,
+            horizontalInterval: 24,
           ),
           borderData: FlBorderData(show: false),
-          titlesData: _generateTitles(maxY, context),
+          titlesData: _generateTitles(dataMax, context),
           barTouchData: BarTouchData(
             touchExtraThreshold:
                 const EdgeInsets.symmetric(vertical: 200, horizontal: 12),
@@ -85,42 +97,41 @@ class DefaultBarChart extends StatelessWidget {
             touchCallback: (tEvent, tResponse) {
               if (!tEvent.isInterestedForInteractions) {
                 final touchedIndex = tResponse?.spot?.touchedBarGroupIndex;
-                if (touchedIndex != null && touchedIndex != selectedBar) {
+                if (touchedIndex != null &&
+                    touchedIndex != selectedBar &&
+                    touchedIndex <= todayOfWeek) {
                   onBarTap(touchedIndex);
                 }
               }
             },
           ),
         ),
-        swapAnimationCurve: Curves.easeOutExpo,
-        swapAnimationDuration: 500.ms,
+        swapAnimationCurve: Curves.easeInOut,
+        swapAnimationDuration: 300.ms,
       ),
     );
   }
 
-  FlTitlesData _generateTitles(int max, BuildContext context) {
+  FlTitlesData _generateTitles(int dataMax, BuildContext context) {
     return FlTitlesData(
       show: true,
       leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
       rightTitles: AxisTitles(
-          sideTitles: SideTitles(
-        showTitles: true,
-        reservedSize: 32,
-        interval: max > 0
-            ? intervalBuilder == null
-                ? null
-                : intervalBuilder!(max)
-            : 1,
-        getTitlesWidget: (yPos, meta) => FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.centerRight,
-          child: StyledText(
-            _generateSideLabels(yPos.toInt()),
-            color: Theme.of(context).hintColor,
+        sideTitles: SideTitles(
+          showTitles: true,
+          reservedSize: 32,
+          interval: 25,
+          getTitlesWidget: (yPos, meta) => FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerRight,
+            child: StyledText(
+              _generateSideLabels(yPos * dataMax ~/ 100),
+              color: Theme.of(context).hintColor,
+            ),
           ),
         ),
-      )),
+      ),
       bottomTitles: AxisTitles(
         sideTitles: SideTitles(
           showTitles: true,
@@ -145,7 +156,7 @@ class DefaultBarChart extends StatelessWidget {
     return switch (usageType) {
       /// Screen usage labels
       UsageType.screenUsage => (yData.inHours > 1)
-          ? "${(yData.inHours).ceil()}h"
+          ? "${yData.inHours.round()}h"
           : "${yData.inMinutes}m",
 
       /// Network usage labels

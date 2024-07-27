@@ -7,6 +7,7 @@ import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
@@ -18,15 +19,16 @@ import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class AppDashboardScreen extends StatefulWidget {
+  /// App dashboard screen containing detailed usage along with quick actions based on the provided app
   const AppDashboardScreen({
     super.key,
     required this.app,
-    required this.usageType,
+    required this.initialUsageType,
     required this.selectedDoW,
   });
 
   final AndroidApp app;
-  final UsageType usageType;
+  final UsageType initialUsageType;
   final int selectedDoW;
 
   @override
@@ -35,7 +37,7 @@ class AppDashboardScreen extends StatefulWidget {
 
 class _AppDashboardScreenState extends State<AppDashboardScreen> {
   UsageType _selectedUsageType = UsageType.screenUsage;
-  int _selectedDoW = dayOfWeek;
+  int _selectedDoW = todayOfWeek;
 
   @override
   void initState() {
@@ -43,7 +45,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
 
     setState(() {
       _selectedDoW = widget.selectedDoW;
-      _selectedUsageType = widget.usageType;
+      _selectedUsageType = widget.initialUsageType;
     });
   }
 
@@ -69,16 +71,17 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                     children: [
                       /// App Icon
                       ApplicationIcon(app: widget.app, size: 32),
-                      8.vBox(),
+                      8.vBox,
 
                       /// App package name
                       StyledText(
                         widget.app.packageName,
                         color: Theme.of(context).hintColor,
                       ),
-                      8.vBox(),
                     ],
-                  ).toSliverBox(),
+                  ).sliver,
+
+                  12.vSliverBox,
 
                   /// Usage type selector and usage info card
                   SliverUsageCards(
@@ -88,19 +91,19 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                     wifiUsageInfo: widget.app.wifiUsageThisWeek[_selectedDoW],
                     mobileUsageInfo:
                         widget.app.mobileUsageThisWeek[_selectedDoW],
-                    onUsageTypeChanged: (i) => setState(
-                      () => _selectedUsageType = UsageType.values[i],
+                    onUsageTypeChanged: (type) => setState(
+                      () => _selectedUsageType = type,
                     ),
                   ),
 
-                  20.vSliverBox(),
+                  20.vSliverBox,
 
                   /// Usage bar chart and selected day changer
                   SliverUsageChartPanel(
                     chartHeight: 212,
-                    dayOfWeek: _selectedDoW,
+                    selectedDoW: _selectedDoW,
                     usageType: _selectedUsageType,
-                    barChartData: widget.usageType == UsageType.screenUsage
+                    barChartData: _selectedUsageType == UsageType.screenUsage
                         ? widget.app.screenTimeThisWeek
                         : widget.app.networkUsageThisWeek,
                     onDayOfWeekChanged: (dow) => setState(
@@ -117,7 +120,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                       ? const StyledText(
                           "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
                           fontSize: 14,
-                        ).toSliverBox()
+                        ).sliver
                       : MultiSliver(
                           children: [
                             /// Vpn permission
@@ -128,7 +131,7 @@ class _AppDashboardScreenState extends State<AppDashboardScreen> {
                           ],
                         ),
 
-                  120.vSliverBox(),
+                  const SliverTabsBottomPadding(),
                 ],
               ),
             ),

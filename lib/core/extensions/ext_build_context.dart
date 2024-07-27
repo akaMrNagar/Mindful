@@ -34,7 +34,7 @@ extension ExtBuildContext on BuildContext {
             content: Row(
               children: [
                 Icon(icon, color: fgColor),
-                12.hBox(),
+                12.hBox,
                 Expanded(child: StyledText(error, color: fgColor))
               ],
             ),
@@ -78,8 +78,8 @@ extension ExtBuildContext on BuildContext {
     String info, {
     IconData icon = FluentIcons.prohibited_20_regular,
   }) {
-    final bgColor = Theme.of(this).colorScheme.errorContainer;
-    final fgColor = Theme.of(this).colorScheme.onErrorContainer;
+    final bgColor = Theme.of(this).colorScheme.secondaryContainer;
+    final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
     _showSnackBar(
       icon: icon,
       error: info,

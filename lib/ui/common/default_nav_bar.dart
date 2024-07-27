@@ -1,9 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
 
 class DefaultNavbar extends StatefulWidget {
+  /// Global navigation bar or vertical tab bar used throughout the app for consistent ui/ux
   const DefaultNavbar({
     super.key,
     this.leading,
@@ -36,7 +38,7 @@ class _DefaultNavbarState extends State<DefaultNavbar>
       vsync: this,
       initialIndex: 0,
       length: widget.navbarItems.length,
-      animationDuration: const Duration(milliseconds: 250),
+      animationDuration: 300.ms,
     );
   }
 
@@ -55,7 +57,7 @@ class _DefaultNavbarState extends State<DefaultNavbar>
           child: SafeArea(
             child: Column(
               children: [
-                40.vBox(),
+                40.vBox,
 
                 /// Leading widget
                 widget.leading ?? const SizedBox(),
@@ -63,11 +65,11 @@ class _DefaultNavbarState extends State<DefaultNavbar>
                 /// Automatically imply back button if leading is null
                 if (widget.leading == null && Navigator.canPop(context))
                   IconButton(
-                    onPressed: () => Navigator.maybePop(context),
                     icon: const Icon(FluentIcons.chevron_left_20_filled),
+                    onPressed: () => Navigator.maybePop(context),
                   ),
 
-                40.vBox(),
+                40.vBox,
 
                 /// Tab buttons
                 Expanded(
@@ -81,7 +83,10 @@ class _DefaultNavbarState extends State<DefaultNavbar>
                       isSelected: _controller.index == index,
                       onTap: () => setState(
                         () {
-                          _controller.animateTo(index);
+                          _controller.animateTo(
+                            index,
+                            curve: Curves.fastEaseInToSlowEaseOut,
+                          );
                           widget.onTabChanged?.call(index);
                         },
                       ),

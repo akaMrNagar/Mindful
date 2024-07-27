@@ -1,6 +1,9 @@
 class AppStrings {
-  static final List<String> daysShort = ["S", "M", "T", "W", "T", "F", "S"];
-  static final List<String> daysFull = [
+  /// Shortened day names (e.g., "M" for Monday).
+  static const List<String> daysShort = ["S", "M", "T", "W", "T", "F", "S"];
+
+  /// Full day names (e.g., "Sunday").
+  static const List<String> daysFull = [
     "Sunday",
     "Monday",
     "Tuesday",
@@ -10,7 +13,8 @@ class AppStrings {
     "Saturday",
   ];
 
-  static final List<String> monthsShort = [
+  /// Shortened month names (e.g., "Jan" for January).
+  static const List<String> monthsShort = [
     "Jan",
     "Feb",
     "Mar",
@@ -25,5 +29,4 @@ class AppStrings {
     "Dec",
   ];
 
-  static const String mostUsedApps = "Most used app";
 }

@@ -1,11 +1,16 @@
+/// DateTime.now()
+DateTime get now => DateTime.now();
 
-final DateTime now = DateTime.now();
-final int dayOfWeek = _formatWeekDayToSunday(now.weekday) - 1;
+/// Calculates the day index for today (0-based) within the current week,
+/// adjusted to start on Sunday (like Java) instead of Monday (default in Dart).
+int get todayOfWeek => _formatWeekDayToSunday(now.weekday) - 1;
 
-/// In java first day of week is SUNDAY but in dart fist day of week is MONDAY
-/// so offset days
+/// Internal helper function to adjust the day of week index to start on Sunday
+/// (like Java) instead of Monday (default in Dart).
+///
+/// This function takes the original `weekday` value (0-6) and maps it to
+/// a new value considering Sunday as the first day (0).
 int _formatWeekDayToSunday(int weekDay) {
-  // print("incoming: $weekDay");
   return switch (weekDay) {
     DateTime.monday => DateTime.tuesday,
     DateTime.tuesday => DateTime.wednesday,

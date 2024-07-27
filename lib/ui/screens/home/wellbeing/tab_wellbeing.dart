@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/tags.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
@@ -13,8 +13,9 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/input_field_dialog.dart';
-import 'package:mindful/ui/common/sliver_permission_warning.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/dialogs/website_input_dialog.dart';
+import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
@@ -54,8 +55,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       (wellBeing.allowedShortContentTimeSec - _shortsScreenTimeSec),
     );
 
-    final canModifyShortsSetting = haveAccessibilityPermission &&
-        (!isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0));
+    final isModifiable =
+        !isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0);
 
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
@@ -69,14 +70,14 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
               /// Information about bedtime
               const StyledText(
-                "Silence your phone, start dnd change screen to black and white at bedtime. Only alarms and important calls can reach you.",
-              ).toSliverBox(),
+                "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
+              ).sliver,
 
               const AccessibilityPermission(),
 
               if (haveAccessibilityPermission)
-                SliverPermissionWarning(
-                  havePermission: canModifyShortsSetting,
+                SliverPrimaryActionContainer(
+                  isVisible: !isModifiable,
                   margin: const EdgeInsets.only(top: 12),
                   title: "Invincible mode",
                   information:
@@ -88,10 +89,10 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
               /// Short usage progress bar
               ShortsTimerChart(
-                isModifiable: canModifyShortsSetting,
+                isModifiable: isModifiable,
                 allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
                 remainingTimeSec: remainingTimeSec,
-              ).toSliverBox(),
+              ).sliver,
 
               /// Quick actions
               SliverList.list(
@@ -99,12 +100,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block instagram reels
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/instaReels.png",
+                      "assets/icons/instaReels.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockInstaReels),
                     titleText: "Block reels",
-                    subtitleText: "Restrict reels on instagram",
+                    subtitleText: "Restrict reels on instagram.",
                     switchValue: wellBeing.blockInstaReels,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -114,12 +116,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block youtube shorts
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/ytShorts.png",
+                      "assets/icons/ytShorts.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockYtShorts),
                     titleText: "Block shorts",
-                    subtitleText: "Restrict shorts on youtube",
+                    subtitleText: "Restrict shorts on youtube.",
                     switchValue: wellBeing.blockYtShorts,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -129,12 +132,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block snapchat spotlight
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/snapSpotlight.png",
+                      "assets/icons/snapSpotlight.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockSnapSpotlight),
                     titleText: "Block spotlight",
-                    subtitleText: "Restrict spotlight on snapchat",
+                    subtitleText: "Restrict spotlight on snapchat.",
                     switchValue: wellBeing.blockSnapSpotlight,
                     onPressed: ref
                         .read(wellBeingProvider.notifier)
@@ -144,12 +148,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   /// Block facebook reels
                   DefaultListTile(
                     leading: Image.asset(
-                      "assets/images/fbReels.png",
+                      "assets/icons/fbReels.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockFbReels),
                     titleText: "Block reels",
-                    subtitleText: "Restrict reels on facebook",
+                    subtitleText: "Restrict reels on facebook.",
                     switchValue: wellBeing.blockFbReels,
                     onPressed:
                         ref.read(wellBeingProvider.notifier).switchBlockFbReels,
@@ -166,11 +171,11 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 leadingIcon: FluentIcons.slide_multiple_search_20_regular,
                 titleText: "Block Nsfw",
                 subtitleText:
-                    "Restrict browsers from opening adult and porn websites",
+                    "Restrict browsers from opening predefined adult and porn websites.",
                 switchValue: wellBeing.blockNsfwSites,
                 onPressed:
                     ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
-              ).toSliverBox(),
+              ).sliver,
 
               /// Blocked websites header
               const SliverContentTitle(title: "Blocked websites"),
@@ -196,9 +201,9 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                         isSubtitle: false,
                         textAlign: TextAlign.center,
                       ),
-                    ).toSliverBox(),
+                    ).sliver,
 
-              180.vSliverBox(),
+              const SliverTabsBottomPadding(),
             ],
           ),
 
@@ -208,7 +213,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               bottom: 32,
               right: 24,
               child: FloatingActionButton(
-                heroTag: 'addWebsiteFAB',
+                heroTag: AppTags.addDistractingSiteFABTag,
                 onPressed: () => _onPressedFab(context, ref),
                 child: const Icon(FluentIcons.add_20_filled),
               ),
@@ -219,7 +224,11 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
   }
 
   void _onPressedFab(BuildContext context, WidgetRef ref) async {
-    final url = await showInputWebsiteDialog(context);
+    final url = await showWebsiteInputDialog(
+      context: context,
+      heroTag: AppTags.addDistractingSiteFABTag,
+    );
+
     if (url == null || url.isEmpty) return;
 
     final host =

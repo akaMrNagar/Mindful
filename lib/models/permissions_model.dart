@@ -1,12 +1,27 @@
 class PermissionsModel {
+  /// Indicates whether the notification permission is granted.
+  final bool haveNotificationPermission;
+
+  /// Indicates whether the usage access permission is granted.
   final bool haveUsageAccessPermission;
+
+  /// Indicates whether the Do Not Disturb (DND) permission is granted.
   final bool haveDndPermission;
+
+  /// Indicates whether the display overlay permission is granted.
   final bool haveDisplayOverlayPermission;
+
+  /// Indicates whether the VPN permission is granted.
   final bool haveVpnPermission;
+
+  /// Indicates whether the accessibility permission is granted.
   final bool haveAccessibilityPermission;
+
+  /// Indicates whether the admin permission is granted.
   final bool haveAdminPermission;
 
-  PermissionsModel({
+  const PermissionsModel({
+    this.haveNotificationPermission = true,
     this.haveUsageAccessPermission = true,
     this.haveDndPermission = true,
     this.haveDisplayOverlayPermission = true,
@@ -15,7 +30,9 @@ class PermissionsModel {
     this.haveAdminPermission = true,
   });
 
+  /// Creates a copy of the `PermissionsModel` with potentially modified permissions.
   PermissionsModel copyWith({
+    bool? haveNotificationPermission,
     bool? haveUsageAccessPermission,
     bool? haveDndPermission,
     bool? haveDisplayOverlayPermission,
@@ -24,6 +41,8 @@ class PermissionsModel {
     bool? haveAdminPermission,
   }) {
     return PermissionsModel(
+      haveNotificationPermission:
+          haveNotificationPermission ?? this.haveNotificationPermission,
       haveUsageAccessPermission:
           haveUsageAccessPermission ?? this.haveUsageAccessPermission,
       haveDndPermission: haveDndPermission ?? this.haveDndPermission,

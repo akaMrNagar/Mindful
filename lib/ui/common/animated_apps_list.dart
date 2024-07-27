@@ -3,22 +3,21 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class AnimatedAppsList extends ConsumerStatefulWidget {
+  /// Animated list of android apps keyed to app packages
+  /// The list automatically animates children based on their previous position or index
   const AnimatedAppsList({
     super.key,
     required this.itemExtent,
     required this.appPackages,
     required this.itemBuilder,
-    this.headerTitle,
     this.separatorTitle,
   });
 
   final double itemExtent;
-  final String? headerTitle;
   final String? separatorTitle;
   final List<String> appPackages;
   final Widget Function(BuildContext context, AndroidApp app) itemBuilder;
@@ -55,10 +54,6 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
 
     return MultiSliver(
       children: [
-        /// Select distracting apps
-        if (widget.headerTitle != null)
-          SliverContentTitle(title: widget.headerTitle!),
-
         /// Apps list
         SliverFixedExtentList.builder(
           itemExtent: widget.itemExtent,

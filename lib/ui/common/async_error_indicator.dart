@@ -1,8 +1,14 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/constants.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
-
-/// Global error widget for async providers
 class AsyncErrorIndicator extends StatelessWidget {
+  /// Global error widget for async providers
   const AsyncErrorIndicator(
     this.error,
     this.stackTrace, {
@@ -14,25 +20,36 @@ class AsyncErrorIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          error.toString(),
-          style: const TextStyle(
+    return RoundedContainer(
+      padding: const EdgeInsets.all(18),
+      circularRadius: 24,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StyledText(
+            error.toString(),
             fontSize: 16,
-            color: Colors.red,
+            fontWeight: FontWeight.bold,
           ),
-        ),
-        Text(
-          stackTrace.toString(),
-          style: const TextStyle(
+          12.vBox,
+          StyledText(
+            stackTrace.toString(),
             fontSize: 12,
-            color: Colors.orange,
           ),
-        ),
-      ],
+          24.vBox,
+          ElevatedButton.icon(
+            icon: const Icon(FluentIcons.bug_20_regular),
+            label: const Text("Copy and report"),
+            onPressed: () async {
+              await Clipboard.setData(
+                  ClipboardData(text: stackTrace.toString()));
+              MethodChannelService.instance
+                  .launchUrl(AppConstants.githubIssueUrl);
+            },
+          )
+        ],
+      ),
     );
   }
 }

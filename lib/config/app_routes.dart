@@ -34,7 +34,7 @@ class AppRoutes {
 
       return AppDashboardScreen(
         app: args.app,
-        usageType: args.selectedUsageType,
+        initialUsageType: args.selectedUsageType,
         selectedDoW: args.selectedDoW,
       );
     }

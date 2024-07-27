@@ -1,12 +1,16 @@
 class AppConstants {
-  ///FIXME - Change package names like com.android.removed
+  static const mindfulAppVersion = 'v0.0.1';
+
   // Custom packages
   static const removedAppPackage = "com.android.removed";
   static const tetheringAppPackage = "com.android.tethering";
 
-  // Shared preferences keys
-  static const prefKeyAppTimers = "mindful.appTimers";
-  static const prefKeyBedtimeSettings = "mindful.bedtimeSettings";
-  static const prefKeyWellbeingSettings = "mindful.wellBeingSettings";
-  static const prefKeyBlockedApps = "mindful.blockedApps";
+  /// FIXME: Change to original urls
+  /// Urls
+  static const privacyPolicyUrl = "https://github.com/akaMrNagar/";
+  static const donationUrl = "https://github.com/akaMrNagar/";
+  static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
+  static const githubIssueUrl = "https://github.com/akaMrNagar/Mindful/issues";
+  static const githubSuggestionUrl =
+      "https://github.com/akaMrNagar/Mindful/issues";
 }

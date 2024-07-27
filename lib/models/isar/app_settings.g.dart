@@ -22,13 +22,18 @@ const AppSettingsSchema = CollectionSchema(
       name: r'color',
       type: IsarType.string,
     ),
-    r'isInvincibleModeOn': PropertySchema(
+    r'dataResetTimeMins': PropertySchema(
       id: 1,
+      name: r'dataResetTimeMins',
+      type: IsarType.long,
+    ),
+    r'isInvincibleModeOn': PropertySchema(
+      id: 2,
       name: r'isInvincibleModeOn',
       type: IsarType.bool,
     ),
     r'themeMode': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
@@ -65,8 +70,9 @@ void _appSettingsSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.color);
-  writer.writeBool(offsets[1], object.isInvincibleModeOn);
-  writer.writeByte(offsets[2], object.themeMode.index);
+  writer.writeLong(offsets[1], object.dataResetTimeMins);
+  writer.writeBool(offsets[2], object.isInvincibleModeOn);
+  writer.writeByte(offsets[3], object.themeMode.index);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -76,10 +82,11 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings(
-    color: reader.readStringOrNull(offsets[0]) ?? 'Light Blue',
-    isInvincibleModeOn: reader.readBoolOrNull(offsets[1]) ?? false,
+    color: reader.readStringOrNull(offsets[0]) ?? 'Teal',
+    dataResetTimeMins: reader.readLongOrNull(offsets[1]) ?? 0,
+    isInvincibleModeOn: reader.readBoolOrNull(offsets[2]) ?? false,
     themeMode:
-        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[2])] ??
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
             ThemeMode.system,
   );
   return object;
@@ -93,10 +100,12 @@ P _appSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset) ?? 'Light Blue') as P;
+      return (reader.readStringOrNull(offset) ?? 'Teal') as P;
     case 1:
-      return (reader.readBoolOrNull(offset) ?? false) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 2:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 3:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
@@ -339,6 +348,62 @@ extension AppSettingsQueryFilter
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      dataResetTimeMinsEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dataResetTimeMins',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      dataResetTimeMinsGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dataResetTimeMins',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      dataResetTimeMinsLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dataResetTimeMins',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      dataResetTimeMinsBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dataResetTimeMins',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> idEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
@@ -480,6 +545,20 @@ extension AppSettingsQuerySortBy
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByDataResetTimeMins() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dataResetTimeMins', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByDataResetTimeMinsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dataResetTimeMins', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
       sortByIsInvincibleModeOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'isInvincibleModeOn', Sort.asc);
@@ -517,6 +596,20 @@ extension AppSettingsQuerySortThenBy
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByColorDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByDataResetTimeMins() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dataResetTimeMins', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByDataResetTimeMinsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'dataResetTimeMins', Sort.desc);
     });
   }
 
@@ -569,6 +662,13 @@ extension AppSettingsQueryWhereDistinct
   }
 
   QueryBuilder<AppSettings, AppSettings, QDistinct>
+      distinctByDataResetTimeMins() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dataResetTimeMins');
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QDistinct>
       distinctByIsInvincibleModeOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isInvincibleModeOn');
@@ -593,6 +693,12 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, String, QQueryOperations> colorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'color');
+    });
+  }
+
+  QueryBuilder<AppSettings, int, QQueryOperations> dataResetTimeMinsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'dataResetTimeMins');
     });
   }
 

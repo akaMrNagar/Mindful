@@ -3,4 +3,14 @@
     <string name="app_name">Mindful</string>
     <string name="accessibility_description">The Mindful app utilizes accessibility service to monitor and intercept websites accessed by the user on selected web browsers. This service functions by fetching the URL of the visited website and subsequently determining if the website has been pre-designated as blocked by the user. If the site is identified as blocked, the service will take appropriate action to prevent access, thereby helping users maintain focus and avoid distractions.</string>
     <string name="admin_description">Our application does not collect, store, or transmit any user data. As Free and Open Source Software (FOSS), you can review and modify the source code. Administrative privileges are required solely for essential system operations, ensuring the app functions correctly without compromising your privacy.</string>
+
+
+    <!--    Usage widget values-->
+    <string name="usage_widget_description">Get a daily view of your screen and data usage</string>
+    <string name="widget_screen_time_label">Screen time</string>
+    <string name="widget_screen_time_usage">12h 43m</string>
+    <string name="widget_mobile_data_label">Mobile</string>
+    <string name="widget_mobile_data_usage">1.53 GB</string>
+    <string name="widget_wifi_data_label">Wifi</string>
+    <string name="widget_wifi_data_usage">6.56 GB</string>
 </resources>

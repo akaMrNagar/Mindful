@@ -3,6 +3,8 @@ description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
+
+# NOTE: If you bump the version than also change it version in [AppConstants]
 version: 0.0.1
 
 environment:
@@ -16,11 +18,11 @@ dependencies:
   # UI
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
-  toast: ^0.3.0
   flutter_riverpod: ^2.4.0
 
   # Animation
   flutter_animate: ^4.2.0+1
+  skeletonizer: ^1.4.1+1
 
   # Database and Storage
   isar_flutter_libs: ^3.1.0+1
@@ -35,6 +37,7 @@ dev_dependencies:
     sdk: flutter
 
   # Development dependencies.
+  # Generator =>  dart run build_runner build
   flutter_lints: ^2.0.0
   isar_generator: ^3.1.0+1
   build_runner: ^2.4.9
@@ -44,12 +47,14 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  uses-material-design: false
+  uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/
-  #   - images/a_dot_ham.jpeg
+    - assets/icons/instaReels.png
+    - assets/icons/fbReels.png
+    - assets/icons/snapSpotlight.png
+    - assets/icons/ytShorts.png
 
   # fonts:
   #   - family: Schyler
