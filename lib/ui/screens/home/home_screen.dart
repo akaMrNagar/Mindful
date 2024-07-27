@@ -31,13 +31,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     /// that means user launched the app from overlay dialog
     _subscription = ref.listenManual<AsyncValue<Map<String, AndroidApp>>>(
       appsProvider,
-      (_, apps) async {
+      (_, apps) {
+        if (!apps.hasValue) return;
         final targetPackage = MethodChannelService.instance.targetedAppPackage;
         if (targetPackage.isNotEmpty &&
-            apps.hasValue &&
             apps.value!.containsKey(targetPackage)) {
           _gotoAppDashboard(apps.value![targetPackage]!);
         }
+
+        _subscription?.close();
       },
     );
   }
@@ -55,7 +57,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       );
     }
-    _subscription?.close();
   }
 
   @override

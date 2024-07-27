@@ -16,6 +16,7 @@ import com.mindful.android.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
+import com.mindful.android.utils.Utils;
 
 import org.jetbrains.annotations.Contract;
 
@@ -33,10 +34,11 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MindfulVpnService extends android.net.VpnService {
     private static final int SERVICE_ID = 302;
     private static final String TAG = "Mindful.VpnService";
-    private final AtomicReference<Thread> mVpnThread = new AtomicReference<>();
+    private final AtomicReference<Thread> mAtomicVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
     private Set<String> mBlockedApps;
     private boolean mShouldRestartVpn = false;
+    private boolean mIsStoppedForcefully = true;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -99,8 +101,8 @@ public class MindfulVpnService extends android.net.VpnService {
             if (mVpnInterface != null) {
                 mVpnInterface.close();
             }
-            Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
             setVpnThread(null);
+            Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
         } catch (IOException e) {
             Log.e(TAG, "disconnectVpn: Unable to close VPN connection", e);
         }
@@ -111,6 +113,7 @@ public class MindfulVpnService extends android.net.VpnService {
      */
     private void stopAndDisposeService() {
         disconnectVpn();
+        mIsStoppedForcefully = false;
         stopForeground(true);
         stopSelf();
     }
@@ -172,7 +175,7 @@ public class MindfulVpnService extends android.net.VpnService {
      * @param thread The new thread to be set.
      */
     private void setVpnThread(final Thread thread) {
-        final Thread oldThread = mVpnThread.getAndSet(thread);
+        final Thread oldThread = mAtomicVpnThread.getAndSet(thread);
         if (oldThread != null) {
             oldThread.interrupt();
         }
@@ -201,6 +204,14 @@ public class MindfulVpnService extends android.net.VpnService {
     public void onDestroy() {
         super.onDestroy();
         disconnectVpn();
+
+        if (mIsStoppedForcefully) {
+            Log.d(TAG, "onDestroy: Vpn service destroyed forcefully. Trying to restart it");
+            if (!Utils.isServiceRunning(this, MindfulVpnService.class.getName())) {
+                startService(new Intent(this, MindfulVpnService.class).setAction(ACTION_START_SERVICE));
+            }
+            return;
+        }
         Log.d(TAG, "onDestroy: VPN service is destroyed");
     }
 

@@ -97,19 +97,16 @@ class TabGeneral extends ConsumerWidget {
           /// Invincible mode
           DefaultHero(
             tag: AppTags.invincibleModeTileTag,
-            child: Material(
-              color: Colors.transparent,
-              child: DefaultListTile(
-                isPrimary: true,
-                switchValue: isInvincibleModeOn,
-                enabled: kDebugMode
-                    ? true
-                    : haveAdminPermission && !isInvincibleModeOn,
-                leadingIcon: FluentIcons.animal_cat_20_regular,
-                titleText: "Invincible mode",
-                onPressed: () =>
-                    _turnOnInvincibleMode(context, ref, isInvincibleModeOn),
-              ),
+            child: DefaultListTile(
+              isPrimary: true,
+              switchValue: isInvincibleModeOn,
+              enabled: kDebugMode
+                  ? true
+                  : haveAdminPermission && !isInvincibleModeOn,
+              leadingIcon: FluentIcons.animal_cat_20_regular,
+              titleText: "Invincible mode",
+              onPressed: () =>
+                  _turnOnInvincibleMode(context, ref, isInvincibleModeOn),
             ),
           ).sliver,
 

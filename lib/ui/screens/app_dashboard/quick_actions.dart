@@ -99,6 +99,7 @@ class QuickActions extends ConsumerWidget {
             tag: AppTags.emergencyTileTag,
             child: DefaultListTile(
               isPrimary: true,
+              margin: const EdgeInsets.symmetric(vertical: 6),
               titleText: "Emergency",
               subtitleText: "Pause app blocker for the next 5 minutes.",
               leadingIcon: FluentIcons.fire_20_regular,

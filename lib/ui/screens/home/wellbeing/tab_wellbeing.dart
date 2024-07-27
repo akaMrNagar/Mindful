@@ -55,8 +55,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       (wellBeing.allowedShortContentTimeSec - _shortsScreenTimeSec),
     );
 
-    final canModifyShortsSetting = haveAccessibilityPermission &&
-        (!isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0));
+    final isModifiable =
+        !isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0);
 
     return Padding(
       padding: const EdgeInsets.only(left: 4, right: 8),
@@ -77,7 +77,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
               if (haveAccessibilityPermission)
                 SliverPrimaryActionContainer(
-                  isVisible: !canModifyShortsSetting,
+                  isVisible: !isModifiable,
                   margin: const EdgeInsets.only(top: 12),
                   title: "Invincible mode",
                   information:
@@ -89,7 +89,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
               /// Short usage progress bar
               ShortsTimerChart(
-                isModifiable: canModifyShortsSetting,
+                isModifiable: isModifiable,
                 allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
                 remainingTimeSec: remainingTimeSec,
               ).sliver,
@@ -103,7 +103,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       "assets/icons/instaReels.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockInstaReels),
                     titleText: "Block reels",
                     subtitleText: "Restrict reels on instagram.",
                     switchValue: wellBeing.blockInstaReels,
@@ -118,7 +119,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       "assets/icons/ytShorts.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockYtShorts),
                     titleText: "Block shorts",
                     subtitleText: "Restrict shorts on youtube.",
                     switchValue: wellBeing.blockYtShorts,
@@ -133,7 +135,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       "assets/icons/snapSpotlight.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockSnapSpotlight),
                     titleText: "Block spotlight",
                     subtitleText: "Restrict spotlight on snapchat.",
                     switchValue: wellBeing.blockSnapSpotlight,
@@ -148,7 +151,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       "assets/icons/fbReels.png",
                       width: 32,
                     ),
-                    enabled: canModifyShortsSetting,
+                    enabled: haveAccessibilityPermission &&
+                        (isModifiable || !wellBeing.blockFbReels),
                     titleText: "Block reels",
                     subtitleText: "Restrict reels on facebook.",
                     switchValue: wellBeing.blockFbReels,
