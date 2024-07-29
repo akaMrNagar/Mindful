@@ -1,7 +1,10 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -26,7 +29,7 @@ class ScheduleCard extends ConsumerWidget {
         ref.watch(bedtimeProvider.select((value) => value.scheduleDays));
 
     return RoundedContainer(
-      height: 208,
+      height: 224,
       circularRadius: 24,
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -41,8 +44,13 @@ class ScheduleCard extends ConsumerWidget {
                 label: "Start",
                 enabled: !isScheduleOn,
                 initialTime: startTime,
-                onChange: (t) =>
-                    ref.read(bedtimeProvider.notifier).setBedtimeStart(t),
+                onChange: (t) {
+                  ref.read(bedtimeProvider.notifier).setBedtimeStart(t);
+                  context.showSnackAlert(
+                    "Bedtime will begin in ${t.difference(TimeOfDay.now()).toTimeFull(replaceCommaWithAnd: true)} from now.",
+                    icon: FluentIcons.sleep_20_regular,
+                  );
+                },
               ),
 
               /// Schedule end time
@@ -124,7 +132,7 @@ class _SelectedTime extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
-      height: 80,
+      height: 96,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       color: Colors.transparent,
       onPressed: enabled

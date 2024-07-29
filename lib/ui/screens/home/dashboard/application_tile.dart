@@ -43,7 +43,7 @@ class ApplicationTile extends ConsumerWidget {
     );
 
     if (isInvincibleModeOn && prevTimer > 0 && screenTime >= prevTimer) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Due to invincible mode, modifications to paused app's timer is not allowed.",
       );
       return;

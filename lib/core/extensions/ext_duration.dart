@@ -9,7 +9,7 @@ extension ExtDuration on Duration {
   }
 
   /// Formats the duration into time like '5 hours, 45 minutes'
-  String toTimeFull() {
+  String toTimeFull({bool replaceCommaWithAnd = false}) {
     final hours = inHours;
     final minutes = inMinutes % 60;
     final seconds = inSeconds % 60;
@@ -21,7 +21,7 @@ extension ExtDuration on Duration {
     }
 
     if (minutes > 0) {
-      if (buffer.isNotEmpty) buffer.write(', ');
+      if (buffer.isNotEmpty) buffer.write(replaceCommaWithAnd ? ' and ' : ', ');
       buffer.write('$minutes ${minutes > 1 ? 'minutes' : 'minute'}');
     }
 

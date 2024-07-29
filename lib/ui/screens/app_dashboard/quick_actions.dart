@@ -33,7 +33,7 @@ class QuickActions extends ConsumerWidget {
     );
 
     if (isInvincibleModeOn && prevTimer > 0 && screenTime >= prevTimer) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Due to invincible mode, modifications to paused app's timer is not allowed.",
       );
       return;
@@ -57,7 +57,7 @@ class QuickActions extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (leftPasses <= 0) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "You have used all your emergency passes. The blocked apps cannot be unblocked until midnight.",
       );
       return;

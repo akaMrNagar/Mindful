@@ -14,11 +14,13 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/website_input_dialog.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class TabWellBeing extends ConsumerStatefulWidget {
   const TabWellBeing({super.key});
@@ -36,6 +38,22 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
     MethodChannelService.instance
         .getShortsScreenTimeSec()
         .then((timeSec) => setState(() => _shortsScreenTimeSec = timeSec));
+  }
+
+  void _turnNsfwBlockerOn() async {
+    final isConfirm = await showConfirmationDialog(
+      context: context,
+      icon: FluentIcons.video_prohibited_20_regular,
+      heroTag: AppTags.blockNsfwTileTag,
+      title: "Adult sites",
+      info:
+          "Are you sure? This action is irreversible. Once adult sites blocker is turned on, you cannot turn it off as long as this app is installed on your device.",
+      positiveLabel: "Block",
+    );
+
+    if (isConfirm) {
+      ref.read(wellBeingProvider.notifier).switchBlockNsfwSites();
+    }
   }
 
   @override
@@ -166,15 +184,18 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               const SliverContentTitle(title: "Adult content"),
 
               /// Block NSFW websites
-              DefaultListTile(
-                enabled: haveAccessibilityPermission,
-                leadingIcon: FluentIcons.slide_multiple_search_20_regular,
-                titleText: "Block Nsfw",
-                subtitleText:
-                    "Restrict browsers from opening predefined adult and porn websites.",
-                switchValue: wellBeing.blockNsfwSites,
-                onPressed:
-                    ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
+              DefaultHero(
+                tag: AppTags.blockNsfwTileTag,
+                child: DefaultListTile(
+                  enabled:
+                      haveAccessibilityPermission && !wellBeing.blockNsfwSites,
+                  leadingIcon: FluentIcons.video_prohibited_20_regular,
+                  titleText: "Block Nsfw",
+                  subtitleText:
+                      "Restrict browsers from opening predefined adult and porn websites.",
+                  switchValue: wellBeing.blockNsfwSites,
+                  onPressed: _turnNsfwBlockerOn,
+                ),
               ).sliver,
 
               /// Blocked websites header

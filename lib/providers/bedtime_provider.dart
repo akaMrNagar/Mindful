@@ -60,7 +60,8 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
       state = state.copyWith(startTimeInMins: startTod.minutes);
 
   /// Sets the end time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeEnd(TimeOfDay endTod) => state.copyWith(endTimeInMins: endTod.minutes);
+  void setBedtimeEnd(TimeOfDay endTod) =>
+      state = state.copyWith(endTimeInMins: endTod.minutes);
 
   /// Toggles the scheduled day for a specific day index.
   void toggleScheduleDay(int index) {
@@ -70,10 +71,11 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   }
 
   /// Enables or disables Do Not Disturb during the Bedtime schedule.
-  /// 
+  ///
   /// Checks for Do Not Disturb permission before enabling it.
   void setShouldStartDnd(bool shouldStartDnd) async {
-    if (shouldStartDnd && !await MethodChannelService.instance.getAndAskDndPermission()) {
+    if (shouldStartDnd &&
+        !await MethodChannelService.instance.getAndAskDndPermission()) {
       return;
     }
     state = state.copyWith(shouldStartDnd: shouldStartDnd);

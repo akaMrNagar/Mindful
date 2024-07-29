@@ -22,12 +22,12 @@ class TabBedtime extends StatelessWidget {
     final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
 
     if (shouldStart && state.distractingApps.isEmpty) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Select at least one distracting app to turn on bedtime schedule",
       );
       return;
     } else if (!shouldStart && !isModifiable) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Due to invincible mode, modifications are not allowed during the bedtime period. You can add distracting apps but cannot remove them.",
       );
       return;

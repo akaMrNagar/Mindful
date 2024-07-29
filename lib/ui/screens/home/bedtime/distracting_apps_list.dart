@@ -25,7 +25,7 @@ class DistractingAppsList extends ConsumerWidget {
     bool shouldInsert,
   ) async {
     if (app.isImpSysApp) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Adding important system apps to the list of distracting apps is not permitted.",
       );
       return;
@@ -33,7 +33,7 @@ class DistractingAppsList extends ConsumerWidget {
 
     final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
     if (!shouldInsert && !isModifiable) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Due to invincible mode, modifications are not allowed during the bedtime period. You can add distracting apps but cannot remove them.",
       );
       return;
