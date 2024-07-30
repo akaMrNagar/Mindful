@@ -294,6 +294,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     public void onDestroy() {
         super.onDestroy();
         // Remove prefs listener and Unregister receivers
+        mEveryDayResetTimer.purge();
+        mEveryDayResetTimer.cancel();
         unregisterReceiver(mAppInstallUninstallReceiver);
         SharedPrefsHelper.unregisterListener(this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");

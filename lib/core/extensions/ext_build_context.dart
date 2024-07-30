@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -16,6 +17,8 @@ extension ExtBuildContext on BuildContext {
       if (mounted) {
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             backgroundColor: bgColor,
             action: showCopyAction
                 ? SnackBarAction(
@@ -38,6 +41,12 @@ extension ExtBuildContext on BuildContext {
                 Expanded(child: StyledText(error, color: fgColor))
               ],
             ),
+          ),
+          snackBarAnimationStyle: AnimationStyle(
+            curve: Curves.elasticInOut,
+            reverseCurve: Curves.elasticInOut,
+            duration: 300.ms,
+            reverseDuration: 300.ms,
           ),
         );
       }
