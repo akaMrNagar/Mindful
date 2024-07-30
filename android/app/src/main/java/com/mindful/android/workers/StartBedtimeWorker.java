@@ -41,7 +41,7 @@ public class StartBedtimeWorker extends Worker {
         // NOTE: (dayOfWeek -1) for zero based indexing (0-6) of week days (1-7)
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
         mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
-        mCanStartRoutineToday = !mBedtimeSettings.scheduleDays.get(dayOfWeek - 1);
+        mCanStartRoutineToday = mBedtimeSettings.scheduleDays.get(dayOfWeek - 1);
 
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
         mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopBedtimeLockdown(true, mBedtimeSettings.distractingApps));

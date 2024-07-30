@@ -49,7 +49,8 @@ public class WorkersHelper {
      */
     public static void scheduleMidnightWorker(@NonNull Context context) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_YEAR, cal.get(Calendar.DAY_OF_YEAR) + 1);
+        cal.add(Calendar.DATE, 1);  // Schedule for next day
+
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);

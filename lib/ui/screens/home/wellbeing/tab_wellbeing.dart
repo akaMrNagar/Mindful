@@ -107,7 +107,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
               /// Short usage progress bar
               ShortsTimerChart(
-                isModifiable: isModifiable,
+                isModifiable: !isModifiable,
                 allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
                 remainingTimeSec: remainingTimeSec,
               ).sliver,

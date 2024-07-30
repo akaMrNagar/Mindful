@@ -46,7 +46,7 @@ public class WellBeingSettings {
      * Allowed time for short content consumption, in milliseconds.
      * The value is calculated from seconds provided in the constructor.
      */
-    public long allowedShortContentTimeMs = 8 * 60 * 60 * 1000L; // Default: 8 hours
+    public long allowedShortContentTimeMs = 30 * 60 * 1000L; // Default: 30 minutes
 
     /**
      * List of website hosts that are blocked.

@@ -36,7 +36,7 @@ class WellBeingSettings {
   /// Protection model used for determining distraction blocking
   /// like blocking short form content on different platforms and blocking websites
   const WellBeingSettings({
-    this.allowedShortContentTimeSec = 8 * 60 * 60,
+    this.allowedShortContentTimeSec = 30 * 60,
     this.blockInstaReels = false,
     this.blockYtShorts = false,
     this.blockSnapSpotlight = false,

@@ -29,10 +29,13 @@ import com.mindful.android.models.WellBeingSettings;
 import com.mindful.android.utils.NsfwDomains;
 import com.mindful.android.utils.Utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
@@ -41,6 +44,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private static final String TAG = "Mindful.MindfulAccessibilityService";
     private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 5000L; // 5 seconds
     private static final long BACK_ACTION_INVOKE_INTERVAL_MS = 500L; // half second
+    private Timer mEveryDayResetTimer = new Timer();
 
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
@@ -67,6 +71,21 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addDataScheme("package");
         registerReceiver(mAppInstallUninstallReceiver, filter);
+
+        // Start timer to reset shortsScreen time everyday midnight
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.add(Calendar.DATE, 1);  // Schedule for next day
+
+
+        mEveryDayResetTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mTotalShortsScreenTimeMs = 0;
+            }
+        }, calendar.getTime(), 24 * 60 * 60 * 1000);
 
         Log.d(TAG, "onCreate: Accessibility service started successfully");
     }
@@ -188,22 +207,25 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
      */
     private void checkTimerAndBlockShortContent() {
-        if (mTotalShortsScreenTimeMs > mWellBeingSettings.allowedShortContentTimeMs) {
+        if (mTotalShortsScreenTimeMs > (mWellBeingSettings.allowedShortContentTimeMs + SHARED_PREF_INVOKE_INTERVAL_MS)) {
             goBackWithToast();
         } else {
             long currentTime = System.currentTimeMillis();
+
             // Calculate screen time since last check
             if (mLastTimeShortsCheck != 0) {
                 long elapsedTime = currentTime - mLastTimeShortsCheck;
                 mTotalShortsScreenTimeMs += elapsedTime;
             }
+
             // Update last check time
             mLastTimeShortsCheck = currentTime;
 
             // Check if the minimum interval has passed before calling shared preferences
-            if (currentTime - mLastTimeSharedPrefInvoked > SHARED_PREF_INVOKE_INTERVAL_MS) {
+            if ((currentTime - mLastTimeSharedPrefInvoked) > SHARED_PREF_INVOKE_INTERVAL_MS) {
                 SharedPrefsHelper.storeShortsScreenTimeMs(this, mTotalShortsScreenTimeMs);
                 mLastTimeSharedPrefInvoked = currentTime;
+                Log.d(TAG, "checkTimerAndBlockShortContent: shorts time saved: " + (mTotalShortsScreenTimeMs / 1000L) + " seconds");
             }
         }
     }
@@ -266,15 +288,14 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public void onInterrupt() {
-        // No-op
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         // Remove prefs listener and Unregister receivers
-        SharedPrefsHelper.unregisterListener(this);
         unregisterReceiver(mAppInstallUninstallReceiver);
+        SharedPrefsHelper.unregisterListener(this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }
 
