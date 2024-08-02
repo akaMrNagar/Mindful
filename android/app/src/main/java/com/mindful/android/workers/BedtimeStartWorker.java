@@ -10,7 +10,9 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import com.mindful.android.generics.SafeServiceConnection;
+import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
+import com.mindful.android.helpers.WorkersHelper;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.MindfulTrackerService;
 
@@ -19,40 +21,39 @@ import java.util.Calendar;
 /**
  * A Worker class responsible for starting the bedtime routine, which may include lockdown mode and Do Not Disturb (DND) settings.
  */
-public class StartBedtimeWorker extends Worker {
+public class BedtimeStartWorker extends Worker {
 
     private static final String TAG = "Mindful.StartBedtimeWorker";
-    public static final String BEDTIME_WORKER_START_ID = "com.mindful.android.StartBedtimeWorker";
+    public static final String BEDTIME_START_WORKER_ID = "com.mindful.android.StartBedtimeWorker";
     private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private final Context mContext;
     private BedtimeSettings mBedtimeSettings = null;
     private boolean mCanStartRoutineToday = false;
 
-    /**
-     * Constructs a StartBedtimeWorker instance.
-     *
-     * @param context The application context.
-     * @param workerParams Parameters for the worker.
-     */
-    public StartBedtimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+
+    public BedtimeStartWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         mContext = context;
 
         // NOTE: (dayOfWeek -1) for zero based indexing (0-6) of week days (1-7)
-        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
         mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
-        mCanStartRoutineToday = mBedtimeSettings.scheduleDays.get(dayOfWeek - 1);
-
+        mCanStartRoutineToday = mBedtimeSettings.scheduleDays.get(dayOfWeek);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-        mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopBedtimeLockdown(true, mBedtimeSettings.distractingApps));
-        if (mCanStartRoutineToday) mTrackerServiceConn.bindService();
+
+        if (mCanStartRoutineToday) {
+            mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopBedtimeLockdown(true, mBedtimeSettings.distractingApps));
+            mTrackerServiceConn.bindService();
+        }
     }
 
     @NonNull
     @Override
     public Result doWork() {
-        startBedtimeLockdown();
-        mTrackerServiceConn.unBindService();
+        if (mCanStartRoutineToday) startBedtimeLockdown();
+
+        // Schedule bedtime for next day
+        WorkersHelper.cancelBedtimeRoutine(mContext);
         return Result.success();
     }
 
@@ -60,10 +61,7 @@ public class StartBedtimeWorker extends Worker {
      * Starts the bedtime lockdown routine, which may include enabling Do Not Disturb (DND) mode.
      */
     private void startBedtimeLockdown() {
-        if (!mCanStartRoutineToday) {
-            return;
-        }
-
+        NotificationHelper.pushAlertNotification(mContext, 444, "It's time to bed, bedtime routine is started");
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) {
             NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -79,5 +77,6 @@ public class StartBedtimeWorker extends Worker {
             notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
             Log.d(TAG, "startBedtimeLockdown: DND mode started");
         }
+        mTrackerServiceConn.unBindService();
     }
 }

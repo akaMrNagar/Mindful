@@ -38,26 +38,30 @@ public class SharedPrefsHelper {
     /**
      * Registers a listener for SharedPreferences changes.
      *
+     * @param context  The application context.
      * @param callback The listener to register.
      */
-    public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
+    public static void registerListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
+        if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.registerOnSharedPreferenceChangeListener(callback);
     }
 
     /**
      * Unregisters a listener for SharedPreferences changes.
      *
+     * @param context  The application context.
      * @param callback The listener to unregister.
      */
-    public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
+    public static void unregisterListener (Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
+        if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
     }
 
     /**
      * Stores the data reset time in minutes.
      *
-     * @param context     The application context.
-     * @param timeInMins  The time in minutes.
+     * @param context    The application context.
+     * @param timeInMins The time in minutes.
      */
     public static void storeDataResetTimeMins(@NonNull Context context, int timeInMins) {
         if (mSharedPrefs == null) initialize(context);
@@ -78,8 +82,8 @@ public class SharedPrefsHelper {
     /**
      * Stores the count of emergency passes.
      *
-     * @param context           The application context.
-     * @param passesLeftCount   The number of emergency passes left.
+     * @param context         The application context.
+     * @param passesLeftCount The number of emergency passes left.
      */
     public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
         if (mSharedPrefs == null) initialize(context);
@@ -89,7 +93,7 @@ public class SharedPrefsHelper {
     /**
      * Stores the JSON representation of blocked apps.
      *
-     * @param context            The application context.
+     * @param context             The application context.
      * @param dartJsonBlockedApps The JSON string of blocked apps.
      */
     public static void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
@@ -111,7 +115,7 @@ public class SharedPrefsHelper {
     /**
      * Stores the JSON representation of bedtime settings.
      *
-     * @param context                The application context.
+     * @param context                 The application context.
      * @param dartJsonBedtimeSettings The JSON string of bedtime settings.
      */
     public static void storeBedtimeSettingsJson(@NonNull Context context, @NonNull String dartJsonBedtimeSettings) {
@@ -122,7 +126,7 @@ public class SharedPrefsHelper {
     /**
      * Stores the JSON representation of well-being settings.
      *
-     * @param context                The application context.
+     * @param context                   The application context.
      * @param dartJsonWellBeingSettings The JSON string of well-being settings.
      */
     public static void storeWellBeingSettingsJson(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {

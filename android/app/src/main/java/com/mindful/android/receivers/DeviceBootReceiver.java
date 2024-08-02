@@ -41,13 +41,12 @@ public class DeviceBootReceiver extends BroadcastReceiver {
             mVpnServiceConn.startOnly();
         }
 
-        // NOTE: Workers are rescheduled by WorkManager automatically on device reboot.
-        //  We are rescheduling only because user may be rebooting device during the schedule period so to block distracting apps
-        //  Reschedule bedtime workers if needed.
-
         // Reschedule bedtime workers if the bedtime schedule is on
         if (isBedtimeScheduleOn) {
             WorkersHelper.scheduleBedtimeRoutine(context);
         }
+
+        // Reschedule midnight reset worker
+        WorkersHelper.scheduleMidnightWorker(context);
     }
 }

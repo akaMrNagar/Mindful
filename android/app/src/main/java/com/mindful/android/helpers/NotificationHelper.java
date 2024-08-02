@@ -10,6 +10,9 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+
+import com.mindful.android.R;
 
 /**
  * NotificationHelper provides utility methods for managing notification channels and permissions
@@ -49,8 +52,8 @@ public class NotificationHelper {
     /**
      * Checks if notification permissions are granted and optionally asks for it if not granted.
      *
-     * @param context The application context used to check notification permissions.
-     * @param activity The activity used to request notification permissions if needed.
+     * @param context          The application context used to check notification permissions.
+     * @param activity         The activity used to request notification permissions if needed.
      * @param askPermissionToo Whether to request notification permission if not already granted.
      * @return True if notification permissions are granted, false otherwise.
      */
@@ -87,5 +90,19 @@ public class NotificationHelper {
             }
         }
         return false;
+    }
+
+
+    public static void pushAlertNotification(@NonNull Context context, int id, String alert) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(
+                id,
+                new NotificationCompat.Builder(context, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setContentTitle("Mindful")
+                        .setContentText(alert)
+                        .setAutoCancel(true)
+                        .build()
+        );
     }
 }
