@@ -12,8 +12,8 @@ import com.mindful.android.helpers.ActivityNewTaskHelper;
 import com.mindful.android.helpers.DeviceAppsHelper;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.PermissionsHelper;
+import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.helpers.WorkersHelper;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.EmergencyTimerService;
 import com.mindful.android.services.MindfulTrackerService;
@@ -38,15 +38,15 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Register notification channels
         NotificationHelper.registerNotificationGroupAndChannels(this);
 
-        // Schedule or update midnight 12 worker
-        WorkersHelper.scheduleMidnightWorker(this);
+        // Schedule midnight 12 task if already not scheduled
+        AlarmTasksSchedulingHelper.scheduleMidnightResetTask(this, true);
 
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
 
         // Start or bind the tracking service based on app timers or bedtime schedule
-        if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty() || SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn) {
+        if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty()) {
             mTrackerServiceConn.startAndBind();
         } else {
             mTrackerServiceConn.bindService();
@@ -134,13 +134,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 SharedPrefsHelper.storeBedtimeSettingsJson(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
                 BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
                 if (bedtimeSettings.isScheduleOn) {
-                    WorkersHelper.scheduleBedtimeRoutine(this);
-                    mTrackerServiceConn.startAndBind(); // Start service if it is not already running
+                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this);
                 } else {
-                    WorkersHelper.cancelBedtimeRoutine(this);
+                    AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
                     if (mTrackerServiceConn.isConnected()) {
-                        mTrackerServiceConn.getService().startStopBedtimeLockdown(false, null);
-                        mTrackerServiceConn.getService().stopIfNoUsage();
+                        mTrackerServiceConn.getService().startStopBedtimeRoutine(false);
                     }
                 }
                 result.success(true);

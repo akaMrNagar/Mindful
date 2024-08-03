@@ -8,8 +8,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SafeServiceConnection;
+import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.helpers.WorkersHelper;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 
@@ -30,7 +30,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         boolean isBedtimeScheduleOn = SharedPrefsHelper.fetchBedtimeSettings(context).isScheduleOn;
 
         // Start the MindfulTrackerService if needed
-        if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty() || isBedtimeScheduleOn) {
+        if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
             SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
             mTrackerServiceConn.startOnly();
         }
@@ -42,11 +42,9 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         }
 
         // Reschedule bedtime workers if the bedtime schedule is on
-        if (isBedtimeScheduleOn) {
-            WorkersHelper.scheduleBedtimeRoutine(context);
-        }
+        if (isBedtimeScheduleOn) AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(context);
 
         // Reschedule midnight reset worker
-        WorkersHelper.scheduleMidnightWorker(context);
+        AlarmTasksSchedulingHelper.scheduleMidnightResetTask(context, false);
     }
 }

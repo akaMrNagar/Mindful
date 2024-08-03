@@ -9,9 +9,8 @@ import android.os.Binder;
  * @param <T> The type of the service being bound.
  */
 public class ServiceBinder<T> extends Binder {
-
     public static final String ACTION_START_SERVICE = "com.mindful.android.service.START";
-    public static final String ACTION_STOP_SERVICE = "com.mindful.android.service.STOP";
+
 
     private final T mService;
 

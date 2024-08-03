@@ -4,9 +4,10 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/wellbeing_settings.dart';
 
 /// A Riverpod state notifier provider that manages well-being related settings.
-final wellBeingProvider = StateNotifierProvider<WellBeingNotifier, WellBeingSettings>((ref) {
-  return WellBeingNotifier();
-});
+final wellBeingProvider =
+    StateNotifierProvider<WellBeingNotifier, WellBeingSettings>(
+  (ref) => WellBeingNotifier(),
+);
 
 /// This class manages the state of well-being settings.
 class WellBeingNotifier extends StateNotifier<WellBeingSettings> {

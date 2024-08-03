@@ -5,6 +5,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
@@ -17,18 +18,36 @@ class TabBedtime extends StatelessWidget {
   const TabBedtime({super.key});
 
   void _setScheduleStatus(
-      WidgetRef ref, BuildContext context, bool shouldStart) async {
+    WidgetRef ref,
+    BuildContext context,
+    bool shouldStart,
+  ) async {
     final state = ref.read(bedtimeProvider);
-    final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
 
+    // If the total duration is less than 30 minutes
+    if (state.totalDuration.inMinutes < 30) {
+      context.showSnackAlert(
+        "The total bedtime duration must be at least 30 minutes.",
+      );
+      return;
+    }
+
+    // If no distracting apps selected
     if (shouldStart && state.distractingApps.isEmpty) {
       context.showSnackAlert(
         "Select at least one distracting app to turn on bedtime schedule",
       );
       return;
-    } else if (!shouldStart && !isModifiable) {
+    }
+
+    final isInvincibleModeOn = ref.read(settingsProvider).isInvincibleModeOn;
+    final isModifiable =
+        ref.read(bedtimeProvider.notifier).isModifiable(isInvincibleModeOn);
+
+    // If schedule is on along with invincible mode and time now is between bedtime period
+    if (!shouldStart && !isModifiable) {
       context.showSnackAlert(
-        "Due to invincible mode, modifications are not allowed during the bedtime period. You can add distracting apps but cannot remove them.",
+        "Due to invincible mode, the bedtime schedule cannot be altered until the designated bedtime period has ended",
       );
       return;
     }

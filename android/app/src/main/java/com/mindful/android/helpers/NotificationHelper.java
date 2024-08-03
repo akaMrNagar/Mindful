@@ -2,6 +2,7 @@ package com.mindful.android.helpers;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -98,6 +99,7 @@ public class NotificationHelper {
         notificationManager.notify(
                 id,
                 new NotificationCompat.Builder(context, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                        .setPriority(Notification.PRIORITY_MAX)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setContentTitle("Mindful")
                         .setContentText(alert)

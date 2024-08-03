@@ -4,25 +4,16 @@ import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
-import 'package:mindful/providers/settings_provider.dart';
 
 /// A Riverpod state notifier provider that manages Bedtime settings including schedule, Do Not Disturb, and distracting apps.
 final bedtimeProvider = StateNotifierProvider<BedtimeNotifier, BedtimeSettings>(
-  (ref) {
-    return BedtimeNotifier(
-      ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn)),
-    );
-  },
+  (ref) => BedtimeNotifier(),
 );
 
 class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
-  BedtimeNotifier(bool isInvincibleModeOn) : super(const BedtimeSettings()) {
-    _isInvincibleModeOn = isInvincibleModeOn;
+  BedtimeNotifier() : super(const BedtimeSettings()) {
     _init();
   }
-
-  /// Flag indicating whether Invincible Mode is currently active.
-  bool _isInvincibleModeOn = false;
 
   /// Initializes the Bedtime state by loading settings from the database and setting up a listener to save changes back.
   void _init() async {
@@ -34,7 +25,7 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   }
 
   /// Determines whether the Bedtime schedule can be modified based on current time, Invincible Mode, and schedule state.
-  bool isModifiable() {
+  bool isModifiable(bool isInvincibleModeOn) {
     final startTod = state.startTime;
     final endTod = state.endTime;
     final now = DateTime.now();
@@ -44,7 +35,7 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
     final end = start.add(endTod.difference(startTod));
 
     return !state.isScheduleOn ||
-        !_isInvincibleModeOn ||
+        !isInvincibleModeOn ||
         now.isBefore(start) ||
         now.isAfter(end);
   }

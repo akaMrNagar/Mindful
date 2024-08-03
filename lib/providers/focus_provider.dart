@@ -5,9 +5,9 @@ import 'package:mindful/models/isar/focus_settings.dart';
 
 /// A Riverpod state notifier provider that manages focus settings for individual apps, including timers and internet access.
 final focusProvider =
-    StateNotifierProvider<AppFocusInfos, Map<String, FocusSettings>>((ref) {
-  return AppFocusInfos();
-});
+    StateNotifierProvider<AppFocusInfos, Map<String, FocusSettings>>(
+  (ref) => AppFocusInfos(),
+);
 
 class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
   AppFocusInfos() : super({}) {

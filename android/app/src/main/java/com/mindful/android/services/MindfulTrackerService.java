@@ -1,7 +1,7 @@
 package com.mindful.android.services;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
-import static com.mindful.android.generics.ServiceBinder.ACTION_STOP_SERVICE;
+import static com.mindful.android.receivers.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 
@@ -16,7 +16,6 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.R;
@@ -40,14 +39,22 @@ public class MindfulTrackerService extends Service {
 
     private static final int SERVICE_ID = 301;
     private final String TAG = "Mindful.MindfulTrackerService";
-    public static final String ACTION_APP_LAUNCHED = "com.mindful.android.ACTION_APP_LAUNCHED";
+    public static final String ACTION_NEW_APP_LAUNCHED = "com.mindful.android.ACTION_NEW_APP_LAUNCHED";
+    public static final String ACTION_START_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_BEDTIME";
+    public static final String ACTION_STOP_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.STOP_SERVICE_BEDTIME";
+
+    private boolean mIsServiceRunning = false;
+    private boolean mIsStoppedForcefully = true;
+
+    private UsageStatsManager mUsageStatsManager;
+
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
     private AppLaunchReceiver mAppLaunchReceiver;
-    private UsageStatsManager mUsageStatsManager;
+
     private HashMap<String, Long> mAppTimers = new HashMap<>();
-    private HashSet<String> mPurgedApps = new HashSet<>();
+    private final HashSet<String> mPurgedApps = new HashSet<>();
     private HashSet<String> mDistractingApps = new HashSet<>();
-    private boolean mIsStoppedForcefully = true;
+
 
     @Override
     public void onCreate() {
@@ -56,23 +63,47 @@ public class MindfulTrackerService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) return START_NOT_STICKY;
+    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         String action = intent.getAction();
+        if (action == null) return START_NOT_STICKY;
 
-        if (ACTION_START_SERVICE.equals(action)) {
-            startTrackingService();
-            return START_STICKY;
-        } else if (ACTION_STOP_SERVICE.equals(action)) {
-            stopForeground(true);
-            stopSelf();
+        switch (action) {
+            // Only start service
+            case ACTION_START_SERVICE: {
+                startTrackingService();
+                return START_STICKY;
+            }
+            // Start service if already not running along with bedtime routine
+            case ACTION_START_SERVICE_BEDTIME_MODE: {
+                if (!mIsServiceRunning) startTrackingService();
+                startStopBedtimeRoutine(true);
+                return START_STICKY;
+            }
+            // Stop bedtime routine
+            case ACTION_STOP_SERVICE_BEDTIME_MODE:
+                startStopBedtimeRoutine(false);
+                break;
+
+            // Time to reset purged app's list
+            case ACTION_MIDNIGHT_SERVICE_RESET:
+                mPurgedApps.clear();
+                NotificationHelper.pushAlertNotification(this, 757, "Tracking service is resetting data at midnight");
+                Log.d(TAG, "onStartCommand: Midnight reset completed");
+                break;
+
+            default:
+                stopIfNoUsage();
+                break;
         }
 
         return START_NOT_STICKY;
     }
 
+    // REVIEW: Suppressing api warnings
     @SuppressLint("NewApi")
     private void startTrackingService() {
+        mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
+
         // Register lock/unlock receiver
         IntentFilter lockUnlockFilter = new IntentFilter();
         lockUnlockFilter.addAction(Intent.ACTION_USER_PRESENT);
@@ -82,7 +113,7 @@ public class MindfulTrackerService extends Service {
 
         // Register app launch receiver
         mAppLaunchReceiver = new AppLaunchReceiver();
-        registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
+        registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_NEW_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
 
         // Create notification
         startForeground(
@@ -96,7 +127,7 @@ public class MindfulTrackerService extends Service {
         );
 
         Log.d(TAG, "startTrackingService: Foreground service started");
-        updateAppTimers();
+        mIsServiceRunning = true;
     }
 
     /**
@@ -112,8 +143,8 @@ public class MindfulTrackerService extends Service {
     /**
      * Stops the service if no timers are active and bedtime schedule is off.
      */
-    public void stopIfNoUsage() {
-        if (!SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn && mAppTimers.isEmpty()) {
+    private void stopIfNoUsage() {
+        if (mDistractingApps.isEmpty() && mAppTimers.isEmpty()) {
             mIsStoppedForcefully = false;
             Log.d(TAG, "stopIfNoUsage: The service is not required any more therefore, stopping it");
             stopForeground(true);
@@ -122,30 +153,24 @@ public class MindfulTrackerService extends Service {
     }
 
     /**
-     * Starts or stops bedtime lockdown mode.
+     * Starts or stops bedtime lockdown based on the passed flag.
      *
-     * @param shouldStart     True to start, false to stop.
-     * @param distractingApps Set of apps to monitor during bedtime mode.
+     * @param shouldStart True to start, false to stop.
      */
-    public void startStopBedtimeLockdown(boolean shouldStart, @Nullable HashSet<String> distractingApps) {
-        if (shouldStart && distractingApps != null) {
-            mDistractingApps = distractingApps;
+    public void startStopBedtimeRoutine(boolean shouldStart) {
+        if (shouldStart) {
+            mDistractingApps = SharedPrefsHelper.fetchBedtimeSettings(this).distractingApps;
             mPurgedApps.clear();
 
-            // Broadcast launch event for last active app if restricted in bedtime mode
+            Log.d(TAG, "startStopBedtimeRoutine: Bedtime routine STARTED successfully");
+            // Broadcast launch event for last active app it may be restricted in bedtime mode
             if (mLockUnlockReceiver != null) mLockUnlockReceiver.broadcastLastAppLaunchEvent();
-            Log.d(TAG, "startStopBedtimeLockdown: Bedtime lockdown started successfully");
+
         } else {
             mDistractingApps.clear();
-            Log.d(TAG, "startStopBedtimeLockdown: Bedtime lockdown stopped successfully");
+            Log.d(TAG, "startStopBedtimeRoutine: Bedtime routine STOPPED successfully");
+            stopIfNoUsage();
         }
-    }
-
-    /**
-     * Resets the list of purged apps at midnight.
-     */
-    public void onMidnightReset() {
-        mPurgedApps.clear();
     }
 
     /**
@@ -197,7 +222,7 @@ public class MindfulTrackerService extends Service {
         @Override
         public void onReceive(Context context, @NonNull Intent intent) {
             String action = intent.getAction();
-            if (ACTION_APP_LAUNCHED.equals(action)) {
+            if (ACTION_NEW_APP_LAUNCHED.equals(action)) {
 
                 // Get the package name of the launched app
                 String packageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);

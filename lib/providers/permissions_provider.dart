@@ -6,9 +6,9 @@ import 'package:mindful/models/permissions_model.dart';
 
 /// A Riverpod state notifier provider that manages and requests various permissions required by the app.
 final permissionProvider =
-    StateNotifierProvider<PermissionNotifier, PermissionsModel>((ref) {
-  return PermissionNotifier();
-});
+    StateNotifierProvider<PermissionNotifier, PermissionsModel>(
+  (ref) => PermissionNotifier(),
+);
 
 /// This class manages the state of app permissions and handles permission requests.
 class PermissionNotifier extends StateNotifier<PermissionsModel>

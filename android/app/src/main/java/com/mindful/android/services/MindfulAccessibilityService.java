@@ -4,6 +4,7 @@ import static com.mindful.android.helpers.ShortsBlockingHelper.FACEBOOK_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.INSTAGRAM_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.SNAPCHAT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_PACKAGE;
+import static com.mindful.android.receivers.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
@@ -35,8 +36,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
@@ -55,21 +54,13 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 10 * 1000;
 
     /**
-     * The interval between every short content screen time reset
-     */
-    private static final long MIDNIGHT_RESET_INTERVAL_MS = 24 * 60 * 1000;
-
-    /**
      * The interval which is used for approximating if user may have closed short content.
      * <p>
      * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
      */
     private static final long SHORT_CONTENT_ACTIVITY_APPROX = 60 * 1000;
 
-
-    private final Timer mDailyResetTimer = new Timer();
     private final AppInstallUninstallReceiver mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
-
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
 
@@ -78,6 +69,16 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private long mLastTimeBackActionInvoked = 0L;
     private long mTotalShortsScreenTimeMs = 0L;
 
+    @Override
+    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
+        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(intent.getAction())) {
+            NotificationHelper.pushAlertNotification(this, 156, "Accessibility is resetting data in midnight");
+            mTotalShortsScreenTimeMs = 0;
+            SharedPrefsHelper.storeShortsScreenTimeMs(this, 0);
+            Log.d(TAG, "onStartCommand: Midnight reset completed");
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
 
     @Override
     protected void onServiceConnected() {
@@ -102,17 +103,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         calendar.set(Calendar.SECOND, 0);
 
         calendar.add(Calendar.DATE, 1);
-
-        mDailyResetTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Reset screen time usage for short content
-                mTotalShortsScreenTimeMs = 0;
-                SharedPrefsHelper.storeShortsScreenTimeMs(MindfulAccessibilityService.this, 0);
-                NotificationHelper.pushAlertNotification(MindfulAccessibilityService.this, 666, "Accessibility is resetting data in midnight");
-            }
-        }, calendar.getTime(), MIDNIGHT_RESET_INTERVAL_MS);
-
         refreshServiceInfo();
         Log.d(TAG, "onCreate: Accessibility service started successfully");
     }
@@ -312,9 +302,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Cancel timer, unregister prefs listener and receiver
-        mDailyResetTimer.purge();
-        mDailyResetTimer.cancel();
+        // Unregister prefs listener and receiver
         unregisterReceiver(mAppInstallUninstallReceiver);
         SharedPrefsHelper.unregisterListener(this, this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");

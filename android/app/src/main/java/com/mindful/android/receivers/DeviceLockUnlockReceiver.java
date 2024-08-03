@@ -1,6 +1,6 @@
 package com.mindful.android.receivers;
 
-import static com.mindful.android.services.MindfulTrackerService.ACTION_APP_LAUNCHED;
+import static com.mindful.android.services.MindfulTrackerService.ACTION_NEW_APP_LAUNCHED;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.app.usage.UsageEvents;
@@ -23,7 +23,7 @@ import java.util.TimerTask;
  */
 public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private final String TAG = "Mindful.DeviceLockUnlockReceiver";
-    private static final long mTimerRate = 500; // Interval for tracking app launches in milliseconds
+    private static final long TIMER_RATE = 500; // Interval for tracking app launches in milliseconds
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
     private Timer mAppLaunchTrackingTimer;
@@ -64,7 +64,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
                 public void run() {
                     onAppLaunchTrackingTimerRun();
                 }
-            }, 0, mTimerRate);
+            }, 0, TIMER_RATE);
         }
 
         Log.d(TAG, "onDeviceUnlocked: Repeated task scheduled for tracking new app launches.");
@@ -88,7 +88,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
      */
     private void onAppLaunchTrackingTimerRun() {
         long now = System.currentTimeMillis();
-        UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - mTimerRate, now);
+        UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - TIMER_RATE, now);
 
         while (usageEvents.hasNextEvent()) {
             UsageEvents.Event currentEvent = new UsageEvents.Event();
@@ -118,7 +118,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
 
         // Create and send the broadcast intent
         Intent eventIntent = new Intent();
-        eventIntent.setAction(ACTION_APP_LAUNCHED);
+        eventIntent.setAction(ACTION_NEW_APP_LAUNCHED);
         eventIntent.setPackage(mContext.getPackageName());
         eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedAppPackage);
         mContext.sendBroadcast(eventIntent);

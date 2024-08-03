@@ -89,7 +89,7 @@ class ScheduleCard extends ConsumerWidget {
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     color: scheduleDays[index]
                         ? isScheduleOn
-                            ? Theme.of(context).focusColor
+                            ? Theme.of(context).disabledColor
                             : Theme.of(context).colorScheme.primary
                         : Colors.transparent,
                     onPressed: isScheduleOn
@@ -100,7 +100,7 @@ class ScheduleCard extends ConsumerWidget {
                     child: StyledText(
                       AppStrings.daysShort[index],
                       fontSize: 14,
-                      isSubtitle: !isScheduleOn,
+                      isSubtitle: isScheduleOn,
                       color: scheduleDays[index]
                           ? Theme.of(context).colorScheme.surface
                           : null,

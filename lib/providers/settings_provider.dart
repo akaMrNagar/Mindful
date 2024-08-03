@@ -6,9 +6,9 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/app_settings.dart';
 
 /// A Riverpod state notifier provider that manages global application settings.
-final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>((ref) {
-  return SettingsNotifier();
-});
+final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>(
+  (ref) => SettingsNotifier(),
+);
 
 /// This class manages the state of global application settings.
 class SettingsNotifier extends StateNotifier<AppSettings> {
@@ -41,6 +41,7 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Also updates the native side with the new reset time.
   void changeDataResetTime(TimeOfDay time) async {
     state = state.copyWith(dataResetTimeMins: time.minutes);
-    await MethodChannelService.instance.setDataResetTime(state.dataResetTimeMins);
+    await MethodChannelService.instance
+        .setDataResetTime(state.dataResetTimeMins);
   }
 }
