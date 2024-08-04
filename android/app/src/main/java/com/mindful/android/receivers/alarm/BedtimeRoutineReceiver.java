@@ -1,4 +1,4 @@
-package com.mindful.android.receivers;
+package com.mindful.android.receivers.alarm;
 
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;

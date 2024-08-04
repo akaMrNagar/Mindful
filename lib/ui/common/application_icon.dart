@@ -1,10 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/constants.dart';
-import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
 
 class ApplicationIcon extends StatelessWidget {
   /// Display [AndroidApp]'s icon if found else custom icon for specified apps.
@@ -12,12 +9,12 @@ class ApplicationIcon extends StatelessWidget {
     super.key,
     required this.app,
     this.size = 18,
-    this.isGreyedOut = false,
+    this.isGrayedOut = false,
   });
 
   final AndroidApp app;
   final double size;
-  final bool isGreyedOut;
+  final bool isGrayedOut;
 
   @override
   Widget build(BuildContext context) {
@@ -31,21 +28,10 @@ class ApplicationIcon extends StatelessWidget {
         radius: size,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(size),
-          child: Consumer(
-            builder: (_, WidgetRef ref, __) {
-              final timer = ref.watch(focusProvider
-                      .select((value) => value[app.packageName]?.timerSec)) ??
-                  0;
-              final isPurged =
-                  timer > 0 && timer < app.screenTimeThisWeek[todayOfWeek];
-
-              return Image.memory(
-                app.icon,
-                color: isPurged || isGreyedOut ? Colors.white : null,
-                colorBlendMode:
-                    isPurged || isGreyedOut ? BlendMode.saturation : null,
-              );
-            },
+          child: Image.memory(
+            app.icon,
+            color: isGrayedOut ? Colors.white : null,
+            colorBlendMode: isGrayedOut ? BlendMode.saturation : null,
           ),
         ),
       );

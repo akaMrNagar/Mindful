@@ -19,11 +19,11 @@ import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
 
 /**
- * ActivityNewTaskHelper provides utility methods to launch various activities and settings screens on Android devices.
+ * NewActivitiesLaunchHelper provides utility methods to launch various activities and settings screens on Android devices.
  * It includes methods for opening URLs, accessibility settings, device admin settings, notification settings,
  * usage access settings, and application settings.
  */
-public class ActivityNewTaskHelper {
+public class NewActivitiesLaunchHelper {
 
     private static final String TAG = "Mindful.ActivityNewTaskHelper";
 
@@ -129,6 +129,17 @@ public class ActivityNewTaskHelper {
             Log.e(TAG, "openDeviceDndSettings: Unable to open device DND settings", e);
             Toast.makeText(context, "Unable to open DND settings", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Opens the battery optimization list settings.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    public static void openDeviceBatteryOptimizationSettings(@NonNull Context context) {
+        Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+        context.startActivity(intent);
+        Toast.makeText(context, "Please allow Mindful to ignore battery optimization", Toast.LENGTH_LONG).show();
     }
 
     // SECTION: For different app packages =========================================================

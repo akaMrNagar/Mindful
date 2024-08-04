@@ -37,7 +37,6 @@ class SliverPrimaryActionContainer extends StatelessWidget {
         visible: isVisible,
         sliver: RoundedContainer(
           circularRadius: 24,
-          color: Theme.of(context).colorScheme.primary,
           padding: const EdgeInsets.all(16),
           margin: margin,
           child: SingleChildScrollView(
@@ -45,10 +44,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  FluentIcons.alert_urgent_20_regular,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+                const Icon(FluentIcons.alert_urgent_20_regular),
 
                 2.vBox,
 
@@ -57,7 +53,6 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                   title,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
                 6.vBox,
@@ -66,7 +61,6 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                 StyledText(
                   information,
                   fontSize: 12,
-                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
 
                 16.vBox,
@@ -75,7 +69,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                 if (onTapAction != null)
                   Align(
                     alignment: Alignment.bottomRight,
-                    child: ElevatedButton.icon(
+                    child: FilledButton.icon(
                       onPressed: onTapAction,
                       label: Text(actionBtnLabel ?? "Allow"),
                       icon: actionBtnIcon,

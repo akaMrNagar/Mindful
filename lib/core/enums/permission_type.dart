@@ -8,4 +8,6 @@ enum PermissionType {
   accessibility,
   vpn,
   admin,
+  ignoreOptimization,
+  exactAlarm,
 }

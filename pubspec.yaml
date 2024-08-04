@@ -31,6 +31,8 @@ dependencies:
 
   # Util
   sliver_tools: ^0.2.12
+  dots_indicator: ^3.0.0
+  flutter_onboarding_slider: ^1.0.11
 
 dev_dependencies:
   flutter_test:

@@ -6,7 +6,12 @@ import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 class UsageAccessPermission extends ConsumerWidget {
   /// Creates a animated [SliverPrimaryActionContainer] for asking permission from user
   /// with self handled state and automatically hides itself if the user have granted the permission
-  const UsageAccessPermission({super.key});
+  const UsageAccessPermission({
+    super.key,
+    this.showEvenIfGranted = false,
+  });
+
+  final bool showEvenIfGranted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -14,13 +19,14 @@ class UsageAccessPermission extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveUsageAccessPermission));
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission,
+      isVisible: !havePermission || showEvenIfGranted,
       margin: const EdgeInsets.only(bottom: 8),
       title: "Usage access",
       information:
           "Please grant usage access permission. This will allow Mindful to monitor app usage and manage access to certain apps, ensuring a more focused and controlled digital environment.",
-      onTapAction:
-          ref.read(permissionProvider.notifier).askUsageAccessPermission,
+      onTapAction: !havePermission
+          ? ref.read(permissionProvider.notifier).askUsageAccessPermission
+          : null,
     );
   }
 }

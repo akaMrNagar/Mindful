@@ -10,7 +10,7 @@ import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
-/// 
+///
 /// Returns time in seconds and take initial time in seconds
 Future<int> showAppTimerPicker({
   required AndroidApp app,
@@ -40,7 +40,7 @@ Future<int> showShortsTimerPicker({
         HeroPageRoute(
           builder: (context) => _DurationPickerDialog(
             title: "Short content",
-            icon: const Icon(FluentIcons.video_clip_multiple_20_regular),
+            icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
             heroTag: heroTag,
             initialTimeInSec: initialTime,
           ),

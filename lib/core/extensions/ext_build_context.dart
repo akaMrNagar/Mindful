@@ -18,6 +18,9 @@ extension ExtBuildContext on BuildContext {
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
             behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             backgroundColor: bgColor,
             action: showCopyAction
@@ -85,7 +88,7 @@ extension ExtBuildContext on BuildContext {
 
   void showSnackAlert(
     String info, {
-    IconData icon = FluentIcons.prohibited_20_regular,
+    IconData icon = FluentIcons.prohibited_20_filled,
   }) {
     final bgColor = Theme.of(this).colorScheme.secondaryContainer;
     final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;

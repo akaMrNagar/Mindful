@@ -74,7 +74,7 @@ public class NotificationHelper {
 
         if (askPermissionToo) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                ActivityNewTaskHelper.openMindfulNotificationSection(context);
+                NewActivitiesLaunchHelper.openMindfulNotificationSection(context);
             } else {
                 int count = SharedPrefsHelper.fetchNotificationAskCount(context);
                 if (count < 2) {
@@ -84,7 +84,7 @@ public class NotificationHelper {
                             0
                     );
                 } else {
-                    ActivityNewTaskHelper.openMindfulNotificationSection(context);
+                    NewActivitiesLaunchHelper.openMindfulNotificationSection(context);
                 }
 
                 SharedPrefsHelper.storeNotificationAskCount(context, count + 1);

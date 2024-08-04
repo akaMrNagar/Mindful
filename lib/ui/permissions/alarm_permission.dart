@@ -3,26 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 
-class NotificationPermission extends ConsumerWidget {
+class ExactAlarmPermission extends ConsumerWidget {
   /// Creates a animated [SliverPrimaryActionContainer] for asking permission from user
   /// with self handled state and automatically hides itself if the user have granted the permission
-  const NotificationPermission({
+  const ExactAlarmPermission({
     super.key,
+    this.showEvenIfGranted = false,
   });
+
+  final bool showEvenIfGranted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final havePermission = ref
-        .watch(permissionProvider.select((v) => v.haveNotificationPermission));
+    final havePermission =
+        ref.watch(permissionProvider.select((v) => v.haveAlarmsPermission));
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission,
+      isVisible: !havePermission || showEvenIfGranted,
       margin: const EdgeInsets.only(bottom: 8),
-      title: "Notification",
+      title: "Alarms & Reminders",
       information:
-          "Please grant notification permission. This will allow Mindful to send you important reminders and updates, helping you stay on track and maintain a focused environment.",
+          "Please grant permission for setting alarms and reminders. This will allow Mindful to start your bedtime schedule on time and reset app timers daily at midnight and help you stay on track.",
       onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askNotificationPermission
+          ? ref.read(permissionProvider.notifier).askExactAlarmPermission
           : null,
     );
   }

@@ -18,7 +18,7 @@ class MindfulApp extends ConsumerWidget {
       theme: AppTheme.lightTheme(materialColor),
       themeMode: themeMode,
       routes: AppRoutes.routes,
-      initialRoute: AppRoutes.homeScreen,
+      initialRoute: AppRoutes.splashScreen,
     );
   }
 }

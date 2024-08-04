@@ -26,13 +26,14 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
 
   /// Determines whether the Bedtime schedule can be modified based on current time, Invincible Mode, and schedule state.
   bool isModifiable(bool isInvincibleModeOn) {
-    final startTod = state.startTime;
-    final endTod = state.endTime;
     final now = DateTime.now();
-
-    /// Calculate start and end time based on schedule
-    final start = now.copyWith(hour: startTod.hour, minute: startTod.minute);
-    final end = start.add(endTod.difference(startTod));
+    final start = now.copyWith(
+      hour: state.startTime.hour,
+      minute: state.startTime.minute,
+    );
+    final end = start.add(
+      state.endTime.difference(state.startTime),
+    );
 
     return !state.isScheduleOn ||
         !isInvincibleModeOn ||

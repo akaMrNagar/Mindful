@@ -29,7 +29,7 @@ class WebsiteTile extends ConsumerWidget {
             final confirm = await showConfirmationDialog(
               context: context,
               heroTag: AppTags.websiteTileTag(websitehost),
-              icon: FluentIcons.delete_dismiss_20_regular,
+              icon: FluentIcons.delete_dismiss_20_filled,
               positiveLabel: "Remove",
               title: "Remove website",
               info:

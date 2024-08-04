@@ -67,6 +67,9 @@ class ApplicationTile extends ConsumerWidget {
             .select((value) => value[app.packageName]?.timerSec)) ??
         0;
 
+    final isPurged =
+        appTimer > 0 && appTimer < app.screenTimeThisWeek[todayOfWeek];
+
     return DefaultHero(
       tag: AppTags.applicationTileTag(app.packageName),
       child: DefaultListTile(
@@ -82,7 +85,7 @@ class ApplicationTile extends ConsumerWidget {
         },
 
         /// App icon
-        leading: ApplicationIcon(app: app),
+        leading: ApplicationIcon(app: app, isGrayedOut: isPurged),
 
         /// App Name
         titleText: app.name,

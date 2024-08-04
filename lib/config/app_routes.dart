@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
+import 'package:mindful/ui/splash_screen.dart';
 
 /// Arguments used in the family provider to sort and filter apps package based on these args.
 /// Mainly used by [packagesByScreenUsageProvider] and [packagesByNetworkUsageProvider].
@@ -22,10 +24,14 @@ typedef AppDashboardScreenArgs = ({
 
 class AppRoutes {
   static const String homeScreen = '/';
+  static const String splashScreen = '/splashScreen';
+  static const String onboardingScreen = '/onboardingScreen';
   static const String appDashboardScreen = '/appDashboardScreen';
   static const String settingsScreen = '/mindfulSettingsScreen';
 
   static final routes = {
+    splashScreen: (context) => const SplashScreen(),
+    onboardingScreen: (context) => const OnboardingScreen(),
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
     appDashboardScreen: (context) {

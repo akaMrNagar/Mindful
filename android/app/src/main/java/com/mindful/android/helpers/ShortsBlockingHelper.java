@@ -66,14 +66,11 @@ public class ShortsBlockingHelper {
      * @return True if YouTube Shorts is open, false otherwise.
      */
     public static boolean isYoutubeShortsOpen(@NonNull AccessibilityNodeInfo node) {
-//        CharSequence nodeId = node.getViewIdResourceName();
-//        return nodeId != null
-//                && (nodeId.equals("com.google.android.youtube:id/reel_progress_bar")
-//                || nodeId.equals("com.google.android.youtube:id/reel_player_page_container")
-//                || nodeId.equals("com.google.android.youtube:id/reel_recycler"));
-
-        List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId("com.google.android.youtube:id/reel_player_underlay");
-        return !nodes.isEmpty();
+        CharSequence nodeId = node.getViewIdResourceName();
+        return nodeId != null
+                && (nodeId.equals("com.google.android.youtube:id/reel_progress_bar")
+                || nodeId.equals("com.google.android.youtube:id/reel_player_page_container")
+                || nodeId.equals("com.google.android.youtube:id/reel_recycler"));
     }
 
     /**

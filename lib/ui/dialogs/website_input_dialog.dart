@@ -34,7 +34,7 @@ class _InputFieldDialog extends StatelessWidget {
         tag: heroTag,
         child: SingleChildScrollView(
           child: AlertDialog(
-            icon: const Icon(FluentIcons.globe_search_20_regular),
+            icon: const Icon(FluentIcons.globe_search_20_filled),
             title: const StyledText("Distracting website"),
             insetPadding: EdgeInsets.zero,
             content: SizedBox(

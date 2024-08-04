@@ -4,7 +4,7 @@ import static com.mindful.android.helpers.ShortsBlockingHelper.FACEBOOK_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.INSTAGRAM_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.SNAPCHAT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_PACKAGE;
-import static com.mindful.android.receivers.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
+import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;

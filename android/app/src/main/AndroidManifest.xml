@@ -12,8 +12,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" /> <!-- The app does not need INTERNET permission but it is declared only to create local vpn socket -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.INTERNET" />  <!-- The app does not need INTERNET permission but it is declared only to create local vpn socket -->
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -92,12 +92,12 @@
         </receiver>
 
         <receiver
-            android:name=".receivers.BedtimeRoutineReceiver"
+            android:name=".receivers.alarm.BedtimeRoutineReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name=".receivers.MidnightResetReceiver"
+            android:name=".receivers.alarm.MidnightResetReceiver"
             android:enabled="true"
             android:exported="false" />
         <!-- _________________________________________________________________________________ -->

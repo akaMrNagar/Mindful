@@ -39,6 +39,10 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           await MethodChannelService.instance.getAndAskAdminPermission(),
       haveVpnPermission:
           await MethodChannelService.instance.getAndAskVpnPermission(),
+      haveAlarmsPermission:
+          await MethodChannelService.instance.getAndAskExactAlarmPermission(),
+      haveIgnoreOptimizationPermission: await MethodChannelService.instance
+          .getAndAskIgnoreBatteryOptimizationPermission(),
     );
 
     state = cache;
@@ -85,6 +89,14 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
       PermissionType.vpn => state.copyWith(
           haveVpnPermission:
               await MethodChannelService.instance.getAndAskVpnPermission(),
+        ),
+      PermissionType.exactAlarm => state.copyWith(
+          haveAlarmsPermission: await MethodChannelService.instance
+              .getAndAskExactAlarmPermission(),
+        ),
+      PermissionType.ignoreOptimization => state.copyWith(
+          haveIgnoreOptimizationPermission: await MethodChannelService.instance
+              .getAndAskIgnoreBatteryOptimizationPermission(),
         ),
     };
 
@@ -138,5 +150,19 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     await MethodChannelService.instance
         .getAndAskDndPermission(askPermissionToo: true);
     _askedPermission = PermissionType.doNotDisturb;
+  }
+
+  /// Requests the Set Exact Alarm permission and updates the internal state.
+  void askExactAlarmPermission() async {
+    await MethodChannelService.instance
+        .getAndAskExactAlarmPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.exactAlarm;
+  }
+
+  /// Requests the Ignore Battery Optimization permission and updates the internal state.
+  void askIgnoreBatteryOptimizationPermission() async {
+    await MethodChannelService.instance
+        .getAndAskIgnoreBatteryOptimizationPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.ignoreOptimization;
   }
 }

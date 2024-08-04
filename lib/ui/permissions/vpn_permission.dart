@@ -19,7 +19,9 @@ class VpnPermission extends ConsumerWidget {
       title: "Create VPN",
       information:
           "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
-      onTapAction: ref.read(permissionProvider.notifier).askVpnPermission,
+      onTapAction: !havePermission
+          ? ref.read(permissionProvider.notifier).askVpnPermission
+          : null,
     );
   }
 }

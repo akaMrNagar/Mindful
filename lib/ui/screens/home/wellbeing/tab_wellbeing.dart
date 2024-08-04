@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/tags.dart';
@@ -43,7 +44,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
   void _turnNsfwBlockerOn() async {
     final isConfirm = await showConfirmationDialog(
       context: context,
-      icon: FluentIcons.video_prohibited_20_regular,
+      icon: FluentIcons.video_prohibited_20_filled,
       heroTag: AppTags.blockNsfwTileTag,
       title: "Adult sites",
       info:
@@ -257,16 +258,20 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
-      if (ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
-        await MethodChannelService.instance.showToast("Url already added");
+      if (context.mounted &&
+          ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
+        context.showSnackAlert(
+          "The URL has already been added to the list of blocked websites.",
+        );
         return;
       }
 
       /// Add to blocked sites list
       ref.read(wellBeingProvider.notifier).insertRemoveBlockedSite(host, true);
-    } else {
-      await MethodChannelService.instance
-          .showToast("Invalid url! cannot parse host name");
+    } else if (context.mounted) {
+      context.showSnackAlert(
+        "Invalid URL! Unable to parse the host name.",
+      );
     }
   }
 }

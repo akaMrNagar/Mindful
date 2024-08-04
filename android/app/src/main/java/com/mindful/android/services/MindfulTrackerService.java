@@ -1,7 +1,7 @@
 package com.mindful.android.services;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
-import static com.mindful.android.receivers.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
+import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 
@@ -141,7 +141,7 @@ public class MindfulTrackerService extends Service {
     }
 
     /**
-     * Stops the service if no timers are active and bedtime schedule is off.
+     * Stops the service if no timers are active and no distracting apps.
      */
     private void stopIfNoUsage() {
         if (mDistractingApps.isEmpty() && mAppTimers.isEmpty()) {

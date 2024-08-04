@@ -85,7 +85,7 @@ class DistractingAppsList extends ConsumerWidget {
                       isSelected: app.isImpSysApp ? null : isSelected,
                       leading: ApplicationIcon(
                         app: app,
-                        isGreyedOut: isSelected,
+                        isGrayedOut: isSelected,
                         size: 16,
                       ),
                       titleText: app.name,
