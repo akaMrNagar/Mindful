@@ -5,7 +5,9 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -13,22 +15,37 @@ import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
 import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
 
-class TabBedtime extends StatelessWidget {
+class TabBedtime extends ConsumerWidget {
   const TabBedtime({super.key});
 
   void _setScheduleStatus(
-      WidgetRef ref, BuildContext context, bool shouldStart) async {
+    WidgetRef ref,
+    BuildContext context,
+    bool shouldStart,
+    bool isModifiable,
+  ) async {
     final state = ref.read(bedtimeProvider);
-    final isModifiable = ref.read(bedtimeProvider.notifier).isModifiable();
 
+    // If the total duration is less than 30 minutes
+    if (state.totalDuration.inMinutes < 30) {
+      context.showSnackAlert(
+        "The total bedtime duration must be at least 30 minutes.",
+      );
+      return;
+    }
+
+    // If no distracting apps selected
     if (shouldStart && state.distractingApps.isEmpty) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Select at least one distracting app to turn on bedtime schedule",
       );
       return;
-    } else if (!shouldStart && !isModifiable) {
-      context.showSnackWarning(
-        "Due to invincible mode, modifications are not allowed during the bedtime period. You can add distracting apps but cannot remove them.",
+    }
+
+    // If schedule is on along with invincible mode and time now is between bedtime period
+    if (!shouldStart && !isModifiable) {
+      context.showSnackAlert(
+        "Due to invincible mode, the bedtime schedule cannot be altered until the designated bedtime period has ended",
       );
       return;
     }
@@ -37,58 +54,68 @@ class TabBedtime extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, right: 8),
-      child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          /// Appbar
-          const SliverFlexibleAppBar(title: "Bedtime"),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isScheduleOn =
+        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
 
-          /// Information about bedtime
-          const StyledText(
-            "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
-          ).sliver,
+    final isInvincibleModeOn =
+        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
 
-          const SliverContentTitle(title: "Schedule"),
+    final isModifiable =
+        ref.read(bedtimeProvider.notifier).isModifiable(isInvincibleModeOn);
 
-          /// Card with start and end time for schedule
-          /// also schedule days
-          const ScheduleCard().sliver,
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 4, right: 8),
+          child: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              /// Appbar
+              const SliverFlexibleAppBar(title: "Bedtime"),
 
-          8.vSliverBox,
+              /// Information about bedtime
+              const StyledText(
+                "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
+              ).sliver,
 
-          /// Bedtime schedule status toggler
-          Consumer(
-            builder: (_, WidgetRef ref, __) {
-              final isScheduleOn = ref.watch(
-                bedtimeProvider.select((v) => v.isScheduleOn),
-              );
+              const SliverContentTitle(title: "Schedule"),
 
-              return DefaultListTile(
+              /// Card with start and end time for schedule
+              /// also schedule days
+              const ScheduleCard().sliver,
+
+              8.vSliverBox,
+
+              /// Bedtime schedule status toggler
+              DefaultListTile(
                 isPrimary: true,
                 switchValue: isScheduleOn,
                 leadingIcon: FluentIcons.sleep_20_regular,
                 titleText: "Schedule",
                 subtitleText: "Enable or disable daily schedule.",
                 onPressed: () => _setScheduleStatus(
-                  ref,
-                  context,
-                  !isScheduleOn,
-                ),
-              );
-            },
-          ).sliver,
+                    ref, context, !isScheduleOn, isModifiable),
+              ).sliver,
 
-          8.vSliverBox,
+              8.vSliverBox,
 
-          /// Actions related to bedtime
-          const SliverQuickActions(),
+              /// Actions related to bedtime
+              const SliverQuickActions(),
 
-          const SliverTabsBottomPadding()
-        ],
-      ),
+              const SliverTabsBottomPadding()
+            ],
+          ),
+        ),
+
+        /// Emergency FAB
+        if (!isModifiable)
+          const Positioned(
+            bottom: 12,
+            right: 12,
+            child: EmergencyFAB(),
+          )
+      ],
     );
   }
 }

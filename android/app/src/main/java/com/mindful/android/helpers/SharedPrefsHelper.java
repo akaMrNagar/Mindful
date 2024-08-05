@@ -2,6 +2,7 @@ package com.mindful.android.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -22,6 +24,7 @@ import java.util.HashSet;
 public class SharedPrefsHelper {
     private static SharedPreferences mSharedPrefs;
     private static final String PREFS_SHARED_BOX = "MindfulSharedPreferences";
+    private static final String PREFS_KEY_ONBOARDING_STATUS = "mindful.onboardingStatus";
     private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "mindful.emergencyPassesCount";
     private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
     private static final String PREF_KEY_DATA_RESET_TIME_MINS = "mindful.dataResetTimeMins";
@@ -35,29 +38,55 @@ public class SharedPrefsHelper {
         mSharedPrefs = context.getApplicationContext().getSharedPreferences(PREFS_SHARED_BOX, Context.MODE_PRIVATE);
     }
 
+
+    /**
+     * Fetches the current status of onboarding
+     *
+     * @param context The application context.
+     * @return Flag indicating if onboarding is completed
+     */
+    public static boolean getOnboardingStatus(Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return mSharedPrefs.getBoolean(PREFS_KEY_ONBOARDING_STATUS, false);
+    }
+
+    /**
+     * Set the onboarding as completed
+     *
+     * @param context The application context.
+     */
+    public static void setOnboardingDone(Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        mSharedPrefs.edit().putBoolean(PREFS_KEY_ONBOARDING_STATUS, true).apply();
+    }
+
     /**
      * Registers a listener for SharedPreferences changes.
      *
+     * @param context  The application context.
      * @param callback The listener to register.
      */
-    public static void registerListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
+    public static void registerListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
+        if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.registerOnSharedPreferenceChangeListener(callback);
     }
 
     /**
      * Unregisters a listener for SharedPreferences changes.
      *
+     * @param context  The application context.
      * @param callback The listener to unregister.
      */
-    public static void unregisterListener(SharedPreferences.OnSharedPreferenceChangeListener callback) {
+    public static void unregisterListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
+        if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
     }
 
     /**
      * Stores the data reset time in minutes.
      *
-     * @param context     The application context.
-     * @param timeInMins  The time in minutes.
+     * @param context    The application context.
+     * @param timeInMins The time in minutes.
      */
     public static void storeDataResetTimeMins(@NonNull Context context, int timeInMins) {
         if (mSharedPrefs == null) initialize(context);
@@ -78,8 +107,8 @@ public class SharedPrefsHelper {
     /**
      * Stores the count of emergency passes.
      *
-     * @param context           The application context.
-     * @param passesLeftCount   The number of emergency passes left.
+     * @param context         The application context.
+     * @param passesLeftCount The number of emergency passes left.
      */
     public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
         if (mSharedPrefs == null) initialize(context);
@@ -89,7 +118,7 @@ public class SharedPrefsHelper {
     /**
      * Stores the JSON representation of blocked apps.
      *
-     * @param context            The application context.
+     * @param context             The application context.
      * @param dartJsonBlockedApps The JSON string of blocked apps.
      */
     public static void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
@@ -111,7 +140,7 @@ public class SharedPrefsHelper {
     /**
      * Stores the JSON representation of bedtime settings.
      *
-     * @param context                The application context.
+     * @param context                 The application context.
      * @param dartJsonBedtimeSettings The JSON string of bedtime settings.
      */
     public static void storeBedtimeSettingsJson(@NonNull Context context, @NonNull String dartJsonBedtimeSettings) {
@@ -122,7 +151,7 @@ public class SharedPrefsHelper {
     /**
      * Stores the JSON representation of well-being settings.
      *
-     * @param context                The application context.
+     * @param context                   The application context.
      * @param dartJsonWellBeingSettings The JSON string of well-being settings.
      */
     public static void storeWellBeingSettingsJson(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {
@@ -176,6 +205,7 @@ public class SharedPrefsHelper {
 
     /**
      * Fetches the blocked apps as a HashSet of package names.
+     * This method filters out any packages that are not currently installed on the device.
      *
      * @param context The application context.
      * @return The HashSet of blocked apps.
@@ -183,11 +213,17 @@ public class SharedPrefsHelper {
     @NonNull
     public static HashSet<String> fetchBlockedApps(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
-        return Utils.jsonStrToStringHashSet(mSharedPrefs.getString(PREF_KEY_BLOCKED_APPS, ""));
+        HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(mSharedPrefs.getString(PREF_KEY_BLOCKED_APPS, ""));
+
+        // Filter out apps that may have been uninstalled
+        PackageManager packageManager = context.getPackageManager();
+        blockedApps.removeIf(appPackage -> packageManager.getLaunchIntentForPackage(appPackage) == null);
+        return blockedApps;
     }
 
     /**
      * Fetches the app timers as a HashMap of package names to their respective timer values.
+     * This method filters out any packages that are not currently installed on the device.
      *
      * @param context The application context.
      * @return The HashMap of app timers.
@@ -195,11 +231,22 @@ public class SharedPrefsHelper {
     @NonNull
     public static HashMap<String, Long> fetchAppTimers(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
-        return Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(PREF_KEY_APP_TIMERS, ""));
+        HashMap<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(PREF_KEY_APP_TIMERS, ""));
+
+        // Filter out apps that may have been uninstalled
+        PackageManager packageManager = context.getPackageManager();
+        for (Map.Entry<String, Long> entry : appTimers.entrySet()) {
+            if (packageManager.getLaunchIntentForPackage(entry.getKey()) == null) {
+                appTimers.remove(entry.getKey());
+            }
+        }
+
+        return appTimers;
     }
 
     /**
      * Fetches the bedtime settings.
+     * This method filters out any packages from distracting apps list that are not currently installed on the device.
      *
      * @param context The application context.
      * @return The BedtimeSettings object.
@@ -208,7 +255,13 @@ public class SharedPrefsHelper {
     @Contract("_ -> new")
     public static BedtimeSettings fetchBedtimeSettings(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
-        return new BedtimeSettings(mSharedPrefs.getString(PREF_KEY_BEDTIME_SETTINGS, ""));
+        BedtimeSettings bedtimeSettings = new BedtimeSettings(mSharedPrefs.getString(PREF_KEY_BEDTIME_SETTINGS, ""));
+
+        // Filter out apps that may have been uninstalled
+        PackageManager packageManager = context.getPackageManager();
+        bedtimeSettings.distractingApps.removeIf(appPackage -> packageManager.getLaunchIntentForPackage(appPackage) == null);
+
+        return bedtimeSettings;
     }
 
     /**

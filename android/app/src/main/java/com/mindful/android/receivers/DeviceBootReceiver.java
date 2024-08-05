@@ -8,8 +8,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SafeServiceConnection;
+import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.helpers.WorkersHelper;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 
@@ -30,7 +30,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         boolean isBedtimeScheduleOn = SharedPrefsHelper.fetchBedtimeSettings(context).isScheduleOn;
 
         // Start the MindfulTrackerService if needed
-        if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty() || isBedtimeScheduleOn) {
+        if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
             SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
             mTrackerServiceConn.startOnly();
         }
@@ -41,13 +41,10 @@ public class DeviceBootReceiver extends BroadcastReceiver {
             mVpnServiceConn.startOnly();
         }
 
-        // NOTE: Workers are rescheduled by WorkManager automatically on device reboot.
-        //  We are rescheduling only because user may be rebooting device during the schedule period so to block distracting apps
-        //  Reschedule bedtime workers if needed.
-
         // Reschedule bedtime workers if the bedtime schedule is on
-        if (isBedtimeScheduleOn) {
-            WorkersHelper.scheduleBedtimeRoutine(context);
-        }
+        if (isBedtimeScheduleOn) AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(context);
+
+        // Reschedule midnight reset worker
+        AlarmTasksSchedulingHelper.scheduleMidnightResetTask(context, false);
     }
 }

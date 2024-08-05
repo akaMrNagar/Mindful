@@ -20,7 +20,7 @@ class AppSettings {
   final String color;
 
   /// Is invincible mode on if it is ON then user cannot change following :
-  /// 
+  ///
   /// 1. App timer if it is purged
   /// 2. Bedtime settings between the scheduled duration
   final bool isInvincibleModeOn;
@@ -34,7 +34,7 @@ class AppSettings {
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
-    this.color = 'Teal',
+    this.color = 'Indigo',
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
   });

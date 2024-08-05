@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -16,6 +17,11 @@ extension ExtBuildContext on BuildContext {
       if (mounted) {
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             backgroundColor: bgColor,
             action: showCopyAction
                 ? SnackBarAction(
@@ -39,6 +45,12 @@ extension ExtBuildContext on BuildContext {
               ],
             ),
           ),
+          snackBarAnimationStyle: AnimationStyle(
+            curve: Curves.elasticInOut,
+            reverseCurve: Curves.elasticInOut,
+            duration: 300.ms,
+            reverseDuration: 300.ms,
+          ),
         );
       }
     } catch (e) {
@@ -59,24 +71,24 @@ extension ExtBuildContext on BuildContext {
     );
   }
 
-  /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
-  void showSnackInfo(
-    String info, {
-    IconData icon = FluentIcons.info_20_regular,
-  }) {
-    final bgColor = Theme.of(this).colorScheme.secondaryContainer;
-    final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
-    _showSnackBar(
-      icon: icon,
-      error: info,
-      fgColor: fgColor,
-      bgColor: bgColor,
-    );
-  }
+  // /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
+  // void showSnackInfo(
+  //   String info, {
+  //   IconData icon = FluentIcons.info_20_regular,
+  // }) {
+  //   final bgColor = Theme.of(this).colorScheme.secondaryContainer;
+  //   final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
+  //   _showSnackBar(
+  //     icon: icon,
+  //     error: info,
+  //     fgColor: fgColor,
+  //     bgColor: bgColor,
+  //   );
+  // }
 
-  void showSnackWarning(
+  void showSnackAlert(
     String info, {
-    IconData icon = FluentIcons.prohibited_20_regular,
+    IconData icon = FluentIcons.prohibited_20_filled,
   }) {
     final bgColor = Theme.of(this).colorScheme.secondaryContainer;
     final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;

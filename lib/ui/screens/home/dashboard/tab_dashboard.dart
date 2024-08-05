@@ -18,6 +18,7 @@ import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/permissions/alarm_permission.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission.dart';
 import 'package:mindful/ui/permissions/notification_permission.dart';
 import 'package:mindful/ui/permissions/usage_access_permission.dart';
@@ -67,9 +68,11 @@ class _TabStatisticsState extends ConsumerState<TabDashboard> {
             /// Appbar
             const SliverFlexibleAppBar(title: "Dashboard"),
 
-            const UsageAccessPermission(),
-
             const NotificationPermission(),
+
+            const ExactAlarmPermission(),
+
+            const UsageAccessPermission(),
 
             const DisplayOverlayPermission(),
 

@@ -5,8 +5,11 @@ class AppTags {
   /// Tag used to identify the short content timer picker.
   static const shortContentTimerPickerTag = "home.wellBeing.shortsTimerPicker";
 
-  /// Tag used to identify the emergency FAB (floating action button).
+  /// Tag used to identify the emergency tile in app dashboard screen.
   static const emergencyTileTag = "appDashboard.useEmergencyTile";
+
+  /// Tag used to identify the block NSFW sites tile in wellbeing tab.
+  static const blockNsfwTileTag = "home.wellBeing.blockNsfwTile";
 
   /// Tag used to identify the FAB for adding a distracting website.
   static const addDistractingSiteFABTag =

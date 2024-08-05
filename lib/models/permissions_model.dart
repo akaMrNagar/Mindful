@@ -20,6 +20,12 @@ class PermissionsModel {
   /// Indicates whether the admin permission is granted.
   final bool haveAdminPermission;
 
+  /// Indicates whether the set exact alarm permission is granted.
+  final bool haveAlarmsPermission;
+
+  /// Indicates whether the ignore battery optimization permission is granted.
+  final bool haveIgnoreOptimizationPermission;
+
   const PermissionsModel({
     this.haveNotificationPermission = true,
     this.haveUsageAccessPermission = true,
@@ -28,6 +34,8 @@ class PermissionsModel {
     this.haveVpnPermission = true,
     this.haveAccessibilityPermission = true,
     this.haveAdminPermission = true,
+    this.haveAlarmsPermission = true,
+    this.haveIgnoreOptimizationPermission = true,
   });
 
   /// Creates a copy of the `PermissionsModel` with potentially modified permissions.
@@ -39,6 +47,8 @@ class PermissionsModel {
     bool? haveVpnPermission,
     bool? haveAccessibilityPermission,
     bool? haveAdminPermission,
+    bool? haveAlarmsPermission,
+    bool? haveIgnoreOptimizationPermission,
   }) {
     return PermissionsModel(
       haveNotificationPermission:
@@ -52,6 +62,9 @@ class PermissionsModel {
       haveAccessibilityPermission:
           haveAccessibilityPermission ?? this.haveAccessibilityPermission,
       haveAdminPermission: haveAdminPermission ?? this.haveAdminPermission,
+      haveAlarmsPermission: haveAlarmsPermission ?? this.haveAlarmsPermission,
+      haveIgnoreOptimizationPermission: haveIgnoreOptimizationPermission ??
+          this.haveIgnoreOptimizationPermission,
     );
   }
 }

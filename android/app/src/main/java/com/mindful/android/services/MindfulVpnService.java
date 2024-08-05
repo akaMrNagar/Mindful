@@ -1,7 +1,6 @@
 package com.mindful.android.services;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
-import static com.mindful.android.generics.ServiceBinder.ACTION_STOP_SERVICE;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -34,6 +33,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MindfulVpnService extends android.net.VpnService {
     private static final int SERVICE_ID = 302;
     private static final String TAG = "Mindful.VpnService";
+
     private final AtomicReference<Thread> mAtomicVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
     private Set<String> mBlockedApps;
@@ -49,11 +49,10 @@ public class MindfulVpnService extends android.net.VpnService {
             mBlockedApps = SharedPrefsHelper.fetchBlockedApps(this);
             connectVpn();
             return START_STICKY;
-        } else if (ACTION_STOP_SERVICE.equals(action)) {
+        } else {
             stopAndDisposeService();
+            return START_NOT_STICKY;
         }
-
-        return START_NOT_STICKY;
     }
 
     /**

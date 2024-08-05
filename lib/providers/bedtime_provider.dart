@@ -4,25 +4,16 @@ import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
-import 'package:mindful/providers/settings_provider.dart';
 
 /// A Riverpod state notifier provider that manages Bedtime settings including schedule, Do Not Disturb, and distracting apps.
 final bedtimeProvider = StateNotifierProvider<BedtimeNotifier, BedtimeSettings>(
-  (ref) {
-    return BedtimeNotifier(
-      ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn)),
-    );
-  },
+  (ref) => BedtimeNotifier(),
 );
 
 class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
-  BedtimeNotifier(bool isInvincibleModeOn) : super(const BedtimeSettings()) {
-    _isInvincibleModeOn = isInvincibleModeOn;
+  BedtimeNotifier() : super(const BedtimeSettings()) {
     _init();
   }
-
-  /// Flag indicating whether Invincible Mode is currently active.
-  bool _isInvincibleModeOn = false;
 
   /// Initializes the Bedtime state by loading settings from the database and setting up a listener to save changes back.
   void _init() async {
@@ -34,17 +25,18 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   }
 
   /// Determines whether the Bedtime schedule can be modified based on current time, Invincible Mode, and schedule state.
-  bool isModifiable() {
-    final startTod = state.startTime;
-    final endTod = state.endTime;
+  bool isModifiable(bool isInvincibleModeOn) {
     final now = DateTime.now();
-
-    /// Calculate start and end time based on schedule
-    final start = now.copyWith(hour: startTod.hour, minute: startTod.minute);
-    final end = start.add(endTod.difference(startTod));
+    final start = now.copyWith(
+      hour: state.startTime.hour,
+      minute: state.startTime.minute,
+    );
+    final end = start.add(
+      state.endTime.difference(state.startTime),
+    );
 
     return !state.isScheduleOn ||
-        !_isInvincibleModeOn ||
+        !isInvincibleModeOn ||
         now.isBefore(start) ||
         now.isAfter(end);
   }
@@ -60,7 +52,8 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
       state = state.copyWith(startTimeInMins: startTod.minutes);
 
   /// Sets the end time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeEnd(TimeOfDay endTod) => state.copyWith(endTimeInMins: endTod.minutes);
+  void setBedtimeEnd(TimeOfDay endTod) =>
+      state = state.copyWith(endTimeInMins: endTod.minutes);
 
   /// Toggles the scheduled day for a specific day index.
   void toggleScheduleDay(int index) {
@@ -70,10 +63,11 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   }
 
   /// Enables or disables Do Not Disturb during the Bedtime schedule.
-  /// 
+  ///
   /// Checks for Do Not Disturb permission before enabling it.
   void setShouldStartDnd(bool shouldStartDnd) async {
-    if (shouldStartDnd && !await MethodChannelService.instance.getAndAskDndPermission()) {
+    if (shouldStartDnd &&
+        !await MethodChannelService.instance.getAndAskDndPermission()) {
       return;
     }
     state = state.copyWith(shouldStartDnd: shouldStartDnd);

@@ -19,8 +19,9 @@ class AccessibilityPermission extends ConsumerWidget {
       title: "Accessibility",
       information:
           "Please grant accessibility permission. This will allow Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers, and filter inappropriate websites, creating a more secure and focused online environment.",
-      onTapAction:
-          ref.read(permissionProvider.notifier).askAccessibilityPermission,
+      onTapAction: !havePermission
+          ? ref.read(permissionProvider.notifier).askAccessibilityPermission
+          : null,
     );
   }
 }

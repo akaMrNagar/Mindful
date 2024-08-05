@@ -43,7 +43,7 @@ class ShortsTimerChart extends ConsumerWidget {
     const double squareDimension = 208;
 
     final progressValue = max(
-      0.001,
+      0.0001,
       (remainingTimeSec / allowedTimeSec),
     );
 
@@ -66,10 +66,11 @@ class ShortsTimerChart extends ConsumerWidget {
               quarterTurns: 2,
               child: FittedBox(
                 child: CircularProgressIndicator(
-                    value: 1,
-                    strokeWidth: 4,
-                    strokeAlign: BorderSide.strokeAlignCenter,
-                    color: lerpedColor),
+                  value: 1,
+                  strokeWidth: 4,
+                  strokeAlign: BorderSide.strokeAlignCenter,
+                  color: lerpedColor,
+                ),
               ),
             ),
 

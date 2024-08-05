@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mindful/core/enums/toast_duration.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/wellbeing_settings.dart';
@@ -42,6 +41,16 @@ class MethodChannelService {
 
   // SECTION: Utility Methods ======================================================================
 
+  /// Get status of onboarding
+  ///
+  /// Returns a bool indicating if onboarding is completed or not
+  Future<bool> getOnboardingStatus() async =>
+      await _methodChannel.invokeMethod('getOnboardingStatus');
+
+  /// Sets the status of onboarding as completed
+  Future<void> setOnboardingDone() async =>
+      await _methodChannel.invokeMethod('setOnboardingDone');
+
   /// Gets the total short screen time for the device in milliseconds.
   ///
   /// This method retrieves the total screen time spent on short-form video apps
@@ -57,22 +66,6 @@ class MethodChannelService {
   /// to be set as the data reset time.
   Future<bool> setDataResetTime(int timeOfDayInMins) async =>
       await _methodChannel.invokeMethod('setDataResetTime', timeOfDayInMins);
-
-  /// Shows a toast message on the screen with a specified duration.
-  ///
-  /// This method takes a message string and an optional toast duration parameter.
-  /// The default duration is [ToastDuration.short].
-  Future<bool> showToast(
-    String msg, {
-    ToastDuration duration = ToastDuration.short,
-  }) async =>
-      await _methodChannel.invokeMethod(
-        'showToast',
-        {
-          'message': msg,
-          'duration': duration.index,
-        },
-      );
 
   /// Parses the host name from a given URL string.
   ///
@@ -175,7 +168,7 @@ class MethodChannelService {
   /// Uses an emergency pass.
   ///
   /// This method sends a request to the native side to use an emergency pass.
-  Future<void> useEmergencyPass() async =>
+  Future<bool> useEmergencyPass() async =>
       await _methodChannel.invokeMethod('useEmergencyPass');
 
   // !SECTION
@@ -236,6 +229,26 @@ class MethodChannelService {
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
         'getAndAskDisplayOverlayPermission',
+        askPermissionToo,
+      );
+
+  /// Checks if the set exact alarm permission is granted and optionally asks for it.
+  ///
+  /// Returns `true` if the permission is granted Otherwise, returns `false`.
+  Future<bool> getAndAskExactAlarmPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskExactAlarmPermission',
+        askPermissionToo,
+      );
+
+  /// Checks if the ignore battery optimization permission is granted and optionally asks for it.
+  ///
+  /// Returns `true` if the permission is granted Otherwise, returns `false`.
+  Future<bool> getAndAskIgnoreBatteryOptimizationPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskIgnoreBatteryOptimizationPermission',
         askPermissionToo,
       );
 

@@ -10,9 +10,11 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/permissions/admin_permission.dart';
+import 'package:mindful/ui/permissions/battery_Permission.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class TabGeneral extends ConsumerWidget {
@@ -22,7 +24,7 @@ class TabGeneral extends ConsumerWidget {
       BuildContext context, WidgetRef ref, bool isInvincibleModeOn) async {
     final isConfirm = await showConfirmationDialog(
       context: context,
-      icon: FluentIcons.animal_cat_20_regular,
+      icon: FluentIcons.animal_cat_20_filled,
       heroTag: AppTags.invincibleModeTileTag,
       title: "Invincible mode",
       info:
@@ -91,6 +93,9 @@ class TabGeneral extends ConsumerWidget {
           ).sliver,
           12.vSliverBox,
 
+          /// Battery permission
+          const BatteryPermission(),
+
           /// Admin permission warning
           const AdminPermission(),
 
@@ -117,6 +122,8 @@ class TabGeneral extends ConsumerWidget {
               // "Note: If you wish to uninstall this app app due to some emergency when invincible mode is On then go to Setting > Security & privacy > More security and privacy > Device admin apps and find mindful in the list and disable it. Now you can uninstall this app in usual way.",
               isSubtitle: true,
             ).sliver,
+
+          const SliverTabsBottomPadding()
         ],
       ),
     );

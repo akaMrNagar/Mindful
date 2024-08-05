@@ -6,7 +6,9 @@ import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 class NotificationPermission extends ConsumerWidget {
   /// Creates a animated [SliverPrimaryActionContainer] for asking permission from user
   /// with self handled state and automatically hides itself if the user have granted the permission
-  const NotificationPermission({super.key});
+  const NotificationPermission({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -19,8 +21,9 @@ class NotificationPermission extends ConsumerWidget {
       title: "Notification",
       information:
           "Please grant notification permission. This will allow Mindful to send you important reminders and updates, helping you stay on track and maintain a focused environment.",
-      onTapAction:
-          ref.read(permissionProvider.notifier).askNotificationPermission,
+      onTapAction: !havePermission
+          ? ref.read(permissionProvider.notifier).askNotificationPermission
+          : null,
     );
   }
 }

@@ -19,7 +19,9 @@ class AdminPermission extends ConsumerWidget {
       title: "Admin",
       information:
           "Please grant administrative privileges. Our app, being Free and Open Source Software (FOSS), does not collect, store, or transmit any user data. Administrative privileges are needed only for essential system operations to ensure the app runs smoothly without compromising your privacy.",
-      onTapAction: ref.read(permissionProvider.notifier).askAdminPermission,
+      onTapAction: !havePermission
+          ? ref.read(permissionProvider.notifier).askAdminPermission
+          : null,
     );
   }
 }

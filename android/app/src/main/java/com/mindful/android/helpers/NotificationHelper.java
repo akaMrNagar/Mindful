@@ -2,6 +2,7 @@ package com.mindful.android.helpers;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -10,6 +11,9 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+
+import com.mindful.android.R;
 
 /**
  * NotificationHelper provides utility methods for managing notification channels and permissions
@@ -49,8 +53,8 @@ public class NotificationHelper {
     /**
      * Checks if notification permissions are granted and optionally asks for it if not granted.
      *
-     * @param context The application context used to check notification permissions.
-     * @param activity The activity used to request notification permissions if needed.
+     * @param context          The application context used to check notification permissions.
+     * @param activity         The activity used to request notification permissions if needed.
      * @param askPermissionToo Whether to request notification permission if not already granted.
      * @return True if notification permissions are granted, false otherwise.
      */
@@ -70,7 +74,7 @@ public class NotificationHelper {
 
         if (askPermissionToo) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                ActivityNewTaskHelper.openMindfulNotificationSection(context);
+                NewActivitiesLaunchHelper.openMindfulNotificationSection(context);
             } else {
                 int count = SharedPrefsHelper.fetchNotificationAskCount(context);
                 if (count < 2) {
@@ -80,12 +84,27 @@ public class NotificationHelper {
                             0
                     );
                 } else {
-                    ActivityNewTaskHelper.openMindfulNotificationSection(context);
+                    NewActivitiesLaunchHelper.openMindfulNotificationSection(context);
                 }
 
                 SharedPrefsHelper.storeNotificationAskCount(context, count + 1);
             }
         }
         return false;
+    }
+
+
+    public static void pushAlertNotification(@NonNull Context context, int id, String alert) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(
+                id,
+                new NotificationCompat.Builder(context, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setContentTitle("Mindful")
+                        .setContentText(alert)
+                        .setAutoCancel(true)
+                        .build()
+        );
     }
 }

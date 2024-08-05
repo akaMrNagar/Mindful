@@ -1,19 +1,21 @@
 package com.mindful.android;
 
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SafeServiceConnection;
-import com.mindful.android.helpers.ActivityNewTaskHelper;
+import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.DeviceAppsHelper;
+import com.mindful.android.helpers.NewActivitiesLaunchHelper;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.PermissionsHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.helpers.WorkersHelper;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.EmergencyTimerService;
 import com.mindful.android.services.MindfulTrackerService;
@@ -38,15 +40,15 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Register notification channels
         NotificationHelper.registerNotificationGroupAndChannels(this);
 
-        // Schedule or update midnight 12 worker
-        WorkersHelper.scheduleMidnightWorker(this);
+        // Schedule midnight 12 task if already not scheduled
+        AlarmTasksSchedulingHelper.scheduleMidnightResetTask(this, true);
 
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
 
         // Start or bind the tracking service based on app timers or bedtime schedule
-        if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty() || SharedPrefsHelper.fetchBedtimeSettings(this).isScheduleOn) {
+        if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty()) {
             mTrackerServiceConn.startAndBind();
         } else {
             mTrackerServiceConn.bindService();
@@ -78,17 +80,21 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             // SECTION: Utility methods -----------------------------------------------------------------------
+            case "getOnboardingStatus": {
+                result.success(SharedPrefsHelper.getOnboardingStatus(this));
+                break;
+            }
+            case "setOnboardingDone": {
+                SharedPrefsHelper.setOnboardingDone(this);
+                result.success(true);
+                break;
+            }
             case "getDeviceApps": {
                 DeviceAppsHelper.getDeviceApps(this, result);
                 break;
             }
             case "getShortsScreenTimeMs": {
                 result.success(SharedPrefsHelper.fetchShortsScreenTimeMs(this));
-                break;
-            }
-            case "showToast": {
-                showToast(call);
-                result.success(true);
                 break;
             }
             case "parseHostFromUrl": {
@@ -101,7 +107,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "launchUrl": {
-                ActivityNewTaskHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
+                NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }
@@ -134,13 +140,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 SharedPrefsHelper.storeBedtimeSettingsJson(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
                 BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
                 if (bedtimeSettings.isScheduleOn) {
-                    WorkersHelper.scheduleBedtimeRoutine(this);
-                    mTrackerServiceConn.startAndBind(); // Start service if it is not already running
+                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this);
                 } else {
-                    WorkersHelper.cancelBedtimeRoutine(this);
+                    AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
                     if (mTrackerServiceConn.isConnected()) {
-                        mTrackerServiceConn.getService().startStopBedtimeLockdown(false, null);
-                        mTrackerServiceConn.getService().stopIfNoUsage();
+                        mTrackerServiceConn.getService().startStopBedtimeRoutine(false);
                     }
                 }
                 result.success(true);
@@ -157,8 +161,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "useEmergencyPass": {
-                startService(new Intent(this, EmergencyTimerService.class));
-                result.success(true);
+                if (!Utils.isServiceRunning(this, EmergencyTimerService.class.getName())) {
+                    startService(new Intent(this, EmergencyTimerService.class));
+                    result.success(true);
+                } else {
+                    result.success(false);
+                }
                 break;
             }
 
@@ -183,6 +191,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
+            case "getAndAskIgnoreBatteryOptimizationPermission": {
+                result.success(PermissionsHelper.getAndAskIgnoreBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
             case "getAndAskVpnPermission": {
                 result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
@@ -191,20 +203,24 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(getAndAskDisplayOverlayPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
             }
+            case "getAndAskExactAlarmPermission": {
+                result.success(getAndAskExactAlarmPermission(Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
 
             // SECTION: New Activity Launch methods ------------------------------------------------------
             case "openAppWithPackage": {
-                ActivityNewTaskHelper.openAppWithPackage(this, call.arguments());
+                NewActivitiesLaunchHelper.openAppWithPackage(this, call.arguments());
                 result.success(true);
                 break;
             }
             case "openAppSettingsForPackage": {
-                ActivityNewTaskHelper.openSettingsForPackage(this, call.arguments());
+                NewActivitiesLaunchHelper.openSettingsForPackage(this, call.arguments());
                 result.success(true);
                 break;
             }
             case "openDeviceDndSettings": {
-                ActivityNewTaskHelper.openDeviceDndSettings(this);
+                NewActivitiesLaunchHelper.openDeviceDndSettings(this);
                 result.success(true);
                 break;
             }
@@ -214,10 +230,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
     /**
-     * Requests VPN permission if needed.
+     * Checks if the Create VPN permission is granted and optionally asks for it if not granted.
      *
-     * @param askPermissionToo Whether to ask for permission if not already granted.
-     * @return True if permission is already granted, false otherwise.
+     * @param askPermissionToo Whether to prompt the user to enable Create VPN permission if not granted.
+     * @return True if Create VPN permission is granted, false otherwise.
      */
     private boolean getAndAskVpnPermission(boolean askPermissionToo) {
         Intent intent = MindfulVpnService.prepare(this);
@@ -228,10 +244,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     }
 
     /**
-     * Requests display overlay permission if needed.
+     * Checks if the Display Over Other Apps permission is granted and optionally asks for it if not granted.
      *
-     * @param askPermissionToo Whether to ask for permission if not already granted.
-     * @return True if permission is already granted, false otherwise.
+     * @param askPermissionToo Whether to prompt the user to enable Display Over Other Apps permission if not granted.
+     * @return True if Display Over Other Apps permission is granted, false otherwise.
      */
     private boolean getAndAskDisplayOverlayPermission(boolean askPermissionToo) {
         if (Settings.canDrawOverlays(this)) return true;
@@ -241,6 +257,25 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             intent.setData(android.net.Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, 0);
             Toast.makeText(this, "Please allow Mindful to display overlay", Toast.LENGTH_LONG).show();
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the Set Exact Alarm permission is granted and optionally asks for it if not granted.
+     *
+     * @param askPermissionToo Whether to prompt the user to enable Set Exact Alarm permission if not granted.
+     * @return True if Set Exact Alarm permission is granted, false otherwise.
+     */
+    public boolean getAndAskExactAlarmPermission(boolean askPermissionToo) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager.canScheduleExactAlarms()) return true;
+
+        if (askPermissionToo) {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            startActivityForResult(intent, 0);
         }
         return false;
     }
@@ -257,22 +292,5 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Unbind services
         mTrackerServiceConn.unBindService();
         mVpnServiceConn.unBindService();
-    }
-
-    /**
-     * Shows a toast message.
-     *
-     * @param call The method call containing the message and duration.
-     */
-    private void showToast(@NonNull MethodCall call) {
-        String msg = call.argument("message");
-        Integer duration = call.argument("duration");
-
-        if (msg == null || duration == null) {
-            Log.w(TAG, "showToast: Method called with null arguments");
-            return;
-        }
-
-        Toast.makeText(this, msg, duration).show();
     }
 }

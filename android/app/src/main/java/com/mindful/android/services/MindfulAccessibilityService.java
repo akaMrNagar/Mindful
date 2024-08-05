@@ -4,6 +4,7 @@ import static com.mindful.android.helpers.ShortsBlockingHelper.FACEBOOK_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.INSTAGRAM_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.SNAPCHAT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_PACKAGE;
+import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
@@ -23,12 +24,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.helpers.ShortsBlockingHelper;
 import com.mindful.android.models.WellBeingSettings;
 import com.mindful.android.utils.NsfwDomains;
 import com.mindful.android.utils.Utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,42 +42,69 @@ import java.util.Map;
  */
 public class MindfulAccessibilityService extends AccessibilityService implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "Mindful.MindfulAccessibilityService";
-    private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 5000L; // 5 seconds
-    private static final long BACK_ACTION_INVOKE_INTERVAL_MS = 500L; // half second
 
+    /**
+     * The minimum interval between every Back Action [BACK PRESS] call from service
+     */
+    private static final long BACK_ACTION_INVOKE_INTERVAL_MS = 500L;
+
+    /**
+     * The minimum interval between saving short content's screen time in shared preferences
+     */
+    private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 10 * 1000;
+
+    /**
+     * The interval which is used for approximating if user may have closed short content.
+     * <p>
+     * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
+     */
+    private static final long SHORT_CONTENT_ACTIVITY_APPROX = 60 * 1000;
+
+    private final AppInstallUninstallReceiver mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
-    private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
 
     private long mLastTimeShortsCheck = 0L;
     private long mLastTimeSharedPrefInvoked = 0L;
     private long mLastTimeBackActionInvoked = 0L;
     private long mTotalShortsScreenTimeMs = 0L;
 
+    @Override
+    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
+        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(intent.getAction())) {
+            NotificationHelper.pushAlertNotification(this, 156, "Accessibility is resetting data in midnight");
+            mTotalShortsScreenTimeMs = 0;
+            SharedPrefsHelper.storeShortsScreenTimeMs(this, 0);
+            Log.d(TAG, "onStartCommand: Midnight reset completed");
+        }
+        return super.onStartCommand(intent, flags, startId);
+    }
 
     @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void onServiceConnected() {
+        super.onServiceConnected();
+
         // Register shared prefs listener
-        SharedPrefsHelper.registerListener(this);
+        SharedPrefsHelper.registerListener(this, this);
         mWellBeingSettings = SharedPrefsHelper.fetchWellBeingSettings(this);
         mTotalShortsScreenTimeMs = SharedPrefsHelper.fetchShortsScreenTimeMs(this);
 
         // Register listener for install and uninstall events
-        mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addDataScheme("package");
         registerReceiver(mAppInstallUninstallReceiver, filter);
 
-        Log.d(TAG, "onCreate: Accessibility service started successfully");
-    }
+        // Start timer to reset shortsScreen time everyday midnight
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
 
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
+        calendar.add(Calendar.DATE, 1);
         refreshServiceInfo();
+        Log.d(TAG, "onCreate: Accessibility service started successfully");
     }
 
     @Override
@@ -188,23 +218,24 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
      */
     private void checkTimerAndBlockShortContent() {
-        if (mTotalShortsScreenTimeMs > mWellBeingSettings.allowedShortContentTimeMs) {
+        if (mTotalShortsScreenTimeMs > (mWellBeingSettings.allowedShortContentTimeMs + SHARED_PREF_INVOKE_INTERVAL_MS)) {
             goBackWithToast();
-        } else {
-            long currentTime = System.currentTimeMillis();
-            // Calculate screen time since last check
-            if (mLastTimeShortsCheck != 0) {
-                long elapsedTime = currentTime - mLastTimeShortsCheck;
-                mTotalShortsScreenTimeMs += elapsedTime;
-            }
-            // Update last check time
-            mLastTimeShortsCheck = currentTime;
+            return;
+        }
 
-            // Check if the minimum interval has passed before calling shared preferences
-            if (currentTime - mLastTimeSharedPrefInvoked > SHARED_PREF_INVOKE_INTERVAL_MS) {
-                SharedPrefsHelper.storeShortsScreenTimeMs(this, mTotalShortsScreenTimeMs);
-                mLastTimeSharedPrefInvoked = currentTime;
-            }
+        // Calculate screen time since last check
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = mLastTimeShortsCheck != 0 ? currentTime - mLastTimeShortsCheck : 0;
+
+        // Update only if elapsedTime is less than SHORT_CONTENT_ACTIVITY_APPROX otherwise user may have closed short content,
+        mTotalShortsScreenTimeMs += (elapsedTime < SHORT_CONTENT_ACTIVITY_APPROX ? elapsedTime : 0);
+        mLastTimeShortsCheck = currentTime;
+
+        // Check if the minimum interval has passed before calling shared preferences
+        if ((currentTime - mLastTimeSharedPrefInvoked) > SHARED_PREF_INVOKE_INTERVAL_MS) {
+            SharedPrefsHelper.storeShortsScreenTimeMs(this, mTotalShortsScreenTimeMs);
+            mLastTimeSharedPrefInvoked = currentTime;
+            Log.d(TAG, "checkTimerAndBlockShortContent: shorts time saved: " + (mTotalShortsScreenTimeMs / 1000L) + " seconds");
         }
     }
 
@@ -266,15 +297,14 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public void onInterrupt() {
-        // No-op
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Remove prefs listener and Unregister receivers
-        SharedPrefsHelper.unregisterListener(this);
+        // Unregister prefs listener and receiver
         unregisterReceiver(mAppInstallUninstallReceiver);
+        SharedPrefsHelper.unregisterListener(this, this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }
 

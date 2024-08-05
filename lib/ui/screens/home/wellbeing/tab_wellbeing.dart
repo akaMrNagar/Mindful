@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/tags.dart';
@@ -14,11 +15,13 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/website_input_dialog.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class TabWellBeing extends ConsumerStatefulWidget {
   const TabWellBeing({super.key});
@@ -36,6 +39,22 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
     MethodChannelService.instance
         .getShortsScreenTimeSec()
         .then((timeSec) => setState(() => _shortsScreenTimeSec = timeSec));
+  }
+
+  void _turnNsfwBlockerOn() async {
+    final isConfirm = await showConfirmationDialog(
+      context: context,
+      icon: FluentIcons.video_prohibited_20_filled,
+      heroTag: AppTags.blockNsfwTileTag,
+      title: "Adult sites",
+      info:
+          "Are you sure? This action is irreversible. Once adult sites blocker is turned on, you cannot turn it off as long as this app is installed on your device.",
+      positiveLabel: "Block",
+    );
+
+    if (isConfirm) {
+      ref.read(wellBeingProvider.notifier).switchBlockNsfwSites();
+    }
   }
 
   @override
@@ -166,15 +185,18 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
               const SliverContentTitle(title: "Adult content"),
 
               /// Block NSFW websites
-              DefaultListTile(
-                enabled: haveAccessibilityPermission,
-                leadingIcon: FluentIcons.slide_multiple_search_20_regular,
-                titleText: "Block Nsfw",
-                subtitleText:
-                    "Restrict browsers from opening predefined adult and porn websites.",
-                switchValue: wellBeing.blockNsfwSites,
-                onPressed:
-                    ref.read(wellBeingProvider.notifier).switchBlockNsfwSites,
+              DefaultHero(
+                tag: AppTags.blockNsfwTileTag,
+                child: DefaultListTile(
+                  enabled:
+                      haveAccessibilityPermission && !wellBeing.blockNsfwSites,
+                  leadingIcon: FluentIcons.video_prohibited_20_regular,
+                  titleText: "Block Nsfw",
+                  subtitleText:
+                      "Restrict browsers from opening predefined adult and porn websites.",
+                  switchValue: wellBeing.blockNsfwSites,
+                  onPressed: _turnNsfwBlockerOn,
+                ),
               ).sliver,
 
               /// Blocked websites header
@@ -236,16 +258,20 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
-      if (ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
-        await MethodChannelService.instance.showToast("Url already added");
+      if (context.mounted &&
+          ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
+        context.showSnackAlert(
+          "The URL has already been added to the list of blocked websites.",
+        );
         return;
       }
 
       /// Add to blocked sites list
       ref.read(wellBeingProvider.notifier).insertRemoveBlockedSite(host, true);
-    } else {
-      await MethodChannelService.instance
-          .showToast("Invalid url! cannot parse host name");
+    } else if (context.mounted) {
+      context.showSnackAlert(
+        "Invalid URL! Unable to parse the host name.",
+      );
     }
   }
 }

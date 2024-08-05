@@ -12,7 +12,6 @@ import 'package:mindful/providers/focus_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
@@ -33,7 +32,7 @@ class QuickActions extends ConsumerWidget {
     );
 
     if (isInvincibleModeOn && prevTimer > 0 && screenTime >= prevTimer) {
-      context.showSnackWarning(
+      context.showSnackAlert(
         "Due to invincible mode, modifications to paused app's timer is not allowed.",
       );
       return;
@@ -48,32 +47,6 @@ class QuickActions extends ConsumerWidget {
 
     if (newTimer == prevTimer) return;
     ref.read(focusProvider.notifier).updateAppTimer(app.packageName, newTimer);
-  }
-
-  void _useEmergency(BuildContext context, WidgetRef ref) async {
-    int leftPasses =
-        await MethodChannelService.instance.getLeftEmergencyPasses();
-
-    if (!context.mounted) return;
-
-    if (leftPasses <= 0) {
-      context.showSnackWarning(
-        "You have used all your emergency passes. The blocked apps cannot be unblocked until midnight.",
-      );
-      return;
-    }
-
-    final confirmed = await showConfirmationDialog(
-      context: context,
-      icon: FluentIcons.fire_20_regular,
-      heroTag: AppTags.emergencyTileTag,
-      title: "Emergency",
-      info:
-          "This will pause the app blocker for 5 minutes. You have $leftPasses emergency passes remaining. After using all passes, the app cannot be unblocked until midnight. Do you still want to proceed?",
-      positiveLabel: "Use anyway",
-    );
-
-    if (confirmed) await MethodChannelService.instance.useEmergencyPass();
   }
 
   @override
@@ -94,19 +67,6 @@ class QuickActions extends ConsumerWidget {
 
     return SliverList.list(
       children: [
-        if (isPurged)
-          Hero(
-            tag: AppTags.emergencyTileTag,
-            child: DefaultListTile(
-              isPrimary: true,
-              margin: const EdgeInsets.symmetric(vertical: 6),
-              titleText: "Emergency",
-              subtitleText: "Pause app blocker for the next 5 minutes.",
-              leadingIcon: FluentIcons.fire_20_regular,
-              onPressed: () => _useEmergency(context, ref),
-            ),
-          ),
-
         /// App Timer Button
         DefaultHero(
           tag: AppTags.appTimerTileTag(app.packageName),

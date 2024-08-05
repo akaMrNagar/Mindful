@@ -4,31 +4,22 @@ import 'package:flutter_animate/flutter_animate.dart';
 class DefaultEffects {
   static List<Effect> get transitionIn => [
         MoveEffect(
-          duration: 1000.ms,
+          duration: 600.ms,
           curve: Curves.fastEaseInToSlowEaseOut,
           begin: const Offset(0, 100),
           end: Offset.zero,
         ),
         ScaleEffect(
-          duration: 1000.ms,
+          duration: 600.ms,
           curve: Curves.decelerate,
-          begin: const Offset(0.9, 0.9),
+          begin: const Offset(0.8, 0.8),
           end: const Offset(1, 1),
         ),
         FadeEffect(
-          duration: 1250.ms,
+          duration: 800.ms,
           curve: Curves.decelerate,
           begin: 0,
           end: 1,
         ),
-      ];
-
-  static List<Effect> shimmer(Color color) => [
-        ShimmerEffect(
-          curve: Curves.easeOut,
-          duration: 1000.ms,
-          padding: 0,
-          color: color,
-        )
       ];
 }
