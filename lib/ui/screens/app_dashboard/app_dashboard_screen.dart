@@ -8,7 +8,7 @@ import 'package:mindful/core/utils/constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/focus_provider.dart';
-import 'package:mindful/ui/common/emergency_tile.dart';
+import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';

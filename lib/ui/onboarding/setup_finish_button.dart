@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/permissions/alarm_permission.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission.dart';
 import 'package:mindful/ui/permissions/usage_access_permission.dart';
 
-class SetupFinishButton extends StatelessWidget {
+class SetupFinishButton extends ConsumerWidget {
   const SetupFinishButton({
     super.key,
     required this.haveAllEssentialPermissions,
@@ -18,13 +20,13 @@ class SetupFinishButton extends StatelessWidget {
   final bool haveAllEssentialPermissions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return RoundedContainer(
       height: 48,
       width: 196,
       color: Theme.of(context).colorScheme.primary,
       onPressed: () => haveAllEssentialPermissions
-          ? _finishSetup(context)
+          ? _finishSetup(context, ref)
           : _showPermissionsSheet(context),
       child: StyledText(
         haveAllEssentialPermissions ? "Let's Go" : "Grant Permissions",
@@ -32,10 +34,14 @@ class SetupFinishButton extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
         color: Theme.of(context).colorScheme.onPrimary,
       ),
-    ).animate().fadeIn(duration: 750.ms);
+    ).animate().fadeIn(duration: 300.ms).scale(
+          begin: const Offset(0.9, 0.9),
+          end: const Offset(1, 1),
+        );
   }
 
-  void _finishSetup(BuildContext context) {
+  void _finishSetup(BuildContext context, WidgetRef ref) {
+    ref.read(appsProvider.notifier).refreshDeviceApps();
     MethodChannelService.instance.setOnboardingDone();
     Navigator.of(context).maybePop();
   }

@@ -1,22 +1,24 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends ConsumerState<SplashScreen> {
   String nextScreenRoute = AppRoutes.homeScreen;
 
   @override
@@ -39,6 +41,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
     nextScreenRoute =
         isOnboardingDone ? AppRoutes.homeScreen : AppRoutes.onboardingScreen;
+
+    if (isOnboardingDone) {
+      ref.read(appsProvider.notifier).refreshDeviceApps();
+    }
   }
 
   @override
@@ -62,7 +68,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: RoundedContainer(
                 circularRadius: 120,
                 padding: EdgeInsets.all(12),
-                child: Icon(FluentIcons.brain_circuit_20_filled, size: 72),
+                child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 72),
               ),
             ),
 

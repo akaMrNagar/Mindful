@@ -44,19 +44,15 @@ class EmergencyFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 12,
-      right: 12,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: FloatingActionButton.extended(
-          heroTag: AppTags.emergencyTileTag,
-          label: const Text("Emergency"),
-          icon: const Icon(FluentIcons.fire_20_filled),
-          backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-          foregroundColor: Theme.of(context).colorScheme.onTertiaryContainer,
-          onPressed: () => _useEmergency(context),
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: FloatingActionButton.extended(
+        heroTag: AppTags.emergencyTileTag,
+        label: const Text("Emergency"),
+        icon: const Icon(FluentIcons.fire_20_filled),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        onPressed: () => _useEmergency(context),
       ),
     );
   }

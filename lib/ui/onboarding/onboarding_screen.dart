@@ -38,18 +38,18 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
         pageBackgroundColor: Theme.of(context).colorScheme.surface,
         controllerColor: Theme.of(context).colorScheme.primary,
         speed: 3,
-        centerBackground: true,
         indicatorAbove: true,
         indicatorPosition: 24,
         skipTextButton: const StyledText("Skip"),
         addButton: false,
+        centerBackground: true,
         background: [
-          Image.asset('assets/icons/fbReels.png'),
-          Image.asset('assets/icons/snapSpotlight.png'),
-          Image.asset('assets/icons/ytShorts.png'),
-          Image.asset('assets/icons/instaReels.png'),
-          Image.asset('assets/icons/snapSpotlight.png'),
-          Image.asset('assets/icons/ytShorts.png'),
+          _bgBuilder('assets/illustrations/onboarding_1.png'),
+          _bgBuilder('assets/illustrations/onboarding_2.png'),
+          _bgBuilder('assets/illustrations/onboarding_3.png'),
+          _bgBuilder('assets/illustrations/onboarding_4.png'),
+          _bgBuilder('assets/illustrations/onboarding_5.png'),
+          _bgBuilder('assets/illustrations/onboarding_6.png'),
         ],
         pageBodies: [
           _bodyBuilder(
@@ -92,13 +92,26 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  Widget _bgBuilder(String path) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 80),
+      child: SizedBox.square(
+        dimension: 420,
+        child: Image.asset(
+          path,
+          fit: BoxFit.scaleDown,
+        ),
+      ),
+    );
+  }
+
   Widget _bodyBuilder({
     required String title,
     required String description,
     Widget? finish,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32).copyWith(bottom: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 32).copyWith(bottom: 48),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -108,6 +121,7 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
             fontSize: 24,
             fontWeight: FontWeight.w600,
             textAlign: TextAlign.center,
+            color: Theme.of(context).colorScheme.primary,
           ),
           6.vBox,
 

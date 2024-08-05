@@ -7,7 +7,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/emergency_tile.dart';
+import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -109,7 +109,12 @@ class TabBedtime extends ConsumerWidget {
         ),
 
         /// Emergency FAB
-        if (!isModifiable) const EmergencyFAB()
+        if (!isModifiable)
+          const Positioned(
+            bottom: 12,
+            right: 12,
+            child: EmergencyFAB(),
+          )
       ],
     );
   }

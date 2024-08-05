@@ -34,7 +34,7 @@ class AppSettings {
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
-    this.color = 'Teal',
+    this.color = 'Indigo',
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
   });

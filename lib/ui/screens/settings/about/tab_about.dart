@@ -40,7 +40,7 @@ class TabAbout extends ConsumerWidget {
             child: RoundedContainer(
               circularRadius: 120,
               padding: EdgeInsets.all(12),
-              child: Icon(FluentIcons.brain_circuit_20_filled, size: 48),
+              child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
             ),
           ).sliver,
 

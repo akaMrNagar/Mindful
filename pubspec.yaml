@@ -16,6 +16,7 @@ dependencies:
 
   # Runtime dependencies
   # UI
+  flutter_onboarding_slider: ^1.0.11
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
   flutter_riverpod: ^2.4.0
@@ -25,14 +26,12 @@ dependencies:
   skeletonizer: ^1.4.1+1
 
   # Database and Storage
-  isar_flutter_libs: ^3.1.0+1
   isar: ^3.1.0+1
   path_provider: ^2.1.2
+  isar_flutter_libs: ^3.1.0+1
 
   # Util
   sliver_tools: ^0.2.12
-  dots_indicator: ^3.0.0
-  flutter_onboarding_slider: ^1.0.11
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +52,15 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    # Onboarding
+    - assets/illustrations/onboarding_1.png
+    - assets/illustrations/onboarding_2.png
+    - assets/illustrations/onboarding_3.png
+    - assets/illustrations/onboarding_4.png
+    - assets/illustrations/onboarding_5.png
+    - assets/illustrations/onboarding_6.png
+
+    # Short content platform's icons
     - assets/icons/instaReels.png
     - assets/icons/fbReels.png
     - assets/icons/snapSpotlight.png
