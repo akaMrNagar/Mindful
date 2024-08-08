@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/usage_algorithm.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -33,6 +34,12 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Changes the application's theme mode.
   void changeThemeMode(ThemeMode mode) =>
       state = state.copyWith(themeMode: mode);
+
+  /// Changes the application's usage algorithm.
+  void changeUsageAlgorithm(UsageAlgorithm algorithm) async {
+    state = state.copyWith(algorithm: algorithm);
+    await MethodChannelService.instance.updateUsageAlgorithm(algorithm);
+  }
 
   /// Changes the application's color theme.
   void changeColor(String color) => state = state.copyWith(color: color);

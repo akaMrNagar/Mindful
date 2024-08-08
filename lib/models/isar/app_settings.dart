@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
+
+import 'package:mindful/core/enums/usage_algorithm.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 
 part 'app_settings.g.dart';
@@ -15,6 +17,10 @@ class AppSettings {
   /// Default theme mode for app
   @enumerated
   final ThemeMode themeMode;
+
+  /// Default usage algorithm  for app
+  @enumerated
+  final UsageAlgorithm algorithm;
 
   /// Default material color for app
   final String color;
@@ -34,19 +40,24 @@ class AppSettings {
 
   const AppSettings({
     this.themeMode = ThemeMode.system,
+    this.algorithm = UsageAlgorithm.usageStates,
     this.color = 'Indigo',
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
   });
 
+ 
+
   AppSettings copyWith({
     ThemeMode? themeMode,
+    UsageAlgorithm? algorithm,
     String? color,
     bool? isInvincibleModeOn,
     int? dataResetTimeMins,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
+      algorithm: algorithm ?? this.algorithm,
       color: color ?? this.color,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,

@@ -68,7 +68,7 @@ class ApplicationTile extends ConsumerWidget {
         0;
 
     final isPurged =
-        appTimer > 0 && appTimer < app.screenTimeThisWeek[todayOfWeek];
+        appTimer > 0 && appTimer <= app.screenTimeThisWeek[todayOfWeek];
 
     return DefaultHero(
       tag: AppTags.applicationTileTag(app.packageName),

@@ -16,6 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SuccessCallback;
 import com.mindful.android.models.AndroidApp;
+import com.mindful.android.utils.AlgorithmType;
 import com.mindful.android.utils.Utils;
 
 import java.util.ArrayList;
@@ -71,9 +72,10 @@ public class DeviceAppsHelper {
     @NonNull
     private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
         PackageManager packageManager = context.getPackageManager();
+        AlgorithmType algorithmType = SharedPrefsHelper.fetchUsageAlgorithm(context);
 
         // Fetch set of important apps like Dialer, Launcher etc.
-        HashSet<String> impSystemApps = ImpSystemAppsHelper.fetchImpApps(context, packageManager);
+        HashSet<String> impSystemApps = ImpSystemAppsHelper.fetchImpApps(packageManager);
 
         // Fetch package info of installed apps on device
         List<PackageInfo> fetchedApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
@@ -82,8 +84,11 @@ public class DeviceAppsHelper {
         for (PackageInfo app : fetchedApps) {
             // Only include apps which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
-                int category = -1;
 
+                /// Skip Mindful app's data and usage
+//                if (app.packageName.equals(context.getPackageName())) continue;
+
+                int category = -1;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     category = app.applicationInfo.category;
                 }
@@ -135,7 +140,7 @@ public class DeviceAppsHelper {
             long screenUsageStart = screenUsageCal.getTimeInMillis();
             long dataUsageStart = dataUsageCal.getTimeInMillis();
 
-            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours);
+            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, algorithmType, screenUsageStart, screenUsageStart + ms24Hours);
             HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
             HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
 

@@ -105,8 +105,7 @@ WellBeingSettings _wellBeingSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = WellBeingSettings(
-    allowedShortContentTimeSec:
-        reader.readLongOrNull(offsets[0]) ?? 8 * 60 * 60,
+    allowedShortContentTimeSec: reader.readLongOrNull(offsets[0]) ?? 30 * 60,
     blockFbReels: reader.readBoolOrNull(offsets[1]) ?? false,
     blockInstaReels: reader.readBoolOrNull(offsets[2]) ?? false,
     blockNsfwSites: reader.readBoolOrNull(offsets[3]) ?? false,
@@ -125,7 +124,7 @@ P _wellBeingSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset) ?? 8 * 60 * 60) as P;
+      return (reader.readLongOrNull(offset) ?? 30 * 60) as P;
     case 1:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 2:

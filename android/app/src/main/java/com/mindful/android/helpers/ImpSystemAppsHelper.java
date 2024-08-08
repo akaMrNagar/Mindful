@@ -1,6 +1,5 @@
 package com.mindful.android.helpers;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -19,14 +18,12 @@ public class ImpSystemAppsHelper {
     /**
      * Fetches a set of important system apps, including the default launcher and dialer apps.
      *
-     * @param context The context to use for fetching the default apps.
      * @param packageManager The package manager used to resolve the default apps.
      * @return A HashSet containing the package names of important system apps.
      */
     @NonNull
-    public static HashSet<String> fetchImpApps(@NonNull Context context, @NonNull PackageManager packageManager) {
+    public static HashSet<String> fetchImpApps( @NonNull PackageManager packageManager) {
         HashSet<String> impSystemApps = new HashSet<>();
-        impSystemApps.add(context.getPackageName());
 
         // Get and add the package names of the default launcher and dialer app.
         @Nullable

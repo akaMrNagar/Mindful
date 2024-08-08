@@ -28,7 +28,7 @@ class TabAppearance extends ConsumerWidget {
           /// Theme mode
           DefaultDropdownTile<ThemeMode>(
             value: ref.watch(settingsProvider.select((v) => v.themeMode)),
-            dialogIcon: FluentIcons.dark_theme_20_regular,
+            dialogIcon: FluentIcons.dark_theme_20_filled,
             label: "Theme mode",
             onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
             items: [
@@ -41,7 +41,7 @@ class TabAppearance extends ConsumerWidget {
           /// Material Color
           DefaultDropdownTile<String>(
             label: "Material color",
-            dialogIcon: FluentIcons.color_20_regular,
+            dialogIcon: FluentIcons.color_20_filled,
             value: ref.watch(settingsProvider.select((v) => v.color)),
             onSelected: ref.read(settingsProvider.notifier).changeColor,
             trailingBuilder: (item) => RoundedContainer(

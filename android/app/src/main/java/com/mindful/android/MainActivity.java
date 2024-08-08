@@ -20,6 +20,7 @@ import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.EmergencyTimerService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
+import com.mindful.android.utils.AlgorithmType;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -97,18 +98,26 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(SharedPrefsHelper.fetchShortsScreenTimeMs(this));
                 break;
             }
-            case "parseHostFromUrl": {
-                result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
-                break;
-            }
             case "setDataResetTime": {
                 SharedPrefsHelper.storeDataResetTimeMins(this, call.arguments() == null ? 0 : (int) call.arguments());
+                result.success(true);
+                break;
+            }
+            case "updateUsageAlgorithm": {
+                SharedPrefsHelper.storeUsageAlgorithm(this, AlgorithmType.fromInteger(call.arguments() == null ? 0 : (int) call.arguments()));
+                if (mTrackerServiceConn.isConnected()) {
+                    mTrackerServiceConn.getService().updateUsageAlgorithm();
+                }
                 result.success(true);
                 break;
             }
             case "launchUrl": {
                 NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
+                break;
+            }
+            case "parseHostFromUrl": {
+                result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
             }
 

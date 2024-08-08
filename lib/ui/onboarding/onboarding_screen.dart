@@ -25,6 +25,8 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
         perms.haveDisplayOverlayPermission &&
         perms.haveAlarmsPermission;
 
+    final deviceHeight = MediaQuery.of(context).size.longestSide;
+
     return PopScope(
       canPop: haveAllEssentialPermissions,
       onPopInvoked: (didPop) {
@@ -44,35 +46,40 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
         addButton: false,
         centerBackground: true,
         background: [
-          _bgBuilder('assets/illustrations/onboarding_1.png'),
-          _bgBuilder('assets/illustrations/onboarding_2.png'),
-          _bgBuilder('assets/illustrations/onboarding_3.png'),
-          _bgBuilder('assets/illustrations/onboarding_4.png'),
-          _bgBuilder('assets/illustrations/onboarding_5.png'),
-          _bgBuilder('assets/illustrations/onboarding_6.png'),
+          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_1.png'),
+          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_2.png'),
+          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_3.png'),
+          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_4.png'),
+          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_5.png'),
+          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_6.png'),
         ],
         pageBodies: [
           _bodyBuilder(
+            deviceHeight: deviceHeight,
             title: "Fewer Distractions",
             description:
                 "Master your screen time! Set app limits, pause distractions, and boost productivity.",
           ),
           _bodyBuilder(
+            deviceHeight: deviceHeight,
             title: "Doom Scrolling",
             description:
                 "Break free from doom scrolling. Set timers for addictive short-form content and reclaim your time.",
           ),
           _bodyBuilder(
+            deviceHeight: deviceHeight,
             title: "Peaceful Routine",
             description:
                 "End your day right with Smart Bedtime Mode. Pause distracting apps and enable Do Not Disturb for a peaceful sleep.",
           ),
           _bodyBuilder(
+            deviceHeight: deviceHeight,
             title: "Detox Mind",
             description:
                 "Surf safely and stay focused. Block adult sites and custom websites to create a cleaner, safer browsing experience.",
           ),
           _bodyBuilder(
+            deviceHeight: deviceHeight,
             title: "Digital Cravings",
             description:
                 "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers, and bedtime settings to stay disciplined and on track.",
@@ -80,6 +87,7 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
 
           /// Last setup page
           _bodyBuilder(
+            deviceHeight: deviceHeight,
             title: "Privacy First",
             description:
                 "Mindful is a Free and Open Source (FOSS) app, ad-free and offline. It doesn't collect or transfer user data, ensuring your privacy.",
@@ -92,11 +100,11 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
     );
   }
 
-  Widget _bgBuilder(String path) {
+  Widget _bgBuilder(double deviceHeight, String path) {
     return Padding(
-      padding: const EdgeInsets.only(top: 80),
+      padding: EdgeInsets.only(top: deviceHeight * 0.075),
       child: SizedBox.square(
-        dimension: 420,
+        dimension: 380,
         child: Image.asset(
           path,
           fit: BoxFit.scaleDown,
@@ -106,12 +114,15 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
   }
 
   Widget _bodyBuilder({
+    required double deviceHeight,
     required String title,
     required String description,
     Widget? finish,
   }) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32).copyWith(bottom: 48),
+      padding: const EdgeInsets.symmetric(horizontal: 32).copyWith(
+        bottom: deviceHeight * 0.05,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
