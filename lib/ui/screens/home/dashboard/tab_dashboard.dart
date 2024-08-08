@@ -13,6 +13,7 @@ import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
+import 'package:mindful/ui/common/sliver_algorithm_suggestion.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
@@ -75,6 +76,8 @@ class _TabStatisticsState extends ConsumerState<TabDashboard> {
             const UsageAccessPermission(),
 
             const DisplayOverlayPermission(),
+
+            const SliverAlgorithmSuggestion(),
 
             /// Usage type selector and usage info card
             SliverSkeletonizer.zone(
