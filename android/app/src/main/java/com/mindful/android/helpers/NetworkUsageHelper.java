@@ -38,8 +38,9 @@ public class NetworkUsageHelper {
             do {
                 networkStatsWifi.getNextBucket(bucketWifi);
                 int uid = bucketWifi.getUid();
-                long usage = bucketWifi.getRxBytes() + bucketWifi.getTxBytes();
-                wifiUsageMap.put(uid, wifiUsageMap.getOrDefault(uid, 0L) + usage);
+                Long usage = wifiUsageMap.getOrDefault(uid, 0L);
+                usage += bucketWifi.getRxBytes() + bucketWifi.getTxBytes();
+                wifiUsageMap.put(uid, usage);
             } while (networkStatsWifi.hasNextBucket());
 
             networkStatsWifi.close();
@@ -73,8 +74,9 @@ public class NetworkUsageHelper {
             do {
                 networkStatsMobile.getNextBucket(bucketMobile);
                 int uid = bucketMobile.getUid();
-                long usage = bucketMobile.getRxBytes() + bucketMobile.getTxBytes();
-                mobileUsageMap.put(uid, mobileUsageMap.getOrDefault(uid, 0L) + usage);
+                Long usage = mobileUsageMap.getOrDefault(uid, 0L);
+                usage += bucketMobile.getRxBytes() + bucketMobile.getTxBytes();
+                mobileUsageMap.put(uid, usage);
             } while (networkStatsMobile.hasNextBucket());
 
             networkStatsMobile.close();

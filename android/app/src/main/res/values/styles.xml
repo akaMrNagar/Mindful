@@ -29,7 +29,6 @@
     <style name="Widget.Android.AppWidget.UsageInfo" parent="android:Widget">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/widget_usage_info</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -37,7 +36,6 @@
     <style name="Widget.Android.AppWidget.UsageLabel" parent="android:Widget">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/widget_usage_label</item>
         <item name="android:textSize">14sp</item>
     </style>
 </resources>

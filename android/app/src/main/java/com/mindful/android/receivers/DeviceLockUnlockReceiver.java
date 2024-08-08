@@ -89,9 +89,9 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private void onAppLaunchTrackingTimerRun() {
         long now = System.currentTimeMillis();
         UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - TIMER_RATE, now);
+        UsageEvents.Event currentEvent = new UsageEvents.Event();
 
         while (usageEvents.hasNextEvent()) {
-            UsageEvents.Event currentEvent = new UsageEvents.Event();
             usageEvents.getNextEvent(currentEvent);
 
             int eventType = currentEvent.getEventType();

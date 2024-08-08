@@ -27,8 +27,7 @@ class AnimatedAppsList extends ConsumerStatefulWidget {
 }
 
 class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
-  // ignore: prefer_final_fields
-  Map<String, int> _prevIndices = {};
+  final Map<String, int> _prevIndices = {};
 
   void _postFrameCallback() {
     /// Update indices of tiles based on packages

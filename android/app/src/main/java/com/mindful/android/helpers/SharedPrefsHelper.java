@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.models.WellBeingSettings;
+import com.mindful.android.utils.AlgorithmType;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -28,6 +29,7 @@ public class SharedPrefsHelper {
     private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "mindful.emergencyPassesCount";
     private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
     private static final String PREF_KEY_DATA_RESET_TIME_MINS = "mindful.dataResetTimeMins";
+    private static final String PREF_KEY_USAGE_ALGORITHM = "mindful.usageAlgorithm";
     private static final String PREF_KEY_BLOCKED_APPS = "mindful.blockedApps";
     private static final String PREF_KEY_APP_TIMERS = "mindful.appTimers";
     private static final String PREF_KEY_BEDTIME_SETTINGS = "mindful.bedtimeSettings";
@@ -171,6 +173,17 @@ public class SharedPrefsHelper {
     }
 
     /**
+     * Stores the default algorithm used for generating screen usage.
+     *
+     * @param context       The application context.
+     * @param algorithmType Enum AlgorithmType.
+     */
+    public static void storeUsageAlgorithm(@NonNull Context context, AlgorithmType algorithmType) {
+        if (mSharedPrefs == null) initialize(context);
+        mSharedPrefs.edit().putInt(PREF_KEY_USAGE_ALGORITHM, algorithmType.toInteger()).apply();
+    }
+
+    /**
      * Fetches the data reset time in minutes.
      *
      * @param context The application context.
@@ -286,5 +299,16 @@ public class SharedPrefsHelper {
     public static long fetchShortsScreenTimeMs(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
         return mSharedPrefs.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L);
+    }
+
+    /**
+     * Fetches the default algorithm used for generating screen usage.
+     *
+     * @param context The application context.
+     * @return  Enum AlgorithmType.
+     */
+    public static AlgorithmType fetchUsageAlgorithm(@NonNull Context context) {
+        if (mSharedPrefs == null) initialize(context);
+        return AlgorithmType.fromInteger(mSharedPrefs.getInt(PREF_KEY_USAGE_ALGORITHM, 0));
     }
 }

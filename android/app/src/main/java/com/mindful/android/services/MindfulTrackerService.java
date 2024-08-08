@@ -24,6 +24,7 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.receivers.DeviceLockUnlockReceiver;
+import com.mindful.android.utils.AlgorithmType;
 import com.mindful.android.utils.Utils;
 
 import java.util.Date;
@@ -45,6 +46,7 @@ public class MindfulTrackerService extends Service {
 
     private boolean mIsServiceRunning = false;
     private boolean mIsStoppedForcefully = true;
+    private AlgorithmType mAlgorithmType = AlgorithmType.UsageStates;
 
     private UsageStatsManager mUsageStatsManager;
 
@@ -60,6 +62,7 @@ public class MindfulTrackerService extends Service {
     public void onCreate() {
         super.onCreate();
         mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        mAlgorithmType = SharedPrefsHelper.fetchUsageAlgorithm(this);
     }
 
     @Override
@@ -137,6 +140,16 @@ public class MindfulTrackerService extends Service {
         mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
         mPurgedApps.clear();
         Log.d(TAG, "updateAppTimers: App timers updated successfully");
+        stopIfNoUsage();
+    }
+
+    /**
+     * Updates usage algorithm from shared preferences and stops the service if no timers are active.
+     */
+    public void updateUsageAlgorithm() {
+        mAlgorithmType = SharedPrefsHelper.fetchUsageAlgorithm(this);
+        mPurgedApps.clear();
+        Log.d(TAG, "updateAppTimers: Usage algorithm updated successfully");
         stopIfNoUsage();
     }
 
@@ -254,7 +267,7 @@ public class MindfulTrackerService extends Service {
             }
 
             // Fetch usage and check if timer ran out then start overlay dialog service
-            long screenTimeSec = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager, packageName);
+            long screenTimeSec = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager, mAlgorithmType, packageName);
             long appTimerSec = mAppTimers.getOrDefault(packageName, 0L);
 
             if (screenTimeSec > 0 && screenTimeSec >= appTimerSec) {

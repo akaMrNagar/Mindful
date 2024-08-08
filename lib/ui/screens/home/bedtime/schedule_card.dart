@@ -1,10 +1,7 @@
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -46,10 +43,6 @@ class ScheduleCard extends ConsumerWidget {
                 initialTime: startTime,
                 onChange: (t) {
                   ref.read(bedtimeProvider.notifier).setBedtimeStart(t);
-                  context.showSnackAlert(
-                    "Bedtime will begin in ${t.difference(TimeOfDay.now()).toTimeFull(replaceCommaWithAnd: true)} from now.",
-                    icon: FluentIcons.sleep_20_regular,
-                  );
                 },
               ),
 

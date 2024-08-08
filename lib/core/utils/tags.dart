@@ -2,6 +2,9 @@ class AppTags {
   /// Tag used to identify the invincible mode setting.
   static const invincibleModeTileTag = "settings.general.invincibleModeTile";
 
+  /// Tag used to identify the beta warning container
+  static const betaWarningTag = "mindful.appbar.betaWarning";
+
   /// Tag used to identify the short content timer picker.
   static const shortContentTimerPickerTag = "home.wellBeing.shortsTimerPicker";
 

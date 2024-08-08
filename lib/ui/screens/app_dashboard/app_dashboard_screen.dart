@@ -59,7 +59,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
         0;
 
     final isPurged =
-        appTimer > 0 && appTimer < widget.app.screenTimeThisWeek[todayOfWeek];
+        appTimer > 0 && appTimer <= widget.app.screenTimeThisWeek[todayOfWeek];
 
     return Scaffold(
       floatingActionButton: isPurged ? const EmergencyFAB() : null,
