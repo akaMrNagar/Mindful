@@ -102,12 +102,18 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
 
   Widget _bgBuilder(double deviceHeight, String path) {
     return Padding(
-      padding: EdgeInsets.only(top: deviceHeight * 0.075),
-      child: SizedBox.square(
-        dimension: 380,
-        child: Image.asset(
-          path,
-          fit: BoxFit.scaleDown,
+      padding: const EdgeInsets.only(top: 12),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          maxWidth: 720,
+          maxHeight: 720,
+        ),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Image.asset(
+            path,
+            fit: BoxFit.scaleDown,
+          ),
         ),
       ),
     );
@@ -121,7 +127,7 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32).copyWith(
-        bottom: deviceHeight * 0.05,
+        bottom: 32,
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,

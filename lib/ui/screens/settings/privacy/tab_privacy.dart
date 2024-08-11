@@ -43,6 +43,7 @@ class TabPrivacy extends ConsumerWidget {
           ).sliver,
 
           /// Permissions
+          12.vSliverBox,
           const SliverContentTitle(title: "Permissions"),
           const DefaultListTile(
             titleText: "Notification",

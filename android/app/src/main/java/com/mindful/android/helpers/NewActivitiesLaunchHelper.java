@@ -131,17 +131,6 @@ public class NewActivitiesLaunchHelper {
         }
     }
 
-    /**
-     * Opens the battery optimization list settings.
-     *
-     * @param context The context to use for launching the activity.
-     */
-    public static void openDeviceBatteryOptimizationSettings(@NonNull Context context) {
-        Intent intent = new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
-        context.startActivity(intent);
-        Toast.makeText(context, "Please allow Mindful to ignore battery optimization", Toast.LENGTH_LONG).show();
-    }
-
     // SECTION: For different app packages =========================================================
 
     /**

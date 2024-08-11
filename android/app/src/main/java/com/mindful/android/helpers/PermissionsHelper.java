@@ -5,7 +5,6 @@ import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 
@@ -91,23 +90,6 @@ public class PermissionsHelper {
 
         if (askPermissionToo) {
             NewActivitiesLaunchHelper.openDeviceDoNotDisturbAccessSection(context);
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the Ignore Battery Optimization permission is granted and optionally asks for it if not granted.
-     *
-     * @param context          The application context used to check permissions and start activities.
-     * @param askPermissionToo Whether to prompt the user to enable Ignore Battery Optimization permission if not granted.
-     * @return True if Ignore Battery Optimization permission is granted, false otherwise.
-     */
-    public static boolean getAndAskIgnoreBatteryOptimizationPermission(@NonNull Context context, boolean askPermissionToo) {
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if (powerManager.isIgnoringBatteryOptimizations(context.getPackageName())) return true;
-
-        if (askPermissionToo) {
-            NewActivitiesLaunchHelper.openDeviceBatteryOptimizationSettings(context);
         }
         return false;
     }

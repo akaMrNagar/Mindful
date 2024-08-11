@@ -9,9 +9,7 @@ import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -83,12 +81,10 @@ public class MindfulVpnService extends android.net.VpnService {
 
         startForeground(
                 SERVICE_ID,
-                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_OTHER_CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setContentTitle("Mindful service")
-                        .setContentText("Mindful is now managing internet access to help you stay focused.")
-                        .setAutoCancel(true)
-                        .build()
+                NotificationHelper.buildFgServiceNotification(
+                        this,
+                        "Mindful is now managing internet access to help you stay focused."
+                )
         );
     }
 

@@ -3,7 +3,7 @@ package com.mindful.android.helpers;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -55,17 +55,11 @@ public class ScreenUsageHelper {
 
         for (UsageStats usageStat : usageStatsList) {
             long lastTimeUsed = usageStat.getLastTimeUsed();
-            long firstTimeUsed = usageStat.getFirstTimeStamp();
-            if (firstTimeUsed > start || lastTimeUsed > end) continue;
+            if (lastTimeUsed < start || lastTimeUsed > end) continue;
 
             String packageName = usageStat.getPackageName();
             Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                screenTime += usageStat.getTotalTimeVisible();
-            } else {
-                screenTime += usageStat.getTotalTimeInForeground();
-            }
-
+            screenTime += usageStat.getTotalTimeInForeground();
             oneDayUsageMap.put(packageName, screenTime);
         }
 
@@ -87,6 +81,8 @@ public class ScreenUsageHelper {
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
         Map<String, UsageEvents.Event> lastResumedEvents = new HashMap<>();
+        boolean isFirstEvent = true;
+
 
         while (usageEvents.hasNextEvent()) {
             UsageEvents.Event currentEvent = new UsageEvents.Event(); // Do not move this from while loop
@@ -96,20 +92,20 @@ public class ScreenUsageHelper {
 
             if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
                 lastResumedEvents.put(packageName, currentEvent);
+                isFirstEvent = false;
             } else if (eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
-                UsageEvents.Event prevResumeEvent = lastResumedEvents.get(packageName);
                 Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
-                if (prevResumeEvent != null) {
+                UsageEvents.Event lastResumedEvent = lastResumedEvents.get(packageName);
+                if (lastResumedEvent != null) {
                     // Calculate usage from the last ACTIVITY_RESUMED to this ACTIVITY_PAUSED
-                    screenTime += (currentEvent.getTimeStamp() - prevResumeEvent.getTimeStamp());
+                    screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
                     oneDayUsageMap.put(packageName, screenTime);
-
-                    // Remove the last resumed event for this package since it’s now processed
                     lastResumedEvents.remove(packageName);
-                } else {
+                } else if (isFirstEvent) {
                     // Fallback logic in case no matching ACTIVITY_RESUMED was found. May be this app was opened before START time
                     screenTime += (currentEvent.getTimeStamp() - start);
                     oneDayUsageMap.put(packageName, screenTime);
+                    isFirstEvent = false;
                 }
             }
         }
@@ -161,21 +157,11 @@ public class ScreenUsageHelper {
 
         for (UsageStats usageStat : usageStatsList) {
             // Skip events that don't belong to the specified package
-            if (!usageStat.getPackageName().equals(packageName)) {
-                continue;
-            }
+            if (!usageStat.getPackageName().equals(packageName)) continue;
 
             long lastTimeUsed = usageStat.getLastTimeUsed();
-            long firstTimeUsed = usageStat.getFirstTimeStamp();
-            if (firstTimeUsed > start || lastTimeUsed > end) continue;
-
-            // Get total screen time of the launched app
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                screenTime += usageStat.getTotalTimeVisible();
-            } else {
-                screenTime += usageStat.getTotalTimeInForeground();
-            }
-
+            if (lastTimeUsed < start || lastTimeUsed > end) continue;
+            screenTime += usageStat.getTotalTimeInForeground();
             lastStat = usageStat;
         }
 
@@ -199,34 +185,34 @@ public class ScreenUsageHelper {
     private static long fetchAppUsageFromEvents(@NonNull UsageStatsManager usageStatsManager, String packageName, long start, long end) {
         long screenTime = 0;
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
-        UsageEvents.Event lastResumedEvent = null;
+        UsageEvents.Event lastAppResumeEvent = null;
+
 
         while (usageEvents.hasNextEvent()) {
-            UsageEvents.Event currentEvent = new UsageEvents.Event();
+            UsageEvents.Event currentEvent = new UsageEvents.Event(); // Do not move this from while loop
             usageEvents.getNextEvent(currentEvent);
 
-            // Skip events that don't belong to the specified package
-            if (!packageName.equals(currentEvent.getPackageName())) {
-                continue;
-            }
+            // Skip it if the event does not belong to the specified app
+            if (!currentEvent.getPackageName().equals(packageName)) continue;
 
             int eventType = currentEvent.getEventType();
             if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
-                lastResumedEvent = currentEvent; // Save the last resumed event
+                lastAppResumeEvent = currentEvent;
             } else if (eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
-                if (lastResumedEvent != null) {
-                    // Calculate the time from the last ACTIVITY_RESUMED to this ACTIVITY_PAUSED
-                    screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
-                    lastResumedEvent = null;
+                if (lastAppResumeEvent != null) {
+                    screenTime += (currentEvent.getTimeStamp() - lastAppResumeEvent.getTimeStamp());
+                } else {
+                    screenTime += (currentEvent.getTimeStamp() - start);
                 }
             }
         }
 
         // If the app is still open (no PAUSED event yet), calculate time till `end`
-        if (lastResumedEvent != null && lastResumedEvent.getTimeStamp() < end) {
-            screenTime += (end - lastResumedEvent.getTimeStamp());
+        if (lastAppResumeEvent != null && lastAppResumeEvent.getTimeStamp() < end) {
+            screenTime += (end - lastAppResumeEvent.getTimeStamp());
         }
 
+        Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + (screenTime / 1000));
         return (screenTime / 1000);
     }
 }

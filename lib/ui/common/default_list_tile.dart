@@ -19,6 +19,7 @@ class DefaultListTile extends StatelessWidget {
     this.titleText,
     this.subtitleText,
     this.color,
+    this.accent,
     this.onPressed,
     this.switchValue,
     this.isSelected,
@@ -38,6 +39,7 @@ class DefaultListTile extends StatelessWidget {
   final String? titleText;
   final String? subtitleText;
   final Color? color;
+  final Color? accent;
   final bool? switchValue;
   final bool? isSelected;
   final VoidCallback? onPressed;
@@ -64,7 +66,8 @@ class DefaultListTile extends StatelessWidget {
           leadingIcon != null
               ? Icon(
                   leadingIcon,
-                  color: enabled ? null : Theme.of(context).colorScheme.outline,
+                  color:
+                      enabled ? accent : Theme.of(context).colorScheme.outline,
                 )
               : leading ?? 0.hBox,
 
@@ -82,7 +85,7 @@ class DefaultListTile extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: isPrimary ? FontWeight.w500 : null,
                         color: enabled
-                            ? null
+                            ? accent
                             : Theme.of(context).colorScheme.outline,
                       )
                     : title ?? 0.vBox,
@@ -105,7 +108,6 @@ class DefaultListTile extends StatelessWidget {
                   child: Switch(
                     value: switchValue ?? false,
                     splashRadius: 0,
-                    // thumbIcon: const WidgetStatePropertyAll(Icon(FluentIcons.access_time_20_filled)),
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     onChanged: enabled ? (_) {} : null,
                   ),
