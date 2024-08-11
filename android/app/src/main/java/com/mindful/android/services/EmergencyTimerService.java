@@ -10,9 +10,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -92,14 +90,13 @@ public class EmergencyTimerService extends Service {
 
         String msg = "The app blocker will resume after " + leftMinutes + ":" + leftSeconds + " minutes";
 
-        return new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setContentTitle("Emergency pause")
-                .setContentText(msg)
-                .setProgress(AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS, (int) millisUntilFinished, false)
-                .build();
+        return NotificationHelper.buildProgressNotification(
+                this,
+                "Emergency pause",
+                msg,
+                AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS,
+                (int) millisUntilFinished
+        );
     }
 
     /**

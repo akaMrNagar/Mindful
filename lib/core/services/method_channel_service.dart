@@ -270,6 +270,7 @@ class MethodChannelService {
         askPermissionToo,
       );
 
+
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================
 

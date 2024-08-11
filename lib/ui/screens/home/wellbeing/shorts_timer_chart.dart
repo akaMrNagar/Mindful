@@ -126,9 +126,9 @@ class ShortsTimerChart extends ConsumerWidget {
                     DefaultHero(
                       tag: AppTags.shortContentTimerPickerTag,
                       child: Icon(
-                        FluentIcons.edit_20_regular,
-                        color:
-                            isModifiable ? null : Theme.of(context).focusColor,
+                        isModifiable
+                            ? FluentIcons.edit_20_regular
+                            : FluentIcons.edit_off_20_regular,
                       ),
                     ),
                   ],

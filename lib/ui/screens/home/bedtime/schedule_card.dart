@@ -28,6 +28,7 @@ class ScheduleCard extends ConsumerWidget {
     return RoundedContainer(
       height: 224,
       circularRadius: 24,
+      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -77,26 +78,29 @@ class ScheduleCard extends ConsumerWidget {
               children: List.generate(
                 7,
                 (index) => Expanded(
-                  child: RoundedContainer(
-                    circularRadius: 40,
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    color: scheduleDays[index]
-                        ? isScheduleOn
-                            ? Theme.of(context).disabledColor
-                            : Theme.of(context).colorScheme.primary
-                        : Colors.transparent,
-                    onPressed: isScheduleOn
-                        ? null
-                        : () => ref
-                            .read(bedtimeProvider.notifier)
-                            .toggleScheduleDay(index),
-                    child: StyledText(
-                      AppStrings.daysShort[index],
-                      fontSize: 14,
-                      isSubtitle: isScheduleOn,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: RoundedContainer(
+                      circularRadius: 40,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
                       color: scheduleDays[index]
-                          ? Theme.of(context).colorScheme.surface
-                          : null,
+                          ? isScheduleOn
+                              ? Theme.of(context).disabledColor
+                              : Theme.of(context).colorScheme.primary
+                          : Colors.transparent,
+                      onPressed: isScheduleOn
+                          ? null
+                          : () => ref
+                              .read(bedtimeProvider.notifier)
+                              .toggleScheduleDay(index),
+                      child: StyledText(
+                        AppStrings.daysShort[index],
+                        fontSize: 14,
+                        isSubtitle: isScheduleOn,
+                        color: scheduleDays[index]
+                            ? Theme.of(context).colorScheme.surface
+                            : null,
+                      ),
                     ),
                   ),
                 ),

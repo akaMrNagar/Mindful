@@ -24,7 +24,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.helpers.ShortsBlockingHelper;
 import com.mindful.android.models.WellBeingSettings;
@@ -72,7 +71,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         if (ACTION_MIDNIGHT_SERVICE_RESET.equals(intent.getAction())) {
-            NotificationHelper.pushAlertNotification(this, 156, "Accessibility is resetting data in midnight");
             mTotalShortsScreenTimeMs = 0;
             SharedPrefsHelper.storeShortsScreenTimeMs(this, 0);
             Log.d(TAG, "onStartCommand: Midnight reset completed");

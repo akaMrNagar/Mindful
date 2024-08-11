@@ -79,6 +79,7 @@ class QuickActions extends ConsumerWidget {
                     ? appTimer.seconds.toTimeFull()
                     : "No timer",
             leadingIcon: FluentIcons.timer_20_regular,
+            accent: isPurged ? Theme.of(context).colorScheme.error : null,
             trailing: isPurged ? const Text("Paused") : null,
             onPressed: () => _pickAppTimer(
               context,
@@ -95,9 +96,14 @@ class QuickActions extends ConsumerWidget {
           enabled: haveVpnPermission && !app.isImpSysApp,
           titleText: "Internet access",
           subtitleText: app.isImpSysApp
-              ? "Cannot block important app's internet"
-              : "Turn off to block app's internet",
-          leadingIcon: FluentIcons.earth_20_regular,
+              ? "Cannot block important app's internet."
+              : internetAccess
+                  ? "Switch off to block ${app.name}'s internet"
+                  : "${app.name}'s internet is blocked.",
+          leadingIcon: internetAccess
+              ? FluentIcons.globe_20_regular
+              : FluentIcons.globe_prohibited_16_filled,
+          accent: internetAccess ? null : Theme.of(context).colorScheme.error,
           onPressed: () => ref
               .read(focusProvider.notifier)
               .switchInternetAccess(app.packageName, !internetAccess),
@@ -116,7 +122,7 @@ class QuickActions extends ConsumerWidget {
         DefaultListTile(
           titleText: "Go to app settings",
           subtitleText:
-              "Manage app settings like notifications, permissions, storage and more",
+              "Manage app settings like notifications, permissions, storage and more.",
           leadingIcon: FluentIcons.launcher_settings_20_regular,
           onPressed: () async => MethodChannelService.instance
               .openAppSettingsForPackage(app.packageName),

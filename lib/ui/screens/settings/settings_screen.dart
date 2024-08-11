@@ -2,8 +2,8 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/screens/settings/about/tab_about.dart';
-import 'package:mindful/ui/screens/settings/appearance/tab_appearance.dart';
 import 'package:mindful/ui/screens/settings/general/tab_general.dart';
+import 'package:mindful/ui/screens/settings/advance/tab_advance.dart';
 import 'package:mindful/ui/screens/settings/privacy/tab_privacy.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -15,14 +15,14 @@ class SettingsScreen extends StatelessWidget {
       body: DefaultNavbar(
         navbarItems: [
           NavbarItem(
-            title: "Appearance",
+            title: "General",
             icon: FluentIcons.color_20_filled,
-            body: TabAppearance(),
+            body: TabGeneral(),
           ),
           NavbarItem(
-            title: "General",
-            icon: FluentIcons.device_eq_20_filled,
-            body: TabGeneral(),
+            title: "Advance",
+            icon: FluentIcons.launcher_settings_24_filled,
+            body: TabAdvance(),
           ),
           NavbarItem(
             title: "Privacy",

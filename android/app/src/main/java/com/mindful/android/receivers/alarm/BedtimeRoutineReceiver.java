@@ -1,16 +1,13 @@
 package com.mindful.android.receivers.alarm;
 
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
+import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.MindfulTrackerService;
@@ -18,7 +15,6 @@ import com.mindful.android.services.MindfulTrackerService;
 import java.util.Calendar;
 
 public class BedtimeRoutineReceiver extends BroadcastReceiver {
-    private static final String TAG = "Mindful.BedtimeStartReceiver";
     public static final String ACTION_START_BEDTIME = "com.mindful.android.StartBedtime";
     public static final String ACTION_STOP_BEDTIME = "com.mindful.android.StopBedtime";
 
@@ -61,8 +57,8 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
         mContext.startService(serviceIntent);
 
         // Start DND if needed
-        if (mBedtimeSettings.shouldStartDnd) toggleDnd(true);
-        NotificationHelper.pushAlertNotification(mContext, 444, "It's time to bed, bedtime routine is started");
+        if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, true);
+        NotificationHelper.pushImpAlertNotification(mContext, 444, "It's time to bed, bedtime routine is started");
     }
 
     private void stopBedtimeRoutine() {
@@ -70,26 +66,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
         mContext.startService(serviceIntent);
 
         // Stop DND if needed
-        if (mBedtimeSettings.shouldStartDnd) toggleDnd(false);
-        NotificationHelper.pushAlertNotification(mContext, 496, "It's time to wake up, bedtime is over");
-    }
-
-
-    private void toggleDnd(boolean shouldStart) {
-        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // Check if permission for DND mode is granted
-        if (notificationManager.isNotificationPolicyAccessGranted()) {
-            if (shouldStart) {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY);
-                Log.d(TAG, "toggleDnd: DND mode started");
-            } else {
-                notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL);
-                Log.d(TAG, "toggleDnd: DND mode stopped");
-            }
-        } else {
-            Log.d(TAG, "toggleDnd: Do not have permission to modify DND mode");
-            Toast.makeText(mContext, "Please allow do not disturb access to Mindful", Toast.LENGTH_SHORT).show();
-        }
+        if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, false);
+        NotificationHelper.pushImpAlertNotification(mContext, 496, "It's time to wake up, bedtime is over");
     }
 }

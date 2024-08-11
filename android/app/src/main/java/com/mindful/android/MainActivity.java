@@ -1,9 +1,12 @@
 package com.mindful.android;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.widget.Toast;
 
@@ -201,7 +204,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "getAndAskIgnoreBatteryOptimizationPermission": {
-                result.success(PermissionsHelper.getAndAskIgnoreBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
+                result.success(getAndAskIgnoreBatteryOptimizationPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskVpnPermission": {
@@ -285,6 +288,24 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         if (askPermissionToo) {
             Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
             startActivityForResult(intent, 0);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the Ignore Battery Optimization permission is granted and optionally asks for it if not granted.
+     *
+     * @param askPermissionToo Whether to prompt the user to enable Ignore Battery Optimization permission if not granted.
+     * @return True if Ignore Battery Optimization permission is granted, false otherwise.
+     */
+    public boolean getAndAskIgnoreBatteryOptimizationPermission(boolean askPermissionToo) {
+        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        if (powerManager.isIgnoringBatteryOptimizations(getPackageName())) return true;
+
+        if (askPermissionToo) {
+            @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent ,0);
         }
         return false;
     }

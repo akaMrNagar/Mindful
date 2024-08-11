@@ -90,6 +90,7 @@ class TabAbout extends ConsumerWidget {
                 .launchUrl(AppConstants.githubSuggestionUrl),
           ).sliver,
 
+          12.vSliverBox,
           const SliverContentTitle(title: "Support us"),
           12.vSliverBox,
 

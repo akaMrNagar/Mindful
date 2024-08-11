@@ -76,6 +76,7 @@ public class DeviceAppsHelper {
 
         // Fetch set of important apps like Dialer, Launcher etc.
         HashSet<String> impSystemApps = ImpSystemAppsHelper.fetchImpApps(packageManager);
+        impSystemApps.add(context.getPackageName());
 
         // Fetch package info of installed apps on device
         List<PackageInfo> fetchedApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);

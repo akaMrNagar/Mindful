@@ -40,9 +40,6 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
         /// Bedtime actions
         const SliverContentTitle(title: "Quick actions"),
 
-        /// Dnd permission warning
-        const DndPermission(),
-
         /// Should start dnd
         DefaultListTile(
           enabled: haveDndPermission && !isScheduleOn,
@@ -53,6 +50,9 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           titleText: "Start DND",
           subtitleText: "Start do not disturb mode during \nbedtime.",
         ),
+
+        /// Dnd permission warning
+        const DndPermission(),
 
         /// Manage Dnd settings
         DefaultListTile(

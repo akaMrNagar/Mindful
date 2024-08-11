@@ -16,9 +16,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
@@ -90,7 +88,6 @@ public class MindfulTrackerService extends Service {
             // Time to reset purged app's list
             case ACTION_MIDNIGHT_SERVICE_RESET:
                 mPurgedApps.clear();
-                NotificationHelper.pushAlertNotification(this, 757, "Tracking service is resetting data at midnight");
                 Log.d(TAG, "onStartCommand: Midnight reset completed");
                 break;
 
@@ -121,14 +118,11 @@ public class MindfulTrackerService extends Service {
         // Create notification
         startForeground(
                 SERVICE_ID,
-                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_OTHER_CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setContentTitle("Mindful service")
-                        .setContentText("Mindful is now tracking app usage to help you stay focused and manage your digital habits.")
-                        .setAutoCancel(true)
-                        .build()
+                NotificationHelper.buildFgServiceNotification(
+                        this,
+                        "Mindful is now tracking app usage to help you stay focused and manage your digital habits."
+                )
         );
-
         Log.d(TAG, "startTrackingService: Foreground service started");
         mIsServiceRunning = true;
     }
