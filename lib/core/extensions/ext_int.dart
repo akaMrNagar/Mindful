@@ -19,15 +19,17 @@ extension ExtInt on int {
   TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
   /// Generates day's date string based on the current day of week
+  // FIXME: Bug when showing dates
   String dateFromDoW() {
-    if (toInt() == now.weekday) {
+    if (toInt() == todayOfWeek) {
       return "Today";
-    } else if (toInt() == now.weekday - 1) {
+    } else if (toInt() == todayOfWeek - 1) {
       return "Yesterday";
     } else {
-      final dt = DateTime.fromMillisecondsSinceEpoch(
-          now.millisecondsSinceEpoch -
-              ((now.weekday - toInt()) * 24 * 60 * 60000));
+      // final dt = DateTime.fromMillisecondsSinceEpoch(
+      //     now.millisecondsSinceEpoch -
+      //         ((now.weekday - toInt()) * 24 * 60 * 60000));
+      final dt = now.subtract(Duration(days: toInt()));
       return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsShort[dt.month - 1]}";
     }
   }
@@ -41,5 +43,10 @@ extension ExtInt on int {
     } else {
       return "${toInt().mb} MB";
     }
+  }
+
+  /// Generates progress percentage for current and previous value
+  int toProgress(int previous) {
+    return previous > 0 ? ((this - previous) / previous * 100).round() : 0;
   }
 }

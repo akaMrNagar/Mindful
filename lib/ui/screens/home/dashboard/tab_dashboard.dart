@@ -2,62 +2,34 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/extensions/ext_duration.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/providers/packages_by_network_usage_provider.dart';
-import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
-import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_algorithm_suggestion.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
-import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/permissions/alarm_permission.dart';
-import 'package:mindful/ui/permissions/display_overlay_permission.dart';
-import 'package:mindful/ui/permissions/notification_permission.dart';
-import 'package:mindful/ui/permissions/usage_access_permission.dart';
-import 'package:mindful/ui/screens/home/dashboard/application_tile.dart';
-import 'package:mindful/ui/common/sliver_shimmer_list.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:sliver_tools/sliver_tools.dart';
+import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/screens/home/dashboard/usage_glance_card.dart';
 
 class TabDashboard extends ConsumerStatefulWidget {
   const TabDashboard({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TabStatisticsState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TabDashboardState();
 }
 
-class _TabStatisticsState extends ConsumerState<TabDashboard> {
-  UsageType _usageType = UsageType.screenUsage;
-  int _selectedDayOfWeek = 1;
-  bool _includeAllApps = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDayOfWeek = todayOfWeek;
-  }
-
+class _TabDashboardState extends ConsumerState<TabDashboard> {
   @override
   Widget build(BuildContext context) {
     /// Aggregated usage for whole week on the basis of full day
     final aggregatedUsage = ref.watch(aggregatedUsageProvider);
-
-    /// Arguments for family provider
-    final args = (selectedDoW: _selectedDayOfWeek, includeAll: _includeAllApps);
-
-    /// Filtered and sorted apps based on usage type and day of this week
-    final filteredApps = _usageType == UsageType.screenUsage
-        ? ref.watch(packagesByScreenUsageProvider(args))
-        : ref.watch(packagesByNetworkUsageProvider(args));
 
     return DefaultRefreshIndicator(
       onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
@@ -69,75 +41,158 @@ class _TabStatisticsState extends ConsumerState<TabDashboard> {
             /// Appbar
             const SliverFlexibleAppBar(title: "Dashboard"),
 
-            const NotificationPermission(),
+            const StyledText("Welcome back,").sliver,
+            const StyledText(
+              "Punish3r",
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ).sliver,
+            24.vSliverBox,
 
-            const ExactAlarmPermission(),
+            // const SliverContentTitle(title: "Today's overview"),
+            // 8.vSliverBox,
 
-            const UsageAccessPermission(),
+            Row(
+              children: [
+                /// Screen time
+                Expanded(
+                  child: UsageGlanceCard(
+                    isPrimary: true,
+                    title: "Screen time",
+                    icon: FluentIcons.phone_screen_time_20_regular,
+                    progressPercentage: aggregatedUsage
+                        .screenTimeThisWeek[todayOfWeek]
+                        .toProgress(todayOfWeek >= 1
+                            ? aggregatedUsage
+                                .screenTimeThisWeek[todayOfWeek - 1]
+                            : 0),
+                    info: aggregatedUsage
+                        .screenTimeThisWeek[todayOfWeek].seconds
+                        .toTimeShort(),
+                  ),
+                ),
+                8.hBox,
+                Expanded(
+                  child: UsageGlanceCard(
+                    isPrimary: true,
+                    icon: FluentIcons.person_clock_20_regular,
+                    title: "Focused time",
+                    info: 125.minutes.toTimeShort(),
+                    progressPercentage: -36,
+                    invertProgress: true,
+                  ),
+                ),
+              ],
+            ).sliver,
 
-            const DisplayOverlayPermission(),
+            // /// Data usage mobile + wifi
+            // Row(
+            //   children: [
+            //     Expanded(
+            //       child: UsageGlanceCard(
+            //         title: "Mobile data",
+            //         icon: FluentIcons.cellular_data_1_20_regular,
+            //         progressPercentage: aggregatedUsage
+            //             .mobileUsageThisWeek[todayOfWeek]
+            //             .toProgress(todayOfWeek >= 1
+            //                 ? aggregatedUsage
+            //                     .mobileUsageThisWeek[todayOfWeek - 1]
+            //                 : 0),
+            //         info: aggregatedUsage.mobileUsageThisWeek[todayOfWeek]
+            //             .toData(),
+            //       ),
+            //     ),
+            //     8.hBox,
+            //     Expanded(
+            //       child: UsageGlanceCard(
+            //         title: "Wifi data",
+            //         icon: FluentIcons.wifi_1_20_regular,
+            //         progressPercentage: aggregatedUsage
+            //             .wifiUsageThisWeek[todayOfWeek]
+            //             .toProgress(todayOfWeek >= 1
+            //                 ? aggregatedUsage.wifiUsageThisWeek[todayOfWeek - 1]
+            //                 : 0),
+            //         info:
+            //             aggregatedUsage.wifiUsageThisWeek[todayOfWeek].toData(),
+            //       ),
+            //     ),
+            //   ],
+            // ).sliver,
 
-            const SliverAlgorithmSuggestion(),
+            // 12.vSliverBox,
+            // const SliverContentTitle(title: "Your achievements"),
+            // 8.vSliverBox,
 
-            /// Usage type selector and usage info card
-            SliverSkeletonizer.zone(
-              enabled: !filteredApps.hasValue,
-              child: SliverUsageCards(
-                usageType: _usageType,
-                screenUsageInfo:
-                    aggregatedUsage.screenTimeThisWeek[_selectedDayOfWeek],
-                wifiUsageInfo:
-                    aggregatedUsage.wifiUsageThisWeek[_selectedDayOfWeek],
-                mobileUsageInfo:
-                    aggregatedUsage.mobileUsageThisWeek[_selectedDayOfWeek],
-                onUsageTypeChanged: (type) => setState(() => _usageType = type),
-              ),
-            ),
-            20.vSliverBox,
+            UsageGlanceCard(
+              icon: FluentIcons.sound_source_20_regular,
+              title: "Lifetime focused time",
+              info: 125.minutes.toTimeFull(),
+              invertProgress: true,
+            ).sliver,
 
-            /// Usage bar chart and selected day changer
-            SliverUsageChartPanel(
-              selectedDoW: _selectedDayOfWeek,
-              usageType: _usageType,
-              barChartData: _usageType == UsageType.screenUsage
-                  ? aggregatedUsage.screenTimeThisWeek
-                  : aggregatedUsage.networkUsageThisWeek,
-              onDayOfWeekChanged: (dow) =>
-                  setState(() => _selectedDayOfWeek = dow),
-            ),
+            ///
+            Row(
+              children: [
+                const Expanded(
+                  child: UsageGlanceCard(
+                    title: "Longest streak",
+                    icon: FluentIcons.trophy_20_regular,
+                    info: "15 days",
+                  ),
+                ),
+                8.hBox,
+                const Expanded(
+                  child: UsageGlanceCard(
+                    title: "Current streak",
+                    icon: FluentIcons.fire_20_regular,
+                    info: "5 days",
+                  ),
+                ),
+              ],
+            ).sliver,
 
-            const SliverContentTitle(title: "Most used apps"),
+            // 8.vSliverBox,
+            // const SliverContentTitle(title: "Quick actions"),
+            // 8.vSliverBox,
+            DefaultListTile(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              leadingIcon: FluentIcons.history_20_regular,
+              titleText: "Focus history",
+              subtitleText: "See what you did throughout the year",
+              trailing: const Icon(FluentIcons.chevron_right_20_regular),
+              onPressed: () {},
+            ).sliver,
+            8.vSliverBox,
+            DefaultListTile(
+              isPrimary: true,
+              titleText: "Focus now",
+              leadingIcon: FluentIcons.target_arrow_20_regular,
+              subtitleText: "Let's do something productive",
+              trailing: const Icon(FluentIcons.chevron_right_20_regular),
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.focusScreen);
+              },
+            ).sliver,
 
-            /// Most used apps list
-            SliverAnimatedSwitcher(
-              duration: 300.ms,
-              switchInCurve: Curves.easeIn,
-              switchOutCurve: Curves.easeOut,
-              child: filteredApps.hasValue
-                  ? AnimatedAppsList(
-                      itemExtent: 64,
-                      appPackages: filteredApps.value ?? [],
-                      itemBuilder: (context, app) => ApplicationTile(
-                        app: app,
-                        selectedUsageType: _usageType,
-                        selectedDoW: _selectedDayOfWeek,
-                      ),
-                    )
-                  : const SliverShimmerList(includeSubtitle: true),
-            ),
+            8.vSliverBox,
+            const SliverContentTitle(title: "Suggestions"),
+            8.vSliverBox,
 
-            /// Show all apps button
-            if (!_includeAllApps && filteredApps.hasValue)
-              DefaultListTile(
-                height: 48,
-                isPrimary: true,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                margin: const EdgeInsets.only(top: 20),
-                leading: const Icon(FluentIcons.select_all_off_20_regular),
-                titleText: "Show all apps",
-                trailing: const Icon(FluentIcons.chevron_down_20_filled),
-                onPressed: () => setState(() => _includeAllApps = true),
-              ).sliver,
+            const DefaultListTile(
+              leadingIcon: FluentIcons.thumb_like_20_regular,
+              subtitleText:
+                  "Keep up the work, You are jus 10 days away from beating your longest streak record.",
+            ).sliver,
+            const DefaultListTile(
+              leadingIcon: FluentIcons.thumb_like_20_regular,
+              subtitleText:
+                  "You have increased your lifetime focused time by 2 hours and 5 minutes today.",
+            ).sliver,
+            const DefaultListTile(
+              leadingIcon: FluentIcons.thumb_like_20_regular,
+              subtitleText:
+                  "You are doing great! You have reduced your screen time as compared to",
+            ).sliver,
 
             const SliverTabsBottomPadding(),
           ],

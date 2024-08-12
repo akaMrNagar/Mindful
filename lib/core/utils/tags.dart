@@ -18,6 +18,9 @@ class AppTags {
   static const addDistractingSiteFABTag =
       "home.wellBeing.addDistractingWebsite";
 
+  /// Tag used to identify the FAB for timer picker in focus mode.
+  static const focusModeFABTag = "focus.focusSessionTimer";
+
   /// Generates a tag for an application tile based on the provided package name.
   static String applicationTileTag(String package) =>
       "home.statistics.applicationTile.$package";

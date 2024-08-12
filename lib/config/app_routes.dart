@@ -3,6 +3,7 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
+import 'package:mindful/ui/screens/focus/focus_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
@@ -28,12 +29,15 @@ class AppRoutes {
   static const String onboardingScreen = '/onboardingScreen';
   static const String appDashboardScreen = '/appDashboardScreen';
   static const String settingsScreen = '/mindfulSettingsScreen';
+  static const String focusScreen = '/focusScreen';
 
   static final routes = {
     splashScreen: (context) => const SplashScreen(),
     onboardingScreen: (context) => const OnboardingScreen(),
     homeScreen: (context) => const HomeScreen(),
+    // homeScreen: (context) => const FocusScreen(),
     settingsScreen: (context) => const SettingsScreen(),
+    focusScreen: (context) => const FocusScreen(),
     appDashboardScreen: (context) {
       final args =
           ModalRoute.of(context)?.settings.arguments as AppDashboardScreenArgs;

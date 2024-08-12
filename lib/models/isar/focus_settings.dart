@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 part 'focus_settings.g.dart';
 
 /// Focus info model used in mapping app package to its focus settings like
-/// [timerSec], [emergencyCounter] and [lastEmergencyTime]
+/// [timerSec], [internetAccess]
 @immutable
 @collection
 class FocusSettings {

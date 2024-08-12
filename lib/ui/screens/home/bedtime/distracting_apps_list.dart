@@ -56,7 +56,11 @@ class DistractingAppsList extends ConsumerWidget {
 
     return MultiSliver(
       children: [
-        const SliverContentTitle(title: "Your distracting apps"),
+        SliverContentTitle(
+          title: distractingApps.isEmpty
+              ? "Select distracting apps"
+              : "Your distracting apps",
+        ),
 
         /// Most used apps list
         SliverAnimatedSwitcher(

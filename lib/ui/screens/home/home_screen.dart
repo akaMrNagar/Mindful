@@ -11,6 +11,7 @@ import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
+import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
 import 'package:mindful/ui/screens/home/wellbeing/tab_wellbeing.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -26,6 +27,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    final targetPackage = MethodChannelService.instance.targetedAppPackage;
+    if (targetPackage.isEmpty) return;
 
     /// Check if target package in method channel service is not empty,
     /// that means user launched the app from overlay dialog
@@ -33,9 +36,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       appsProvider,
       (_, apps) {
         if (!apps.hasValue) return;
-        final targetPackage = MethodChannelService.instance.targetedAppPackage;
-        if (targetPackage.isNotEmpty &&
-            apps.value!.containsKey(targetPackage)) {
+        if (apps.value!.containsKey(targetPackage)) {
           _gotoAppDashboard(apps.value![targetPackage]!);
         }
 
@@ -71,18 +72,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         navbarItems: const [
           NavbarItem(
             title: "Dashboard",
-            icon: FluentIcons.data_pie_24_filled,
+            icon: FluentIcons.home_20_filled,
             body: TabDashboard(),
           ),
           NavbarItem(
-            title: "Bedtime",
-            icon: FluentIcons.sleep_20_filled,
-            body: TabBedtime(),
+            title: "Statistics",
+            icon: FluentIcons.data_pie_24_filled,
+            body: TabStatistics(),
           ),
           NavbarItem(
             title: "Wellbeing",
             icon: FluentIcons.brain_circuit_20_filled,
             body: TabWellBeing(),
+          ),
+          NavbarItem(
+            title: "Bedtime",
+            icon: FluentIcons.sleep_20_filled,
+            body: TabBedtime(),
           ),
         ],
       ),

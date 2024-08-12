@@ -4,7 +4,7 @@ extension ExtDuration on Duration {
     return inMinutes >= 60
         ? inMinutes % 60 == 0
             ? "${inHours}h"
-            : "${inHours}h  ${inMinutes % 60}m"
+            : "${inHours}h ${inMinutes % 60}m"
         : "${inMinutes}m";
   }
 
