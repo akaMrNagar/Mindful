@@ -1,5 +1,7 @@
 package com.mindful.android.services;
 
+import static com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -12,16 +14,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SafeServiceConnection;
+import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.AppConstants;
 
-/**
- * A Service that provides an emergency timer for pausing app tracking.
- */
-public class EmergencyTimerService extends Service {
-    private static final String TAG = "Mindful.EmergencyTimerService";
-    private static final int SERVICE_ID = 304;
+public class FocusSessionService extends Service {
+    private static final String TAG = "Mindful.FocusSessionService";
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
@@ -34,7 +33,7 @@ public class EmergencyTimerService extends Service {
 
         // Bind to tracking service
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
-        mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
+//        mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
         mTrackerServiceConn.bindService();
     }
 
@@ -51,33 +50,34 @@ public class EmergencyTimerService extends Service {
         SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
         startTimer();
 
-        Log.d(TAG, "onStartCommand: Emergency timer service started successfully");
+        Log.d(TAG, "onStartCommand: Focus Session service started successfully");
         return START_STICKY;
     }
+
 
     /**
      * Starts the countdown timer and updates the notification with the remaining time.
      */
     private void startTimer() {
-        startForeground(SERVICE_ID, createNotification(AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS));
+        startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS));
         mCountDownTimer = new CountDownTimer(AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(SERVICE_ID, createNotification(millisUntilFinished));
+                mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(millisUntilFinished));
             }
 
             @Override
             public void onFinish() {
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().pauseResumeTracking(false);
-                }
-                stopSelf();
+//                if (mTrackerServiceConn.isConnected()) {
+//                    mTrackerServiceConn.getService().pauseResumeTracking(false);
+//                }
+//                stopSelf();
             }
         }.start();
     }
 
     /**
-     * Creates a notification for the emergency timer with the remaining time.
+     * Creates a notification for the Focus Session with the remaining time.
      *
      * @param millisUntilFinished The remaining time in milliseconds.
      * @return The notification object.
@@ -88,7 +88,7 @@ public class EmergencyTimerService extends Service {
         int leftMinutes = totalSeconds / 60;
         int leftSeconds = totalSeconds % 60;
 
-        String msg = "The app blocker will resume after " + leftMinutes + ":" + leftSeconds + " minutes";
+        String msg = "Focus session will end in " + leftMinutes + ":" + leftSeconds + " minutes";
 
         return NotificationHelper.buildProgressNotification(
                 this,
@@ -99,10 +99,7 @@ public class EmergencyTimerService extends Service {
         );
     }
 
-    /**
-     * Called when the service is destroyed. Unbinds from the tracking service,
-     * cancels the countdown timer, and stops the foreground notification.
-     */
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -110,12 +107,12 @@ public class EmergencyTimerService extends Service {
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
         }
-        stopForeground(true);
-        Log.d(TAG, "onDestroy: Emergency timer service destroyed");
+        stopForeground(STOP_FOREGROUND_DETACH);
+        Log.d(TAG, "onDestroy: Focus Session service destroyed");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new ServiceBinder<>(FocusSessionService.this);
     }
 }

@@ -30,6 +30,7 @@ import androidx.core.app.NotificationCompat;
 import com.mindful.android.R;
 import com.mindful.android.MainActivity;
 import com.mindful.android.helpers.NotificationHelper;
+import com.mindful.android.utils.AppConstants;
 
 /**
  * Service that displays an overlay dialog informing the user about the app whose timer ran out.
@@ -37,7 +38,6 @@ import com.mindful.android.helpers.NotificationHelper;
 public class OverlayDialogService extends Service {
 
     private static final String TAG = "Mindful.OverlayDialogService";
-    private static final int SERVICE_ID = 303;
 
     private String mPackageName;
     private boolean mIsThisBedtime = false;
@@ -82,7 +82,7 @@ public class OverlayDialogService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, permissionIntent, PendingIntent.FLAG_IMMUTABLE);
         String msg = "Please grant display overlay permission to Mindful by clicking on the notification. On the next screen, find Mindful in the list of apps and click on allow.";
         notificationManager.notify(
-                SERVICE_ID,
+                AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setAutoCancel(true)

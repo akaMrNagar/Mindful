@@ -23,6 +23,7 @@ import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.receivers.DeviceLockUnlockReceiver;
 import com.mindful.android.utils.AlgorithmType;
+import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
 import java.util.Date;
@@ -36,7 +37,6 @@ import java.util.TimerTask;
  */
 public class MindfulTrackerService extends Service {
 
-    private static final int SERVICE_ID = 301;
     private final String TAG = "Mindful.MindfulTrackerService";
     public static final String ACTION_NEW_APP_LAUNCHED = "com.mindful.android.ACTION_NEW_APP_LAUNCHED";
     public static final String ACTION_START_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_BEDTIME";
@@ -117,7 +117,7 @@ public class MindfulTrackerService extends Service {
 
         // Create notification
         startForeground(
-                SERVICE_ID,
+                AppConstants.TRACKER_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
                         "Mindful is now tracking app usage to help you stay focused and manage your digital habits."

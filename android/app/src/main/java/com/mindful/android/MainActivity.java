@@ -20,7 +20,7 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.PermissionsHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.BedtimeSettings;
-import com.mindful.android.services.EmergencyTimerService;
+import com.mindful.android.services.EmergencyPauseService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AlgorithmType;
@@ -173,8 +173,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "useEmergencyPass": {
-                if (!Utils.isServiceRunning(this, EmergencyTimerService.class.getName())) {
-                    startService(new Intent(this, EmergencyTimerService.class));
+                if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())) {
+                    startService(new Intent(this, EmergencyPauseService.class));
                     result.success(true);
                 } else {
                     result.success(false);

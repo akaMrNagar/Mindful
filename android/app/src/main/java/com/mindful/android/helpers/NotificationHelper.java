@@ -130,28 +130,15 @@ public class NotificationHelper {
      */
     public static void pushImpAlertNotification(@NonNull Context context, int id, String alert) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.notify(
-                    id, new Notification.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setOngoing(false)
-                            .setOnlyAlertOnce(true)
-                            .setContentTitle("Mindful")
-                            .setContentText(alert)
-                            .build());
-
-        } else {
-            notificationManager.notify(
-                    id, new NotificationCompat.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setOngoing(false)
-                            .setOnlyAlertOnce(true)
-                            .setContentTitle("Mindful")
-                            .setContentText(alert)
-                            .build()
-            );
-        }
+        notificationManager.notify(
+                id, new NotificationCompat.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setOngoing(false)
+                        .setOnlyAlertOnce(true)
+                        .setContentTitle("Mindful")
+                        .setContentText(alert)
+                        .build()
+        );
     }
 
     /**
@@ -171,25 +158,13 @@ public class NotificationHelper {
                                                          int maxProgress,
                                                          int progress
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return new Notification.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setOngoing(true)
-                    .setOnlyAlertOnce(true)
-                    .setContentTitle(title)
-                    .setContentText(content)
-                    .setProgress(maxProgress, progress, false)
-                    .build();
-
-        } else {
-            return new NotificationCompat.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setOngoing(true)
-                    .setOnlyAlertOnce(true)
-                    .setContentTitle(title)
-                    .setContentText(content)
-                    .setProgress(maxProgress, progress, false).build();
-        }
+        return new NotificationCompat.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setProgress(maxProgress, progress, false).build();
     }
 
     /**
@@ -201,21 +176,11 @@ public class NotificationHelper {
      */
     @NonNull
     public static Notification buildFgServiceNotification(Context context, String content) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            return new Notification.Builder(context, NOTIFICATION_OTHER_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setAutoCancel(true)
-                    .setContentTitle("Mindful Service")
-                    .setContentText(content)
-                    .build();
-
-        } else {
-            return new NotificationCompat.Builder(context, NOTIFICATION_OTHER_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_notification)
-                    .setAutoCancel(true)
-                    .setContentTitle("Mindful Service")
-                    .setContentText(content)
-                    .build();
-        }
+        return new NotificationCompat.Builder(context, NOTIFICATION_OTHER_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setAutoCancel(true)
+                .setContentTitle("Mindful is running")
+                .setContentText(content)
+                .build();
     }
 }

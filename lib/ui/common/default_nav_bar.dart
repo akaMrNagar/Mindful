@@ -107,7 +107,15 @@ class _DefaultNavbarState extends State<DefaultNavbar>
               controller: _controller,
               physics: const NeverScrollableScrollPhysics(),
               children: widget.navbarItems
-                  .map((e) => RotatedBox(quarterTurns: -1, child: e.body))
+                  .map(
+                    (e) => RotatedBox(
+                      quarterTurns: -1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4, right: 8),
+                        child: e.body,
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),

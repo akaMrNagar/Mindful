@@ -77,171 +77,168 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
     final isModifiable =
         !isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0);
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, right: 8),
-      child: Stack(
-        children: [
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              /// Appbar
-              const SliverFlexibleAppBar(title: "Wellbeing"),
-
-              /// Information about bedtime
-              const StyledText(
-                "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
-              ).sliver,
-
-              const AccessibilityPermission(),
-
-              if (haveAccessibilityPermission)
-                SliverPrimaryActionContainer(
-                  isVisible: !isModifiable,
-                  margin: const EdgeInsets.only(top: 12),
-                  title: "Invincible mode",
-                  information:
-                      "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
-                ),
-
-              /// Short content header
-              const SliverContentTitle(title: "Short content"),
-
-              /// Short usage progress bar
-              ShortsTimerChart(
-                isModifiable: isModifiable && haveAccessibilityPermission,
-                allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
-                remainingTimeSec: remainingTimeSec,
-              ).sliver,
-
-              /// Quick actions
-              SliverList.list(
-                children: [
-                  /// Block instagram reels
-                  DefaultListTile(
-                    leading: Image.asset(
-                      "assets/icons/instaReels.png",
-                      width: 32,
-                    ),
-                    enabled: haveAccessibilityPermission &&
-                        (isModifiable || !wellBeing.blockInstaReels),
-                    titleText: "Block reels",
-                    subtitleText: "Restrict reels on instagram.",
-                    switchValue: wellBeing.blockInstaReels,
-                    onPressed: ref
-                        .read(wellBeingProvider.notifier)
-                        .switchBlockInstaReels,
-                  ),
-
-                  /// Block youtube shorts
-                  DefaultListTile(
-                    leading: Image.asset(
-                      "assets/icons/ytShorts.png",
-                      width: 32,
-                    ),
-                    enabled: haveAccessibilityPermission &&
-                        (isModifiable || !wellBeing.blockYtShorts),
-                    titleText: "Block shorts",
-                    subtitleText: "Restrict shorts on youtube.",
-                    switchValue: wellBeing.blockYtShorts,
-                    onPressed: ref
-                        .read(wellBeingProvider.notifier)
-                        .switchBlockYtShorts,
-                  ),
-
-                  /// Block snapchat spotlight
-                  DefaultListTile(
-                    leading: Image.asset(
-                      "assets/icons/snapSpotlight.png",
-                      width: 32,
-                    ),
-                    enabled: haveAccessibilityPermission &&
-                        (isModifiable || !wellBeing.blockSnapSpotlight),
-                    titleText: "Block spotlight",
-                    subtitleText: "Restrict spotlight on snapchat.",
-                    switchValue: wellBeing.blockSnapSpotlight,
-                    onPressed: ref
-                        .read(wellBeingProvider.notifier)
-                        .switchBlockSnapSpotlight,
-                  ),
-
-                  /// Block facebook reels
-                  DefaultListTile(
-                    leading: Image.asset(
-                      "assets/icons/fbReels.png",
-                      width: 32,
-                    ),
-                    enabled: haveAccessibilityPermission &&
-                        (isModifiable || !wellBeing.blockFbReels),
-                    titleText: "Block reels",
-                    subtitleText: "Restrict reels on facebook.",
-                    switchValue: wellBeing.blockFbReels,
-                    onPressed:
-                        ref.read(wellBeingProvider.notifier).switchBlockFbReels,
-                  ),
-                ],
+    return Stack(
+      children: [
+        CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            /// Appbar
+            const SliverFlexibleAppBar(title: "Wellbeing"),
+    
+            /// Information about bedtime
+            const StyledText(
+              "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
+            ).sliver,
+    
+            const AccessibilityPermission(),
+    
+            if (haveAccessibilityPermission)
+              SliverPrimaryActionContainer(
+                isVisible: !isModifiable,
+                margin: const EdgeInsets.only(top: 12),
+                title: "Invincible mode",
+                information:
+                    "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
               ),
-
-              /// Adult content header
-              const SliverContentTitle(title: "Adult content"),
-
-              /// Block NSFW websites
-              DefaultHero(
-                tag: AppTags.blockNsfwTileTag,
-                child: DefaultListTile(
-                  enabled:
-                      haveAccessibilityPermission && !wellBeing.blockNsfwSites,
-                  leadingIcon: FluentIcons.video_prohibited_20_regular,
-                  titleText: "Block Nsfw",
-                  subtitleText:
-                      "Restrict browsers from opening predefined adult and porn websites.",
-                  switchValue: wellBeing.blockNsfwSites,
-                  onPressed: _turnNsfwBlockerOn,
+    
+            /// Short content header
+            const SliverContentTitle(title: "Short content"),
+    
+            /// Short usage progress bar
+            ShortsTimerChart(
+              isModifiable: isModifiable && haveAccessibilityPermission,
+              allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
+              remainingTimeSec: remainingTimeSec,
+            ).sliver,
+    
+            /// Quick actions
+            SliverList.list(
+              children: [
+                /// Block instagram reels
+                DefaultListTile(
+                  leading: Image.asset(
+                    "assets/icons/instaReels.png",
+                    width: 32,
+                  ),
+                  enabled: haveAccessibilityPermission &&
+                      (isModifiable || !wellBeing.blockInstaReels),
+                  titleText: "Block reels",
+                  subtitleText: "Restrict reels on instagram.",
+                  switchValue: wellBeing.blockInstaReels,
+                  onPressed: ref
+                      .read(wellBeingProvider.notifier)
+                      .switchBlockInstaReels,
                 ),
-              ).sliver,
-
-              /// Blocked websites header
-              const SliverContentTitle(title: "Blocked websites"),
-
-              /// Distracting websites list
-              wellBeing.blockedWebsites.isNotEmpty
-                  ? SliverFixedExtentList.builder(
-                      itemExtent: 40,
-                      itemCount: wellBeing.blockedWebsites.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        child: WebsiteTile(
-                          websitehost: wellBeing.blockedWebsites[index],
-                        ),
-                      ),
-                    )
-                  : Container(
-                      height: 300,
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      alignment: const Alignment(0, 0),
-                      child: const StyledText(
-                        "Click on '+' icon to add distracting website which you wish to block.",
-                        isSubtitle: false,
-                        textAlign: TextAlign.center,
-                      ),
-                    ).sliver,
-
-              const SliverTabsBottomPadding(),
-            ],
-          ),
-
-          /// Add more distracting websites button
-          if (haveAccessibilityPermission)
-            Positioned(
-              bottom: 32,
-              right: 24,
-              child: FloatingActionButton(
-                heroTag: AppTags.addDistractingSiteFABTag,
-                onPressed: () => _onPressedFab(context, ref),
-                child: const Icon(FluentIcons.add_20_filled),
+    
+                /// Block youtube shorts
+                DefaultListTile(
+                  leading: Image.asset(
+                    "assets/icons/ytShorts.png",
+                    width: 32,
+                  ),
+                  enabled: haveAccessibilityPermission &&
+                      (isModifiable || !wellBeing.blockYtShorts),
+                  titleText: "Block shorts",
+                  subtitleText: "Restrict shorts on youtube.",
+                  switchValue: wellBeing.blockYtShorts,
+                  onPressed: ref
+                      .read(wellBeingProvider.notifier)
+                      .switchBlockYtShorts,
+                ),
+    
+                /// Block snapchat spotlight
+                DefaultListTile(
+                  leading: Image.asset(
+                    "assets/icons/snapSpotlight.png",
+                    width: 32,
+                  ),
+                  enabled: haveAccessibilityPermission &&
+                      (isModifiable || !wellBeing.blockSnapSpotlight),
+                  titleText: "Block spotlight",
+                  subtitleText: "Restrict spotlight on snapchat.",
+                  switchValue: wellBeing.blockSnapSpotlight,
+                  onPressed: ref
+                      .read(wellBeingProvider.notifier)
+                      .switchBlockSnapSpotlight,
+                ),
+    
+                /// Block facebook reels
+                DefaultListTile(
+                  leading: Image.asset(
+                    "assets/icons/fbReels.png",
+                    width: 32,
+                  ),
+                  enabled: haveAccessibilityPermission &&
+                      (isModifiable || !wellBeing.blockFbReels),
+                  titleText: "Block reels",
+                  subtitleText: "Restrict reels on facebook.",
+                  switchValue: wellBeing.blockFbReels,
+                  onPressed:
+                      ref.read(wellBeingProvider.notifier).switchBlockFbReels,
+                ),
+              ],
+            ),
+    
+            /// Adult content header
+            const SliverContentTitle(title: "Adult content"),
+    
+            /// Block NSFW websites
+            DefaultHero(
+              tag: AppTags.blockNsfwTileTag,
+              child: DefaultListTile(
+                enabled:
+                    haveAccessibilityPermission && !wellBeing.blockNsfwSites,
+                leadingIcon: FluentIcons.video_prohibited_20_regular,
+                titleText: "Block Nsfw",
+                subtitleText:
+                    "Restrict browsers from opening predefined adult and porn websites.",
+                switchValue: wellBeing.blockNsfwSites,
+                onPressed: _turnNsfwBlockerOn,
               ),
-            )
-        ],
-      ),
+            ).sliver,
+    
+            /// Blocked websites header
+            const SliverContentTitle(title: "Blocked websites"),
+    
+            /// Distracting websites list
+            wellBeing.blockedWebsites.isNotEmpty
+                ? SliverFixedExtentList.builder(
+                    itemExtent: 40,
+                    itemCount: wellBeing.blockedWebsites.length,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: WebsiteTile(
+                        websitehost: wellBeing.blockedWebsites[index],
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: 300,
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    alignment: const Alignment(0, 0),
+                    child: const StyledText(
+                      "Click on '+' icon to add distracting website which you wish to block.",
+                      isSubtitle: false,
+                      textAlign: TextAlign.center,
+                    ),
+                  ).sliver,
+    
+            const SliverTabsBottomPadding(),
+          ],
+        ),
+    
+        /// Add more distracting websites button
+        if (haveAccessibilityPermission)
+          Positioned(
+            bottom: 32,
+            right: 24,
+            child: FloatingActionButton(
+              heroTag: AppTags.addDistractingSiteFABTag,
+              onPressed: () => _onPressedFab(context, ref),
+              child: const Icon(FluentIcons.add_20_filled),
+            ),
+          )
+      ],
     );
   }
 

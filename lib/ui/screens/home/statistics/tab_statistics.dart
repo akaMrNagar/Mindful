@@ -58,87 +58,84 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
     return DefaultRefreshIndicator(
       onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 4, right: 8),
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            /// Appbar
-            const SliverFlexibleAppBar(title: "Statistics"),
-
-            const NotificationPermission(),
-
-            const ExactAlarmPermission(),
-
-            const UsageAccessPermission(),
-
-            const DisplayOverlayPermission(),
-
-            const SliverAlgorithmSuggestion(),
-
-            /// Usage type selector and usage info card
-            SliverSkeletonizer.zone(
-              enabled: !filteredApps.hasValue,
-              child: SliverUsageCards(
-                usageType: _usageType,
-                screenUsageInfo:
-                    aggregatedUsage.screenTimeThisWeek[_selectedDayOfWeek],
-                wifiUsageInfo:
-                    aggregatedUsage.wifiUsageThisWeek[_selectedDayOfWeek],
-                mobileUsageInfo:
-                    aggregatedUsage.mobileUsageThisWeek[_selectedDayOfWeek],
-                onUsageTypeChanged: (type) => setState(() => _usageType = type),
-              ),
-            ),
-            20.vSliverBox,
-
-            /// Usage bar chart and selected day changer
-            SliverUsageChartPanel(
-              selectedDoW: _selectedDayOfWeek,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          /// Appbar
+          const SliverFlexibleAppBar(title: "Statistics"),
+      
+          const NotificationPermission(),
+      
+          const ExactAlarmPermission(),
+      
+          const UsageAccessPermission(),
+      
+          const DisplayOverlayPermission(),
+      
+          const SliverAlgorithmSuggestion(),
+      
+          /// Usage type selector and usage info card
+          SliverSkeletonizer.zone(
+            enabled: !filteredApps.hasValue,
+            child: SliverUsageCards(
               usageType: _usageType,
-              barChartData: _usageType == UsageType.screenUsage
-                  ? aggregatedUsage.screenTimeThisWeek
-                  : aggregatedUsage.networkUsageThisWeek,
-              onDayOfWeekChanged: (dow) =>
-                  setState(() => _selectedDayOfWeek = dow),
+              screenUsageInfo:
+                  aggregatedUsage.screenTimeThisWeek[_selectedDayOfWeek],
+              wifiUsageInfo:
+                  aggregatedUsage.wifiUsageThisWeek[_selectedDayOfWeek],
+              mobileUsageInfo:
+                  aggregatedUsage.mobileUsageThisWeek[_selectedDayOfWeek],
+              onUsageTypeChanged: (type) => setState(() => _usageType = type),
             ),
-
-            const SliverContentTitle(title: "Most used apps"),
-
-            /// Most used apps list
-            SliverAnimatedSwitcher(
-              duration: 300.ms,
-              switchInCurve: Curves.easeIn,
-              switchOutCurve: Curves.easeOut,
-              child: filteredApps.hasValue
-                  ? AnimatedAppsList(
-                      itemExtent: 64,
-                      appPackages: filteredApps.value ?? [],
-                      itemBuilder: (context, app) => ApplicationTile(
-                        app: app,
-                        selectedUsageType: _usageType,
-                        selectedDoW: _selectedDayOfWeek,
-                      ),
-                    )
-                  : const SliverShimmerList(includeSubtitle: true),
-            ),
-
-            /// Show all apps button
-            if (!_includeAllApps && filteredApps.hasValue)
-              DefaultListTile(
-                height: 48,
-                isPrimary: true,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                margin: const EdgeInsets.only(top: 20),
-                leading: const Icon(FluentIcons.select_all_off_20_regular),
-                titleText: "Show all apps",
-                trailing: const Icon(FluentIcons.chevron_down_20_filled),
-                onPressed: () => setState(() => _includeAllApps = true),
-              ).sliver,
-
-            const SliverTabsBottomPadding(),
-          ],
-        ),
+          ),
+          20.vSliverBox,
+      
+          /// Usage bar chart and selected day changer
+          SliverUsageChartPanel(
+            selectedDoW: _selectedDayOfWeek,
+            usageType: _usageType,
+            barChartData: _usageType == UsageType.screenUsage
+                ? aggregatedUsage.screenTimeThisWeek
+                : aggregatedUsage.networkUsageThisWeek,
+            onDayOfWeekChanged: (dow) =>
+                setState(() => _selectedDayOfWeek = dow),
+          ),
+      
+          const SliverContentTitle(title: "Most used apps"),
+      
+          /// Most used apps list
+          SliverAnimatedSwitcher(
+            duration: 300.ms,
+            switchInCurve: Curves.easeIn,
+            switchOutCurve: Curves.easeOut,
+            child: filteredApps.hasValue
+                ? AnimatedAppsList(
+                    itemExtent: 64,
+                    appPackages: filteredApps.value ?? [],
+                    itemBuilder: (context, app) => ApplicationTile(
+                      app: app,
+                      selectedUsageType: _usageType,
+                      selectedDoW: _selectedDayOfWeek,
+                    ),
+                  )
+                : const SliverShimmerList(includeSubtitle: true),
+          ),
+      
+          /// Show all apps button
+          if (!_includeAllApps && filteredApps.hasValue)
+            DefaultListTile(
+              height: 48,
+              isPrimary: true,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              margin: const EdgeInsets.only(top: 20),
+              leading: const Icon(FluentIcons.select_all_off_20_regular),
+              titleText: "Show all apps",
+              trailing: const Icon(FluentIcons.chevron_down_20_filled),
+              onPressed: () => setState(() => _includeAllApps = true),
+            ).sliver,
+      
+          const SliverTabsBottomPadding(),
+        ],
       ),
     );
   }

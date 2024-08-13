@@ -1,5 +1,7 @@
 package com.mindful.android.receivers.alarm;
 
+import static com.mindful.android.utils.AppConstants.BEDTIME_ROUTINE_NOTIFICATION_ID;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -58,7 +60,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, true);
-        NotificationHelper.pushImpAlertNotification(mContext, 444, "It's time to bed, bedtime routine is started");
+        NotificationHelper.pushImpAlertNotification(mContext, BEDTIME_ROUTINE_NOTIFICATION_ID, "It's time to bed, bedtime routine is started");
     }
 
     private void stopBedtimeRoutine() {
@@ -67,6 +69,6 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
         // Stop DND if needed
         if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, false);
-        NotificationHelper.pushImpAlertNotification(mContext, 496, "It's time to wake up, bedtime is over");
+        NotificationHelper.pushImpAlertNotification(mContext, BEDTIME_ROUTINE_NOTIFICATION_ID, "It's time to wake up, bedtime is over");
     }
 }

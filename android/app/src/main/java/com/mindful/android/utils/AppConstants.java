@@ -12,4 +12,12 @@ public class AppConstants {
     public static final int DEFAULT_EMERGENCY_PASSES_COUNT = 3;
     public static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
     public static final long WIDGET_MANUAL_REFRESH_INTERVAL = 60 * 1000; // 1 minute
+
+
+    /// Notification IDs
+    public static final int TRACKER_SERVICE_NOTIFICATION_ID = 301;
+    public static final int VPN_SERVICE_NOTIFICATION_ID = 302;
+    public static final int OVERLAY_SERVICE_NOTIFICATION_ID = 303;
+    public static final int EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID = 304;
+    public static final int BEDTIME_ROUTINE_NOTIFICATION_ID = 305;
 }

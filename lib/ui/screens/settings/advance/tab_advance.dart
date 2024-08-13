@@ -50,91 +50,88 @@ class TabAdvance extends ConsumerWidget {
     final haveAdminPermission =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 4, right: 8),
-      child: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          /// Appbar
-          const SliverFlexibleAppBar(title: "Advance"),
-
-          /// Usage
-          const SliverContentTitle(title: "Usage"),
-
-          /// Info about usage algorithm
-          const StyledText(
-            "If the screen time does not accurately reflect your usage, try changing the usage algorithm from the dropdown below.",
-          ).sliver,
-
-          4.vSliverBox,
-
-          /// Usage algorithm
-          DefaultDropdownTile<UsageAlgorithm>(
-            value: ref.watch(settingsProvider.select((v) => v.algorithm)),
-            dialogIcon: FluentIcons.data_sunburst_20_filled,
-            label: "Usage algorithm",
-            onSelected:
-                ref.read(settingsProvider.notifier).changeUsageAlgorithm,
-            items: [
-              DefaultDropdownItem(
-                label: "States Based",
-                value: UsageAlgorithm.usageStates,
-              ),
-              DefaultDropdownItem(
-                label: "Events Based",
-                value: UsageAlgorithm.usageEvents,
-              ),
-            ],
-          ).sliver,
-
-          12.vSliverBox,
-          const SliverContentTitle(title: "Service"),
-
-          /// Battery
-          const StyledText(
-            "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
-          ).sliver,
-          6.vSliverBox,
-
-          /// Battery permission
-          const BatteryPermissionTile(),
-
-          /// Invincible
-          12.vSliverBox,
-          const SliverContentTitle(title: "Invincible mode"),
-
-          /// Information about invincible mode
-          const StyledText(
-            "When Invincible Mode is enabled, you cannot uninstall Mindful, modify app's timer once it runs out, change bedtime routine settings during the bedtime schedule period, or modify shorts blocker settings after reaching the daily limit.\n\nEnjoy a distraction-free experience!",
-          ).sliver,
-          8.vSliverBox,
-
-          /// Invincible mode
-          DefaultHero(
-            tag: AppTags.invincibleModeTileTag,
-            child: DefaultListTile(
-              isPrimary: true,
-              switchValue: isInvincibleModeOn,
-              enabled: haveAdminPermission && !isInvincibleModeOn,
-              leadingIcon: FluentIcons.animal_cat_20_regular,
-              titleText: "Invincible mode",
-              onPressed: () =>
-                  _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        /// Appbar
+        const SliverFlexibleAppBar(title: "Advance"),
+    
+        /// Usage
+        const SliverContentTitle(title: "Usage"),
+    
+        /// Info about usage algorithm
+        const StyledText(
+          "If the screen time does not accurately reflect your usage, try changing the usage algorithm from the dropdown below.",
+        ).sliver,
+    
+        4.vSliverBox,
+    
+        /// Usage algorithm
+        DefaultDropdownTile<UsageAlgorithm>(
+          value: ref.watch(settingsProvider.select((v) => v.algorithm)),
+          dialogIcon: FluentIcons.data_sunburst_20_filled,
+          label: "Usage algorithm",
+          onSelected:
+              ref.read(settingsProvider.notifier).changeUsageAlgorithm,
+          items: [
+            DefaultDropdownItem(
+              label: "States Based",
+              value: UsageAlgorithm.usageStates,
             ),
+            DefaultDropdownItem(
+              label: "Events Based",
+              value: UsageAlgorithm.usageEvents,
+            ),
+          ],
+        ).sliver,
+    
+        12.vSliverBox,
+        const SliverContentTitle(title: "Service"),
+    
+        /// Battery
+        const StyledText(
+          "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
+        ).sliver,
+        6.vSliverBox,
+    
+        /// Battery permission
+        const BatteryPermissionTile(),
+    
+        /// Invincible
+        12.vSliverBox,
+        const SliverContentTitle(title: "Invincible mode"),
+    
+        /// Information about invincible mode
+        const StyledText(
+          "When Invincible Mode is enabled, you cannot uninstall Mindful, modify app's timer once it runs out, change bedtime routine settings during the bedtime schedule period, or modify shorts blocker settings after reaching the daily limit.\n\nEnjoy a distraction-free experience!",
+        ).sliver,
+        8.vSliverBox,
+    
+        /// Invincible mode
+        DefaultHero(
+          tag: AppTags.invincibleModeTileTag,
+          child: DefaultListTile(
+            isPrimary: true,
+            switchValue: isInvincibleModeOn,
+            enabled: haveAdminPermission && !isInvincibleModeOn,
+            leadingIcon: FluentIcons.animal_cat_20_regular,
+            titleText: "Invincible mode",
+            onPressed: () =>
+                _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
+          ),
+        ).sliver,
+        12.vSliverBox,
+    
+        /// Admin permission warning
+        const AdminPermission(),
+        if (isInvincibleModeOn && haveAdminPermission)
+          const StyledText(
+            "Note: If you wish to uninstall this app due to an emergency while Invincible Mode is on, please follow these steps:\n\n1. Go to Settings > Apps > All Apps or Downloaded Apps.\n2. Find Mindful in the list and open app settings page.\n3. Tap uninstall and you will be asked to Deactivate Admin then Tap on deactivate and uninstall",
+            isSubtitle: true,
           ).sliver,
-          12.vSliverBox,
-
-          /// Admin permission warning
-          const AdminPermission(),
-          if (isInvincibleModeOn && haveAdminPermission)
-            const StyledText(
-              "Note: If you wish to uninstall this app due to an emergency while Invincible Mode is on, please follow these steps:\n\n1. Go to Settings > Apps > All Apps or Downloaded Apps.\n2. Find Mindful in the list and open app settings page.\n3. Tap uninstall and you will be asked to Deactivate Admin then Tap on deactivate and uninstall",
-              isSubtitle: true,
-            ).sliver,
-
-          const SliverTabsBottomPadding()
-        ],
-      ),
+    
+        const SliverTabsBottomPadding()
+      ],
     );
   }
 }
