@@ -1,28 +1,20 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/tags.dart';
-import 'package:mindful/ui/common/default_dropdown_tile.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/device_dnd_tile.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
-import 'package:mindful/ui/permissions/dnd_permission.dart';
-import 'package:mindful/ui/screens/home/bedtime/distracting_apps_list.dart';
+import 'package:mindful/ui/screens/focus/focus_mode/focus_distracting_apps_list.dart';
+import 'package:mindful/ui/screens/focus/focus_mode/focus_configurations.dart';
 
-class TabFocus extends ConsumerStatefulWidget {
+class TabFocus extends StatelessWidget {
   const TabFocus({super.key});
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TabFocusState();
-}
-
-class _TabFocusState extends ConsumerState<TabFocus> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -38,35 +30,9 @@ class _TabFocusState extends ConsumerState<TabFocus> {
               "When you need time to focus, you can pause distracting apps and start do not disturb mode",
             ).sliver,
 
-            const SliverContentTitle(title: "Configurations"),
+            const FocusConfigurations(),
 
-            /// Session tag
-            DefaultDropdownTile<String>(
-              label: "Focus session",
-              dialogIcon: FluentIcons.door_tag_20_filled,
-              value: 'Study',
-              onSelected: (e) {},
-              items: ["Study", "Other"]
-                  .map((e) => DefaultDropdownItem(label: e, value: e))
-                  .toList(),
-            ).sliver,
-
-            /// Should start dnd
-            DefaultListTile(
-              switchValue: true,
-              titleText: "Start DND mode",
-              subtitleText:
-                  "Enable Do Not Disturb Mode throughout the focus session.",
-              onPressed: () {},
-            ).sliver,
-
-            /// Dnd permission warning
-            const DndPermission(),
-
-            /// Manage Dnd settings
-            const DeviceDndTile().sliver,
-
-            const DistractingAppsList()
+            const FocusDistractingAppsList()
           ],
         ),
 
@@ -74,34 +40,50 @@ class _TabFocusState extends ConsumerState<TabFocus> {
         Positioned(
           bottom: 12,
           right: 12,
-          child: FloatingActionButton.extended(
-            heroTag: AppTags.focusModeFABTag,
-            label: const Text("Start Now"),
-            icon: const Icon(FluentIcons.target_arrow_20_filled),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            onPressed: () => _startFocusSession(context),
+          child: Consumer(
+            builder: (_, WidgetRef ref, __) {
+              return FloatingActionButton.extended(
+                heroTag: HeroTags.focusModeFABTag,
+                label: const Text("Start Session"),
+                icon: const Icon(FluentIcons.target_arrow_20_filled),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                onPressed: () => _startFocusSession(context, ref),
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  void _startFocusSession(BuildContext context) async {
+  void _startFocusSession(BuildContext context, WidgetRef ref) async {
     /// Check if already session is running then forward to active session screen
-    if (context.mounted) {
+    final state = ref.read(focusModeProvider);
+    if (state.lastSession != null) {
       Navigator.of(context).pushNamed(AppRoutes.activeSessionScreen);
       return;
     }
 
-    /// else
+    // If no distracting apps selected
+    if (state.distractingApps.isEmpty) {
+      context.showSnackAlert(
+        "Select at least one distracting app to start focus session",
+      );
+      return;
+    }
+
     final timerSeconds = await showFocusTimerPicker(
       context: context,
-      heroTag: AppTags.focusModeFABTag,
+      heroTag: HeroTags.focusModeFABTag,
     );
 
-    await Future.delayed(250.ms);
+    /// Return if user cancelled duration picker
+    if (timerSeconds == null) return;
+    await ref.read(focusModeProvider.notifier).startNewSession(timerSeconds);
 
-    if (timerSeconds == null || !context.mounted) return;
+    /// Return if not mounted
+    if (!context.mounted) return;
+    Navigator.of(context).pushNamed(AppRoutes.activeSessionScreen);
   }
 }

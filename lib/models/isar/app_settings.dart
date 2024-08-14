@@ -46,8 +46,6 @@ class AppSettings {
     this.dataResetTimeMins = 0, // 12:00 AM
   });
 
- 
-
   AppSettings copyWith({
     ThemeMode? themeMode,
     UsageAlgorithm? algorithm,

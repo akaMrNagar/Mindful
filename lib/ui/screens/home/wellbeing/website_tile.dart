@@ -1,7 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -21,14 +21,14 @@ class WebsiteTile extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       titleText: websitehost,
       trailing: DefaultHero(
-        tag: AppTags.websiteTileTag(websitehost),
+        tag: HeroTags.websiteTileTag(websitehost),
         child: IconButton(
           iconSize: 18,
           icon: const Icon(FluentIcons.delete_dismiss_20_regular),
           onPressed: () async {
             final confirm = await showConfirmationDialog(
               context: context,
-              heroTag: AppTags.websiteTileTag(websitehost),
+              heroTag: HeroTags.websiteTileTag(websitehost),
               icon: FluentIcons.delete_dismiss_20_filled,
               positiveLabel: "Remove",
               title: "Remove website",

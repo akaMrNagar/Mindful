@@ -179,6 +179,23 @@ class MethodChannelService {
   Future<bool> useEmergencyPass() async =>
       await _methodChannel.invokeMethod('useEmergencyPass');
 
+  /// Uses an emergency pass.
+  ///
+  /// This method sends a request to the native side to use an emergency pass.
+  Future<bool> startFocusSession({
+    required int durationSeconds,
+    required bool toggleDnd,
+    required List<String> distractingApps,
+  }) async =>
+      await _methodChannel.invokeMethod(
+        'startFocusSession',
+        jsonEncode({
+          'toggleDnd': toggleDnd,
+          'durationSeconds': durationSeconds,
+          'distractingApps': distractingApps,
+        }),
+      );
+
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
 
@@ -269,7 +286,6 @@ class MethodChannelService {
         'getAndAskAdminPermission',
         askPermissionToo,
       );
-
 
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================

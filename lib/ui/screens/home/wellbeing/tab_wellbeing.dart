@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
@@ -45,7 +45,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
     final isConfirm = await showConfirmationDialog(
       context: context,
       icon: FluentIcons.video_prohibited_20_filled,
-      heroTag: AppTags.blockNsfwTileTag,
+      heroTag: HeroTags.blockNsfwTileTag,
       title: "Adult sites",
       info:
           "Are you sure? This action is irreversible. Once adult sites blocker is turned on, you cannot turn it off as long as this app is installed on your device.",
@@ -84,14 +84,14 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           slivers: [
             /// Appbar
             const SliverFlexibleAppBar(title: "Wellbeing"),
-    
+
             /// Information about bedtime
             const StyledText(
               "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
             ).sliver,
-    
+
             const AccessibilityPermission(),
-    
+
             if (haveAccessibilityPermission)
               SliverPrimaryActionContainer(
                 isVisible: !isModifiable,
@@ -100,17 +100,17 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 information:
                     "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
               ),
-    
+
             /// Short content header
             const SliverContentTitle(title: "Short content"),
-    
+
             /// Short usage progress bar
             ShortsTimerChart(
               isModifiable: isModifiable && haveAccessibilityPermission,
               allowedTimeSec: max(wellBeing.allowedShortContentTimeSec, 1),
               remainingTimeSec: remainingTimeSec,
             ).sliver,
-    
+
             /// Quick actions
             SliverList.list(
               children: [
@@ -129,7 +129,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       .read(wellBeingProvider.notifier)
                       .switchBlockInstaReels,
                 ),
-    
+
                 /// Block youtube shorts
                 DefaultListTile(
                   leading: Image.asset(
@@ -141,11 +141,10 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                   titleText: "Block shorts",
                   subtitleText: "Restrict shorts on youtube.",
                   switchValue: wellBeing.blockYtShorts,
-                  onPressed: ref
-                      .read(wellBeingProvider.notifier)
-                      .switchBlockYtShorts,
+                  onPressed:
+                      ref.read(wellBeingProvider.notifier).switchBlockYtShorts,
                 ),
-    
+
                 /// Block snapchat spotlight
                 DefaultListTile(
                   leading: Image.asset(
@@ -161,7 +160,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       .read(wellBeingProvider.notifier)
                       .switchBlockSnapSpotlight,
                 ),
-    
+
                 /// Block facebook reels
                 DefaultListTile(
                   leading: Image.asset(
@@ -178,13 +177,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 ),
               ],
             ),
-    
+
             /// Adult content header
             const SliverContentTitle(title: "Adult content"),
-    
+
             /// Block NSFW websites
             DefaultHero(
-              tag: AppTags.blockNsfwTileTag,
+              tag: HeroTags.blockNsfwTileTag,
               child: DefaultListTile(
                 enabled:
                     haveAccessibilityPermission && !wellBeing.blockNsfwSites,
@@ -196,10 +195,10 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 onPressed: _turnNsfwBlockerOn,
               ),
             ).sliver,
-    
+
             /// Blocked websites header
             const SliverContentTitle(title: "Blocked websites"),
-    
+
             /// Distracting websites list
             wellBeing.blockedWebsites.isNotEmpty
                 ? SliverFixedExtentList.builder(
@@ -222,18 +221,18 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                       textAlign: TextAlign.center,
                     ),
                   ).sliver,
-    
+
             const SliverTabsBottomPadding(),
           ],
         ),
-    
+
         /// Add more distracting websites button
         if (haveAccessibilityPermission)
           Positioned(
             bottom: 32,
             right: 24,
             child: FloatingActionButton(
-              heroTag: AppTags.addDistractingSiteFABTag,
+              heroTag: HeroTags.addDistractingSiteFABTag,
               onPressed: () => _onPressedFab(context, ref),
               child: const Icon(FluentIcons.add_20_filled),
             ),
@@ -245,7 +244,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
   void _onPressedFab(BuildContext context, WidgetRef ref) async {
     final url = await showWebsiteInputDialog(
       context: context,
-      heroTag: AppTags.addDistractingSiteFABTag,
+      heroTag: HeroTags.addDistractingSiteFABTag,
     );
 
     if (url == null || url.isEmpty) return;

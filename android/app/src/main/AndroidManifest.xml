@@ -112,12 +112,7 @@
             android:exported="false"
             android:foregroundServiceType="specialUse" />
         <service
-            android:name=".services.EmergencyPauseService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
-        <service
-            android:name=".services.FocusSessionService"
+            android:name=".services.CountDownService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />

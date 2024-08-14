@@ -21,7 +21,7 @@ import com.mindful.android.R;
 import com.mindful.android.helpers.NetworkUsageHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.utils.AlgorithmType;
+import com.mindful.android.enums.AlgorithmType;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 

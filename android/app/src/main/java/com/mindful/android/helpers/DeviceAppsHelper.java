@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SuccessCallback;
 import com.mindful.android.models.AndroidApp;
-import com.mindful.android.utils.AlgorithmType;
+import com.mindful.android.enums.AlgorithmType;
 import com.mindful.android.utils.Utils;
 
 import java.util.ArrayList;

@@ -2,8 +2,8 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/constants.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -21,7 +21,7 @@ class SliverFlexibleAppBar extends StatelessWidget {
   void _showBetaDialog(BuildContext context) async {
     final reportIssue = await showConfirmationDialog(
       context: context,
-      heroTag: AppTags.betaWarningTag,
+      heroTag: HeroTags.betaWarningTag,
       icon: FluentIcons.warning_20_filled,
       positiveLabel: "Report Issue",
       negativeLabel: "Close",
@@ -63,7 +63,7 @@ class SliverFlexibleAppBar extends StatelessWidget {
 
               /// Beta tag
               DefaultHero(
-                tag: AppTags.betaWarningTag,
+                tag: HeroTags.betaWarningTag,
                 child: RoundedContainer(
                   width: 48,
                   height: 24,

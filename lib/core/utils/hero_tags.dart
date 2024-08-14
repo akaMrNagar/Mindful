@@ -1,4 +1,4 @@
-class AppTags {
+class HeroTags {
   /// Tag used to identify the invincible mode setting.
   static const invincibleModeTileTag = "settings.general.invincibleModeTile";
 
@@ -32,4 +32,7 @@ class AppTags {
   /// Generates a tag for a website tile based on the provided host name.
   static String websiteTileTag(String host) =>
       "home.wellBeing.websiteTile.$host";
+ 
+  /// Tag used to identify the FAB for timer picker in focus mode.
+  static const giveUpFocusSessionTag = "activeSession.giveUp";
 }

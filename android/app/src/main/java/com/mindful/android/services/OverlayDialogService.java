@@ -1,8 +1,7 @@
 package com.mindful.android.services;
 
 import static com.mindful.android.utils.AppConstants.BEDTIME_APP_PAUSE_MESSAGE;
-import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
-import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
+import static com.mindful.android.utils.AppConstants.FOCUS_SESSION_APP_PAUSE_MESSAGE;
 import static com.mindful.android.utils.AppConstants.TIMER_APP_PAUSE_MESSAGE;
 
 import android.app.AlertDialog;
@@ -27,8 +26,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.mindful.android.R;
 import com.mindful.android.MainActivity;
+import com.mindful.android.R;
+import com.mindful.android.enums.DialogType;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.utils.AppConstants;
 
@@ -38,14 +38,16 @@ import com.mindful.android.utils.AppConstants;
 public class OverlayDialogService extends Service {
 
     private static final String TAG = "Mindful.OverlayDialogService";
+    public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
+    public static final String INTENT_EXTRA_DIALOG_TYPE = "overlayDialogType";
 
     private String mPackageName;
-    private boolean mIsThisBedtime = false;
+    private DialogType mDialogType = DialogType.TimerOut;
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         mPackageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
-        mIsThisBedtime = intent.getBooleanExtra(INTENT_EXTRA_IS_THIS_BEDTIME, false);
+        mDialogType = DialogType.fromInteger(intent.getIntExtra(INTENT_EXTRA_DIALOG_TYPE, mDialogType.toInteger()));
 
         if (mPackageName == null) {
             stopSelf();
@@ -133,9 +135,22 @@ public class OverlayDialogService extends Service {
             sysTheme = AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
         }
 
+        String dialogMsg = TIMER_APP_PAUSE_MESSAGE;
+        switch (mDialogType) {
+            case TimerOut:
+                dialogMsg = TIMER_APP_PAUSE_MESSAGE;
+                break;
+            case FocusSession:
+                dialogMsg = FOCUS_SESSION_APP_PAUSE_MESSAGE;
+                break;
+            case BedtimeRoutine:
+                dialogMsg = BEDTIME_APP_PAUSE_MESSAGE;
+                break;
+        }
+
         return new AlertDialog.Builder(this, sysTheme)
                 .setTitle(appName)
-                .setMessage(mIsThisBedtime ? BEDTIME_APP_PAUSE_MESSAGE : TIMER_APP_PAUSE_MESSAGE)
+                .setMessage(dialogMsg)
                 .setIcon(icon)
                 .setCancelable(false)
                 .setNegativeButton("Emergency", this::onClickEmergency)

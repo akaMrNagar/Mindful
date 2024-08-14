@@ -88,7 +88,7 @@ extension ExtBuildContext on BuildContext {
 
   void showSnackAlert(
     String info, {
-    IconData icon = FluentIcons.prohibited_20_filled,
+    IconData icon = FluentIcons.warning_20_filled,
   }) {
     final bgColor = Theme.of(this).colorScheme.secondaryContainer;
     final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;

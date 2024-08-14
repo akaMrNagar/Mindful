@@ -7,7 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.mindful.android.utils.AlgorithmType;
+import com.mindful.android.enums.AlgorithmType;
 
 import java.util.Calendar;
 import java.util.HashMap;

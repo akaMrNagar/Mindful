@@ -1,5 +1,7 @@
 package com.mindful.android;
 
+import static com.mindful.android.services.CountDownService.INTENT_EXTRA_FOCUS_SESSION_JSON;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.Context;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.mindful.android.enums.AlgorithmType;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.DeviceAppsHelper;
@@ -20,10 +23,9 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.PermissionsHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.BedtimeSettings;
-import com.mindful.android.services.EmergencyPauseService;
+import com.mindful.android.services.CountDownService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
-import com.mindful.android.utils.AlgorithmType;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -155,9 +157,8 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                     AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this);
                 } else {
                     AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
-                    if (mTrackerServiceConn.isConnected()) {
-                        mTrackerServiceConn.getService().startStopBedtimeRoutine(false);
-                    }
+                    Intent serviceIntent = new Intent(this, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_SERVICE_BEDTIME_MODE);
+                    startService(serviceIntent);
                 }
                 result.success(true);
                 break;
@@ -173,11 +174,29 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "useEmergencyPass": {
-                if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())) {
-                    startService(new Intent(this, EmergencyPauseService.class));
-                    result.success(true);
-                } else {
+                String action = CountDownService.ACTION_START_EMERGENCY_COUNTDOWN;
+                if (Utils.isServiceRunning(this, CountDownService.class.getName())
+                        && SharedPrefsHelper.fetchAllCountDownServices(this).contains(action)
+                ) {
                     result.success(false);
+                } else {
+                    startService(new Intent(this, CountDownService.class).setAction(action));
+                    result.success(true);
+                }
+                break;
+            }
+            case "startFocusSession": {
+                String action = CountDownService.ACTION_START_FOCUS_COUNTDOWN;
+                if (Utils.isServiceRunning(this, CountDownService.class.getName())
+                        && SharedPrefsHelper.fetchAllCountDownServices(this).contains(action)
+                ) {
+                    result.success(false);
+                } else {
+                    Intent intent = new Intent(this, CountDownService.class);
+                    intent.setAction(action);
+                    intent.putExtra(INTENT_EXTRA_FOCUS_SESSION_JSON, Utils.notNullStr(call.arguments()));
+                    startService(intent);
+                    result.success(true);
                 }
                 break;
             }
@@ -305,7 +324,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         if (askPermissionToo) {
             @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent ,0);
+            startActivityForResult(intent, 0);
         }
         return false;
     }

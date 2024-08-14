@@ -11,7 +11,7 @@ class DeviceDndTile extends StatelessWidget {
     return DefaultListTile(
       color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      leading: const Icon(FluentIcons.alert_20_regular),
+      leading: const Icon(FluentIcons.alert_off_20_regular),
       titleText: "Do not disturb settings",
       subtitleText: "Manage which apps and notifications can reach you in DND.",
       trailing: const Icon(FluentIcons.chevron_right_20_filled),

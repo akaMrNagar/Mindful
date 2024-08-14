@@ -142,32 +142,6 @@ public class NotificationHelper {
     }
 
     /**
-     * Builds and returns a progress notification with the specified parameters.
-     *
-     * @param context     The application context used to access system services.
-     * @param title       The title of the notification.
-     * @param content     The content text of the notification.
-     * @param maxProgress The maximum progress value.
-     * @param progress    The current progress value.
-     * @return A Notification object representing the progress notification.
-     */
-    @NonNull
-    public static Notification buildProgressNotification(Context context,
-                                                         String title,
-                                                         String content,
-                                                         int maxProgress,
-                                                         int progress
-    ) {
-        return new NotificationCompat.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setContentTitle(title)
-                .setContentText(content)
-                .setProgress(maxProgress, progress, false).build();
-    }
-
-    /**
      * Builds and returns a notification for a foreground service with the specified content.
      *
      * @param context The application context used to access system services.

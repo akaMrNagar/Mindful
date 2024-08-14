@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -40,22 +40,24 @@ class QuickActions extends ConsumerWidget {
 
     final newTimer = await showAppTimerPicker(
       app: app,
-      heroTag: AppTags.appTimerTileTag(app.packageName),
+      heroTag: HeroTags.appTimerTileTag(app.packageName),
       context: context,
       initialTime: prevTimer,
     );
 
     if (newTimer == prevTimer) return;
-    ref.read(focusProvider.notifier).updateAppTimer(app.packageName, newTimer);
+    ref
+        .read(restrictionInfosProvider.notifier)
+        .updateAppTimer(app.packageName, newTimer);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTimer = ref.watch(focusProvider
+    final appTimer = ref.watch(restrictionInfosProvider
             .select((value) => value[app.packageName]?.timerSec)) ??
         0;
 
-    final internetAccess = ref.watch(focusProvider
+    final internetAccess = ref.watch(restrictionInfosProvider
             .select((value) => value[app.packageName]?.internetAccess)) ??
         true;
 
@@ -69,7 +71,7 @@ class QuickActions extends ConsumerWidget {
       children: [
         /// App Timer Button
         DefaultHero(
-          tag: AppTags.appTimerTileTag(app.packageName),
+          tag: HeroTags.appTimerTileTag(app.packageName),
           child: DefaultListTile(
             titleText: "App timer",
             enabled: !app.isImpSysApp,
@@ -105,7 +107,7 @@ class QuickActions extends ConsumerWidget {
               : FluentIcons.globe_prohibited_16_filled,
           accent: internetAccess ? null : Theme.of(context).colorScheme.error,
           onPressed: () => ref
-              .read(focusProvider.notifier)
+              .read(restrictionInfosProvider.notifier)
               .switchInternetAccess(app.packageName, !internetAccess),
         ),
 

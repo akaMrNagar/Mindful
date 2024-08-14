@@ -45,7 +45,6 @@ public class BedtimeSettings {
 
     /**
      * Set of app package names identified as distracting apps.
-     * Actions like pausing apps or blocking the internet will be applied to these apps.
      */
     public HashSet<String> distractingApps = new HashSet<>(0);
 

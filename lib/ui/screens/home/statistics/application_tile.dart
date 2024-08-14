@@ -7,10 +7,10 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
@@ -51,19 +51,21 @@ class ApplicationTile extends ConsumerWidget {
 
     final newTimer = await showAppTimerPicker(
       app: app,
-      heroTag: AppTags.applicationTileTag(app.packageName),
+      heroTag: HeroTags.applicationTileTag(app.packageName),
       context: context,
       initialTime: prevTimer,
     );
 
     if (newTimer == prevTimer) return;
-    ref.read(focusProvider.notifier).updateAppTimer(app.packageName, newTimer);
+    ref
+        .read(restrictionInfosProvider.notifier)
+        .updateAppTimer(app.packageName, newTimer);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     /// Watch timer for the package
-    final appTimer = ref.watch(focusProvider
+    final appTimer = ref.watch(restrictionInfosProvider
             .select((value) => value[app.packageName]?.timerSec)) ??
         0;
 
@@ -71,7 +73,7 @@ class ApplicationTile extends ConsumerWidget {
         appTimer > 0 && appTimer <= app.screenTimeThisWeek[todayOfWeek];
 
     return DefaultHero(
-      tag: AppTags.applicationTileTag(app.packageName),
+      tag: HeroTags.applicationTileTag(app.packageName),
       child: DefaultListTile(
         onPressed: () {
           Navigator.of(context).pushNamed(

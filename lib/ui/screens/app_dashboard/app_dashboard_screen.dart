@@ -4,10 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/constants.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -54,7 +54,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appTimer = ref.watch(focusProvider
+    final appTimer = ref.watch(restrictionInfosProvider
             .select((value) => value[widget.app.packageName]?.timerSec)) ??
         0;
 
@@ -73,7 +73,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
               slivers: [
                 /// App bar
                 SliverFlexibleAppBar(title: widget.app.name),
-            
+
                 /// App icon and app package name
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -85,7 +85,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                       isGrayedOut: isPurged,
                     ),
                     8.vBox,
-            
+
                     /// App package name
                     StyledText(
                       widget.app.packageName,
@@ -93,24 +93,22 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                     ),
                   ],
                 ).sliver,
-            
+
                 12.vSliverBox,
-            
+
                 /// Usage type selector and usage info card
                 SliverUsageCards(
                   usageType: _selectedUsageType,
-                  screenUsageInfo:
-                      widget.app.screenTimeThisWeek[_selectedDoW],
+                  screenUsageInfo: widget.app.screenTimeThisWeek[_selectedDoW],
                   wifiUsageInfo: widget.app.wifiUsageThisWeek[_selectedDoW],
-                  mobileUsageInfo:
-                      widget.app.mobileUsageThisWeek[_selectedDoW],
+                  mobileUsageInfo: widget.app.mobileUsageThisWeek[_selectedDoW],
                   onUsageTypeChanged: (type) => setState(
                     () => _selectedUsageType = type,
                   ),
                 ),
-            
+
                 20.vSliverBox,
-            
+
                 /// Usage bar chart and selected day changer
                 SliverUsageChartPanel(
                   chartHeight: 212,
@@ -123,9 +121,9 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                     () => _selectedDoW = dow,
                   ),
                 ),
-            
+
                 const SliverContentTitle(title: "Quick actions"),
-            
+
                 /// Available app setting or functions
                 widget.app.packageName == AppConstants.removedAppPackage ||
                         widget.app.packageName ==
@@ -138,12 +136,12 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                         children: [
                           /// Vpn permission
                           if (!widget.app.isImpSysApp) const VpnPermission(),
-            
+
                           /// Quick action for app
                           QuickActions(app: widget.app),
                         ],
                       ),
-            
+
                 const SliverTabsBottomPadding(),
               ],
             ),

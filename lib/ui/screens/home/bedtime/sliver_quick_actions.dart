@@ -9,7 +9,7 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/permissions/dnd_permission.dart';
-import 'package:mindful/ui/screens/home/bedtime/distracting_apps_list.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class SliverQuickActions extends ConsumerStatefulWidget {
@@ -81,7 +81,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           duration: 500.ms,
           curve: Curves.easeOut,
           child: isDistractingAppsListExpanded
-              ? const DistractingAppsList()
+              ? const BedtimeDistractingAppsList()
               : 0.vSliverBox,
         ),
 
