@@ -5,13 +5,15 @@ class TimerProgressClock extends StatelessWidget {
   const TimerProgressClock({
     super.key,
     required this.progress,
+    this.dimension = 184,
   });
   final double progress;
+  final double dimension;
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      size: const Size.square(208),
+      size: Size.square(dimension),
       painter: _TimerClockPainter(
         progress: progress,
         bgColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),

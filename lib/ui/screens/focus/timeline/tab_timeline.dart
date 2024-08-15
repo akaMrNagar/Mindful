@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/models/isar/focus_session.dart';
+import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -20,6 +21,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
   @override
   void initState() {
     super.initState();
+    ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
     // IsarDbService.instance.resetDb();
     load();
   }
@@ -49,7 +51,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                 StyledText(_sessions[index].id.toString()),
                 StyledText(_sessions[index].startTime.toString()),
                 StyledText(_sessions[index].duration.toTimeShort()),
-                StyledText(_sessions[index].endTime.toString()),
                 StyledText(_sessions[index].state.toString()),
                 StyledText(_sessions[index].type.toString()),
               ],

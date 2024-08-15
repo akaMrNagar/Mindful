@@ -8,8 +8,10 @@ import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/providers/aggregated_usage_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -26,6 +28,12 @@ class TabDashboard extends ConsumerStatefulWidget {
 }
 
 class _TabDashboardState extends ConsumerState<TabDashboard> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+  }
+
   @override
   Widget build(BuildContext context) {
     /// Aggregated usage for whole week on the basis of full day
@@ -79,6 +87,9 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
               ),
             ],
           ).sliver,
+
+          /// Active session
+          const SliverActiveSessionAlert(),
 
           /// Total focused time from install to till now
           UsageGlanceCard(
@@ -143,11 +154,10 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             isPrimary: true,
             titleText: "Focus now",
             leadingIcon: FluentIcons.target_arrow_20_regular,
-            subtitleText: "Let's do something productive",
+            subtitleText: "Let's do something productive.",
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
-            onPressed: () {
-              Navigator.of(context).pushNamed(AppRoutes.focusScreen);
-            },
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.focusScreen),
           ).sliver,
 
           8.vSliverBox,

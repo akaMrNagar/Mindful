@@ -20,14 +20,10 @@ class FocusModeSettings {
 
   final List<String> distractingApps;
 
-  @ignore
-  final FocusSession? lastSession;
-
   const FocusModeSettings({
     this.sessionType = SessionType.study,
     this.shouldStartDnd = false,
     this.distractingApps = const [],
-    this.lastSession,
   });
 
   FocusModeSettings copyWith({
@@ -40,7 +36,6 @@ class FocusModeSettings {
       sessionType: sessionType ?? this.sessionType,
       shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
       distractingApps: distractingApps ?? this.distractingApps,
-      lastSession: lastSession,
     );
   }
 }

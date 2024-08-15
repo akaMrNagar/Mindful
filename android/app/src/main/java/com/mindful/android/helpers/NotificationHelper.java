@@ -42,7 +42,7 @@ public class NotificationHelper {
     public static void registerNotificationGroupAndChannels(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channels
-            NotificationChannel importantChannel = new NotificationChannel(NOTIFICATION_IMPORTANT_CHANNEL_ID, NOTIFICATION_IMPORTANT_CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel importantChannel = new NotificationChannel(NOTIFICATION_IMPORTANT_CHANNEL_ID, NOTIFICATION_IMPORTANT_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
             NotificationChannel otherChannel = new NotificationChannel(NOTIFICATION_OTHER_CHANNEL_ID, NOTIFICATION_OTHER_CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN);
             importantChannel.setDescription("These notifications include crucial reminders and updates, designed to help you stay on track.");
             otherChannel.setDescription("These are non-critical updates. They can be disabled but are included to comply with Android requirements.");

@@ -1,5 +1,6 @@
 package com.mindful.android;
 
+import static com.mindful.android.services.CountDownService.ACTION_STOP_FOCUS_COUNTDOWN;
 import static com.mindful.android.services.CountDownService.INTENT_EXTRA_FOCUS_SESSION_JSON;
 
 import android.annotation.SuppressLint;
@@ -198,6 +199,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                     startService(intent);
                     result.success(true);
                 }
+                break;
+            }
+
+            case "stopFocusSession": {
+                startService(new Intent(this, CountDownService.class).setAction(ACTION_STOP_FOCUS_COUNTDOWN));
+                result.success(true);
                 break;
             }
 

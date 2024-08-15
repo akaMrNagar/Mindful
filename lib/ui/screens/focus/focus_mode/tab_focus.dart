@@ -5,15 +5,28 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/focus_distracting_apps_list.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/focus_configurations.dart';
 
-class TabFocus extends StatelessWidget {
+class TabFocus extends ConsumerStatefulWidget {
   const TabFocus({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TabFocusState();
+}
+
+class _TabFocusState extends ConsumerState<TabFocus> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +43,10 @@ class TabFocus extends StatelessWidget {
               "When you need time to focus, you can pause distracting apps and start do not disturb mode",
             ).sliver,
 
+            const SliverActiveSessionAlert(
+              margin: EdgeInsets.only(top: 12),
+            ),
+
             const FocusConfigurations(),
 
             const FocusDistractingAppsList()
@@ -40,33 +57,31 @@ class TabFocus extends StatelessWidget {
         Positioned(
           bottom: 12,
           right: 12,
-          child: Consumer(
-            builder: (_, WidgetRef ref, __) {
-              return FloatingActionButton.extended(
-                heroTag: HeroTags.focusModeFABTag,
-                label: const Text("Start Session"),
-                icon: const Icon(FluentIcons.target_arrow_20_filled),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                onPressed: () => _startFocusSession(context, ref),
-              );
-            },
+          child: FloatingActionButton.extended(
+            heroTag: HeroTags.focusModeFABTag,
+            icon: const Icon(FluentIcons.target_arrow_20_filled),
+            label: const Text("Start Session"),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            onPressed: _startFocusSession,
           ),
         ),
       ],
     );
   }
 
-  void _startFocusSession(BuildContext context, WidgetRef ref) async {
-    /// Check if already session is running then forward to active session screen
-    final state = ref.read(focusModeProvider);
-    if (state.lastSession != null) {
-      Navigator.of(context).pushNamed(AppRoutes.activeSessionScreen);
+  void _startFocusSession() async {
+    /// If another focus session is already active
+    if (ref.read(activeSessionProvider).value != null) {
+      context.showSnackAlert(
+        "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
+      );
       return;
     }
 
     // If no distracting apps selected
-    if (state.distractingApps.isEmpty) {
+    final focusMode = ref.read(focusModeProvider);
+    if (focusMode.distractingApps.isEmpty) {
       context.showSnackAlert(
         "Select at least one distracting app to start focus session",
       );
@@ -79,11 +94,18 @@ class TabFocus extends StatelessWidget {
     );
 
     /// Return if user cancelled duration picker
-    if (timerSeconds == null) return;
-    await ref.read(focusModeProvider.notifier).startNewSession(timerSeconds);
+    if (timerSeconds == null || timerSeconds <= 0) return;
+    final newSession =
+        await ref.read(activeSessionProvider.notifier).startNewSession(
+              durationSeconds: timerSeconds,
+              type: focusMode.sessionType,
+              toggleDnd: focusMode.shouldStartDnd,
+              distractingApps: focusMode.distractingApps,
+            );
 
-    /// Return if not mounted
-    if (!context.mounted) return;
-    Navigator.of(context).pushNamed(AppRoutes.activeSessionScreen);
+    if (mounted) {
+      Navigator.of(context)
+          .pushNamed(AppRoutes.activeSessionScreen, arguments: newSession);
+    }
   }
 }

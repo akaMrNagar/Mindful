@@ -84,7 +84,7 @@ class IsarDbService {
   /// Inserts or Updates a single [FocusSession] object by id in the Isar database.
   Future<void> insertFocusSession(FocusSession session) async {
     _isar.writeTxn(
-      () => _isar.focusSessions.put(session),
+      () => _isar.focusSessions.putByIndex('startTimeMsEpoch', session),
     );
   }
 

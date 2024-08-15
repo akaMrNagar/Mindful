@@ -33,16 +33,14 @@ public class FocusSession {
     /**
      * Constructs a FocusSession instance from a JSON string.
      *
-     * @param jsonString JSON representation of FocusSession.
+     * @param jsonMapString JSON representation of FocusSession.
      */
-    public FocusSession(@NonNull String jsonString) {
-        if (jsonString.isEmpty()) {
+    public FocusSession(@NonNull String jsonMapString) {
+        if (jsonMapString.isEmpty()) {
             Log.d("Mindful.FocusSession", "JSON string passed to the constructor is empty");
         } else {
             try {
-                // Clean the JSON string and parse it
-                jsonString = jsonString.replace("\\", "");
-                JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
+                JSONObject jsonObject = new JSONObject(jsonMapString);
 
                 // Deserialize fields
                 toggleDnd = jsonObject.getBoolean("toggleDnd");

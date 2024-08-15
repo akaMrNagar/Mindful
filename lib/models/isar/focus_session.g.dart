@@ -17,34 +17,24 @@ const FocusSessionSchema = CollectionSchema(
   name: r'FocusSession',
   id: 7529488139707530527,
   properties: {
-    r'breakDurationSecs': PropertySchema(
-      id: 0,
-      name: r'breakDurationSecs',
-      type: IsarType.long,
-    ),
     r'durationSecs': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'durationSecs',
       type: IsarType.long,
     ),
-    r'endTimeMsEpoch': PropertySchema(
-      id: 2,
-      name: r'endTimeMsEpoch',
-      type: IsarType.long,
-    ),
     r'startTimeMsEpoch': PropertySchema(
-      id: 3,
+      id: 1,
       name: r'startTimeMsEpoch',
       type: IsarType.long,
     ),
     r'state': PropertySchema(
-      id: 4,
+      id: 2,
       name: r'state',
       type: IsarType.byte,
       enumMap: _FocusSessionstateEnumValueMap,
     ),
     r'type': PropertySchema(
-      id: 5,
+      id: 3,
       name: r'type',
       type: IsarType.byte,
       enumMap: _FocusSessiontypeEnumValueMap,
@@ -55,7 +45,21 @@ const FocusSessionSchema = CollectionSchema(
   deserialize: _focusSessionDeserialize,
   deserializeProp: _focusSessionDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'startTimeMsEpoch': IndexSchema(
+      id: 6705969030143502100,
+      name: r'startTimeMsEpoch',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'startTimeMsEpoch',
+          type: IndexType.value,
+          caseSensitive: false,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {},
   getId: _focusSessionGetId,
@@ -79,12 +83,10 @@ void _focusSessionSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.breakDurationSecs);
-  writer.writeLong(offsets[1], object.durationSecs);
-  writer.writeLong(offsets[2], object.endTimeMsEpoch);
-  writer.writeLong(offsets[3], object.startTimeMsEpoch);
-  writer.writeByte(offsets[4], object.state.index);
-  writer.writeByte(offsets[5], object.type.index);
+  writer.writeLong(offsets[0], object.durationSecs);
+  writer.writeLong(offsets[1], object.startTimeMsEpoch);
+  writer.writeByte(offsets[2], object.state.index);
+  writer.writeByte(offsets[3], object.type.index);
 }
 
 FocusSession _focusSessionDeserialize(
@@ -94,14 +96,12 @@ FocusSession _focusSessionDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = FocusSession(
-    breakDurationSecs: reader.readLongOrNull(offsets[0]) ?? 0,
-    durationSecs: reader.readLong(offsets[1]),
-    endTimeMsEpoch: reader.readLongOrNull(offsets[2]) ?? 0,
+    durationSecs: reader.readLong(offsets[0]),
     id: id,
-    startTimeMsEpoch: reader.readLong(offsets[3]),
-    state: _FocusSessionstateValueEnumMap[reader.readByteOrNull(offsets[4])] ??
+    startTimeMsEpoch: reader.readLong(offsets[1]),
+    state: _FocusSessionstateValueEnumMap[reader.readByteOrNull(offsets[2])] ??
         SessionState.active,
-    type: _FocusSessiontypeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
+    type: _FocusSessiontypeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
         SessionType.study,
   );
   return object;
@@ -115,17 +115,13 @@ P _focusSessionDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
+      return (reader.readLong(offset)) as P;
     case 1:
       return (reader.readLong(offset)) as P;
     case 2:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
-    case 3:
-      return (reader.readLong(offset)) as P;
-    case 4:
       return (_FocusSessionstateValueEnumMap[reader.readByteOrNull(offset)] ??
           SessionState.active) as P;
-    case 5:
+    case 3:
       return (_FocusSessiontypeValueEnumMap[reader.readByteOrNull(offset)] ??
           SessionType.study) as P;
     default:
@@ -201,11 +197,77 @@ List<IsarLinkBase<dynamic>> _focusSessionGetLinks(FocusSession object) {
 void _focusSessionAttach(
     IsarCollection<dynamic> col, Id id, FocusSession object) {}
 
+extension FocusSessionByIndex on IsarCollection<FocusSession> {
+  Future<FocusSession?> getByStartTimeMsEpoch(int startTimeMsEpoch) {
+    return getByIndex(r'startTimeMsEpoch', [startTimeMsEpoch]);
+  }
+
+  FocusSession? getByStartTimeMsEpochSync(int startTimeMsEpoch) {
+    return getByIndexSync(r'startTimeMsEpoch', [startTimeMsEpoch]);
+  }
+
+  Future<bool> deleteByStartTimeMsEpoch(int startTimeMsEpoch) {
+    return deleteByIndex(r'startTimeMsEpoch', [startTimeMsEpoch]);
+  }
+
+  bool deleteByStartTimeMsEpochSync(int startTimeMsEpoch) {
+    return deleteByIndexSync(r'startTimeMsEpoch', [startTimeMsEpoch]);
+  }
+
+  Future<List<FocusSession?>> getAllByStartTimeMsEpoch(
+      List<int> startTimeMsEpochValues) {
+    final values = startTimeMsEpochValues.map((e) => [e]).toList();
+    return getAllByIndex(r'startTimeMsEpoch', values);
+  }
+
+  List<FocusSession?> getAllByStartTimeMsEpochSync(
+      List<int> startTimeMsEpochValues) {
+    final values = startTimeMsEpochValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'startTimeMsEpoch', values);
+  }
+
+  Future<int> deleteAllByStartTimeMsEpoch(List<int> startTimeMsEpochValues) {
+    final values = startTimeMsEpochValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'startTimeMsEpoch', values);
+  }
+
+  int deleteAllByStartTimeMsEpochSync(List<int> startTimeMsEpochValues) {
+    final values = startTimeMsEpochValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'startTimeMsEpoch', values);
+  }
+
+  Future<Id> putByStartTimeMsEpoch(FocusSession object) {
+    return putByIndex(r'startTimeMsEpoch', object);
+  }
+
+  Id putByStartTimeMsEpochSync(FocusSession object, {bool saveLinks = true}) {
+    return putByIndexSync(r'startTimeMsEpoch', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByStartTimeMsEpoch(List<FocusSession> objects) {
+    return putAllByIndex(r'startTimeMsEpoch', objects);
+  }
+
+  List<Id> putAllByStartTimeMsEpochSync(List<FocusSession> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'startTimeMsEpoch', objects,
+        saveLinks: saveLinks);
+  }
+}
+
 extension FocusSessionQueryWhereSort
     on QueryBuilder<FocusSession, FocusSession, QWhere> {
   QueryBuilder<FocusSession, FocusSession, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+
+  QueryBuilder<FocusSession, FocusSession, QAfterWhere> anyStartTimeMsEpoch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        const IndexWhereClause.any(indexName: r'startTimeMsEpoch'),
+      );
     });
   }
 }
@@ -278,66 +340,103 @@ extension FocusSessionQueryWhere
       ));
     });
   }
-}
 
-extension FocusSessionQueryFilter
-    on QueryBuilder<FocusSession, FocusSession, QFilterCondition> {
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      breakDurationSecsEqualTo(int value) {
+  QueryBuilder<FocusSession, FocusSession, QAfterWhereClause>
+      startTimeMsEpochEqualTo(int startTimeMsEpoch) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'breakDurationSecs',
-        value: value,
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'startTimeMsEpoch',
+        value: [startTimeMsEpoch],
       ));
     });
   }
 
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      breakDurationSecsGreaterThan(
-    int value, {
+  QueryBuilder<FocusSession, FocusSession, QAfterWhereClause>
+      startTimeMsEpochNotEqualTo(int startTimeMsEpoch) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTimeMsEpoch',
+              lower: [],
+              upper: [startTimeMsEpoch],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTimeMsEpoch',
+              lower: [startTimeMsEpoch],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTimeMsEpoch',
+              lower: [startTimeMsEpoch],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'startTimeMsEpoch',
+              lower: [],
+              upper: [startTimeMsEpoch],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<FocusSession, FocusSession, QAfterWhereClause>
+      startTimeMsEpochGreaterThan(
+    int startTimeMsEpoch, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'breakDurationSecs',
-        value: value,
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'startTimeMsEpoch',
+        lower: [startTimeMsEpoch],
+        includeLower: include,
+        upper: [],
       ));
     });
   }
 
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      breakDurationSecsLessThan(
-    int value, {
+  QueryBuilder<FocusSession, FocusSession, QAfterWhereClause>
+      startTimeMsEpochLessThan(
+    int startTimeMsEpoch, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'breakDurationSecs',
-        value: value,
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'startTimeMsEpoch',
+        lower: [],
+        upper: [startTimeMsEpoch],
+        includeUpper: include,
       ));
     });
   }
 
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      breakDurationSecsBetween(
-    int lower,
-    int upper, {
+  QueryBuilder<FocusSession, FocusSession, QAfterWhereClause>
+      startTimeMsEpochBetween(
+    int lowerStartTimeMsEpoch,
+    int upperStartTimeMsEpoch, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'breakDurationSecs',
-        lower: lower,
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'startTimeMsEpoch',
+        lower: [lowerStartTimeMsEpoch],
         includeLower: includeLower,
-        upper: upper,
+        upper: [upperStartTimeMsEpoch],
         includeUpper: includeUpper,
       ));
     });
   }
+}
 
+extension FocusSessionQueryFilter
+    on QueryBuilder<FocusSession, FocusSession, QFilterCondition> {
   QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
       durationSecsEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
@@ -386,62 +485,6 @@ extension FocusSessionQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'durationSecs',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      endTimeMsEpochEqualTo(int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'endTimeMsEpoch',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      endTimeMsEpochGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'endTimeMsEpoch',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      endTimeMsEpochLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'endTimeMsEpoch',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterFilterCondition>
-      endTimeMsEpochBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'endTimeMsEpoch',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -676,20 +719,6 @@ extension FocusSessionQueryLinks
 
 extension FocusSessionQuerySortBy
     on QueryBuilder<FocusSession, FocusSession, QSortBy> {
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      sortByBreakDurationSecs() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'breakDurationSecs', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      sortByBreakDurationSecsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'breakDurationSecs', Sort.desc);
-    });
-  }
-
   QueryBuilder<FocusSession, FocusSession, QAfterSortBy> sortByDurationSecs() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSecs', Sort.asc);
@@ -700,20 +729,6 @@ extension FocusSessionQuerySortBy
       sortByDurationSecsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSecs', Sort.desc);
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      sortByEndTimeMsEpoch() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeMsEpoch', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      sortByEndTimeMsEpochDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeMsEpoch', Sort.desc);
     });
   }
 
@@ -758,20 +773,6 @@ extension FocusSessionQuerySortBy
 
 extension FocusSessionQuerySortThenBy
     on QueryBuilder<FocusSession, FocusSession, QSortThenBy> {
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      thenByBreakDurationSecs() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'breakDurationSecs', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      thenByBreakDurationSecsDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'breakDurationSecs', Sort.desc);
-    });
-  }
-
   QueryBuilder<FocusSession, FocusSession, QAfterSortBy> thenByDurationSecs() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSecs', Sort.asc);
@@ -782,20 +783,6 @@ extension FocusSessionQuerySortThenBy
       thenByDurationSecsDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'durationSecs', Sort.desc);
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      thenByEndTimeMsEpoch() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeMsEpoch', Sort.asc);
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QAfterSortBy>
-      thenByEndTimeMsEpochDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'endTimeMsEpoch', Sort.desc);
     });
   }
 
@@ -852,23 +839,9 @@ extension FocusSessionQuerySortThenBy
 
 extension FocusSessionQueryWhereDistinct
     on QueryBuilder<FocusSession, FocusSession, QDistinct> {
-  QueryBuilder<FocusSession, FocusSession, QDistinct>
-      distinctByBreakDurationSecs() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'breakDurationSecs');
-    });
-  }
-
   QueryBuilder<FocusSession, FocusSession, QDistinct> distinctByDurationSecs() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'durationSecs');
-    });
-  }
-
-  QueryBuilder<FocusSession, FocusSession, QDistinct>
-      distinctByEndTimeMsEpoch() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'endTimeMsEpoch');
     });
   }
 
@@ -900,22 +873,9 @@ extension FocusSessionQueryProperty
     });
   }
 
-  QueryBuilder<FocusSession, int, QQueryOperations>
-      breakDurationSecsProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'breakDurationSecs');
-    });
-  }
-
   QueryBuilder<FocusSession, int, QQueryOperations> durationSecsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'durationSecs');
-    });
-  }
-
-  QueryBuilder<FocusSession, int, QQueryOperations> endTimeMsEpochProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'endTimeMsEpoch');
     });
   }
 

@@ -34,6 +34,7 @@ dependencies:
   sliver_tools: ^0.2.12
   flutter_heatmap_calendar: ^1.0.5
   animated_flip_counter: ^0.3.4
+  flutter_confetti: ^0.3.0
 
 dev_dependencies:
   flutter_test:

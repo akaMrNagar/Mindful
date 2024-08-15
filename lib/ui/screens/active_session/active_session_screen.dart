@@ -1,17 +1,19 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/isar/focus_session.dart';
-import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -19,57 +21,43 @@ import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
 import 'package:mindful/ui/screens/active_session/timer_progress_clock.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
-class ActiveSessionScreen extends StatefulWidget {
-  const ActiveSessionScreen({
-    super.key,
-    this.currentSession,
-  });
+class ActiveSessionScreen extends ConsumerStatefulWidget {
+  const ActiveSessionScreen({required this.session, super.key});
 
-  final FocusSession? currentSession;
+  final FocusSession session;
 
   @override
-  State<ActiveSessionScreen> createState() => _ActiveSessionScreenState();
+  ConsumerState<ActiveSessionScreen> createState() =>
+      _ActiveSessionScreenState();
 }
 
-class _ActiveSessionScreenState extends State<ActiveSessionScreen> {
-  FocusSession? _runningSession;
+class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
   Timer? _timer;
-  Duration _remainingDuration = Duration.zero;
+  Duration _remainingTime = Duration.zero;
 
   @override
   void initState() {
     super.initState();
-    _iniSession();
+    _startSessionTimer();
   }
 
-  void _iniSession() async {
-    _runningSession = widget.currentSession ??
-        await IsarDbService.instance.loadLastActiveFocusSession();
+  void _startSessionTimer() {
+    final remaining = widget.session.duration
+        .subtract(DateTime.now().difference(widget.session.startTime));
 
-    if (_runningSession != null) {
-      _startTimer(_runningSession!);
-      return;
-    }
+    if (remaining.inSeconds > 0) _remainingTime = remaining;
 
-    if (mounted) Navigator.of(context).maybePop();
-  }
-
-  void _startTimer(FocusSession session) {
-    final elapsedSeconds =
-        (session.startTimeMsEpoch - DateTime.now().millisecondsSinceEpoch) ~/
-            1000;
-
-    final remainingSeconds =
-        session.duration.inSeconds - elapsedSeconds - session.breakDurationSecs;
-
-    _remainingDuration = remainingSeconds.seconds;
     _timer = Timer.periodic(1.seconds, (timer) {
-      int remainingSeconds = _remainingDuration.inSeconds;
-      remainingSeconds > 0 ? remainingSeconds-- : _timer!.cancel();
-      setState(() {
-        _remainingDuration = remainingSeconds.seconds;
-      });
+      /// Decrease remaining duration or cancel timer if remaining duration is 0
+      if (_remainingTime.inSeconds > 0) {
+        setState(() => _remainingTime = _remainingTime.subtract(1.seconds));
+      } else {
+        _timer!.cancel();
+        _launchConfetti();
+        ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+      }
     });
   }
 
@@ -82,6 +70,22 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen> {
   @override
   Widget build(BuildContext context) {
     const timeStyle = TextStyle(fontSize: 48, fontWeight: FontWeight.w600);
+    final quotes = [
+      "Every step counts, stay strong and keep going!",
+      "Stay focused! you're making amazing progress!",
+      "You're crushing it! Keep the momentum going!",
+      "Just a little more to go, you're doing fantastic!",
+      "Congratulations! 🎉\n You've completed your focus session of ${widget.session.duration.toTimeFull(replaceCommaWithAnd: true)}.\n\nGreat job—keep up the amazing work!"
+    ];
+    final isSessionActive = _remainingTime.inSeconds > 0;
+    final progress = !isSessionActive
+        ? 100
+        : 100 -
+            ((_remainingTime.inSeconds / widget.session.duration.inSeconds) *
+                100);
+
+    final quoteIndex = (progress / 20).floor() - 1;
+
     return Scaffold(
       body: DefaultNavbar(
         navbarItems: [
@@ -94,43 +98,50 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen> {
                 /// Appbar
                 const SliverFlexibleAppBar(title: "Study"),
 
-                const TimerProgressClock(progress: 50).sliver,
-                32.vSliverBox,
+                TimerProgressClock(
+                  progress: progress.toDouble(),
+                ).sliver,
+                20.vSliverBox,
 
                 /// Countdown timer
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     /// Hours
-                    if (_remainingDuration.inHours > 0)
+                    if (_remainingTime.inHours > 0)
                       AnimatedFlipCounter(
                         suffix: ":",
-                        value: _remainingDuration.inHours,
+                        value: _remainingTime.inHours,
                         textStyle: timeStyle,
                       ),
 
                     /// Minutes
                     AnimatedFlipCounter(
                       suffix: ":",
-                      value: _remainingDuration.inMinutes % 60,
+                      value: _remainingTime.inMinutes % 60,
                       textStyle: timeStyle,
                     ),
 
                     /// Seconds
                     AnimatedFlipCounter(
-                      value: _remainingDuration.inSeconds % 60,
+                      value: _remainingTime.inSeconds % 60,
                       textStyle: timeStyle,
                     ),
                   ],
                 ).sliver,
-                2.vSliverBox,
+                64.vSliverBox,
 
-                const StyledText(
-                  "You are doing great! keep it up",
-                  fontSize: 14,
-                ).centered.sliver,
+                SliverAnimatedPaintExtent(
+                  duration: 300.ms,
+                  child: StyledText(
+                    quotes[max(quoteIndex, 0)],
+                    fontSize: 14,
+                    textAlign: TextAlign.center,
+                    color: isSessionActive ? Theme.of(context).hintColor : null,
+                  ).centered.sliver,
+                ),
 
-                96.vSliverBox,
+                64.vSliverBox,
 
                 /// Waves
                 SineWave(
@@ -138,32 +149,17 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen> {
                   cosColor: Theme.of(context).colorScheme.primary,
                 ).sliver,
 
-                96.vSliverBox,
+                64.vSliverBox,
 
-                Consumer(
-                  builder: (_, WidgetRef ref, __) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        FilledButton.tonalIcon(
-                          label: const Text("Take break"),
-                          icon: const Icon(FluentIcons.bowl_salad_20_filled),
-                          onPressed: () {},
-                        ),
-                        12.hBox,
-                        DefaultHero(
-                          tag: HeroTags.giveUpFocusSessionTag,
-                          child: FilledButton.tonalIcon(
-                            label: const Text("Give Up"),
-                            icon:
-                                const Icon(FluentIcons.thumb_dislike_20_filled),
-                            onPressed: () => _giveUp(context, ref),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ).sliver,
+                if (_remainingTime.inSeconds > 20)
+                  DefaultHero(
+                    tag: HeroTags.giveUpFocusSessionTag,
+                    child: FilledButton.tonalIcon(
+                      label: const Text("Give Up"),
+                      icon: const Icon(FluentIcons.thumb_dislike_20_filled),
+                      onPressed: _giveUp,
+                    ),
+                  ).centered.sliver,
               ],
             ),
           ),
@@ -172,7 +168,7 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen> {
     );
   }
 
-  void _giveUp(BuildContext context, WidgetRef ref) async {
+  void _giveUp() async {
     final confirm = await showConfirmationDialog(
         context: context,
         heroTag: HeroTags.giveUpFocusSessionTag,
@@ -184,14 +180,81 @@ class _ActiveSessionScreenState extends State<ActiveSessionScreen> {
         negativeLabel: "Keep pushing");
 
     if (!confirm) return;
-    await ref.read(focusModeProvider.notifier).giveUpOnLastSession();
-
-    if (!context.mounted) return;
+    await ref.read(activeSessionProvider.notifier).giveUpOnCurrentSession();
 
     /// Show alert and go back
+    if (!mounted) return;
     context.showSnackAlert(
-      "Don't worry, you can do better next time! Every effort counts-just keep going!",
+      "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going",
     );
     Navigator.of(context).maybePop();
+  }
+
+  void _launchConfetti() {
+    final colors = [
+      Theme.of(context).colorScheme.primary,
+      Theme.of(context).colorScheme.onSecondaryContainer,
+    ];
+
+    int frameTime = 1000 ~/ 24;
+    int total = 5 * 1000 ~/ frameTime;
+    int progress = 0;
+
+    ConfettiController? controller1;
+    ConfettiController? controller2;
+    bool isDone = false;
+
+    Timer.periodic(Duration(milliseconds: frameTime), (timer) {
+      progress++;
+
+      if (progress >= total) {
+        timer.cancel();
+        isDone = true;
+        return;
+      }
+      if (controller1 == null) {
+        controller1 = Confetti.launch(
+          context,
+          options: ConfettiOptions(
+            particleCount: 2,
+            scalar: 1.5,
+            angle: 60,
+            spread: 55,
+            x: 0,
+            y: .75,
+            colors: colors,
+          ),
+          onFinished: (overlayEntry) {
+            if (isDone) {
+              overlayEntry.remove();
+            }
+          },
+        );
+      } else {
+        controller1!.launch();
+      }
+
+      if (controller2 == null) {
+        controller2 = Confetti.launch(
+          context,
+          options: ConfettiOptions(
+            particleCount: 2,
+            scalar: 1.5,
+            angle: 120,
+            spread: 55,
+            x: 1,
+            y: .75,
+            colors: colors,
+          ),
+          onFinished: (overlayEntry) {
+            if (isDone) {
+              overlayEntry.remove();
+            }
+          },
+        );
+      } else {
+        controller2!.launch();
+      }
+    });
   }
 }

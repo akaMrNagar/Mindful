@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
@@ -37,10 +38,17 @@ class AppRoutes {
     splashScreen: (context) => const SplashScreen(),
     onboardingScreen: (context) => const OnboardingScreen(),
     homeScreen: (context) => const HomeScreen(),
-    // homeScreen: (context) => const FocusScreen(),
     settingsScreen: (context) => const SettingsScreen(),
     focusScreen: (context) => const FocusScreen(),
-    activeSessionScreen: (context) => const ActiveSessionScreen(),
+
+    /// Resolve [FocusSession] model from arguments
+    activeSessionScreen: (context) {
+      final session =
+          ModalRoute.of(context)?.settings.arguments as FocusSession;
+      return ActiveSessionScreen(session: session);
+    },
+
+    /// Resolve variables from arguments
     appDashboardScreen: (context) {
       final args =
           ModalRoute.of(context)?.settings.arguments as AppDashboardScreenArgs;
