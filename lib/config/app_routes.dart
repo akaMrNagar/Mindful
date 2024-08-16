@@ -39,7 +39,11 @@ class AppRoutes {
     onboardingScreen: (context) => const OnboardingScreen(),
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
-    focusScreen: (context) => const FocusScreen(),
+
+    /// Resolve initial tab index from arguments
+    focusScreen: (context) => FocusScreen(
+          initialTabIndex: ModalRoute.of(context)?.settings.arguments as int,
+        ),
 
     /// Resolve [FocusSession] model from arguments
     activeSessionScreen: (context) {

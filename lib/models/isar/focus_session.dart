@@ -30,9 +30,7 @@ class FocusSession {
   @Index(unique: true, replace: true)
   final int startTimeMsEpoch;
 
-
   final int durationSecs;
-
 
   const FocusSession({
     this.id = Isar.autoIncrement,
@@ -55,5 +53,10 @@ class FocusSession {
       startTimeMsEpoch: startTimeMsEpoch ?? this.startTimeMsEpoch,
       durationSecs: durationSecs ?? this.durationSecs,
     );
+  }
+
+  @override
+  String toString() {
+    return 'FocusSession(id: $id, type: $type, state: $state, startTimeMsEpoch: $startTimeMsEpoch, durationSecs: $durationSecs)';
   }
 }

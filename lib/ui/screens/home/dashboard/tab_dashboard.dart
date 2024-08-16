@@ -142,12 +142,13 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
           ).sliver,
 
           DefaultListTile(
-            color: Theme.of(context).colorScheme.surfaceContainer,
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
             leadingIcon: FluentIcons.history_20_regular,
             titleText: "Focus timeline",
             subtitleText: "See what you did throughout the year.",
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
-            onPressed: () {},
+            onPressed: () => Navigator.of(context)
+                .pushNamed(AppRoutes.focusScreen, arguments: 1),
           ).sliver,
           8.vSliverBox,
           DefaultListTile(
@@ -156,8 +157,8 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             leadingIcon: FluentIcons.target_arrow_20_regular,
             subtitleText: "Let's do something productive.",
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(AppRoutes.focusScreen),
+            onPressed: () => Navigator.of(context)
+                .pushNamed(AppRoutes.focusScreen, arguments: 0),
           ).sliver,
 
           8.vSliverBox,

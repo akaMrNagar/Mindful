@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 
@@ -49,4 +50,11 @@ extension ExtInt on int {
   int toProgress(int previous) {
     return previous > 0 ? ((this - previous) / previous * 100).round() : 0;
   }
+
+  /// Returns [DateTime] object by creating it through fromMillisecondsSinceEpoch() constructor
+  DateTime get msToDateTime => DateTime.fromMillisecondsSinceEpoch(this);
+
+  /// Returns [DateTime] object while resetting time related fields by creating it through fromMillisecondsSinceEpoch() constructor
+  DateTime get msToDateOnly =>
+      DateTime.fromMillisecondsSinceEpoch(this).dateOnly;
 }

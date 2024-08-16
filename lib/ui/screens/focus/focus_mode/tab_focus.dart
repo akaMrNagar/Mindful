@@ -1,5 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -9,6 +10,7 @@ import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/focus_distracting_apps_list.dart';
@@ -49,7 +51,9 @@ class _TabFocusState extends ConsumerState<TabFocus> {
 
             const FocusConfigurations(),
 
-            const FocusDistractingAppsList()
+            const FocusDistractingAppsList(),
+
+            const SliverTabsBottomPadding(),
           ],
         ),
 
@@ -103,6 +107,7 @@ class _TabFocusState extends ConsumerState<TabFocus> {
               distractingApps: focusMode.distractingApps,
             );
 
+    await Future.delayed(300.ms);
     if (mounted) {
       Navigator.of(context)
           .pushNamed(AppRoutes.activeSessionScreen, arguments: newSession);

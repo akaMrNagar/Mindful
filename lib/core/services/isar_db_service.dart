@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:isar/isar.dart';
 import 'package:mindful/core/enums/session_state.dart';
+import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/focus_mode_settings.dart';
 import 'package:mindful/models/isar/focus_session.dart';
@@ -118,15 +121,68 @@ class IsarDbService {
       await _isar.focusModeSettings.where().findFirst() ??
       const FocusModeSettings();
 
-  /// Loads all [FocusSession] objects from the Isar database,
-  Future<List<FocusSession>> loadAllFocusSessions() async =>
-      await _isar.focusSessions.where().findAll();
+  /// Loads all [FocusSession] objects from the Isar database within the interval,
+  Future<List<FocusSession>> loadAllSessionsForInterval({
+    required DateTime start,
+    required DateTime end,
+  }) async =>
+      await _isar.focusSessions
+          .filter()
+          .startTimeMsEpochBetween(
+            start.millisecondsSinceEpoch,
+            end.millisecondsSinceEpoch,
+            includeLower: true,
+            includeUpper: true,
+          )
+          .findAll();
 
-  /// Loads the first (and likely only) [FocusSession] object
+  /// Loads list of dates in ms since epoch which are productive from the Isar database within the interval,
+  ///
+  /// A day is said to be productive if it has a session with duration greater than zero
+  Future<List<int>> loadProductiveDatesForInterval({
+    required DateTime start,
+    required DateTime end,
+  }) async =>
+      await _isar.focusSessions
+          .filter()
+          .startTimeMsEpochBetween(
+            start.millisecondsSinceEpoch,
+            end.millisecondsSinceEpoch,
+            includeLower: true,
+            includeUpper: true,
+          )
+          .durationSecsGreaterThan(0)
+          .startTimeMsEpochProperty()
+          .findAll();
+
+  /// Loads the first (and likely only) [FocusSession] object who's state is [SessionState.active]
   /// from the Isar database. If none exists, returns null.
   Future<FocusSession?> loadLastActiveFocusSession() async =>
       await _isar.focusSessions
           .filter()
           .stateEqualTo(SessionState.active)
           .findFirst();
+
+  void insertFakeSessions() async {
+    _isar.writeTxn(
+      () async {
+        DateTime initialTime = DateTime.now().copyWith(day: 1);
+        final rand = Random();
+
+        for (var i = 1; i <= 100; i++) {
+          int ran = rand.nextInt(999);
+
+          final session = FocusSession(
+            type: SessionType.values[ran % (SessionType.values.length - 1)],
+            state: i % 2 == 0 ? SessionState.successful : SessionState.failed,
+            startTimeMsEpoch:
+                initialTime.copyWith(day: ran % 30).millisecondsSinceEpoch,
+            durationSecs: ran,
+          );
+
+          await _isar.focusSessions.putByIndex('startTimeMsEpoch', session);
+        }
+      },
+    );
+  }
 }
