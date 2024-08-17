@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
@@ -41,6 +42,8 @@ class FocusConfigurations extends ConsumerWidget {
 
         /// Should start dnd
         DefaultListTile(
+          enabled:
+              ref.watch(permissionProvider.select((v) => v.haveDndPermission)),
           switchValue: shouldStartDnd,
           titleText: "Start DND mode",
           subtitleText:

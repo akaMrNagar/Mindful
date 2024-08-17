@@ -175,7 +175,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
         title: "Give Up",
         info:
             "Hold on! You're almost there don't give up now! Are you sure you want to end this focus session early? Progress will be lost.",
-        icon: FluentIcons.warning_20_filled,
+        icon: FluentIcons.emoji_sad_20_filled,
         positiveLabel: "Give up",
         negativeLabel: "Keep pushing");
 

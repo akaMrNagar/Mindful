@@ -12,7 +12,7 @@ class DefaultEffects {
         ScaleEffect(
           duration: 600.ms,
           curve: Curves.decelerate,
-          begin: const Offset(0.8, 0.8),
+          begin: const Offset(0.85, 0.85),
           end: const Offset(1, 1),
         ),
         FadeEffect(

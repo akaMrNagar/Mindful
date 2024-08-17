@@ -55,8 +55,11 @@ class FocusSession {
     );
   }
 
-  @override
-  String toString() {
-    return 'FocusSession(id: $id, type: $type, state: $state, startTimeMsEpoch: $startTimeMsEpoch, durationSecs: $durationSecs)';
+  factory FocusSession.placeholder() {
+    return const FocusSession(
+      type: SessionType.other,
+      startTimeMsEpoch: 0,
+      durationSecs: 24000,
+    );
   }
 }

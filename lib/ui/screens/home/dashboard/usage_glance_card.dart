@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class UsageGlanceCard extends StatelessWidget {
   const UsageGlanceCard({
@@ -72,12 +73,14 @@ class UsageGlanceCard extends StatelessWidget {
             fontSize: 12,
           ),
           FittedBox(
-            child: StyledText(
-              info.isEmpty ? " " : info,
-              fontSize: 24,
-              maxLines: 1,
-              fontWeight: FontWeight.bold,
-              overflow: TextOverflow.ellipsis,
+            child: Skeleton.leaf(
+              child: StyledText(
+                info.isEmpty ? " " : info,
+                fontSize: 24,
+                maxLines: 1,
+                fontWeight: FontWeight.bold,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ),
         ],

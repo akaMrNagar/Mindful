@@ -121,6 +121,14 @@ class IsarDbService {
       await _isar.focusModeSettings.where().findFirst() ??
       const FocusModeSettings();
 
+  /// Loads the first (and likely only) [FocusSession] object who's state is [SessionState.active]
+  /// from the Isar database. If none exists, returns null.
+  Future<FocusSession?> loadLastActiveFocusSession() async =>
+      await _isar.focusSessions
+          .filter()
+          .stateEqualTo(SessionState.active)
+          .findFirst();
+
   /// Loads all [FocusSession] objects from the Isar database within the interval,
   Future<List<FocusSession>> loadAllSessionsForInterval({
     required DateTime start,
@@ -134,12 +142,13 @@ class IsarDbService {
             includeLower: true,
             includeUpper: true,
           )
+          .sortByStartTimeMsEpoch()
           .findAll();
 
   /// Loads list of dates in ms since epoch which are productive from the Isar database within the interval,
   ///
   /// A day is said to be productive if it has a session with duration greater than zero
-  Future<List<int>> loadProductiveDatesForInterval({
+  Future<List<int>> loadAllSessionDatesForInterval({
     required DateTime start,
     required DateTime end,
   }) async =>
@@ -154,14 +163,25 @@ class IsarDbService {
           .durationSecsGreaterThan(0)
           .startTimeMsEpochProperty()
           .findAll();
-
-  /// Loads the first (and likely only) [FocusSession] object who's state is [SessionState.active]
-  /// from the Isar database. If none exists, returns null.
-  Future<FocusSession?> loadLastActiveFocusSession() async =>
+  
+  /// Loads list of dates in ms since epoch which are productive from the Isar database within the interval,
+  ///
+  /// A day is said to be productive if it has a session with duration greater than zero
+  Future<List<int>> loadAllSessionsDurationForInterval({
+    required DateTime start,
+    required DateTime end,
+  }) async =>
       await _isar.focusSessions
           .filter()
-          .stateEqualTo(SessionState.active)
-          .findFirst();
+          .startTimeMsEpochBetween(
+            start.millisecondsSinceEpoch,
+            end.millisecondsSinceEpoch,
+            includeLower: true,
+            includeUpper: true,
+          )
+          .durationSecsGreaterThan(0)
+          .startTimeMsEpochProperty()
+          .findAll();
 
   void insertFakeSessions() async {
     _isar.writeTxn(
