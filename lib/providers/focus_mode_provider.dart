@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/session_type.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/focus_mode_settings.dart';
@@ -50,4 +53,20 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
   void setSessionType(SessionType sessionType) =>
       state = state.copyWith(sessionType: sessionType);
 
+  void updateSessionsStreak() async {
+    /// If streak is already updated then return
+    final today = DateTime.now().dateOnly;
+    if (state.lastStreakUpdatedDay == today) return;
+
+    final currentStreak = await IsarDbService.instance.loadCurrentStreak();
+
+    /// Return if no change in streaks
+    if (currentStreak == state.currentStreak) return;
+
+    state = state.copyWith(
+      currentStreak: currentStreak,
+      longestStreak: max(currentStreak, state.longestStreak),
+      lastStreakUpdatedDayMsEpoch: today.millisecondsSinceEpoch,
+    );
+  }
 }

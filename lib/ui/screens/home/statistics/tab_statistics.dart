@@ -6,7 +6,7 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/providers/aggregated_usage_provider.dart';
+import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/packages_by_network_usage_provider.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
@@ -33,7 +33,6 @@ class TabStatistics extends ConsumerStatefulWidget {
     super.key,
   });
 
-
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TabStatisticsState();
 }
@@ -46,7 +45,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
   @override
   Widget build(BuildContext context) {
     /// Aggregated usage for whole week on the basis of full day
-    final aggregatedUsage = ref.watch(aggregatedUsageProvider);
+    final aggregatedUsage = ref.watch(aggregatedUsageStatsProvider);
 
     /// Arguments for family provider
     final args = (selectedDoW: _selectedDayOfWeek, includeAll: _includeAllApps);
@@ -63,17 +62,17 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Statistics"),
-      
+
           const NotificationPermission(),
-      
+
           const ExactAlarmPermission(),
-      
+
           const UsageAccessPermission(),
-      
+
           const DisplayOverlayPermission(),
-      
+
           const SliverAlgorithmSuggestion(),
-      
+
           /// Usage type selector and usage info card
           SliverSkeletonizer.zone(
             enabled: !filteredApps.hasValue,
@@ -89,7 +88,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             ),
           ),
           20.vSliverBox,
-      
+
           /// Usage bar chart and selected day changer
           SliverUsageChartPanel(
             selectedDoW: _selectedDayOfWeek,
@@ -100,9 +99,9 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             onDayOfWeekChanged: (dow) =>
                 setState(() => _selectedDayOfWeek = dow),
           ),
-      
+
           const SliverContentTitle(title: "Most used apps"),
-      
+
           /// Most used apps list
           SliverAnimatedSwitcher(
             duration: 300.ms,
@@ -120,7 +119,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                   )
                 : const SliverShimmerList(includeSubtitle: true),
           ),
-      
+
           /// Show all apps button
           if (!_includeAllApps && filteredApps.hasValue)
             DefaultListTile(
@@ -133,7 +132,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
               trailing: const Icon(FluentIcons.chevron_down_20_filled),
               onPressed: () => setState(() => _includeAllApps = true),
             ).sliver,
-      
+
           const SliverTabsBottomPadding(),
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/active_session_provider.dart';
@@ -42,8 +43,10 @@ class _TabFocusState extends ConsumerState<TabFocus> {
 
             /// Information
             const StyledText(
-              "When you need time to focus, you can pause distracting apps and start do not disturb mode",
+              "When you need time to focus, start a new session by selecting the type, choosing distracting apps to pause, and enabling Do Not Disturb for uninterrupted concentration.",
             ).sliver,
+
+            12.vSliverBox,
 
             const SliverActiveSessionAlert(
               margin: EdgeInsets.only(top: 12),

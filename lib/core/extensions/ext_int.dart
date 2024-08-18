@@ -47,7 +47,7 @@ extension ExtInt on int {
   }
 
   /// Generates progress/downfall percentage from current value and previous value
-  int toProgress(int previous) {
+  int toDiffPercentage(int previous) {
     return previous > 0 ? ((this - previous) / previous * 100).round() : 0;
   }
 

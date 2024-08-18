@@ -16,7 +16,7 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
-import 'package:mindful/ui/dialogs/website_input_dialog.dart';
+import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';

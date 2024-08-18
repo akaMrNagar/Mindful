@@ -17,19 +17,34 @@ const FocusModeSettingsSchema = CollectionSchema(
   name: r'FocusModeSettings',
   id: -6889118312166646239,
   properties: {
-    r'distractingApps': PropertySchema(
+    r'currentStreak': PropertySchema(
       id: 0,
+      name: r'currentStreak',
+      type: IsarType.long,
+    ),
+    r'distractingApps': PropertySchema(
+      id: 1,
       name: r'distractingApps',
       type: IsarType.stringList,
     ),
+    r'lastStreakUpdatedDayMsEpoch': PropertySchema(
+      id: 2,
+      name: r'lastStreakUpdatedDayMsEpoch',
+      type: IsarType.long,
+    ),
+    r'longestStreak': PropertySchema(
+      id: 3,
+      name: r'longestStreak',
+      type: IsarType.long,
+    ),
     r'sessionType': PropertySchema(
-      id: 1,
+      id: 4,
       name: r'sessionType',
       type: IsarType.byte,
       enumMap: _FocusModeSettingssessionTypeEnumValueMap,
     ),
     r'shouldStartDnd': PropertySchema(
-      id: 2,
+      id: 5,
       name: r'shouldStartDnd',
       type: IsarType.bool,
     )
@@ -70,9 +85,12 @@ void _focusModeSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeStringList(offsets[0], object.distractingApps);
-  writer.writeByte(offsets[1], object.sessionType.index);
-  writer.writeBool(offsets[2], object.shouldStartDnd);
+  writer.writeLong(offsets[0], object.currentStreak);
+  writer.writeStringList(offsets[1], object.distractingApps);
+  writer.writeLong(offsets[2], object.lastStreakUpdatedDayMsEpoch);
+  writer.writeLong(offsets[3], object.longestStreak);
+  writer.writeByte(offsets[4], object.sessionType.index);
+  writer.writeBool(offsets[5], object.shouldStartDnd);
 }
 
 FocusModeSettings _focusModeSettingsDeserialize(
@@ -82,11 +100,14 @@ FocusModeSettings _focusModeSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = FocusModeSettings(
-    distractingApps: reader.readStringList(offsets[0]) ?? const [],
+    currentStreak: reader.readLongOrNull(offsets[0]) ?? 0,
+    distractingApps: reader.readStringList(offsets[1]) ?? const [],
+    lastStreakUpdatedDayMsEpoch: reader.readLongOrNull(offsets[2]) ?? 0,
+    longestStreak: reader.readLongOrNull(offsets[3]) ?? 0,
     sessionType: _FocusModeSettingssessionTypeValueEnumMap[
-            reader.readByteOrNull(offsets[1])] ??
+            reader.readByteOrNull(offsets[4])] ??
         SessionType.study,
-    shouldStartDnd: reader.readBoolOrNull(offsets[2]) ?? false,
+    shouldStartDnd: reader.readBoolOrNull(offsets[5]) ?? false,
   );
   return object;
 }
@@ -99,12 +120,18 @@ P _focusModeSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringList(offset) ?? const []) as P;
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 1:
+      return (reader.readStringList(offset) ?? const []) as P;
+    case 2:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 3:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 4:
       return (_FocusModeSettingssessionTypeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           SessionType.study) as P;
-    case 2:
+    case 5:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -252,6 +279,62 @@ extension FocusModeSettingsQueryWhere
 
 extension FocusModeSettingsQueryFilter
     on QueryBuilder<FocusModeSettings, FocusModeSettings, QFilterCondition> {
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      currentStreakEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'currentStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      currentStreakGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'currentStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      currentStreakLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'currentStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      currentStreakBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'currentStreak',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
       distractingAppsElementEqualTo(
     String value, {
@@ -536,6 +619,118 @@ extension FocusModeSettingsQueryFilter
   }
 
   QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      lastStreakUpdatedDayMsEpochEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastStreakUpdatedDayMsEpoch',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      lastStreakUpdatedDayMsEpochGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastStreakUpdatedDayMsEpoch',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      lastStreakUpdatedDayMsEpochLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastStreakUpdatedDayMsEpoch',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      lastStreakUpdatedDayMsEpochBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastStreakUpdatedDayMsEpoch',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      longestStreakEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'longestStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      longestStreakGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'longestStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      longestStreakLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'longestStreak',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
+      longestStreakBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'longestStreak',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterFilterCondition>
       sessionTypeEqualTo(SessionType value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -611,6 +806,48 @@ extension FocusModeSettingsQueryLinks
 extension FocusModeSettingsQuerySortBy
     on QueryBuilder<FocusModeSettings, FocusModeSettings, QSortBy> {
   QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      sortByCurrentStreak() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentStreak', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      sortByCurrentStreakDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentStreak', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      sortByLastStreakUpdatedDayMsEpoch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastStreakUpdatedDayMsEpoch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      sortByLastStreakUpdatedDayMsEpochDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastStreakUpdatedDayMsEpoch', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      sortByLongestStreak() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longestStreak', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      sortByLongestStreakDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longestStreak', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
       sortBySessionType() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'sessionType', Sort.asc);
@@ -641,6 +878,20 @@ extension FocusModeSettingsQuerySortBy
 
 extension FocusModeSettingsQuerySortThenBy
     on QueryBuilder<FocusModeSettings, FocusModeSettings, QSortThenBy> {
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      thenByCurrentStreak() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentStreak', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      thenByCurrentStreakDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'currentStreak', Sort.desc);
+    });
+  }
+
   QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -651,6 +902,34 @@ extension FocusModeSettingsQuerySortThenBy
       thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      thenByLastStreakUpdatedDayMsEpoch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastStreakUpdatedDayMsEpoch', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      thenByLastStreakUpdatedDayMsEpochDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastStreakUpdatedDayMsEpoch', Sort.desc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      thenByLongestStreak() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longestStreak', Sort.asc);
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QAfterSortBy>
+      thenByLongestStreakDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'longestStreak', Sort.desc);
     });
   }
 
@@ -686,9 +965,30 @@ extension FocusModeSettingsQuerySortThenBy
 extension FocusModeSettingsQueryWhereDistinct
     on QueryBuilder<FocusModeSettings, FocusModeSettings, QDistinct> {
   QueryBuilder<FocusModeSettings, FocusModeSettings, QDistinct>
+      distinctByCurrentStreak() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'currentStreak');
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QDistinct>
       distinctByDistractingApps() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'distractingApps');
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QDistinct>
+      distinctByLastStreakUpdatedDayMsEpoch() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastStreakUpdatedDayMsEpoch');
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, FocusModeSettings, QDistinct>
+      distinctByLongestStreak() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'longestStreak');
     });
   }
 
@@ -715,10 +1015,31 @@ extension FocusModeSettingsQueryProperty
     });
   }
 
+  QueryBuilder<FocusModeSettings, int, QQueryOperations>
+      currentStreakProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'currentStreak');
+    });
+  }
+
   QueryBuilder<FocusModeSettings, List<String>, QQueryOperations>
       distractingAppsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'distractingApps');
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, int, QQueryOperations>
+      lastStreakUpdatedDayMsEpochProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastStreakUpdatedDayMsEpoch');
+    });
+  }
+
+  QueryBuilder<FocusModeSettings, int, QQueryOperations>
+      longestStreakProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'longestStreak');
     });
   }
 

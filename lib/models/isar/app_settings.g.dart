@@ -43,6 +43,11 @@ const AppSettingsSchema = CollectionSchema(
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
+    ),
+    r'username': PropertySchema(
+      id: 5,
+      name: r'username',
+      type: IsarType.string,
     )
   },
   estimateSize: _appSettingsEstimateSize,
@@ -66,6 +71,7 @@ int _appSettingsEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.color.length * 3;
+  bytesCount += 3 + object.username.length * 3;
   return bytesCount;
 }
 
@@ -80,6 +86,7 @@ void _appSettingsSerialize(
   writer.writeLong(offsets[2], object.dataResetTimeMins);
   writer.writeBool(offsets[3], object.isInvincibleModeOn);
   writer.writeByte(offsets[4], object.themeMode.index);
+  writer.writeString(offsets[5], object.username);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -91,13 +98,14 @@ AppSettings _appSettingsDeserialize(
   final object = AppSettings(
     algorithm:
         _AppSettingsalgorithmValueEnumMap[reader.readByteOrNull(offsets[0])] ??
-            UsageAlgorithm.usageStates,
+            UsageAlgorithm.usageEvents,
     color: reader.readStringOrNull(offsets[1]) ?? 'Indigo',
     dataResetTimeMins: reader.readLongOrNull(offsets[2]) ?? 0,
     isInvincibleModeOn: reader.readBoolOrNull(offsets[3]) ?? false,
     themeMode:
         _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[4])] ??
             ThemeMode.system,
+    username: reader.readStringOrNull(offsets[5]) ?? "Hustler",
   );
   return object;
 }
@@ -112,7 +120,7 @@ P _appSettingsDeserializeProp<P>(
     case 0:
       return (_AppSettingsalgorithmValueEnumMap[
               reader.readByteOrNull(offset)] ??
-          UsageAlgorithm.usageStates) as P;
+          UsageAlgorithm.usageEvents) as P;
     case 1:
       return (reader.readStringOrNull(offset) ?? 'Indigo') as P;
     case 2:
@@ -123,6 +131,8 @@ P _appSettingsDeserializeProp<P>(
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
+    case 5:
+      return (reader.readStringOrNull(offset) ?? "Hustler") as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -600,6 +610,141 @@ extension AppSettingsQueryFilter
       ));
     });
   }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> usernameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> usernameBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'username',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'username',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> usernameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'username',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'username',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      usernameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'username',
+        value: '',
+      ));
+    });
+  }
 }
 
 extension AppSettingsQueryObject
@@ -671,6 +816,18 @@ extension AppSettingsQuerySortBy
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByThemeModeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByUsername() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByUsernameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.desc);
     });
   }
 }
@@ -752,6 +909,18 @@ extension AppSettingsQuerySortThenBy
       return query.addSortBy(r'themeMode', Sort.desc);
     });
   }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByUsername() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByUsernameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'username', Sort.desc);
+    });
+  }
 }
 
 extension AppSettingsQueryWhereDistinct
@@ -786,6 +955,13 @@ extension AppSettingsQueryWhereDistinct
   QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'themeMode');
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByUsername(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'username', caseSensitive: caseSensitive);
     });
   }
 }
@@ -827,6 +1003,12 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, ThemeMode, QQueryOperations> themeModeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'themeMode');
+    });
+  }
+
+  QueryBuilder<AppSettings, String, QQueryOperations> usernameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'username');
     });
   }
 }

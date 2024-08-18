@@ -13,8 +13,9 @@ import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/focus/timeline/session_tile.dart';
-import 'package:mindful/ui/screens/home/dashboard/usage_glance_card.dart';
+import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class TabTimeline extends ConsumerStatefulWidget {
@@ -28,7 +29,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
   @override
   void initState() {
     super.initState();
-    // IsarDbService.instance.resetDb();
     ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
   }
 
@@ -48,7 +48,13 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             /// Appbar
             const SliverFlexibleAppBar(title: "Timeline"),
 
-            8.vSliverBox,
+            const StyledText(
+              "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
+            ).sliver,
+
+            24.vSliverBox,
+
+            /// Productivity stats
             Row(
               children: [
                 Expanded(
@@ -79,6 +85,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               ],
             ).sliver,
 
+            /// Today's total focused time
             UsageGlanceCard(
               isPrimary: true,
               icon: FluentIcons.shifts_day_20_regular,
@@ -89,8 +96,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                 icon: FluentIcons.shifts_day_20_filled,
               ),
             ).sliver,
-            // 12.vSliverBox,
-            // 8.vSliverBox,
 
             const SliverContentTitle(title: "Calender"),
             HeatMapCalendar(
@@ -120,13 +125,11 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               onClick: ref.read(focusTimelineProvider.notifier).onDayChanged,
             ).sliver,
 
-            // const SliverContentTitle(title: "16 August 2024"),
-
             8.vSliverBox,
             const SliverContentTitle(title: "Your sessions"),
             8.vSliverBox,
 
-            /// List of sessions
+            /// List of today's sessions
             SliverList.builder(
               itemCount: timeline.todaysSessions.value?.length ?? 5,
               itemBuilder: (context, index) => SessionTile(
@@ -136,10 +139,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             ),
 
             const SliverTabsBottomPadding(),
-            // TextButton(
-            //   onPressed: IsarDbService.instance.insertFakeSessions,
-            //   child: const Text("Fake Data"),
-            // ).centered.sliver,
           ],
         ),
       ),

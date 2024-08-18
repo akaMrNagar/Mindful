@@ -4,16 +4,19 @@ import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/focus_session.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 
 /// A Riverpod state notifier provider that manages active focus session.
 final activeSessionProvider =
     StateNotifierProvider<ActiveSessionNotifier, AsyncValue<FocusSession?>>(
-  (ref) => ActiveSessionNotifier(),
+  (ref) => ActiveSessionNotifier(ref),
 );
 
 /// This class manages the state of global application settings.
 class ActiveSessionNotifier extends StateNotifier<AsyncValue<FocusSession?>> {
-  ActiveSessionNotifier() : super(const AsyncLoading()) {
+  final StateNotifierProviderRef ref;
+
+  ActiveSessionNotifier(this.ref) : super(const AsyncLoading()) {
     refreshActiveSessionState();
   }
 
@@ -28,12 +31,13 @@ class ActiveSessionNotifier extends StateNotifier<AsyncValue<FocusSession?>> {
       final timeDiffSecs =
           DateTime.now().difference(activeSession.startTime).inSeconds;
 
+      /// If session is completed then update it's state in Database
       if (timeDiffSecs >= activeSession.durationSecs) {
-        /// Update session state in database
         await IsarDbService.instance.insertFocusSession(
           activeSession.copyWith(state: SessionState.successful),
         );
         state = const AsyncData(null);
+        ref.read(focusModeProvider.notifier).updateSessionsStreak();
         return;
       }
     }

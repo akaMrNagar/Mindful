@@ -5,13 +5,13 @@ import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/models/focus_timeline_model.dart';
 
-/// A Riverpod state notifier provider that manages focus mode settings.
+/// A Riverpod state notifier provider that manages Focus Timeline.
 final focusTimelineProvider =
     StateNotifierProvider<FocusModeNotifier, FocusTimelineModel>(
   (ref) => FocusModeNotifier(),
 );
 
-/// This class manages the state of global application settings.
+/// This class manages the state of Focus Timeline.
 class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
   DateTime _selectedDay = DateTime(2024);
 

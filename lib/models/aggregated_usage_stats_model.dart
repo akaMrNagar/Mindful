@@ -3,7 +3,7 @@ import 'package:mindful/models/android_app.dart';
 
 /// Responsible for aggregated data usage [screen, mobile, and wifi] of the device in the current week.
 @immutable
-class AggregatedUsageModel {
+class AggregatedUsageStatsModel {
   /// Total screen time usage of all the apps in this week as a list of int [in Seconds] for each day of week [7 days]
   final List<int> screenTimeThisWeek;
 
@@ -16,14 +16,14 @@ class AggregatedUsageModel {
   /// Total sum of mobile and wifi data usage of all the apps in this week as a list of int [in KBs] for each day of week [7 days]
   final List<int> networkUsageThisWeek;
 
-  const AggregatedUsageModel({
+  const AggregatedUsageStatsModel({
     this.screenTimeThisWeek = const [0, 0, 0, 0, 0, 0, 0],
     this.mobileUsageThisWeek = const [0, 0, 0, 0, 0, 0, 0],
     this.wifiUsageThisWeek = const [0, 0, 0, 0, 0, 0, 0],
     this.networkUsageThisWeek = const [0, 0, 0, 0, 0, 0, 0],
   });
 
-  factory AggregatedUsageModel.fromApps(List<AndroidApp> apps) {
+  factory AggregatedUsageStatsModel.fromApps(List<AndroidApp> apps) {
     List<int> screenTime = [];
     List<int> mobile = [];
     List<int> wifi = [];
@@ -35,7 +35,7 @@ class AggregatedUsageModel {
       wifi.add(apps.fold(0, (p, e) => p + e.wifiUsageThisWeek[i]));
       totalNetwork.add(apps.fold(0, (p, e) => p + e.networkUsageThisWeek[i]));
     }
-    return AggregatedUsageModel(
+    return AggregatedUsageStatsModel(
       screenTimeThisWeek: screenTime,
       mobileUsageThisWeek: mobile,
       wifiUsageThisWeek: wifi,

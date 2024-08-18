@@ -1,8 +1,7 @@
-import 'dart:math';
-
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:isar/isar.dart';
 import 'package:mindful/core/enums/session_state.dart';
-import 'package:mindful/core/enums/session_type.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/focus_mode_settings.dart';
 import 'package:mindful/models/isar/focus_session.dart';
@@ -129,7 +128,39 @@ class IsarDbService {
           .stateEqualTo(SessionState.active)
           .findFirst();
 
-  /// Loads all [FocusSession] objects from the Isar database within the interval,
+  /// Loads the number of [FocusSession] object who's state corresponds to the passed [SessionState]
+  Future<int> loadSessionsCountWithState(SessionState state) async =>
+      await _isar.focusSessions.filter().stateEqualTo(state).count();
+
+  /// Loads the total duration in seconds for all the [FocusSession] in the database
+  ///
+  /// i.e., The lifetime duration in seconds of all the sessions user have taken
+  /// with state no equal to [SessionState.active]
+  Future<int> loadLifetimeSessionsDuration() async => await _isar.focusSessions
+      .filter()
+      .stateGreaterThan(SessionState.active)
+      .durationSecsProperty()
+      .sum();
+
+  /// Loads the total duration in seconds for all the [FocusSession] in the database for the provided interval
+  ///
+  /// i.e., The total duration in seconds of all the sessions user have taken in the provided interval
+  /// with state no equal to [SessionState.active]
+  Future<int> loadSessionsDurationForInterval(
+    DateTime start,
+    DateTime end,
+  ) async =>
+      await _isar.focusSessions
+          .filter()
+          .stateGreaterThan(SessionState.active)
+          .startTimeMsEpochBetween(
+            start.millisecondsSinceEpoch,
+            end.millisecondsSinceEpoch,
+          )
+          .durationSecsProperty()
+          .sum();
+
+  /// Loads all [FocusSession] objects from the Isar database within the interval.
   Future<List<FocusSession>> loadAllSessionsForInterval({
     required DateTime start,
     required DateTime end,
@@ -145,64 +176,31 @@ class IsarDbService {
           .sortByStartTimeMsEpoch()
           .findAll();
 
-  /// Loads list of dates in ms since epoch which are productive from the Isar database within the interval,
+  /// Loads all number of days for current running streak from the Isar database.
   ///
-  /// A day is said to be productive if it has a session with duration greater than zero
-  Future<List<int>> loadAllSessionDatesForInterval({
-    required DateTime start,
-    required DateTime end,
-  }) async =>
-      await _isar.focusSessions
+  /// A day is included in a streak only if it has at least one Successful session
+  Future<int> loadCurrentStreak() async {
+    final today = DateTime.now().dateOnly;
+    int streak = 0;
+
+    // Start from today and go backwards day by day
+    for (int i = 0;; i++) {
+      final targetDate = today.subtract(i.days);
+
+      // Query the database to check if there's a session on the targetDate
+      final hasSession = await _isar.focusSessions
           .filter()
+          .stateEqualTo(SessionState.successful)
           .startTimeMsEpochBetween(
-            start.millisecondsSinceEpoch,
-            end.millisecondsSinceEpoch,
-            includeLower: true,
-            includeUpper: true,
+            targetDate.millisecondsSinceEpoch,
+            targetDate.add(1.days).millisecondsSinceEpoch,
           )
-          .durationSecsGreaterThan(0)
-          .startTimeMsEpochProperty()
-          .findAll();
-  
-  /// Loads list of dates in ms since epoch which are productive from the Isar database within the interval,
-  ///
-  /// A day is said to be productive if it has a session with duration greater than zero
-  Future<List<int>> loadAllSessionsDurationForInterval({
-    required DateTime start,
-    required DateTime end,
-  }) async =>
-      await _isar.focusSessions
-          .filter()
-          .startTimeMsEpochBetween(
-            start.millisecondsSinceEpoch,
-            end.millisecondsSinceEpoch,
-            includeLower: true,
-            includeUpper: true,
-          )
-          .durationSecsGreaterThan(0)
-          .startTimeMsEpochProperty()
-          .findAll();
+          .findFirst();
 
-  void insertFakeSessions() async {
-    _isar.writeTxn(
-      () async {
-        DateTime initialTime = DateTime.now().copyWith(day: 1);
-        final rand = Random();
+      if (hasSession == null) break;
+      streak++;
+    }
 
-        for (var i = 1; i <= 100; i++) {
-          int ran = rand.nextInt(999);
-
-          final session = FocusSession(
-            type: SessionType.values[ran % (SessionType.values.length - 1)],
-            state: i % 2 == 0 ? SessionState.successful : SessionState.failed,
-            startTimeMsEpoch:
-                initialTime.copyWith(day: ran % 30).millisecondsSinceEpoch,
-            durationSecs: ran,
-          );
-
-          await _isar.focusSessions.putByIndex('startTimeMsEpoch', session);
-        }
-      },
-    );
+    return streak;
   }
 }
