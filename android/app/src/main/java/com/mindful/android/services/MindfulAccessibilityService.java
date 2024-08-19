@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.provider.Browser;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -53,6 +54,11 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 10 * 1000;
 
     /**
+     * The minimum interval between redirecting user to safe search result
+     */
+    private static final long URL_REDIRECT_INVOKE_INTERVAL_MS = 3 * 1000;
+
+    /**
      * The interval which is used for approximating if user may have closed short content.
      * <p>
      * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
@@ -66,6 +72,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private long mLastTimeShortsCheck = 0L;
     private long mLastTimeSharedPrefInvoked = 0L;
     private long mLastTimeBackActionInvoked = 0L;
+    private long mLastTimeUrlRedirectInvoked = 0L;
     private long mTotalShortsScreenTimeMs = 0L;
 
     @Override
@@ -171,6 +178,64 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         if (ShortsBlockingHelper.isShortContentOpenOnBrowser(mWellBeingSettings, url)) {
             Log.d(TAG, "blockDistractionOnBrowsers: Blocked short content " + url + " opened in " + packageName);
             checkTimerAndBlockShortContent();
+            return;
+        }
+
+        // Activate safe search if NSFW is blocked
+        if (mWellBeingSettings.blockNsfwSites) {
+            applySafeSearch(packageName, url, host);
+        }
+    }
+
+    /**
+     * Redirects the user to safe search results by using different techniques on different search engines.
+     * Supported search engines are GOOGLE, BRAVE, BING, DUCKDUCKGO
+     *
+     * @param browserPackage The package name of the browser app.
+     * @param url            The url from the browser's search bar.
+     * @param hostDomain     The resolved host name for the provided url.
+     */
+    private void applySafeSearch(String browserPackage, @NonNull String url, String hostDomain) {
+        // For bing, google use &safe=active flag
+        // For brave, duckduckgo switch domain to safe.[SEARCH_ENGINE_DOMAIN]
+
+        // For GOOGLE and BING search engines
+        if (!url.contains("safe=active") && (url.contains("google.com/search?") || url.contains("bing.com/search?"))) {
+            String safeUrl = url + "&safe=active";
+            redirectUserToUrl(safeUrl, browserPackage);
+        }
+        // For DUCKDUCKGO and BRAVE search engines
+        else if (!hostDomain.contains("safe.") && (url.contains("search.brave.com/search?") || url.contains("duckduckgo.com/?"))) {
+            String safeUrl =
+                    hostDomain.contains("search.brave.com") ?
+                            url.replace("search.brave.com", "safe.search.brave.com") :
+                            url.replace("duckduckgo.com", "safe.duckduckgo.com");
+
+            redirectUserToUrl(safeUrl, browserPackage);
+        }
+    }
+
+    /**
+     * Redirects the user to the new url in the specified browser.
+     *
+     * @param url            The url to which user will be redirected.
+     * @param browserPackage The package name of the browser app.
+     */
+    private void redirectUserToUrl(String url, String browserPackage) {
+        long currentTime = System.currentTimeMillis();
+
+        if ((currentTime - mLastTimeUrlRedirectInvoked) >= URL_REDIRECT_INVOKE_INTERVAL_MS) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + url));
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
+                Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
+            } else {
+                Log.e(TAG, "No application found to handle the Intent for URL: " + url);
+            }
+
+            mLastTimeUrlRedirectInvoked = currentTime;
         }
     }
 
