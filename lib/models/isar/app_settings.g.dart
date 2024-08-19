@@ -17,35 +17,29 @@ const AppSettingsSchema = CollectionSchema(
   name: r'AppSettings',
   id: -5633561779022347008,
   properties: {
-    r'algorithm': PropertySchema(
-      id: 0,
-      name: r'algorithm',
-      type: IsarType.byte,
-      enumMap: _AppSettingsalgorithmEnumValueMap,
-    ),
     r'color': PropertySchema(
-      id: 1,
+      id: 0,
       name: r'color',
       type: IsarType.string,
     ),
     r'dataResetTimeMins': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'dataResetTimeMins',
       type: IsarType.long,
     ),
     r'isInvincibleModeOn': PropertySchema(
-      id: 3,
+      id: 2,
       name: r'isInvincibleModeOn',
       type: IsarType.bool,
     ),
     r'themeMode': PropertySchema(
-      id: 4,
+      id: 3,
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
     ),
     r'username': PropertySchema(
-      id: 5,
+      id: 4,
       name: r'username',
       type: IsarType.string,
     )
@@ -81,12 +75,11 @@ void _appSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeByte(offsets[0], object.algorithm.index);
-  writer.writeString(offsets[1], object.color);
-  writer.writeLong(offsets[2], object.dataResetTimeMins);
-  writer.writeBool(offsets[3], object.isInvincibleModeOn);
-  writer.writeByte(offsets[4], object.themeMode.index);
-  writer.writeString(offsets[5], object.username);
+  writer.writeString(offsets[0], object.color);
+  writer.writeLong(offsets[1], object.dataResetTimeMins);
+  writer.writeBool(offsets[2], object.isInvincibleModeOn);
+  writer.writeByte(offsets[3], object.themeMode.index);
+  writer.writeString(offsets[4], object.username);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -96,16 +89,13 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings(
-    algorithm:
-        _AppSettingsalgorithmValueEnumMap[reader.readByteOrNull(offsets[0])] ??
-            UsageAlgorithm.usageEvents,
-    color: reader.readStringOrNull(offsets[1]) ?? 'Indigo',
-    dataResetTimeMins: reader.readLongOrNull(offsets[2]) ?? 0,
-    isInvincibleModeOn: reader.readBoolOrNull(offsets[3]) ?? false,
+    color: reader.readStringOrNull(offsets[0]) ?? 'Indigo',
+    dataResetTimeMins: reader.readLongOrNull(offsets[1]) ?? 0,
+    isInvincibleModeOn: reader.readBoolOrNull(offsets[2]) ?? false,
     themeMode:
-        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[4])] ??
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
             ThemeMode.system,
-    username: reader.readStringOrNull(offsets[5]) ?? "Hustler",
+    username: reader.readStringOrNull(offsets[4]) ?? "Hustler",
   );
   return object;
 }
@@ -118,34 +108,22 @@ P _appSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (_AppSettingsalgorithmValueEnumMap[
-              reader.readByteOrNull(offset)] ??
-          UsageAlgorithm.usageEvents) as P;
-    case 1:
       return (reader.readStringOrNull(offset) ?? 'Indigo') as P;
-    case 2:
+    case 1:
       return (reader.readLongOrNull(offset) ?? 0) as P;
-    case 3:
+    case 2:
       return (reader.readBoolOrNull(offset) ?? false) as P;
-    case 4:
+    case 3:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
-    case 5:
+    case 4:
       return (reader.readStringOrNull(offset) ?? "Hustler") as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-const _AppSettingsalgorithmEnumValueMap = {
-  'usageStates': 0,
-  'usageEvents': 1,
-};
-const _AppSettingsalgorithmValueEnumMap = {
-  0: UsageAlgorithm.usageStates,
-  1: UsageAlgorithm.usageEvents,
-};
 const _AppSettingsthemeModeEnumValueMap = {
   'system': 0,
   'light': 1,
@@ -248,62 +226,6 @@ extension AppSettingsQueryWhere
 
 extension AppSettingsQueryFilter
     on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {
-  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
-      algorithmEqualTo(UsageAlgorithm value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'algorithm',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
-      algorithmGreaterThan(
-    UsageAlgorithm value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'algorithm',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
-      algorithmLessThan(
-    UsageAlgorithm value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'algorithm',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
-      algorithmBetween(
-    UsageAlgorithm lower,
-    UsageAlgorithm upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'algorithm',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> colorEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -755,18 +677,6 @@ extension AppSettingsQueryLinks
 
 extension AppSettingsQuerySortBy
     on QueryBuilder<AppSettings, AppSettings, QSortBy> {
-  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByAlgorithm() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'algorithm', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByAlgorithmDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'algorithm', Sort.desc);
-    });
-  }
-
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -834,18 +744,6 @@ extension AppSettingsQuerySortBy
 
 extension AppSettingsQuerySortThenBy
     on QueryBuilder<AppSettings, AppSettings, QSortThenBy> {
-  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByAlgorithm() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'algorithm', Sort.asc);
-    });
-  }
-
-  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByAlgorithmDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'algorithm', Sort.desc);
-    });
-  }
-
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -925,12 +823,6 @@ extension AppSettingsQuerySortThenBy
 
 extension AppSettingsQueryWhereDistinct
     on QueryBuilder<AppSettings, AppSettings, QDistinct> {
-  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByAlgorithm() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'algorithm');
-    });
-  }
-
   QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByColor(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -971,13 +863,6 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
-    });
-  }
-
-  QueryBuilder<AppSettings, UsageAlgorithm, QQueryOperations>
-      algorithmProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'algorithm');
     });
   }
 

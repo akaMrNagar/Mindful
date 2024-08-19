@@ -21,7 +21,6 @@ import com.mindful.android.R;
 import com.mindful.android.helpers.NetworkUsageHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.enums.AlgorithmType;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -141,9 +140,8 @@ public class DeviceUsageWidget extends AppWidgetProvider {
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
-        AlgorithmType algorithmType = SharedPrefsHelper.fetchUsageAlgorithm(context);
 
-        HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, algorithmType, screenUsageStart, screenUsageStart + ms24Hours);
+        HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours);
         HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
         HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
 

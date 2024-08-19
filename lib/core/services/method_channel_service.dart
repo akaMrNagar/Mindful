@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mindful/core/enums/usage_algorithm.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
 import 'package:mindful/models/isar/wellbeing_settings.dart';
@@ -67,13 +66,6 @@ class MethodChannelService {
   /// to be set as the data reset time.
   Future<bool> setDataResetTime(int timeOfDayInMins) async =>
       await _methodChannel.invokeMethod('setDataResetTime', timeOfDayInMins);
-
-  /// Updates the default algorithm used while fetching screen usage.
-  ///
-  /// This method takes the algorithm index and sends it to the native side.
-  Future<bool> updateUsageAlgorithm(UsageAlgorithm algorithm) async =>
-      await _methodChannel.invokeMethod(
-          'updateUsageAlgorithm', algorithm.index);
 
   /// Parses the host name from a given URL string.
   ///

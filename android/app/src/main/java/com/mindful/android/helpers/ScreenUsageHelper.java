@@ -1,17 +1,13 @@
 package com.mindful.android.helpers;
 
 import android.app.usage.UsageEvents;
-import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.mindful.android.enums.AlgorithmType;
-
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,54 +15,6 @@ import java.util.Map;
  * for Android applications. It interacts with the UsageStatsManager to query and process usage data.
  */
 public class ScreenUsageHelper {
-
-    /**
-     * Generates screen usage statistics for a specified time interval.
-     *
-     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param algorithmType     The algorithm used for generating screen usage.
-     * @param start             The start time of the interval in milliseconds.
-     * @param end               The end time of the interval in milliseconds.
-     * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
-     */
-    @NonNull
-    public static HashMap<String, Long> fetchUsageForInterval(@NonNull UsageStatsManager usageStatsManager, @NonNull AlgorithmType algorithmType, long start, long end) {
-        switch (algorithmType) {
-            case UsageEvents:
-                return fetchIntervalUsageFromEvents(usageStatsManager, start, end);
-            case UsageStates:
-            default:
-                return fetchIntervalUsageFromStates(usageStatsManager, start, end);
-        }
-    }
-
-    /**
-     * Fetches screen usage statistics for a specified time interval using usage states.
-     *
-     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param start             The start time of the interval in milliseconds.
-     * @param end               The end time of the interval in milliseconds.
-     * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
-     */
-    @NonNull
-    private static HashMap<String, Long> fetchIntervalUsageFromStates(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
-        HashMap<String, Long> oneDayUsageMap = new HashMap<>();
-        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
-
-        for (UsageStats usageStat : usageStatsList) {
-            long lastTimeUsed = usageStat.getLastTimeUsed();
-            if (lastTimeUsed < start || lastTimeUsed > end) continue;
-
-            String packageName = usageStat.getPackageName();
-            Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
-            screenTime += usageStat.getTotalTimeInForeground();
-            oneDayUsageMap.put(packageName, screenTime);
-        }
-
-        // Convert milliseconds to seconds
-        oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
-        return oneDayUsageMap;
-    }
 
     /**
      * Fetches screen usage statistics for a specified time interval using usage events.
@@ -77,7 +25,7 @@ public class ScreenUsageHelper {
      * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
      */
     @NonNull
-    private static HashMap<String, Long> fetchIntervalUsageFromEvents(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
+    public static HashMap<String, Long> fetchUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
         Map<String, UsageEvents.Event> lastResumedEvents = new HashMap<>();
@@ -116,14 +64,13 @@ public class ScreenUsageHelper {
     }
 
     /**
-     * Fetches the screen usage time of a specific application for the current day until now.
+     * Fetches the screen usage time of a specific application for the current day until now using usage events.
      *
      * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param algorithmType     The algorithm used for generating screen usage.
      * @param packageName       The package name of the application whose usage time is to be fetched.
      * @return The total screen usage time of the specified application in seconds.
      */
-    public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, @NonNull AlgorithmType algorithmType, String packageName) {
+    public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
         Calendar midNightCal = Calendar.getInstance();
         midNightCal.set(Calendar.HOUR_OF_DAY, 0);
         midNightCal.set(Calendar.MINUTE, 0);
@@ -131,61 +78,9 @@ public class ScreenUsageHelper {
 
         long start = midNightCal.getTimeInMillis();
         long end = System.currentTimeMillis();
-
-        switch (algorithmType) {
-            case UsageEvents:
-                return fetchAppUsageFromEvents(usageStatsManager, packageName, start, end);
-            case UsageStates:
-            default:
-                return fetchAppUsageFromStats(usageStatsManager, packageName, start, end);
-        }
-    }
-
-    /**
-     * Fetches the screen usage time of a specific application using usage states.
-     *
-     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param packageName       The package name of the application whose usage time is to be fetched.
-     * @param start             The start time of the interval in milliseconds.
-     * @param end               The end time of the interval in milliseconds.
-     * @return The total screen usage time of the specified application in seconds.
-     */
-    private static long fetchAppUsageFromStats(@NonNull UsageStatsManager usageStatsManager, String packageName, long start, long end) {
-        List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, start, end);
-        UsageStats lastStat = null;
-        long screenTime = 0;
-
-        for (UsageStats usageStat : usageStatsList) {
-            // Skip events that don't belong to the specified package
-            if (!usageStat.getPackageName().equals(packageName)) continue;
-
-            long lastTimeUsed = usageStat.getLastTimeUsed();
-            if (lastTimeUsed < start || lastTimeUsed > end) continue;
-            screenTime += usageStat.getTotalTimeInForeground();
-            lastStat = usageStat;
-        }
-
-        // If the last event is same as the launched app means it is opened but not closed which eventually means it is running
-        if (lastStat != null && lastStat.getLastTimeUsed() < end) {
-            screenTime += (end - lastStat.getLastTimeUsed());
-        }
-
-        return (screenTime / 1000);
-    }
-
-    /**
-     * Fetches the screen usage time of a specific application using usage events.
-     *
-     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param packageName       The package name of the application whose usage time is to be fetched.
-     * @param start             The start time of the interval in milliseconds.
-     * @param end               The end time of the interval in milliseconds.
-     * @return The total screen usage time of the specified application in seconds.
-     */
-    private static long fetchAppUsageFromEvents(@NonNull UsageStatsManager usageStatsManager, String packageName, long start, long end) {
-        long screenTime = 0;
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
         UsageEvents.Event lastAppResumeEvent = null;
+        long screenTime = 0;
 
 
         while (usageEvents.hasNextEvent()) {

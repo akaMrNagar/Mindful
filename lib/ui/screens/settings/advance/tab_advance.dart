@@ -1,13 +1,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/usage_algorithm.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
-import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
@@ -56,35 +54,6 @@ class TabAdvance extends ConsumerWidget {
         /// Appbar
         const SliverFlexibleAppBar(title: "Advance"),
 
-        /// Usage
-        const SliverContentTitle(title: "Usage"),
-
-        /// Info about usage algorithm
-        const StyledText(
-          "If the screen time does not accurately reflect your usage, try changing the usage algorithm from the dropdown below.",
-        ).sliver,
-
-        4.vSliverBox,
-
-        /// Usage algorithm
-        DefaultDropdownTile<UsageAlgorithm>(
-          value: ref.watch(settingsProvider.select((v) => v.algorithm)),
-          dialogIcon: FluentIcons.data_sunburst_20_filled,
-          label: "Usage algorithm",
-          onSelected: ref.read(settingsProvider.notifier).changeUsageAlgorithm,
-          items: [
-            DefaultDropdownItem(
-              label: "States Based",
-              value: UsageAlgorithm.usageStates,
-            ),
-            DefaultDropdownItem(
-              label: "Events Based",
-              value: UsageAlgorithm.usageEvents,
-            ),
-          ],
-        ).sliver,
-
-        12.vSliverBox,
         const SliverContentTitle(title: "Service"),
 
         /// Battery

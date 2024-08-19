@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.mindful.android.enums.AlgorithmType;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.DeviceAppsHelper;
@@ -106,14 +105,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "setDataResetTime": {
                 SharedPrefsHelper.storeDataResetTimeMins(this, call.arguments() == null ? 0 : (int) call.arguments());
-                result.success(true);
-                break;
-            }
-            case "updateUsageAlgorithm": {
-                SharedPrefsHelper.storeUsageAlgorithm(this, AlgorithmType.fromInteger(call.arguments() == null ? 0 : (int) call.arguments()));
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().updateUsageAlgorithm();
-                }
                 result.success(true);
                 break;
             }
