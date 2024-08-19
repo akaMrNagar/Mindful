@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'focus_settings.dart';
+part of 'restriction_info.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -9,13 +9,13 @@ part of 'focus_settings.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetFocusSettingsCollection on Isar {
-  IsarCollection<FocusSettings> get focusSettings => this.collection();
+extension GetRestrictionInfoCollection on Isar {
+  IsarCollection<RestrictionInfo> get restrictionInfos => this.collection();
 }
 
-const FocusSettingsSchema = CollectionSchema(
-  name: r'FocusSettings',
-  id: -930078290915607717,
+const RestrictionInfoSchema = CollectionSchema(
+  name: r'RestrictionInfo',
+  id: 7211120438130607134,
   properties: {
     r'appPackage': PropertySchema(
       id: 0,
@@ -33,10 +33,10 @@ const FocusSettingsSchema = CollectionSchema(
       type: IsarType.long,
     )
   },
-  estimateSize: _focusSettingsEstimateSize,
-  serialize: _focusSettingsSerialize,
-  deserialize: _focusSettingsDeserialize,
-  deserializeProp: _focusSettingsDeserializeProp,
+  estimateSize: _restrictionInfoEstimateSize,
+  serialize: _restrictionInfoSerialize,
+  deserialize: _restrictionInfoDeserialize,
+  deserializeProp: _restrictionInfoDeserializeProp,
   idName: r'id',
   indexes: {
     r'appPackage': IndexSchema(
@@ -55,14 +55,14 @@ const FocusSettingsSchema = CollectionSchema(
   },
   links: {},
   embeddedSchemas: {},
-  getId: _focusSettingsGetId,
-  getLinks: _focusSettingsGetLinks,
-  attach: _focusSettingsAttach,
+  getId: _restrictionInfoGetId,
+  getLinks: _restrictionInfoGetLinks,
+  attach: _restrictionInfoAttach,
   version: '3.1.0+1',
 );
 
-int _focusSettingsEstimateSize(
-  FocusSettings object,
+int _restrictionInfoEstimateSize(
+  RestrictionInfo object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
@@ -71,8 +71,8 @@ int _focusSettingsEstimateSize(
   return bytesCount;
 }
 
-void _focusSettingsSerialize(
-  FocusSettings object,
+void _restrictionInfoSerialize(
+  RestrictionInfo object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
@@ -82,13 +82,13 @@ void _focusSettingsSerialize(
   writer.writeLong(offsets[2], object.timerSec);
 }
 
-FocusSettings _focusSettingsDeserialize(
+RestrictionInfo _restrictionInfoDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = FocusSettings(
+  final object = RestrictionInfo(
     appPackage: reader.readString(offsets[0]),
     internetAccess: reader.readBoolOrNull(offsets[1]) ?? true,
     timerSec: reader.readLongOrNull(offsets[2]) ?? 0,
@@ -96,7 +96,7 @@ FocusSettings _focusSettingsDeserialize(
   return object;
 }
 
-P _focusSettingsDeserializeProp<P>(
+P _restrictionInfoDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -114,23 +114,23 @@ P _focusSettingsDeserializeProp<P>(
   }
 }
 
-Id _focusSettingsGetId(FocusSettings object) {
+Id _restrictionInfoGetId(RestrictionInfo object) {
   return object.id;
 }
 
-List<IsarLinkBase<dynamic>> _focusSettingsGetLinks(FocusSettings object) {
+List<IsarLinkBase<dynamic>> _restrictionInfoGetLinks(RestrictionInfo object) {
   return [];
 }
 
-void _focusSettingsAttach(
-    IsarCollection<dynamic> col, Id id, FocusSettings object) {}
+void _restrictionInfoAttach(
+    IsarCollection<dynamic> col, Id id, RestrictionInfo object) {}
 
-extension FocusSettingsByIndex on IsarCollection<FocusSettings> {
-  Future<FocusSettings?> getByAppPackage(String appPackage) {
+extension RestrictionInfoByIndex on IsarCollection<RestrictionInfo> {
+  Future<RestrictionInfo?> getByAppPackage(String appPackage) {
     return getByIndex(r'appPackage', [appPackage]);
   }
 
-  FocusSettings? getByAppPackageSync(String appPackage) {
+  RestrictionInfo? getByAppPackageSync(String appPackage) {
     return getByIndexSync(r'appPackage', [appPackage]);
   }
 
@@ -142,13 +142,13 @@ extension FocusSettingsByIndex on IsarCollection<FocusSettings> {
     return deleteByIndexSync(r'appPackage', [appPackage]);
   }
 
-  Future<List<FocusSettings?>> getAllByAppPackage(
+  Future<List<RestrictionInfo?>> getAllByAppPackage(
       List<String> appPackageValues) {
     final values = appPackageValues.map((e) => [e]).toList();
     return getAllByIndex(r'appPackage', values);
   }
 
-  List<FocusSettings?> getAllByAppPackageSync(List<String> appPackageValues) {
+  List<RestrictionInfo?> getAllByAppPackageSync(List<String> appPackageValues) {
     final values = appPackageValues.map((e) => [e]).toList();
     return getAllByIndexSync(r'appPackage', values);
   }
@@ -163,36 +163,36 @@ extension FocusSettingsByIndex on IsarCollection<FocusSettings> {
     return deleteAllByIndexSync(r'appPackage', values);
   }
 
-  Future<Id> putByAppPackage(FocusSettings object) {
+  Future<Id> putByAppPackage(RestrictionInfo object) {
     return putByIndex(r'appPackage', object);
   }
 
-  Id putByAppPackageSync(FocusSettings object, {bool saveLinks = true}) {
+  Id putByAppPackageSync(RestrictionInfo object, {bool saveLinks = true}) {
     return putByIndexSync(r'appPackage', object, saveLinks: saveLinks);
   }
 
-  Future<List<Id>> putAllByAppPackage(List<FocusSettings> objects) {
+  Future<List<Id>> putAllByAppPackage(List<RestrictionInfo> objects) {
     return putAllByIndex(r'appPackage', objects);
   }
 
-  List<Id> putAllByAppPackageSync(List<FocusSettings> objects,
+  List<Id> putAllByAppPackageSync(List<RestrictionInfo> objects,
       {bool saveLinks = true}) {
     return putAllByIndexSync(r'appPackage', objects, saveLinks: saveLinks);
   }
 }
 
-extension FocusSettingsQueryWhereSort
-    on QueryBuilder<FocusSettings, FocusSettings, QWhere> {
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhere> anyId() {
+extension RestrictionInfoQueryWhereSort
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QWhere> {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 }
 
-extension FocusSettingsQueryWhere
-    on QueryBuilder<FocusSettings, FocusSettings, QWhereClause> {
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause> idEqualTo(
+extension RestrictionInfoQueryWhere
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QWhereClause> {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause> idEqualTo(
       Id id) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -202,8 +202,8 @@ extension FocusSettingsQueryWhere
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause> idNotEqualTo(
-      Id id) {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause>
+      idNotEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -225,9 +225,8 @@ extension FocusSettingsQueryWhere
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause> idGreaterThan(
-      Id id,
-      {bool include = false}) {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause>
+      idGreaterThan(Id id, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -235,7 +234,7 @@ extension FocusSettingsQueryWhere
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause> idLessThan(
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause> idLessThan(
       Id id,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
@@ -245,7 +244,7 @@ extension FocusSettingsQueryWhere
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause> idBetween(
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause> idBetween(
     Id lowerId,
     Id upperId, {
     bool includeLower = true,
@@ -261,7 +260,7 @@ extension FocusSettingsQueryWhere
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause>
       appPackageEqualTo(String appPackage) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -271,7 +270,7 @@ extension FocusSettingsQueryWhere
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterWhereClause>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterWhereClause>
       appPackageNotEqualTo(String appPackage) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -307,9 +306,9 @@ extension FocusSettingsQueryWhere
   }
 }
 
-extension FocusSettingsQueryFilter
-    on QueryBuilder<FocusSettings, FocusSettings, QFilterCondition> {
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+extension RestrictionInfoQueryFilter
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QFilterCondition> {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -323,7 +322,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageGreaterThan(
     String value, {
     bool include = false,
@@ -339,7 +338,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageLessThan(
     String value, {
     bool include = false,
@@ -355,7 +354,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageBetween(
     String lower,
     String upper, {
@@ -375,7 +374,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageStartsWith(
     String value, {
     bool caseSensitive = true,
@@ -389,7 +388,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageEndsWith(
     String value, {
     bool caseSensitive = true,
@@ -403,7 +402,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
@@ -414,7 +413,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
@@ -425,7 +424,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -435,7 +434,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       appPackageIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
@@ -445,8 +444,8 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition> idEqualTo(
-      Id value) {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
+      idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'id',
@@ -455,7 +454,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       idGreaterThan(
     Id value, {
     bool include = false,
@@ -469,7 +468,8 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition> idLessThan(
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
+      idLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -482,7 +482,8 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition> idBetween(
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
+      idBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -499,7 +500,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       internetAccessEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -509,7 +510,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       timerSecEqualTo(int value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -519,7 +520,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       timerSecGreaterThan(
     int value, {
     bool include = false,
@@ -533,7 +534,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       timerSecLessThan(
     int value, {
     bool include = false,
@@ -547,7 +548,7 @@ extension FocusSettingsQueryFilter
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterFilterCondition>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterFilterCondition>
       timerSecBetween(
     int lower,
     int upper, {
@@ -566,48 +567,50 @@ extension FocusSettingsQueryFilter
   }
 }
 
-extension FocusSettingsQueryObject
-    on QueryBuilder<FocusSettings, FocusSettings, QFilterCondition> {}
+extension RestrictionInfoQueryObject
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QFilterCondition> {}
 
-extension FocusSettingsQueryLinks
-    on QueryBuilder<FocusSettings, FocusSettings, QFilterCondition> {}
+extension RestrictionInfoQueryLinks
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QFilterCondition> {}
 
-extension FocusSettingsQuerySortBy
-    on QueryBuilder<FocusSettings, FocusSettings, QSortBy> {
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> sortByAppPackage() {
+extension RestrictionInfoQuerySortBy
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QSortBy> {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
+      sortByAppPackage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'appPackage', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       sortByAppPackageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'appPackage', Sort.desc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       sortByInternetAccess() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'internetAccess', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       sortByInternetAccessDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'internetAccess', Sort.desc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> sortByTimerSec() {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
+      sortByTimerSec() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timerSec', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       sortByTimerSecDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timerSec', Sort.desc);
@@ -615,54 +618,56 @@ extension FocusSettingsQuerySortBy
   }
 }
 
-extension FocusSettingsQuerySortThenBy
-    on QueryBuilder<FocusSettings, FocusSettings, QSortThenBy> {
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenByAppPackage() {
+extension RestrictionInfoQuerySortThenBy
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QSortThenBy> {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
+      thenByAppPackage() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'appPackage', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       thenByAppPackageDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'appPackage', Sort.desc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenById() {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenByIdDesc() {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy> thenByIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       thenByInternetAccess() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'internetAccess', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       thenByInternetAccessDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'internetAccess', Sort.desc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy> thenByTimerSec() {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
+      thenByTimerSec() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timerSec', Sort.asc);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QAfterSortBy>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QAfterSortBy>
       thenByTimerSecDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'timerSec', Sort.desc);
@@ -670,50 +675,52 @@ extension FocusSettingsQuerySortThenBy
   }
 }
 
-extension FocusSettingsQueryWhereDistinct
-    on QueryBuilder<FocusSettings, FocusSettings, QDistinct> {
-  QueryBuilder<FocusSettings, FocusSettings, QDistinct> distinctByAppPackage(
-      {bool caseSensitive = true}) {
+extension RestrictionInfoQueryWhereDistinct
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QDistinct> {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QDistinct>
+      distinctByAppPackage({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'appPackage', caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QDistinct>
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QDistinct>
       distinctByInternetAccess() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'internetAccess');
     });
   }
 
-  QueryBuilder<FocusSettings, FocusSettings, QDistinct> distinctByTimerSec() {
+  QueryBuilder<RestrictionInfo, RestrictionInfo, QDistinct>
+      distinctByTimerSec() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'timerSec');
     });
   }
 }
 
-extension FocusSettingsQueryProperty
-    on QueryBuilder<FocusSettings, FocusSettings, QQueryProperty> {
-  QueryBuilder<FocusSettings, int, QQueryOperations> idProperty() {
+extension RestrictionInfoQueryProperty
+    on QueryBuilder<RestrictionInfo, RestrictionInfo, QQueryProperty> {
+  QueryBuilder<RestrictionInfo, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
     });
   }
 
-  QueryBuilder<FocusSettings, String, QQueryOperations> appPackageProperty() {
+  QueryBuilder<RestrictionInfo, String, QQueryOperations> appPackageProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'appPackage');
     });
   }
 
-  QueryBuilder<FocusSettings, bool, QQueryOperations> internetAccessProperty() {
+  QueryBuilder<RestrictionInfo, bool, QQueryOperations>
+      internetAccessProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'internetAccess');
     });
   }
 
-  QueryBuilder<FocusSettings, int, QQueryOperations> timerSecProperty() {
+  QueryBuilder<RestrictionInfo, int, QQueryOperations> timerSecProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'timerSec');
     });

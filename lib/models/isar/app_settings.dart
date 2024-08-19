@@ -25,6 +25,8 @@ class AppSettings {
   /// Default material color for app
   final String color;
 
+  final String username;
+
   /// Is invincible mode on if it is ON then user cannot change following :
   ///
   /// 1. App timer if it is purged
@@ -39,19 +41,19 @@ class AppSettings {
   TimeOfDay get dataResetToD => dataResetTimeMins.toTimeOfDay;
 
   const AppSettings({
+    this.username= "Hustler",
     this.themeMode = ThemeMode.system,
-    this.algorithm = UsageAlgorithm.usageStates,
+    this.algorithm = UsageAlgorithm.usageEvents,
     this.color = 'Indigo',
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
   });
 
- 
-
   AppSettings copyWith({
     ThemeMode? themeMode,
     UsageAlgorithm? algorithm,
     String? color,
+    String? username,
     bool? isInvincibleModeOn,
     int? dataResetTimeMins,
   }) {
@@ -59,6 +61,7 @@ class AppSettings {
       themeMode: themeMode ?? this.themeMode,
       algorithm: algorithm ?? this.algorithm,
       color: color ?? this.color,
+      username: username ?? this.username,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
     );

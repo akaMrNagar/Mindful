@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
+import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
 import org.jetbrains.annotations.Contract;
@@ -29,7 +30,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * A VPN service that manages internet access by blocking specified apps.
  */
 public class MindfulVpnService extends android.net.VpnService {
-    private static final int SERVICE_ID = 302;
     private static final String TAG = "Mindful.VpnService";
 
     private final AtomicReference<Thread> mAtomicVpnThread = new AtomicReference<>();
@@ -80,7 +80,7 @@ public class MindfulVpnService extends android.net.VpnService {
         newThread.start();
 
         startForeground(
-                SERVICE_ID,
+                AppConstants.VPN_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
                         "Mindful is now managing internet access to help you stay focused."

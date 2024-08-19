@@ -119,6 +119,8 @@ public class AlarmTasksSchedulingHelper {
         alarmManager.cancel(startPendingIntent);
         alarmManager.cancel(stopPendingIntent);
 
+        // Turn off Dnd
+        NotificationHelper.toggleDnd(context, false);
         Log.d(TAG, "cancelBedtimeRoutineTasks: Bedtime routine tasks cancelled successfully");
     }
 

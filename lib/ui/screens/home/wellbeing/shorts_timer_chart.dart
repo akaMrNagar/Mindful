@@ -6,7 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
@@ -29,7 +29,7 @@ class ShortsTimerChart extends ConsumerWidget {
   void _editAllowedTime(BuildContext context, WidgetRef ref) async {
     final newTime = await showShortsTimerPicker(
       context: context,
-      heroTag: AppTags.shortContentTimerPickerTag,
+      heroTag: HeroTags.shortContentTimerPickerTag,
       initialTime: allowedTimeSec,
     );
 
@@ -124,7 +124,7 @@ class ShortsTimerChart extends ConsumerWidget {
                     ),
                     32.vBox,
                     DefaultHero(
-                      tag: AppTags.shortContentTimerPickerTag,
+                      tag: HeroTags.shortContentTimerPickerTag,
                       child: Icon(
                         isModifiable
                             ? FluentIcons.edit_20_regular

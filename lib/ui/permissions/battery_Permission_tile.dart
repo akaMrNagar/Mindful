@@ -21,7 +21,7 @@ class BatteryPermissionTile extends ConsumerWidget {
       titleText: "Ignore Battery Optimization",
       enabled: !havePermission,
       switchValue: havePermission,
-      leadingIcon: FluentIcons.leaf_three_20_regular,
+      leadingIcon: FluentIcons.battery_saver_20_regular,
       subtitleText: havePermission
           ? "Already unrestricted"
           : "Disable background restriction",

@@ -31,6 +31,9 @@ Future<int> showAppTimerPicker({
       initialTime;
 }
 
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+///
+/// Returns time in seconds and take initial time in seconds
 Future<int> showShortsTimerPicker({
   required BuildContext context,
   required Object heroTag,
@@ -49,18 +52,48 @@ Future<int> showShortsTimerPicker({
       initialTime;
 }
 
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+///
+/// Returns time in seconds and take initial time in seconds
+Future<int?> showFocusTimerPicker({
+  required BuildContext context,
+  required Object heroTag,
+  int initialTime = 30 * 60,
+}) async {
+  return await Navigator.of(context).push<int?>(
+    HeroPageRoute(
+      builder: (context) => _DurationPickerDialog(
+        title: "Focus Session",
+        icon: const Icon(FluentIcons.timer_20_regular),
+        heroTag: heroTag,
+        initialTimeInSec: initialTime,
+        info:
+            "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.",
+        positiveButtonLabel: "Start",
+        showDeleteButton: false,
+      ),
+    ),
+  );
+}
+
 class _DurationPickerDialog extends StatefulWidget {
   const _DurationPickerDialog({
     required this.icon,
     required this.title,
     required this.initialTimeInSec,
     required this.heroTag,
+    this.info,
+    this.positiveButtonLabel = "Set timer",
+    this.showDeleteButton = true,
   });
 
   final Widget icon;
   final String title;
   final Object heroTag;
   final int initialTimeInSec;
+  final String positiveButtonLabel;
+  final bool showDeleteButton;
+  final String? info;
 
   @override
   State<_DurationPickerDialog> createState() => _DurationPickerDialogState();
@@ -85,8 +118,10 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
-                  const StyledText(
-                      "This timer will reset at midnight every day, ensuring that your daily usage is tracked accurately."),
+                  StyledText(
+                    widget.info ??
+                        "This timer will reset at midnight every day, ensuring that your daily usage is tracked accurately.",
+                  ),
                   Container(
                     height: 124,
                     margin: const EdgeInsets.symmetric(vertical: 12),
@@ -98,27 +133,27 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                     ),
                   ),
                   18.vBox,
-                  FittedBox(
-                    child: FilledButton.icon(
-                      icon: const Icon(FluentIcons.delete_20_regular),
-                      label: const Text("Delete timer"),
-                      onPressed: () => Navigator.maybePop(
-                        context,
-                        0,
+                  if (widget.showDeleteButton)
+                    FittedBox(
+                      child: FilledButton.icon(
+                        icon: const Icon(FluentIcons.delete_20_regular),
+                        label: const Text("Delete timer"),
+                        onPressed: () => Navigator.maybePop(
+                          context,
+                          0,
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ],
               ),
             ),
             actions: [
               TextButton(
                 child: const Text("cancel"),
-                onPressed: () =>
-                    Navigator.maybePop(context, widget.initialTimeInSec),
+                onPressed: () => Navigator.maybePop(context),
               ),
               TextButton(
-                child: const Text("Set timer"),
+                child: Text(widget.positiveButtonLabel),
                 onPressed: () => Navigator.maybePop(
                   context,
                   _selectedDuration?.inSeconds ?? widget.initialTimeInSec,

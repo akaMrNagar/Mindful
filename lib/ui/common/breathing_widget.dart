@@ -22,6 +22,7 @@ class BreathingWidget extends StatelessWidget {
   final Widget child;
   final Curve curve;
   final bool animateChild;
+  
 
   @override
   Widget build(BuildContext context) {

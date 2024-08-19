@@ -7,10 +7,11 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/focus_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
@@ -51,27 +52,50 @@ class ApplicationTile extends ConsumerWidget {
 
     final newTimer = await showAppTimerPicker(
       app: app,
-      heroTag: AppTags.applicationTileTag(app.packageName),
+      heroTag: HeroTags.applicationTileTag(app.packageName),
       context: context,
       initialTime: prevTimer,
     );
 
     if (newTimer == prevTimer) return;
-    ref.read(focusProvider.notifier).updateAppTimer(app.packageName, newTimer);
+    ref
+        .read(restrictionInfosProvider.notifier)
+        .updateAppTimer(app.packageName, newTimer);
+  }
+
+  void _switchInternet(
+      BuildContext context, WidgetRef ref, bool haveInternetAccess) {
+    if (!ref.read(permissionProvider).haveVpnPermission) {
+      ref.read(permissionProvider.notifier).askVpnPermission();
+      return;
+    }
+
+    ref.read(restrictionInfosProvider.notifier).switchInternetAccess(
+          app.packageName,
+          haveInternetAccess,
+        );
+
+    context.showSnackAlert(
+      "${app.name}'s internet is ${haveInternetAccess ? 'unblocked.' : 'blocked.'}",
+      icon: haveInternetAccess
+          ? FluentIcons.globe_20_filled
+          : FluentIcons.globe_prohibited_20_filled,
+    );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /// Watch timer for the package
-    final appTimer = ref.watch(focusProvider
-            .select((value) => value[app.packageName]?.timerSec)) ??
-        0;
+    /// Watch restriction info for the package
+    final restrictionInfo =
+        ref.watch(restrictionInfosProvider.select((e) => e[app.packageName]));
 
+    final appTimer = restrictionInfo?.timerSec ?? 0;
+    final haveInternetAccess = restrictionInfo?.internetAccess ?? true;
     final isPurged =
         appTimer > 0 && appTimer <= app.screenTimeThisWeek[todayOfWeek];
 
     return DefaultHero(
-      tag: AppTags.applicationTileTag(app.packageName),
+      tag: HeroTags.applicationTileTag(app.packageName),
       child: DefaultListTile(
         onPressed: () {
           Navigator.of(context).pushNamed(
@@ -102,17 +126,33 @@ class ApplicationTile extends ConsumerWidget {
         /// Timer picker button
         trailing: app.isImpSysApp
             ? null
-            : IconButton(
-                icon: appTimer > 0
-                    ? TimeTextShort(timeDuration: appTimer.seconds)
-                    : const Icon(FluentIcons.timer_20_regular),
-                onPressed: () => _pickAppTimer(
-                  context,
-                  ref,
-                  appTimer,
-                  app.screenTimeThisWeek[todayOfWeek],
-                ),
-              ),
+            : selectedUsageType == UsageType.screenUsage
+                ? IconButton(
+                    icon: appTimer > 0
+                        ? TimeTextShort(timeDuration: appTimer.seconds)
+                        : const Icon(FluentIcons.timer_20_regular),
+                    onPressed: () => _pickAppTimer(
+                      context,
+                      ref,
+                      appTimer,
+                      app.screenTimeThisWeek[todayOfWeek],
+                    ),
+                  )
+                : IconButton(
+                    icon: Icon(
+                      haveInternetAccess
+                          ? FluentIcons.globe_20_regular
+                          : FluentIcons.globe_off_20_regular,
+                      color: haveInternetAccess
+                          ? null
+                          : Theme.of(context).colorScheme.error,
+                    ),
+                    onPressed: () => _switchInternet(
+                      context,
+                      ref,
+                      !haveInternetAccess,
+                    ),
+                  ),
       ),
     );
   }

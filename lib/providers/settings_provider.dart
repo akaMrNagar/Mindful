@@ -44,6 +44,10 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Changes the application's color theme.
   void changeColor(String color) => state = state.copyWith(color: color);
 
+  /// Changes the username for dashboard.
+  void changeUsername(String username) =>
+      state = state.copyWith(username: username);
+
   /// Changes the time of day when app usage data is reset.
   /// Also updates the native side with the new reset time.
   void changeDataResetTime(TimeOfDay time) async {

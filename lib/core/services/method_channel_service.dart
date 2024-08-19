@@ -179,6 +179,29 @@ class MethodChannelService {
   Future<bool> useEmergencyPass() async =>
       await _methodChannel.invokeMethod('useEmergencyPass');
 
+  /// Start new focus session.
+  ///
+  /// This method sends a request to the native side to start focus session.
+  Future<bool> startFocusSession({
+    required int durationSeconds,
+    required bool toggleDnd,
+    required List<String> distractingApps,
+  }) async =>
+      await _methodChannel.invokeMethod(
+        'startFocusSession',
+        jsonEncode({
+          'toggleDnd': toggleDnd,
+          'durationSeconds': durationSeconds,
+          'distractingApps': distractingApps,
+        }),
+      );
+
+  /// Stop running focus session.
+  ///
+  /// This method sends a request to the native side to stop already running focus session.
+  Future<bool> stopFocusSession() async =>
+      await _methodChannel.invokeMethod('stopFocusSession');
+
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
 
@@ -269,7 +292,6 @@ class MethodChannelService {
         'getAndAskAdminPermission',
         askPermissionToo,
       );
-
 
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================

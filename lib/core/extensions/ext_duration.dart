@@ -1,10 +1,22 @@
 extension ExtDuration on Duration {
+  /// Returns a [Duration] when adding [other] to
+  /// [this] with precision up to second.
+  Duration add(Duration other) => Duration(
+        seconds: inSeconds + other.inSeconds,
+      );
+
+  /// Returns a [Duration] when subtracting [other] from
+  /// [this] with precision up to second.
+  Duration subtract(Duration other) => Duration(
+        seconds: inSeconds - other.inSeconds,
+      );
+
   /// Formats the duration into time like '5h 45m' or '54m'
   String toTimeShort() {
     return inMinutes >= 60
         ? inMinutes % 60 == 0
             ? "${inHours}h"
-            : "${inHours}h  ${inMinutes % 60}m"
+            : "${inHours}h ${inMinutes % 60}m"
         : "${inMinutes}m";
   }
 

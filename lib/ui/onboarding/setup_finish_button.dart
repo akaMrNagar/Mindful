@@ -9,6 +9,7 @@ import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/permissions/alarm_permission.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission.dart';
+import 'package:mindful/ui/permissions/notification_permission.dart';
 import 'package:mindful/ui/permissions/usage_access_permission.dart';
 
 class SetupFinishButton extends ConsumerWidget {
@@ -89,6 +90,7 @@ class SetupFinishButton extends ConsumerWidget {
                     physics: const BouncingScrollPhysics(),
                     slivers: [
                       12.vSliverBox,
+                      const NotificationPermission(showEvenIfGranted: true),
                       const UsageAccessPermission(showEvenIfGranted: true),
                       const DisplayOverlayPermission(showEvenIfGranted: true),
                       const ExactAlarmPermission(showEvenIfGranted: true),

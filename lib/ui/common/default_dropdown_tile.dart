@@ -14,6 +14,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
     required this.items,
     required this.onSelected,
     required this.label,
+    this.width,
     this.leadingIcon,
     this.dialogIcon,
     this.trailingBuilder,
@@ -23,6 +24,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
   final IconData? dialogIcon;
 
   final String label;
+  final double? width;
   final T value;
   final List<DefaultDropdownItem<T>> items;
   final ValueChanged<T> onSelected;
@@ -34,32 +36,31 @@ class DefaultDropdownTile<T> extends StatelessWidget {
     final selected =
         items.isNotEmpty ? items.firstWhere((e) => e.value == value) : null;
 
-    return Material(
-      child: DefaultHero(
-        tag: heroTag,
-        child: DefaultListTile(
-          height: 64,
-          leadingIcon: leadingIcon,
-          titleText: label,
-          subtitleText: selected?.label,
-          trailing: trailingBuilder?.call(selected?.value) ??
-              const Icon(FluentIcons.caret_down_20_filled),
-          onPressed: () {
-            Navigator.of(context).push(
-              HeroPageRoute(
-                builder: (context) => _DropdownMenu<T>(
-                  label: label,
-                  heroTag: heroTag,
-                  iconData: dialogIcon,
-                  selected: selected,
-                  onSelected: onSelected,
-                  trailingBuilder: trailingBuilder,
-                  items: items,
-                ),
+    return DefaultHero(
+      tag: heroTag,
+      child: DefaultListTile(
+        height: 64,
+        width: width,
+        leadingIcon: leadingIcon,
+        titleText: label,
+        subtitleText: selected?.label,
+        trailing: trailingBuilder?.call(selected?.value) ??
+            const Icon(FluentIcons.caret_down_20_filled),
+        onPressed: () {
+          Navigator.of(context).push(
+            HeroPageRoute(
+              builder: (context) => _DropdownMenu<T>(
+                label: label,
+                heroTag: heroTag,
+                iconData: dialogIcon,
+                selected: selected,
+                onSelected: onSelected,
+                trailingBuilder: trailingBuilder,
+                items: items,
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

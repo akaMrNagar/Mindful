@@ -102,6 +102,9 @@ class DefaultListTile extends StatelessWidget {
             ),
           ),
 
+          if (switchValue != null || isSelected != null || trailing != null)
+            4.hBox,
+
           /// Trailing widget
           switchValue != null
               ? IgnorePointer(

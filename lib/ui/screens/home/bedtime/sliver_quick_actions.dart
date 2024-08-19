@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/device_dnd_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/permissions/dnd_permission.dart';
-import 'package:mindful/ui/screens/home/bedtime/distracting_apps_list.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class SliverQuickActions extends ConsumerStatefulWidget {
@@ -55,17 +55,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
         const DndPermission(),
 
         /// Manage Dnd settings
-        DefaultListTile(
-          color: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          leading: const Icon(FluentIcons.alert_20_regular),
-          titleText: "Do not disturb settings",
-          subtitleText:
-              "Manage which app are distracting you from your routine.",
-          trailing: const Icon(FluentIcons.chevron_right_20_filled),
-          onPressed: () =>
-              MethodChannelService.instance.openDeviceDndSettings(),
-        ),
+        const DeviceDndTile(),
 
         /// Manage distracting apps
         DefaultListTile(
@@ -74,7 +64,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           leading: const Icon(FluentIcons.weather_moon_20_regular),
           titleText: "Distracting apps",
           subtitleText:
-              "Manage which app are distracting you from your routine.",
+              "Select which apps are distracting you from your bedtime routine.",
           trailing: AnimatedRotation(
             duration: 250.ms,
             turns: isDistractingAppsListExpanded ? 0.5 : 1,
@@ -91,7 +81,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           duration: 500.ms,
           curve: Curves.easeOut,
           child: isDistractingAppsListExpanded
-              ? const DistractingAppsList()
+              ? const BedtimeDistractingAppsList()
               : 0.vSliverBox,
         ),
 

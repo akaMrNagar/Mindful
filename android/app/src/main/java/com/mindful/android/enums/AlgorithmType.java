@@ -1,4 +1,4 @@
-package com.mindful.android.utils;
+package com.mindful.android.enums;
 
 public enum AlgorithmType {
     UsageStates,

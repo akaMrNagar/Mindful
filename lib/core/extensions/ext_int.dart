@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 
@@ -19,16 +20,18 @@ extension ExtInt on int {
   TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
   /// Generates day's date string based on the current day of week
+  // FIXME: Bug when showing dates
   String dateFromDoW() {
-    if (toInt() == now.weekday) {
+    if (toInt() == todayOfWeek) {
       return "Today";
-    } else if (toInt() == now.weekday - 1) {
+    } else if (toInt() == todayOfWeek - 1) {
       return "Yesterday";
     } else {
-      final dt = DateTime.fromMillisecondsSinceEpoch(
-          now.millisecondsSinceEpoch -
-              ((now.weekday - toInt()) * 24 * 60 * 60000));
-      return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsShort[dt.month - 1]}";
+      // final dt = DateTime.fromMillisecondsSinceEpoch(
+      //     now.millisecondsSinceEpoch -
+      //         ((now.weekday - toInt()) * 24 * 60 * 60000));
+      final dt = now.subtract(Duration(days: toInt()));
+      return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsLabelShort[dt.month - 1]}";
     }
   }
 
@@ -42,4 +45,16 @@ extension ExtInt on int {
       return "${toInt().mb} MB";
     }
   }
+
+  /// Generates progress/downfall percentage from current value and previous value
+  int toDiffPercentage(int previous) {
+    return previous > 0 ? ((this - previous) / previous * 100).round() : 0;
+  }
+
+  /// Returns [DateTime] object by creating it through fromMillisecondsSinceEpoch() constructor
+  DateTime get msToDateTime => DateTime.fromMillisecondsSinceEpoch(this);
+
+  /// Returns [DateTime] object while resetting time related fields by creating it through fromMillisecondsSinceEpoch() constructor
+  DateTime get msToDateOnly =>
+      DateTime.fromMillisecondsSinceEpoch(this).dateOnly;
 }

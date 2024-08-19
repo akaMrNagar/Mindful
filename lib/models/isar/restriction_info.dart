@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
-part 'focus_settings.g.dart';
+part 'restriction_info.g.dart';
 
-/// Focus info model used in mapping app package to its focus settings like
-/// [timerSec], [emergencyCounter] and [lastEmergencyTime]
+/// Restriction info model used in mapping app package to its focus info like
+/// [timerSec], [internetAccess]
 @immutable
 @collection
-class FocusSettings {
+class RestrictionInfo {
   /// ID for isar database
   Id get id => Isar.autoIncrement;
 
@@ -21,19 +21,19 @@ class FocusSettings {
   /// Flag denoting if this app's can access internet or not
   final bool internetAccess;
 
-  /// Focus settings for each installed app
-  const FocusSettings({
+  /// Info model for each installed app
+  const RestrictionInfo({
     required this.appPackage,
     this.timerSec = 0,
     this.internetAccess = true,
   });
 
-  FocusSettings copyWith({
+  RestrictionInfo copyWith({
     String? appPackage,
     int? timerSec,
     bool? internetAccess,
   }) {
-    return FocusSettings(
+    return RestrictionInfo(
       appPackage: appPackage ?? this.appPackage,
       timerSec: timerSec ?? this.timerSec,
       internetAccess: internetAccess ?? this.internetAccess,

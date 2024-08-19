@@ -2,7 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/tags.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 
 class EmergencyFAB extends StatelessWidget {
@@ -24,7 +24,7 @@ class EmergencyFAB extends StatelessWidget {
     final confirmed = await showConfirmationDialog(
       context: context,
       icon: FluentIcons.fire_20_filled,
-      heroTag: AppTags.emergencyTileTag,
+      heroTag: HeroTags.emergencyTileTag,
       title: "Emergency",
       info:
           "This will pause the app blocker for 5 minutes. You have $leftPasses emergency passes remaining. After using all passes, the app cannot be unblocked until midnight. Do you still want to proceed?",
@@ -47,7 +47,7 @@ class EmergencyFAB extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: FloatingActionButton.extended(
-        heroTag: AppTags.emergencyTileTag,
+        heroTag: HeroTags.emergencyTileTag,
         label: const Text("Emergency"),
         icon: const Icon(FluentIcons.fire_20_filled),
         backgroundColor: Theme.of(context).colorScheme.primary,

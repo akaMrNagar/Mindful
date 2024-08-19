@@ -30,7 +30,7 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
      * Constructs a SafeServiceConnection instance.
      *
      * @param serviceClass The class type of the service to connect to.
-     * @param context The context in which the service is being managed.
+     * @param context      The context in which the service is being managed.
      */
     public SafeServiceConnection(Class<T> serviceClass, Context context) {
         mServiceClass = serviceClass;

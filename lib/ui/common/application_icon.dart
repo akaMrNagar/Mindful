@@ -1,6 +1,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:mindful/core/utils/constants.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/models/android_app.dart';
 
 class ApplicationIcon extends StatelessWidget {

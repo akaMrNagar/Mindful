@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/providers/aggregated_usage_provider.dart';
+import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 
 class SliverAlgorithmSuggestion extends ConsumerStatefulWidget {
@@ -18,8 +18,8 @@ class _SliverAlgorithmSuggestionState
   @override
   Widget build(BuildContext context) {
     const oneDayInSec = 24 * 60 * 60;
-    final screenUsage =
-        ref.watch(aggregatedUsageProvider.select((v) => v.screenTimeThisWeek));
+    final screenUsage = ref.watch(
+        aggregatedUsageStatsProvider.select((v) => v.screenTimeThisWeek));
 
     final timeExceeded24H =
         screenUsage.where((e) => e >= oneDayInSec).isNotEmpty;

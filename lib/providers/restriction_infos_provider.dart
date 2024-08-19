@@ -1,27 +1,27 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/isar/focus_settings.dart';
+import 'package:mindful/models/isar/restriction_info.dart';
 
 /// A Riverpod state notifier provider that manages focus settings for individual apps, including timers and internet access.
-final focusProvider =
-    StateNotifierProvider<AppFocusInfos, Map<String, FocusSettings>>(
-  (ref) => AppFocusInfos(),
+final restrictionInfosProvider =
+    StateNotifierProvider<RestrictionInfos, Map<String, RestrictionInfo>>(
+  (ref) => RestrictionInfos(),
 );
 
-class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
-  AppFocusInfos() : super({}) {
+class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
+  RestrictionInfos() : super({}) {
     _init();
   }
 
-  /// Initializes the focus settings state by loading data from the Isar database and setting up a listener to save changes back.
+  /// Initializes the infos state by loading data from the Isar database and setting up a listener to save changes back.
   void _init() async {
-    final items = await IsarDbService.instance.loadFocusSettings();
+    final items = await IsarDbService.instance.loadRestrictionInfos();
     state = Map.fromEntries(items.map((e) => MapEntry(e.appPackage, e)));
 
     addListener((state) async {
       /// Save changes to the Isar database whenever the state updates.
-      await IsarDbService.instance.saveFocusSettings(state.values.toList());
+      await IsarDbService.instance.saveRestrictionInfos(state.values.toList());
     });
   }
 
@@ -33,7 +33,7 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
         appPackage,
         (value) => value.copyWith(timerSec: timerSec),
         ifAbsent: () =>
-            FocusSettings(appPackage: appPackage, timerSec: timerSec),
+            RestrictionInfo(appPackage: appPackage, timerSec: timerSec),
       );
 
     final appTimers = Map.fromEntries(
@@ -54,7 +54,7 @@ class AppFocusInfos extends StateNotifier<Map<String, FocusSettings>> {
     state = {...state}..update(
         appPackage,
         (value) => value.copyWith(internetAccess: haveInternetAccess),
-        ifAbsent: () => FocusSettings(
+        ifAbsent: () => RestrictionInfo(
           appPackage: appPackage,
           internetAccess: haveInternetAccess,
         ),

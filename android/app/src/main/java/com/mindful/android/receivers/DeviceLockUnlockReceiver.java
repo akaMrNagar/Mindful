@@ -1,7 +1,7 @@
 package com.mindful.android.receivers;
 
 import static com.mindful.android.services.MindfulTrackerService.ACTION_NEW_APP_LAUNCHED;
-import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
+import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;

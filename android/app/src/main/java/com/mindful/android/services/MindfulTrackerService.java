@@ -2,8 +2,8 @@ package com.mindful.android.services;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
-import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_THIS_BEDTIME;
-import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
+import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_DIALOG_TYPE;
+import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.Service;
@@ -16,13 +16,16 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.mindful.android.enums.AlgorithmType;
+import com.mindful.android.enums.DialogType;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.receivers.DeviceLockUnlockReceiver;
-import com.mindful.android.utils.AlgorithmType;
+import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
 import java.util.Date;
@@ -36,7 +39,6 @@ import java.util.TimerTask;
  */
 public class MindfulTrackerService extends Service {
 
-    private static final int SERVICE_ID = 301;
     private final String TAG = "Mindful.MindfulTrackerService";
     public static final String ACTION_NEW_APP_LAUNCHED = "com.mindful.android.ACTION_NEW_APP_LAUNCHED";
     public static final String ACTION_START_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_BEDTIME";
@@ -53,7 +55,8 @@ public class MindfulTrackerService extends Service {
 
     private HashMap<String, Long> mAppTimers = new HashMap<>();
     private final HashSet<String> mPurgedApps = new HashSet<>();
-    private HashSet<String> mDistractingApps = new HashSet<>();
+    private HashSet<String> mBedtimeDistractingApps = new HashSet<>(0);
+    private HashSet<String> mFocusSessionDistractingApps = new HashSet<>(0);
 
 
     @Override
@@ -117,7 +120,7 @@ public class MindfulTrackerService extends Service {
 
         // Create notification
         startForeground(
-                SERVICE_ID,
+                AppConstants.TRACKER_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
                         "Mindful is now tracking app usage to help you stay focused and manage your digital habits."
@@ -151,7 +154,7 @@ public class MindfulTrackerService extends Service {
      * Stops the service if no timers are active and no distracting apps.
      */
     private void stopIfNoUsage() {
-        if (mDistractingApps.isEmpty() && mAppTimers.isEmpty()) {
+        if (mBedtimeDistractingApps.isEmpty() && mAppTimers.isEmpty() && mFocusSessionDistractingApps.isEmpty()) {
             mIsStoppedForcefully = false;
             Log.d(TAG, "stopIfNoUsage: The service is not required any more therefore, stopping it");
             stopForeground(true);
@@ -164,9 +167,9 @@ public class MindfulTrackerService extends Service {
      *
      * @param shouldStart True to start, false to stop.
      */
-    public void startStopBedtimeRoutine(boolean shouldStart) {
+    private void startStopBedtimeRoutine(boolean shouldStart) {
         if (shouldStart) {
-            mDistractingApps = SharedPrefsHelper.fetchBedtimeSettings(this).distractingApps;
+            mBedtimeDistractingApps = SharedPrefsHelper.fetchBedtimeSettings(this).distractingApps;
             mPurgedApps.clear();
 
             Log.d(TAG, "startStopBedtimeRoutine: Bedtime routine STARTED successfully");
@@ -174,8 +177,27 @@ public class MindfulTrackerService extends Service {
             if (mLockUnlockReceiver != null) mLockUnlockReceiver.broadcastLastAppLaunchEvent();
 
         } else {
-            mDistractingApps.clear();
+            mBedtimeDistractingApps.clear();
             Log.d(TAG, "startStopBedtimeRoutine: Bedtime routine STOPPED successfully");
+            stopIfNoUsage();
+        }
+    }
+
+    /**
+     * Starts or stops Focus Session on the basis of passed distractingApps.
+     * If the passed hash set is null then STOP session otherwise START session.
+     *
+     * @param distractingApps Hashset of strings of distracting app's packages.
+     */
+    public void startStopFocusSession(@Nullable HashSet<String> distractingApps) {
+        if (distractingApps != null) {
+            mFocusSessionDistractingApps = distractingApps;
+            mPurgedApps.clear();
+
+            Log.d(TAG, "startStopBedtimeRoutine: Focus Session STARTED successfully");
+        } else {
+            mFocusSessionDistractingApps.clear();
+            Log.d(TAG, "startStopBedtimeRoutine: Focus Session STOPPED successfully");
             stopIfNoUsage();
         }
     }
@@ -239,9 +261,12 @@ public class MindfulTrackerService extends Service {
                 // Cancel running task
                 cancelTimers();
 
-                if (mDistractingApps.contains(packageName)) {
+                if (mFocusSessionDistractingApps.contains(packageName)) {
+                    // If focus session is ON
+                    showOverlayDialog(packageName, DialogType.FocusSession);
+                } else if (mBedtimeDistractingApps.contains(packageName)) {
                     // If bedtime mode is ON
-                    showOverlayDialog(packageName);
+                    showOverlayDialog(packageName, DialogType.BedtimeRoutine);
                 } else if (mAppTimers.containsKey(packageName)) {
                     // Else if app has timer
                     onTimerAppLaunched(packageName);
@@ -256,7 +281,7 @@ public class MindfulTrackerService extends Service {
          */
         private void onTimerAppLaunched(String packageName) {
             if (mPurgedApps.contains(packageName)) {
-                showOverlayDialog(packageName);
+                showOverlayDialog(packageName, DialogType.TimerOut);
                 return;
             }
 
@@ -266,7 +291,7 @@ public class MindfulTrackerService extends Service {
 
             if (screenTimeSec > 0 && screenTimeSec >= appTimerSec) {
                 mPurgedApps.add(packageName);
-                showOverlayDialog(packageName);
+                showOverlayDialog(packageName, DialogType.TimerOut);
                 return;
             }
 
@@ -278,7 +303,7 @@ public class MindfulTrackerService extends Service {
                 @Override
                 public void run() {
                     mPurgedApps.add(packageName);
-                    showOverlayDialog(packageName);
+                    showOverlayDialog(packageName, DialogType.TimerOut);
                     Log.d(TAG, "handleTimerAppLaunch: Executed timer task for package : " + packageName);
                 }
             }, delayMs);
@@ -291,11 +316,11 @@ public class MindfulTrackerService extends Service {
          *
          * @param packageName The package name of the app.
          */
-        private void showOverlayDialog(String packageName) {
+        private void showOverlayDialog(String packageName, DialogType dialogType) {
             if (!Utils.isServiceRunning(MindfulTrackerService.this, OverlayDialogService.class.getName())) {
                 Intent intent = new Intent(MindfulTrackerService.this, OverlayDialogService.class);
                 intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
-                intent.putExtra(INTENT_EXTRA_IS_THIS_BEDTIME, mDistractingApps.contains(packageName));
+                intent.putExtra(INTENT_EXTRA_DIALOG_TYPE, dialogType.toInteger());
                 startService(intent);
                 Log.d(TAG, "showOverlayDialog: Starting overlay dialog service for package : " + packageName);
             }

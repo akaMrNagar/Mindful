@@ -23,7 +23,8 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
 
     final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
         perms.haveDisplayOverlayPermission &&
-        perms.haveAlarmsPermission;
+        perms.haveAlarmsPermission &&
+        perms.haveNotificationPermission;
 
     final deviceHeight = MediaQuery.of(context).size.longestSide;
 
@@ -34,68 +35,72 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
           exit(0);
         }
       },
-      child: OnBoardingSlider(
-        totalPage: 6,
-        headerBackgroundColor: Theme.of(context).colorScheme.surface,
-        pageBackgroundColor: Theme.of(context).colorScheme.surface,
-        controllerColor: Theme.of(context).colorScheme.primary,
-        speed: 3,
-        indicatorAbove: true,
-        indicatorPosition: 24,
-        skipTextButton: const StyledText("Skip"),
-        addButton: false,
-        centerBackground: true,
-        background: [
-          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_1.png'),
-          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_2.png'),
-          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_3.png'),
-          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_4.png'),
-          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_5.png'),
-          _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_6.png'),
-        ],
-        pageBodies: [
-          _bodyBuilder(
-            deviceHeight: deviceHeight,
-            title: "Fewer Distractions",
-            description:
-                "Master your screen time! Set app limits, pause distractions, and boost productivity.",
-          ),
-          _bodyBuilder(
-            deviceHeight: deviceHeight,
-            title: "Doom Scrolling",
-            description:
-                "Break free from doom scrolling. Set timers for addictive short-form content and reclaim your time.",
-          ),
-          _bodyBuilder(
-            deviceHeight: deviceHeight,
-            title: "Peaceful Routine",
-            description:
-                "End your day right with Smart Bedtime Mode. Pause distracting apps and enable Do Not Disturb for a peaceful sleep.",
-          ),
-          _bodyBuilder(
-            deviceHeight: deviceHeight,
-            title: "Detox Mind",
-            description:
-                "Surf safely and stay focused. Block adult sites and custom websites to create a cleaner, safer browsing experience.",
-          ),
-          _bodyBuilder(
-            deviceHeight: deviceHeight,
-            title: "Digital Cravings",
-            description:
-                "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers, and bedtime settings to stay disciplined and on track.",
-          ),
-
-          /// Last setup page
-          _bodyBuilder(
-            deviceHeight: deviceHeight,
-            title: "Privacy First",
-            description:
-                "Mindful is a Free and Open Source (FOSS) app, ad-free and offline. It doesn't collect or transfer user data, ensuring your privacy.",
-            finish: SetupFinishButton(
-              haveAllEssentialPermissions: haveAllEssentialPermissions,
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        extendBody: true,
+        body: OnBoardingSlider(
+          totalPage: 6,
+          headerBackgroundColor: Theme.of(context).colorScheme.surface,
+          pageBackgroundColor: Theme.of(context).colorScheme.surface,
+          controllerColor: Theme.of(context).colorScheme.primary,
+          speed: 3,
+          indicatorAbove: true,
+          indicatorPosition: 24,
+          skipTextButton: const StyledText("Skip"),
+          addButton: false,
+          centerBackground: true,
+          background: [
+            _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_1.png'),
+            _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_2.png'),
+            _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_3.png'),
+            _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_4.png'),
+            _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_5.png'),
+            _bgBuilder(deviceHeight, 'assets/illustrations/onboarding_6.png'),
+          ],
+          pageBodies: [
+            _bodyBuilder(
+              deviceHeight: deviceHeight,
+              title: "Fewer Distractions",
+              description:
+                  "Master your screen time! Set app limits, pause distractions, and boost productivity.",
             ),
-          ),
-        ],
+            _bodyBuilder(
+              deviceHeight: deviceHeight,
+              title: "Doom Scrolling",
+              description:
+                  "Break free from doom scrolling. Set timers for addictive short-form content and reclaim your time.",
+            ),
+            _bodyBuilder(
+              deviceHeight: deviceHeight,
+              title: "Peaceful Routine",
+              description:
+                  "End your day right with Smart Bedtime Mode. Pause distracting apps and enable Do Not Disturb for a peaceful sleep.",
+            ),
+            _bodyBuilder(
+              deviceHeight: deviceHeight,
+              title: "Detox Mind",
+              description:
+                  "Surf safely and stay focused. Block adult sites and custom websites to create a cleaner, safer browsing experience.",
+            ),
+            _bodyBuilder(
+              deviceHeight: deviceHeight,
+              title: "Digital Cravings",
+              description:
+                  "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers, and bedtime settings to stay disciplined and on track.",
+            ),
+
+            /// Last setup page
+            _bodyBuilder(
+              deviceHeight: deviceHeight,
+              title: "Privacy First",
+              description:
+                  "Mindful is a Free and Open Source (FOSS) app, ad-free and offline. It doesn't collect or transfer user data, ensuring your privacy.",
+              finish: SetupFinishButton(
+                haveAllEssentialPermissions: haveAllEssentialPermissions,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

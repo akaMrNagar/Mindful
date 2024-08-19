@@ -10,8 +10,12 @@ class DefaultNavbar extends StatefulWidget {
     super.key,
     this.leading,
     this.onTabChanged,
+    this.initialTabIndex = 0,
     required this.navbarItems,
   });
+
+  /// Index of the initial tab must be [initialTabIndex] < [navbarItems] length.
+  final int initialTabIndex;
 
   /// List of all tab items with title, icon and body
   final List<NavbarItem> navbarItems;
@@ -36,7 +40,9 @@ class _DefaultNavbarState extends State<DefaultNavbar>
     super.initState();
     _controller = TabController(
       vsync: this,
-      initialIndex: 0,
+      initialIndex: widget.initialTabIndex < widget.navbarItems.length
+          ? widget.initialTabIndex
+          : 0,
       length: widget.navbarItems.length,
       animationDuration: 300.ms,
     );
@@ -107,7 +113,15 @@ class _DefaultNavbarState extends State<DefaultNavbar>
               controller: _controller,
               physics: const NeverScrollableScrollPhysics(),
               children: widget.navbarItems
-                  .map((e) => RotatedBox(quarterTurns: -1, child: e.body))
+                  .map(
+                    (e) => RotatedBox(
+                      quarterTurns: -1,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 4, right: 8),
+                        child: e.body,
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),

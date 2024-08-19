@@ -8,7 +8,7 @@ import 'package:mindful/ui/common/styled_text.dart';
 extension ExtBuildContext on BuildContext {
   void _showSnackBar({
     required IconData icon,
-    required String error,
+    required String info,
     required Color fgColor,
     required Color bgColor,
     bool showCopyAction = false,
@@ -17,11 +17,10 @@ extension ExtBuildContext on BuildContext {
       if (mounted) {
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
+            dismissDirection: DismissDirection.horizontal,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
             ),
-            margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 24),
             backgroundColor: bgColor,
             action: showCopyAction
                 ? SnackBarAction(
@@ -32,7 +31,7 @@ extension ExtBuildContext on BuildContext {
                     // textColor: fgColor,
                     onPressed: () async {
                       await Clipboard.setData(
-                        ClipboardData(text: error),
+                        ClipboardData(text: info),
                       );
                     },
                   )
@@ -41,7 +40,14 @@ extension ExtBuildContext on BuildContext {
               children: [
                 Icon(icon, color: fgColor),
                 12.hBox,
-                Expanded(child: StyledText(error, color: fgColor))
+                Expanded(
+                  child: StyledText(
+                    info,
+                    color: fgColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )
               ],
             ),
           ),
@@ -64,7 +70,7 @@ extension ExtBuildContext on BuildContext {
     final fgColor = Theme.of(this).colorScheme.onErrorContainer;
     _showSnackBar(
       icon: FluentIcons.bug_20_regular,
-      error: error,
+      info: error,
       fgColor: fgColor,
       bgColor: bgColor,
       showCopyAction: true,
@@ -88,13 +94,13 @@ extension ExtBuildContext on BuildContext {
 
   void showSnackAlert(
     String info, {
-    IconData icon = FluentIcons.prohibited_20_filled,
+    IconData icon = FluentIcons.warning_20_filled,
   }) {
-    final bgColor = Theme.of(this).colorScheme.secondaryContainer;
-    final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
+    final bgColor = Theme.of(this).colorScheme.primary;
+    final fgColor = Theme.of(this).colorScheme.onPrimary;
     _showSnackBar(
       icon: icon,
-      error: info,
+      info: info,
       fgColor: fgColor,
       bgColor: bgColor,
     );
