@@ -1,6 +1,5 @@
 package com.mindful.android.services;
 
-import static com.mindful.android.helpers.NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID;
 import static com.mindful.android.utils.AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS;
 import static com.mindful.android.utils.AppConstants.EMERGENCY_COUNTDOWN_SERVICE_NOTIFICATION_ID;
 import static com.mindful.android.utils.AppConstants.FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID;
@@ -51,7 +50,7 @@ public class CountDownService extends Service {
         Intent appIntent = new Intent(getBaseContext(), MainActivity.class);
         appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appPendingIntent = PendingIntent.getActivity(this, 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        mProgressNotificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_IMPORTANT_CHANNEL_ID)
+        mProgressNotificationBuilder = new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
@@ -194,7 +193,7 @@ public class CountDownService extends Service {
 
     private void showNotificationAfterStop(String title, String msg, int id) {
         mNotificationManager.notify(id,
-                new NotificationCompat.Builder(this, NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
                         .setContentIntent(appPendingIntent)

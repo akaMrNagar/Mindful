@@ -142,7 +142,7 @@ class ApplicationTile extends ConsumerWidget {
                     icon: Icon(
                       haveInternetAccess
                           ? FluentIcons.globe_20_regular
-                          : FluentIcons.globe_off_20_regular,
+                          : FluentIcons.globe_prohibited_20_regular,
                       color: haveInternetAccess
                           ? null
                           : Theme.of(context).colorScheme.error,

@@ -85,7 +85,7 @@ public class OverlayDialogService extends Service {
         String msg = "Please grant display overlay permission to Mindful by clicking on the notification. On the next screen, find Mindful in the list of apps and click on allow.";
         notificationManager.notify(
                 AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
-                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_IMPORTANT_CHANNEL_ID)
+                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setAutoCancel(true)
                         .setContentTitle("Permission denied")
