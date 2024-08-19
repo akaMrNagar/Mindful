@@ -2,12 +2,15 @@ package com.mindful.android.receivers.alarm;
 
 import static com.mindful.android.utils.AppConstants.BEDTIME_ROUTINE_NOTIFICATION_ID;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
+import com.mindful.android.R;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -60,7 +63,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, true);
-        NotificationHelper.pushImpAlertNotification(mContext, BEDTIME_ROUTINE_NOTIFICATION_ID, "It's time to bed, bedtime routine is started");
+        pushAlertNotification("It's time to wind down. Bedtime routine has started, helping you relax and prepare for a restful night's sleep.");
     }
 
     private void stopBedtimeRoutine() {
@@ -69,6 +72,20 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
         // Stop DND if needed
         if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, false);
-        NotificationHelper.pushImpAlertNotification(mContext, BEDTIME_ROUTINE_NOTIFICATION_ID, "It's time to wake up, bedtime is over");
+        pushAlertNotification("Rise and shine! Bedtime routine has ended, get ready to start the day energized and refreshed.");
+    }
+
+
+    private void pushAlertNotification(String alert) {
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(
+                BEDTIME_ROUTINE_NOTIFICATION_ID, new NotificationCompat.Builder(mContext, NotificationHelper.NOTIFICATION_BEDTIME_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setOngoing(false)
+                        .setOnlyAlertOnce(true)
+                        .setContentTitle("Mindful")
+                        .setContentText(alert)
+                        .build()
+        );
     }
 }

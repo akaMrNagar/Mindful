@@ -25,13 +25,11 @@ import com.mindful.android.R;
 public class NotificationHelper {
     private static final String TAG = "Mindful.NotificationHelper";
 
-    // Notification channel names
-    private static final String NOTIFICATION_IMPORTANT_CHANNEL_NAME = "Important";
-    private static final String NOTIFICATION_OTHER_CHANNEL_NAME = "Other";
-
     // Notification channel IDs
-    public static final String NOTIFICATION_IMPORTANT_CHANNEL_ID = "mindful.notification.channel.important";
-    public static final String NOTIFICATION_OTHER_CHANNEL_ID = "mindful.notification.channel.other";
+    public static final String NOTIFICATION_CRITICAL_CHANNEL_ID = "mindful.notification.channel.CRITICAL";
+    public static final String NOTIFICATION_FOCUS_CHANNEL_ID = "mindful.notification.channel.FOCUS";
+    public static final String NOTIFICATION_BEDTIME_CHANNEL_ID = "mindful.notification.channel.BEDTIME";
+    public static final String NOTIFICATION_SERVICE_CHANNEL_ID = "mindful.notification.channel.SERVICE";
 
     /**
      * Registers notification channels for the application. This method creates and registers
@@ -42,15 +40,24 @@ public class NotificationHelper {
     public static void registerNotificationGroupAndChannels(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channels
-            NotificationChannel importantChannel = new NotificationChannel(NOTIFICATION_IMPORTANT_CHANNEL_ID, NOTIFICATION_IMPORTANT_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationChannel otherChannel = new NotificationChannel(NOTIFICATION_OTHER_CHANNEL_ID, NOTIFICATION_OTHER_CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN);
-            importantChannel.setDescription("These notifications include crucial reminders and updates, designed to help you stay on track.");
-            otherChannel.setDescription("These are non-critical updates. They can be disabled but are included to comply with Android requirements.");
+            NotificationChannel criticalChannel = new NotificationChannel(NOTIFICATION_CRITICAL_CHANNEL_ID, "Critical Alerts", NotificationManager.IMPORTANCE_HIGH);
+            criticalChannel.setDescription("These notifications include crucial updates regarding the essential system operations to ensure Mindful runs smoothly.");
+
+            NotificationChannel focusChannel = new NotificationChannel(NOTIFICATION_FOCUS_CHANNEL_ID, "Focus Sessions", NotificationManager.IMPORTANCE_DEFAULT);
+            focusChannel.setDescription("These notifications include updates regarding focus sessions to help you stay on track.");
+
+            NotificationChannel bedtimeChannel = new NotificationChannel(NOTIFICATION_BEDTIME_CHANNEL_ID, "Bedtime Routine", NotificationManager.IMPORTANCE_DEFAULT);
+            bedtimeChannel.setDescription("These notifications include updates regarding bedtime routine to help you get a peaceful sleep.");
+
+            NotificationChannel serviceChannel = new NotificationChannel(NOTIFICATION_SERVICE_CHANNEL_ID, "Running Services", NotificationManager.IMPORTANCE_MIN);
+            serviceChannel.setDescription("These are non-critical notifications. They can be disabled but are included to comply with Android requirements.");
 
             // Register channels
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(otherChannel);
-            notificationManager.createNotificationChannel(importantChannel);
+            notificationManager.createNotificationChannel(criticalChannel);
+            notificationManager.createNotificationChannel(focusChannel);
+            notificationManager.createNotificationChannel(bedtimeChannel);
+            notificationManager.createNotificationChannel(serviceChannel);
         }
     }
 
@@ -122,26 +129,6 @@ public class NotificationHelper {
     }
 
     /**
-     * Sends an important alert notification with the specified content.
-     *
-     * @param context The application context used to access system services.
-     * @param id      The ID of the notification.
-     * @param alert   The content of the notification.
-     */
-    public static void pushImpAlertNotification(@NonNull Context context, int id, String alert) {
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(
-                id, new NotificationCompat.Builder(context, NOTIFICATION_IMPORTANT_CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_notification)
-                        .setOngoing(false)
-                        .setOnlyAlertOnce(true)
-                        .setContentTitle("Mindful")
-                        .setContentText(alert)
-                        .build()
-        );
-    }
-
-    /**
      * Builds and returns a notification for a foreground service with the specified content.
      *
      * @param context The application context used to access system services.
@@ -150,7 +137,7 @@ public class NotificationHelper {
      */
     @NonNull
     public static Notification buildFgServiceNotification(Context context, String content) {
-        return new NotificationCompat.Builder(context, NOTIFICATION_OTHER_CHANNEL_ID)
+        return new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setAutoCancel(true)
                 .setContentTitle("Mindful is running")
