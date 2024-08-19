@@ -5,9 +5,6 @@ import 'package:mindful/models/isar/focus_session.dart';
 
 @immutable
 class FocusTimelineModel {
-  /// NOTE - Key for colors
-  /// -1 for selected day
-  /// 1 for productive days
   final Map<DateTime, int> daysTypeMap;
   final int totalProductiveDays;
   final Duration totalProductiveTime;

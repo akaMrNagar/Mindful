@@ -10,22 +10,20 @@ import 'package:mindful/models/focus_stats_model.dart';
 import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 
 final focusStatsProvider =
-    StateNotifierProvider<FocusStatsNotifier, AsyncValue<FocusStatsModel>>(
-        (ref) {
+    StateNotifierProvider<FocusStatsNotifier, FocusStatsModel>((ref) {
   final aggregatedScreenTime = ref
       .watch(aggregatedUsageStatsProvider.select((v) => v.screenTimeThisWeek));
   return FocusStatsNotifier(aggregatedScreenTime);
 });
 
-class FocusStatsNotifier extends StateNotifier<AsyncValue<FocusStatsModel>> {
+class FocusStatsNotifier extends StateNotifier<FocusStatsModel> {
   final List<int> thisWeeksScreenTime;
-  FocusStatsNotifier(this.thisWeeksScreenTime) : super(const AsyncLoading()) {
+  FocusStatsNotifier(this.thisWeeksScreenTime)
+      : super(const FocusStatsModel()) {
     refreshFocusStats();
   }
 
   Future<void> refreshFocusStats() async {
-    state = const AsyncLoading();
-
     final todaysScreenTime = thisWeeksScreenTime[todayOfWeek];
     final yesterdaysScreenTime = thisWeeksScreenTime[max(0, todayOfWeek - 1)];
 
@@ -45,16 +43,14 @@ class FocusStatsNotifier extends StateNotifier<AsyncValue<FocusStatsModel>> {
         .loadSessionsDurationForInterval(dateToday.subtract(1.days), dateToday);
 
     if (!mounted) return;
-    state = AsyncData(
-      FocusStatsModel(
-        todaysScreenTime: todaysScreenTime.seconds,
-        yesterdaysScreenTime: yesterdaysScreenTime.seconds,
-        todaysFocusedTime: todaysFocusedTime.seconds,
-        yesterdaysFocusedTime: yesterdaysFocusedTime.seconds,
-        lifetimeFocusedTime: lifetimeFocusedTime.seconds,
-        successfulSessions: successfulSessions,
-        failedSessions: failedSessions,
-      ),
+    state = state.copyWith(
+      todaysScreenTime: todaysScreenTime.seconds,
+      yesterdaysScreenTime: yesterdaysScreenTime.seconds,
+      todaysFocusedTime: todaysFocusedTime.seconds,
+      yesterdaysFocusedTime: yesterdaysFocusedTime.seconds,
+      lifetimeFocusedTime: lifetimeFocusedTime.seconds,
+      successfulSessions: successfulSessions,
+      failedSessions: failedSessions,
     );
   }
 }

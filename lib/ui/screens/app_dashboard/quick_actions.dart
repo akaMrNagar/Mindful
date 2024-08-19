@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -13,7 +14,9 @@ import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
+import 'package:mindful/ui/permissions/vpn_permission.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 /// Displays available actions for the app in [AppDashboard]
 class QuickActions extends ConsumerWidget {
@@ -51,6 +54,24 @@ class QuickActions extends ConsumerWidget {
         .updateAppTimer(app.packageName, newTimer);
   }
 
+  void _switchInternet(
+    BuildContext context,
+    WidgetRef ref,
+    bool haveInternetAccess,
+  ) {
+    ref.read(restrictionInfosProvider.notifier).switchInternetAccess(
+          app.packageName,
+          haveInternetAccess,
+        );
+
+    context.showSnackAlert(
+      "${app.name}'s internet is ${haveInternetAccess ? 'unblocked.' : 'blocked.'}",
+      icon: haveInternetAccess
+          ? FluentIcons.globe_20_filled
+          : FluentIcons.globe_prohibited_20_filled,
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTimer = ref.watch(restrictionInfosProvider
@@ -67,7 +88,7 @@ class QuickActions extends ConsumerWidget {
     final haveVpnPermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
-    return SliverList.list(
+    return MultiSliver(
       children: [
         /// App Timer Button
         DefaultHero(
@@ -90,7 +111,7 @@ class QuickActions extends ConsumerWidget {
               app.screenTimeThisWeek[todayOfWeek],
             ),
           ),
-        ),
+        ).sliver,
 
         /// Internet access
         DefaultListTile(
@@ -99,17 +120,20 @@ class QuickActions extends ConsumerWidget {
           titleText: "Internet access",
           subtitleText: app.isImpSysApp
               ? "Cannot block important app's internet."
-              : internetAccess
-                  ? "Switch off to block ${app.name}'s internet"
-                  : "${app.name}'s internet is blocked.",
+              : "Switch off to block app's internet.",
           leadingIcon: internetAccess
               ? FluentIcons.globe_20_regular
               : FluentIcons.globe_prohibited_16_filled,
           accent: internetAccess ? null : Theme.of(context).colorScheme.error,
-          onPressed: () => ref
-              .read(restrictionInfosProvider.notifier)
-              .switchInternetAccess(app.packageName, !internetAccess),
-        ),
+          onPressed: () => _switchInternet(
+            context,
+            ref,
+            !internetAccess,
+          ),
+        ).sliver,
+
+        /// Vpn permission
+        const VpnPermission(),
 
         /// Launch app button
         DefaultListTile(
@@ -118,7 +142,7 @@ class QuickActions extends ConsumerWidget {
           leadingIcon: FluentIcons.rocket_20_regular,
           onPressed: () async =>
               MethodChannelService.instance.openAppWithPackage(app.packageName),
-        ),
+        ).sliver,
 
         /// Launch app settings button
         DefaultListTile(
@@ -128,7 +152,7 @@ class QuickActions extends ConsumerWidget {
           leadingIcon: FluentIcons.launcher_settings_20_regular,
           onPressed: () async => MethodChannelService.instance
               .openAppSettingsForPackage(app.packageName),
-        ),
+        ).sliver,
       ],
     );
   }

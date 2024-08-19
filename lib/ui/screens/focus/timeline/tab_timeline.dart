@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
@@ -26,6 +27,8 @@ class TabTimeline extends ConsumerStatefulWidget {
 }
 
 class _TabTimelineState extends ConsumerState<TabTimeline> {
+  DateTime _selectedDay = DateTime.now().dateOnly;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +38,17 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
   @override
   Widget build(BuildContext context) {
     final timeline = ref.watch(focusTimelineProvider);
+
+    /// Manually update selected day Due to the fact that [HeatMapCalendar] does
+    /// not allow to change color for the selected day
+    /// NOTE - Key value for days
+    /// -1 for selected day
+    /// 1 for productive days
+    final heatMapData = {...timeline.daysTypeMap}..update(
+        _selectedDay,
+        (_) => -1,
+        ifAbsent: () => -1,
+      );
 
     return Skeletonizer.zone(
       enabled: timeline.todaysSessions.isLoading,
@@ -64,7 +78,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                     title: "Productive time",
                     info: timeline.totalProductiveTime.toTimeShort(),
                     onTap: () => context.showSnackAlert(
-                      "The total productive time in the selected month.",
+                      "Your total productive time for the selected month is ${timeline.totalProductiveTime.toTimeFull()}.",
                       icon: FluentIcons.clock_20_filled,
                     ),
                   ),
@@ -75,9 +89,9 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                     isPrimary: true,
                     icon: FluentIcons.shifts_day_20_regular,
                     title: "Productive days",
-                    info: "${timeline.totalProductiveDays} days",
+                    info: "${timeline.daysTypeMap.length} days",
                     onTap: () => context.showSnackAlert(
-                      "The total number of productive days in the selected month.",
+                      "You've had a total of ${timeline.totalProductiveDays} productive days in the selected month.",
                       icon: FluentIcons.shifts_day_20_filled,
                     ),
                   ),
@@ -92,7 +106,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               title: "Focused time",
               info: timeline.todaysFocusedTime.toTimeFull(),
               onTap: () => context.showSnackAlert(
-                "The total number of productive days in the selected month.",
+                "Your total focused time for the selected day is ${timeline.todaysFocusedTime.toTimeFull()}.",
                 icon: FluentIcons.shifts_day_20_filled,
               ),
             ).sliver,
@@ -100,7 +114,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             const SliverContentTitle(title: "Calender"),
             HeatMapCalendar(
               /// NOTE - datasets map should only contain date and all time related fields should be 0
-              datasets: timeline.daysTypeMap,
+              datasets: heatMapData,
               flexible: true,
               initDate: DateTime.now(),
               borderRadius: 10,
@@ -122,7 +136,10 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               },
               onMonthChange:
                   ref.read(focusTimelineProvider.notifier).onMonthChanged,
-              onClick: ref.read(focusTimelineProvider.notifier).onDayChanged,
+              onClick: (day) {
+                _selectedDay = day;
+                ref.read(focusTimelineProvider.notifier).onDayChanged(day);
+              },
             ).sliver,
 
             8.vSliverBox,
@@ -130,13 +147,28 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             8.vSliverBox,
 
             /// List of today's sessions
-            SliverList.builder(
-              itemCount: timeline.todaysSessions.value?.length ?? 5,
-              itemBuilder: (context, index) => SessionTile(
-                session: timeline.todaysSessions.value?[index] ??
-                    FocusSession.placeholder(),
-              ),
-            ),
+            timeline.todaysSessions.value?.isEmpty ?? false
+                ? const SizedBox(
+                    height: 256,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(FluentIcons.emoji_sad_20_filled, size: 32),
+                        StyledText(
+                          "No focus sessions recorded for the selected day.",
+                          fontSize: 14,
+                          isSubtitle: true,
+                        ),
+                      ],
+                    ),
+                  ).sliver
+                : SliverList.builder(
+                    itemCount: timeline.todaysSessions.value?.length ?? 5,
+                    itemBuilder: (context, index) => SessionTile(
+                      session: timeline.todaysSessions.value?[index] ??
+                          FocusSession.placeholder(),
+                    ),
+                  ),
 
             const SliverTabsBottomPadding(),
           ],

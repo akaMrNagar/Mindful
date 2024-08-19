@@ -26,7 +26,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
     _validateNextScreen();
     Future.delayed(
-      1500.ms,
+      1000.ms,
       () {
         nextScreenRoute == AppRoutes.homeScreen
             ? Navigator.of(context).pop()
@@ -43,7 +43,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         isOnboardingDone ? AppRoutes.homeScreen : AppRoutes.onboardingScreen;
 
     if (isOnboardingDone) {
-      ref.read(appsProvider.notifier).refreshDeviceApps();
+      ref.read(appsProvider);
     }
   }
 

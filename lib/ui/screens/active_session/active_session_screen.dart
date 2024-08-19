@@ -47,7 +47,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
     final remaining = widget.session.duration
         .subtract(DateTime.now().difference(widget.session.startTime));
 
-    if (remaining.inSeconds > 0) _remainingTime = remaining;
+    if (remaining.inSeconds > 0) _remainingTime = remaining.subtract(2.seconds);
 
     _timer = Timer.periodic(1.seconds, (timer) {
       /// Decrease remaining duration or cancel timer if remaining duration is 0

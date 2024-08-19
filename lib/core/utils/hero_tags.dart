@@ -20,10 +20,9 @@ class HeroTags {
 
   /// Tag used to identify the FAB for timer picker in focus mode.
   static const focusModeFABTag = "focus.focusSessionTimer";
- 
+
   /// Tag used to identify the FAB for adding a distracting website.
-  static const editUsernameTag =
-      "home.dashboard.editUsername";
+  static const editUsernameTag = "home.dashboard.editUsername";
 
   /// Generates a tag for an application tile based on the provided package name.
   static String applicationTileTag(String package) =>
@@ -36,7 +35,7 @@ class HeroTags {
   /// Generates a tag for a website tile based on the provided host name.
   static String websiteTileTag(String host) =>
       "home.wellBeing.websiteTile.$host";
- 
+
   /// Tag used to identify the FAB for timer picker in focus mode.
   static const giveUpFocusSessionTag = "activeSession.giveUp";
 }

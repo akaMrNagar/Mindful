@@ -17,9 +17,7 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/default_nav_bar.dart';
 import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/permissions/vpn_permission.dart';
 import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 class AppDashboardScreen extends ConsumerStatefulWidget {
   /// App dashboard screen containing detailed usage along with quick actions based on the provided app
@@ -132,15 +130,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                         "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
                         fontSize: 14,
                       ).sliver
-                    : MultiSliver(
-                        children: [
-                          /// Vpn permission
-                          if (!widget.app.isImpSysApp) const VpnPermission(),
-
-                          /// Quick action for app
-                          QuickActions(app: widget.app),
-                        ],
-                      ),
+                    : QuickActions(app: widget.app),
 
                 const SliverTabsBottomPadding(),
               ],

@@ -19,10 +19,6 @@ import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/permissions/alarm_permission.dart';
-import 'package:mindful/ui/permissions/display_overlay_permission.dart';
-import 'package:mindful/ui/permissions/notification_permission.dart';
-import 'package:mindful/ui/permissions/usage_access_permission.dart';
 import 'package:mindful/ui/screens/home/statistics/application_tile.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -62,15 +58,6 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
         slivers: [
           /// Appbar
           const SliverFlexibleAppBar(title: "Statistics"),
-
-          const NotificationPermission(),
-
-          const ExactAlarmPermission(),
-
-          const UsageAccessPermission(),
-
-          const DisplayOverlayPermission(),
-
           const SliverAlgorithmSuggestion(),
 
           /// Usage type selector and usage info card

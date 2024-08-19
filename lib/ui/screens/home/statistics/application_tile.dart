@@ -10,6 +10,7 @@ import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -62,13 +63,34 @@ class ApplicationTile extends ConsumerWidget {
         .updateAppTimer(app.packageName, newTimer);
   }
 
+  void _switchInternet(
+      BuildContext context, WidgetRef ref, bool haveInternetAccess) {
+    if (!ref.read(permissionProvider).haveVpnPermission) {
+      ref.read(permissionProvider.notifier).askVpnPermission();
+      return;
+    }
+
+    ref.read(restrictionInfosProvider.notifier).switchInternetAccess(
+          app.packageName,
+          haveInternetAccess,
+        );
+
+    context.showSnackAlert(
+      "${app.name}'s internet is ${haveInternetAccess ? 'unblocked.' : 'blocked.'}",
+      icon: haveInternetAccess
+          ? FluentIcons.globe_20_filled
+          : FluentIcons.globe_prohibited_20_filled,
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    /// Watch timer for the package
-    final appTimer = ref.watch(restrictionInfosProvider
-            .select((value) => value[app.packageName]?.timerSec)) ??
-        0;
+    /// Watch restriction info for the package
+    final restrictionInfo =
+        ref.watch(restrictionInfosProvider.select((e) => e[app.packageName]));
 
+    final appTimer = restrictionInfo?.timerSec ?? 0;
+    final haveInternetAccess = restrictionInfo?.internetAccess ?? true;
     final isPurged =
         appTimer > 0 && appTimer <= app.screenTimeThisWeek[todayOfWeek];
 
@@ -104,17 +126,33 @@ class ApplicationTile extends ConsumerWidget {
         /// Timer picker button
         trailing: app.isImpSysApp
             ? null
-            : IconButton(
-                icon: appTimer > 0
-                    ? TimeTextShort(timeDuration: appTimer.seconds)
-                    : const Icon(FluentIcons.timer_20_regular),
-                onPressed: () => _pickAppTimer(
-                  context,
-                  ref,
-                  appTimer,
-                  app.screenTimeThisWeek[todayOfWeek],
-                ),
-              ),
+            : selectedUsageType == UsageType.screenUsage
+                ? IconButton(
+                    icon: appTimer > 0
+                        ? TimeTextShort(timeDuration: appTimer.seconds)
+                        : const Icon(FluentIcons.timer_20_regular),
+                    onPressed: () => _pickAppTimer(
+                      context,
+                      ref,
+                      appTimer,
+                      app.screenTimeThisWeek[todayOfWeek],
+                    ),
+                  )
+                : IconButton(
+                    icon: Icon(
+                      haveInternetAccess
+                          ? FluentIcons.globe_20_regular
+                          : FluentIcons.globe_off_20_regular,
+                      color: haveInternetAccess
+                          ? null
+                          : Theme.of(context).colorScheme.error,
+                    ),
+                    onPressed: () => _switchInternet(
+                      context,
+                      ref,
+                      !haveInternetAccess,
+                    ),
+                  ),
       ),
     );
   }

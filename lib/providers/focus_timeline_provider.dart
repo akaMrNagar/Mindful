@@ -1,7 +1,7 @@
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/models/focus_timeline_model.dart';
 
@@ -13,7 +13,7 @@ final focusTimelineProvider =
 
 /// This class manages the state of Focus Timeline.
 class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
-  DateTime _selectedDay = DateTime(2024);
+  // DateTime _selectedDay = DateTime(2024);
 
   FocusModeNotifier() : super(const FocusTimelineModel()) {
     refreshTimeline();
@@ -25,11 +25,8 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
   }
 
   Future<void> onDayChanged(DateTime dayDate) async {
-    if (dayDate == _selectedDay) return;
-
     // Start of the day
     final startOfDay = dayDate.dateOnly;
-    _selectedDay = startOfDay;
 
     // End of the day
     final endOfDay = dayDate.copyWith(
@@ -39,10 +36,12 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
       millisecond: 999,
     );
 
-    final sessions = await IsarDbService.instance.loadAllSessionsForInterval(
+    var sessions = await IsarDbService.instance.loadAllSessionsForInterval(
       start: startOfDay,
       end: endOfDay,
     );
+
+    sessions.removeWhere((e) => e.state == SessionState.active);
 
     final todaysFocusedTime =
         sessions.fold(0, (prev, e) => prev + e.durationSecs).seconds;
@@ -50,11 +49,6 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
     state = state.copyWith(
       todaysSessions: AsyncData(sessions),
       todaysFocusedTime: todaysFocusedTime,
-
-      /// Manually update selected day Due to the fact that [HeatMapCalendar] does
-      /// not allow to change color for the selected day
-      daysTypeMap: {...state.daysTypeMap}
-        ..updateAll((k, v) => k == _selectedDay ? -1 : 1),
     );
   }
 
@@ -66,35 +60,25 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
     final endOfMonth =
         DateTime(month.year, month.month + 1, 1).subtract(1.days);
 
-    final sessions = await IsarDbService.instance.loadAllSessionsForInterval(
+    var sessions = await IsarDbService.instance.loadAllSessionsForInterval(
       start: startOfMonth,
       end: endOfMonth,
     );
 
+    sessions.removeWhere((e) => e.state == SessionState.active);
+
     final totalProductiveTime =
         sessions.fold(0, (prev, e) => prev + e.durationSecs).seconds;
 
-    /// NOTE - Key value for colors
-    /// -1 for selected day
-    /// 1 for productive days
-    var daysTypeMap = Map<DateTime, int>.fromEntries(
-      sessions.map((e) => MapEntry(e.startTimeMsEpoch.msToDateOnly, 1)),
-    );
-
-    final totalProductiveDays = daysTypeMap.length;
-
-    /// Manually update selected day Due to the fact that [HeatMapCalendar] does
-    /// not allow to change color for the selected day
-
-    daysTypeMap.update(
-      _selectedDay,
-      (_) => -1,
-      ifAbsent: () => -1,
+    final productiveDaysMap = Map.fromEntries(
+      sessions.map(
+        (e) => MapEntry(e.startTime.dateOnly, 1),
+      ),
     );
 
     state = state.copyWith(
-      daysTypeMap: daysTypeMap,
-      totalProductiveDays: totalProductiveDays,
+      daysTypeMap: productiveDaysMap,
+      totalProductiveDays: productiveDaysMap.length,
       totalProductiveTime: totalProductiveTime,
     );
   }
