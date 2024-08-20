@@ -16,10 +16,12 @@ dependencies:
 
   # Runtime dependencies
   # UI
-  flutter_onboarding_slider: ^1.0.11
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
-  flutter_riverpod: ^2.4.0
+  flutter_onboarding_slider: ^1.0.11
+  flutter_heatmap_calendar: ^1.0.5
+  animated_flip_counter: ^0.3.4
+  flutter_confetti: ^0.3.0
 
   # Animation
   flutter_animate: ^4.2.0+1
@@ -32,9 +34,7 @@ dependencies:
 
   # Util
   sliver_tools: ^0.2.12
-  flutter_heatmap_calendar: ^1.0.5
-  animated_flip_counter: ^0.3.4
-  flutter_confetti: ^0.3.0
+  flutter_riverpod: ^2.4.0
 
 dev_dependencies:
   flutter_test:
