@@ -85,6 +85,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
                         .setOnlyAlertOnce(true)
                         .setContentTitle("Mindful")
                         .setContentText(alert)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(alert))
                         .build()
         );
     }

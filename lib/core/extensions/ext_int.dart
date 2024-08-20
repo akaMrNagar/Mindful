@@ -20,17 +20,15 @@ extension ExtInt on int {
   TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
   /// Generates day's date string based on the current day of week
-  // FIXME: Bug when showing dates
   String dateFromDoW() {
     if (toInt() == todayOfWeek) {
       return "Today";
     } else if (toInt() == todayOfWeek - 1) {
       return "Yesterday";
     } else {
-      // final dt = DateTime.fromMillisecondsSinceEpoch(
-      //     now.millisecondsSinceEpoch -
-      //         ((now.weekday - toInt()) * 24 * 60 * 60000));
-      final dt = now.subtract(Duration(days: toInt()));
+      final dt = toInt() < todayOfWeek
+          ? now.subtract(Duration(days: toInt() + todayOfWeek))
+          : now.add(Duration(days: toInt() - todayOfWeek));
       return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsLabelShort[dt.month - 1]}";
     }
   }

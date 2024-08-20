@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -96,7 +97,9 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
               physics: const BouncingScrollPhysics(),
               slivers: [
                 /// Appbar
-                const SliverFlexibleAppBar(title: "Study"),
+                SliverFlexibleAppBar(
+                  title: sessionTypeLabels[widget.session.type] ?? "Focus",
+                ),
 
                 TimerProgressClock(
                   progress: progress.toDouble(),
