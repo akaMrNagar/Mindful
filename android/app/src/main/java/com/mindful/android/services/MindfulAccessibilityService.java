@@ -68,6 +68,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private final AppInstallUninstallReceiver mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
+    private String mLastRedirectedUrl = "";
 
     private long mLastTimeShortsCheck = 0L;
     private long mLastTimeSharedPrefInvoked = 0L;
@@ -222,6 +223,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * @param browserPackage The package name of the browser app.
      */
     private void redirectUserToUrl(String url, String browserPackage) {
+        if (mLastRedirectedUrl.equals(url)) return;
+        mLastRedirectedUrl = url;
         long currentTime = System.currentTimeMillis();
 
         if ((currentTime - mLastTimeUrlRedirectInvoked) >= URL_REDIRECT_INVOKE_INTERVAL_MS) {
