@@ -1,16 +1,18 @@
 class AppConstants {
-  static const mindfulAppVersion = 'v0.0.1';
+  static const mindfulAppVersion = 'v0.6.1+20240821';
 
   // Custom packages
   static const removedAppPackage = "com.android.removed";
   static const tetheringAppPackage = "com.android.tethering";
 
-  /// FIXME: Change to original urls
   /// Urls
-  static const privacyPolicyUrl = "https://github.com/akaMrNagar/";
-  static const donationUrl = "https://github.com/akaMrNagar/";
   static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
-  static const githubIssueUrl = "https://github.com/akaMrNagar/Mindful/issues";
+  static const privacyPolicyUrl =
+      "https://github.com/akaMrNagar/blob/main/PRIVACY.md";
+  static const donationUrl =
+      "https://github.com/akaMrNagar/blob/main/README.md#-donate";
+  static const githubIssueUrl =
+      "https://github.com/akaMrNagar/Mindful/issues/new?template=bug_report.md";
   static const githubSuggestionUrl =
-      "https://github.com/akaMrNagar/Mindful/issues";
+      "https://github.com/akaMrNagar/Mindful/issues/new?template=feature_request.md";
 }
