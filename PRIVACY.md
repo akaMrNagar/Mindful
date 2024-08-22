@@ -24,6 +24,7 @@ As an open-source project, Mindful's source code is publicly available. Users ca
 
 To provide optimal functionality, Mindful requests certain permissions from users:
 
+- Usage access: To monitor app usage and block apps if their timer ran out to maintain focus.
 - Accessibility Service: To monitor and manage app usage, helping minimize distractions and support focus.
 - Battery Optimization: To ensure uninterrupted operation and provide consistent reminders.
 - Alarms and Reminders: To start bedtime schedules and reset timers daily.
