@@ -1,11 +1,8 @@
 name: mindful
-description: A new Flutter project.
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
-
-# NOTE: If you bump the version than also change it version in [AppConstants]
-version: 0.0.1
+description: Your Ultimate Companion for Focus and Well-being.
+homepage: https://github.com/akaMrNagar/Mindful
+publish_to: "none"
+version: 0.0.1+101
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
@@ -16,10 +13,12 @@ dependencies:
 
   # Runtime dependencies
   # UI
-  flutter_onboarding_slider: ^1.0.11
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
-  flutter_riverpod: ^2.4.0
+  flutter_onboarding_slider: ^1.0.11
+  flutter_heatmap_calendar: ^1.0.5
+  animated_flip_counter: ^0.3.4
+  flutter_confetti: ^0.3.0
 
   # Animation
   flutter_animate: ^4.2.0+1
@@ -32,9 +31,7 @@ dependencies:
 
   # Util
   sliver_tools: ^0.2.12
-  flutter_heatmap_calendar: ^1.0.5
-  animated_flip_counter: ^0.3.4
-  flutter_confetti: ^0.3.0
+  flutter_riverpod: ^2.4.0
 
 dev_dependencies:
   flutter_test:

@@ -175,7 +175,7 @@ public class CountDownService extends Service {
     private Notification createNotification(long millisUntilFinished, String title, String prefixMsg) {
         int totalLeftSeconds = (int) (millisUntilFinished / 1000);
         int leftHours = totalLeftSeconds / 60 / 60;
-        int leftMinutes = totalLeftSeconds / 60;
+        int leftMinutes = (totalLeftSeconds / 60) % 60;
         int leftSeconds = totalLeftSeconds % 60;
 
         String msg =

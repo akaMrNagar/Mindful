@@ -23,6 +23,8 @@ if (flutterVersionName == null) {
 }
 
 android {
+    signingConfigs {
+    }
     namespace "com.mindful.android"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
@@ -33,12 +35,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         applicationId "com.mindful.android"
         minSdkVersion defaultMinSdkVersion
         compileSdk 34
-        // You can update the following values to match your application needs.
-        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -60,6 +61,3 @@ flutter {
     source '../..'
 }
 
-dependencies {
-    implementation 'androidx.work:work-runtime:2.9.0'
-}

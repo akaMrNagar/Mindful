@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
-import 'package:mindful/core/enums/usage_algorithm.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 
 part 'app_settings.g.dart';
@@ -17,10 +16,6 @@ class AppSettings {
   /// Default theme mode for app
   @enumerated
   final ThemeMode themeMode;
-
-  /// Default usage algorithm  for app
-  @enumerated
-  final UsageAlgorithm algorithm;
 
   /// Default material color for app
   final String color;
@@ -41,9 +36,8 @@ class AppSettings {
   TimeOfDay get dataResetToD => dataResetTimeMins.toTimeOfDay;
 
   const AppSettings({
-    this.username= "Hustler",
+    this.username = "Hustler",
     this.themeMode = ThemeMode.system,
-    this.algorithm = UsageAlgorithm.usageEvents,
     this.color = 'Indigo',
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
@@ -51,7 +45,6 @@ class AppSettings {
 
   AppSettings copyWith({
     ThemeMode? themeMode,
-    UsageAlgorithm? algorithm,
     String? color,
     String? username,
     bool? isInvincibleModeOn,
@@ -59,7 +52,6 @@ class AppSettings {
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
-      algorithm: algorithm ?? this.algorithm,
       color: color ?? this.color,
       username: username ?? this.username,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,

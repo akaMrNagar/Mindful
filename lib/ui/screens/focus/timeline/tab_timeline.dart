@@ -87,7 +87,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                 Expanded(
                   child: UsageGlanceCard(
                     isPrimary: true,
-                    icon: FluentIcons.shifts_day_20_regular,
+                    icon: FluentIcons.calendar_day_20_regular,
                     title: "Productive days",
                     info: "${timeline.daysTypeMap.length} days",
                     onTap: () => context.showSnackAlert(

@@ -60,15 +60,15 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
           pageBodies: [
             _bodyBuilder(
               deviceHeight: deviceHeight,
-              title: "Fewer Distractions",
+              title: "Focus Mode",
               description:
-                  "Master your screen time! Set app limits, pause distractions, and boost productivity.",
+                  "Focus Mode boosts productivity by blocking distractions. Pause apps and track your progress over time to see your growth.",
             ),
             _bodyBuilder(
               deviceHeight: deviceHeight,
               title: "Doom Scrolling",
               description:
-                  "Break free from doom scrolling. Set timers for addictive short-form content and reclaim your time.",
+                  "Break free from doom scrolling. Set timers for apps and addictive short-form content and reclaim your time.",
             ),
             _bodyBuilder(
               deviceHeight: deviceHeight,
@@ -78,9 +78,9 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
             ),
             _bodyBuilder(
               deviceHeight: deviceHeight,
-              title: "Detox Mind",
+              title: "Digital Detox",
               description:
-                  "Surf safely and stay focused. Block adult sites and custom websites to create a cleaner, safer browsing experience.",
+                  "Stay focused online. Block internet access for apps and distracting websites along with adult websites with one click.",
             ),
             _bodyBuilder(
               deviceHeight: deviceHeight,
