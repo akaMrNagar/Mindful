@@ -1,6 +1,4 @@
 class AppConstants {
-  static const mindfulAppVersion = 'v0.6.1+20240821';
-
   // Custom packages
   static const removedAppPackage = "com.android.removed";
   static const tetheringAppPackage = "com.android.tethering";

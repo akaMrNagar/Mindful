@@ -90,6 +90,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(SharedPrefsHelper.getOnboardingStatus(this));
                 break;
             }
+            case "getAppVersion": {
+                result.success(Utils.getAppVersion(this));
+                break;
+            }
             case "setOnboardingDone": {
                 SharedPrefsHelper.setOnboardingDone(this);
                 result.success(true);

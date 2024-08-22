@@ -5,6 +5,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/providers/app_version_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -19,13 +20,15 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appVersion = ref.read(appVersionProvider).value ?? "v0.0.0";
+
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appbar
         const SliverFlexibleAppBar(title: "About"),
-        const StyledText(
-          AppConstants.mindfulAppVersion,
+        StyledText(
+          appVersion,
           fontWeight: FontWeight.bold,
           fontSize: 14,
           isSubtitle: true,

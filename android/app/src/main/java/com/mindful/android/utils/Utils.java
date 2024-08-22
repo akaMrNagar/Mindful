@@ -2,6 +2,8 @@ package com.mindful.android.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -30,6 +32,24 @@ import java.util.Locale;
  */
 public class Utils {
     private static final String TAG = "Mindful.Utils";
+
+    /**
+     * Resolve the version string for the app
+     *
+     * @param context The application context.
+     * @return Version string include version and build code
+     */
+    @NonNull
+    public static String getAppVersion(@NonNull Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            return "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "getAppVersion: Error in fetching app version", e);
+        }
+        return "v0.0.0";
+    }
 
     /**
      * Checks if a service with the given class name is currently running.

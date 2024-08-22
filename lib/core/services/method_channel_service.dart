@@ -41,6 +41,10 @@ class MethodChannelService {
 
   // SECTION: Utility Methods ======================================================================
 
+  /// Get version string of this app
+  Future<String> getAppVersion() async =>
+      await _methodChannel.invokeMethod('getAppVersion');
+
   /// Get status of onboarding
   ///
   /// Returns a bool indicating if onboarding is completed or not

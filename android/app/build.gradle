@@ -24,8 +24,6 @@ if (flutterVersionName == null) {
 
 android {
     signingConfigs {
-        release {
-        }
     }
     namespace "com.mindful.android"
     compileSdkVersion flutter.compileSdkVersion
@@ -45,7 +43,6 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        versionNameSuffix 'b'
     }
 
     buildTypes {
