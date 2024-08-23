@@ -65,7 +65,7 @@ jobs:
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/zip" \
             --data-binary @"build/app/outputs/flutter-apk/app-release.apk" \
-            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=Mindful_${ENCODED_VERSION}_Universal.apk"
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=Mindful_v${ENCODED_VERSION}_Universal.apk"
 
       - name: Cleanup
         if: success()
