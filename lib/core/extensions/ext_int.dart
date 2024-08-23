@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -26,9 +27,7 @@ extension ExtInt on int {
     } else if (toInt() == todayOfWeek - 1) {
       return "Yesterday";
     } else {
-      final dt = toInt() < todayOfWeek
-          ? now.subtract(Duration(days: toInt() + todayOfWeek))
-          : now.add(Duration(days: toInt() - todayOfWeek));
+      final dt = now.subtract(todayOfWeek.days).add(toInt().days);
       return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsLabelShort[dt.month - 1]}";
     }
   }
