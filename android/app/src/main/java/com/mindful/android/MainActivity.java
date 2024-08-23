@@ -1,7 +1,7 @@
 package com.mindful.android;
 
-import static com.mindful.android.services.CountDownService.ACTION_STOP_FOCUS_COUNTDOWN;
-import static com.mindful.android.services.CountDownService.INTENT_EXTRA_FOCUS_SESSION_JSON;
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
+import static com.mindful.android.services.FocusSessionService.INTENT_EXTRA_FOCUS_SESSION_JSON;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -23,7 +23,8 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.PermissionsHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.BedtimeSettings;
-import com.mindful.android.services.CountDownService;
+import com.mindful.android.services.EmergencyPauseService;
+import com.mindful.android.services.FocusSessionService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AppConstants;
@@ -170,35 +171,32 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "useEmergencyPass": {
-                String action = CountDownService.ACTION_START_EMERGENCY_COUNTDOWN;
-                if (Utils.isServiceRunning(this, CountDownService.class.getName())
-                        && SharedPrefsHelper.fetchAllCountDownServices(this).contains(action)
+                if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())
+                        && Utils.isServiceRunning(this, MindfulTrackerService.class.getName())
                 ) {
-                    result.success(false);
-                } else {
-                    startService(new Intent(this, CountDownService.class).setAction(action));
+                    startService(new Intent(this, EmergencyPauseService.class).setAction(ACTION_START_SERVICE));
                     result.success(true);
+                } else {
+                    result.success(false);
                 }
                 break;
             }
             case "startFocusSession": {
-                String action = CountDownService.ACTION_START_FOCUS_COUNTDOWN;
-                if (Utils.isServiceRunning(this, CountDownService.class.getName())
-                        && SharedPrefsHelper.fetchAllCountDownServices(this).contains(action)
+                if (!Utils.isServiceRunning(this, FocusSessionService.class.getName())
                 ) {
-                    result.success(false);
-                } else {
-                    Intent intent = new Intent(this, CountDownService.class);
-                    intent.setAction(action);
+                    Intent intent = new Intent(this, FocusSessionService.class);
+                    intent.setAction(ACTION_START_SERVICE);
                     intent.putExtra(INTENT_EXTRA_FOCUS_SESSION_JSON, Utils.notNullStr(call.arguments()));
                     startService(intent);
                     result.success(true);
+                } else {
+                    result.success(false);
                 }
                 break;
             }
 
             case "stopFocusSession": {
-                startService(new Intent(this, CountDownService.class).setAction(ACTION_STOP_FOCUS_COUNTDOWN));
+                startService(new Intent(this, FocusSessionService.class).setAction(""));
                 result.success(true);
                 break;
             }

@@ -16,7 +16,6 @@ import org.jetbrains.annotations.Contract;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -33,7 +32,6 @@ public class SharedPrefsHelper {
     private static final String PREF_KEY_APP_TIMERS = "mindful.appTimers";
     private static final String PREF_KEY_BEDTIME_SETTINGS = "mindful.bedtimeSettings";
     private static final String PREF_KEY_SHORTS_SCREEN_TIME = "mindful.shortsScreenTime";
-    private static final String PREF_KEY_RUNNING_COUNTDOWN_SERVICES = "mindful.runningCountDownServices";
     public static final String PREF_KEY_WELLBEING_SETTINGS = "mindful.wellBeingSettings";
 
     private static void initialize(@NonNull Context context) {
@@ -289,43 +287,4 @@ public class SharedPrefsHelper {
         if (mSharedPrefs == null) initialize(context);
         return mSharedPrefs.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L);
     }
-
-    /**
-     * Fetches the set of all currently running countdown service Intent actions.
-     *
-     * @param context The context used to access SharedPreferences.
-     * @return A Set of Strings representing the Intent actions of all running countdown services.
-     */
-    public static Set<String> fetchAllCountDownServices(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
-        return mSharedPrefs.getStringSet(PREF_KEY_RUNNING_COUNTDOWN_SERVICES, new HashSet<>(0));
-    }
-
-    /**
-     * Inserts a new countdown service Intent action into the list of currently running services.
-     *
-     * @param context      The context used to access SharedPreferences.
-     * @param intentAction The Intent action of the countdown service to be added.
-     */
-    public static void insertCountDownService(@NonNull Context context, String intentAction) {
-        if (mSharedPrefs == null) initialize(context);
-        Set<String> alreadyRunning = fetchAllCountDownServices(context);
-        alreadyRunning.add(intentAction);
-        mSharedPrefs.edit().putStringSet(PREF_KEY_RUNNING_COUNTDOWN_SERVICES, alreadyRunning).apply();
-    }
-
-    /**
-     * Removes a countdown service Intent action from the list of currently running services.
-     *
-     * @param context      The context used to access SharedPreferences.
-     * @param intentAction The Intent action of the countdown service to be removed.
-     */
-    public static void removeCountDownService(@NonNull Context context, String intentAction) {
-        if (mSharedPrefs == null) initialize(context);
-        Set<String> alreadyRunning = fetchAllCountDownServices(context);
-        alreadyRunning.remove(intentAction);
-        mSharedPrefs.edit().putStringSet(PREF_KEY_RUNNING_COUNTDOWN_SERVICES, alreadyRunning).apply();
-    }
-
-
 }

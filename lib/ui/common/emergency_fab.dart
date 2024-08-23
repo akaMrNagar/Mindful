@@ -16,7 +16,7 @@ class EmergencyFAB extends StatelessWidget {
 
     if (leftPasses <= 0) {
       context.showSnackAlert(
-        "You have used all your emergency passes. The blocked apps cannot be unblocked until midnight.",
+        "You have used all your emergency passes. The blocked apps will stay blocked until midnight, the focus session ends, or bedtime concludes.",
       );
       return;
     }
@@ -27,7 +27,7 @@ class EmergencyFAB extends StatelessWidget {
       heroTag: HeroTags.emergencyTileTag,
       title: "Emergency",
       info:
-          "This will pause the app blocker for 5 minutes. You have $leftPasses emergency passes remaining. After using all passes, the app cannot be unblocked until midnight. Do you still want to proceed?",
+          "This action will pause the app blocker for next 5 minutes. You have $leftPasses passes left. After using all passes, the app will stay blocked until midnight, the focus session ends, or bedtime concludes.\n\nDo you still wish to proceed?",
       positiveLabel: "Use anyway",
     );
 
@@ -36,7 +36,12 @@ class EmergencyFAB extends StatelessWidget {
 
     if (!success && context.mounted) {
       context.showSnackAlert(
-        "The app blocker is already paused. If notifications are enabled, you will receive a notification about the remaining time.",
+        "The app blocker is currently either paused or inactive. If notifications are enabled, you will receive updates regarding the remaining time.",
+        icon: FluentIcons.fire_16_filled,
+      );
+    } else if (context.mounted) {
+      context.showSnackAlert(
+        "The app blocker is paused and will resume blocking in 5 minutes.",
         icon: FluentIcons.fire_16_filled,
       );
     }
