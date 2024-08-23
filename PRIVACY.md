@@ -42,8 +42,10 @@ We may update this privacy policy from time to time. Any changes will be posted 
 ## 📧 Contact Us
 
 If you have any questions or concerns about this privacy policy or Mindful's privacy practices, please contact us at
-mindful.foss@gmail.com
+<a href="mailto:help.lasthopedevs@gmail.com">
+**_help.lasthopedevs@gmail.com_**
+</a>
 
 ## 😊 Conclusion
 
-### **_Your privacy is of utmost importance to us. By using Mindful, you can be confident that your data remains secure, private, and under your control. Thank you for choosing Mindful to support your focus and productivity._**
+#### **_Your privacy is of utmost importance to us. By using Mindful, you can be confident that your data remains secure, private, and under your control. Thank you for choosing Mindful to support your focus and productivity._**

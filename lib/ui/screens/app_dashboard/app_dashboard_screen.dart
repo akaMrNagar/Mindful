@@ -43,11 +43,8 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
   @override
   void initState() {
     super.initState();
-
-    setState(() {
-      _selectedDoW = widget.selectedDoW;
-      _selectedUsageType = widget.initialUsageType;
-    });
+    _selectedDoW = widget.selectedDoW;
+    _selectedUsageType = widget.initialUsageType;
   }
 
   @override
@@ -60,7 +57,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
         appTimer > 0 && appTimer <= widget.app.screenTimeThisWeek[todayOfWeek];
 
     return Scaffold(
-      floatingActionButton: isPurged ? const EmergencyFAB() : null,
+      floatingActionButton: const EmergencyFAB(),
       body: DefaultNavbar(
         navbarItems: [
           NavbarItem(

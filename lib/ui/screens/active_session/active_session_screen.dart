@@ -57,7 +57,10 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
       } else {
         _timer!.cancel();
         _launchConfetti();
-        ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+        Future.delayed(
+          1.seconds,
+          ref.read(activeSessionProvider.notifier).refreshActiveSessionState,
+        );
       }
     });
   }
