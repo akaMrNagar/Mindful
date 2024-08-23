@@ -56,7 +56,7 @@ jobs:
         run: flutter pub get
 
       - name: Build the Universal APK
-        run: flutter build apk --release --target-platform android-arm,android-arm64,android-x64
+        run: flutter build apk --release
 
       - name: Upload APK to Existing GitHub Release
         run: |
