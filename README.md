@@ -1,6 +1,8 @@
-# Mindful:
+# Mindful
 
-**Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist. [Privacy Policy](PRIVACY.md)
+**Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
+
+### [🛠️ Contribute](CONTRIBUTION.md)&emsp;&emsp; [💖 Donate](#-donate)&emsp;&emsp; [🔏 Privacy Policy](PRIVACY.md)
 
 ![Mindful App Banner](assets/github_readme/banner.png)
 
@@ -55,10 +57,6 @@
 
 ---
 
-# 💖 Donate
-
-Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
-
 ## 🤔 Why We Developed Mindful ?
 
 We were frustrated with our own excessive phone usage and the lack of privacy-friendly, free solutions that could help manage it. After finding no suitable app on the Play Store, we decided to create Mindful—an app that respects your privacy, is free to use, and offers the comprehensive features we needed to regain control of our digital lives.
@@ -66,3 +64,9 @@ We were frustrated with our own excessive phone usage and the lack of privacy-fr
 ## 🗨️ Feedback and Support
 
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us on github.
+
+---
+
+# 💖 Donate
+
+Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
