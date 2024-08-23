@@ -1,8 +1,7 @@
 package com.mindful.android.services;
 
-import static com.mindful.android.utils.AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS;
-import static com.mindful.android.utils.AppConstants.EMERGENCY_COUNTDOWN_SERVICE_NOTIFICATION_ID;
-import static com.mindful.android.utils.AppConstants.FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID;
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
+import static com.mindful.android.utils.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -21,17 +20,12 @@ import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
-import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.FocusSession;
 import com.mindful.android.utils.Utils;
 
-public class CountDownService extends Service {
-    private static final String TAG = "Mindful.CountDownService";
-    public static final String ACTION_START_EMERGENCY_COUNTDOWN = "com.mindful.android.service.START_EMERGENCY_COUNTDOWN";
-    public static final String ACTION_START_FOCUS_COUNTDOWN = "com.mindful.android.service.START_FOCUS_COUNTDOWN";
-    public static final String ACTION_STOP_FOCUS_COUNTDOWN = "com.mindful.android.service.STOP_FOCUS_COUNTDOWN";
+public class FocusSessionService extends Service {
+    private static final String TAG = "Mindful.FocusSessionService";
     public static final String INTENT_EXTRA_FOCUS_SESSION_JSON = "focusSessionJson";
-
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
@@ -55,62 +49,49 @@ public class CountDownService extends Service {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(appPendingIntent)
-                .setContentTitle("Mindful");
+                .setContentTitle("Focus Session");
     }
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        if (ACTION_START_EMERGENCY_COUNTDOWN.equals(intent.getAction())) {
-            int leftPasses = SharedPrefsHelper.fetchEmergencyPassesCount(this);
-            if (leftPasses <= 0) {
-                // Stop if no passes left
-                stopSelf();
-                return START_NOT_STICKY;
-            }
-            SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
-            mCountDownDurationMs = DEFAULT_EMERGENCY_PASS_PERIOD_MS;
-            startEmergencyTimer();
-            return START_STICKY;
-        } else if (ACTION_START_FOCUS_COUNTDOWN.equals(intent.getAction())) {
+        String action = intent.getAction();
+        if (action == null) return START_NOT_STICKY;
+
+        if (ACTION_START_SERVICE.equals(action)) {
             mFocusSession = new FocusSession(Utils.notNullStr(intent.getStringExtra(INTENT_EXTRA_FOCUS_SESSION_JSON)));
             mCountDownDurationMs = mFocusSession.durationSecs * 1000L;
             if (!mFocusSession.distractingApps.isEmpty()) {
                 startFocusTimer();
                 return START_STICKY;
             }
-        } else if (ACTION_STOP_FOCUS_COUNTDOWN.equals(intent.getAction())) {
+        } else {
             if (mFocusSession != null && mFocusSession.toggleDnd) {
                 NotificationHelper.toggleDnd(this, false);
             }
-            SharedPrefsHelper.removeCountDownService(CountDownService.this, ACTION_START_FOCUS_COUNTDOWN);
             stopSelf();
-            showNotificationAfterStop("Focus Session", "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going", FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID);
+            showSuccessNotification(false);
             return START_NOT_STICKY;
         }
 
-        stopSelf();
         return START_NOT_STICKY;
     }
 
-
+    /**
+     * Starts a countdown timer for a focus session. Configures notifications to show the remaining time
+     * and handles DND mode if needed.
+     */
     private void startFocusTimer() {
-        SharedPrefsHelper.insertCountDownService(this, ACTION_START_FOCUS_COUNTDOWN);
         mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopFocusSession(mFocusSession.distractingApps));
         mTrackerServiceConn.startAndBind();
 
-        // Toggle dnd according to the session configurations
+        // Toggle DND according to the session configurations
         if (mFocusSession.toggleDnd) NotificationHelper.toggleDnd(this, true);
-
-        /// Handle Notification
-        String title = "Focus session";
-        String msgPrefix = "Focus session will end in ";
-        String successMsg = "Congratulations! You’ve successfully completed your focus session. Great job staying on track! Keep up the amazing work!";
-        startForeground(FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs, title, msgPrefix));
+        startForeground(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs));
 
         mCountDownTimer = new CountDownTimer(mCountDownDurationMs, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID, createNotification(millisUntilFinished, title, msgPrefix));
+                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(millisUntilFinished));
             }
 
             @Override
@@ -118,65 +99,33 @@ public class CountDownService extends Service {
                 if (mTrackerServiceConn.isConnected()) {
                     mTrackerServiceConn.getService().startStopFocusSession(null);
                 }
-                SharedPrefsHelper.removeCountDownService(CountDownService.this, ACTION_START_FOCUS_COUNTDOWN);
                 if (mFocusSession.toggleDnd) {
-                    NotificationHelper.toggleDnd(CountDownService.this, false);
+                    NotificationHelper.toggleDnd(FocusSessionService.this, false);
                 }
                 Log.d(TAG, "startFocusTimer: Focus session completed successfully");
                 stopSelf();
-                showNotificationAfterStop(title, successMsg, FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID);
-
+                showSuccessNotification(true);
             }
         }.start();
 
-        Log.d(TAG, "startFocusTimer: Focus session countdown service started successfully");
-    }
-
-    private void startEmergencyTimer() {
-        SharedPrefsHelper.insertCountDownService(this, ACTION_START_EMERGENCY_COUNTDOWN);
-        mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
-        mTrackerServiceConn.startAndBind();
-
-        /// Handle Notification
-        String title = "Emergency pause";
-        String msgPrefix = "App blocker will resume after ";
-        String successMsg = "Emergency pause is over, and app blocker is back in action. Distractions are now blocked again, stay focused!";
-        startForeground(EMERGENCY_COUNTDOWN_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs, title, msgPrefix));
-
-        mCountDownTimer = new CountDownTimer(mCountDownDurationMs, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(EMERGENCY_COUNTDOWN_SERVICE_NOTIFICATION_ID, createNotification(millisUntilFinished, title, msgPrefix));
-            }
-
-            @Override
-            public void onFinish() {
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().pauseResumeTracking(false);
-                }
-                SharedPrefsHelper.removeCountDownService(CountDownService.this, ACTION_START_EMERGENCY_COUNTDOWN);
-                Log.d(TAG, "startEmergencyTimer: Emergency pause is over. App blocker is resumed successfully");
-                stopSelf();
-                showNotificationAfterStop(title, successMsg, EMERGENCY_COUNTDOWN_SERVICE_NOTIFICATION_ID);
-            }
-        }.start();
-
-        Log.d(TAG, "startEmergencyTimer: Emergency countdown service started successfully");
+        Log.d(TAG, "startFocusTimer: Focus session service started successfully");
     }
 
 
     /**
-     * Creates a notification for the countdown timer with the remaining time.
+     * Creates a notification to show the countdown progress.
      *
      * @param millisUntilFinished The remaining time in milliseconds.
      * @return The notification object.
      */
     @NonNull
-    private Notification createNotification(long millisUntilFinished, String title, String prefixMsg) {
+    private Notification createNotification(long millisUntilFinished) {
         int totalLeftSeconds = (int) (millisUntilFinished / 1000);
         int leftHours = totalLeftSeconds / 60 / 60;
         int leftMinutes = (totalLeftSeconds / 60) % 60;
         int leftSeconds = totalLeftSeconds % 60;
+
+        String prefixMsg = "Focus session will end in ";
 
         String msg =
                 leftHours > 0 ?
@@ -184,26 +133,33 @@ public class CountDownService extends Service {
                         prefixMsg + leftMinutes + ":" + leftSeconds + " minutes";
 
         mProgressNotificationBuilder
-                .setContentTitle(title)
                 .setContentText(msg)
                 .setProgress((int) (mCountDownDurationMs / 1000), totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
     }
 
-    private void showNotificationAfterStop(String title, String msg, int id) {
-        mNotificationManager.notify(id,
+
+    /**
+     * Displays a notification when the focus session is completed successfully.
+     *
+     * @param isSuccessful Flag denoting if the session is successful or use gave up
+     */
+    private void showSuccessNotification(boolean isSuccessful) {
+        String msg =
+                isSuccessful ? "Congratulations! You’ve successfully completed your focus session. Great job staying on track! Keep up the amazing work!" :
+                        "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going";
+        mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
                         .setContentIntent(appPendingIntent)
-                        .setContentTitle(title)
+                        .setContentTitle("Focus Session")
                         .setContentText(msg)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                         .build()
         );
     }
-
 
     @Override
     public void onDestroy() {
@@ -213,12 +169,13 @@ public class CountDownService extends Service {
             mCountDownTimer.cancel();
         }
         stopForeground(STOP_FOREGROUND_REMOVE);
-        Log.d(TAG, "onDestroy: Countdown service destroyed");
+        Log.d(TAG, "onDestroy: Focus session service destroyed");
     }
 
 
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        // TODO: Return the communication channel to the service.
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

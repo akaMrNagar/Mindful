@@ -16,7 +16,7 @@ public class AppConstants {
     public static final int TRACKER_SERVICE_NOTIFICATION_ID = 301;
     public static final int VPN_SERVICE_NOTIFICATION_ID = 302;
     public static final int OVERLAY_SERVICE_NOTIFICATION_ID = 303;
-    public static final int EMERGENCY_COUNTDOWN_SERVICE_NOTIFICATION_ID = 304;
-    public static final int FOCUS_COUNTDOWN_SERVICE_NOTIFICATION_ID = 305;
+    public static final int EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID = 304;
+    public static final int FOCUS_SESSION_SERVICE_NOTIFICATION_ID = 305;
     public static final int BEDTIME_ROUTINE_NOTIFICATION_ID = 306;
 }

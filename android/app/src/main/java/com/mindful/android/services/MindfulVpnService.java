@@ -39,9 +39,9 @@ public class MindfulVpnService extends android.net.VpnService {
     private boolean mIsStoppedForcefully = true;
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) return START_NOT_STICKY;
+    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         String action = intent.getAction();
+        if (action == null) return START_NOT_STICKY;
 
         if (ACTION_START_SERVICE.equals(action)) {
             mBlockedApps = SharedPrefsHelper.fetchBlockedApps(this);
