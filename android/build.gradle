@@ -1,16 +1,3 @@
-buildscript {
-    ext.kotlin_version = '1.7.10'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 ext {
     defaultMinSdkVersion = 24
 }
@@ -24,6 +11,18 @@ allprojects {
 
 rootProject.buildDir = '../build'
 subprojects {
+    //  fix for verifyReleaseResources
+    // ============
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 34
+                buildToolsVersion "34.0.0"
+            }
+        }
+    }
+    // ============
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {

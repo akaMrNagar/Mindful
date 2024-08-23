@@ -13,7 +13,7 @@ import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/permissions/admin_permission.dart';
-import 'package:mindful/ui/permissions/tile_battery_permission.dart';
+import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class TabAdvance extends ConsumerWidget {

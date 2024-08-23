@@ -4,28 +4,27 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - "main"
 
 jobs:
   build:
     name: Build and Deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up JDK 11
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           distribution: "zulu"
-          java-version: "11"
+          java-version: "17"
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "stable"
+      - run: flutter --version
 
       - name: Reconstruct Keystore File
         run: |
@@ -38,19 +37,17 @@ jobs:
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> $GITHUB_ENV
           echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> $GITHUB_ENV
 
-      - name: Extract version and build number
+      - name: Extract version from tag
         id: extract_version
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           VERSION=${TAG#v}
-          BUILD_NUMBER=$(echo $VERSION | sed 's/[^0-9]*//g')
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          echo "BUILD_NUMBER=$BUILD_NUMBER" >> $GITHUB_ENV
 
       - name: Update pubspec.yaml
         run: |
           cd $GITHUB_WORKSPACE
-          sed -i "s/^version: .*/version: ${{ env.VERSION }}+${{ env.BUILD_NUMBER }}/" pubspec.yaml
+          sed -i "s/^version: .*/version: ${{ env.VERSION }}/" pubspec.yaml
 
       - name: Install dependencies
         run: flutter pub get
@@ -63,10 +60,12 @@ jobs:
           RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             https://api.github.com/repos/${{ github.repository }}/releases/tags/${GITHUB_REF#refs/tags/} | jq -r '.id')
 
+          ENCODED_VERSION=$(echo -n "${{ env.VERSION }}" | jq -s -R -r @uri)
+
           curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             -H "Content-Type: application/zip" \
             --data-binary @"build/app/outputs/flutter-apk/app-release.apk" \
-            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=Mindful_${{ env.VERSION }}+${{ env.BUILD_NUMBER }}_Universal.apk"
+            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=Mindful_${ENCODED_VERSION}_Universal.apk"
 
       - name: Cleanup
         if: success()
