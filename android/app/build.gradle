@@ -52,7 +52,7 @@ android {
             }
             if (System.getenv("KEYSTORE_FILE") != null) {
                 signingConfigs {
-                    create("release") {
+                    register("release") {
                         storeFile file(System.getenv("KEYSTORE_FILE"))
                         storePassword System.getenv("STORE_PASSWORD")
                         keyAlias System.getenv("KEY_ALIAS")
@@ -66,10 +66,12 @@ android {
         }
 
         debug {
+            applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
         }
 
         profile {
+            applicationIdSuffix ".profile"
             signingConfig signingConfigs.debug
         }
     }
