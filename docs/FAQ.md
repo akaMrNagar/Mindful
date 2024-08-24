@@ -34,23 +34,20 @@
   <summary><b>Why did Mindful suddenly stop working?</b></summary>
   <p>Some device manufacturers, especially those using MIUI OS like Xiaomi and Poco, restrict background app activity to save battery or for other reasons. This can affect Mindful's performance.<br/>Troubleshooting: Go to the settings in Mindful and allow the permission to ignore battery optimizations. If you're unsure how to grant this permission, click on the help icon in the permission dialog for guidance.</p>
   <br/>
-
- <video src='assets/restricted_settings.mp4' width=180/>
-
 </details>
 
 <details>
   <summary><b>My device shows a security warning. Is this safe?</b></summary>
    <p>&emsp;&emsp;Yes, the Mindful app is completely secure and safe to use. The security warning you're seeing is likely due to the accessibility service Mindful needs to operate effectively. This service is crucial for Mindful to detect and manage short videos in supported apps. While accessibility services can sometimes trigger security warnings, please be assured that Mindful is built with your privacy and data protection in mind. If you have any concerns, don't hesitate to contact us for support.</p>
   <br/>
-  <br/>
 </details>
 
 <details>
   <summary><b>Why does my device show a 'restricted setting' message when I try to enable accessibility for Mindful?</b></summary>
   <p>Starting with Android 13, accessibility services are restricted for apps installed from sources outside the Play Store for your security. If you're seeing a 'restricted setting' warning, it's likely because you downloaded Mindful from our GitHub repository.<br/> To disable this restriction, go to the app info page for Mindful, tap the three dots in the top right corner, and select 'Allow restricted settings.' Once this is done, you can enable accessibility.</p>
+<video src='https://github.com/user-attachments/assets/4a6428f7-459c-4934-b4bd-c18cfccfb32b'/>
 </details>
-
+  
 <details>
   <summary><b>How can I uninstall Mindful?</b></summary>
   <p>To uninstall Mindful while Invincible Mode is active, first disable the admin permission by going to your device's settings. Once admin access is removed, you can uninstall the app as usual. If you encounter any issues, please contact us for assistance.</p>
@@ -62,3 +59,4 @@
   <p>As an open-source project, Mindful welcomes contributions from the community. You can review and modify the source code, report issues, or suggest improvements via our GitHub repository.</p>
   <br/>
 </details>
+
