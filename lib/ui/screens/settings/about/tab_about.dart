@@ -103,8 +103,8 @@ class TabAbout extends ConsumerWidget {
               "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
           actionBtnLabel: "Donate",
           actionBtnIcon: const Icon(FluentIcons.heart_20_filled),
-          onTapAction: () =>
-              MethodChannelService.instance.launchUrl(AppConstants.donationUrl),
+          onTapAction: () => MethodChannelService.instance
+              .launchUrl(AppConstants.githubDonationUrl),
         ),
 
         const SliverTabsBottomPadding(),
