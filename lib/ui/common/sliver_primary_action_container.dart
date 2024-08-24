@@ -1,8 +1,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -17,6 +19,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
     this.onTapAction,
     this.actionBtnLabel,
     this.actionBtnIcon,
+    this.helpUrl,
     this.margin = EdgeInsets.zero,
   });
 
@@ -25,6 +28,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
   final String information;
   final EdgeInsets margin;
   final String? actionBtnLabel;
+  final String? helpUrl;
   final VoidCallback? onTapAction;
   final Widget? actionBtnIcon;
 
@@ -65,16 +69,29 @@ class SliverPrimaryActionContainer extends StatelessWidget {
 
                 16.vBox,
 
-                /// Allow permission button
-                if (onTapAction != null)
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: FilledButton.icon(
-                      onPressed: onTapAction,
-                      label: Text(actionBtnLabel ?? "Allow"),
-                      icon: actionBtnIcon,
-                    ),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    /// Help button
+                    if (helpUrl != null)
+                      TextButton(
+                        onPressed: () =>
+                            MethodChannelService.instance.launchUrl(helpUrl!),
+                        child: const Text("Help?"),
+                      ),
+
+                    0.hBox,
+
+                    /// Allow permission button
+                    if (onTapAction != null)
+                      FilledButton.icon(
+                        onPressed: onTapAction,
+                        label: Text(actionBtnLabel ?? "Allow"),
+                        icon: actionBtnIcon,
+                      ),
+                  ],
+                ),
               ],
             ),
           ),
