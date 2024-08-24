@@ -2,9 +2,9 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-### [🛠️ Build & Contribute](CONTRIBUTION.md)&emsp;&emsp; [🔏 Privacy Policy](PRIVACY.md)&emsp;&emsp;[💖 Donate](#-donate)
+[🛠️ Build & Contribute](docs/CONTRIBUTION.md)&emsp;&emsp; [🔏 Privacy Policy](docs/PRIVACY.md)&emsp;&emsp;[❓ FAQs](docs/FAQ.md)&emsp;&emsp;[💖 Donate](#-donate)
 
-![Mindful App Banner](assets/github_readme/banner.png)
+![Mindful App Banner](docs/assets/banner.png)
 
 ## 👇 Download
 
@@ -18,9 +18,9 @@
 
 ## 📱 Screenshots
 
-| <img src="assets/github_readme/screenshot_1.png"> | <img src="assets/github_readme/screenshot_2.png"> | <img src="assets/github_readme/screenshot_3.png"> | <img src="assets/github_readme/screenshot_4.png"> |
-| ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------- |
-| <img src="assets/github_readme/screenshot_5.png"> | <img src="assets/github_readme/screenshot_6.png"> | <img src="assets/github_readme/screenshot_7.png"> | <img src="assets/github_readme/screenshot_8.png"> |
+| <img src="docs/assets/screenshot_1.png"> | <img src="docs/assets/screenshot_2.png"> | <img src="docs/assets/screenshot_3.png"> | <img src="docs/assets/screenshot_4.png"> |
+| ---------------------------------------- | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- |
+| <img src="docs/assets/screenshot_5.png"> | <img src="docs/assets/screenshot_6.png"> | <img src="docs/assets/screenshot_7.png"> | <img src="docs/assets/screenshot_8.png"> |
 
 ## 💪 Features
 
@@ -57,16 +57,10 @@
 
 ---
 
-## 🤔 Why We Developed Mindful ?
+# 💖 Donate
 
-We were frustrated with our own excessive phone usage and the lack of privacy-friendly, free solutions that could help manage it. After finding no suitable app on the Play Store, we decided to create Mindful—an app that respects your privacy, is free to use, and offers the comprehensive features we needed to regain control of our digital lives.
+Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
 
 ## 🗨️ Feedback and Support
 
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us on github.
-
----
-
-# 💖 Donate
-
-Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
