@@ -2,7 +2,7 @@
 
 <details>
   <summary><b>Why we developed Mindful?</b></summary>
-  <p>Let's be honest: we were hooked on our phones, endlessly scrolling through social media and procrastinating like pros. Our productivity was in freefall, and we thought, 'Surely, there's an app out there to fix this mess.' <br/>We scoured the Play Store, hoping to find a magical app that would save us from our digital downfall. Instead, we found either overpriced solutions or apps that were as privacy-friendly as a leaky bucket.<br/>So, we decided to stop complaining and start coding. Mindful was born out of our frustration and our determination to create something that was not only free but actually respected our privacy. We figured if we couldn't find what we needed, we'd build it ourselves—and here it is, just for you.</p>
+  <p>Let's be honest: we were hooked on our phones, endlessly scrolling through social media and procrastinating like pros. Our productivity was in freefall, and we thought, 'Surely, there's an app out there to fix this mess.' <br/><br/>We scoured the Play Store, hoping to find a magical app that would save us from our digital downfall. Instead, we found either overpriced solutions or apps that were as privacy-friendly as a leaky bucket.<br/><br/>So, we decided to stop complaining and start coding. Mindful was born out of our frustration and our determination to create something that was not only free but actually respected our privacy. We figured if we couldn't find what we needed, we'd build it ourselves—and here it is, just for you.</p>
   <br/>
 </details>
 
@@ -32,19 +32,19 @@
 
 <details>
   <summary><b>Why did Mindful suddenly stop working?</b></summary>
-  <p>Some device manufacturers, especially those using MIUI OS like Xiaomi and Poco, restrict background app activity to save battery or for other reasons. This can affect Mindful's performance.<br/>Troubleshooting: Go to the settings in Mindful and allow the permission to ignore battery optimizations. If you're unsure how to grant this permission, click on the help icon in the permission dialog for guidance.</p>
+  <p>Some device manufacturers, especially those using MIUI OS like Xiaomi and Poco, restrict background app activity to save battery or for other reasons. This can affect Mindful's performance.<br/><br/>Troubleshooting: Go to the settings in Mindful and allow the permission to ignore battery optimizations. If you're unsure how to grant this permission, click on the help icon in the permission dialog for guidance.</p>
   <br/>
 </details>
 
 <details>
   <summary><b>My device shows a security warning. Is this safe?</b></summary>
-   <p>&emsp;&emsp;Yes, the Mindful app is completely secure and safe to use. The security warning you're seeing is likely due to the accessibility service Mindful needs to operate effectively. This service is crucial for Mindful to detect and manage short videos in supported apps. While accessibility services can sometimes trigger security warnings, please be assured that Mindful is built with your privacy and data protection in mind. If you have any concerns, don't hesitate to contact us for support.</p>
+   <p>Yes, the Mindful app is completely secure and safe to use. The security warning you're seeing is likely due to the accessibility service Mindful needs to operate effectively. This service is crucial for Mindful to detect and manage short videos in supported apps. While accessibility services can sometimes trigger security warnings, please be assured that Mindful is built with your privacy and data protection in mind. If you have any concerns, don't hesitate to contact us for support.</p>
   <br/>
 </details>
 
 <details>
-  <summary><b>Why does my device show a 'restricted setting' message when I try to enable accessibility for Mindful?</b></summary>
-  <p>Starting with Android 13, accessibility services are restricted for apps installed from sources outside the Play Store for your security. If you're seeing a 'restricted setting' warning, it's likely because you downloaded Mindful from our GitHub repository.<br/> To disable this restriction, go to the app info page for Mindful, tap the three dots in the top right corner, and select 'Allow restricted settings.' Once this is done, you can enable accessibility.</p>
+  <summary><b>Why does my device show a 'Restricted Setting' message when I try to enable accessibility for Mindful?</b></summary>
+  <p>Starting with Android 13, accessibility services are restricted for apps installed from sources outside the Play Store for your security. If you're seeing a 'restricted setting' warning, it's likely because you downloaded Mindful from our GitHub repository.<br/><br/> To disable this restriction, go to the app info page for Mindful, tap the three dots in the top right corner, and select 'Allow restricted settings.' Once this is done, you can enable accessibility.</p>
 <video src='https://github.com/user-attachments/assets/4a6428f7-459c-4934-b4bd-c18cfccfb32b'/>
 </details>
   
@@ -59,4 +59,16 @@
   <p>As an open-source project, Mindful welcomes contributions from the community. You can review and modify the source code, report issues, or suggest improvements via our GitHub repository.</p>
   <br/>
 </details>
+
+---
+
+# Need More Help?
+
+If you’ve reviewed the FAQs and still have questions or issues, please don’t hesitate to reach out to us. We’re here to help!
+
+- **Contact Us:**  <a href="mailto:help.lasthopedevs@gmail.com"> **_help.lasthopedevs@gmail.com_** </a>
+- **Report an Issue:** If you believe you’ve encountered a bug or have a feature request, please [open an issue on GitHub](https://github.com/akaMrNagar/Mindful/issues/new/choose).
+
+We appreciate your feedback and are committed to improving Mindful.
+
 
