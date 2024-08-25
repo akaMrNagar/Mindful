@@ -4,9 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
 
-class DefaultNavbar extends StatefulWidget {
-  /// Global navigation bar or vertical tab bar used throughout the app for consistent ui/ux
-  const DefaultNavbar({
+class DefaultScaffold extends StatefulWidget {
+  /// Global Scaffold navigation bar or vertical tab bar used throughout the app for consistent ui/ux
+  const DefaultScaffold({
     super.key,
     this.leading,
     this.onTabChanged,
@@ -28,10 +28,10 @@ class DefaultNavbar extends StatefulWidget {
   final ValueChanged<int>? onTabChanged;
 
   @override
-  State<DefaultNavbar> createState() => _DefaultNavbarState();
+  State<DefaultScaffold> createState() => _DefaultScaffoldState();
 }
 
-class _DefaultNavbarState extends State<DefaultNavbar>
+class _DefaultScaffoldState extends State<DefaultScaffold>
     with SingleTickerProviderStateMixin {
   late TabController _controller;
 
@@ -56,77 +56,80 @@ class _DefaultNavbarState extends State<DefaultNavbar>
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 1,
-          child: SafeArea(
-            child: Column(
-              children: [
-                40.vBox,
+    return Scaffold(
+      floatingActionButton: widget.navbarItems[_controller.index].fab,
+      body: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: SafeArea(
+              child: Column(
+                children: [
+                  40.vBox,
 
-                /// Leading widget
-                widget.leading ?? const SizedBox(),
+                  /// Leading widget
+                  widget.leading ?? const SizedBox(),
 
-                /// Automatically imply back button if leading is null
-                if (widget.leading == null && Navigator.canPop(context))
-                  IconButton(
-                    icon: const Icon(FluentIcons.chevron_left_20_filled),
-                    onPressed: () => Navigator.maybePop(context),
-                  ),
+                  /// Automatically imply back button if leading is null
+                  if (widget.leading == null && Navigator.canPop(context))
+                    IconButton(
+                      icon: const Icon(FluentIcons.chevron_left_20_filled),
+                      onPressed: () => Navigator.maybePop(context),
+                    ),
 
-                40.vBox,
+                  40.vBox,
 
-                /// Tab buttons
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: widget.navbarItems.length,
-                    scrollDirection: Axis.vertical,
-                    physics: const ClampingScrollPhysics(),
-                    itemBuilder: (context, index) => _TabBarButton(
-                      title: widget.navbarItems[index].title,
-                      icon: widget.navbarItems[index].icon,
-                      isSelected: _controller.index == index,
-                      onTap: () => setState(
-                        () {
-                          _controller.animateTo(
-                            index,
-                            curve: Curves.fastEaseInToSlowEaseOut,
-                          );
-                          widget.onTabChanged?.call(index);
-                        },
+                  /// Tab buttons
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: widget.navbarItems.length,
+                      scrollDirection: Axis.vertical,
+                      physics: const ClampingScrollPhysics(),
+                      itemBuilder: (context, index) => _TabBarButton(
+                        title: widget.navbarItems[index].title,
+                        icon: widget.navbarItems[index].icon,
+                        isSelected: _controller.index == index,
+                        onTap: () => setState(
+                          () {
+                            _controller.animateTo(
+                              index,
+                              curve: Curves.fastEaseInToSlowEaseOut,
+                            );
+                            widget.onTabChanged?.call(index);
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
 
-        /// Tab bar view with tab body
-        Expanded(
-          flex: 7,
-          child: RotatedBox(
-            quarterTurns: 1,
-            child: TabBarView(
-              controller: _controller,
-              physics: const NeverScrollableScrollPhysics(),
-              children: widget.navbarItems
-                  .map(
-                    (e) => RotatedBox(
-                      quarterTurns: -1,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 4, right: 8),
-                        child: e.body,
+          /// Tab bar view with tab body
+          Expanded(
+            flex: 7,
+            child: RotatedBox(
+              quarterTurns: 1,
+              child: TabBarView(
+                controller: _controller,
+                physics: const NeverScrollableScrollPhysics(),
+                children: widget.navbarItems
+                    .map(
+                      (e) => RotatedBox(
+                        quarterTurns: -1,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4, right: 8),
+                          child: e.body,
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
+                    )
+                    .toList(),
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -194,10 +197,12 @@ class NavbarItem {
   final String title;
   final IconData icon;
   final Widget body;
+  final Widget? fab;
 
   const NavbarItem({
     required this.icon,
     required this.title,
     required this.body,
+    this.fab,
   });
 }

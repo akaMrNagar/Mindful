@@ -8,10 +8,12 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/ui/common/default_nav_bar.dart';
+import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
+import 'package:mindful/ui/screens/home/wellbeing/add_websites_fab.dart';
 import 'package:mindful/ui/screens/home/wellbeing/tab_wellbeing.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -62,36 +64,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DefaultNavbar(
-        leading: IconButton(
-          icon: const Icon(FluentIcons.settings_20_regular),
-          onPressed: () =>
-              Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
-        ),
-        navbarItems: const [
-          NavbarItem(
-            title: "Dashboard",
-            icon: FluentIcons.home_20_filled,
-            body: TabDashboard(),
-          ),
-          NavbarItem(
-            title: "Statistics",
-            icon: FluentIcons.data_pie_24_filled,
-            body: TabStatistics(),
-          ),
-          NavbarItem(
-            title: "Wellbeing",
-            icon: FluentIcons.brain_circuit_20_filled,
-            body: TabWellBeing(),
-          ),
-          NavbarItem(
-            title: "Bedtime",
-            icon: FluentIcons.sleep_20_filled,
-            body: TabBedtime(),
-          ),
-        ],
+    return DefaultScaffold(
+      leading: IconButton(
+        icon: const Icon(FluentIcons.settings_20_regular),
+        onPressed: () =>
+            Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
       ),
+      navbarItems: const [
+        NavbarItem(
+          title: "Dashboard",
+          icon: FluentIcons.home_20_filled,
+          body: TabDashboard(),
+        ),
+        NavbarItem(
+          title: "Statistics",
+          icon: FluentIcons.data_pie_24_filled,
+          body: TabStatistics(),
+        ),
+        NavbarItem(
+          title: "Wellbeing",
+          icon: FluentIcons.brain_circuit_20_filled,
+          body: TabWellBeing(),
+          fab: AddWebsitesFAB(),
+        ),
+        NavbarItem(
+          title: "Bedtime",
+          icon: FluentIcons.sleep_20_filled,
+          body: TabBedtime(),
+          fab: EmergencyFAB(),
+        ),
+      ],
     );
   }
 }

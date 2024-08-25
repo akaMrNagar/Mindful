@@ -15,6 +15,7 @@ extension ExtBuildContext on BuildContext {
   }) {
     try {
       if (mounted) {
+        ScaffoldMessenger.of(this).clearSnackBars();
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
             dismissDirection: DismissDirection.horizontal,
@@ -77,21 +78,7 @@ extension ExtBuildContext on BuildContext {
     );
   }
 
-  // /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
-  // void showSnackInfo(
-  //   String info, {
-  //   IconData icon = FluentIcons.info_20_regular,
-  // }) {
-  //   final bgColor = Theme.of(this).colorScheme.secondaryContainer;
-  //   final fgColor = Theme.of(this).colorScheme.onSecondaryContainer;
-  //   _showSnackBar(
-  //     icon: icon,
-  //     error: info,
-  //     fgColor: fgColor,
-  //     bgColor: bgColor,
-  //   );
-  // }
-
+  /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
   void showSnackAlert(
     String info, {
     IconData icon = FluentIcons.warning_20_filled,

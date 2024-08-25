@@ -1,6 +1,5 @@
 package com.mindful.android.services;
 
-import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,6 +30,8 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class MindfulVpnService extends android.net.VpnService {
     private static final String TAG = "Mindful.VpnService";
+    public static final String ACTION_START_SERVICE_VPN = "com.mindful.android.MindfulVpnService.START_SERVICE_VPN";
+
 
     private final AtomicReference<Thread> mAtomicVpnThread = new AtomicReference<>();
     private ParcelFileDescriptor mVpnInterface = null;
@@ -41,16 +42,15 @@ public class MindfulVpnService extends android.net.VpnService {
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
         String action = intent.getAction();
-        if (action == null) return START_NOT_STICKY;
 
-        if (ACTION_START_SERVICE.equals(action)) {
+        if (ACTION_START_SERVICE_VPN.equals(action)) {
             mBlockedApps = SharedPrefsHelper.fetchBlockedApps(this);
             connectVpn();
             return START_STICKY;
-        } else {
-            stopAndDisposeService();
-            return START_NOT_STICKY;
         }
+
+        stopAndDisposeService();
+        return START_NOT_STICKY;
     }
 
     /**
@@ -203,7 +203,7 @@ public class MindfulVpnService extends android.net.VpnService {
         if (mIsStoppedForcefully) {
             Log.d(TAG, "onDestroy: Vpn service destroyed forcefully. Trying to restart it");
             if (!Utils.isServiceRunning(this, MindfulVpnService.class.getName())) {
-                startService(new Intent(this, MindfulVpnService.class).setAction(ACTION_START_SERVICE));
+                startService(new Intent(this, MindfulVpnService.class).setAction(ACTION_START_SERVICE_VPN));
             }
             return;
         }

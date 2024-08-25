@@ -1,6 +1,5 @@
 package com.mindful.android.services;
 
-import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_DIALOG_TYPE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
@@ -40,6 +39,7 @@ public class MindfulTrackerService extends Service {
 
     private final String TAG = "Mindful.MindfulTrackerService";
     public static final String ACTION_NEW_APP_LAUNCHED = "com.mindful.android.ACTION_NEW_APP_LAUNCHED";
+    public static final String ACTION_START_SERVICE_TIMER_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_TIMER";
     public static final String ACTION_START_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_BEDTIME";
     public static final String ACTION_STOP_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.STOP_SERVICE_BEDTIME";
 
@@ -65,12 +65,11 @@ public class MindfulTrackerService extends Service {
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        String action = intent.getAction();
-        if (action == null) return START_NOT_STICKY;
+        String action = Utils.notNullStr(intent.getAction());
 
         switch (action) {
             // Only start service
-            case ACTION_START_SERVICE: {
+            case ACTION_START_SERVICE_TIMER_MODE: {
                 startTrackingService();
                 return START_STICKY;
             }
@@ -90,12 +89,9 @@ public class MindfulTrackerService extends Service {
                 mPurgedApps.clear();
                 Log.d(TAG, "onStartCommand: Midnight reset completed");
                 break;
-
-            default:
-                stopIfNoUsage();
-                break;
         }
 
+        stopIfNoUsage();
         return START_NOT_STICKY;
     }
 
@@ -171,20 +167,20 @@ public class MindfulTrackerService extends Service {
     }
 
     /**
-     * Starts or stops Focus Session on the basis of passed distractingApps.
+     * Starts or stops or updates Focus Session on the basis of passed distractingApps.
      * If the passed hash set is null then STOP session otherwise START session.
      *
      * @param distractingApps Hashset of strings of distracting app's packages.
      */
-    public void startStopFocusSession(@Nullable HashSet<String> distractingApps) {
+    public void startStopUpdateFocusSession(@Nullable HashSet<String> distractingApps) {
         if (distractingApps != null) {
             mFocusSessionDistractingApps = distractingApps;
             mPurgedApps.clear();
 
-            Log.d(TAG, "startStopBedtimeRoutine: Focus Session STARTED successfully");
+            Log.d(TAG, "startStopUpdateFocusSession: Focus Session STARTED or UPDATED successfully");
         } else {
             mFocusSessionDistractingApps.clear();
-            Log.d(TAG, "startStopBedtimeRoutine: Focus Session STOPPED successfully");
+            Log.d(TAG, "startStopUpdateFocusSession: Focus Session STOPPED successfully");
             stopIfNoUsage();
         }
     }
@@ -215,7 +211,7 @@ public class MindfulTrackerService extends Service {
         if (mIsStoppedForcefully) {
             Log.d(TAG, "onDestroy: Tracking service destroyed forcefully. Trying to restart it");
             if (!Utils.isServiceRunning(this, MindfulTrackerService.class.getName())) {
-                startService(new Intent(this, MindfulTrackerService.class).setAction(ACTION_START_SERVICE));
+                startService(new Intent(this, MindfulTrackerService.class).setAction(ACTION_START_SERVICE_TIMER_MODE));
             }
             return;
         }

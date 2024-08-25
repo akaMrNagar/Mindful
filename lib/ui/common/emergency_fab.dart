@@ -1,12 +1,21 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 
-class EmergencyFAB extends StatelessWidget {
-  const EmergencyFAB({super.key});
+class EmergencyFAB extends ConsumerWidget {
+  const EmergencyFAB({
+    super.key,
+    this.showAnyway = false,
+  });
+
+  final bool showAnyway;
 
   void _useEmergency(BuildContext context) async {
     int leftPasses =
@@ -48,17 +57,22 @@ class EmergencyFAB extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: FloatingActionButton.extended(
-        heroTag: HeroTags.emergencyTileTag,
-        label: const Text("Emergency"),
-        icon: const Icon(FluentIcons.fire_20_filled),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        onPressed: () => _useEmergency(context),
-      ),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isInvincibleModeOn =
+        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
+
+    final isModifiable =
+        ref.read(bedtimeProvider.notifier).isModifiable(isInvincibleModeOn);
+
+    return !isModifiable || showAnyway
+        ? FloatingActionButton.extended(
+            heroTag: HeroTags.emergencyTileTag,
+            label: const Text("Emergency"),
+            icon: const Icon(FluentIcons.fire_20_filled),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+            onPressed: () => _useEmergency(context),
+          )
+        : 0.vBox;
   }
 }
