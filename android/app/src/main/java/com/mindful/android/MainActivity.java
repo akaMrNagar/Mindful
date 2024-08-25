@@ -1,6 +1,6 @@
 package com.mindful.android;
 
-import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
+import static com.mindful.android.services.EmergencyPauseService.ACTION_START_SERVICE_EMERGENCY;
 import static com.mindful.android.services.FocusSessionService.INTENT_EXTRA_FOCUS_SESSION_JSON;
 
 import android.annotation.SuppressLint;
@@ -40,6 +40,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private static final String TAG = "Mindful.MainActivity";
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
+    private SafeServiceConnection<FocusSessionService> mFocusServiceConn;
 
     @Override
     protected void onStart() {
@@ -53,20 +54,24 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
+        mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
 
         // Start or bind the tracking service based on app timers or bedtime schedule
         if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty()) {
-            mTrackerServiceConn.startAndBind();
+            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
         } else {
             mTrackerServiceConn.bindService();
         }
 
         // Start or bind the VPN service based on blocked apps and VPN permissions
         if (!SharedPrefsHelper.fetchBlockedApps(this).isEmpty() && getAndAskVpnPermission(false)) {
-            mVpnServiceConn.startAndBind();
+            mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
         } else {
             mVpnServiceConn.bindService();
         }
+
+        /// Bind to Focus Service if it is already running
+        mFocusServiceConn.bindService();
     }
 
     @Override
@@ -130,7 +135,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (mTrackerServiceConn.isConnected()) {
                     mTrackerServiceConn.getService().updateAppTimers();
                 } else {
-                    mTrackerServiceConn.startAndBind();
+                    mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
                 }
                 result.success(true);
                 break;
@@ -141,7 +146,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().updateBlockedApps();
                 } else if (getAndAskVpnPermission(true)) {
-                    mVpnServiceConn.startAndBind();
+                    mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
                 }
                 result.success(true);
                 break;
@@ -174,7 +179,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())
                         && Utils.isServiceRunning(this, MindfulTrackerService.class.getName())
                 ) {
-                    startService(new Intent(this, EmergencyPauseService.class).setAction(ACTION_START_SERVICE));
+                    startService(new Intent(this, EmergencyPauseService.class).setAction(ACTION_START_SERVICE_EMERGENCY));
                     result.success(true);
                 } else {
                     result.success(false);
@@ -182,12 +187,22 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "startFocusSession": {
-                if (!Utils.isServiceRunning(this, FocusSessionService.class.getName())
-                ) {
+                if (!Utils.isServiceRunning(this, FocusSessionService.class.getName())) {
                     Intent intent = new Intent(this, FocusSessionService.class);
-                    intent.setAction(ACTION_START_SERVICE);
+                    intent.setAction(FocusSessionService.ACTION_START_SERVICE_FOCUS);
                     intent.putExtra(INTENT_EXTRA_FOCUS_SESSION_JSON, Utils.notNullStr(call.arguments()));
                     startService(intent);
+                    mFocusServiceConn.bindService();
+                    result.success(true);
+                } else {
+                    result.success(false);
+                }
+                break;
+            }
+            case "UpdateFocusSession": {
+                if (mFocusServiceConn.isConnected()) {
+                    String dartJsonFocusSessionDistractingApps = Utils.notNullStr(call.arguments());
+                    mFocusServiceConn.getService().updateDistractingApps(Utils.jsonStrToStringHashSet(dartJsonFocusSessionDistractingApps));
                     result.success(true);
                 } else {
                     result.success(false);
@@ -196,7 +211,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
 
             case "stopFocusSession": {
-                startService(new Intent(this, FocusSessionService.class).setAction(""));
+                if (mFocusServiceConn.isConnected()) {
+                    mFocusServiceConn.getService().giveUpAndStopSession();
+                }
                 result.success(true);
                 break;
             }
@@ -341,5 +358,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         // Unbind services
         mTrackerServiceConn.unBindService();
         mVpnServiceConn.unBindService();
+        mFocusServiceConn.unBindService();
     }
 }

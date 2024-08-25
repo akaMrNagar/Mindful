@@ -15,7 +15,7 @@ import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/default_nav_bar.dart';
+import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
 
@@ -56,85 +56,82 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     final isPurged =
         appTimer > 0 && appTimer <= widget.app.screenTimeThisWeek[todayOfWeek];
 
-    return Scaffold(
-      floatingActionButton: const EmergencyFAB(),
-      body: DefaultNavbar(
-        navbarItems: [
-          NavbarItem(
-            icon: FluentIcons.data_pie_20_filled,
-            title: "Dashboard",
-            body: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                /// App bar
-                SliverFlexibleAppBar(title: widget.app.name),
+    return DefaultScaffold(
+      navbarItems: [
+        NavbarItem(
+          icon: FluentIcons.data_pie_20_filled,
+          title: "Dashboard",
+          fab: const EmergencyFAB(showAnyway: true),
+          body: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              /// App bar
+              SliverFlexibleAppBar(title: widget.app.name),
 
-                /// App icon and app package name
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /// App Icon
-                    ApplicationIcon(
-                      size: 32,
-                      app: widget.app,
-                      isGrayedOut: isPurged,
-                    ),
-                    8.vBox,
-
-                    /// App package name
-                    StyledText(
-                      widget.app.packageName,
-                      color: Theme.of(context).hintColor,
-                    ),
-                  ],
-                ).sliver,
-
-                12.vSliverBox,
-
-                /// Usage type selector and usage info card
-                SliverUsageCards(
-                  usageType: _selectedUsageType,
-                  screenUsageInfo: widget.app.screenTimeThisWeek[_selectedDoW],
-                  wifiUsageInfo: widget.app.wifiUsageThisWeek[_selectedDoW],
-                  mobileUsageInfo: widget.app.mobileUsageThisWeek[_selectedDoW],
-                  onUsageTypeChanged: (type) => setState(
-                    () => _selectedUsageType = type,
+              /// App icon and app package name
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /// App Icon
+                  ApplicationIcon(
+                    size: 32,
+                    app: widget.app,
+                    isGrayedOut: isPurged,
                   ),
-                ),
+                  8.vBox,
 
-                20.vSliverBox,
-
-                /// Usage bar chart and selected day changer
-                SliverUsageChartPanel(
-                  chartHeight: 212,
-                  selectedDoW: _selectedDoW,
-                  usageType: _selectedUsageType,
-                  barChartData: _selectedUsageType == UsageType.screenUsage
-                      ? widget.app.screenTimeThisWeek
-                      : widget.app.networkUsageThisWeek,
-                  onDayOfWeekChanged: (dow) => setState(
-                    () => _selectedDoW = dow,
+                  /// App package name
+                  StyledText(
+                    widget.app.packageName,
+                    color: Theme.of(context).hintColor,
                   ),
+                ],
+              ).sliver,
+
+              12.vSliverBox,
+
+              /// Usage type selector and usage info card
+              SliverUsageCards(
+                usageType: _selectedUsageType,
+                screenUsageInfo: widget.app.screenTimeThisWeek[_selectedDoW],
+                wifiUsageInfo: widget.app.wifiUsageThisWeek[_selectedDoW],
+                mobileUsageInfo: widget.app.mobileUsageThisWeek[_selectedDoW],
+                onUsageTypeChanged: (type) => setState(
+                  () => _selectedUsageType = type,
                 ),
+              ),
 
-                const SliverContentTitle(title: "Quick actions"),
+              20.vSliverBox,
 
-                /// Available app setting or functions
-                widget.app.packageName == AppConstants.removedAppPackage ||
-                        widget.app.packageName ==
-                            AppConstants.tetheringAppPackage
-                    ? const StyledText(
-                        "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
-                        fontSize: 14,
-                      ).sliver
-                    : QuickActions(app: widget.app),
+              /// Usage bar chart and selected day changer
+              SliverUsageChartPanel(
+                chartHeight: 212,
+                selectedDoW: _selectedDoW,
+                usageType: _selectedUsageType,
+                barChartData: _selectedUsageType == UsageType.screenUsage
+                    ? widget.app.screenTimeThisWeek
+                    : widget.app.networkUsageThisWeek,
+                onDayOfWeekChanged: (dow) => setState(
+                  () => _selectedDoW = dow,
+                ),
+              ),
 
-                const SliverTabsBottomPadding(),
-              ],
-            ),
+              const SliverContentTitle(title: "Quick actions"),
+
+              /// Available app setting or functions
+              widget.app.packageName == AppConstants.removedAppPackage ||
+                      widget.app.packageName == AppConstants.tetheringAppPackage
+                  ? const StyledText(
+                      "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
+                      fontSize: 14,
+                    ).sliver
+                  : QuickActions(app: widget.app),
+
+              const SliverTabsBottomPadding(),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

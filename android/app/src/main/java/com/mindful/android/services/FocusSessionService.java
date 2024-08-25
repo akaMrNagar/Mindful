@@ -1,6 +1,5 @@
 package com.mindful.android.services;
 
-import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.mindful.android.utils.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID;
 
 import android.app.Notification;
@@ -19,13 +18,19 @@ import androidx.core.app.NotificationCompat;
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
+import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.models.FocusSession;
 import com.mindful.android.utils.Utils;
 
+import java.util.HashSet;
+
 public class FocusSessionService extends Service {
     private static final String TAG = "Mindful.FocusSessionService";
     public static final String INTENT_EXTRA_FOCUS_SESSION_JSON = "focusSessionJson";
+    public static final String ACTION_START_SERVICE_FOCUS = "com.mindful.android.FocusSessionService.START_SERVICE_FOCUS";
+    public static final String ACTION_STOP_SERVICE_FOCUS = "com.mindful.android.FocusSessionService.STOP_SERVICE_FOCUS";
+
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
@@ -54,26 +59,47 @@ public class FocusSessionService extends Service {
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        String action = intent.getAction();
-        if (action == null) return START_NOT_STICKY;
+        String action = Utils.notNullStr(intent.getAction());
 
-        if (ACTION_START_SERVICE.equals(action)) {
+        if (ACTION_START_SERVICE_FOCUS.equals(action)) {
             mFocusSession = new FocusSession(Utils.notNullStr(intent.getStringExtra(INTENT_EXTRA_FOCUS_SESSION_JSON)));
             mCountDownDurationMs = mFocusSession.durationSecs * 1000L;
+
+            /// Start and bind tracking service
+            mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopUpdateFocusSession(mFocusSession.distractingApps));
+            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+
             if (!mFocusSession.distractingApps.isEmpty()) {
                 startFocusTimer();
                 return START_STICKY;
             }
-        } else {
-            if (mFocusSession != null && mFocusSession.toggleDnd) {
-                NotificationHelper.toggleDnd(this, false);
-            }
-            stopSelf();
-            showSuccessNotification(false);
-            return START_NOT_STICKY;
         }
 
+        stopSelf();
         return START_NOT_STICKY;
+    }
+
+    /**
+     * Stops the running focus session and push give-up notification
+     */
+    public void giveUpAndStopSession() {
+        if (mFocusSession != null && mFocusSession.toggleDnd) {
+            NotificationHelper.toggleDnd(this, false);
+        }
+        stopSelf();
+        showSuccessNotification(false);
+    }
+
+    /**
+     * Updates the list of distracting apps for the current running focus session
+     *
+     * @param distractingApps List of distracting app's packages.
+     */
+    public void updateDistractingApps(HashSet<String> distractingApps) {
+        if (mTrackerServiceConn.isConnected()) {
+            mTrackerServiceConn.getService().startStopUpdateFocusSession(distractingApps);
+            Log.d(TAG, "updateDistractingApps: Focus session's distracting app's list updated successfully");
+        }
     }
 
     /**
@@ -81,9 +107,6 @@ public class FocusSessionService extends Service {
      * and handles DND mode if needed.
      */
     private void startFocusTimer() {
-        mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopFocusSession(mFocusSession.distractingApps));
-        mTrackerServiceConn.startAndBind();
-
         // Toggle DND according to the session configurations
         if (mFocusSession.toggleDnd) NotificationHelper.toggleDnd(this, true);
         startForeground(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs));
@@ -97,7 +120,7 @@ public class FocusSessionService extends Service {
             @Override
             public void onFinish() {
                 if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().startStopFocusSession(null);
+                    mTrackerServiceConn.getService().startStopUpdateFocusSession(null);
                 }
                 if (mFocusSession.toggleDnd) {
                     NotificationHelper.toggleDnd(FocusSessionService.this, false);
@@ -175,7 +198,6 @@ public class FocusSessionService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new ServiceBinder<>(FocusSessionService.this);
     }
 }

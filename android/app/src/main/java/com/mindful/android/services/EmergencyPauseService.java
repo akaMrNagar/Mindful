@@ -1,6 +1,5 @@
 package com.mindful.android.services;
 
-import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
 import static com.mindful.android.utils.AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS;
 import static com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID;
 
@@ -22,9 +21,12 @@ import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
+import com.mindful.android.utils.Utils;
 
 public class EmergencyPauseService extends Service {
     private static final String TAG = "Mindful.EmergencyPauseService";
+    public static final String ACTION_START_SERVICE_EMERGENCY = "com.mindful.android.EmergencyPauseService.START_SERVICE_EMERGENCY";
+
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
@@ -52,11 +54,10 @@ public class EmergencyPauseService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        String action = intent.getAction();
-        if (action == null) return START_NOT_STICKY;
+    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
+        String action = Utils.notNullStr(intent.getAction());
 
-        if (ACTION_START_SERVICE.equals(action)) {
+        if (ACTION_START_SERVICE_EMERGENCY.equals(action)) {
             int leftPasses = SharedPrefsHelper.fetchEmergencyPassesCount(this);
             // Stop if no passes left
             if (leftPasses <= 0) {
@@ -67,15 +68,15 @@ public class EmergencyPauseService extends Service {
             mCountDownDurationMs = DEFAULT_EMERGENCY_PASS_PERIOD_MS;
             startEmergencyTimer();
             return START_STICKY;
-        } else {
-            stopSelf();
-            return START_NOT_STICKY;
         }
+
+        stopSelf();
+        return START_NOT_STICKY;
     }
 
     private void startEmergencyTimer() {
         mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
-        mTrackerServiceConn.startAndBind();
+        mTrackerServiceConn.bindService();
         startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs));
 
         mCountDownTimer = new CountDownTimer(mCountDownDurationMs, 1000) {

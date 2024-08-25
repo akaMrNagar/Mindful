@@ -7,7 +7,6 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -64,54 +63,42 @@ class TabBedtime extends ConsumerWidget {
     final isModifiable =
         ref.read(bedtimeProvider.notifier).isModifiable(isInvincibleModeOn);
 
-    return Stack(
-      children: [
-        CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            /// Appbar
-            const SliverFlexibleAppBar(title: "Bedtime"),
-        
-            /// Information about bedtime
-            const StyledText(
-              "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
-            ).sliver,
-        
-            const SliverContentTitle(title: "Schedule"),
-        
-            /// Card with start and end time for schedule
-            /// also schedule days
-            const ScheduleCard().sliver,
-        
-            8.vSliverBox,
-        
-            /// Bedtime schedule status toggler
-            DefaultListTile(
-              isPrimary: true,
-              switchValue: isScheduleOn,
-              leadingIcon: FluentIcons.sleep_20_regular,
-              titleText: "Schedule",
-              subtitleText: "Enable or disable daily schedule.",
-              onPressed: () => _setScheduleStatus(
-                  ref, context, !isScheduleOn, isModifiable),
-            ).sliver,
-        
-            8.vSliverBox,
-        
-            /// Actions related to bedtime
-            const SliverQuickActions(),
-        
-            const SliverTabsBottomPadding()
-          ],
-        ),
-
-        /// Emergency FAB
-        if (!isModifiable)
-          const Positioned(
-            bottom: 12,
-            right: 12,
-            child: EmergencyFAB(),
-          )
+    return CustomScrollView(
+      physics: const BouncingScrollPhysics(),
+      slivers: [
+        /// Appbar
+        const SliverFlexibleAppBar(title: "Bedtime"),
+    
+        /// Information about bedtime
+        const StyledText(
+          "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
+        ).sliver,
+    
+        const SliverContentTitle(title: "Schedule"),
+    
+        /// Card with start and end time for schedule
+        /// also schedule days
+        const ScheduleCard().sliver,
+    
+        8.vSliverBox,
+    
+        /// Bedtime schedule status toggler
+        DefaultListTile(
+          isPrimary: true,
+          switchValue: isScheduleOn,
+          leadingIcon: FluentIcons.sleep_20_regular,
+          titleText: "Schedule",
+          subtitleText: "Enable or disable daily schedule.",
+          onPressed: () =>
+              _setScheduleStatus(ref, context, !isScheduleOn, isModifiable),
+        ).sliver,
+    
+        8.vSliverBox,
+    
+        /// Actions related to bedtime
+        const SliverQuickActions(),
+    
+        const SliverTabsBottomPadding()
       ],
     );
   }

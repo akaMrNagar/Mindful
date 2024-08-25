@@ -1,7 +1,5 @@
 package com.mindful.android.generics;
 
-import static com.mindful.android.generics.ServiceBinder.ACTION_START_SERVICE;
-
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -93,18 +91,18 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
     /**
      * Starts the service if it is not already running.
      */
-    public void startOnly() {
+    public void startOnly(String action) {
         if (!Utils.isServiceRunning(mContext, mServiceClass.getName())) {
-            mContext.startService(new Intent(mContext, mServiceClass).setAction(ACTION_START_SERVICE));
+            mContext.startService(new Intent(mContext, mServiceClass).setAction(action));
         }
     }
 
     /**
      * Starts and binds the service if it is not already running.
      */
-    public void startAndBind() {
+    public void startAndBind(String action) {
         if (!Utils.isServiceRunning(mContext, mServiceClass.getName())) {
-            mContext.startService(new Intent(mContext, mServiceClass).setAction(ACTION_START_SERVICE));
+            mContext.startService(new Intent(mContext, mServiceClass).setAction(action));
         }
         bindService();
     }
