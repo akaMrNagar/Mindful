@@ -43,8 +43,12 @@ public class Utils {
     public static String getAppVersion(@NonNull Context context) {
         try {
             PackageManager packageManager = context.getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-            return "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
+            String packageName = context.getPackageName();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+
+            return packageName.contains(".debug")
+                    ? "DEBUG " + "v" + packageInfo.versionName + "+" + packageInfo.versionCode
+                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "getAppVersion: Error in fetching app version", e);
         }

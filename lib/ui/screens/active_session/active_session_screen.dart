@@ -15,7 +15,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/active_session_provider.dart';
-import 'package:mindful/ui/common/default_nav_bar.dart';
+import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -34,7 +34,8 @@ class ActiveSessionScreen extends ConsumerStatefulWidget {
       _ActiveSessionScreenState();
 }
 
-class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
+class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
+    with WidgetsBindingObserver {
   Timer? _timer;
   Duration _remainingTime = Duration.zero;
 
@@ -42,9 +43,28 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
   void initState() {
     super.initState();
     _startSessionTimer();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) async {
+    if (appState == AppLifecycleState.resumed) {
+      _startSessionTimer();
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    super.dispose();
   }
 
   void _startSessionTimer() {
+    // Cancel if timer is already running
+    _timer?.cancel();
+    _remainingTime = Duration.zero;
+
     final remaining = widget.session.duration
         .subtract(DateTime.now().difference(widget.session.startTime));
 
@@ -66,12 +86,6 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
   }
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     const timeStyle = TextStyle(fontSize: 48, fontWeight: FontWeight.w600);
     final quotes = [
@@ -90,87 +104,85 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
 
     final quoteIndex = (progress / 20).floor() - 1;
 
-    return Scaffold(
-      body: DefaultNavbar(
-        navbarItems: [
-          NavbarItem(
-            icon: FluentIcons.brain_circuit_20_filled,
-            title: "Session",
-            body: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                /// Appbar
-                SliverFlexibleAppBar(
-                  title: sessionTypeLabels[widget.session.type] ?? "Focus",
-                ),
+    return DefaultScaffold(
+      navbarItems: [
+        NavbarItem(
+          icon: FluentIcons.brain_circuit_20_filled,
+          title: "Session",
+          body: CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              /// Appbar
+              SliverFlexibleAppBar(
+                title: sessionTypeLabels[widget.session.type] ?? "Focus",
+              ),
 
-                TimerProgressClock(
-                  progress: progress.toDouble(),
-                ).sliver,
-                20.vSliverBox,
+              TimerProgressClock(
+                progress: progress.toDouble(),
+              ).sliver,
+              20.vSliverBox,
 
-                /// Countdown timer
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /// Hours
-                    if (_remainingTime.inHours > 0)
-                      AnimatedFlipCounter(
-                        suffix: ":",
-                        value: _remainingTime.inHours,
-                        textStyle: timeStyle,
-                      ),
-
-                    /// Minutes
+              /// Countdown timer
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /// Hours
+                  if (_remainingTime.inHours > 0)
                     AnimatedFlipCounter(
                       suffix: ":",
-                      value: _remainingTime.inMinutes % 60,
+                      value: _remainingTime.inHours,
                       textStyle: timeStyle,
                     ),
 
-                    /// Seconds
-                    AnimatedFlipCounter(
-                      value: _remainingTime.inSeconds % 60,
-                      textStyle: timeStyle,
-                    ),
-                  ],
-                ).sliver,
-                64.vSliverBox,
+                  /// Minutes
+                  AnimatedFlipCounter(
+                    suffix: ":",
+                    value: _remainingTime.inMinutes % 60,
+                    textStyle: timeStyle,
+                  ),
 
-                SliverAnimatedPaintExtent(
-                  duration: 300.ms,
-                  child: StyledText(
-                    quotes[max(quoteIndex, 0)],
-                    fontSize: 14,
-                    textAlign: TextAlign.center,
-                    color: isSessionActive ? Theme.of(context).hintColor : null,
-                  ).centered.sliver,
-                ),
+                  /// Seconds
+                  AnimatedFlipCounter(
+                    value: _remainingTime.inSeconds % 60,
+                    textStyle: timeStyle,
+                  ),
+                ],
+              ).sliver,
+              64.vSliverBox,
 
-                64.vSliverBox,
+              SliverAnimatedPaintExtent(
+                duration: 300.ms,
+                child: StyledText(
+                  quotes[max(quoteIndex, 0)],
+                  fontSize: 14,
+                  textAlign: TextAlign.center,
+                  color: isSessionActive ? Theme.of(context).hintColor : null,
+                ).centered.sliver,
+              ),
 
-                /// Waves
-                SineWave(
-                  sinColor: Theme.of(context).colorScheme.primaryContainer,
-                  cosColor: Theme.of(context).colorScheme.primary,
-                ).sliver,
+              64.vSliverBox,
 
-                64.vSliverBox,
+              /// Waves
+              SineWave(
+                sinColor: Theme.of(context).colorScheme.primaryContainer,
+                cosColor: Theme.of(context).colorScheme.primary,
+              ).sliver,
 
-                if (_remainingTime.inSeconds > 20)
-                  DefaultHero(
-                    tag: HeroTags.giveUpFocusSessionTag,
-                    child: FilledButton.tonalIcon(
-                      label: const Text("Give Up"),
-                      icon: const Icon(FluentIcons.thumb_dislike_20_filled),
-                      onPressed: _giveUp,
-                    ),
-                  ).centered.sliver,
-              ],
-            ),
+              64.vSliverBox,
+
+              if (_remainingTime.inSeconds > 20)
+                DefaultHero(
+                  tag: HeroTags.giveUpFocusSessionTag,
+                  child: FilledButton.tonalIcon(
+                    label: const Text("Give Up"),
+                    icon: const Icon(FluentIcons.thumb_dislike_20_filled),
+                    onPressed: _giveUp,
+                  ),
+                ).centered.sliver,
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,9 +38,9 @@ class TabAbout extends ConsumerWidget {
         ).rightCentered.sliver,
 
         /// Breathing logo
-        const BreathingWidget(
-          dimension: 256,
-          child: RoundedContainer(
+        BreathingWidget(
+          dimension: min(360, MediaQuery.of(context).size.width * 0.7),
+          child: const RoundedContainer(
             circularRadius: 120,
             padding: EdgeInsets.all(12),
             child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
@@ -59,9 +61,25 @@ class TabAbout extends ConsumerWidget {
           isSubtitle: true,
         ).centered.sliver,
 
-        24.vSliverBox,
+        12.vSliverBox,
+
+        const SliverContentTitle(title: "Support us"),
+        4.vSliverBox,
+
+        /// Donation box
+        SliverPrimaryActionContainer(
+          isVisible: true,
+          title: "Thank you",
+          information:
+              "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
+          actionBtnLabel: "Donate",
+          actionBtnIcon: const Icon(FluentIcons.heart_20_filled),
+          onTapAction: () => MethodChannelService.instance
+              .launchUrl(AppConstants.githubDonationUrl),
+        ),
 
         /// Contribute
+        24.vSliverBox,
         const SliverContentTitle(title: "Contribute"),
 
         /// Source code
@@ -90,22 +108,6 @@ class TabAbout extends ConsumerWidget {
           onPressed: () => MethodChannelService.instance
               .launchUrl(AppConstants.githubSuggestionUrl),
         ).sliver,
-
-        12.vSliverBox,
-        const SliverContentTitle(title: "Support us"),
-        12.vSliverBox,
-
-        /// Donation box
-        SliverPrimaryActionContainer(
-          isVisible: true,
-          title: "Thank you",
-          information:
-              "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
-          actionBtnLabel: "Donate",
-          actionBtnIcon: const Icon(FluentIcons.heart_20_filled),
-          onTapAction: () => MethodChannelService.instance
-              .launchUrl(AppConstants.githubDonationUrl),
-        ),
 
         const SliverTabsBottomPadding(),
       ],

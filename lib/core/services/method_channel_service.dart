@@ -175,7 +175,7 @@ class MethodChannelService {
   Future<bool> useEmergencyPass() async =>
       await _methodChannel.invokeMethod('useEmergencyPass');
 
-  /// Start new focus session.
+  /// Start new focus session or only updates the list of distracting apps if already running.
   ///
   /// This method sends a request to the native side to start focus session.
   Future<bool> startFocusSession({
@@ -190,6 +190,17 @@ class MethodChannelService {
           'durationSeconds': durationSeconds,
           'distractingApps': distractingApps,
         }),
+      );
+
+  /// Only updates the list of distracting apps if Focus Session is already running.
+  ///
+  /// This method sends a request to the native side to update focus session.
+  Future<bool> updateFocusSession({
+    required List<String> distractingApps,
+  }) async =>
+      await _methodChannel.invokeMethod(
+        'UpdateFocusSession',
+        jsonEncode(distractingApps),
       );
 
   /// Stop running focus session.

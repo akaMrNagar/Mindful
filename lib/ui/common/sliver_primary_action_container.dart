@@ -85,7 +85,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
 
                     /// Allow permission button
                     if (onTapAction != null)
-                      FilledButton.icon(
+                      FilledButton.icon( 
                         onPressed: onTapAction,
                         label: Text(actionBtnLabel ?? "Allow"),
                         icon: actionBtnIcon,

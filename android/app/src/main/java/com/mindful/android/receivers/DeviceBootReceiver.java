@@ -32,13 +32,13 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         // Start the MindfulTrackerService if needed
         if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
             SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-            mTrackerServiceConn.startOnly();
+            mTrackerServiceConn.startOnly(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
         }
 
         // Start the MindfulVpnService if needed
         if (!SharedPrefsHelper.fetchBlockedApps(context).isEmpty() && MindfulVpnService.prepare(context) == null) {
             SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, context);
-            mVpnServiceConn.startOnly();
+            mVpnServiceConn.startOnly(MindfulVpnService.ACTION_START_SERVICE_VPN);
         }
 
         // Reschedule bedtime workers if the bedtime schedule is on

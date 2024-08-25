@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -63,12 +65,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             /// Breathing logo
-            const BreathingWidget(
-              dimension: 420,
-              child: RoundedContainer(
-                circularRadius: 120,
+            BreathingWidget(
+              dimension: min(420, MediaQuery.of(context).size.width * 0.8),
+              child: const RoundedContainer(
+                circularRadius: 420,
                 padding: EdgeInsets.all(12),
-                child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 72),
+                child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 64),
               ),
             ),
 
