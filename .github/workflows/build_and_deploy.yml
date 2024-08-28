@@ -1,4 +1,4 @@
-name: Build and Deploy Flutter App to GitHub
+name: Build and Deploy to Play Store
 
 on:
   push:
@@ -52,23 +52,24 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build the Universal APK
-        run: flutter build apk --release
+      - name: Build AAB
+        run: flutter build appbundle --release
 
-      - name: Upload APK to Existing GitHub Release
-        run: |
-          RELEASE_ID=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            https://api.github.com/repos/${{ github.repository }}/releases/tags/${GITHUB_REF#refs/tags/} | jq -r '.id')
-
-          ENCODED_VERSION=$(echo -n "${{ env.VERSION }}" | jq -s -R -r @uri)
-
-          curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/zip" \
-            --data-binary @"build/app/outputs/flutter-apk/app-release.apk" \
-            "https://uploads.github.com/repos/${{ github.repository }}/releases/${RELEASE_ID}/assets?name=Mindful_v${ENCODED_VERSION}_Universal.apk"
+      - name: Upload AAB to Play Store
+        id: upload_google_play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: ${{ secrets.PACKAGE_NAME }}
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          debugSymbols: build/app/intermediates/merged_native_libs/release/out/lib
+          whatsNewDirectory: $HOME/whatsnew
+          track: internal
+          status: draft
+          inAppUpdatePriority: ${{ secrets.UPDATE_PRIORITY }} # Between 0-5 => Higher the number, higher the priority.
+          userFraction: ${{ secrets.UPDATE_FRACTION }} # Between 0-1 => Fraction of user who should get updates.
 
       - name: Cleanup
-        if: success()
         run: |
           echo "Cleaning up temporary files..."
           rm -rf build
