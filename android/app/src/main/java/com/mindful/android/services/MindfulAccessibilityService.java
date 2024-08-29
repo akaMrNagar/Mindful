@@ -78,7 +78,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(intent.getAction())) {
+        String action = Utils.notNullStr(intent.getAction());
+
+        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(action)) {
             mTotalShortsScreenTimeMs = 0;
             SharedPrefsHelper.storeShortsScreenTimeMs(this, 0);
             Log.d(TAG, "onStartCommand: Midnight reset completed");
