@@ -12,7 +12,7 @@ import 'package:mindful/ui/permissions/display_overlay_permission.dart';
 import 'package:mindful/ui/permissions/notification_permission.dart';
 import 'package:mindful/ui/permissions/usage_access_permission.dart';
 
-class SetupFinishButton extends ConsumerWidget {
+class SetupFinishButton extends ConsumerStatefulWidget {
   const SetupFinishButton({
     super.key,
     required this.haveAllEssentialPermissions,
@@ -21,16 +21,37 @@ class SetupFinishButton extends ConsumerWidget {
   final bool haveAllEssentialPermissions;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  SetupFinishButtonState createState() => SetupFinishButtonState();
+}
+
+class SetupFinishButtonState extends ConsumerState<SetupFinishButton> {
+  bool _isSheetOpen = false;
+  BuildContext? _sheetContext;
+
+  @override
+  void didUpdateWidget(covariant SetupFinishButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Check if permissions are now all granted
+    if (widget.haveAllEssentialPermissions &&
+        _isSheetOpen &&
+        _sheetContext != null) {
+      Navigator.of(_sheetContext!).pop(); // Close the bottom sheet
+      _isSheetOpen = false;
+      _sheetContext = null;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return RoundedContainer(
       height: 48,
       width: 196,
       color: Theme.of(context).colorScheme.primary,
-      onPressed: () => haveAllEssentialPermissions
+      onPressed: () => widget.haveAllEssentialPermissions
           ? _finishSetup(context, ref)
           : _showPermissionsSheet(context),
       child: StyledText(
-        haveAllEssentialPermissions ? "Let's Go" : "Grant Permissions",
+        widget.haveAllEssentialPermissions ? "Let's Go" : "Grant Permissions",
         fontSize: 16,
         overflow: TextOverflow.ellipsis,
         color: Theme.of(context).colorScheme.onPrimary,
@@ -48,61 +69,70 @@ class SetupFinishButton extends ConsumerWidget {
   }
 
   void _showPermissionsSheet(BuildContext context) {
+    _isSheetOpen = true;
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: BottomSheet(
-          enableDrag: false,
-          onClosing: () {},
-          builder: (context) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                12.vBox,
-                // Handle
-                RoundedContainer(
-                  height: 8,
-                  width: 64,
-                  color: Theme.of(context).disabledColor,
-                ).centered,
-                8.vBox,
+      builder: (context) {
+        _sheetContext = context;
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: BottomSheet(
+            enableDrag: false,
+            onClosing: () {},
+            builder: (context) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  12.vBox,
+                  // Handle
+                  RoundedContainer(
+                    height: 8,
+                    width: 64,
+                    color: Theme.of(context).disabledColor,
+                  ).centered,
+                  8.vBox,
 
-                /// Title
-                StyledText(
-                  "Grant essential permissions",
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-                6.vBox,
-
-                /// Info
-                const StyledText(
-                  "To ensure Mindful works effectively and supports your focus, please grant the essential permissions.\n\nThank you",
-                ),
-                6.vBox,
-
-                /// Permissions
-                Expanded(
-                  child: CustomScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      12.vSliverBox,
-                      const NotificationPermission(showEvenIfGranted: true),
-                      const UsageAccessPermission(showEvenIfGranted: true),
-                      const DisplayOverlayPermission(showEvenIfGranted: true),
-                      const ExactAlarmPermission(showEvenIfGranted: true),
-                      96.vSliverBox,
-                    ],
+                  /// Title
+                  StyledText(
+                    "Grant essential permissions",
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
                   ),
-                ),
-              ],
+                  6.vBox,
+
+                  /// Info
+                  const StyledText(
+                    "To ensure Mindful works effectively and supports your focus, please grant the essential permissions.\n\nThank you",
+                  ),
+                  6.vBox,
+
+                  /// Permissions
+                  Expanded(
+                    child: CustomScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      slivers: [
+                        12.vSliverBox,
+                        const NotificationPermission(showEvenIfGranted: true),
+                        const UsageAccessPermission(showEvenIfGranted: true),
+                        const DisplayOverlayPermission(showEvenIfGranted: true),
+                        const ExactAlarmPermission(showEvenIfGranted: true),
+                        96.vSliverBox,
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
+    ).whenComplete(
+      () {
+        _isSheetOpen = false;
+        _sheetContext = null;
+      },
     );
   }
 }

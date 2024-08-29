@@ -68,20 +68,23 @@ class TabBedtime extends ConsumerWidget {
       slivers: [
         /// Appbar
         const SliverFlexibleAppBar(title: "Bedtime"),
-    
+
         /// Information about bedtime
-        const StyledText(
-          "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
+        Semantics(
+          excludeSemantics: true,
+          child: const StyledText(
+            "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
+          ),
         ).sliver,
-    
+
         const SliverContentTitle(title: "Schedule"),
-    
+
         /// Card with start and end time for schedule
         /// also schedule days
         const ScheduleCard().sliver,
-    
+
         8.vSliverBox,
-    
+
         /// Bedtime schedule status toggler
         DefaultListTile(
           isPrimary: true,
@@ -92,12 +95,12 @@ class TabBedtime extends ConsumerWidget {
           onPressed: () =>
               _setScheduleStatus(ref, context, !isScheduleOn, isModifiable),
         ).sliver,
-    
+
         8.vSliverBox,
-    
+
         /// Actions related to bedtime
         const SliverQuickActions(),
-    
+
         const SliverTabsBottomPadding()
       ],
     );

@@ -120,7 +120,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               borderRadius: 10,
               showColorTip: false,
               colorMode: ColorMode.color,
-              // monthFontSize: 0.1,
               weekTextColor: Theme.of(context).iconTheme.color,
               textColor: Theme.of(context).iconTheme.color,
               defaultColor: Colors.transparent,

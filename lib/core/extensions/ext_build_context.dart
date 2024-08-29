@@ -26,7 +26,6 @@ extension ExtBuildContext on BuildContext {
             action: showCopyAction
                 ? SnackBarAction(
                     label: "Copy",
-
                     backgroundColor: Theme.of(this).colorScheme.primary,
                     textColor: Theme.of(this).colorScheme.onPrimary,
                     // textColor: fgColor,

@@ -62,14 +62,17 @@ class ShortsTimerChart extends ConsumerWidget {
           fit: StackFit.passthrough,
           children: [
             /// Background ring with color based on progress
-            RotatedBox(
-              quarterTurns: 2,
-              child: FittedBox(
-                child: CircularProgressIndicator(
-                  value: 1,
-                  strokeWidth: 4,
-                  strokeAlign: BorderSide.strokeAlignCenter,
-                  color: lerpedColor,
+            Semantics(
+              excludeSemantics: true,
+              child: RotatedBox(
+                quarterTurns: 2,
+                child: FittedBox(
+                  child: CircularProgressIndicator(
+                    value: 1,
+                    strokeWidth: 4,
+                    strokeAlign: BorderSide.strokeAlignCenter,
+                    color: lerpedColor,
+                  ),
                 ),
               ),
             ),

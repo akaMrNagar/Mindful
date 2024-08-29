@@ -49,65 +49,68 @@ class DefaultBarChart extends StatelessWidget {
     // adding one to show bar chart if all values are zeroes
     final barMaxHeight = (dataMax * 1.1) + 1.0;
 
-    return Container(
-      height: height,
-      width: width,
-      padding: padding,
-      child: BarChart(
-        BarChartData(
-          barGroups: List.generate(
-            data.length,
-            (index) {
-              final isSelected = selectedBar == index;
-              final toPercentY = data[index] / barMaxHeight * 100;
-              return BarChartGroupData(
-                groupVertically: true,
-                x: index,
-                barRods: [
-                  BarChartRodData(
-                    width: 24,
-                    toY: toPercentY,
-                    // color: isSelected ? selectedGrad : unselectedGrad,
-                    gradient: LinearGradient(
-                      colors: isSelected ? selectedGrad : unselectedGrad,
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
+    return Semantics(
+      excludeSemantics: true,
+      child: Container(
+        height: height,
+        width: width,
+        padding: padding,
+        child: BarChart(
+          BarChartData(
+            barGroups: List.generate(
+              data.length,
+              (index) {
+                final isSelected = selectedBar == index;
+                final toPercentY = data[index] / barMaxHeight * 100;
+                return BarChartGroupData(
+                  groupVertically: true,
+                  x: index,
+                  barRods: [
+                    BarChartRodData(
+                      width: 24,
+                      toY: toPercentY,
+                      // color: isSelected ? selectedGrad : unselectedGrad,
+                      gradient: LinearGradient(
+                        colors: isSelected ? selectedGrad : unselectedGrad,
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                      ),
                     ),
-                  ),
-                ],
-              );
-            },
-          ),
-          maxY: 100,
-          gridData: const FlGridData(
-            show: true,
-            drawVerticalLine: false,
-            horizontalInterval: 24,
-          ),
-          borderData: FlBorderData(show: false),
-          titlesData: _generateTitles(dataMax, context),
-          barTouchData: BarTouchData(
-            touchExtraThreshold:
-                const EdgeInsets.symmetric(vertical: 200, horizontal: 12),
-            touchTooltipData: BarTouchTooltipData(
-              getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                return null;
+                  ],
+                );
               },
             ),
-            touchCallback: (tEvent, tResponse) {
-              if (!tEvent.isInterestedForInteractions) {
-                final touchedIndex = tResponse?.spot?.touchedBarGroupIndex;
-                if (touchedIndex != null &&
-                    touchedIndex != selectedBar &&
-                    touchedIndex <= todayOfWeek) {
-                  onBarTap(touchedIndex);
+            maxY: 100,
+            gridData: const FlGridData(
+              show: true,
+              drawVerticalLine: false,
+              horizontalInterval: 24,
+            ),
+            borderData: FlBorderData(show: false),
+            titlesData: _generateTitles(dataMax, context),
+            barTouchData: BarTouchData(
+              touchExtraThreshold:
+                  const EdgeInsets.symmetric(vertical: 200, horizontal: 12),
+              touchTooltipData: BarTouchTooltipData(
+                getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                  return null;
+                },
+              ),
+              touchCallback: (tEvent, tResponse) {
+                if (!tEvent.isInterestedForInteractions) {
+                  final touchedIndex = tResponse?.spot?.touchedBarGroupIndex;
+                  if (touchedIndex != null &&
+                      touchedIndex != selectedBar &&
+                      touchedIndex <= todayOfWeek) {
+                    onBarTap(touchedIndex);
+                  }
                 }
-              }
-            },
+              },
+            ),
           ),
+          swapAnimationCurve: Curves.easeInOut,
+          swapAnimationDuration: 300.ms,
         ),
-        swapAnimationCurve: Curves.easeInOut,
-        swapAnimationDuration: 300.ms,
       ),
     );
   }

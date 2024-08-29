@@ -128,9 +128,12 @@ class ApplicationTile extends ConsumerWidget {
             ? null
             : selectedUsageType == UsageType.screenUsage
                 ? IconButton(
-                    icon: appTimer > 0
-                        ? TimeTextShort(timeDuration: appTimer.seconds)
-                        : const Icon(FluentIcons.timer_20_regular),
+                    icon: Semantics(
+                      hint: "Set timer for ${app.name}",
+                      child: appTimer > 0
+                          ? TimeTextShort(timeDuration: appTimer.seconds)
+                          : const Icon(FluentIcons.timer_20_regular),
+                    ),
                     onPressed: () => _pickAppTimer(
                       context,
                       ref,
@@ -139,13 +142,16 @@ class ApplicationTile extends ConsumerWidget {
                     ),
                   )
                 : IconButton(
-                    icon: Icon(
-                      haveInternetAccess
-                          ? FluentIcons.globe_20_regular
-                          : FluentIcons.globe_prohibited_20_regular,
-                      color: haveInternetAccess
-                          ? null
-                          : Theme.of(context).colorScheme.error,
+                    icon: Semantics(
+                      hint: "Switch internet access for ${app.name}",
+                      child: Icon(
+                        haveInternetAccess
+                            ? FluentIcons.globe_20_regular
+                            : FluentIcons.globe_prohibited_20_regular,
+                        color: haveInternetAccess
+                            ? null
+                            : Theme.of(context).colorScheme.error,
+                      ),
                     ),
                     onPressed: () => _switchInternet(
                       context,

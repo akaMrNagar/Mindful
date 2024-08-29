@@ -48,7 +48,10 @@ class SliverUsageChartPanel extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(FluentIcons.chevron_left_20_filled),
+                icon: Semantics(
+                  hint: "Switch to previous day",
+                  child: const Icon(FluentIcons.chevron_left_20_filled),
+                ),
                 onPressed: selectedDoW > 0
                     ? () => onDayOfWeekChanged((selectedDoW - 1) % 7)
                     : null,
@@ -59,7 +62,10 @@ class SliverUsageChartPanel extends StatelessWidget {
                 fontSize: 14,
               ),
               IconButton(
-                icon: const Icon(FluentIcons.chevron_right_20_filled),
+                icon: Semantics(
+                  hint: "Switch to next day",
+                  child: const Icon(FluentIcons.chevron_right_20_filled),
+                ),
                 onPressed: selectedDoW < todayOfWeek
                     ? () => onDayOfWeekChanged((selectedDoW + 1) % 7)
                     : null,

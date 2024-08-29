@@ -66,7 +66,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return DefaultScaffold(
       leading: IconButton(
-        icon: const Icon(FluentIcons.settings_20_regular),
+        icon: Semantics(
+          hint: "Double tab to open app settings",
+          child: const Icon(FluentIcons.settings_20_regular),
+        ),
         onPressed: () =>
             Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
       ),

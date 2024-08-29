@@ -57,11 +57,13 @@ class SliverUsageCards extends StatelessWidget {
                 icon: Icon(FluentIcons.phone_screen_time_20_regular),
                 label: Text("Screen"),
                 value: UsageType.screenUsage,
+                tooltip: "Switch to screen usage",
               ),
               ButtonSegment(
                 icon: Icon(FluentIcons.earth_20_regular),
                 label: Text("Data"),
                 value: UsageType.networkUsage,
+                tooltip: "Switch to network usage",
               ),
             ],
           ),

@@ -71,36 +71,35 @@ class ScheduleCard extends ConsumerWidget {
           ),
 
           /// Schedule selected Days
-          SizedBox(
-            height: 40,
+          FittedBox(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(
                 7,
-                (index) => Expanded(
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: RoundedContainer(
-                      circularRadius: 40,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                (index) => RoundedContainer(
+                  circularRadius: 48,
+                  height: 48,
+                  width: 48,
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  color: scheduleDays[index]
+                      ? isScheduleOn
+                          ? Theme.of(context).disabledColor
+                          : Theme.of(context).colorScheme.primary
+                      : Colors.transparent,
+                  onPressed: isScheduleOn
+                      ? null
+                      : () => ref
+                          .read(bedtimeProvider.notifier)
+                          .toggleScheduleDay(index),
+                  child: Semantics(
+                    hint: AppStrings.daysFull[index],
+                    child: StyledText(
+                      AppStrings.daysShort[index],
+                      fontSize: 16,
+                      isSubtitle: isScheduleOn,
                       color: scheduleDays[index]
-                          ? isScheduleOn
-                              ? Theme.of(context).disabledColor
-                              : Theme.of(context).colorScheme.primary
-                          : Colors.transparent,
-                      onPressed: isScheduleOn
-                          ? null
-                          : () => ref
-                              .read(bedtimeProvider.notifier)
-                              .toggleScheduleDay(index),
-                      child: StyledText(
-                        AppStrings.daysShort[index],
-                        fontSize: 14,
-                        isSubtitle: isScheduleOn,
-                        color: scheduleDays[index]
-                            ? Theme.of(context).colorScheme.surface
-                            : null,
-                      ),
+                          ? Theme.of(context).colorScheme.surface
+                          : null,
                     ),
                   ),
                 ),

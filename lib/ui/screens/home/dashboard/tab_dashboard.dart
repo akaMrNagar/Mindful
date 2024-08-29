@@ -84,23 +84,18 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             /// User name
             DefaultHero(
               tag: HeroTags.editUsernameTag,
-              child: Row(
-                children: [
-                  InkWell(
-                    onLongPress: _editUserName,
-                    onTap: () => context.showSnackAlert(
-                      "Long press to edit username.",
-                      icon: FluentIcons.edit_20_filled,
-                    ),
-                    splashColor:
-                        Theme.of(context).colorScheme.surfaceContainerLow,
-                    child: StyledText(
-                      username,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              child: InkWell(
+                onLongPress: _editUserName,
+                onTap: () => context.showSnackAlert(
+                  "Long press to edit username.",
+                  icon: FluentIcons.edit_20_filled,
+                ),
+                splashColor: Theme.of(context).colorScheme.surfaceContainerLow,
+                child: StyledText(
+                  username,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ).sliver,
 

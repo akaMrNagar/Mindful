@@ -208,10 +208,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 height: 300,
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 alignment: const Alignment(0, 0),
-                child: const StyledText(
-                  "Click on '+' icon to add distracting website which you wish to block.",
-                  isSubtitle: false,
-                  textAlign: TextAlign.center,
+                child: Semantics(
+                  excludeSemantics: true,
+                  child: const StyledText(
+                    "Click on '+ Add Website' button to add distracting website which you wish to block.",
+                    isSubtitle: false,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ).sliver,
 

@@ -83,7 +83,7 @@ class TabAdvance extends ConsumerWidget {
             switchValue: isInvincibleModeOn,
             enabled: haveAdminPermission && !isInvincibleModeOn,
             leadingIcon: FluentIcons.animal_cat_20_regular,
-            titleText: "Invincible mode",
+            titleText: "Switch invincible mode",
             onPressed: () =>
                 _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
           ),
@@ -93,9 +93,12 @@ class TabAdvance extends ConsumerWidget {
         /// Admin permission warning
         const AdminPermission(),
         if (isInvincibleModeOn && haveAdminPermission)
-          const StyledText(
-            "Note: If you wish to uninstall this app due to an emergency while Invincible Mode is on, please follow these steps:\n\n1. Go to Settings > Apps > All Apps or Downloaded Apps.\n2. Find Mindful in the list and open app settings page.\n3. Tap uninstall and you will be asked to Deactivate Admin then Tap on deactivate and uninstall",
-            isSubtitle: true,
+          Semantics(
+            excludeSemantics: true,
+            child: const StyledText(
+              "Note: If you wish to uninstall this app due to an emergency while Invincible Mode is on, please follow these steps:\n\n1. Go to Settings > Apps > All Apps or Downloaded Apps.\n2. Find Mindful in the list and open app settings page.\n3. Tap uninstall and you will be asked to Deactivate Admin then Tap on deactivate and uninstall",
+              isSubtitle: true,
+            ),
           ).sliver,
 
         const SliverTabsBottomPadding()

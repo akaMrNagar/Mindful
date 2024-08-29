@@ -21,9 +21,9 @@ class TabPrivacy extends ConsumerWidget {
       slivers: [
         /// Appbar
         const SliverFlexibleAppBar(title: "Privacy"),
-    
-        /// Privacy police
-        const SliverContentTitle(title: "Privacy"),
+
+        /// Privacy policy
+        const SliverContentTitle(title: "Privacy policy"),
         const StyledText(
           "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",
           fontSize: 14,
@@ -39,7 +39,7 @@ class TabPrivacy extends ConsumerWidget {
                 .launchUrl(AppConstants.privacyPolicyUrl),
           ),
         ).sliver,
-    
+
         /// Permissions
         12.vSliverBox,
         const SliverContentTitle(title: "Permissions"),
@@ -64,13 +64,11 @@ class TabPrivacy extends ConsumerWidget {
         ).sliver,
         const DefaultListTile(
           titleText: "Do not disturb",
-          subtitleText:
-              "Allows to start and stop dnd during bedtime schedule.",
+          subtitleText: "Allows to start and stop dnd during bedtime schedule.",
         ).sliver,
         const DefaultListTile(
           titleText: "VPN",
-          subtitleText:
-              "Allows to restrict internet access to specified apps.",
+          subtitleText: "Allows to restrict internet access to specified apps.",
         ).sliver,
         const DefaultListTile(
           titleText: "Admin",
@@ -82,7 +80,7 @@ class TabPrivacy extends ConsumerWidget {
           subtitleText:
               "Allows to create and protect local vpn socket when blocking app's internet.",
         ).sliver,
-    
+
         const SliverTabsBottomPadding(),
       ],
     );

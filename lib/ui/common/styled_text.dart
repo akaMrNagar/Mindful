@@ -35,6 +35,7 @@ class StyledText extends StatelessWidget {
       text,
       maxLines: maxLines,
       textAlign: textAlign,
+      // semanticsLabel: text,
       style: TextStyle(
         color: color ?? (isSubtitle ? Theme.of(context).disabledColor : null),
         fontSize: fontSize,
