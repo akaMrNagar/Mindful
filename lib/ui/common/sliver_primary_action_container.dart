@@ -1,5 +1,4 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -16,6 +15,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
     required this.isVisible,
     required this.title,
     required this.information,
+    this.icon,
     this.onTapAction,
     this.actionBtnLabel,
     this.actionBtnIcon,
@@ -27,6 +27,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
   final String title;
   final String information;
   final EdgeInsets margin;
+  final IconData? icon;
   final String? actionBtnLabel;
   final String? helpUrl;
   final VoidCallback? onTapAction;
@@ -48,9 +49,9 @@ class SliverPrimaryActionContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(FluentIcons.alert_urgent_20_regular),
+                Icon(icon ?? FluentIcons.alert_urgent_20_regular),
 
-                2.vBox,
+                6.vBox,
 
                 /// Warning title
                 StyledText(
@@ -59,7 +60,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
 
-                6.vBox,
+                2.vBox,
 
                 /// Warning info
                 StyledText(
@@ -67,7 +68,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                   fontSize: 12,
                 ),
 
-                16.vBox,
+                12.vBox,
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -85,7 +86,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
 
                     /// Allow permission button
                     if (onTapAction != null)
-                      FilledButton.icon( 
+                      FilledButton.icon(
                         onPressed: onTapAction,
                         label: Text(actionBtnLabel ?? "Allow"),
                         icon: actionBtnIcon,

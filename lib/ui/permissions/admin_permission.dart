@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -16,9 +17,10 @@ class AdminPermission extends ConsumerWidget {
     return SliverPrimaryActionContainer(
       isVisible: !havePermission,
       margin: const EdgeInsets.only(bottom: 12),
+      icon: FluentIcons.fingerprint_20_regular,
       title: "Admin",
       information:
-          "Please grant administrative privileges. Our app, being Free and Open Source Software (FOSS), does not collect, store, or transmit any user data. Administrative privileges are needed only for essential system operations to ensure the app runs smoothly without compromising your privacy.",
+          "Please grant administrative privileges. This is required to prevent the uninstallation of Mindful when Invincible Mode is active. Rest assured, as a Free and Open Source Software (FOSS) app, Mindful does not collect, store, or transmit any user data—your privacy remains fully protected.",
       onTapAction: !havePermission
           ? ref.read(permissionProvider.notifier).askAdminPermission
           : null,

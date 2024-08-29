@@ -71,7 +71,7 @@ public class PermissionsHelper {
 
         if (haveUsage) return true;
         if (askPermissionToo) {
-            NewActivitiesLaunchHelper.openDeviceUsageAccessSection(context);
+            NewActivitiesLaunchHelper.openMindfulUsageAccessSection(context);
         }
 
         return false;

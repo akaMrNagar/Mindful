@@ -96,13 +96,19 @@ public class NewActivitiesLaunchHelper {
     // SECTION: For device setting sections or pages app ===========================================
 
     /**
-     * Opens the device usage access settings.
+     * Opens the Mindful usage access settings for permission.
      *
      * @param context The context to use for launching the activity.
      */
-    public static void openDeviceUsageAccessSection(@NonNull Context context) {
-        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-        context.startActivity(intent);
+    public static void openMindfulUsageAccessSection(@NonNull Context context) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            context.startActivity(intent);
+        }
         Toast.makeText(context, "Please allow usage access to Mindful", Toast.LENGTH_LONG).show();
     }
 
@@ -152,8 +158,8 @@ public class NewActivitiesLaunchHelper {
                 context.startActivity(appIntent);
             }
         } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "openAppWithPackage: Unable to launch app : " + appPackage, e);
-            Toast.makeText(context, "Package not found, unable to launch app", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "openAppWithPackage:Package not found, Unable to launch app : " + appPackage, e);
+            Toast.makeText(context, "Unable to open app", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -178,7 +184,7 @@ public class NewActivitiesLaunchHelper {
             }
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "openAppSettingsForPackage: Unable to launch app settings for " + appPackage, e);
-            Toast.makeText(context, "Unable to launch app settings", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Unable to open app settings", Toast.LENGTH_SHORT).show();
         }
     }
 }

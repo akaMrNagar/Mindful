@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/utils/app_constants.dart';
@@ -17,10 +18,11 @@ class AccessibilityPermission extends ConsumerWidget {
     return SliverPrimaryActionContainer(
       isVisible: !havePermission,
       margin: const EdgeInsets.only(top: 12),
+      icon: FluentIcons.accessibility_20_regular,
       title: "Accessibility",
-      helpUrl: AppConstants.githubFaqUrl,
       information:
           "Please grant accessibility permission. This will allow Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers, and filter inappropriate websites, creating a more secure and focused online environment.",
+      helpUrl: AppConstants.githubFaqUrl,
       onTapAction: !havePermission
           ? ref.read(permissionProvider.notifier).askAccessibilityPermission
           : null,

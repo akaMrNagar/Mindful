@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -16,6 +17,7 @@ class DndPermission extends ConsumerWidget {
     return SliverPrimaryActionContainer(
       isVisible: !havePermission,
       margin: const EdgeInsets.only(top: 4, bottom: 12),
+      icon: FluentIcons.alert_snooze_20_regular,
       title: "Do not disturb",
       information:
           "Please grant Do Not Disturb access. This will allow Mindful to start and stop Do Not Disturb mode during the bedtime schedule.",
