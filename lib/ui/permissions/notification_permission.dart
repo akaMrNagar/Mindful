@@ -9,10 +9,7 @@ class NotificationPermission extends ConsumerWidget {
   /// with self handled state and automatically hides itself if the user have granted the permission
   const NotificationPermission({
     super.key,
-    this.showEvenIfGranted = false,
   });
-
-  final bool showEvenIfGranted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,8 +17,9 @@ class NotificationPermission extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveNotificationPermission));
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission || showEvenIfGranted,
+      isVisible: !havePermission,
       margin: const EdgeInsets.only(bottom: 8),
+      icon: FluentIcons.alert_on_20_regular,
       title: "Notification",
       information:
           "Please grant notification permission. This will allow Mindful to send you important reminders and updates, helping you stay on track and maintain a focused environment.",
@@ -31,7 +29,7 @@ class NotificationPermission extends ConsumerWidget {
           : null,
       onTapAction: !havePermission
           ? ref.read(permissionProvider.notifier).askNotificationPermission
-          : () {},
+          : null,
     );
   }
 }

@@ -56,27 +56,34 @@ class SliverFlexibleAppBar extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               /// Title
-              StyledText(
-                title,
-                maxLines: 1,
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                overflow: TextOverflow.fade,
+              Semantics(
+                label: "Active tab title",
+                header: true,
+                child: StyledText(
+                  title,
+                  maxLines: 1,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w600,
+                  overflow: TextOverflow.fade,
+                ),
               ),
 
               /// Beta tag
               DefaultHero(
                 tag: HeroTags.betaWarningTag,
-                child: RoundedContainer(
-                  width: 48,
-                  height: 24,
-                  circularRadius: 8,
-                  color: Theme.of(context).colorScheme.primary,
-                  onPressed: () => _showBetaDialog(context, appVersion),
-                  child: StyledText(
-                    "DEV",
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    overflow: TextOverflow.fade,
+                child: Semantics(
+                  excludeSemantics: true,
+                  child: RoundedContainer(
+                    width: 48,
+                    height: 24,
+                    circularRadius: 8,
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () => _showBetaDialog(context, appVersion),
+                    child: StyledText(
+                      "DEV",
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      overflow: TextOverflow.fade,
+                    ),
                   ),
                 ),
               ),

@@ -29,7 +29,6 @@ public class FocusSessionService extends Service {
     private static final String TAG = "Mindful.FocusSessionService";
     public static final String INTENT_EXTRA_FOCUS_SESSION_JSON = "focusSessionJson";
     public static final String ACTION_START_SERVICE_FOCUS = "com.mindful.android.FocusSessionService.START_SERVICE_FOCUS";
-    public static final String ACTION_STOP_SERVICE_FOCUS = "com.mindful.android.FocusSessionService.STOP_SERVICE_FOCUS";
 
 
     private CountDownTimer mCountDownTimer;
@@ -85,6 +84,9 @@ public class FocusSessionService extends Service {
     public void giveUpAndStopSession() {
         if (mFocusSession != null && mFocusSession.toggleDnd) {
             NotificationHelper.toggleDnd(this, false);
+        }
+        if (mTrackerServiceConn.isConnected()) {
+            mTrackerServiceConn.getService().startStopUpdateFocusSession(null);
         }
         stopSelf();
         showSuccessNotification(false);

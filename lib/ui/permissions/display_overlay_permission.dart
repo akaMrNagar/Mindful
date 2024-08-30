@@ -9,10 +9,7 @@ class DisplayOverlayPermission extends ConsumerWidget {
   /// with self handled state and automatically hides itself if the user have granted the permission
   const DisplayOverlayPermission({
     super.key,
-    this.showEvenIfGranted = false,
   });
-
-  final bool showEvenIfGranted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,8 +17,9 @@ class DisplayOverlayPermission extends ConsumerWidget {
         permissionProvider.select((v) => v.haveDisplayOverlayPermission));
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission || showEvenIfGranted,
+      isVisible: !havePermission,
       margin: const EdgeInsets.only(bottom: 8),
+      icon: FluentIcons.app_recent_20_regular,
       title: "Display over other apps",
       information:
           "Please grant display overlay permission. This will allow Mindful to show an overlay when a paused app is opened, helping you stay focused and maintain your schedule.",
@@ -31,7 +29,7 @@ class DisplayOverlayPermission extends ConsumerWidget {
           : null,
       onTapAction: !havePermission
           ? ref.read(permissionProvider.notifier).askDisplayOverlayPermission
-          : () {},
+          : null,
     );
   }
 }

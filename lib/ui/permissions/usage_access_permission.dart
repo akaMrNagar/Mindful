@@ -9,10 +9,7 @@ class UsageAccessPermission extends ConsumerWidget {
   /// with self handled state and automatically hides itself if the user have granted the permission
   const UsageAccessPermission({
     super.key,
-    this.showEvenIfGranted = false,
   });
-
-  final bool showEvenIfGranted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,8 +17,9 @@ class UsageAccessPermission extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveUsageAccessPermission));
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission || showEvenIfGranted,
+      isVisible: !havePermission,
       margin: const EdgeInsets.only(bottom: 8),
+      icon: FluentIcons.data_usage_20_regular,
       title: "Usage access",
       information:
           "Please grant usage access permission. This will allow Mindful to monitor app usage and manage access to certain apps, ensuring a more focused and controlled digital environment.",
@@ -31,7 +29,7 @@ class UsageAccessPermission extends ConsumerWidget {
           : null,
       onTapAction: !havePermission
           ? ref.read(permissionProvider.notifier).askUsageAccessPermission
-          : () {},
+          : null,
     );
   }
 }

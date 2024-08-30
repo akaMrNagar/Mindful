@@ -73,7 +73,10 @@ class _DefaultScaffoldState extends State<DefaultScaffold>
                   /// Automatically imply back button if leading is null
                   if (widget.leading == null && Navigator.canPop(context))
                     IconButton(
-                      icon: const Icon(FluentIcons.chevron_left_20_filled),
+                      icon: Semantics(
+                        hint: "Double tab to go back",
+                        child: const Icon(FluentIcons.chevron_left_20_filled),
+                      ),
                       onPressed: () => Navigator.maybePop(context),
                     ),
 
@@ -108,7 +111,7 @@ class _DefaultScaffoldState extends State<DefaultScaffold>
 
           /// Tab bar view with tab body
           Expanded(
-            flex: 7,
+            flex: 6,
             child: RotatedBox(
               quarterTurns: 1,
               child: TabBarView(
@@ -119,7 +122,7 @@ class _DefaultScaffoldState extends State<DefaultScaffold>
                       (e) => RotatedBox(
                         quarterTurns: -1,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 4, right: 8),
+                          padding: const EdgeInsets.only(left: 2, right: 8),
                           child: e.body,
                         ),
                       ),
@@ -157,6 +160,7 @@ class _TabBarButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 2),
         child: IconButton(
           onPressed: onTap,
+          tooltip: "Switch to $title tab",
           style: const ButtonStyle().copyWith(
             padding: const WidgetStatePropertyAll(
               EdgeInsets.symmetric(horizontal: 20),

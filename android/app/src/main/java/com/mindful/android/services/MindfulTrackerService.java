@@ -75,7 +75,7 @@ public class MindfulTrackerService extends Service {
             }
             // Start service if already not running along with bedtime routine
             case ACTION_START_SERVICE_BEDTIME_MODE: {
-                if (!mIsServiceRunning) startTrackingService();
+                startTrackingService();
                 startStopBedtimeRoutine(true);
                 return START_STICKY;
             }
@@ -98,6 +98,8 @@ public class MindfulTrackerService extends Service {
     // REVIEW: Suppressing api warnings
     @SuppressLint("NewApi")
     private void startTrackingService() {
+        if (mIsServiceRunning) return;
+        
         mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
 
         // Register lock/unlock receiver
@@ -168,7 +170,7 @@ public class MindfulTrackerService extends Service {
 
     /**
      * Starts or stops or updates Focus Session on the basis of passed distractingApps.
-     * If the passed hash set is null then STOP session otherwise START session.
+     * If the passed hash set is null then STOP session otherwise START or UPDATE session if already active.
      *
      * @param distractingApps Hashset of strings of distracting app's packages.
      */
@@ -176,7 +178,6 @@ public class MindfulTrackerService extends Service {
         if (distractingApps != null) {
             mFocusSessionDistractingApps = distractingApps;
             mPurgedApps.clear();
-
             Log.d(TAG, "startStopUpdateFocusSession: Focus Session STARTED or UPDATED successfully");
         } else {
             mFocusSessionDistractingApps.clear();

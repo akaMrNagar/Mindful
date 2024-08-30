@@ -78,7 +78,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(intent.getAction())) {
+        String action = Utils.notNullStr(intent.getAction());
+
+        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(action)) {
             mTotalShortsScreenTimeMs = 0;
             SharedPrefsHelper.storeShortsScreenTimeMs(this, 0);
             Log.d(TAG, "onStartCommand: Midnight reset completed");
@@ -127,6 +129,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
+
+        // TODO: Prevent user from opening this in invincible mode
+//         ("com.android.settings.Settings$DeviceAdminSettingsActivity".equals(param1a.o) || "com.android.settings.DeviceAdminAdd".equals(param1a.o) || ("com.android.settings".equals(param1a.n) && param1a.o.endsWith("DeviceAdminAdd")));
+
 
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
@@ -277,6 +283,17 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             }
         }
 
+        // TODO: For Future references if user requests for these browsers
+//        "com.sec.android.app.sbrowser" = "com.sec.android.app.sbrowser:id/location_bar_edit_text"
+//        "com.android.browser" = "com.android.browser:id/url"
+//        "com.opera.browser" = "com.opera.browser:id/url_field"
+//        "com.opera.mini.native" = "com.opera.mini.native:id/url_field"
+//        "com.opera.browser.beta" = "com.opera.browser.beta:id/url_field"
+//        "com.opera.touch" = "com.opera.touch:id/addressbarEdit"
+//        "com.mi.globalbrowser" = "com.mi.globalbrowser:id/url"
+//        "com.yandex.browser" = "com.yandex.browser:id/bro_omnibar_address_title_text"
+//        "com.yandex.browser.beta" = "com.yandex.browser.beta:id/bro_omnibar_address_title_text"
+//        "com.sec.android.app.sbrowser.lite" = "com.sec.android.app.sbrowser.lite:id/location_bar_edit_text"
         return "";
     }
 

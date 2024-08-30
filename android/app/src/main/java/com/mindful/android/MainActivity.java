@@ -323,6 +323,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
 
         if (askPermissionToo) {
             Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            intent.setData(android.net.Uri.parse("package:" + getPackageName()));
             startActivityForResult(intent, 0);
         }
         return false;

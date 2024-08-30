@@ -112,7 +112,10 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
         child: SingleChildScrollView(
           child: AlertDialog(
             icon: widget.icon,
-            title: StyledText(widget.title, fontSize: 16),
+            title: StyledText(
+              widget.title,
+              fontSize: 16,
+            ),
             insetPadding: EdgeInsets.zero,
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
