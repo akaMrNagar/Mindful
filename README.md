@@ -2,7 +2,7 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-[🛠️ Build & Contribute](docs/CONTRIBUTION.md)&emsp;&emsp; [📃 Privacy Policy](docs/PRIVACY.md)&emsp;&emsp;[🔏 Verify](docs/VERIFICATION.md)&emsp;&emsp;
+[🛠️ Build & Contribute](docs/CONTRIBUTION.md)&emsp;&emsp; [📃 Privacy Policy](https://bemindful.vercel.app/privacy)&emsp;&emsp;[🔏 Verify](docs/VERIFICATION.md)&emsp;&emsp;
 [❓ FAQs](docs/FAQ.md)
 
 ---
