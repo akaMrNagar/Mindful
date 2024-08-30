@@ -235,10 +235,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(PermissionsHelper.getAndAskUsageAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskAdminPermission": {
-                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
             case "getAndAskIgnoreBatteryOptimizationPermission": {
                 result.success(getAndAskIgnoreBatteryOptimizationPermission(Boolean.TRUE.equals(call.arguments())));
                 break;

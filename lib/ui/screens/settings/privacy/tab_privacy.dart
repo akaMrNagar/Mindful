@@ -71,9 +71,9 @@ class TabPrivacy extends ConsumerWidget {
           subtitleText: "Allows to restrict internet access to specified apps.",
         ).sliver,
         const DefaultListTile(
-          titleText: "Admin",
+          titleText: "Alarm & Reminders",
           subtitleText:
-              "Allows to restrict user from uninstalling during invincible mode.",
+              "Allows to schedule task to reset timers in midnight and bedtime routine.",
         ).sliver,
         const DefaultListTile(
           titleText: "Internet",

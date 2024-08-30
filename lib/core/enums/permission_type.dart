@@ -7,7 +7,6 @@ enum PermissionType {
   doNotDisturb,
   accessibility,
   vpn,
-  admin,
   ignoreOptimization,
   exactAlarm,
 }

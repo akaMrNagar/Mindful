@@ -9,7 +9,6 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
-import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
@@ -94,7 +93,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           title: "Bedtime",
           icon: FluentIcons.sleep_20_filled,
           body: TabBedtime(),
-          fab: EmergencyFAB(),
         ),
       ],
     );

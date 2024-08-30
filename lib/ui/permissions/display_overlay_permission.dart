@@ -23,13 +23,8 @@ class DisplayOverlayPermission extends ConsumerWidget {
       title: "Display over other apps",
       information:
           "Please grant display overlay permission. This will allow Mindful to show an overlay when a paused app is opened, helping you stay focused and maintain your schedule.",
-      actionBtnLabel: havePermission ? "Already granted" : "Allow",
-      actionBtnIcon: havePermission
-          ? const Icon(FluentIcons.checkmark_circle_20_filled)
-          : null,
-      onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askDisplayOverlayPermission
-          : null,
+      onTapAction:
+          ref.read(permissionProvider.notifier).askDisplayOverlayPermission,
     );
   }
 }

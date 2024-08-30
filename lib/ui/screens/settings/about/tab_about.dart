@@ -69,6 +69,7 @@ class TabAbout extends ConsumerWidget {
         /// Donation box
         SliverPrimaryActionContainer(
           isVisible: true,
+          icon: FluentIcons.handshake_20_regular,
           title: "Thank you",
           information:
               "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",

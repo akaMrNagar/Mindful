@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -12,7 +11,6 @@ import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
-import 'package:mindful/ui/permissions/admin_permission.dart';
 import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
@@ -45,14 +43,35 @@ class TabAdvance extends ConsumerWidget {
     final isInvincibleModeOn =
         ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
 
-    final haveAdminPermission =
-        ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
-
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appbar
         const SliverFlexibleAppBar(title: "Advance"),
+
+        /// Invincible mode
+        const SliverContentTitle(title: "Invincible mode"),
+
+        /// Information about invincible mode
+        const StyledText(
+                "When Invincible Mode is active, modifying the app's timer after it runs out or adjusting the short content settings after reaching the daily limit is not permitted.")
+            .sliver,
+        12.vSliverBox,
+
+        /// Invincible mode
+        DefaultHero(
+          tag: HeroTags.invincibleModeTileTag,
+          child: DefaultListTile(
+            isPrimary: true,
+            switchValue: isInvincibleModeOn,
+            enabled: !isInvincibleModeOn,
+            leadingIcon: FluentIcons.animal_cat_20_regular,
+            titleText: "Activate invincible mode",
+            onPressed: () =>
+                _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
+          ),
+        ).sliver,
+        12.vSliverBox,
 
         const SliverContentTitle(title: "Service"),
 
@@ -64,42 +83,6 @@ class TabAdvance extends ConsumerWidget {
 
         /// Battery permission
         const BatteryPermissionTile(),
-
-        /// Invincible
-        12.vSliverBox,
-        const SliverContentTitle(title: "Invincible mode"),
-
-        /// Information about invincible mode
-        const StyledText(
-          "When Invincible Mode is enabled, you cannot uninstall Mindful, modify app's timer once it runs out, change bedtime routine settings during the bedtime schedule period, or modify shorts blocker settings after reaching the daily limit.\n\nEnjoy a distraction-free experience!",
-        ).sliver,
-        8.vSliverBox,
-
-        /// Invincible mode
-        DefaultHero(
-          tag: HeroTags.invincibleModeTileTag,
-          child: DefaultListTile(
-            isPrimary: true,
-            switchValue: isInvincibleModeOn,
-            enabled: haveAdminPermission && !isInvincibleModeOn,
-            leadingIcon: FluentIcons.animal_cat_20_regular,
-            titleText: "Switch invincible mode",
-            onPressed: () =>
-                _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
-          ),
-        ).sliver,
-        12.vSliverBox,
-
-        /// Admin permission warning
-        const AdminPermission(),
-        if (isInvincibleModeOn && haveAdminPermission)
-          Semantics(
-            excludeSemantics: true,
-            child: const StyledText(
-              "Note: If you wish to uninstall this app due to an emergency while Invincible Mode is on, please follow these steps:\n\n1. Go to Settings > Apps > All Apps or Downloaded Apps.\n2. Find Mindful in the list and open app settings page.\n3. Tap uninstall and you will be asked to Deactivate Admin then Tap on deactivate and uninstall",
-              isSubtitle: true,
-            ),
-          ).sliver,
 
         const SliverTabsBottomPadding()
       ],

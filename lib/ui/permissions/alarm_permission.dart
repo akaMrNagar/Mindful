@@ -23,13 +23,8 @@ class ExactAlarmPermission extends ConsumerWidget {
       title: "Alarms & Reminders",
       information:
           "Please grant permission for setting alarms and reminders. This will allow Mindful to start your bedtime schedule on time and reset app timers daily at midnight and help you stay on track.",
-      actionBtnLabel: havePermission ? "Already granted" : "Allow",
-      actionBtnIcon: havePermission
-          ? const Icon(FluentIcons.checkmark_circle_20_filled)
-          : null,
-      onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askExactAlarmPermission
-          : null,
+      onTapAction:
+          ref.read(permissionProvider.notifier).askExactAlarmPermission,
     );
   }
 }

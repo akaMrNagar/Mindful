@@ -86,7 +86,7 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
               deviceHeight: deviceHeight,
               title: "Digital Cravings",
               description:
-                  "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers, and bedtime settings to stay disciplined and on track.",
+                  "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers and related settings to stay disciplined and on track.",
             ),
 
             /// Last setup page

@@ -17,9 +17,6 @@ class PermissionsModel {
   /// Indicates whether the accessibility permission is granted.
   final bool haveAccessibilityPermission;
 
-  /// Indicates whether the admin permission is granted.
-  final bool haveAdminPermission;
-
   /// Indicates whether the set exact alarm permission is granted.
   final bool haveAlarmsPermission;
 
@@ -33,7 +30,6 @@ class PermissionsModel {
     this.haveDisplayOverlayPermission = true,
     this.haveVpnPermission = true,
     this.haveAccessibilityPermission = true,
-    this.haveAdminPermission = true,
     this.haveAlarmsPermission = true,
     this.haveIgnoreOptimizationPermission = true,
   });
@@ -46,7 +42,6 @@ class PermissionsModel {
     bool? haveDisplayOverlayPermission,
     bool? haveVpnPermission,
     bool? haveAccessibilityPermission,
-    bool? haveAdminPermission,
     bool? haveAlarmsPermission,
     bool? haveIgnoreOptimizationPermission,
   }) {
@@ -61,7 +56,6 @@ class PermissionsModel {
       haveVpnPermission: haveVpnPermission ?? this.haveVpnPermission,
       haveAccessibilityPermission:
           haveAccessibilityPermission ?? this.haveAccessibilityPermission,
-      haveAdminPermission: haveAdminPermission ?? this.haveAdminPermission,
       haveAlarmsPermission: haveAlarmsPermission ?? this.haveAlarmsPermission,
       haveIgnoreOptimizationPermission: haveIgnoreOptimizationPermission ??
           this.haveIgnoreOptimizationPermission,

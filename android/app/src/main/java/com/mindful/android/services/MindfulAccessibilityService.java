@@ -130,10 +130,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
 
-        // TODO: Prevent user from opening this in invincible mode
-//         ("com.android.settings.Settings$DeviceAdminSettingsActivity".equals(param1a.o) || "com.android.settings.DeviceAdminAdd".equals(param1a.o) || ("com.android.settings".equals(param1a.n) && param1a.o.endsWith("DeviceAdminAdd")));
-
-
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
                 if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {

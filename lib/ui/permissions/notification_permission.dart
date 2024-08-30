@@ -23,13 +23,8 @@ class NotificationPermission extends ConsumerWidget {
       title: "Notification",
       information:
           "Please grant notification permission. This will allow Mindful to send you important reminders and updates, helping you stay on track and maintain a focused environment.",
-      actionBtnLabel: havePermission ? "Already granted" : "Allow",
-      actionBtnIcon: havePermission
-          ? const Icon(FluentIcons.checkmark_circle_20_filled)
-          : null,
-      onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askNotificationPermission
-          : null,
+      onTapAction:
+          ref.read(permissionProvider.notifier).askNotificationPermission,
     );
   }
 }

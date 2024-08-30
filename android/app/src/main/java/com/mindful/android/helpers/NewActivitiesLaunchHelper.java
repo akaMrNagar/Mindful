@@ -1,8 +1,6 @@
 package com.mindful.android.helpers;
 
-import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,13 +12,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.mindful.android.R;
 import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
 
 /**
  * NewActivitiesLaunchHelper provides utility methods to launch various activities and settings screens on Android devices.
- * It includes methods for opening URLs, accessibility settings, device admin settings, notification settings,
+ * It includes methods for opening URLs, accessibility settings, notification settings,
  * usage access settings, and application settings.
  */
 public class NewActivitiesLaunchHelper {
@@ -54,24 +51,6 @@ public class NewActivitiesLaunchHelper {
         if (!Utils.isServiceRunning(context, MindfulAccessibilityService.class.getName())) {
             context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
             Toast.makeText(context, "Please enable Mindful accessibility service", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    /**
-     * Opens the device admin settings for the Mindful app.
-     *
-     * @param context       The context to use for launching the activity.
-     * @param componentName The component name of the Mindful device admin receiver.
-     */
-    public static void openMindfulDeviceAdminSection(@NonNull Context context, ComponentName componentName) {
-        try {
-            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_description);
-            context.startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            Log.e(TAG, "openDeviceAdminSettings: Unable to open device ADMIN settings", e);
-            Toast.makeText(context, "Unable to open ADMIN settings", Toast.LENGTH_SHORT).show();
         }
     }
 

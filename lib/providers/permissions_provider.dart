@@ -35,8 +35,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           await MethodChannelService.instance.getAndAskDndPermission(),
       haveAccessibilityPermission: await MethodChannelService.instance
           .getAndAskAccessibilityPermission(),
-      haveAdminPermission:
-          await MethodChannelService.instance.getAndAskAdminPermission(),
       haveVpnPermission:
           await MethodChannelService.instance.getAndAskVpnPermission(),
       haveAlarmsPermission:
@@ -82,10 +80,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           haveAccessibilityPermission: await MethodChannelService.instance
               .getAndAskAccessibilityPermission(),
         ),
-      PermissionType.admin => state.copyWith(
-          haveAdminPermission:
-              await MethodChannelService.instance.getAndAskAdminPermission(),
-        ),
       PermissionType.vpn => state.copyWith(
           haveVpnPermission:
               await MethodChannelService.instance.getAndAskVpnPermission(),
@@ -129,13 +123,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     await MethodChannelService.instance
         .getAndAskAccessibilityPermission(askPermissionToo: true);
     _askedPermission = PermissionType.accessibility;
-  }
-
-  /// Requests the admin permission and updates the internal state.
-  void askAdminPermission() async {
-    await MethodChannelService.instance
-        .getAndAskAdminPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.admin;
   }
 
   /// Requests the VPN permission and updates the internal state.

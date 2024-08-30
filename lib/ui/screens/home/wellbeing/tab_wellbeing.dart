@@ -17,6 +17,7 @@ import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/accessibility_permission.dart';
+import 'package:mindful/ui/permissions/alarm_permission.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -63,6 +64,10 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       permissionProvider.select((value) => value.haveAccessibilityPermission),
     );
 
+    final haveAlarmPermission = ref.watch(
+      permissionProvider.select((value) => value.haveAlarmsPermission),
+    );
+
     final isInvincibleModeOn = ref.watch(
       settingsProvider.select((v) => v.isInvincibleModeOn),
     );
@@ -72,8 +77,9 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       (wellBeing.allowedShortContentTimeSec - _shortsScreenTimeSec),
     );
 
-    final isModifiable =
-        !isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0);
+    final isModifiable = haveAccessibilityPermission &&
+        haveAlarmPermission &&
+        (!isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0));
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -86,16 +92,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
         ).sliver,
 
+        const ExactAlarmPermission(),
         const AccessibilityPermission(),
-
-        if (haveAccessibilityPermission)
-          SliverPrimaryActionContainer(
-            isVisible: !isModifiable,
-            margin: const EdgeInsets.only(top: 12),
-            title: "Invincible mode",
-            information:
-                "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
-          ),
 
         /// Short content header
         const SliverContentTitle(title: "Short content"),
@@ -107,6 +105,16 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           remainingTimeSec: remainingTimeSec,
         ).sliver,
 
+        if (haveAccessibilityPermission)
+          SliverPrimaryActionContainer(
+            isVisible: !isModifiable,
+            margin: const EdgeInsets.symmetric(vertical: 16),
+            icon: FluentIcons.animal_cat_20_regular,
+            title: "Invincible mode",
+            information:
+                "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
+          ),
+
         /// Quick actions
         SliverList.list(
           children: [
@@ -116,8 +124,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 "assets/icons/instaReels.png",
                 width: 32,
               ),
-              enabled: haveAccessibilityPermission &&
-                  (isModifiable || !wellBeing.blockInstaReels),
+              enabled: isModifiable || !wellBeing.blockInstaReels,
               titleText: "Block reels",
               subtitleText: "Restrict reels on instagram.",
               switchValue: wellBeing.blockInstaReels,
@@ -131,8 +138,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 "assets/icons/ytShorts.png",
                 width: 32,
               ),
-              enabled: haveAccessibilityPermission &&
-                  (isModifiable || !wellBeing.blockYtShorts),
+              enabled: isModifiable || !wellBeing.blockYtShorts,
               titleText: "Block shorts",
               subtitleText: "Restrict shorts on youtube.",
               switchValue: wellBeing.blockYtShorts,
@@ -146,8 +152,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 "assets/icons/snapSpotlight.png",
                 width: 32,
               ),
-              enabled: haveAccessibilityPermission &&
-                  (isModifiable || !wellBeing.blockSnapSpotlight),
+              enabled: isModifiable || !wellBeing.blockSnapSpotlight,
               titleText: "Block spotlight",
               subtitleText: "Restrict spotlight on snapchat.",
               switchValue: wellBeing.blockSnapSpotlight,
@@ -161,8 +166,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
                 "assets/icons/fbReels.png",
                 width: 32,
               ),
-              enabled: haveAccessibilityPermission &&
-                  (isModifiable || !wellBeing.blockFbReels),
+              enabled: isModifiable || !wellBeing.blockFbReels,
               titleText: "Block reels",
               subtitleText: "Restrict reels on facebook.",
               switchValue: wellBeing.blockFbReels,

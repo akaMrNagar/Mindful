@@ -2,20 +2,14 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/bedtime_provider.dart';
-import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 
 class EmergencyFAB extends ConsumerWidget {
   const EmergencyFAB({
     super.key,
-    this.showAnyway = false,
   });
-
-  final bool showAnyway;
 
   void _useEmergency(BuildContext context) async {
     int leftPasses =
@@ -25,7 +19,7 @@ class EmergencyFAB extends ConsumerWidget {
 
     if (leftPasses <= 0) {
       context.showSnackAlert(
-        "You have used all your emergency passes. The blocked apps will stay blocked until midnight, the focus session ends, or bedtime concludes.",
+        "You have used all your emergency passes. The blocked apps will stay blocked until midnight, or the active focus session ends.",
       );
       return;
     }
@@ -36,7 +30,7 @@ class EmergencyFAB extends ConsumerWidget {
       heroTag: HeroTags.emergencyTileTag,
       title: "Emergency",
       info:
-          "This action will pause the app blocker for next 5 minutes. You have $leftPasses passes left. After using all passes, the app will stay blocked until midnight, the focus session ends, or bedtime concludes.\n\nDo you still wish to proceed?",
+          "This action will pause the app blocker for next 5 minutes. You have $leftPasses passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",
       positiveLabel: "Use anyway",
     );
 
@@ -58,21 +52,13 @@ class EmergencyFAB extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isInvincibleModeOn =
-        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
-
-    final isModifiable =
-        ref.read(bedtimeProvider.notifier).isModifiable(isInvincibleModeOn);
-
-    return !isModifiable || showAnyway
-        ? FloatingActionButton.extended(
-            heroTag: HeroTags.emergencyTileTag,
-            label: const Text("Emergency"),
-            icon: const Icon(FluentIcons.fire_20_filled),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
-            onPressed: () => _useEmergency(context),
-          )
-        : 0.vBox;
+    return FloatingActionButton.extended(
+      heroTag: HeroTags.emergencyTileTag,
+      label: const Text("Emergency"),
+      icon: const Icon(FluentIcons.fire_20_filled),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      foregroundColor: Theme.of(context).colorScheme.onPrimary,
+      onPressed: () => _useEmergency(context),
+    );
   }
 }

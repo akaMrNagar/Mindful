@@ -25,11 +25,9 @@ class BatteryPermissionTile extends ConsumerWidget {
       subtitleText: havePermission
           ? "Already unrestricted"
           : "Disable background restriction",
-      onPressed: !havePermission
-          ? ref
-              .read(permissionProvider.notifier)
-              .askIgnoreBatteryOptimizationPermission
-          : null,
+      onPressed: ref
+          .read(permissionProvider.notifier)
+          .askIgnoreBatteryOptimizationPermission,
     ).sliver;
   }
 }

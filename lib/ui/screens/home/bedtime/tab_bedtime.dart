@@ -5,7 +5,6 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
-import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
@@ -21,7 +20,6 @@ class TabBedtime extends ConsumerWidget {
     WidgetRef ref,
     BuildContext context,
     bool shouldStart,
-    bool isModifiable,
   ) async {
     final state = ref.read(bedtimeProvider);
 
@@ -41,14 +39,6 @@ class TabBedtime extends ConsumerWidget {
       return;
     }
 
-    // If schedule is on along with invincible mode and time now is between bedtime period
-    if (!shouldStart && !isModifiable) {
-      context.showSnackAlert(
-        "Due to invincible mode, the bedtime schedule cannot be altered until the designated bedtime period has ended",
-      );
-      return;
-    }
-
     ref.read(bedtimeProvider.notifier).switchBedtimeSchedule(shouldStart);
   }
 
@@ -56,12 +46,6 @@ class TabBedtime extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isScheduleOn =
         ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
-
-    final isInvincibleModeOn =
-        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
-
-    final isModifiable =
-        ref.read(bedtimeProvider.notifier).isModifiable(isInvincibleModeOn);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -92,8 +76,7 @@ class TabBedtime extends ConsumerWidget {
           leadingIcon: FluentIcons.sleep_20_regular,
           titleText: "Schedule",
           subtitleText: "Enable or disable daily schedule.",
-          onPressed: () =>
-              _setScheduleStatus(ref, context, !isScheduleOn, isModifiable),
+          onPressed: () => _setScheduleStatus(ref, context, !isScheduleOn),
         ).sliver,
 
         8.vSliverBox,

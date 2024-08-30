@@ -21,9 +21,7 @@ class DndPermission extends ConsumerWidget {
       title: "Do not disturb",
       information:
           "Please grant Do Not Disturb access. This will allow Mindful to start and stop Do Not Disturb mode during the bedtime schedule.",
-      onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askDndPermission
-          : null,
+      onTapAction: ref.read(permissionProvider.notifier).askDndPermission,
     );
   }
 }
