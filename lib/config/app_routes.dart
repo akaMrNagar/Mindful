@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/android_app.dart';
@@ -52,7 +61,7 @@ class AppRoutes {
       return ActiveSessionScreen(session: session);
     },
 
-    /// Resolve variables from arguments
+    /// Resolve [AppDashboardScreenArgs] from arguments
     appDashboardScreen: (context) {
       final args =
           ModalRoute.of(context)?.settings.arguments as AppDashboardScreenArgs;
