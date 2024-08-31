@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'dart:async';
 import 'dart:convert';
 
@@ -287,16 +296,6 @@ class MethodChannelService {
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
         'getAndAskIgnoreBatteryOptimizationPermission',
-        askPermissionToo,
-      );
-
-  /// Checks if the admin permission is granted and optionally asks for it.
-  ///
-  /// Returns `true` if the permission is granted Otherwise, returns `false`.
-  Future<bool> getAndAskAdminPermission(
-          {bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskAdminPermission',
         askPermissionToo,
       );
 

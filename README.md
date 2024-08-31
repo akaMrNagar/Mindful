@@ -2,8 +2,8 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-[🛠️ Build & Contribute](docs/CONTRIBUTION.md)&emsp;&emsp; [📃 Privacy Policy](docs/PRIVACY.md)&emsp;&emsp;[🔏 Verify](docs/VERIFICATION.md)&emsp;&emsp;
-[❓ FAQs](docs/FAQ.md)
+[🛠️ Build & Contribute](docs/CONTRIBUTION.md)&emsp;&emsp;[🔏 Verify](docs/VERIFICATION.md)&emsp;&emsp; [📃 Privacy Policy](https://bemindful.vercel.app/privacy)&emsp;&emsp;
+[❓ FAQs](https://bemindful.vercel.app/#faqs)
 
 ---
 
@@ -51,7 +51,7 @@
 
 ### 5. ♾️ **Invincible Mode**
 
-- **Stay Disciplined**: Prevent changes to timers and bedtime settings, and block the ability to uninstall Mindful without first disabling this mode.
+- **Stay Disciplined**: Prevent changes to app timers when they ran out and short content timer after running out of allowed time quota.
 
 ### 6. 🚫 **Completely Ad-Free & Privacy-Focused**
 
@@ -67,3 +67,7 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 ## 🗨️ Feedback and Support
 
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us on github.
+
+---
+
+### 🤝 Thank you [Colton Griffith](https://github.com/coltongriffith) for [Fluent Icons](https://fluenticons.co/)

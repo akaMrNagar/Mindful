@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +17,7 @@ import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/restriction_infos_provider.dart';
-import 'package:mindful/ui/common/emergency_fab.dart';
+import 'package:mindful/ui/screens/app_dashboard/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
@@ -61,7 +70,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
         NavbarItem(
           icon: FluentIcons.data_pie_20_filled,
           title: "Dashboard",
-          fab: const EmergencyFAB(showAnyway: true),
+          fab: const EmergencyFAB(),
           body: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [

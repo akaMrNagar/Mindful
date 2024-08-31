@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 class AppConstants {
   // Custom packages
   static const removedAppPackage = "com.android.removed";
@@ -7,7 +16,7 @@ class AppConstants {
   static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
 
   static const privacyPolicyUrl =
-      "https://github.com/akaMrNagar/Mindful/blob/main/docs/PRIVACY.md";
+      "https://bemindful.vercel.app/privacy";
 
   static const githubDonationUrl =
       "https://github.com/akaMrNagar/Mindful/blob/main/README.md#-donate";

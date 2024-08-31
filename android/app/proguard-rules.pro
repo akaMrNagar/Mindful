@@ -1,1 +1,3 @@
 -keep class androidx.lifecycle.DefaultLifecycleObserver
+-keepattributes LineNumberTable,SourceFile
+-renamesourcefileattribute SourceFile

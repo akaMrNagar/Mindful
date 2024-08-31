@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,13 +32,8 @@ class NotificationPermission extends ConsumerWidget {
       title: "Notification",
       information:
           "Please grant notification permission. This will allow Mindful to send you important reminders and updates, helping you stay on track and maintain a focused environment.",
-      actionBtnLabel: havePermission ? "Already granted" : "Allow",
-      actionBtnIcon: havePermission
-          ? const Icon(FluentIcons.checkmark_circle_20_filled)
-          : null,
-      onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askNotificationPermission
-          : null,
+      onTapAction:
+          ref.read(permissionProvider.notifier).askNotificationPermission,
     );
   }
 }

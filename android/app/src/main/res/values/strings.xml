@@ -2,8 +2,6 @@
 <resources>
     <string name="app_name">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block websites and short-form content on apps like Instagram, YouTube, Snapchat, and Facebook. It checks URLs and content against your blocklist and prevents access to help you stay focused.</string>
-    <string name="admin_description">Our application does not collect, store, or transmit any user data. As Free and Open Source Software (FOSS), you can review and modify the source code. Administrative privileges are required solely for essential system operations, ensuring the app functions correctly without compromising your privacy.</string>
-
 
     <!--    Usage widget values-->
     <string name="usage_widget_description">Get a daily view of your screen and data usage</string>

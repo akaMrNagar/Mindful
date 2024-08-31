@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,9 +80,9 @@ class TabPrivacy extends ConsumerWidget {
           subtitleText: "Allows to restrict internet access to specified apps.",
         ).sliver,
         const DefaultListTile(
-          titleText: "Admin",
+          titleText: "Alarm & Reminders",
           subtitleText:
-              "Allows to restrict user from uninstalling during invincible mode.",
+              "Allows to schedule task to reset timers in midnight and bedtime routine.",
         ).sliver,
         const DefaultListTile(
           titleText: "Internet",

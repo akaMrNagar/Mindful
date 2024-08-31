@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -86,7 +95,7 @@ class _MindfulOnboardingState extends ConsumerState<OnboardingScreen> {
               deviceHeight: deviceHeight,
               title: "Digital Cravings",
               description:
-                  "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers, and bedtime settings to stay disciplined and on track.",
+                  "Conquer digital cravings with Invincible Mode. Lock app timers, short content timers and related settings to stay disciplined and on track.",
             ),
 
             /// Last setup page

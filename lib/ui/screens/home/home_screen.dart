@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,7 +18,6 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
-import 'package:mindful/ui/common/emergency_fab.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
@@ -94,7 +102,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           title: "Bedtime",
           icon: FluentIcons.sleep_20_filled,
           body: TabBedtime(),
-          fab: EmergencyFAB(),
         ),
       ],
     );

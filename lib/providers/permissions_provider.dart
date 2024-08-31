@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/permission_type.dart';
@@ -35,8 +44,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           await MethodChannelService.instance.getAndAskDndPermission(),
       haveAccessibilityPermission: await MethodChannelService.instance
           .getAndAskAccessibilityPermission(),
-      haveAdminPermission:
-          await MethodChannelService.instance.getAndAskAdminPermission(),
       haveVpnPermission:
           await MethodChannelService.instance.getAndAskVpnPermission(),
       haveAlarmsPermission:
@@ -82,10 +89,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           haveAccessibilityPermission: await MethodChannelService.instance
               .getAndAskAccessibilityPermission(),
         ),
-      PermissionType.admin => state.copyWith(
-          haveAdminPermission:
-              await MethodChannelService.instance.getAndAskAdminPermission(),
-        ),
       PermissionType.vpn => state.copyWith(
           haveVpnPermission:
               await MethodChannelService.instance.getAndAskVpnPermission(),
@@ -129,13 +132,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     await MethodChannelService.instance
         .getAndAskAccessibilityPermission(askPermissionToo: true);
     _askedPermission = PermissionType.accessibility;
-  }
-
-  /// Requests the admin permission and updates the internal state.
-  void askAdminPermission() async {
-    await MethodChannelService.instance
-        .getAndAskAdminPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.admin;
   }
 
   /// Requests the VPN permission and updates the internal state.

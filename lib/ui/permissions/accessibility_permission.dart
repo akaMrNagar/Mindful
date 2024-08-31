@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,9 +32,8 @@ class AccessibilityPermission extends ConsumerWidget {
       information:
           "Please grant accessibility permission. This will allow Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers, and filter inappropriate websites, creating a more secure and focused online environment.",
       helpUrl: AppConstants.githubFaqUrl,
-      onTapAction: !havePermission
-          ? ref.read(permissionProvider.notifier).askAccessibilityPermission
-          : null,
+      onTapAction:
+          ref.read(permissionProvider.notifier).askAccessibilityPermission,
     );
   }
 }

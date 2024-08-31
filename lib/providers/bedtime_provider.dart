@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
@@ -22,23 +31,6 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
       /// Save changes to the Isar database whenever the state updates.
       await IsarDbService.instance.saveBedtimeSettings(state);
     });
-  }
-
-  /// Determines whether the Bedtime schedule can be modified based on current time, Invincible Mode, and schedule state.
-  bool isModifiable(bool isInvincibleModeOn) {
-    final now = DateTime.now();
-    final start = now.copyWith(
-      hour: state.startTime.hour,
-      minute: state.startTime.minute,
-    );
-    final end = start.add(
-      state.endTime.difference(state.startTime),
-    );
-
-    return !state.isScheduleOn ||
-        !isInvincibleModeOn ||
-        now.isBefore(start) ||
-        now.isAfter(end);
   }
 
   /// Enables or disables the Bedtime schedule.

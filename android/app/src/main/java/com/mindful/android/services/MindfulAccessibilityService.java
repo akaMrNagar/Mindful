@@ -1,3 +1,12 @@
+/*
+ *
+ *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 package com.mindful.android.services;
 
 import static com.mindful.android.helpers.ShortsBlockingHelper.FACEBOOK_PACKAGE;
@@ -129,10 +138,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
-
-        // TODO: Prevent user from opening this in invincible mode
-//         ("com.android.settings.Settings$DeviceAdminSettingsActivity".equals(param1a.o) || "com.android.settings.DeviceAdminAdd".equals(param1a.o) || ("com.android.settings".equals(param1a.n) && param1a.o.endsWith("DeviceAdminAdd")));
-
 
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
