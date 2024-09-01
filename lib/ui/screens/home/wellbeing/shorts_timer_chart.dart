@@ -13,6 +13,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
@@ -42,9 +43,18 @@ class ShortsTimerChart extends ConsumerWidget {
       initialTime: allowedTimeSec,
     );
 
-    if (newTime != allowedTimeSec) {
-      ref.read(wellBeingProvider.notifier).setAllowedShortContentTime(newTime);
+    if (newTime == allowedTimeSec) return;
+
+    if (newTime < minimumShortTimerSecs) {
+      if (context.mounted) {
+        context.showSnackAlert(
+          "Please ensure the timer for short content is set to a minimum of 5 minutes.",
+        );
+      }
+      return;
     }
+
+    ref.read(wellBeingProvider.notifier).setAllowedShortContentTime(newTime);
   }
 
   @override

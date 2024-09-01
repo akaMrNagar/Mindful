@@ -39,7 +39,7 @@ class TabAdvance extends ConsumerWidget {
         title: "Invincible mode",
         info:
             "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
-        positiveLabel: "Start",
+        positiveLabel: "Start anyway",
       );
       if (isConfirm) {
         ref.read(settingsProvider.notifier).switchInvincibleMode();
