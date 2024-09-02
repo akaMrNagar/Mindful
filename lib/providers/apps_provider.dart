@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/android_app.dart';
 
-/// A Riverpod state notifier provider that manages a list of installed Android applications with their usage details.
+/// A Riverpod state notifier provider that manages a map of Package and installed Android applications with their usage details.
 final appsProvider =
     StateNotifierProvider<DeviceAppsList, AsyncValue<Map<String, AndroidApp>>>(
   (ref) => DeviceAppsList(),

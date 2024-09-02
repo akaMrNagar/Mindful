@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/active_session_provider.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -30,7 +30,7 @@ class _TabFocusState extends ConsumerState<TabFocus> {
   @override
   void initState() {
     super.initState();
-    ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+    ref.read(focusModeProvider.notifier).refreshActiveSessionState();
   }
 
   @override

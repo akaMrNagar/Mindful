@@ -188,6 +188,7 @@ class MethodChannelService {
   ///
   /// This method sends a request to the native side to start focus session.
   Future<bool> startFocusSession({
+    required int startTimeMsEpoch,
     required int durationSeconds,
     required bool toggleDnd,
     required List<String> distractingApps,
@@ -195,8 +196,9 @@ class MethodChannelService {
       await _methodChannel.invokeMethod(
         'startFocusSession',
         jsonEncode({
-          'toggleDnd': toggleDnd,
+          'startTimeMsEpoch': startTimeMsEpoch,
           'durationSeconds': durationSeconds,
+          'toggleDnd': toggleDnd,
           'distractingApps': distractingApps,
         }),
       );

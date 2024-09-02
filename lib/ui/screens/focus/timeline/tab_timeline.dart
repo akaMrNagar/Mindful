@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/models/isar/focus_session.dart';
-import 'package:mindful/providers/active_session_provider.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/providers/focus_timeline_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -41,7 +41,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
   @override
   void initState() {
     super.initState();
-    ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+    ref.read(focusModeProvider.notifier).refreshActiveSessionState();
   }
 
   @override

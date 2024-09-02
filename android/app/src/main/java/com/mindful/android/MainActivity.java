@@ -18,11 +18,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
@@ -39,6 +42,9 @@ import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
+import java.util.HashSet;
+import java.util.Map;
+
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
@@ -52,6 +58,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     private SafeServiceConnection<FocusSessionService> mFocusServiceConn;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         // Register notification channels
@@ -61,26 +73,23 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         AlarmTasksSchedulingHelper.scheduleMidnightResetTask(this, true);
 
         // Initialize service connections
-        mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
-        mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
-        mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
-
-        // Start or bind the tracking service based on app timers or bedtime schedule
-        if (!SharedPrefsHelper.fetchAppTimers(this).isEmpty()) {
-            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
-        } else {
-            mTrackerServiceConn.bindService();
+        if (mTrackerServiceConn == null) {
+            mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         }
 
-        // Start or bind the VPN service based on blocked apps and VPN permissions
-        if (!SharedPrefsHelper.fetchBlockedApps(this).isEmpty() && getAndAskVpnPermission(false)) {
-            mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
-        } else {
-            mVpnServiceConn.bindService();
+        if (mVpnServiceConn == null) {
+            mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
         }
 
-        /// Bind to Focus Service if it is already running
+        if (mFocusServiceConn == null) {
+            mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
+        }
+
+        /// Bind to Services if they are already running
+        mTrackerServiceConn.bindService();
+        mVpnServiceConn.bindService();
         mFocusServiceConn.bindService();
+
     }
 
     @Override
@@ -140,10 +149,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppTimers": {
                 String dartJsonAppTimers = Utils.notNullStr(call.arguments());
+                Map<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(dartJsonAppTimers);
                 SharedPrefsHelper.storeAppTimersJson(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
                 if (mTrackerServiceConn.isConnected()) {
                     mTrackerServiceConn.getService().updateAppTimers();
-                } else {
+                } else if (!appTimers.isEmpty()) {
                     mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
                 }
                 result.success(true);
@@ -151,10 +161,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "updateBlockedApps": {
                 String blockedAppsJson = Utils.notNullStr(call.arguments());
+                HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(blockedAppsJson);
                 SharedPrefsHelper.storeBlockedAppsJson(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
                 if (mVpnServiceConn.isConnected()) {
                     mVpnServiceConn.getService().updateBlockedApps();
-                } else if (getAndAskVpnPermission(true)) {
+                } else if (!blockedApps.isEmpty() && getAndAskVpnPermission(true)) {
                     mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
                 }
                 result.success(true);

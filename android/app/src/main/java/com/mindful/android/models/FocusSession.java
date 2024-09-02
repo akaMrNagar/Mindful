@@ -30,7 +30,12 @@ public class FocusSession {
     /**
      * Total duration for this focus session.
      */
-    public long durationSecs = 0L;
+    public int durationSecs = 0;
+
+    /**
+     * Start time in Milliseconds since Epoch for this focus session.
+     */
+    public long startTimeMsEpoch = 0L;
 
 
     /**
@@ -53,7 +58,8 @@ public class FocusSession {
 
                 // Deserialize fields
                 toggleDnd = jsonObject.getBoolean("toggleDnd");
-                durationSecs = jsonObject.getLong("durationSeconds");
+                durationSecs = jsonObject.getInt("durationSeconds");
+                startTimeMsEpoch = jsonObject.getLong("startTimeMsEpoch");
 
                 // Deserialize distracting apps
                 JSONArray appsJsonArray = jsonObject.getJSONArray("distractingApps");

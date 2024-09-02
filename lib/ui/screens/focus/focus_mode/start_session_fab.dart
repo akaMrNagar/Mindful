@@ -14,7 +14,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 
@@ -34,8 +33,10 @@ class StartSessionFAB extends ConsumerWidget {
   }
 
   void _startFocusSession(BuildContext context, WidgetRef ref) async {
+    final focusMode = ref.read(focusModeProvider);
+
     /// If another focus session is already active
-    if (ref.read(activeSessionProvider).value != null) {
+    if (focusMode.activeSession != null) {
       context.showSnackAlert(
         "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
       );
@@ -43,7 +44,6 @@ class StartSessionFAB extends ConsumerWidget {
     }
 
     // If no distracting apps selected
-    final focusMode = ref.read(focusModeProvider);
     if (focusMode.distractingApps.isEmpty) {
       context.showSnackAlert(
         "Select at least one distracting app to start focus session",
@@ -58,13 +58,9 @@ class StartSessionFAB extends ConsumerWidget {
 
     /// Return if user cancelled duration picker
     if (timerSeconds == null || timerSeconds <= 0) return;
-    final newSession =
-        await ref.read(activeSessionProvider.notifier).startNewSession(
-              durationSeconds: timerSeconds,
-              type: focusMode.sessionType,
-              toggleDnd: focusMode.shouldStartDnd,
-              distractingApps: focusMode.distractingApps,
-            );
+    final newSession = await ref
+        .read(focusModeProvider.notifier)
+        .startNewSession(durationSeconds: timerSeconds);
 
     await Future.delayed(300.ms);
     if (context.mounted) {
