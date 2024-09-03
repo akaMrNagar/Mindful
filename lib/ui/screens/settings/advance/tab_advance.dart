@@ -10,8 +10,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -44,6 +46,16 @@ class TabAdvance extends ConsumerWidget {
       if (isConfirm) {
         ref.read(settingsProvider.notifier).switchInvincibleMode();
       }
+    }
+  }
+
+  void _openAutoStartSettings(BuildContext context) async {
+    final success = await MethodChannelService.instance.openAutoStartSettings();
+
+    if (!success && context.mounted) {
+      context.showSnackAlert(
+        "This device does not support automatic startup management.",
+      );
     }
   }
 
@@ -92,6 +104,19 @@ class TabAdvance extends ConsumerWidget {
 
         /// Battery permission
         const BatteryPermissionTile(),
+
+        20.vSliverBox,
+        const StyledText(
+          "If you are still experiencing same issues, even after granting ignore battery optimization, then consider whitelisting Mindful.",
+        ).sliver,
+        6.vSliverBox,
+        DefaultListTile(
+          leadingIcon: FluentIcons.leaf_three_20_regular,
+          titleText: "Whitelist Mindful",
+          subtitleText: "Allow Mindful to auto start.",
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => _openAutoStartSettings(context),
+        ).sliver,
 
         const SliverTabsBottomPadding()
       ],

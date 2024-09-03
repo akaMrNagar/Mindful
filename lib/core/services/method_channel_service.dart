@@ -307,6 +307,10 @@ class MethodChannelService {
   /// Opens the device's Do Not Disturb (DND) settings.
   Future<bool> openDeviceDndSettings() async =>
       await _methodChannel.invokeMethod('openDeviceDndSettings');
+  
+  /// Opens the device specific settings to whitelist mindful.
+  Future<bool> openAutoStartSettings() async =>
+      await _methodChannel.invokeMethod('openAutoStartSettings');
 
   /// Opens an app with the specified package name.
   Future<bool> openAppWithPackage(String appPackage) async =>

@@ -288,6 +288,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(true);
                 break;
             }
+            case "openAutoStartSettings": {
+                result.success(NewActivitiesLaunchHelper.openAutoStartSettings(this));
+                break;
+            }
             default:
                 result.notImplemented();
         }
