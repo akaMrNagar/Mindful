@@ -67,7 +67,3 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 ## 🗨️ Feedback and Support
 
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us on github.
-
----
-
-### 🤝 Thank you [Colton Griffith](https://github.com/coltongriffith) for [Fluent Icons](https://fluenticons.co/)
