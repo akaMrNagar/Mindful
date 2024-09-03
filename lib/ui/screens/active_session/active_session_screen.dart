@@ -23,7 +23,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/isar/focus_session.dart';
-import 'package:mindful/providers/active_session_provider.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -88,7 +88,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
         _launchConfetti();
         Future.delayed(
           1.seconds,
-          ref.read(activeSessionProvider.notifier).refreshActiveSessionState,
+          ref.read(focusModeProvider.notifier).refreshActiveSessionState,
         );
       }
     });
@@ -207,7 +207,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
         negativeLabel: "Keep pushing");
 
     if (!confirm) return;
-    await ref.read(activeSessionProvider.notifier).giveUpOnCurrentSession();
+    await ref.read(focusModeProvider.notifier).giveUpOnActiveSession();
 
     /// Show alert and go back
     if (!mounted) return;

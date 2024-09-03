@@ -10,7 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
-import 'package:mindful/providers/active_session_provider.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 
 class SliverActiveSessionAlert extends ConsumerWidget {
@@ -22,7 +22,9 @@ class SliverActiveSessionAlert extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeSession = ref.watch(activeSessionProvider).value;
+    final activeSession =
+        ref.watch(focusModeProvider.select((v) => v.activeSession));
+
     return SliverPrimaryActionContainer(
       isVisible: activeSession != null,
       margin: margin,
@@ -30,12 +32,10 @@ class SliverActiveSessionAlert extends ConsumerWidget {
       information:
           "You have an active focus session running! Click 'View' to check your progress and see how much time has elapsed.",
       actionBtnLabel: "View",
-      onTapAction: activeSession == null
-          ? null
-          : () => Navigator.of(context).pushNamed(
-                AppRoutes.activeSessionScreen,
-                arguments: activeSession,
-              ),
+      onTapAction: () => Navigator.of(context).pushNamed(
+        AppRoutes.activeSessionScreen,
+        arguments: activeSession,
+      ),
     );
   }
 }

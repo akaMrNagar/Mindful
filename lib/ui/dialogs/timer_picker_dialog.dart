@@ -55,6 +55,7 @@ Future<int> showShortsTimerPicker({
             icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
             heroTag: heroTag,
             initialTimeInSec: initialTime,
+            showDeleteButton: false,
           ),
         ),
       ) ??

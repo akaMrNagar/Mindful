@@ -44,9 +44,9 @@ public class FocusSessionService extends Service {
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
-    private long mCountDownDurationMs = 0L;
     private FocusSession mFocusSession = null;
     private PendingIntent appPendingIntent;
+    private int elapsedSeconds = 0;
 
     @Override
     public void onCreate() {
@@ -71,13 +71,14 @@ public class FocusSessionService extends Service {
 
         if (ACTION_START_SERVICE_FOCUS.equals(action)) {
             mFocusSession = new FocusSession(Utils.notNullStr(intent.getStringExtra(INTENT_EXTRA_FOCUS_SESSION_JSON)));
-            mCountDownDurationMs = mFocusSession.durationSecs * 1000L;
 
             /// Start and bind tracking service
             mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopUpdateFocusSession(mFocusSession.distractingApps));
             mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
 
             if (!mFocusSession.distractingApps.isEmpty()) {
+                long diffMs = System.currentTimeMillis() - mFocusSession.startTimeMsEpoch;
+                elapsedSeconds = diffMs > 0 ? (int) (diffMs / 1000) : 0;
                 startFocusTimer();
                 return START_STICKY;
             }
@@ -120,12 +121,14 @@ public class FocusSessionService extends Service {
     private void startFocusTimer() {
         // Toggle DND according to the session configurations
         if (mFocusSession.toggleDnd) NotificationHelper.toggleDnd(this, true);
-        startForeground(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs));
+        startForeground(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mFocusSession.durationSecs));
 
-        mCountDownTimer = new CountDownTimer(mCountDownDurationMs, 1000) {
+
+        long timerDuration = (mFocusSession.durationSecs - elapsedSeconds) * 1000L;
+        mCountDownTimer = new CountDownTimer(timerDuration, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(millisUntilFinished));
+                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000L)));
             }
 
             @Override
@@ -149,12 +152,11 @@ public class FocusSessionService extends Service {
     /**
      * Creates a notification to show the countdown progress.
      *
-     * @param millisUntilFinished The remaining time in milliseconds.
+     * @param totalLeftSeconds The remaining time in seconds.
      * @return The notification object.
      */
     @NonNull
-    private Notification createNotification(long millisUntilFinished) {
-        int totalLeftSeconds = (int) (millisUntilFinished / 1000);
+    private Notification createNotification(int totalLeftSeconds) {
         int leftHours = totalLeftSeconds / 60 / 60;
         int leftMinutes = (totalLeftSeconds / 60) % 60;
         int leftSeconds = totalLeftSeconds % 60;
@@ -168,7 +170,7 @@ public class FocusSessionService extends Service {
 
         mProgressNotificationBuilder
                 .setContentText(msg)
-                .setProgress((int) (mCountDownDurationMs / 1000), totalLeftSeconds, false);
+                .setProgress(elapsedSeconds + mFocusSession.durationSecs, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
     }

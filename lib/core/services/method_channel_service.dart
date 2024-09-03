@@ -188,6 +188,7 @@ class MethodChannelService {
   ///
   /// This method sends a request to the native side to start focus session.
   Future<bool> startFocusSession({
+    required int startTimeMsEpoch,
     required int durationSeconds,
     required bool toggleDnd,
     required List<String> distractingApps,
@@ -195,8 +196,9 @@ class MethodChannelService {
       await _methodChannel.invokeMethod(
         'startFocusSession',
         jsonEncode({
-          'toggleDnd': toggleDnd,
+          'startTimeMsEpoch': startTimeMsEpoch,
           'durationSeconds': durationSeconds,
+          'toggleDnd': toggleDnd,
           'distractingApps': distractingApps,
         }),
       );
@@ -305,6 +307,10 @@ class MethodChannelService {
   /// Opens the device's Do Not Disturb (DND) settings.
   Future<bool> openDeviceDndSettings() async =>
       await _methodChannel.invokeMethod('openDeviceDndSettings');
+  
+  /// Opens the device specific settings to whitelist mindful.
+  Future<bool> openAutoStartSettings() async =>
+      await _methodChannel.invokeMethod('openAutoStartSettings');
 
   /// Opens an app with the specified package name.
   Future<bool> openAppWithPackage(String appPackage) async =>

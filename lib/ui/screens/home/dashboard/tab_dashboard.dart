@@ -19,7 +19,6 @@ import 'package:mindful/core/extensions/ext_list.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/active_session_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/focus_stats_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
@@ -51,7 +50,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
   @override
   void initState() {
     super.initState();
-    ref.read(activeSessionProvider.notifier).refreshActiveSessionState();
+    ref.read(focusModeProvider.notifier).refreshActiveSessionState();
   }
 
   void _editUserName() async {

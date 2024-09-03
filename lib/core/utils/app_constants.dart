@@ -15,8 +15,7 @@ class AppConstants {
   /// Urls
   static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
 
-  static const privacyPolicyUrl =
-      "https://bemindful.vercel.app/privacy";
+  static const privacyPolicyUrl = "https://bemindful.vercel.app/privacy";
 
   static const githubDonationUrl =
       "https://github.com/akaMrNagar/Mindful/blob/main/README.md#-donate";

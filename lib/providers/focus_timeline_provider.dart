@@ -22,17 +22,17 @@ final focusTimelineProvider =
 
 /// This class manages the state of Focus Timeline.
 class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
-  // DateTime _selectedDay = DateTime(2024);
-
   FocusModeNotifier() : super(const FocusTimelineModel()) {
     refreshTimeline();
   }
 
+  /// Refresh the state
   Future<void> refreshTimeline() async {
     await onMonthChanged(DateTime.now().dateOnly);
     await onDayChanged(DateTime.now().dateOnly);
   }
 
+  /// Reload the list of focus session when the selected DAY changes
   Future<void> onDayChanged(DateTime dayDate) async {
     // Start of the day
     final startOfDay = dayDate.dateOnly;
@@ -61,6 +61,7 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
     );
   }
 
+  /// Reload focus session states when the selected MONTH changes
   Future<void> onMonthChanged(DateTime month) async {
     // Start of the month
     final startOfMonth = DateTime(month.year, month.month, 1);

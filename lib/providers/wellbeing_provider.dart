@@ -12,6 +12,9 @@ import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/wellbeing_settings.dart';
 
+/// Minimum short content time is 5 minutes.
+const int minimumShortTimerSecs = 5 * 60;
+
 /// A Riverpod state notifier provider that manages well-being related settings.
 final wellBeingProvider =
     StateNotifierProvider<WellBeingNotifier, WellBeingSettings>(
@@ -27,6 +30,11 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
   /// Initializes the well-being settings by loading them from the database and setting up a listener to save changes.
   void _init() async {
     state = await IsarDbService.instance.loadWellBeingSettings();
+
+    /// Update timer if it is less than minimum time
+    if (state.allowedShortContentTimeSec < minimumShortTimerSecs) {
+      setAllowedShortContentTime(minimumShortTimerSecs);
+    }
 
     /// Listen to provider and save changes to Isar database and platform service
     addListener((state) async {

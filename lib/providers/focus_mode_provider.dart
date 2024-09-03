@@ -10,19 +10,21 @@
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/focus_mode_settings.dart';
+import 'package:mindful/models/isar/focus_session.dart';
 
-/// A Riverpod state notifier provider that manages focus mode settings.
+/// A Riverpod state notifier provider that manages Focus Mode Settings.
 final focusModeProvider =
     StateNotifierProvider<FocusModeNotifier, FocusModeSettings>(
   (ref) => FocusModeNotifier(),
 );
 
-/// This class manages the state of global application settings.
+/// This class manages the state of Focus Mode Settings.
 class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
   FocusModeNotifier() : super(const FocusModeSettings()) {
     _init();
@@ -31,6 +33,12 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
   /// Initializes the state by loading from the database and setting up a listener for saving changes.
   void _init() async {
     state = await IsarDbService.instance.loadFocusModeSettings();
+    await refreshActiveSessionState();
+
+    /// Start service if already not running
+    if (state.activeSession != null) {
+      startFocusSessionService(state.activeSession!);
+    }
 
     /// Listen to provider and save changes to Isar database
     addListener((state) async {
@@ -56,12 +64,19 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
           ? [...state.distractingApps, appPackage]
           : [...state.distractingApps.where((e) => e != appPackage)],
     );
+
+    if (state.activeSession != null) {
+      await MethodChannelService.instance.updateFocusSession(
+        distractingApps: state.distractingApps,
+      );
+    }
   }
 
   /// Set session type for current focus session.
   void setSessionType(SessionType sessionType) =>
       state = state.copyWith(sessionType: sessionType);
 
+  /// Update the streaks in database on the basis of current streak
   void updateSessionsStreak() async {
     /// If streak is already updated then return
     final today = DateTime.now().dateOnly;
@@ -78,4 +93,81 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
       lastStreakUpdatedDayMsEpoch: today.millisecondsSinceEpoch,
     );
   }
+
+  /// Refresh the state for active session
+  ///
+  /// Checks if the last active session is still ongoing or if it needs to be marked as successful.
+  Future<void> refreshActiveSessionState() async {
+    final activeSession =
+        await IsarDbService.instance.loadLastActiveFocusSession();
+
+    if (activeSession != null) {
+      final timeDiffSecs =
+          DateTime.now().difference(activeSession.startTime).inSeconds;
+
+      /// If session is completed then update it's state in Database
+      if (timeDiffSecs >= activeSession.durationSecs) {
+        await IsarDbService.instance.insertFocusSession(
+          activeSession.copyWith(state: SessionState.successful),
+        );
+        state = state.copyWith(activeSession: null);
+        updateSessionsStreak();
+        return;
+      }
+    }
+
+    state = state.copyWith(activeSession: activeSession);
+  }
+
+  /// Starts a new focus session with the specified duration.
+  ///
+  /// Returns a [FocusSession] object representing the newly started session.
+  Future<FocusSession> startNewSession({
+    required int durationSeconds,
+  }) async {
+    final session = FocusSession(
+      durationSecs: durationSeconds,
+      type: state.sessionType,
+      startTimeMsEpoch: DateTime.now().millisecondsSinceEpoch,
+    );
+
+    /// Start service
+    await startFocusSessionService(session);
+
+    /// Insert session to database
+    await IsarDbService.instance.insertFocusSession(session);
+
+    /// Update state
+    state = state.copyWith(activeSession: session);
+    return session;
+  }
+
+  /// Ends the current active focus session, marking it as failed.
+  ///
+  /// Updates the session in the database and stops the focus session service.
+  Future<void> giveUpOnActiveSession() async {
+    if (state.activeSession == null) return;
+
+    final updatedSession = state.activeSession!.copyWith(
+      state: SessionState.failed,
+      durationSecs:
+          DateTime.now().difference(state.activeSession!.startTime).inSeconds,
+    );
+
+    /// Update session in database
+    await IsarDbService.instance.insertFocusSession(updatedSession);
+
+    /// Start service
+    await MethodChannelService.instance.stopFocusSession();
+    state = state.copyWith(activeSession: null);
+  }
+
+  /// Starts the focus session service with the given session.
+  Future<void> startFocusSessionService(FocusSession session) async =>
+      await MethodChannelService.instance.startFocusSession(
+        durationSeconds: session.durationSecs,
+        startTimeMsEpoch: session.startTimeMsEpoch,
+        toggleDnd: state.shouldStartDnd,
+        distractingApps: state.distractingApps,
+      );
 }

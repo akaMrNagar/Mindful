@@ -28,22 +28,28 @@ class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
     final items = await IsarDbService.instance.loadRestrictionInfos();
     state = Map.fromEntries(items.map((e) => MapEntry(e.appPackage, e)));
 
+    /// Calling these methods with empty package to only start services if they are needed but they are inactive
+    updateAppTimer("", 0);
+    switchInternetAccess("", true);
+
     addListener((state) async {
       /// Save changes to the Isar database whenever the state updates.
       await IsarDbService.instance.saveRestrictionInfos(state.values.toList());
     });
   }
 
-  /// Updates the focus timer for a specific app package.
+  /// Updates the focus timer for a specific app package if package is not empty.
   ///
-  /// Also filters timers, updates the platform-specific service, and saves changes to the database.
+  /// Anyway updated the platform-specific service.
   Future<void> updateAppTimer(String appPackage, int timerSec) async {
-    state = {...state}..update(
-        appPackage,
-        (value) => value.copyWith(timerSec: timerSec),
-        ifAbsent: () =>
-            RestrictionInfo(appPackage: appPackage, timerSec: timerSec),
-      );
+    if (appPackage.isNotEmpty) {
+      state = {...state}..update(
+          appPackage,
+          (value) => value.copyWith(timerSec: timerSec),
+          ifAbsent: () =>
+              RestrictionInfo(appPackage: appPackage, timerSec: timerSec),
+        );
+    }
 
     final appTimers = Map.fromEntries(
       state.entries
@@ -56,18 +62,20 @@ class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
     await MethodChannelService.instance.updateAppTimers(appTimers);
   }
 
-  /// Toggles internet access permission for a specific app package.
+  /// Toggles internet access permission for a specific app package if package is not empty.
   ///
-  /// Updates the focus settings and calls the platform channel service to potentially start or stop a VPN.
+  /// Anyway call the platform channel service to potentially start or stop a VPN.
   void switchInternetAccess(String appPackage, bool haveInternetAccess) async {
-    state = {...state}..update(
-        appPackage,
-        (value) => value.copyWith(internetAccess: haveInternetAccess),
-        ifAbsent: () => RestrictionInfo(
-          appPackage: appPackage,
-          internetAccess: haveInternetAccess,
-        ),
-      );
+    if (appPackage.isNotEmpty) {
+      state = {...state}..update(
+          appPackage,
+          (value) => value.copyWith(internetAccess: haveInternetAccess),
+          ifAbsent: () => RestrictionInfo(
+            appPackage: appPackage,
+            internetAccess: haveInternetAccess,
+          ),
+        );
+    }
 
     final blockedApps = state.values
         .where((e) => !e.internetAccess)

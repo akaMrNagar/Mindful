@@ -10,6 +10,7 @@
 package com.mindful.android.helpers;
 
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -123,6 +124,61 @@ public class NewActivitiesLaunchHelper {
             Log.e(TAG, "openDeviceDndSettings: Unable to open device DND settings", e);
             Toast.makeText(context, "Unable to open DND settings", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    /**
+     * Navigates user to the appropriate auto-start settings screen based on the device manufacturer.
+     * If the manufacturer-specific intent fails, it falls back to ignore battery optimizations.
+     *
+     * @param context The context to use for launching the activity.
+     * @return Boolean flag if successful in launching the activity.
+     */
+    public static boolean openAutoStartSettings(Context context) {
+        try {
+            String manufacturer = Build.MANUFACTURER.toLowerCase();
+            Intent intent = new Intent();
+
+            switch (manufacturer) {
+                case "xiaomi":
+                    intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
+                    break;
+                case "huawei":
+                    intent.setComponent(new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"));
+                    break;
+                case "oppo":
+                    intent.setComponent(new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.startupapp.StartupAppListActivity"));
+                    break;
+                case "vivo":
+                    intent.setComponent(new ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity"));
+                    break;
+                case "asus":
+                    intent.setComponent(new ComponentName("com.asus.mobilemanager", "com.asus.mobilemanager.entry.FunctionActivity"));
+                    break;
+                case "samsung":
+                    intent.setComponent(new ComponentName("com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity"));
+                    break;
+                case "oneplus":
+                    intent.setComponent(new ComponentName("com.oneplus.security", "com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity"));
+                    break;
+                case "sony":
+                    intent.setComponent(new ComponentName("com.sonymobile.cta", "com.sonymobile.cta.SomcCTAMainActivity"));
+                    break;
+                case "lenovo":
+                    intent.setComponent(new ComponentName("com.lenovo.security", "com.lenovo.security.purebackground.PureBackgroundActivity"));
+                    break;
+                default:
+                    return false;
+            }
+
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        } catch (Exception e) {
+            return false;
+        }
+
+        Toast.makeText(context,"Please allow Mindful to auto start",Toast.LENGTH_LONG).show();
+        return true;
     }
 
     // SECTION: For different app packages =========================================================

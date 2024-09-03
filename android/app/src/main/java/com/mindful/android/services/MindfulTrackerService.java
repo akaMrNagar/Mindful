@@ -55,8 +55,6 @@ public class MindfulTrackerService extends Service {
     private boolean mIsServiceRunning = false;
     private boolean mIsStoppedForcefully = true;
 
-    private UsageStatsManager mUsageStatsManager;
-
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
     private AppLaunchReceiver mAppLaunchReceiver;
 
@@ -64,13 +62,6 @@ public class MindfulTrackerService extends Service {
     private final HashSet<String> mPurgedApps = new HashSet<>();
     private HashSet<String> mBedtimeDistractingApps = new HashSet<>(0);
     private HashSet<String> mFocusSessionDistractingApps = new HashSet<>(0);
-
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-    }
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
@@ -107,9 +98,8 @@ public class MindfulTrackerService extends Service {
     // REVIEW: Suppressing api warnings
     @SuppressLint("NewApi")
     private void startTrackingService() {
-        if (mIsServiceRunning) return;
-        
         mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
+        if (mIsServiceRunning) return;
 
         // Register lock/unlock receiver
         IntentFilter lockUnlockFilter = new IntentFilter();
@@ -240,6 +230,11 @@ public class MindfulTrackerService extends Service {
     private class AppLaunchReceiver extends BroadcastReceiver {
         private final String TAG = "Mindful.AppLaunchReceiver";
         private Timer mAppUsageRecheckTimer;
+        private final UsageStatsManager mUsageStatsManager;
+
+        AppLaunchReceiver() {
+            mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        }
 
         @Override
         public void onReceive(Context context, @NonNull Intent intent) {
