@@ -7,6 +7,7 @@
  *
  */
 
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
@@ -28,6 +29,7 @@ class SliverActiveSessionAlert extends ConsumerWidget {
     return SliverPrimaryActionContainer(
       isVisible: activeSession != null,
       margin: margin,
+      icon: FluentIcons.timer_20_regular,
       title: "Active session",
       information:
           "You have an active focus session running! Click 'View' to check your progress and see how much time has elapsed.",

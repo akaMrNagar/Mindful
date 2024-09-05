@@ -7,8 +7,10 @@
  *
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/services/crash_log_service.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/mindful_app.dart';
@@ -22,6 +24,26 @@ Future<void> main() async {
   /// Initialize isar database service
   await IsarDbService.instance.init();
 
+  /// Initialize local crashlytics
+  FlutterError.onError = (errorDetails) {
+    CrashLogService.instance.recordCrashError(
+      errorDetails.exception.toString(),
+      errorDetails.stack.toString(),
+    );
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    CrashLogService.instance.recordCrashError(
+      error.toString(),
+      stack.toString(),
+    );
+    return true;
+  };
+
   /// run main app
-  runApp(const ProviderScope(child: MindfulApp()));
+  runApp(
+    const ProviderScope(
+      child: MindfulApp(),
+    ),
+  );
 }

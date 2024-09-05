@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * A utility class containing static helper methods for various common tasks such as
@@ -62,6 +64,23 @@ public class Utils {
             Log.e(TAG, "getAppVersion: Error in fetching app version", e);
         }
         return "v0.0.0";
+    }
+
+    /**
+     * Resolve the device information and  returns it
+     *
+     * @return Map<String, String> containing Manufacturer, Model, Android Version and SDK Version.
+     */
+    @NonNull
+    public static Map<String, String> getDeviceInfoMap() {
+        HashMap<String, String> infoMap = new HashMap<>();
+
+        infoMap.put("Manufacturer", Build.MANUFACTURER);
+        infoMap.put("Model", Build.MODEL);
+        infoMap.put("Android Version", Build.VERSION.RELEASE);
+        infoMap.put("SDK Version", String.valueOf(Build.VERSION.SDK_INT));
+
+        return infoMap;
     }
 
     /**
