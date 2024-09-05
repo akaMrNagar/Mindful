@@ -63,22 +63,23 @@ public class NewActivitiesLaunchHelper {
 
         try {
             File file = new File(filePath);
-            // Create URI using FileProvider
-            Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".share_provider", file);
 
+            if (file.exists()) {
+                // Create URI using FileProvider
+                Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".share_provider", file);
 
-            // Create an intent to share the file
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain"); // Change MIME type based on file type
-            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read permission
+                // Create an intent to share the file
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain"); // Change MIME type based on file type
+                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read permission
 
-            // Start the share intent
-            context.startActivity(Intent.createChooser(intent, "Share crash log file"));
-//            } else {
-//                Log.d(TAG, "launchUrl: File does not exist: " + filePath);
-//                Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
-//            }
+                // Start the share intent
+                context.startActivity(Intent.createChooser(intent, "Share crash log file"));
+            } else {
+                Log.d(TAG, "launchUrl: File does not exist: " + filePath);
+                Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Log.e(TAG, "launchUrl: Unable to share file: " + filePath, e);
             Toast.makeText(context, "Invalid file path", Toast.LENGTH_SHORT).show();
