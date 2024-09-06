@@ -141,7 +141,7 @@ class TabAdvance extends ConsumerWidget {
           titleText: "Share crash logs",
           subtitleText: "Share crash logs as a json file.",
           leadingIcon: FluentIcons.share_android_20_regular,
-          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          trailing: const Icon(FluentIcons.chevron_right_20_regular), 
           onPressed: () => _shareLogs(context),
         ).sliver,
 

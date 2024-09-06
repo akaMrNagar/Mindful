@@ -86,12 +86,12 @@ public class EmergencyPauseService extends Service {
     private void startEmergencyTimer() {
         mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
         mTrackerServiceConn.bindService();
-        startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(mCountDownDurationMs));
+        startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (mCountDownDurationMs / 1000)));
 
         mCountDownTimer = new CountDownTimer(mCountDownDurationMs, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(millisUntilFinished));
+                mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000)));
             }
 
             @Override
@@ -111,25 +111,16 @@ public class EmergencyPauseService extends Service {
     /**
      * Creates a notification to show the countdown progress.
      *
-     * @param millisUntilFinished The remaining time in milliseconds.
+     * @param totalLeftSeconds The remaining time in seconds.
      * @return The notification object.
      */
     @NonNull
-    private Notification createNotification(long millisUntilFinished) {
-        int totalLeftSeconds = (int) (millisUntilFinished / 1000);
-        int leftHours = totalLeftSeconds / 60 / 60;
-        int leftMinutes = (totalLeftSeconds / 60) % 60;
-        int leftSeconds = totalLeftSeconds % 60;
-
+    private Notification createNotification(int totalLeftSeconds) {
         String prefixMsg = "App blocker will resume after ";
-
-        String msg =
-                leftHours > 0 ?
-                        prefixMsg + leftHours + ":" + leftMinutes + ":" + leftSeconds + (leftHours > 1 ? " hours" : " hour") :
-                        prefixMsg + leftMinutes + ":" + leftSeconds + " minutes";
+        String remainingTime = Utils.secondsToTimeStr(totalLeftSeconds);
 
         mProgressNotificationBuilder
-                .setContentText(msg)
+                .setContentText(prefixMsg + remainingTime)
                 .setProgress((int) (mCountDownDurationMs / 1000), totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();

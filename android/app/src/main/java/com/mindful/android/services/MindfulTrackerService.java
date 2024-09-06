@@ -9,23 +9,31 @@
 
 package com.mindful.android.services;
 
+import static com.mindful.android.helpers.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_DIALOG_TYPE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
+import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
+import com.mindful.android.R;
 import com.mindful.android.enums.DialogType;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
@@ -38,8 +46,6 @@ import com.mindful.android.utils.Utils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A service that tracks app usage, manages timers for app usage limits, and handles bedtime lockdowns.
@@ -47,6 +53,7 @@ import java.util.TimerTask;
 public class MindfulTrackerService extends Service {
 
     private final String TAG = "Mindful.MindfulTrackerService";
+    private static final long USAGE_ALERT_LEFT_TIME_SECONDS = 10 * 60; // 10 minutes
     public static final String ACTION_NEW_APP_LAUNCHED = "com.mindful.android.ACTION_NEW_APP_LAUNCHED";
     public static final String ACTION_START_SERVICE_TIMER_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_TIMER";
     public static final String ACTION_START_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_BEDTIME";
@@ -229,7 +236,7 @@ public class MindfulTrackerService extends Service {
      */
     private class AppLaunchReceiver extends BroadcastReceiver {
         private final String TAG = "Mindful.AppLaunchReceiver";
-        private Timer mAppUsageRecheckTimer;
+        private CountDownTimer mOngoingAppTimer;
         private final UsageStatsManager mUsageStatsManager;
 
         AppLaunchReceiver() {
@@ -283,20 +290,85 @@ public class MindfulTrackerService extends Service {
                 return;
             }
 
-            // Schedule timer for rechecking the app if it is still running
-            long delayMs = (appTimerSec - screenTimeSec) * 1000;
+            // Schedule Ongoing timer for alerts and rechecking if app is running but timer is not over
+            long leftTimeSeconds = (appTimerSec - screenTimeSec);
+            scheduleUsageAlertCountDownTimer(packageName, (int) leftTimeSeconds);
+        }
 
-            mAppUsageRecheckTimer = new Timer();
-            mAppUsageRecheckTimer.schedule(new TimerTask() {
+
+        /**
+         * Schedule a countdown timer for the app if it is still running and
+         * alert user about the remaining time with notification
+         *
+         * @param packageName     The package name of the launched app.
+         * @param leftTimeSeconds Time in seconds left from the app's timer w.r.t screen time
+         */
+        private void scheduleUsageAlertCountDownTimer(String packageName, int leftTimeSeconds) {
+            // Times when alert notification will be pushed
+            final int[] alertTimeSeconds = {60, 5 * 60, 10 * 60, 20 * 60};
+
+            // Buffer of ± seconds
+            final int bufferSeconds = 30;
+
+            mOngoingAppTimer = new CountDownTimer(leftTimeSeconds * 1000L, 60 * 1000) {
                 @Override
-                public void run() {
+                public void onTick(long millisUntilFinished) {
+                    int secondsRemaining = (int) (millisUntilFinished / 1000);
+
+                    // Check if the remaining time is close to any of the notifyTimes with the buffer
+                    for (int alertTime : alertTimeSeconds) {
+                        if (Math.abs(secondsRemaining - alertTime) <= bufferSeconds) {
+                            pushUsageAlertNotification(packageName, alertTime / 60);
+                            break;
+                        }
+                    }
+
+                }
+
+                @Override
+                public void onFinish() {
                     mPurgedApps.add(packageName);
                     showOverlayDialog(packageName, DialogType.TimerOut);
-                    Log.d(TAG, "handleTimerAppLaunch: Executed timer task for package : " + packageName);
+                    Log.d(TAG, "scheduleUsageAlertCountDownTimer: Ongoing countdown timer finished for package : " + packageName);
                 }
-            }, delayMs);
+            };
 
-            Log.d(TAG, "handleTimerAppLaunch: Timer task scheduled for " + packageName + " :  " + new Date(delayMs + System.currentTimeMillis()));
+            mOngoingAppTimer.start();
+            Log.d(TAG, "scheduleUsageAlertCountDownTimer: Ongoing Countdown timer task scheduled for " + packageName + " :  " + new Date((leftTimeSeconds * 1000L) + System.currentTimeMillis()));
+        }
+
+        /**
+         * Push an alert notification with the launched app's icon and name
+         * and let user know about the remaining time
+         *
+         * @param packageName The package name of the launched app.
+         * @param minutesLeft Time in minutes left from the app's timer w.r.t screen time
+         */
+        private void pushUsageAlertNotification(String packageName, int minutesLeft) {
+            try {
+                PackageManager packageManager = getPackageManager();
+                ApplicationInfo info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
+                String appName = info.loadLabel(packageManager).toString();
+                Drawable appIcon = packageManager.getApplicationIcon(info);
+
+
+                String msg = appName + " will be paused for the rest of the day";
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(
+                        minutesLeft,
+                        new NotificationCompat.Builder(MindfulTrackerService.this, NOTIFICATION_CRITICAL_CHANNEL_ID)
+                                .setOngoing(false)
+                                .setSmallIcon(R.drawable.ic_notification)
+                                .setLargeIcon(Utils.drawableToBitmap(appIcon))
+                                .setContentTitle(minutesLeft + " minutes left")
+                                .setContentText(msg)
+                                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                                .build()
+                );
+
+            } catch (Exception e) {
+                Log.d(TAG, "pushAlertNotification: Failed to push usage alert notification for " + packageName, e);
+            }
         }
 
         /**
@@ -318,11 +390,10 @@ public class MindfulTrackerService extends Service {
          * Cancels any scheduled timers for app usage rechecking.
          */
         protected void cancelTimers() {
-            if (mAppUsageRecheckTimer != null) {
-                mAppUsageRecheckTimer.purge();
-                mAppUsageRecheckTimer.cancel();
-                mAppUsageRecheckTimer = null;
-                Log.d(TAG, "cancelTimers: Usage recheck timer cancelled");
+            if (mOngoingAppTimer != null) {
+                mOngoingAppTimer.cancel();
+                mOngoingAppTimer = null;
+                Log.d(TAG, "cancelTimers: Ongoing app timer is cancelled");
             }
         }
     }

@@ -157,19 +157,11 @@ public class FocusSessionService extends Service {
      */
     @NonNull
     private Notification createNotification(int totalLeftSeconds) {
-        int leftHours = totalLeftSeconds / 60 / 60;
-        int leftMinutes = (totalLeftSeconds / 60) % 60;
-        int leftSeconds = totalLeftSeconds % 60;
-
         String prefixMsg = "Focus session will end in ";
-
-        String msg =
-                leftHours > 0 ?
-                        prefixMsg + leftHours + ":" + leftMinutes + ":" + leftSeconds + (leftHours > 1 ? " hours" : " hour") :
-                        prefixMsg + leftMinutes + ":" + leftSeconds + " minutes";
+        String remainingTime = Utils.secondsToTimeStr(totalLeftSeconds);
 
         mProgressNotificationBuilder
-                .setContentText(msg)
+                .setContentText(prefixMsg + remainingTime)
                 .setProgress(elapsedSeconds + mFocusSession.durationSecs, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();

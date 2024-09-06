@@ -15,6 +15,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Base64;
@@ -135,6 +136,25 @@ public class Utils {
     }
 
     /**
+     * Converts the drawable to bitmap.
+     *
+     * @param drawable The Drawable which will be converted.
+     * @return Bitmap The converted bitmap.
+     */
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+    /**
      * Deserializes a JSON string into a HashMap of String keys and Long values.
      *
      * @param jsonString The JSON string to deserialize.
@@ -237,16 +257,34 @@ public class Utils {
     /**
      * Formats the total screen usage time into a human-readable string.
      *
+     * @param totalSeconds The total screen usage time in seconds.
+     * @return A string representing the formatted screen usage time.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String secondsToTimeStr(long totalSeconds) {
+        int leftHours = (int) (totalSeconds / 60 / 60);
+        int leftMinutes = (int) ((totalSeconds / 60) % 60);
+        int leftSeconds = (int) (totalSeconds % 60);
+
+        return
+                leftHours > 0 ?
+                        leftHours + ":" + leftMinutes + ":" + leftSeconds + (leftHours > 1 ? " hours" : " hour") :
+                        leftMinutes + ":" + leftSeconds + " minutes";
+
+    }
+
+    /**
+     * Formats the total screen usage time into a human-readable string.
+     *
      * @param totalMinutes The total screen usage time in minutes.
      * @return A string representing the formatted screen usage time.
-     * @throws IllegalArgumentException if totalMinutes is negative.
      */
     @NonNull
     @Contract(pure = true)
     public static String formatScreenTime(int totalMinutes) {
-        if (totalMinutes < 0) {
-            throw new IllegalArgumentException("Total minutes cannot be negative");
-        }
+        totalMinutes = Math.abs(totalMinutes);
+
         return totalMinutes > 60
                 ? totalMinutes % 60 == 0
                 ? totalMinutes / 60 + "h"
@@ -259,14 +297,12 @@ public class Utils {
      *
      * @param totalMBs The total data usage in megabytes (MB).
      * @return A string representing the formatted data usage.
-     * @throws IllegalArgumentException if totalMBs is negative.
      */
     @NonNull
     @Contract(pure = true)
     public static String formatDataMBs(int totalMBs) {
-        if (totalMBs < 0) {
-            throw new IllegalArgumentException("Total MBs cannot be negative");
-        }
+        totalMBs = Math.abs(totalMBs);
+
         if (totalMBs >= 1024) {
             float GBs = totalMBs / 1024f;
             String formattedGBs = String.format(Locale.US, "%.2f", GBs);
