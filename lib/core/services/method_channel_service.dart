@@ -54,6 +54,10 @@ class MethodChannelService {
   Future<String> getAppVersion() async =>
       await _methodChannel.invokeMethod('getAppVersion');
 
+  /// Get device info string
+  Future<Map<String, String>> getDeviceInfoMap() async =>
+      await _methodChannel.invokeMapMethod('getDeviceInfoMap') ?? {};
+
   /// Get status of onboarding
   ///
   /// Returns a bool indicating if onboarding is completed or not
@@ -91,6 +95,12 @@ class MethodChannelService {
   /// This method takes the URL string and sends it to the native side for launching in the browser.
   Future<bool> launchUrl(String siteUrl) async =>
       await _methodChannel.invokeMethod('launchUrl', siteUrl);
+
+  /// Share the file from the path using native share chooser.
+  ///
+  /// This method takes the File Path string and sends it to the native side.
+  Future<bool> shareFile(String filePath) async =>
+      await _methodChannel.invokeMethod('shareFile', filePath);
 
   /// Retrieves a list of all launchable apps installed on the user's device along with their usage statistics.
   ///
@@ -307,7 +317,7 @@ class MethodChannelService {
   /// Opens the device's Do Not Disturb (DND) settings.
   Future<bool> openDeviceDndSettings() async =>
       await _methodChannel.invokeMethod('openDeviceDndSettings');
-  
+
   /// Opens the device specific settings to whitelist mindful.
   Future<bool> openAutoStartSettings() async =>
       await _methodChannel.invokeMethod('openAutoStartSettings');

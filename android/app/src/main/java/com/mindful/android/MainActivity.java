@@ -118,6 +118,10 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(Utils.getAppVersion(this));
                 break;
             }
+            case "getDeviceInfoMap": {
+                result.success(Utils.getDeviceInfoMap());
+                break;
+            }
             case "setOnboardingDone": {
                 SharedPrefsHelper.setOnboardingDone(this);
                 result.success(true);
@@ -138,6 +142,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "launchUrl": {
                 NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
+                result.success(true);
+                break;
+            }
+            case "shareFile": {
+                NewActivitiesLaunchHelper.shareFile(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }

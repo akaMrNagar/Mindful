@@ -56,7 +56,7 @@ class DefaultBarChart extends StatelessWidget {
 
     final dataMax = data.fold(0, (p, e) => math.max(p, e));
     // adding one to show bar chart if all values are zeroes
-    final barMaxHeight = (dataMax * 1.1) + 1.0;
+    final barMaxHeight = (dataMax * 1.17) + 1.0;
 
     return Semantics(
       excludeSemantics: true,
@@ -173,7 +173,7 @@ class DefaultBarChart extends StatelessWidget {
 
       /// Network usage labels
       UsageType.networkUsage => (yData.gb >= 1)
-          ? "${yData.gb.ceil()}gb"
+          ? "${yData.gb.round()}gb"
           : (yData.mb >= 1)
               ? "${yData.mb}mb"
               : "${yData}kb",

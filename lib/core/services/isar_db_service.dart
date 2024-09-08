@@ -12,6 +12,7 @@ import 'package:isar/isar.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/models/isar/bedtime_settings.dart';
+import 'package:mindful/models/isar/crash_log.dart';
 import 'package:mindful/models/isar/focus_mode_settings.dart';
 import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/models/isar/restriction_info.dart';
@@ -27,7 +28,7 @@ class IsarDbService {
   /// Private constructor to enforce singleton pattern.
   IsarDbService._();
 
-  /// Singleton instance of the IsarDbService.
+  /// Singleton instance of the [IsarDbService].
   static final IsarDbService instance = IsarDbService._();
 
   /// Internal Isar instance used for database operations.
@@ -50,6 +51,7 @@ class IsarDbService {
         WellBeingSettingsSchema,
         FocusSessionSchema,
         FocusModeSettingsSchema,
+        CrashLogSchema,
       ],
       directory: appDirectory.path,
     );
@@ -60,6 +62,16 @@ class IsarDbService {
       );
 
   // SECTION Saving section -----------------------------------------------------------------
+
+  /// Delete all [CrashLog] object from the Isar database.
+  Future<void> clearCrashLogs() async => _isar.writeTxn(
+        () => _isar.crashLogs.clear(),
+      );
+
+  /// Insert a [CrashLog] object to the Isar database.
+  Future<void> insertCrashLog(CrashLog log) async => _isar.writeTxn(
+        () => _isar.crashLogs.put(log),
+      );
 
   /// Saves a list of [RestrictionInfo] objects to the Isar database.
   Future<void> saveRestrictionInfos(List<RestrictionInfo> infos) async =>
@@ -100,6 +112,10 @@ class IsarDbService {
   }
 
   //SECTION Loading section ----------------------------------------------------------
+
+  /// Loads all [CrashLog] objects from the Isar database,
+  Future<List<CrashLog>> loadCrashLogs() async =>
+      _isar.crashLogs.where().findAll();
 
   /// Loads all [RestrictionInfo] objects from the Isar database,
   /// sorted by their app package.

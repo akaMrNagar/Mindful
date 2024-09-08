@@ -21,9 +21,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 
 import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
+
+import java.io.File;
 
 /**
  * NewActivitiesLaunchHelper provides utility methods to launch various activities and settings screens on Android devices.
@@ -48,6 +51,40 @@ public class NewActivitiesLaunchHelper {
             Log.e(TAG, "launchUrl: Unable to launch url: " + url, e);
             Toast.makeText(context, "Invalid url", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Share the file from the path with android share chooser.
+     *
+     * @param context  The context to use for launching the activity.
+     * @param filePath The URL to be opened.
+     */
+    public static void shareFile(@NonNull Context context, @NonNull String filePath) {
+
+        try {
+            File file = new File(filePath);
+
+            if (file.exists()) {
+                // Create URI using FileProvider
+                Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".share_provider", file);
+
+                // Create an intent to share the file
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain"); // Change MIME type based on file type
+                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read permission
+
+                // Start the share intent
+                context.startActivity(Intent.createChooser(intent, "Share crash log file"));
+            } else {
+                Log.d(TAG, "launchUrl: File does not exist: " + filePath);
+                Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "launchUrl: Unable to share file: " + filePath, e);
+            Toast.makeText(context, "Invalid file path", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     // SECTION: For MINDFUL app ====================================================================
@@ -177,7 +214,7 @@ public class NewActivitiesLaunchHelper {
             return false;
         }
 
-        Toast.makeText(context,"Please allow Mindful to auto start",Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Please allow Mindful to auto start", Toast.LENGTH_LONG).show();
         return true;
     }
 

@@ -59,11 +59,11 @@ public class NotificationHelper {
             bedtimeChannel.setDescription("These notifications include updates regarding bedtime routine to help you get a peaceful sleep.");
 
             NotificationChannel serviceChannel = new NotificationChannel(NOTIFICATION_SERVICE_CHANNEL_ID, "Running Services", NotificationManager.IMPORTANCE_DEFAULT);
-            serviceChannel.setSound(null,null);
+            serviceChannel.setSound(null, null);
             serviceChannel.setDescription("These are non-critical notifications. They can be disabled but are included to comply with Android requirements.");
 
             // Register channels
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(NotificationManager.class);
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(criticalChannel);
             notificationManager.createNotificationChannel(focusChannel);
             notificationManager.createNotificationChannel(bedtimeChannel);

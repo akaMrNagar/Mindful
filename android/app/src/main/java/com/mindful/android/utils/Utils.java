@@ -15,7 +15,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Base64;
 import android.util.Log;
 
@@ -34,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * A utility class containing static helper methods for various common tasks such as
@@ -62,6 +65,23 @@ public class Utils {
             Log.e(TAG, "getAppVersion: Error in fetching app version", e);
         }
         return "v0.0.0";
+    }
+
+    /**
+     * Resolve the device information and  returns it
+     *
+     * @return Map<String, String> containing Manufacturer, Model, Android Version and SDK Version.
+     */
+    @NonNull
+    public static Map<String, String> getDeviceInfoMap() {
+        HashMap<String, String> infoMap = new HashMap<>();
+
+        infoMap.put("Manufacturer", Build.MANUFACTURER);
+        infoMap.put("Model", Build.MODEL);
+        infoMap.put("Android Version", Build.VERSION.RELEASE);
+        infoMap.put("SDK Version", String.valueOf(Build.VERSION.SDK_INT));
+
+        return infoMap;
     }
 
     /**
@@ -113,6 +133,25 @@ public class Utils {
             Log.e(TAG, "getEncodedAppIcon: Cannot parse app icon from memory", e);
         }
         return appIcon;
+    }
+
+    /**
+     * Converts the drawable to bitmap.
+     *
+     * @param drawable The Drawable which will be converted.
+     * @return Bitmap The converted bitmap.
+     */
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
 
     /**
@@ -218,16 +257,34 @@ public class Utils {
     /**
      * Formats the total screen usage time into a human-readable string.
      *
+     * @param totalSeconds The total screen usage time in seconds.
+     * @return A string representing the formatted screen usage time.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String secondsToTimeStr(long totalSeconds) {
+        int leftHours = (int) (totalSeconds / 60 / 60);
+        int leftMinutes = (int) ((totalSeconds / 60) % 60);
+        int leftSeconds = (int) (totalSeconds % 60);
+
+        return
+                leftHours > 0 ?
+                        leftHours + ":" + leftMinutes + ":" + leftSeconds + (leftHours > 1 ? " hours" : " hour") :
+                        leftMinutes + ":" + leftSeconds + " minutes";
+
+    }
+
+    /**
+     * Formats the total screen usage time into a human-readable string.
+     *
      * @param totalMinutes The total screen usage time in minutes.
      * @return A string representing the formatted screen usage time.
-     * @throws IllegalArgumentException if totalMinutes is negative.
      */
     @NonNull
     @Contract(pure = true)
     public static String formatScreenTime(int totalMinutes) {
-        if (totalMinutes < 0) {
-            throw new IllegalArgumentException("Total minutes cannot be negative");
-        }
+        totalMinutes = Math.abs(totalMinutes);
+
         return totalMinutes > 60
                 ? totalMinutes % 60 == 0
                 ? totalMinutes / 60 + "h"
@@ -240,14 +297,12 @@ public class Utils {
      *
      * @param totalMBs The total data usage in megabytes (MB).
      * @return A string representing the formatted data usage.
-     * @throws IllegalArgumentException if totalMBs is negative.
      */
     @NonNull
     @Contract(pure = true)
     public static String formatDataMBs(int totalMBs) {
-        if (totalMBs < 0) {
-            throw new IllegalArgumentException("Total MBs cannot be negative");
-        }
+        totalMBs = Math.abs(totalMBs);
+
         if (totalMBs >= 1024) {
             float GBs = totalMBs / 1024f;
             String formattedGBs = String.format(Locale.US, "%.2f", GBs);

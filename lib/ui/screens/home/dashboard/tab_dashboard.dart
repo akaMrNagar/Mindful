@@ -26,10 +26,12 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
+import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 import 'package:mindful/ui/permissions/alarm_permission.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission.dart';
@@ -70,6 +72,9 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
 
     final longestStreak =
         ref.watch(focusModeProvider.select((v) => v.longestStreak));
+
+    final isInvincibleModeOn =
+        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
 
     final focusStats = ref.watch(focusStatsProvider);
 
@@ -245,13 +250,58 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             ),
 
             /// Active session
-            8.vSliverBox,
-            const SliverActiveSessionAlert(),
+            const SliverActiveSessionAlert(margin: EdgeInsets.only(top: 8)),
+
+            20.vSliverBox,
+
+            /// Invincible mode
+            const SliverContentTitle(title: "Invincible mode"),
+
+            /// Information about invincible mode
+            const StyledText(
+                    "When Invincible Mode is active, modifying the app's timer after it runs out or adjusting the short content settings after reaching the daily limit is not permitted.")
+                .sliver,
+            12.vSliverBox,
+
+            /// Invincible mode
+            DefaultHero(
+              tag: HeroTags.invincibleModeTileTag,
+              child: DefaultListTile(
+                isPrimary: true,
+                switchValue: isInvincibleModeOn,
+                enabled: !isInvincibleModeOn,
+                leadingIcon: FluentIcons.animal_cat_20_regular,
+                titleText: "Activate invincible mode",
+                onPressed: () =>
+                    _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
+              ),
+            ).sliver,
 
             const SliverTabsBottomPadding(),
           ],
         ),
       ),
     );
+  }
+
+  void _turnOnInvincibleMode(
+    BuildContext context,
+    WidgetRef ref,
+    bool shouldTurnOn,
+  ) async {
+    if (shouldTurnOn) {
+      final isConfirm = await showConfirmationDialog(
+        context: context,
+        icon: FluentIcons.animal_cat_20_filled,
+        heroTag: HeroTags.invincibleModeTileTag,
+        title: "Invincible mode",
+        info:
+            "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
+        positiveLabel: "Start anyway",
+      );
+      if (isConfirm) {
+        ref.read(settingsProvider.notifier).switchInvincibleMode();
+      }
+    }
   }
 }
