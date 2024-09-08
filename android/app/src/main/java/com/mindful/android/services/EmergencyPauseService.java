@@ -41,7 +41,6 @@ public class EmergencyPauseService extends Service {
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
-    private long mCountDownDurationMs = 0L;
     private PendingIntent appPendingIntent;
 
 
@@ -74,7 +73,6 @@ public class EmergencyPauseService extends Service {
                 return START_NOT_STICKY;
             }
             SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
-            mCountDownDurationMs = DEFAULT_EMERGENCY_PASS_PERIOD_MS;
             startEmergencyTimer();
             return START_STICKY;
         }
@@ -86,9 +84,9 @@ public class EmergencyPauseService extends Service {
     private void startEmergencyTimer() {
         mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
         mTrackerServiceConn.bindService();
-        startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (mCountDownDurationMs / 1000)));
+        startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
 
-        mCountDownTimer = new CountDownTimer(mCountDownDurationMs, 1000) {
+        mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000)));
@@ -121,7 +119,7 @@ public class EmergencyPauseService extends Service {
 
         mProgressNotificationBuilder
                 .setContentText(prefixMsg + remainingTime)
-                .setProgress((int) (mCountDownDurationMs / 1000), totalLeftSeconds, false);
+                .setProgress(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
     }
@@ -147,6 +145,9 @@ public class EmergencyPauseService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mTrackerServiceConn.isConnected()) {
+            mTrackerServiceConn.getService().pauseResumeTracking(false);
+        }
         mTrackerServiceConn.unBindService();
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();

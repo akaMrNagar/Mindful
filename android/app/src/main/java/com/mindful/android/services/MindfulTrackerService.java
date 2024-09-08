@@ -317,7 +317,7 @@ public class MindfulTrackerService extends Service {
 
                     // Check if the remaining time is close to any of the notifyTimes with the buffer
                     for (int alertTime : alertTimeSeconds) {
-                        if (Math.abs(secondsRemaining - alertTime) <= bufferSeconds) {
+                        if (Math.abs(secondsRemaining - alertTime) < bufferSeconds) {
                             pushUsageAlertNotification(packageName, alertTime / 60);
                             break;
                         }

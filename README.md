@@ -3,7 +3,7 @@
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
 [🛠️ Build & Contribute](docs/CONTRIBUTION.md)&emsp;&emsp;[🔏 Verify](docs/VERIFICATION.md)&emsp;&emsp; [📃 Privacy Policy](https://bemindful.vercel.app/privacy)&emsp;&emsp;
-[❓ FAQs](https://bemindful.vercel.app/#faqs)
+[🙋‍♂️ FAQs](https://bemindful.vercel.app/#faqs)
 
 ---
 
@@ -11,13 +11,9 @@
 
 ## 👇 Download
 
-<a href="https://github.com/akamrnagar/mindful/releases/latest">
-    <img src="https://img.shields.io/badge/GitHub-b7bffa?logo=github&logoColor=black" height="48">
-</a> 
+<a href="https://github.com/akamrnagar/mindful/releases/latest"><img src="https://img.shields.io/badge/GitHub-b7bffa?logo=github&logoColor=black" height="48"></a>
 &emsp;
-<a href="https://play.google.com/store/apps/details?id=com.mindful.android">
-    <img src="https://img.shields.io/badge/Play%20Store-b7bffa?logo=google-play&logoColor=black" height="48">
-</a>
+<a href="https://play.google.com/store/apps/details?id=com.mindful.android"><img src="https://img.shields.io/badge/PlayStore-b7bffa?logo=google-play&logoColor=black" height="48"></a>
 
 ## 📱 Screenshots
 
