@@ -21,6 +21,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.mindful.android.generics.SuccessCallback;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,8 +37,9 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private static final long TIMER_RATE = 500; // Interval for tracking app launches in milliseconds
     private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
+    private final SuccessCallback<Boolean> mOnChangeCallback;
+    private final List<String> mActiveAppsList = new ArrayList<>(3);
     private Timer mAppLaunchTrackingTimer;
-    private List<String> mActiveAppsList = new ArrayList<>(3);
     private String mLastLaunchedAppPackage = "";
     private boolean mIsTrackingPaused = false;
 
@@ -45,9 +48,10 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
      *
      * @param context The application context.
      */
-    public DeviceLockUnlockReceiver(Context context) {
+    public DeviceLockUnlockReceiver(Context context, UsageStatsManager usageStatsManager, SuccessCallback<Boolean> onChangeCallback) {
         mContext = context;
-        mUsageStatsManager = (UsageStatsManager) mContext.getSystemService(Context.USAGE_STATS_SERVICE);
+        mOnChangeCallback = onChangeCallback;
+        mUsageStatsManager = usageStatsManager;
         onDeviceUnlocked();
     }
 
@@ -55,9 +59,11 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     public void onReceive(Context context, @NonNull Intent intent) {
         if (intent.getAction() != null && Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
             onDeviceUnlocked();
+            mOnChangeCallback.onSuccess(true);
             Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE");
         } else if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF)) {
             onDeviceLocked();
+            mOnChangeCallback.onSuccess(false);
             Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE");
         }
     }

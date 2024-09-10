@@ -36,6 +36,7 @@ import androidx.core.app.NotificationCompat;
 import com.mindful.android.R;
 import com.mindful.android.enums.DialogType;
 import com.mindful.android.generics.ServiceBinder;
+import com.mindful.android.generics.SuccessCallback;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -53,15 +54,23 @@ import java.util.HashSet;
 public class MindfulTrackerService extends Service {
 
     private final String TAG = "Mindful.MindfulTrackerService";
-    private static final long USAGE_ALERT_LEFT_TIME_SECONDS = 10 * 60; // 10 minutes
     public static final String ACTION_NEW_APP_LAUNCHED = "com.mindful.android.ACTION_NEW_APP_LAUNCHED";
     public static final String ACTION_START_SERVICE_TIMER_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_TIMER";
     public static final String ACTION_START_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_SERVICE_BEDTIME";
     public static final String ACTION_STOP_SERVICE_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.STOP_SERVICE_BEDTIME";
+    private final SuccessCallback<Boolean> mDeviceLockUnlockCallback = new SuccessCallback<Boolean>() {
+        @Override
+        public void onSuccess(Boolean isDeviceActive) {
+            if (!isDeviceActive && mAppLaunchReceiver != null) {
+                mAppLaunchReceiver.cancelTimers();
+            }
+        }
+    };
 
     private boolean mIsServiceRunning = false;
     private boolean mIsStoppedForcefully = true;
 
+    private UsageStatsManager mUsageStatsManager;
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
     private AppLaunchReceiver mAppLaunchReceiver;
 
@@ -69,6 +78,11 @@ public class MindfulTrackerService extends Service {
     private final HashSet<String> mPurgedApps = new HashSet<>();
     private HashSet<String> mBedtimeDistractingApps = new HashSet<>(0);
     private HashSet<String> mFocusSessionDistractingApps = new HashSet<>(0);
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+    }
 
     @Override
     public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
@@ -108,11 +122,13 @@ public class MindfulTrackerService extends Service {
         mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
         if (mIsServiceRunning) return;
 
+        mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+
         // Register lock/unlock receiver
         IntentFilter lockUnlockFilter = new IntentFilter();
         lockUnlockFilter.addAction(Intent.ACTION_USER_PRESENT);
         lockUnlockFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        mLockUnlockReceiver = new DeviceLockUnlockReceiver(this);
+        mLockUnlockReceiver = new DeviceLockUnlockReceiver(this, mUsageStatsManager, mDeviceLockUnlockCallback);
         registerReceiver(mLockUnlockReceiver, lockUnlockFilter);
 
         // Register app launch receiver
@@ -237,11 +253,6 @@ public class MindfulTrackerService extends Service {
     private class AppLaunchReceiver extends BroadcastReceiver {
         private final String TAG = "Mindful.AppLaunchReceiver";
         private CountDownTimer mOngoingAppTimer;
-        private final UsageStatsManager mUsageStatsManager;
-
-        AppLaunchReceiver() {
-            mUsageStatsManager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
-        }
 
         @Override
         public void onReceive(Context context, @NonNull Intent intent) {
