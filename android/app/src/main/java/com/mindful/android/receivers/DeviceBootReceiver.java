@@ -21,6 +21,7 @@ import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
+import com.mindful.android.utils.Utils;
 
 /**
  * BroadcastReceiver that handles actions after the device boots up.
@@ -30,30 +31,31 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
-        // Check if the received intent action is related to device boot completion
-        if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) return;
+        String action = Utils.notNullStr(intent.getAction());
 
-        Log.d(TAG, "onReceive: Device reboot broadcast received. Now doing the needful");
+        if (Intent.ACTION_BOOT_COMPLETED.equals(action) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
+            Log.d(TAG, "onReceive: Device reboot broadcast received. Now doing the needful");
 
-        // Fetch bedtime settings to check if the bedtime schedule is on
-        boolean isBedtimeScheduleOn = SharedPrefsHelper.fetchBedtimeSettings(context).isScheduleOn;
+            // Fetch bedtime settings to check if the bedtime schedule is on
+            boolean isBedtimeScheduleOn = SharedPrefsHelper.fetchBedtimeSettings(context).isScheduleOn;
 
-        // Start the MindfulTrackerService if needed
-        if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
-            SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
-            mTrackerServiceConn.startOnly(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+            // Start the MindfulTrackerService if needed
+            if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
+                SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
+                mTrackerServiceConn.startOnly(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+            }
+
+            // Start the MindfulVpnService if needed
+            if (!SharedPrefsHelper.fetchBlockedApps(context).isEmpty() && MindfulVpnService.prepare(context) == null) {
+                SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, context);
+                mVpnServiceConn.startOnly(MindfulVpnService.ACTION_START_SERVICE_VPN);
+            }
+
+            // Reschedule bedtime workers if the bedtime schedule is on
+            if (isBedtimeScheduleOn) AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(context);
+
+            // Reschedule midnight reset worker
+            AlarmTasksSchedulingHelper.scheduleMidnightResetTask(context, false);
         }
-
-        // Start the MindfulVpnService if needed
-        if (!SharedPrefsHelper.fetchBlockedApps(context).isEmpty() && MindfulVpnService.prepare(context) == null) {
-            SafeServiceConnection<MindfulVpnService> mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, context);
-            mVpnServiceConn.startOnly(MindfulVpnService.ACTION_START_SERVICE_VPN);
-        }
-
-        // Reschedule bedtime workers if the bedtime schedule is on
-        if (isBedtimeScheduleOn) AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(context);
-
-        // Reschedule midnight reset worker
-        AlarmTasksSchedulingHelper.scheduleMidnightResetTask(context, false);
     }
 }

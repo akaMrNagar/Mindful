@@ -53,7 +53,7 @@ public class ScreenUsageHelper {
             } else if (eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
                 Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
                 UsageEvents.Event lastResumedEvent = lastResumedEvents.get(packageName);
-                if (lastResumedEvent != null) {
+                if (lastResumedEvent != null && lastResumedEvent.getPackageName().equals(packageName)) {
                     // Calculate usage from the last ACTIVITY_RESUMED to this ACTIVITY_PAUSED
                     screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
                     oneDayUsageMap.put(packageName, screenTime);
