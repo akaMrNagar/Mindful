@@ -45,7 +45,7 @@ class PermissionsPage extends ConsumerWidget {
           child: OnboardingPage(
             bottomPadding: 0,
             title: "Essential Permissions.",
-            imgArtPath: "assets/illustrations/onboarding_6.png",
+            imgArtPath: "assets/illustrations/onboarding_4.png",
             description:
                 "Mindful requires following essential permissions to track and manage your screen time, helping reduce distractions and improve focus.",
           ),

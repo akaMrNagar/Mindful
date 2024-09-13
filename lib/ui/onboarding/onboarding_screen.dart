@@ -41,7 +41,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   final pages = [
     const OnboardingPage(
       title: "Master Focus.",
-      imgArtPath: "assets/illustrations/onboarding_4.png",
+      imgArtPath: "assets/illustrations/onboarding_1.png",
       description:
           "Pause distracting apps, block short content, and stay on track with customizable focus sessions. Whether you're working, studying, or relaxing, Mindful helps you stay in control.",
     ),
@@ -53,7 +53,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     ),
     const OnboardingPage(
       title: "Privacy First.",
-      imgArtPath: "assets/illustrations/onboarding_1.png",
+      imgArtPath: "assets/illustrations/onboarding_3.png",
       description:
           "Mindful is 100% open-source and operates entirely offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
     ),
