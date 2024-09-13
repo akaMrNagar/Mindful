@@ -23,4 +23,11 @@ extension ExtWidget on Widget {
   /// Wraps the widget with [Align] and set alignment to [Alignment.centerRight] and returns it
   Widget get rightCentered =>
       Align(alignment: Alignment.centerRight, child: this);
+
+  /// Wraps the widget with [Align] and set alignment to [Alignment.topCenter] and returns it
+  Widget get topCentered => Align(alignment: Alignment.topCenter, child: this);
+
+  /// Wraps the widget with [Align] and set alignment to [Alignment.bottomCenter] and returns it
+  Widget get bottomCentered =>
+      Align(alignment: Alignment.bottomCenter, child: this);
 }

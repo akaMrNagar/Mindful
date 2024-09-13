@@ -19,6 +19,7 @@ dependencies:
   flutter_heatmap_calendar: ^1.0.5
   animated_flip_counter: ^0.3.4
   flutter_confetti: ^0.3.0
+  smooth_page_indicator: ^1.2.0+3
 
   # Animation
   flutter_animate: ^4.2.0+1

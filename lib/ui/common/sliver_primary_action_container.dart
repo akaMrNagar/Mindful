@@ -80,7 +80,6 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                 12.vBox,
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     /// Help button
@@ -91,7 +90,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                         child: const Text("Help?"),
                       ),
 
-                    0.hBox,
+                    const Spacer(),
 
                     /// Allow permission button
                     if (onTapAction != null)

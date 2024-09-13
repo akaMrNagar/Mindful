@@ -45,9 +45,13 @@ class AppRoutes {
 
   static final routes = {
     splashScreen: (context) => const SplashScreen(),
-    onboardingScreen: (context) => const OnboardingScreen(),
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
+
+    /// Resolve isOnboardingDone bool from arguments
+    onboardingScreen: (context) => OnboardingScreen(
+          isOnboardingDone: ModalRoute.of(context)?.settings.arguments as bool,
+        ),
 
     /// Resolve initial tab index from arguments
     focusScreen: (context) => FocusScreen(

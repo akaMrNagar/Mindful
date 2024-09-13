@@ -32,8 +32,12 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
   /// Initializes the permission state by fetching initial permission status and setting up a lifecycle listener.
   void _init() async {
     WidgetsBinding.instance.addObserver(this);
+    state = await fetchPermissionsStatus();
+  }
 
-    final cache = state.copyWith(
+  /// Create [PermissionsModel] and initializes with permission state by fetching initial permission status.
+  Future<PermissionsModel> fetchPermissionsStatus() async {
+    return PermissionsModel(
       haveNotificationPermission:
           await MethodChannelService.instance.getAndAskNotificationPermission(),
       haveUsageAccessPermission:
@@ -51,8 +55,6 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
       haveIgnoreOptimizationPermission: await MethodChannelService.instance
           .getAndAskIgnoreBatteryOptimizationPermission(),
     );
-
-    state = cache;
   }
 
   /// Removes the lifecycle observer when the widget is disposed.

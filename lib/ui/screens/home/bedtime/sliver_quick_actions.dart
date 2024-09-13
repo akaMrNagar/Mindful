@@ -13,11 +13,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
-import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/permissions/dnd_permission.dart';
+import 'package:mindful/ui/permissions/dnd_switch_tile.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -38,9 +37,6 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
     final shouldStartDnd =
         ref.watch(bedtimeProvider.select((v) => v.shouldStartDnd));
 
-    final haveDndPermission =
-        ref.watch(permissionProvider.select((v) => v.haveDndPermission));
-
     final isScheduleOn =
         ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
 
@@ -50,18 +46,13 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
         const SliverContentTitle(title: "Quick actions"),
 
         /// Should start dnd
-        DefaultListTile(
-          enabled: haveDndPermission && !isScheduleOn,
+        DndSwitchTile(
+          enabled: !isScheduleOn,
           switchValue: shouldStartDnd,
           onPressed: () => ref
               .read(bedtimeProvider.notifier)
               .setShouldStartDnd(!shouldStartDnd),
-          titleText: "Start DND",
-          subtitleText: "Start do not disturb mode during \nbedtime.",
         ),
-
-        /// Dnd permission warning
-        const DndPermission(),
 
         /// Manage Dnd settings
         const DeviceDndTile(),

@@ -17,6 +17,7 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -35,26 +36,34 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _validateNextScreen();
     Future.delayed(
       1000.ms,
-      () {
-        nextScreenRoute == AppRoutes.homeScreen
-            ? Navigator.of(context).pop()
-            : Navigator.of(context).pushReplacementNamed(nextScreenRoute);
-      },
+      _goToNextScreen,
     );
   }
 
-  void _validateNextScreen() async {
+  void _goToNextScreen() async {
     final isOnboardingDone =
         await MethodChannelService.instance.getOnboardingStatus();
 
-    nextScreenRoute =
-        isOnboardingDone ? AppRoutes.homeScreen : AppRoutes.onboardingScreen;
+    final perms =
+        await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
 
-    if (isOnboardingDone) {
+    final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
+        perms.haveDisplayOverlayPermission &&
+        perms.haveAlarmsPermission &&
+        perms.haveNotificationPermission;
+
+    if (!mounted) return;
+
+    if (haveAllEssentialPermissions && isOnboardingDone) {
       ref.read(appsProvider);
+      Navigator.of(context).pop();
+    } else {
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.onboardingScreen,
+        arguments: isOnboardingDone,
+      );
     }
   }
 
