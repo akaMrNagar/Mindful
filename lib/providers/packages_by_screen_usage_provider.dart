@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -12,33 +13,35 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/providers/apps_provider.dart';
 
 /// A Riverpod provider that filters and sorts apps based on screen time for a specific day of the week.
-/// 
+///
 /// This provider takes a `FilterArgs` argument that defines filtering options.
-final packagesByScreenUsageProvider = Provider.family<AsyncValue<List<String>>, FilterArgs>(
-  (ref, params) {
+final packagesByScreenUsageProvider =
+    Provider.family<AsyncValue<List<String>>, FilterArgs>((ref, params) {
   // Watch the appsProvider state
   return ref.watch(appsProvider).when(
-    loading: () => const AsyncLoading(),
-    error: (e, st) => AsyncError(e, st),
-    data: (appsMap) {
-      /// Create list of apps from the map
-      var apps = appsMap.values.toList();
+        loading: () => const AsyncLoading(),
+        error: (e, st) => AsyncError(e, st),
+        data: (appsMap) {
+          /// Create list of apps from the map
+          var apps = appsMap.values.toList();
 
-      /// Filter out apps with no usage for the selected day
-      if (!params.includeAll) {
-        apps.removeWhere((e) => e.screenTimeThisWeek[params.selectedDoW] == 0);
-      }
+          /// Filter out apps with no usage for the selected day
+          if (!params.includeAll) {
+            apps.removeWhere(
+                (e) => e.screenTimeThisWeek[params.selectedDoW] == 0);
+          }
 
-      /// Repopulate list if empty after filtering (avoid empty result)
-      if (apps.isEmpty) apps = appsMap.values.toList();
+          /// Repopulate list if empty after filtering (avoid empty result)
+          if (apps.isEmpty) apps = appsMap.values.toList();
 
-      /// Sort apps based on screen time for the selected day (descending)
-      apps.sort(
-        (a, b) => b.screenTimeThisWeek[params.selectedDoW].compareTo(a.screenTimeThisWeek[params.selectedDoW]),
+          /// Sort apps based on screen time for the selected day (descending)
+          apps.sort(
+            (a, b) => b.screenTimeThisWeek[params.selectedDoW]
+                .compareTo(a.screenTimeThisWeek[params.selectedDoW]),
+          );
+
+          /// Map the sorted apps to a list of package names
+          return AsyncData(apps.map((e) => e.packageName).toList());
+        },
       );
-
-      /// Map the sorted apps to a list of package names
-      return AsyncData(apps.map((e) => e.packageName).toList());
-    },
-  );
 });

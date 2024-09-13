@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -33,10 +34,6 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
-import 'package:mindful/ui/permissions/alarm_permission.dart';
-import 'package:mindful/ui/permissions/display_overlay_permission.dart';
-import 'package:mindful/ui/permissions/notification_permission.dart';
-import 'package:mindful/ui/permissions/usage_access_permission.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -113,14 +110,6 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             ).sliver,
 
             24.vSliverBox,
-
-            const NotificationPermission(),
-
-            const ExactAlarmPermission(),
-
-            const UsageAccessPermission(),
-
-            const DisplayOverlayPermission(),
 
             SliverList.list(
               children: [

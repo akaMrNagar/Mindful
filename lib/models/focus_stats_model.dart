@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -42,7 +43,8 @@ class FocusStatsModel {
       todaysScreenTime: todaysScreenTime ?? this.todaysScreenTime,
       todaysFocusedTime: todaysFocusedTime ?? this.todaysFocusedTime,
       yesterdaysScreenTime: yesterdaysScreenTime ?? this.yesterdaysScreenTime,
-      yesterdaysFocusedTime: yesterdaysFocusedTime ?? this.yesterdaysFocusedTime,
+      yesterdaysFocusedTime:
+          yesterdaysFocusedTime ?? this.yesterdaysFocusedTime,
       lifetimeFocusedTime: lifetimeFocusedTime ?? this.lifetimeFocusedTime,
       successfulSessions: successfulSessions ?? this.successfulSessions,
       failedSessions: failedSessions ?? this.failedSessions,

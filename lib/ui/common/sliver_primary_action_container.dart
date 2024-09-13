@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -80,7 +81,6 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                 12.vBox,
 
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     /// Help button
@@ -91,7 +91,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                         child: const Text("Help?"),
                       ),
 
-                    0.hBox,
+                    const Spacer(),
 
                     /// Allow permission button
                     if (onTapAction != null)

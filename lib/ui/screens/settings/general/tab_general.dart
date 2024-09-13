@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -34,10 +35,10 @@ class TabGeneral extends ConsumerWidget {
       slivers: [
         /// Appbar
         const SliverFlexibleAppBar(title: "General"),
-    
+
         /// Appearance
         const SliverContentTitle(title: "Appearance"),
-    
+
         /// Theme mode
         DefaultDropdownTile<ThemeMode>(
           value: ref.watch(settingsProvider.select((v) => v.themeMode)),
@@ -50,7 +51,7 @@ class TabGeneral extends ConsumerWidget {
             DefaultDropdownItem(label: "Light", value: ThemeMode.light),
           ],
         ).sliver,
-    
+
         /// Material Color
         DefaultDropdownTile<String>(
           label: "Material color",
@@ -70,11 +71,11 @@ class TabGeneral extends ConsumerWidget {
                   ))
               .toList(),
         ).sliver,
-    
+
         /// Default settings
         12.vSliverBox,
         const SliverContentTitle(title: "Default"),
-    
+
         /// Data reset time
         DefaultListTile(
           titleText: "Daily data usage reset time",
@@ -91,7 +92,7 @@ class TabGeneral extends ConsumerWidget {
               initialTime: dataUsageResetTime,
               helpText: "Select daily data usage reset time",
             );
-    
+
             if (pickedTime != null && context.mounted) {
               ref
                   .read(settingsProvider.notifier)

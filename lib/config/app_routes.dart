@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -45,9 +46,13 @@ class AppRoutes {
 
   static final routes = {
     splashScreen: (context) => const SplashScreen(),
-    onboardingScreen: (context) => const OnboardingScreen(),
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
+
+    /// Resolve isOnboardingDone bool from arguments
+    onboardingScreen: (context) => OnboardingScreen(
+          isOnboardingDone: ModalRoute.of(context)?.settings.arguments as bool,
+        ),
 
     /// Resolve initial tab index from arguments
     focusScreen: (context) => FocusScreen(

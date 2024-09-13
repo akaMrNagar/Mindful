@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -25,8 +26,7 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
-import 'package:mindful/ui/permissions/accessibility_permission.dart';
-import 'package:mindful/ui/permissions/alarm_permission.dart';
+import 'package:mindful/ui/permissions/accessibility_permission_card.dart';
 import 'package:mindful/ui/screens/home/wellbeing/sliver_blocked_websites_list.dart';
 import 'package:mindful/ui/screens/home/wellbeing/sliver_shorts_quick_actions.dart';
 import 'package:mindful/ui/screens/home/wellbeing/shorts_timer_chart.dart';
@@ -78,12 +78,6 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       permissionProvider.select((v) => v.haveAccessibilityPermission),
     );
 
-    final haveAlarmPermission = ref.watch(
-      permissionProvider.select((v) => v.haveAlarmsPermission),
-    );
-
-    final havePerms = haveAccessibilityPermission && haveAlarmPermission;
-
     final remainingTimeSec = max(
       0,
       (allowedShortContentTimeSec - _shortsScreenTimeSec),
@@ -107,21 +101,20 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
         ).sliver,
 
-        const ExactAlarmPermission(),
-        const AccessibilityPermission(),
+        const AccessibilityPermissionCard(),
 
         /// Short content header
         const SliverContentTitle(title: "Short content"),
 
         /// Short usage progress bar
         ShortsTimerChart(
-          isModifiable: isModifiable && havePerms,
+          isModifiable: isModifiable && haveAccessibilityPermission,
           allowedTimeSec: max(allowedShortContentTimeSec, 1),
           remainingTimeSec: remainingTimeSec,
         ).sliver,
 
         SliverPrimaryActionContainer(
-          isVisible: havePerms && !isModifiable,
+          isVisible: haveAccessibilityPermission && !isModifiable,
           margin: const EdgeInsets.symmetric(vertical: 16),
           icon: FluentIcons.animal_cat_20_regular,
           title: "Invincible mode",
@@ -131,7 +124,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
         /// Quick actions
         SliverShortsQuickActions(
-          haveNecessaryPerms: havePerms,
+          haveNecessaryPerms: haveAccessibilityPermission,
           isModifiable: isModifiable,
         ),
 

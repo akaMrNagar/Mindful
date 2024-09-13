@@ -1,6 +1,7 @@
 /*
  *
- *  * Copyright (c) 2024 Pawan Nagar (https://github.com/akaMrNagar)
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
  *  *
  *  * This source code is licensed under the GPL-2.0 license license found in the
  *  * LICENSE file in the root directory of this source tree.
@@ -72,92 +73,92 @@ class ShortsTimerChart extends ConsumerWidget {
       progressValue,
     );
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 12, bottom: 16),
-      child: SizedBox.square(
-        dimension: squareDimension,
-        child: Stack(
-          alignment: Alignment.center,
-          fit: StackFit.passthrough,
-          children: [
-            /// Background ring with color based on progress
-            Semantics(
-              excludeSemantics: true,
-              child: RotatedBox(
-                quarterTurns: 2,
-                child: FittedBox(
-                  child: CircularProgressIndicator(
-                    value: 1,
-                    strokeWidth: 4,
-                    strokeAlign: BorderSide.strokeAlignCenter,
-                    color: lerpedColor,
+    return Opacity(
+      opacity: isModifiable ? 1 : 0.4,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 16),
+        child: SizedBox.square(
+          dimension: squareDimension,
+          child: Stack(
+            alignment: Alignment.center,
+            fit: StackFit.passthrough,
+            children: [
+              /// Background ring with color based on progress
+              Semantics(
+                excludeSemantics: true,
+                child: RotatedBox(
+                  quarterTurns: 2,
+                  child: FittedBox(
+                    child: CircularProgressIndicator(
+                      value: 1,
+                      strokeWidth: 4,
+                      strokeAlign: BorderSide.strokeAlignCenter,
+                      color: lerpedColor,
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            /// Remaining time progress bar
-            RotatedBox(
-              quarterTurns: 2,
-              child: FittedBox(
-                child: CircularProgressIndicator(
-                  value: progressValue,
-                  strokeWidth: 2.5,
-                  strokeCap: StrokeCap.round,
-                  strokeAlign: BorderSide.strokeAlignCenter,
+              /// Remaining time progress bar
+              RotatedBox(
+                quarterTurns: 2,
+                child: FittedBox(
+                  child: CircularProgressIndicator(
+                    value: progressValue,
+                    strokeWidth: 2.5,
+                    strokeCap: StrokeCap.round,
+                    strokeAlign: BorderSide.strokeAlignCenter,
+                  ),
                 ),
               ),
-            ),
 
-            /// Remaining time
-            FittedBox(
-              child: RoundedContainer(
-                width: squareDimension,
-                height: squareDimension,
-                circularRadius: squareDimension,
-                margin: const EdgeInsets.all(20),
-                padding: const EdgeInsets.all(12),
-                color: lerpedColor,
-                onPressed:
-                    isModifiable ? () => _editAllowedTime(context, ref) : null,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      FluentIcons.beach_20_regular,
-                      size: 56,
-                    ),
-                    12.vBox,
-
-                    /// Remaining Time text
-                    TimeTextShort(
-                      timeDuration: remainingTimeSec.seconds,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 32,
-                    ),
-                    2.vBox,
-                    StyledText(
-                      "Left from ${allowedTimeSec.seconds.toTimeShort()}",
-                      fontSize: 14,
-                      isSubtitle: true,
-                      fontWeight: FontWeight.w500,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    32.vBox,
-                    DefaultHero(
-                      tag: HeroTags.shortContentTimerPickerTag,
-                      child: Icon(
-                        isModifiable
-                            ? FluentIcons.edit_20_regular
-                            : FluentIcons.edit_off_20_regular,
+              /// Remaining time
+              FittedBox(
+                child: RoundedContainer(
+                  width: squareDimension,
+                  height: squareDimension,
+                  circularRadius: squareDimension,
+                  margin: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(12),
+                  color: lerpedColor,
+                  onPressed: isModifiable
+                      ? () => _editAllowedTime(context, ref)
+                      : null,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        FluentIcons.beach_20_regular,
+                        size: 56,
                       ),
-                    ),
-                  ],
+                      12.vBox,
+
+                      /// Remaining Time text
+                      TimeTextShort(
+                        timeDuration: remainingTimeSec.seconds,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 32,
+                      ),
+                      2.vBox,
+                      StyledText(
+                        "Left from ${allowedTimeSec.seconds.toTimeShort()}",
+                        fontSize: 14,
+                        isSubtitle: true,
+                        fontWeight: FontWeight.w500,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      32.vBox,
+                      const DefaultHero(
+                        tag: HeroTags.shortContentTimerPickerTag,
+                        child: Icon(FluentIcons.edit_20_regular),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

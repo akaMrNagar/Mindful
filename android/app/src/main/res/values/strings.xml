@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+  ~  *  *
+  ~  *  * This source code is licensed under the GPL-2.0 license license found in the
+  ~  *  * LICENSE file in the root directory of this source tree.
+  ~  *
+  ~  */
+  -->
+
 <resources>
     <string name="app_name">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block websites and short-form content on apps like Instagram, YouTube, Snapchat, and Facebook. It checks URLs and content against your blocklist and prevents access to help you stay focused.</string>
