@@ -65,6 +65,7 @@ jobs:
           debugSymbols: build/app/intermediates/merged_native_libs/release/out/lib
           track: internal
           status: draft
+          changesNotSentForReview: true
 
       - name: Cleanup
         run: |
