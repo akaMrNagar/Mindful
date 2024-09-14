@@ -87,10 +87,6 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
       } else {
         _timer!.cancel();
         _launchConfetti();
-        Future.delayed(
-          1.seconds,
-          ref.read(focusModeProvider.notifier).refreshActiveSessionState,
-        );
       }
     });
   }

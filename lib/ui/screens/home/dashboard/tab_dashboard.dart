@@ -38,21 +38,10 @@ import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class TabDashboard extends ConsumerStatefulWidget {
+class TabDashboard extends ConsumerWidget {
   const TabDashboard({super.key});
 
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TabDashboardState();
-}
-
-class _TabDashboardState extends ConsumerState<TabDashboard> {
-  @override
-  void initState() {
-    super.initState();
-    ref.read(focusModeProvider.notifier).refreshActiveSessionState();
-  }
-
-  void _editUserName() async {
+  void _editUserName(BuildContext context, WidgetRef ref) async {
     final userName = await showUsernameInputDialog(
       context: context,
       heroTag: HeroTags.editUsernameTag,
@@ -63,7 +52,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final currentStreak =
         ref.watch(focusModeProvider.select((v) => v.currentStreak));
 
@@ -95,7 +84,7 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             DefaultHero(
               tag: HeroTags.editUsernameTag,
               child: InkWell(
-                onLongPress: _editUserName,
+                onLongPress: () => _editUserName(context, ref),
                 onTap: () => context.showSnackAlert(
                   "Long press to edit username.",
                   icon: FluentIcons.edit_20_filled,
@@ -110,6 +99,9 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
             ).sliver,
 
             24.vSliverBox,
+
+            /// Active session
+            const SliverActiveSessionAlert(margin: EdgeInsets.only(bottom: 8)),
 
             SliverList.list(
               children: [
@@ -237,9 +229,6 @@ class _TabDashboardState extends ConsumerState<TabDashboard> {
                 interval: 100.ms,
               ),
             ),
-
-            /// Active session
-            const SliverActiveSessionAlert(margin: EdgeInsets.only(top: 8)),
 
             20.vSliverBox,
 
