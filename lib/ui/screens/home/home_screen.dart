@@ -18,6 +18,7 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
@@ -42,6 +43,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     /// Initialize the provider to start the necessary services
     ref.read(restrictionInfosProvider);
+
+    /// Restart services if they ara inactive but needed
+    _restartServicesIfNeeded();
 
     final targetPackage = MethodChannelService.instance.targetedAppPackage;
     if (targetPackage.isEmpty) return;
@@ -73,6 +77,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           selectedDoW: todayOfWeek,
         ),
       );
+    }
+  }
+
+  void _restartServicesIfNeeded() async {
+    final perms =
+        await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
+
+    final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
+        perms.haveDisplayOverlayPermission &&
+        perms.haveAlarmsPermission &&
+        perms.haveNotificationPermission;
+
+    /// Calling these methods with empty package to only start services if they are needed but they are inactive
+    if (haveAllEssentialPermissions) {
+      ref.read(restrictionInfosProvider.notifier).updateAppTimer('', 0);
+
+      if (perms.haveVpnPermission) {
+        ref
+            .read(restrictionInfosProvider.notifier)
+            .switchInternetAccess('', true);
+      }
     }
   }
 

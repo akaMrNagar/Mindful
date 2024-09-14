@@ -34,7 +34,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
-        String action = Utils.notNullStr(intent.getAction());
+        String action = Utils.getActionFromIntent(intent);
 
         if (Intent.ACTION_BOOT_COMPLETED.equals(action) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
             Log.d(TAG, "onReceive: Device reboot broadcast received. Now doing the needful");

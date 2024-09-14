@@ -14,6 +14,7 @@ package com.mindful.android.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -255,6 +256,17 @@ public class Utils {
     public static String notNullStr(@Nullable String nullableString) {
         if (nullableString != null) return nullableString;
         else return "";
+    }
+
+    /**
+     * Null safe method that returns an empty string if the provided Intent is null or Intent's Action is null.
+     *
+     * @param intent The nullable Intent to check.
+     * @return The action string if it's not null, otherwise an empty string.
+     */
+    @NonNull
+    public static String getActionFromIntent(@Nullable Intent intent) {
+        return intent == null ? "" : notNullStr(intent.getAction());
     }
 
     /**

@@ -29,6 +29,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.R;
 
+import java.util.Arrays;
+
 /**
  * NotificationHelper provides utility methods for managing notification channels and permissions
  * in an Android application.
@@ -67,10 +69,7 @@ public class NotificationHelper {
 
             // Register channels
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannel(criticalChannel);
-            notificationManager.createNotificationChannel(focusChannel);
-            notificationManager.createNotificationChannel(bedtimeChannel);
-            notificationManager.createNotificationChannel(serviceChannel);
+            notificationManager.createNotificationChannels(Arrays.asList(criticalChannel, focusChannel, bedtimeChannel, serviceChannel));
         }
     }
 

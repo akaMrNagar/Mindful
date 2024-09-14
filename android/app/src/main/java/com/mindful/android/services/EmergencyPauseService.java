@@ -65,8 +65,8 @@ public class EmergencyPauseService extends Service {
     }
 
     @Override
-    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        String action = Utils.notNullStr(intent.getAction());
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = Utils.getActionFromIntent(intent);
 
         if (ACTION_START_SERVICE_EMERGENCY.equals(action)) {
             int leftPasses = SharedPrefsHelper.fetchEmergencyPassesCount(this);

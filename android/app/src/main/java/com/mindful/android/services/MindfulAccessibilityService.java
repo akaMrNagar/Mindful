@@ -89,8 +89,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private long mTotalShortsScreenTimeMs = 0L;
 
     @Override
-    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        String action = Utils.notNullStr(intent.getAction());
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = Utils.getActionFromIntent(intent);
 
         if (ACTION_MIDNIGHT_SERVICE_RESET.equals(action)) {
             mTotalShortsScreenTimeMs = 0;

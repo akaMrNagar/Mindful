@@ -29,10 +29,6 @@ class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
     final items = await IsarDbService.instance.loadRestrictionInfos();
     state = Map.fromEntries(items.map((e) => MapEntry(e.appPackage, e)));
 
-    /// Calling these methods with empty package to only start services if they are needed but they are inactive
-    updateAppTimer("", 0);
-    switchInternetAccess("", true);
-
     addListener((state) async {
       /// Save changes to the Isar database whenever the state updates.
       await IsarDbService.instance.saveRestrictionInfos(state.values.toList());

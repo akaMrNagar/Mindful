@@ -32,8 +32,6 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
-  String nextScreenRoute = AppRoutes.homeScreen;
-
   @override
   void initState() {
     super.initState();
@@ -69,7 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     return PopScope(
       canPop: false,
       child: Scaffold(
