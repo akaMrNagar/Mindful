@@ -81,4 +81,13 @@ class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
 
     await MethodChannelService.instance.updateBlockedApps(blockedApps);
   }
+
+  /// Restart services if they ara inactive but needed
+  void checkAndRestartServices({
+    required bool haveVpnPermission,
+  }) {
+    /// Calling these methods with empty package to only start services if they are needed but they are inactive
+    updateAppTimer('', 0);
+    if (haveVpnPermission) switchInternetAccess('', true);
+  }
 }

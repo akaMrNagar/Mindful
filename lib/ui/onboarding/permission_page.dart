@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/permissions/alarm_permission_tile.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission_tile.dart';
@@ -35,7 +36,17 @@ class PermissionsPage extends ConsumerWidget {
       (_) {
         if (haveAllEssentialPermissions && context.mounted) {
           MethodChannelService.instance.setOnboardingDone();
-          Future.delayed(250.ms, () => Navigator.of(context).maybePop());
+          Future.delayed(
+            250.ms,
+            () {
+              Navigator.of(context).maybePop();
+              ref
+                  .read(restrictionInfosProvider.notifier)
+                  .checkAndRestartServices(
+                    haveVpnPermission: perms.haveVpnPermission,
+                  );
+            },
+          );
         }
       },
     );
