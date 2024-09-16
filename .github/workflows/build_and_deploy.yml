@@ -65,7 +65,7 @@ jobs:
           debugSymbols: build/app/intermediates/merged_native_libs/release/out/lib
           track: internal
           status: draft
-          changesNotSentForReview: true
+          changesNotSentForReview: ${{ secrets.SEND_FOR_REVIEW }}  # true or false
 
       - name: Cleanup
         run: |
