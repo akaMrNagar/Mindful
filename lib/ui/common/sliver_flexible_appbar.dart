@@ -90,7 +90,7 @@ class SliverFlexibleAppBar extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.primary,
                     onPressed: () => _showBetaDialog(context, appVersion),
                     child: StyledText(
-                      "DEV",
+                      appVersion.contains('DEBUG') ? "DEBUG" : "DEV",
                       color: Theme.of(context).colorScheme.onPrimary,
                       overflow: TextOverflow.fade,
                     ),

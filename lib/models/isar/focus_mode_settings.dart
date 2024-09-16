@@ -69,7 +69,19 @@ class FocusModeSettings {
       currentStreak: currentStreak ?? this.currentStreak,
       lastStreakUpdatedDayMsEpoch:
           lastStreakUpdatedDayMsEpoch ?? this.lastStreakUpdatedDayMsEpoch,
-      activeSession: activeSession,
+      activeSession: activeSession ?? this.activeSession,
+    );
+  }
+
+  FocusModeSettings removeActiveSession() {
+    return FocusModeSettings(
+      sessionType: sessionType,
+      shouldStartDnd: shouldStartDnd,
+      distractingApps: distractingApps,
+      longestStreak: longestStreak,
+      currentStreak: currentStreak,
+      lastStreakUpdatedDayMsEpoch: lastStreakUpdatedDayMsEpoch,
+      activeSession: null,
     );
   }
 }

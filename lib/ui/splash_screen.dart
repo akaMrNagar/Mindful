@@ -19,6 +19,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -32,8 +33,6 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
-  String nextScreenRoute = AppRoutes.homeScreen;
-
   @override
   void initState() {
     super.initState();
@@ -60,6 +59,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (haveAllEssentialPermissions && isOnboardingDone) {
       ref.read(appsProvider);
       Navigator.of(context).pop();
+      ref
+          .read(restrictionInfosProvider.notifier)
+          .checkAndRestartServices(haveVpnPermission: perms.haveVpnPermission);
     } else {
       Navigator.of(context).pushReplacementNamed(
         AppRoutes.onboardingScreen,

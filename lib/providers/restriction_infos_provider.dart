@@ -29,10 +29,6 @@ class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
     final items = await IsarDbService.instance.loadRestrictionInfos();
     state = Map.fromEntries(items.map((e) => MapEntry(e.appPackage, e)));
 
-    /// Calling these methods with empty package to only start services if they are needed but they are inactive
-    updateAppTimer("", 0);
-    switchInternetAccess("", true);
-
     addListener((state) async {
       /// Save changes to the Isar database whenever the state updates.
       await IsarDbService.instance.saveRestrictionInfos(state.values.toList());
@@ -84,5 +80,14 @@ class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
         .toList();
 
     await MethodChannelService.instance.updateBlockedApps(blockedApps);
+  }
+
+  /// Restart services if they ara inactive but needed
+  void checkAndRestartServices({
+    required bool haveVpnPermission,
+  }) {
+    /// Calling these methods with empty package to only start services if they are needed but they are inactive
+    updateAppTimer('', 0);
+    if (haveVpnPermission) switchInternetAccess('', true);
   }
 }

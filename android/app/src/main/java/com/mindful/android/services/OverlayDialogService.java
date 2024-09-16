@@ -34,7 +34,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -57,7 +56,12 @@ public class OverlayDialogService extends Service {
     private DialogType mDialogType = DialogType.TimerOut;
 
     @Override
-    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent == null) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+
         mPackageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
         mDialogType = DialogType.fromInteger(intent.getIntExtra(INTENT_EXTRA_DIALOG_TYPE, mDialogType.toInteger()));
 

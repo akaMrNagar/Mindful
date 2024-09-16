@@ -8,8 +8,10 @@
  *
  */
 
+import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
@@ -27,6 +29,8 @@ final focusModeProvider =
 
 /// This class manages the state of Focus Mode Settings.
 class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
+  Timer? _activeSessionTimer;
+
   FocusModeNotifier() : super(const FocusModeSettings()) {
     _init();
   }
@@ -34,17 +38,19 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
   /// Initializes the state by loading from the database and setting up a listener for saving changes.
   void _init() async {
     state = await IsarDbService.instance.loadFocusModeSettings();
-    await refreshActiveSessionState();
+    await _checkAndUpdateActiveSession();
 
     /// Start service if already not running
     if (state.activeSession != null) {
-      startFocusSessionService(state.activeSession!);
+      _startFocusSessionService(state.activeSession!);
     }
 
     /// Listen to provider and save changes to Isar database
-    addListener((state) async {
-      await IsarDbService.instance.saveFocusModeSettings(state);
-    });
+    addListener(
+      (state) async {
+        await IsarDbService.instance.saveFocusModeSettings(state);
+      },
+    );
   }
 
   /// Enables or disables Do Not Disturb during the Focus Session.
@@ -95,31 +101,6 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
     );
   }
 
-  /// Refresh the state for active session
-  ///
-  /// Checks if the last active session is still ongoing or if it needs to be marked as successful.
-  Future<void> refreshActiveSessionState() async {
-    final activeSession =
-        await IsarDbService.instance.loadLastActiveFocusSession();
-
-    if (activeSession != null) {
-      final timeDiffSecs =
-          DateTime.now().difference(activeSession.startTime).inSeconds;
-
-      /// If session is completed then update it's state in Database
-      if (timeDiffSecs >= activeSession.durationSecs) {
-        await IsarDbService.instance.insertFocusSession(
-          activeSession.copyWith(state: SessionState.successful),
-        );
-        state = state.copyWith(activeSession: null);
-        updateSessionsStreak();
-        return;
-      }
-    }
-
-    state = state.copyWith(activeSession: activeSession);
-  }
-
   /// Starts a new focus session with the specified duration.
   ///
   /// Returns a [FocusSession] object representing the newly started session.
@@ -133,13 +114,16 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
     );
 
     /// Start service
-    await startFocusSessionService(session);
+    await _startFocusSessionService(session);
 
     /// Insert session to database
     await IsarDbService.instance.insertFocusSession(session);
 
     /// Update state
     state = state.copyWith(activeSession: session);
+
+    /// Schedule the session timer
+    _scheduleRefreshActiveSessionTimer(durationSeconds.seconds);
     return session;
   }
 
@@ -160,15 +144,64 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
 
     /// Start service
     await MethodChannelService.instance.stopFocusSession();
-    state = state.copyWith(activeSession: null);
+
+    /// Cancel active session timer
+    _activeSessionTimer?.cancel();
+
+    state = state.removeActiveSession();
+  }
+
+  /// Checks and updates the active session status.
+  ///
+  /// This function checks whether the last active focus session is still ongoing
+  /// or if it needs to be marked as successful based on the session's duration.
+  /// If the session is still active, it schedules a future check when the session is expected to complete.
+  Future<void> _checkAndUpdateActiveSession() async {
+    final activeSession =
+        await IsarDbService.instance.loadLastActiveFocusSession();
+
+    if (activeSession != null) {
+      final timeDiffSecs =
+          DateTime.now().difference(activeSession.startTime).inSeconds;
+
+      /// If session is completed then update it's state in Database
+      if (timeDiffSecs >= activeSession.durationSecs) {
+        await IsarDbService.instance.insertFocusSession(
+          activeSession.copyWith(state: SessionState.successful),
+        );
+        state = state.removeActiveSession();
+        updateSessionsStreak();
+        return;
+      } else {
+        // Adding 1 second ensures that the check occurs slightly after the session is supposed to end.
+        final expectedToCompleteInSecs =
+            (activeSession.durationSecs - timeDiffSecs + 1);
+        _scheduleRefreshActiveSessionTimer(expectedToCompleteInSecs.seconds);
+      }
+    }
+
+    state = state.copyWith(activeSession: activeSession);
   }
 
   /// Starts the focus session service with the given session.
-  Future<void> startFocusSessionService(FocusSession session) async =>
+  Future<void> _startFocusSessionService(FocusSession session) async =>
       await MethodChannelService.instance.startFocusSession(
         durationSeconds: session.durationSecs,
         startTimeMsEpoch: session.startTimeMsEpoch,
         toggleDnd: state.shouldStartDnd,
         distractingApps: state.distractingApps,
       );
+
+  /// This function schedules a future check call to [_checkAndUpdateActiveSession]
+  /// with the specified [Duration] delay
+  void _scheduleRefreshActiveSessionTimer(Duration delay) {
+    _activeSessionTimer?.cancel();
+    _activeSessionTimer = Timer(delay, _checkAndUpdateActiveSession);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _activeSessionTimer?.cancel();
+  }
 }

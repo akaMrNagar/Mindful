@@ -82,14 +82,10 @@ public class MindfulTrackerService extends Service {
     private HashSet<String> mBedtimeDistractingApps = new HashSet<>(0);
     private HashSet<String> mFocusSessionDistractingApps = new HashSet<>(0);
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-    }
 
     @Override
-    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        String action = Utils.notNullStr(intent.getAction());
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = Utils.getActionFromIntent(intent);
 
         switch (action) {
             // Only start service

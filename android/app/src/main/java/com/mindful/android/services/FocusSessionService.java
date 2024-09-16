@@ -69,8 +69,8 @@ public class FocusSessionService extends Service {
     }
 
     @Override
-    public int onStartCommand(@NonNull Intent intent, int flags, int startId) {
-        String action = Utils.notNullStr(intent.getAction());
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        String action = Utils.getActionFromIntent(intent);
 
         if (ACTION_START_SERVICE_FOCUS.equals(action)) {
             mFocusSession = new FocusSession(Utils.notNullStr(intent.getStringExtra(INTENT_EXTRA_FOCUS_SESSION_JSON)));
