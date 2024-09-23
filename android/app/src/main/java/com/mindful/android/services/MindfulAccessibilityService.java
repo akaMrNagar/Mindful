@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
@@ -76,6 +77,22 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
      */
     private static final long SHORT_CONTENT_ACTIVITY_APPROX = 60 * 1000;
+
+
+    /**
+     * List of Ids of URL Bars used by different browsers.
+     * These are used to retrieve/extract url from the browsers.
+     */
+    private final HashSet<String> mUrlBarNodeIds = new HashSet<>(Set.of(
+            ":id/url_bar",
+            ":id/mozac_browser_toolbar_url_view",
+            ":id/url",
+            ":id/search",
+            ":id/url_field",
+            ":id/location_bar_edit_text",
+            ":id/addressbarEdit",
+            ":id/bro_omnibar_address_title_text"
+    ));
 
     private final AppInstallUninstallReceiver mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
@@ -130,11 +147,19 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
         // Return if no need for blocking
-        if (mWellBeingSettings.blockedWebsites.isEmpty() && !mWellBeingSettings.blockInstaReels && !mWellBeingSettings.blockYtShorts && !mWellBeingSettings.blockSnapSpotlight && !mWellBeingSettings.blockFbReels && !mWellBeingSettings.blockNsfwSites)
+        if (mWellBeingSettings.blockedWebsites.isEmpty() &&
+                !mWellBeingSettings.blockInstaReels &&
+                !mWellBeingSettings.blockYtShorts &&
+                !mWellBeingSettings.blockSnapSpotlight &&
+                !mWellBeingSettings.blockFbReels &&
+                !mWellBeingSettings.blockNsfwSites
+        ) {
             return;
+        }
 
-        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null)
+        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null) {
             return;
+        }
 
         String packageName = event.getPackageName().toString();
         AccessibilityNodeInfo node = event.getSource();
@@ -216,8 +241,12 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // For GOOGLE and BING search engines
         if (!url.contains("safe=active") && (url.contains("google.com/search?") || url.contains("bing.com/search?"))) {
+            // Caching last redirect url because sometime google removes the '&safe=active' parameter
+            // thus it can trigger redirect whenever something changes
+            if (mLastRedirectedUrl.equals(url)) return;
             String safeUrl = url + "&safe=active";
             redirectUserToUrl(safeUrl, browserPackage);
+            mLastRedirectedUrl = url;
         }
         // For DUCKDUCKGO and BRAVE search engines
         else if (!hostDomain.contains("safe.") && (url.contains("search.brave.com/search?") || url.contains("duckduckgo.com/?"))) {
@@ -237,15 +266,17 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * @param browserPackage The package name of the browser app.
      */
     private void redirectUserToUrl(String url, String browserPackage) {
-        if (mLastRedirectedUrl.equals(url)) return;
-        mLastRedirectedUrl = url;
         long currentTime = System.currentTimeMillis();
 
         if ((currentTime - mLastTimeUrlRedirectInvoked) >= URL_REDIRECT_INVOKE_INTERVAL_MS) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + url));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)));
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
+            intent.setPackage(browserPackage);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
             if (intent.resolveActivity(getPackageManager()) != null) {
+                // Popping first to replace head of browser history stack instead of inserting in it.
+                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                 startActivity(intent);
                 Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
             } else {
@@ -265,43 +296,23 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      */
     @NonNull
     private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
-        // Find by id 'url_bar' on chromium based browsers
-        List<AccessibilityNodeInfo> chromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/url_bar");
-        if (chromiumUrlNodes != null && !chromiumUrlNodes.isEmpty()) {
-            CharSequence txtSequence = chromiumUrlNodes.get(0).getText();
-            if (txtSequence != null) {
-                return txtSequence.toString();
-            }
-        }
-
-        // Find by id 'mozac_browser_toolbar_url_view' on non chromium browsers
-        List<AccessibilityNodeInfo> nonChromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/mozac_browser_toolbar_url_view");
-        if (nonChromiumUrlNodes != null && !nonChromiumUrlNodes.isEmpty()) {
-            CharSequence txtSequence = nonChromiumUrlNodes.get(0).getText();
-            if (txtSequence != null) {
-                return txtSequence.toString();
+        for (String id : mUrlBarNodeIds) {
+            List<AccessibilityNodeInfo> urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id);
+            if (urlBarNodes != null && !urlBarNodes.isEmpty()) {
+                CharSequence txtSequence = urlBarNodes.get(0).getText();
+                if (txtSequence != null && txtSequence.length() > 1) {
+                    return txtSequence.toString();
+                }
             }
         }
 
         // Find by input field class
         if (node.getClassName().equals("android.widget.EditText")) {
             CharSequence txtSequence = node.getText();
-            if (txtSequence != null) {
+            if (txtSequence != null && txtSequence.length() > 1) {
                 return txtSequence.toString();
             }
         }
-
-        // TODO: For Future references if user requests for these browsers
-//        "com.sec.android.app.sbrowser" = "com.sec.android.app.sbrowser:id/location_bar_edit_text"
-//        "com.android.browser" = "com.android.browser:id/url"
-//        "com.opera.browser" = "com.opera.browser:id/url_field"
-//        "com.opera.mini.native" = "com.opera.mini.native:id/url_field"
-//        "com.opera.browser.beta" = "com.opera.browser.beta:id/url_field"
-//        "com.opera.touch" = "com.opera.touch:id/addressbarEdit"
-//        "com.mi.globalbrowser" = "com.mi.globalbrowser:id/url"
-//        "com.yandex.browser" = "com.yandex.browser:id/bro_omnibar_address_title_text"
-//        "com.yandex.browser.beta" = "com.yandex.browser.beta:id/bro_omnibar_address_title_text"
-//        "com.sec.android.app.sbrowser.lite" = "com.sec.android.app.sbrowser.lite:id/location_bar_edit_text"
         return "";
     }
 
@@ -355,6 +366,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         for (ResolveInfo browser : browsers) {
             allowedAppPackages.add(browser.activityInfo.packageName);
+            Log.d(TAG, "refreshServiceInfo: Browser found: " + browser.activityInfo.packageName);
         }
 
         // For short form content blocking on their native apps
@@ -369,7 +381,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
-        info.flags = AccessibilityServiceInfo.DEFAULT | AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS | AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS | AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+        info.flags = AccessibilityServiceInfo.DEFAULT |
+                AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS |
+                AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS |
+                AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
         info.notificationTimeout = 500;
         info.packageNames = allowedAppPackages.toArray(new String[0]);
         setServiceInfo(info);
@@ -418,6 +433,60 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         private String getPackageName(@NonNull Intent intent) {
             Uri uri = intent.getData();
             return uri != null ? uri.getSchemeSpecificPart() : "NULL";
+        }
+    }
+
+
+    /**
+     * Recursively logs information about the accessibility node and its children.
+     * This method traverses the accessibility node tree starting from the given parent node,
+     * logging the class name, view ID, and text content of each node.
+     *
+     * <p>Note: This method does not provide any functional capabilities but is helpful
+     * for debugging and testing purposes.</p>
+     *
+     * @param parentNode The root node from which to start logging. This should be the
+     *                   top-level accessibility node to explore its hierarchy.
+     */
+    private void logNodeInfoRecursively(AccessibilityNodeInfo parentNode) {
+        logNode(parentNode, 0);
+
+        for (int i = 0; i < parentNode.getChildCount(); i++) {
+            AccessibilityNodeInfo childNode = parentNode.getChild(i);
+            logNode(childNode, 1);
+            if (childNode == null) continue;
+
+            for (int j = 0; j < childNode.getChildCount(); j++) {
+                AccessibilityNodeInfo nthChildNode = childNode.getChild(j);
+                logNode(nthChildNode, 2);
+                if (nthChildNode == null) continue;
+
+                for (int k = 0; k < nthChildNode.getChildCount(); k++) {
+                    AccessibilityNodeInfo leafNode = nthChildNode.getChild(k);
+                    logNode(leafNode, 3);
+                }
+            }
+        }
+    }
+
+    /**
+     * Logs information about a specific accessibility node.
+     * This method outputs the class name, view ID, and text content of the given node
+     * at the specified hierarchical level.
+     *
+     * <p>Note: This method does not provide any functional capabilities but is helpful
+     * for debugging and testing purposes.</p>
+     *
+     * @param node  The accessibility node to log. This can be any node in the hierarchy.
+     * @param level The hierarchical level of the node in the tree, where 0 represents
+     *              the root node and higher values indicate deeper levels in the hierarchy.
+     */
+    private void logNode(AccessibilityNodeInfo node, int level) {
+        if (node != null) {
+            Log.d(TAG, "Level: " + level +
+                    " Class: " + node.getClassName() +
+                    " Id: " + node.getViewIdResourceName() +
+                    " Text: " + node.getText());
         }
     }
 }

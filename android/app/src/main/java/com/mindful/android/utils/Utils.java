@@ -327,4 +327,20 @@ public class Utils {
         }
     }
 
+
+    /**
+     * Ensures the given URL uses the HTTPS protocol.
+     *
+     * <p>If the URL starts with "https://", it is returned unchanged. If it starts with
+     * "http://", the protocol is changed to "https://". If no protocol is present,
+     * "https://" is added.</p>
+     *
+     * @param url The URL to validate (must not be null).
+     * @return A URL that starts with "https://".
+     */
+    public static String validateHttpsProtocol(@NonNull String url) {
+        return url.startsWith("https://") ? url :
+                url.startsWith("http://") ?
+                        url.replace("http://", "https://") : ("https://" + url);
+    }
 }
