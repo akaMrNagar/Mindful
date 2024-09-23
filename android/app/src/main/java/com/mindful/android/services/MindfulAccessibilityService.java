@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
@@ -76,6 +77,12 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
      */
     private static final long SHORT_CONTENT_ACTIVITY_APPROX = 60 * 1000;
+
+
+    private final HashSet<String> mUrlBarNodeIds = new HashSet<>(Set.of(
+            ":id/url_bar",
+            ":id/mozac_browser_toolbar_url_view"
+    ));
 
     private final AppInstallUninstallReceiver mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
@@ -130,11 +137,19 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     @Override
     public void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
         // Return if no need for blocking
-        if (mWellBeingSettings.blockedWebsites.isEmpty() && !mWellBeingSettings.blockInstaReels && !mWellBeingSettings.blockYtShorts && !mWellBeingSettings.blockSnapSpotlight && !mWellBeingSettings.blockFbReels && !mWellBeingSettings.blockNsfwSites)
+        if (mWellBeingSettings.blockedWebsites.isEmpty() &&
+                !mWellBeingSettings.blockInstaReels &&
+                !mWellBeingSettings.blockYtShorts &&
+                !mWellBeingSettings.blockSnapSpotlight &&
+                !mWellBeingSettings.blockFbReels &&
+                !mWellBeingSettings.blockNsfwSites
+        ) {
             return;
+        }
 
-        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null)
+        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null) {
             return;
+        }
 
         String packageName = event.getPackageName().toString();
         AccessibilityNodeInfo node = event.getSource();
@@ -216,8 +231,12 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // For GOOGLE and BING search engines
         if (!url.contains("safe=active") && (url.contains("google.com/search?") || url.contains("bing.com/search?"))) {
+            // Caching last redirect url because sometime google removes the '&safe=active' parameter
+            // thus it can trigger redirect whenever something changes
+            if (mLastRedirectedUrl.equals(url)) return;
             String safeUrl = url + "&safe=active";
             redirectUserToUrl(safeUrl, browserPackage);
+            mLastRedirectedUrl = url;
         }
         // For DUCKDUCKGO and BRAVE search engines
         else if (!hostDomain.contains("safe.") && (url.contains("search.brave.com/search?") || url.contains("duckduckgo.com/?"))) {
@@ -237,15 +256,17 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * @param browserPackage The package name of the browser app.
      */
     private void redirectUserToUrl(String url, String browserPackage) {
-        if (mLastRedirectedUrl.equals(url)) return;
-        mLastRedirectedUrl = url;
         long currentTime = System.currentTimeMillis();
 
         if ((currentTime - mLastTimeUrlRedirectInvoked) >= URL_REDIRECT_INVOKE_INTERVAL_MS) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + url));
             intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
+            intent.setPackage(browserPackage);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
             if (intent.resolveActivity(getPackageManager()) != null) {
+                // Popping first to replace head of browser history stack instead of inserting in it.
+                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                 startActivity(intent);
                 Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
             } else {
@@ -265,28 +286,20 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      */
     @NonNull
     private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
-        // Find by id 'url_bar' on chromium based browsers
-        List<AccessibilityNodeInfo> chromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/url_bar");
-        if (chromiumUrlNodes != null && !chromiumUrlNodes.isEmpty()) {
-            CharSequence txtSequence = chromiumUrlNodes.get(0).getText();
-            if (txtSequence != null) {
-                return txtSequence.toString();
-            }
-        }
-
-        // Find by id 'mozac_browser_toolbar_url_view' on non chromium browsers
-        List<AccessibilityNodeInfo> nonChromiumUrlNodes = node.findAccessibilityNodeInfosByViewId(packageName + ":id/mozac_browser_toolbar_url_view");
-        if (nonChromiumUrlNodes != null && !nonChromiumUrlNodes.isEmpty()) {
-            CharSequence txtSequence = nonChromiumUrlNodes.get(0).getText();
-            if (txtSequence != null) {
-                return txtSequence.toString();
+        for (String id : mUrlBarNodeIds) {
+            List<AccessibilityNodeInfo> urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id);
+            if (urlBarNodes != null && !urlBarNodes.isEmpty()) {
+                CharSequence txtSequence = urlBarNodes.get(0).getText();
+                if (txtSequence != null && txtSequence.length() > 1) {
+                    return txtSequence.toString();
+                }
             }
         }
 
         // Find by input field class
         if (node.getClassName().equals("android.widget.EditText")) {
             CharSequence txtSequence = node.getText();
-            if (txtSequence != null) {
+            if (txtSequence != null && txtSequence.length() > 1) {
                 return txtSequence.toString();
             }
         }
@@ -355,6 +368,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         for (ResolveInfo browser : browsers) {
             allowedAppPackages.add(browser.activityInfo.packageName);
+            Log.d(TAG, "refreshServiceInfo: Browser found: " + browser.activityInfo.packageName);
         }
 
         // For short form content blocking on their native apps
@@ -369,7 +383,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         info.eventTypes = AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK;
-        info.flags = AccessibilityServiceInfo.DEFAULT | AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS | AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS | AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
+        info.flags = AccessibilityServiceInfo.DEFAULT |
+                AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS |
+                AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS |
+                AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS;
         info.notificationTimeout = 500;
         info.packageNames = allowedAppPackages.toArray(new String[0]);
         setServiceInfo(info);
