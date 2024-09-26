@@ -112,6 +112,8 @@ public class ShortsBlockingHelper {
      */
     public static boolean isFacebookReelsOpen(@NonNull AccessibilityNodeInfo node) {
         CharSequence txt = node.getText();
+        // TODO: Add more string translated from different languages for the node text
+        //  as user may have set different language for facebook app
         return txt != null && (txt.equals("Add a comment…") || txt.equals("कमेंट जोड़ें…"));
     }
 

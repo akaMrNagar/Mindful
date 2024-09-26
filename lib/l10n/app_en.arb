@@ -1,6 +1,6 @@
 {
     "@@locale": "en",
-    "@----------------------------- SECTION APP PERMISSIONS -----------------------------": {},
+    "@----------------------------- APP PERMISSIONS -----------------------------": {},
     "permission_status_off": "Off",
     "permission_status_allowed": "Allowed",
     "permission_status_not_allowed": "Not allowed",
@@ -41,7 +41,9 @@
     "permission_battery_optimization_status_enabled": "Already unrestricted",
     "permission_battery_optimization_status_disabled": "Disable background restriction",
     "permission_battery_optimization_warning": "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
-    "@----------------------------- SECTION ONBOARDING SCREEN -----------------------------": {},
+    "@----------------------------- DIALOGS -----------------------------": {},
+    "dialog_button_cancel": "Cancel",
+    "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
     "onboarding_finish_setup_btn_label": "Finish Setup",
     "onboarding_page_one_title": "Master Focus.",
@@ -52,6 +54,56 @@
     "onboarding_page_three_info": "Mindful is 100% open-source and operates entirely offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
     "onboarding_page_permissions_title": "Essential Permissions.",
     "onboarding_page_permissions_info": "Mindful requires following essential permissions to track and manage your screen time, helping reduce distractions and improve focus.",
-    "@----------------------------- SECTION HOME SCREEN DASHBOARD TAB -----------------------------": {},
+    "@----------------------------- HOME SCREEN DASHBOARD TAB -----------------------------": {},
+    "dashboard_tab_title": "Dashboard",
+    "welcome_greetings": "Welcome back,",
+    "username_snack_alert": "Long press to edit username.",
+    "username_dialog_title": "Username",
+    "username_dialog_info": "Enter your username which will be displayed on dashboard.",
+    "username_dialog_apply": "Apply",
+    "screen_time_label": "Screen time",
+    "screen_time_snack_alert": "Your total screen time for today is {timeString}.",
+    "@screen_time_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "focused_time_label": "Focused time",
+    "focused_time_snack_alert": "Your total focused time for today is {timeString}.",
+    "@focused_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "lifetime_focused_time_label": "Lifetime focused time",
+    "lifetime_focused_time_snack_alert": "Your total focused time since install is {timeString}.",
+    "@lifetime_focused_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "longest_streak_label": "Longest streak",
+    "current_streak_label": "Current streak",
+    "successful_sessions_label": "Successful sessions",
+    "failed_sessions_label": "Failed sessions",
+    "focus_now_tile_title": "Focus now",
+    "focus_now_tile_subtitle": "Let's get productive.",
+    "focus_timeline_tile_title": "Focus timeline",
+    "focus_timeline_tile_subtitle": "View all your achievements.",
+    "invincible_mode_heading": "Invincible mode",
+    "invincible_mode_tile_title": "Activate invincible mode",
+    "invincible_mode_info": "When Invincible Mode is active, modifying the app's timer after it runs out or adjusting the short content settings after reaching the daily limit is not permitted.",
+    "invincible_mode_dialog_info": "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
+    "invincible_mode_dialog_start_anyway": "Start anyway",
+    "@----------------------------- HOME SCREEN STATISTICS TAB -----------------------------": {},
     "hey": "hey"
 }

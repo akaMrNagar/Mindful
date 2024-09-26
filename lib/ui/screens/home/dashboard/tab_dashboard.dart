@@ -51,6 +51,26 @@ class TabDashboard extends ConsumerWidget {
     ref.read(settingsProvider.notifier).changeUsername(userName);
   }
 
+  void _turnOnInvincibleMode(
+    BuildContext context,
+    WidgetRef ref,
+    bool shouldTurnOn,
+  ) async {
+    if (shouldTurnOn) {
+      final isConfirm = await showConfirmationDialog(
+        context: context,
+        icon: FluentIcons.animal_cat_20_filled,
+        heroTag: HeroTags.invincibleModeTileTag,
+        title: context.locale.invincible_mode_heading,
+        info: context.locale.invincible_mode_dialog_info,
+        positiveLabel: context.locale.invincible_mode_dialog_start_anyway,
+      );
+      if (isConfirm) {
+        ref.read(settingsProvider.notifier).switchInvincibleMode();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentStreak =
@@ -76,9 +96,9 @@ class TabDashboard extends ConsumerWidget {
           physics: const BouncingScrollPhysics(),
           slivers: [
             /// Appbar
-            const SliverFlexibleAppBar(title: "Dashboard"),
+            SliverFlexibleAppBar(title: context.locale.dashboard_tab_title),
 
-            const StyledText("Welcome back,").sliver,
+            StyledText(context.locale.welcome_greetings).sliver,
 
             /// User name
             DefaultHero(
@@ -86,7 +106,7 @@ class TabDashboard extends ConsumerWidget {
               child: InkWell(
                 onLongPress: () => _editUserName(context, ref),
                 onTap: () => context.showSnackAlert(
-                  "Long press to edit username.",
+                  context.locale.username_snack_alert,
                   icon: FluentIcons.edit_20_filled,
                 ),
                 splashColor: Theme.of(context).colorScheme.surfaceContainerLow,
@@ -111,7 +131,7 @@ class TabDashboard extends ConsumerWidget {
                     Expanded(
                       child: UsageGlanceCard(
                         isPrimary: true,
-                        title: "Screen time",
+                        title: context.locale.screen_time_label,
                         icon: FluentIcons.phone_screen_time_20_regular,
                         progressPercentage: focusStats
                             .todaysScreenTime.inSeconds
@@ -120,7 +140,9 @@ class TabDashboard extends ConsumerWidget {
                         ),
                         info: focusStats.todaysScreenTime.toTimeShort(),
                         onTap: () => context.showSnackAlert(
-                          "Your total screen time for today is ${focusStats.todaysScreenTime.toTimeFull()}.",
+                          context.locale.screen_time_snack_alert(
+                            focusStats.todaysScreenTime.toTimeFull(),
+                          ),
                           icon: FluentIcons.phone_screen_time_20_filled,
                         ),
                       ),
@@ -133,7 +155,7 @@ class TabDashboard extends ConsumerWidget {
                         isPrimary: true,
                         invertProgress: true,
                         icon: FluentIcons.person_clock_20_regular,
-                        title: "Focused time",
+                        title: context.locale.focused_time_label,
                         info: focusStats.todaysFocusedTime.toTimeShort(),
                         progressPercentage: focusStats
                             .todaysFocusedTime.inMinutes
@@ -141,7 +163,9 @@ class TabDashboard extends ConsumerWidget {
                           focusStats.yesterdaysFocusedTime.inMinutes,
                         ),
                         onTap: () => context.showSnackAlert(
-                          "Your total focused time for today is ${focusStats.todaysFocusedTime.toTimeFull()}.",
+                          context.locale.focused_time_snack_alert(
+                            focusStats.todaysFocusedTime.toTimeFull(),
+                          ),
                           icon: FluentIcons.person_clock_20_filled,
                         ),
                       ),
@@ -152,21 +176,24 @@ class TabDashboard extends ConsumerWidget {
                 /// Total focused time from install to till now
                 UsageGlanceCard(
                   icon: FluentIcons.sound_source_20_regular,
-                  title: "Lifetime focused time",
+                  title: context.locale.lifetime_focused_time_label,
                   info: focusStats.lifetimeFocusedTime.toTimeFull(),
                   invertProgress: true,
                   onTap: () => context.showSnackAlert(
-                    "Your total focused time since install is ${focusStats.lifetimeFocusedTime.toTimeFull()}.",
+                    context.locale.lifetime_focused_time_snack_alert(
+                      focusStats.lifetimeFocusedTime.toTimeFull(),
+                    ),
                     icon: FluentIcons.sound_source_20_filled,
                   ),
                 ),
 
                 /// Streaks
+                // TODO: Localize days string from streak info.
                 Row(
                   children: [
                     Expanded(
                       child: UsageGlanceCard(
-                        title: "Longest streak",
+                        title: context.locale.longest_streak_label,
                         icon: FluentIcons.trophy_20_regular,
                         info: "$longestStreak days",
                       ),
@@ -174,7 +201,7 @@ class TabDashboard extends ConsumerWidget {
                     8.hBox,
                     Expanded(
                       child: UsageGlanceCard(
-                        title: "Current streak",
+                        title: context.locale.current_streak_label,
                         icon: FluentIcons.fire_20_regular,
                         info: "$currentStreak days",
                       ),
@@ -187,7 +214,7 @@ class TabDashboard extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: UsageGlanceCard(
-                        title: "Successful sessions",
+                        title: context.locale.successful_sessions_label,
                         icon: FluentIcons.thumb_like_20_regular,
                         info: focusStats.successfulSessions.toString(),
                       ),
@@ -195,7 +222,7 @@ class TabDashboard extends ConsumerWidget {
                     8.hBox,
                     Expanded(
                       child: UsageGlanceCard(
-                        title: "Failed sessions",
+                        title: context.locale.failed_sessions_label,
                         icon: FluentIcons.thumb_dislike_20_regular,
                         info: focusStats.failedSessions.toString(),
                       ),
@@ -205,9 +232,9 @@ class TabDashboard extends ConsumerWidget {
 
                 DefaultListTile(
                   isPrimary: true,
-                  titleText: "Focus now",
+                  titleText: context.locale.focus_now_tile_title,
                   leadingIcon: FluentIcons.target_arrow_20_regular,
-                  subtitleText: "Let's do something productive.",
+                  subtitleText: context.locale.focus_now_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(AppRoutes.focusScreen, arguments: 0),
@@ -217,8 +244,8 @@ class TabDashboard extends ConsumerWidget {
                 DefaultListTile(
                   color: Theme.of(context).colorScheme.surfaceContainer,
                   leadingIcon: FluentIcons.history_20_regular,
-                  titleText: "Focus timeline",
-                  subtitleText: "See your achievements since install.",
+                  titleText: context.locale.focus_timeline_tile_title,
+                  subtitleText: context.locale.focus_timeline_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(AppRoutes.focusScreen, arguments: 1),
@@ -233,12 +260,12 @@ class TabDashboard extends ConsumerWidget {
             20.vSliverBox,
 
             /// Invincible mode
-            const SliverContentTitle(title: "Invincible mode"),
+            SliverContentTitle(title: context.locale.invincible_mode_heading),
 
             /// Information about invincible mode
-            const StyledText(
-                    "When Invincible Mode is active, modifying the app's timer after it runs out or adjusting the short content settings after reaching the daily limit is not permitted.")
-                .sliver,
+            StyledText(
+              context.locale.invincible_mode_info,
+            ).sliver,
             12.vSliverBox,
 
             /// Invincible mode
@@ -249,7 +276,7 @@ class TabDashboard extends ConsumerWidget {
                 switchValue: isInvincibleModeOn,
                 enabled: !isInvincibleModeOn,
                 leadingIcon: FluentIcons.animal_cat_20_regular,
-                titleText: "Activate invincible mode",
+                titleText: context.locale.invincible_mode_tile_title,
                 onPressed: () =>
                     _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
               ),
@@ -260,26 +287,5 @@ class TabDashboard extends ConsumerWidget {
         ),
       ),
     );
-  }
-
-  void _turnOnInvincibleMode(
-    BuildContext context,
-    WidgetRef ref,
-    bool shouldTurnOn,
-  ) async {
-    if (shouldTurnOn) {
-      final isConfirm = await showConfirmationDialog(
-        context: context,
-        icon: FluentIcons.animal_cat_20_filled,
-        heroTag: HeroTags.invincibleModeTileTag,
-        title: "Invincible mode",
-        info:
-            "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
-        positiveLabel: "Start anyway",
-      );
-      if (isConfirm) {
-        ref.read(settingsProvider.notifier).switchInvincibleMode();
-      }
-    }
   }
 }
