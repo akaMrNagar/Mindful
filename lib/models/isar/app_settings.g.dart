@@ -32,14 +32,19 @@ const AppSettingsSchema = CollectionSchema(
       name: r'isInvincibleModeOn',
       type: IsarType.bool,
     ),
-    r'themeMode': PropertySchema(
+    r'localeCode': PropertySchema(
       id: 3,
+      name: r'localeCode',
+      type: IsarType.string,
+    ),
+    r'themeMode': PropertySchema(
+      id: 4,
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
     ),
     r'username': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'username',
       type: IsarType.string,
     )
@@ -65,6 +70,7 @@ int _appSettingsEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.color.length * 3;
+  bytesCount += 3 + object.localeCode.length * 3;
   bytesCount += 3 + object.username.length * 3;
   return bytesCount;
 }
@@ -78,8 +84,9 @@ void _appSettingsSerialize(
   writer.writeString(offsets[0], object.color);
   writer.writeLong(offsets[1], object.dataResetTimeMins);
   writer.writeBool(offsets[2], object.isInvincibleModeOn);
-  writer.writeByte(offsets[3], object.themeMode.index);
-  writer.writeString(offsets[4], object.username);
+  writer.writeString(offsets[3], object.localeCode);
+  writer.writeByte(offsets[4], object.themeMode.index);
+  writer.writeString(offsets[5], object.username);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -92,10 +99,11 @@ AppSettings _appSettingsDeserialize(
     color: reader.readStringOrNull(offsets[0]) ?? 'Indigo',
     dataResetTimeMins: reader.readLongOrNull(offsets[1]) ?? 0,
     isInvincibleModeOn: reader.readBoolOrNull(offsets[2]) ?? false,
+    localeCode: reader.readStringOrNull(offsets[3]) ?? 'en',
     themeMode:
-        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[4])] ??
             ThemeMode.system,
-    username: reader.readStringOrNull(offsets[4]) ?? "Hustler",
+    username: reader.readStringOrNull(offsets[5]) ?? "Hustler",
   );
   return object;
 }
@@ -114,10 +122,12 @@ P _appSettingsDeserializeProp<P>(
     case 2:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 3:
+      return (reader.readStringOrNull(offset) ?? 'en') as P;
+    case 4:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
-    case 4:
+    case 5:
       return (reader.readStringOrNull(offset) ?? "Hustler") as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -478,6 +488,142 @@ extension AppSettingsQueryFilter
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'localeCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'localeCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'localeCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'localeCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeEqualTo(ThemeMode value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -717,6 +863,18 @@ extension AppSettingsQuerySortBy
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByLocaleCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByLocaleCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -796,6 +954,18 @@ extension AppSettingsQuerySortThenBy
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByLocaleCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByLocaleCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -844,6 +1014,13 @@ extension AppSettingsQueryWhereDistinct
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByLocaleCode(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'localeCode', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'themeMode');
@@ -882,6 +1059,12 @@ extension AppSettingsQueryProperty
       isInvincibleModeOnProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isInvincibleModeOn');
+    });
+  }
+
+  QueryBuilder<AppSettings, String, QQueryOperations> localeCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'localeCode');
     });
   }
 

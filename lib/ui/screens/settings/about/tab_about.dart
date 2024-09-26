@@ -83,10 +83,12 @@ class TabAbout extends ConsumerWidget {
           title: "Thank you",
           information:
               "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
-          actionBtnLabel: "Donate",
-          actionBtnIcon: const Icon(FluentIcons.heart_20_filled),
-          onTapAction: () => MethodChannelService.instance
-              .launchUrl(AppConstants.githubDonationUrl),
+          positiveBtn: FilledButton.icon(
+            icon: const Icon(FluentIcons.heart_20_filled),
+            label: const Text("Donate"),
+            onPressed: () => MethodChannelService.instance
+                .launchUrl(AppConstants.githubDonationUrl),
+          ),
         ),
 
         /// Contribute

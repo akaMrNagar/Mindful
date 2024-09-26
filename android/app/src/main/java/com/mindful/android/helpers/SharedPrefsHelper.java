@@ -133,7 +133,7 @@ public class SharedPrefsHelper {
      * @param context             The application context.
      * @param dartJsonBlockedApps The JSON string of blocked apps.
      */
-    public static void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
+    public static synchronized void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_BLOCKED_APPS, dartJsonBlockedApps).apply();
     }
@@ -144,7 +144,7 @@ public class SharedPrefsHelper {
      * @param context           The application context.
      * @param dartJsonAppTimers The JSON string of app timers.
      */
-    public static void storeAppTimersJson(@NonNull Context context, @NonNull String dartJsonAppTimers) {
+    public static synchronized void storeAppTimersJson(@NonNull Context context, @NonNull String dartJsonAppTimers) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_APP_TIMERS, dartJsonAppTimers).apply();
     }
@@ -166,7 +166,7 @@ public class SharedPrefsHelper {
      * @param context                   The application context.
      * @param dartJsonWellBeingSettings The JSON string of well-being settings.
      */
-    public static void storeWellBeingSettingsJson(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {
+    public static synchronized void storeWellBeingSettingsJson(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putString(PREF_KEY_WELLBEING_SETTINGS, dartJsonWellBeingSettings).apply();
     }
@@ -177,7 +177,7 @@ public class SharedPrefsHelper {
      * @param context    The application context.
      * @param screenTime The screen time in milliseconds.
      */
-    public static void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
+    public static synchronized void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
         if (mSharedPrefs == null) initialize(context);
         mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
     }
@@ -223,7 +223,7 @@ public class SharedPrefsHelper {
      * @return The HashSet of blocked apps.
      */
     @NonNull
-    public static HashSet<String> fetchBlockedApps(@NonNull Context context) {
+    public static synchronized HashSet<String> fetchBlockedApps(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
         HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(mSharedPrefs.getString(PREF_KEY_BLOCKED_APPS, ""));
 
@@ -241,7 +241,7 @@ public class SharedPrefsHelper {
      * @return The HashMap of app timers.
      */
     @NonNull
-    public static HashMap<String, Long> fetchAppTimers(@NonNull Context context) {
+    public static synchronized HashMap<String, Long> fetchAppTimers(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
         HashMap<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(PREF_KEY_APP_TIMERS, ""));
 
@@ -284,7 +284,7 @@ public class SharedPrefsHelper {
      */
     @NonNull
     @Contract("_ -> new")
-    public static WellBeingSettings fetchWellBeingSettings(@NonNull Context context) {
+    public static synchronized WellBeingSettings fetchWellBeingSettings(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
         return new WellBeingSettings(mSharedPrefs.getString(PREF_KEY_WELLBEING_SETTINGS, ""));
     }
@@ -295,7 +295,7 @@ public class SharedPrefsHelper {
      * @param context The application context.
      * @return The screen time in milliseconds.
      */
-    public static long fetchShortsScreenTimeMs(@NonNull Context context) {
+    public static synchronized long fetchShortsScreenTimeMs(@NonNull Context context) {
         if (mSharedPrefs == null) initialize(context);
         return mSharedPrefs.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L);
     }

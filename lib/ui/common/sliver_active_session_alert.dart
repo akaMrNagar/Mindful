@@ -34,10 +34,12 @@ class SliverActiveSessionAlert extends ConsumerWidget {
       title: "Active session",
       information:
           "You have an active focus session running! Click 'View' to check your progress and see how much time has elapsed.",
-      actionBtnLabel: "View",
-      onTapAction: () => Navigator.of(context).pushNamed(
-        AppRoutes.activeSessionScreen,
-        arguments: activeSession,
+      positiveBtn: FilledButton(
+        child: const Text("View"),
+        onPressed: () => Navigator.of(context).pushNamed(
+          AppRoutes.activeSessionScreen,
+          arguments: activeSession,
+        ),
       ),
     );
   }

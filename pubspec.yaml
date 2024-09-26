@@ -10,12 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
   # Runtime dependencies
   # UI
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
-  flutter_onboarding_slider: ^1.0.11
   flutter_heatmap_calendar: ^1.0.5
   animated_flip_counter: ^0.3.4
   flutter_confetti: ^0.3.0
@@ -31,6 +32,7 @@ dependencies:
   isar_flutter_libs: ^3.1.0+1
 
   # Util
+  intl: ^0.19.0
   sliver_tools: ^0.2.12
   flutter_riverpod: ^2.4.0
 
@@ -50,6 +52,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   assets:

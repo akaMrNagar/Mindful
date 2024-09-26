@@ -110,9 +110,8 @@ class TabAdvance extends ConsumerWidget {
         const SliverContentTitle(title: "Service"),
 
         /// Battery
-        const StyledText(
-          "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
-        ).sliver,
+        StyledText(context.locale.permission_battery_optimization_warning)
+            .sliver,
         6.vSliverBox,
 
         /// Battery permission

@@ -14,6 +14,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -39,28 +40,6 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   final _animDuration = 300.ms;
   int _currentPage = 0;
 
-  final pages = [
-    const OnboardingPage(
-      title: "Master Focus.",
-      imgArtPath: "assets/illustrations/onboarding_1.png",
-      description:
-          "Pause distracting apps, block short content, and stay on track with customizable focus sessions. Whether you're working, studying, or relaxing, Mindful helps you stay in control.",
-    ),
-    const OnboardingPage(
-      title: "Block Distractions.",
-      imgArtPath: "assets/illustrations/onboarding_2.png",
-      description:
-          "Set usage limits, automatically pause apps, and create healthier digital habits. Use Bedtime Mode to unwind and enjoy a distraction-free night.",
-    ),
-    const OnboardingPage(
-      title: "Privacy First.",
-      imgArtPath: "assets/illustrations/onboarding_3.png",
-      description:
-          "Mindful is 100% open-source and operates entirely offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
-    ),
-    const PermissionsPage(),
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -69,7 +48,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
       (isDone) {
         if (isDone && _controller.hasClients) {
           _controller.animateToPage(
-            pages.length - 1,
+            _onboardingPages().length - 1,
             duration: _animDuration,
             curve: _animCurve,
           );
@@ -78,8 +57,28 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     );
   }
 
+  List<Widget> _onboardingPages() => [
+        OnboardingPage(
+          title: context.locale.onboarding_page_one_title,
+          imgArtPath: "assets/illustrations/onboarding_1.png",
+          description: context.locale.onboarding_page_one_info,
+        ),
+        OnboardingPage(
+          title: context.locale.onboarding_page_two_title,
+          imgArtPath: "assets/illustrations/onboarding_2.png",
+          description: context.locale.onboarding_page_two_info,
+        ),
+        OnboardingPage(
+          title: context.locale.onboarding_page_three_title,
+          imgArtPath: "assets/illustrations/onboarding_3.png",
+          description: context.locale.onboarding_page_three_info,
+        ),
+        const PermissionsPage(),
+      ];
+
   @override
   Widget build(BuildContext context) {
+    final pages = _onboardingPages();
     final isLastPage = _currentPage == pages.length - 1;
     final perms = ref.watch(permissionProvider);
     final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
@@ -129,7 +128,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                       duration: _animDuration,
                       curve: _animCurve,
                     ),
-                    child: const Text("Skip"),
+                    child: Text(context.locale.onboarding_skip_btn_label),
                   ).animate(target: isLastPage ? 0 : 1).scale(duration: 100.ms),
 
                   /// Bottom controls
@@ -181,7 +180,10 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                                         Navigator.of(context).maybePop();
                                       }
                                     : null,
-                                child: const Text("Finish Setup"),
+                                child: Text(
+                                  context
+                                      .locale.onboarding_finish_setup_btn_label,
+                                ),
                               ).animate(target: isLastPage ? 1 : 0).scale(
                                   duration: 200.ms,
                                   alignment: Alignment.centerRight,

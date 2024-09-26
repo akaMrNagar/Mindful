@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/locales.dart';
 import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -21,6 +22,7 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TabGeneral extends ConsumerWidget {
   const TabGeneral({super.key});
@@ -66,6 +68,7 @@ class TabGeneral extends ConsumerWidget {
           ),
           items: AppTheme.materialColors.entries
               .map((e) => DefaultDropdownItem(
+                    // using key for both label and value as we are storing color name in database
                     label: e.key,
                     value: e.key,
                   ))
@@ -74,7 +77,22 @@ class TabGeneral extends ConsumerWidget {
 
         /// Default settings
         12.vSliverBox,
-        const SliverContentTitle(title: "Default"),
+        const SliverContentTitle(title: "Defaults"),
+
+        /// Material Color
+        DefaultDropdownTile<String>(
+          label: "App Language",
+          dialogIcon: FluentIcons.color_20_filled,
+          value: ref.watch(settingsProvider.select((v) => v.localeCode)),
+          onSelected: ref.read(settingsProvider.notifier).changeLocale,
+          items: AppLocalizations.supportedLocales
+              .map((e) => DefaultDropdownItem(
+                    value: e.languageCode,
+                    label:
+                        Locales.knownLocales[e.languageCode] ?? e.languageCode,
+                  ))
+              .toList(),
+        ).sliver,
 
         /// Data reset time
         DefaultListTile(

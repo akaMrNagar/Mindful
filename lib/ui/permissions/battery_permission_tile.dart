@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -28,13 +29,13 @@ class BatteryPermissionTile extends ConsumerWidget {
         permissionProvider.select((v) => v.haveIgnoreOptimizationPermission));
 
     return DefaultListTile(
-      titleText: "Ignore Battery Optimization",
+      titleText: context.locale.permission_battery_optimization_tile_title,
       enabled: !havePermission,
       switchValue: havePermission,
       leadingIcon: FluentIcons.battery_saver_20_regular,
       subtitleText: havePermission
-          ? "Already unrestricted"
-          : "Disable background restriction",
+          ? context.locale.permission_battery_optimization_status_enabled
+          : context.locale.permission_battery_optimization_status_disabled,
       onPressed: ref
           .read(permissionProvider.notifier)
           .askIgnoreBatteryOptimizationPermission,

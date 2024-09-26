@@ -14,8 +14,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension ExtBuildContext on BuildContext {
+  /// Returns the [AppLocalizations] instance for the current context.
+  /// Which can be used to access Locale Strings
+  AppLocalizations get locale => AppLocalizations.of(this);
+
   void _showSnackBar({
     required IconData icon,
     required String info,

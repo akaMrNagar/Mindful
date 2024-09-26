@@ -81,7 +81,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return DefaultScaffold(
       leading: IconButton(
         icon: Semantics(
-          hint: "Double tab to open app settings",
+          hint: "Double tap to open app settings",
           child: const Icon(FluentIcons.settings_20_regular),
         ),
         onPressed: () =>

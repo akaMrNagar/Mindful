@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -18,15 +19,14 @@ import 'package:mindful/ui/common/styled_text.dart';
 class PermissionGrantingSteps extends StatelessWidget {
   const PermissionGrantingSteps({
     super.key,
-    required this.btnLabel,
-    required this.lastStepTileTitle,
-    required this.permissionStatusSubtitle,
+    required this.deviceSwitchTileLabel,
+    required this.labelOfBtnToClick,
+    this.isAccessibilityPerm = false,
   });
 
-  final String btnLabel;
-  final String permissionStatusSubtitle;
-
-  final String lastStepTileTitle;
+  final String deviceSwitchTileLabel;
+  final String labelOfBtnToClick;
+  final bool isAccessibilityPerm;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class PermissionGrantingSteps extends StatelessWidget {
         children: [
           /// First step
           StyledText(
-            "1. Click on $btnLabel button.",
+            "1. Click on $labelOfBtnToClick button.",
             fontSize: 14,
           ),
           6.vBox,
@@ -62,7 +62,9 @@ class PermissionGrantingSteps extends StatelessWidget {
               ),
             ),
             titleText: "Mindful",
-            subtitleText: permissionStatusSubtitle,
+            subtitleText: isAccessibilityPerm
+                ? context.locale.permission_status_not_allowed
+                : context.locale.permission_status_off,
           ),
 
           8.vBox,
@@ -76,7 +78,7 @@ class PermissionGrantingSteps extends StatelessWidget {
             margin: const EdgeInsets.only(left: 16, top: 4),
             color: Theme.of(context).colorScheme.surfaceContainer,
             switchValue: true,
-            titleText: lastStepTileTitle,
+            titleText: deviceSwitchTileLabel,
           ),
 
           6.vBox,
