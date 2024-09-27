@@ -31,7 +31,7 @@ class AddWebsitesFAB extends ConsumerWidget {
     return haveAccessibilityPermission
         ? FloatingActionButton.extended(
             heroTag: HeroTags.addDistractingSiteFABTag,
-            label: const Text("Add Website"),
+            label: Text(context.locale.add_website_button_label),
             icon: const Icon(FluentIcons.add_20_filled),
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -56,7 +56,7 @@ class AddWebsitesFAB extends ConsumerWidget {
       if (context.mounted &&
           ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
         context.showSnackAlert(
-          "The URL has already been added to the list of blocked websites.",
+          context.locale.add_website_already_exist_snack_alert,
         );
         return;
       }
@@ -65,7 +65,7 @@ class AddWebsitesFAB extends ConsumerWidget {
       ref.read(wellBeingProvider.notifier).insertRemoveBlockedSite(host, true);
     } else if (context.mounted) {
       context.showSnackAlert(
-        "Invalid URL! Unable to parse the host name.",
+        context.locale.add_website_invalid_url_snack_alert,
       );
     }
   }

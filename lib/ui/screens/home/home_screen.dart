@@ -14,6 +14,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
@@ -80,34 +81,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return DefaultScaffold(
       leading: IconButton(
-        icon: Semantics(
-          hint: "Double tap to open app settings",
-          child: const Icon(FluentIcons.settings_20_regular),
-        ),
+        icon: const Icon(FluentIcons.settings_20_regular),
         onPressed: () =>
             Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
       ),
-      navbarItems: const [
+      navbarItems: [
         NavbarItem(
-          title: "Dashboard",
+          title: context.locale.dashboard_tab_title,
           icon: FluentIcons.home_20_filled,
-          body: TabDashboard(),
+          body: const TabDashboard(),
         ),
         NavbarItem(
-          title: "Statistics",
+          title: context.locale.statistics_tab_title,
           icon: FluentIcons.data_pie_24_filled,
-          body: TabStatistics(),
+          body: const TabStatistics(),
         ),
         NavbarItem(
-          title: "Wellbeing",
+          title: context.locale.wellbeing_tab_title,
           icon: FluentIcons.brain_circuit_20_filled,
-          body: TabWellBeing(),
-          fab: AddWebsitesFAB(),
+          body: const TabWellBeing(),
+          fab: const AddWebsitesFAB(),
         ),
         NavbarItem(
-          title: "Bedtime",
+          title: context.locale.bedtime_tab_title,
           icon: FluentIcons.sleep_20_filled,
-          body: TabBedtime(),
+          body: const TabBedtime(),
         ),
       ],
     );

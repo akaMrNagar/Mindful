@@ -49,7 +49,7 @@ class ShortsTimerChart extends ConsumerWidget {
     if (newTime < minimumShortTimerSecs) {
       if (context.mounted) {
         context.showSnackAlert(
-          "Please ensure the timer for short content is set to a minimum of 5 minutes.",
+          context.locale.short_content_minimum_time_snack_warning,
         );
       }
       return;
@@ -141,7 +141,9 @@ class ShortsTimerChart extends ConsumerWidget {
                       ),
                       2.vBox,
                       StyledText(
-                        "Left from ${allowedTimeSec.seconds.toTimeShort()}",
+                        context.locale.shorts_time_left_from(
+                          allowedTimeSec.seconds.toTimeShort(),
+                        ),
                         fontSize: 14,
                         isSubtitle: true,
                         fontWeight: FontWeight.w500,

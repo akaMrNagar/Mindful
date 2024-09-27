@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -40,8 +41,8 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
             alignment: const Alignment(0, 0),
             child: Semantics(
               excludeSemantics: true,
-              child: const StyledText(
-                "Click on '+ Add Website' button to add distracting website which you wish to block.",
+              child: StyledText(
+                context.locale.add_website_to_block_hint,
                 isSubtitle: false,
                 textAlign: TextAlign.center,
               ),

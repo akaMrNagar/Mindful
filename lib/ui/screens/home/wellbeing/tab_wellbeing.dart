@@ -13,6 +13,7 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
@@ -55,10 +56,9 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       context: context,
       icon: FluentIcons.video_prohibited_20_filled,
       heroTag: HeroTags.blockNsfwTileTag,
-      title: "Adult sites",
-      info:
-          "Are you sure? This action is irreversible. Once adult sites blocker is turned on, you cannot turn it off as long as this app is installed on your device.",
-      positiveLabel: "Block anyway",
+      title: context.locale.adult_content_heading,
+      info: context.locale.block_nsfw_dialog_info,
+      positiveLabel: context.locale.block_nsfw_dialog_button_block_anyway,
     );
 
     if (isConfirm) {
@@ -94,17 +94,15 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appbar
-        const SliverFlexibleAppBar(title: "Wellbeing"),
+        SliverFlexibleAppBar(title: context.locale.wellbeing_tab_title),
 
         /// Information about bedtime
-        const StyledText(
-          "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
-        ).sliver,
+        StyledText(context.locale.wellbeing_tab_info).sliver,
 
         const AccessibilityPermissionCard(),
 
         /// Short content header
-        const SliverContentTitle(title: "Short content"),
+        SliverContentTitle(title: context.locale.short_content_heading),
 
         /// Short usage progress bar
         ShortsTimerChart(
@@ -117,9 +115,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           isVisible: haveAccessibilityPermission && !isModifiable,
           margin: const EdgeInsets.symmetric(vertical: 16),
           icon: FluentIcons.animal_cat_20_regular,
-          title: "Invincible mode",
-          information:
-              "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
+          title: context.locale.invincible_mode_heading,
+          information: context.locale.short_content_invincible_mode_warning,
         ),
 
         /// Quick actions
@@ -129,7 +126,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         ),
 
         /// Adult content header
-        const SliverContentTitle(title: "Adult content"),
+        SliverContentTitle(title: context.locale.adult_content_heading),
 
         /// Block NSFW websites
         DefaultHero(
@@ -137,16 +134,15 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           child: DefaultListTile(
             enabled: haveAccessibilityPermission && !blockNsfwSites,
             leadingIcon: FluentIcons.video_prohibited_20_regular,
-            titleText: "Block Nsfw",
-            subtitleText:
-                "Restrict browsers from opening adult and porn websites.",
+            titleText: context.locale.block_nsfw_title,
+            subtitleText: context.locale.block_nsfw_subtitle,
             switchValue: blockNsfwSites,
             onPressed: _turnNsfwBlockerOn,
           ),
         ).sliver,
 
         /// Blocked websites header
-        const SliverContentTitle(title: "Blocked websites"),
+        SliverContentTitle(title: context.locale.blocked_websites_heading),
 
         /// Distracting websites list
         const SliverBlockedWebsitesList(),

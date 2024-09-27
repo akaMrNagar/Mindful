@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -62,18 +63,16 @@ class SliverUsageCards extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
             ),
-            segments: const [
+            segments: [
               ButtonSegment(
-                icon: Icon(FluentIcons.phone_screen_time_20_regular),
-                label: Text("Screen"),
+                icon: const Icon(FluentIcons.phone_screen_time_20_regular),
+                label: Text(context.locale.screen_segment_label),
                 value: UsageType.screenUsage,
-                tooltip: "Switch to screen usage",
               ),
               ButtonSegment(
-                icon: Icon(FluentIcons.earth_20_regular),
-                label: Text("Data"),
+                icon: const Icon(FluentIcons.earth_20_regular),
+                label: Text(context.locale.data_segment_label),
                 value: UsageType.networkUsage,
-                tooltip: "Switch to network usage",
               ),
             ],
           ),
@@ -87,7 +86,7 @@ class SliverUsageCards extends StatelessWidget {
             ? _buildUsageCard(
                 context,
                 icon: FluentIcons.phone_20_regular,
-                title: "Screen time",
+                title: context.locale.screen_time_label,
                 subtitle: screenUsageInfo.seconds.toTimeFull(),
               )
 
@@ -100,7 +99,7 @@ class SliverUsageCards extends StatelessWidget {
                       child: _buildUsageCard(
                         context,
                         icon: FluentIcons.cellular_data_1_20_filled,
-                        title: "Mobile",
+                        title: context.locale.mobile_label,
                         subtitle: mobileUsageInfo.toData(),
                       ),
                     ),
@@ -109,7 +108,7 @@ class SliverUsageCards extends StatelessWidget {
                       child: _buildUsageCard(
                         context,
                         icon: FluentIcons.wifi_1_20_filled,
-                        title: "Wifi",
+                        title: context.locale.wifi_label,
                         subtitle: wifiUsageInfo.toData(),
                       ),
                     ),

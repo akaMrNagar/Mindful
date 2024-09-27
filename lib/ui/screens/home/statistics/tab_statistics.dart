@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -66,7 +67,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
         physics: const BouncingScrollPhysics(),
         slivers: [
           /// Appbar
-          const SliverFlexibleAppBar(title: "Statistics"),
+          SliverFlexibleAppBar(title: context.locale.statistics_tab_title),
 
           /// Usage type selector and usage info card
           SliverSkeletonizer.zone(
@@ -95,7 +96,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 setState(() => _selectedDayOfWeek = dow),
           ),
 
-          const SliverContentTitle(title: "Most used apps"),
+          SliverContentTitle(title: context.locale.most_used_apps_heading),
 
           /// Most used apps list
           SliverAnimatedSwitcher(
@@ -123,7 +124,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               margin: const EdgeInsets.only(top: 20),
               leading: const Icon(FluentIcons.select_all_off_20_regular),
-              titleText: "Show all apps",
+              titleText: context.locale.show_all_apps_tile_title,
               trailing: const Icon(FluentIcons.chevron_down_20_filled),
               onPressed: () => setState(() => _includeAllApps = true),
             ).sliver,

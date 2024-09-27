@@ -63,7 +63,8 @@ class TabDashboard extends ConsumerWidget {
         heroTag: HeroTags.invincibleModeTileTag,
         title: context.locale.invincible_mode_heading,
         info: context.locale.invincible_mode_dialog_info,
-        positiveLabel: context.locale.invincible_mode_dialog_start_anyway,
+        positiveLabel:
+            context.locale.invincible_mode_dialog_button_start_anyway,
       );
       if (isConfirm) {
         ref.read(settingsProvider.notifier).switchInvincibleMode();

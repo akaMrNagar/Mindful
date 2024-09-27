@@ -37,10 +37,10 @@ class AccessibilityPermissionCard extends ConsumerWidget {
       negativeBtn: TextButton(
         onPressed: () =>
             MethodChannelService.instance.launchUrl(AppConstants.faqsUrl),
-        child: Text(context.locale.permission_button_label_help),
+        child: Text(context.locale.permission_button_help),
       ),
       positiveBtn: FilledButton(
-        child: Text(context.locale.permission_button_label_grant_permission),
+        child: Text(context.locale.permission_button_grant_permission),
         onPressed: () => _showSheet(context, ref),
       ),
     );

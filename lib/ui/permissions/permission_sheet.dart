@@ -37,8 +37,8 @@ class PermissionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final positiveButtonLabel = isAccessibilityPerm
-        ? context.locale.permission_button_label_agree_and_continue
-        : context.locale.permission_button_label_grant_permission;
+        ? context.locale.permission_button_agree_and_continue
+        : context.locale.permission_button_grant_permission;
 
     return BottomSheet(
       enableDrag: false,
@@ -104,7 +104,7 @@ class PermissionSheet extends StatelessWidget {
                     TextButton(
                       onPressed: Navigator.of(context).maybePop,
                       child:
-                          Text(context.locale.permission_button_label_not_now),
+                          Text(context.locale.permission_button_not_now),
                     ),
                   const Spacer(),
                   FilledButton(

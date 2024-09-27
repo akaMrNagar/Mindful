@@ -45,12 +45,9 @@ class AppTimerPicker extends ConsumerWidget {
 
     return isIconButton
         ? IconButton(
-            icon: Semantics(
-              hint: "Set timer for ${app.name}",
-              child: appTimer > 0
-                  ? TimeTextShort(timeDuration: appTimer.seconds)
-                  : const Icon(FluentIcons.timer_20_regular),
-            ),
+            icon: appTimer > 0
+                ? TimeTextShort(timeDuration: appTimer.seconds)
+                : const Icon(FluentIcons.timer_20_regular),
             onPressed: () => _pickAppTimer(
               context,
               ref,
