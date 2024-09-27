@@ -120,7 +120,8 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
             slivers: [
               /// Appbar
               SliverFlexibleAppBar(
-                title: sessionTypeLabels[widget.session.type] ?? "Focus",
+                title:
+                    sessionTypeLabels(context)[widget.session.type] ?? "Focus",
               ),
 
               TimerProgressClock(

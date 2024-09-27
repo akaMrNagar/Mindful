@@ -63,7 +63,7 @@
     "onboarding_page_three_info": "Mindful is 100% open-source and operates entirely offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
     "onboarding_page_permissions_title": "Essential Permissions.",
     "onboarding_page_permissions_info": "Mindful requires following essential permissions to track and manage your screen time, helping reduce distractions and improve focus.",
-    "@----------------------------- HOME SCREEN DASHBOARD TAB -----------------------------": {},
+    "@----------------------------- HOME SCREEN - DASHBOARD TAB -----------------------------": {},
     "dashboard_tab_title": "Dashboard",
     "welcome_greetings": "Welcome back,",
     "username_snack_alert": "Long press to edit username.",
@@ -113,7 +113,7 @@
     "invincible_mode_info": "When Invincible Mode is active, modifying the app's timer after it runs out or adjusting the short content settings after reaching the daily limit is not permitted.",
     "invincible_mode_dialog_info": "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
     "invincible_mode_dialog_button_start_anyway": "Start anyway",
-    "@----------------------------- HOME SCREEN STATISTICS TAB -----------------------------": {},
+    "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
     "statistics_tab_title": "Statistics",
     "screen_segment_label": "Screen",
     "data_segment_label": "Data",
@@ -121,7 +121,7 @@
     "wifi_label": "Wifi",
     "most_used_apps_heading": "Most used apps",
     "show_all_apps_tile_title": "Show all apps",
-    "@----------------------------- HOME SCREEN WELLBEING TAB -----------------------------": {},
+    "@----------------------------- HOME SCREEN - WELLBEING TAB -----------------------------": {},
     "wellbeing_tab_title": "Wellbeing",
     "wellbeing_tab_info": "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
     "short_content_heading": "Short content",
@@ -150,14 +150,14 @@
     "block_nsfw_dialog_info": "Are you sure? This action is irreversible. Once adult sites blocker is turned ON, you cannot turn it OFF as long as this app is installed on your device.",
     "block_nsfw_dialog_button_block_anyway": "Block anyway",
     "blocked_websites_heading": "Blocked websites",
-    "add_website_to_block_hint": "Click on '+ Add Website' button to add distracting websites which you wish to block.",
+    "blocked_websites_empty_list_hint": "Click on '+ Add Website' button to add distracting websites which you wish to block.",
     "add_website_button_label": "Add Website",
     "add_website_dialog_title": "Distracting website",
     "add_website_dialog_info": "Enter url of a website which you want to block.",
     "add_website_dialog_button_block": "Block",
     "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
     "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
-    "@----------------------------- HOME SCREEN BEDTIME TAB -----------------------------": {},
+    "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "bedtime_tab_title": "Bedtime",
     "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
     "schedule_start_label": "Start",
@@ -170,5 +170,84 @@
     "distracting_apps_tile_title": "Distracting apps",
     "distracting_apps_tile_subtitle": "Select which apps are distracting you from your bedtime routine.",
     "bedtime_distracting_apps_modify_snack_alert": "Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.",
+    "@----------------------------- FOCUS SCREEN - FOCUS TAB -----------------------------": {},
+    "focus_tab_title": "Focus",
+    "focus_tab_info": "When you need time to focus, start a new session by selecting the type, choosing distracting apps to pause, and enabling Do Not Disturb for uninterrupted concentration.",
+    "active_session_card_title": "Active session",
+    "active_session_card_info": "You have an active focus session running! Click 'View' to check your progress and see how much time has elapsed.",
+    "active_session_card_view_button": "View",
+    "configuration_heading": "Configurations",
+    "focus_distracting_apps_removal_snack_alert": "Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.",
+    "focus_session_tile_title": "Focus session",
+    "focus_session_start_fab_button": "Start Session",
+    "focus_session_minimum_apps_snack_alert": "Select at least one distracting app to start focus session",
+    "focus_session_already_active_snack_alert": "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
+    "focus_session_dialog_info": "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.",
+    "focus_session_dialog_button_start": "Start",
+    "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},
+    "focus_session_type_study": "Study",
+    "focus_session_type_work": "Work",
+    "focus_session_type_exercise": "Exercise",
+    "focus_session_type_meditation": "Meditation",
+    "focus_session_type_creativeWriting": "Creative Writing",
+    "focus_session_type_reading": "Reading",
+    "focus_session_type_programming": "Programming",
+    "focus_session_type_chores": "Chores",
+    "focus_session_type_projectPlanning": "Project Planning",
+    "focus_session_type_artAndDesign": "Art and Design",
+    "focus_session_type_languageLearning": "Language Learning",
+    "focus_session_type_musicPractice": "Music Practice",
+    "focus_session_type_selfCare": "Self Care",
+    "focus_session_type_brainstorming": "Brainstorming",
+    "focus_session_type_skillDevelopment": "Skill Development",
+    "focus_session_type_research": "Research",
+    "focus_session_type_networking": "Networking",
+    "focus_session_type_cooking": "Cooking",
+    "focus_session_type_sportsTraining": "Sports Training",
+    "focus_session_type_restAndRelaxation": "Rest and Relaxation",
+    "focus_session_type_other": "Other",
+    "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
+    "timeline_tab_title": "Timeline",
+    "timeline_tab_info": "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
+    "selected_month_productive_time_label": "Productive time",
+    "selected_month_productive_time_snack_alert": "Your total productive time for the selected month is {timeString}.",
+    "@selected_month_productive_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "selected_month_productive_days_label": "Productive days",
+    "selected_month_productive_days_snack_alert": "You've had a total of {daysCount} productive days in the selected month.",
+    "@selected_month_productive_days_snack_alert": {
+        "placeholders": {
+            "daysCount": {
+                "type": "num",
+                "example": "12"
+            }
+        }
+    },
+    "selected_day_focused_time_label": "Focused time",
+    "selected_day_focused_time_snack_alert": "Your total focused time for the selected day is {timeString}.",
+    "@selected_day_focused_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "calender_heading": "Calender",
+    "your_sessions_heading": "Your sessions",
+    "your_sessions_empty_list_hint": "No focus sessions recorded for the selected day.",
+    "focus_session_tile_time_label": "Time",
+    "focus_session_tile_date_label": "Date",
+    "focus_session_tile_duration_label": "Duration",
+    "focus_session_state_active": "Active",
+    "focus_session_state_successful": "Successful",
+    "focus_session_state_failed": "Failed",
+    "@----------------------------- APP DASHBOARD SCREEN -----------------------------": {},
     "hey": "hey"
 }

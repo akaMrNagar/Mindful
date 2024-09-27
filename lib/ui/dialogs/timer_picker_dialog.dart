@@ -79,13 +79,12 @@ Future<int?> showFocusTimerPicker({
   return await Navigator.of(context).push<int?>(
     HeroPageRoute(
       builder: (context) => _DurationPickerDialog(
-        title: "Focus Session",
+        title: context.locale.focus_session_tile_title,
         icon: const Icon(FluentIcons.timer_20_regular),
         heroTag: heroTag,
         initialTimeInSec: initialTime,
-        info:
-            "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.",
-        positiveButtonLabel: "Start",
+        info: context.locale.focus_session_dialog_info,
+        positiveButtonLabel: context.locale.focus_session_dialog_button_start,
         showDeleteButton: false,
       ),
     ),

@@ -42,7 +42,7 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
             child: Semantics(
               excludeSemantics: true,
               child: StyledText(
-                context.locale.add_website_to_block_hint,
+                context.locale.blocked_websites_empty_list_hint,
                 isSubtitle: false,
                 textAlign: TextAlign.center,
               ),

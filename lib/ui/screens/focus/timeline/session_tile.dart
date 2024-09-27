@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/session_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -31,7 +32,12 @@ class SessionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final stateLabels = ["Active", "Successful", "Failed"];
+    final stateLabels = [
+      context.locale.focus_session_state_active,
+      context.locale.focus_session_state_successful,
+      context.locale.focus_session_state_failed,
+    ];
+
     final stateColors = [
       Theme.of(context).colorScheme.tertiary,
       Theme.of(context).colorScheme.primary,
@@ -67,7 +73,7 @@ class SessionTile extends StatelessWidget {
               children: [
                 Skeleton.leaf(
                   child: StyledText(
-                    sessionTypeLabels[session.type] ?? 'Session',
+                    sessionTypeLabels(context)[session.type] ?? 'Session',
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -75,19 +81,19 @@ class SessionTile extends StatelessWidget {
                 2.vBox,
                 Skeleton.leaf(
                   child: StyledText(
-                    "Time: ${dateTime.timeString}",
+                    "${context.locale.focus_session_tile_time_label}: ${dateTime.timeString}",
                     color: Theme.of(context).hintColor,
                   ),
                 ),
                 Skeleton.leaf(
                   child: StyledText(
-                    "Date: ${dateTime.dateString}",
+                    "${context.locale.focus_session_tile_date_label}: ${dateTime.dateString}",
                     color: Theme.of(context).hintColor,
                   ),
                 ),
                 Skeleton.leaf(
                   child: StyledText(
-                    "Duration: ${session.duration.toTimeFull()}",
+                    "${context.locale.focus_session_tile_duration_label}: ${session.duration.toTimeFull()}",
                     color: Theme.of(context).hintColor,
                   ),
                 ),

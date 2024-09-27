@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
@@ -27,12 +28,10 @@ class TabFocus extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appbar
-        const SliverFlexibleAppBar(title: "Focus Mode"),
+        SliverFlexibleAppBar(title: context.locale.focus_tab_title),
 
         /// Information
-        const StyledText(
-          "When you need time to focus, start a new session by selecting the type, choosing distracting apps to pause, and enabling Do Not Disturb for uninterrupted concentration.",
-        ).sliver,
+        StyledText(context.locale.focus_tab_info).sliver,
 
         12.vSliverBox,
 

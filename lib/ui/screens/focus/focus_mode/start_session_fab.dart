@@ -26,7 +26,7 @@ class StartSessionFAB extends ConsumerWidget {
     return FloatingActionButton.extended(
       heroTag: HeroTags.focusModeFABTag,
       icon: const Icon(FluentIcons.target_arrow_20_filled),
-      label: const Text("Start Session"),
+      label: Text(context.locale.focus_session_start_fab_button),
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: () => _startFocusSession(context, ref),
@@ -39,7 +39,7 @@ class StartSessionFAB extends ConsumerWidget {
     /// If another focus session is already active
     if (focusMode.activeSession != null) {
       context.showSnackAlert(
-        "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
+        context.locale.focus_session_already_active_snack_alert,
       );
       return;
     }
@@ -47,7 +47,7 @@ class StartSessionFAB extends ConsumerWidget {
     // If no distracting apps selected
     if (focusMode.distractingApps.isEmpty) {
       context.showSnackAlert(
-        "Select at least one distracting app to start focus session",
+        context.locale.focus_session_minimum_apps_snack_alert,
       );
       return;
     }

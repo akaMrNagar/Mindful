@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 
 /// Type of session used for differentiating focus sessions
 enum SessionType {
@@ -36,30 +37,38 @@ enum SessionType {
   other,
 }
 
-/// Map of [SessionType] and their respective string labels or titles
-const Map<SessionType, String> sessionTypeLabels = {
-  SessionType.study: 'Study',
-  SessionType.work: 'Work',
-  SessionType.exercise: 'Exercise',
-  SessionType.meditation: 'Meditation',
-  SessionType.creativeWriting: 'Creative Writing',
-  SessionType.reading: 'Reading',
-  SessionType.programming: 'Programming',
-  SessionType.chores: 'Chores',
-  SessionType.projectPlanning: 'Project Planning',
-  SessionType.artAndDesign: 'Art and Design',
-  SessionType.languageLearning: 'Language Learning',
-  SessionType.musicPractice: 'Music Practice',
-  SessionType.selfCare: 'Self-Care',
-  SessionType.brainstorming: 'Brainstorming',
-  SessionType.skillDevelopment: 'Skill Development',
-  SessionType.research: 'Research',
-  SessionType.networking: 'Networking',
-  SessionType.cooking: 'Cooking',
-  SessionType.sportsTraining: 'Sports Training',
-  SessionType.restAndRelaxation: 'Rest and Relaxation',
-  SessionType.other: 'Other',
-};
+/// Map of [SessionType] and their respective localized string labels or titles
+Map<SessionType, String> sessionTypeLabels(BuildContext context) => {
+      SessionType.study: context.locale.focus_session_type_study,
+      SessionType.work: context.locale.focus_session_type_work,
+      SessionType.exercise: context.locale.focus_session_type_exercise,
+      SessionType.meditation: context.locale.focus_session_type_meditation,
+      SessionType.creativeWriting:
+          context.locale.focus_session_type_creativeWriting,
+      SessionType.reading: context.locale.focus_session_type_reading,
+      SessionType.programming: context.locale.focus_session_type_programming,
+      SessionType.chores: context.locale.focus_session_type_chores,
+      SessionType.projectPlanning:
+          context.locale.focus_session_type_projectPlanning,
+      SessionType.artAndDesign: context.locale.focus_session_type_artAndDesign,
+      SessionType.languageLearning:
+          context.locale.focus_session_type_languageLearning,
+      SessionType.musicPractice:
+          context.locale.focus_session_type_musicPractice,
+      SessionType.selfCare: context.locale.focus_session_type_selfCare,
+      SessionType.brainstorming:
+          context.locale.focus_session_type_brainstorming,
+      SessionType.skillDevelopment:
+          context.locale.focus_session_type_skillDevelopment,
+      SessionType.research: context.locale.focus_session_type_research,
+      SessionType.networking: context.locale.focus_session_type_networking,
+      SessionType.cooking: context.locale.focus_session_type_cooking,
+      SessionType.sportsTraining:
+          context.locale.focus_session_type_sportsTraining,
+      SessionType.restAndRelaxation:
+          context.locale.focus_session_type_restAndRelaxation,
+      SessionType.other: context.locale.focus_session_type_other,
+    };
 
 /// Map of [SessionType] and their respective icons [IconData]
 const Map<SessionType, IconData> sessionTypeIcons = {
