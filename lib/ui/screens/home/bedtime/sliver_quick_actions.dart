@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -44,7 +45,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
     return MultiSliver(
       children: [
         /// Bedtime actions
-        const SliverContentTitle(title: "Quick actions"),
+        SliverContentTitle(title: context.locale.quick_actions_heading),
 
         /// Should start dnd
         DndSwitchTile(
@@ -63,9 +64,8 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           color: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           leading: const Icon(FluentIcons.weather_moon_20_regular),
-          titleText: "Distracting apps",
-          subtitleText:
-              "Select which apps are distracting you from your bedtime routine.",
+          titleText: context.locale.distracting_apps_tile_title,
+          subtitleText: context.locale.distracting_apps_tile_subtitle,
           trailing: AnimatedRotation(
             duration: 250.ms,
             turns: isDistractingAppsListExpanded ? 0.5 : 1,

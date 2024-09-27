@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/strings.dart';
@@ -49,7 +50,7 @@ class ScheduleCard extends ConsumerWidget {
             children: [
               /// Schedule start time
               _SelectedTime(
-                label: "Start",
+                label: context.locale.schedule_start_label,
                 enabled: !isScheduleOn,
                 initialTime: startTime,
                 onChange: (t) {
@@ -59,7 +60,7 @@ class ScheduleCard extends ConsumerWidget {
 
               /// Schedule end time
               _SelectedTime(
-                label: "End",
+                label: context.locale.schedule_end_label,
                 enabled: !isScheduleOn,
                 initialTime: endTime,
                 onChange: (t) =>
@@ -146,9 +147,11 @@ class _SelectedTime extends StatelessWidget {
               showTimePicker(
                 context: context,
                 initialTime: initialTime,
-              ).then((value) {
-                onChange(value ?? initialTime);
-              });
+              ).then(
+                (value) {
+                  onChange(value ?? initialTime);
+                },
+              );
             }
           : null,
       child: Column(

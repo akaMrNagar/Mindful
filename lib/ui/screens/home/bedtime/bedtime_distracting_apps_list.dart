@@ -27,9 +27,7 @@ class BedtimeDistractingAppsList extends ConsumerWidget {
   ) async {
     /// If bedtime schedule is active or ON
     if (ref.read(bedtimeProvider).isScheduleOn) {
-      context.showSnackAlert(
-        "Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.",
-      );
+      context.showSnackAlert(context.locale.bedtime_distracting_apps_modify_snack_alert);
       return;
     }
 
