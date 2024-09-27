@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
@@ -32,14 +33,14 @@ class SliverFlexibleAppBar extends ConsumerWidget {
 
   void _showBetaDialog(BuildContext context, String version) async {
     final reportIssue = await showConfirmationDialog(
-        context: context,
-        heroTag: HeroTags.betaWarningTag,
-        icon: FluentIcons.warning_20_filled,
-        positiveLabel: "Report Issue",
-        negativeLabel: "Close",
-        title: version,
-        info:
-            "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!");
+      context: context,
+      heroTag: HeroTags.betaWarningTag,
+      icon: FluentIcons.warning_20_filled,
+      positiveLabel: context.locale.development_dialog_button_report_issue,
+      negativeLabel: context.locale.development_dialog_button_close,
+      title: version,
+      info: context.locale.development_dialog_info,
+    );
 
     if (reportIssue) {
       await MethodChannelService.instance
@@ -66,16 +67,12 @@ class SliverFlexibleAppBar extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               /// Title
-              Semantics(
-                label: "Active tab title",
-                header: true,
-                child: StyledText(
-                  title,
-                  maxLines: 1,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                  overflow: TextOverflow.fade,
-                ),
+              StyledText(
+                title,
+                maxLines: 1,
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+                overflow: TextOverflow.fade,
               ),
 
               /// Beta tag

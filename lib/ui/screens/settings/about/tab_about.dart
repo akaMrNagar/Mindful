@@ -13,6 +13,7 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -32,13 +33,13 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion = ref.read(appVersionProvider).value ?? "v0.0.0";
+    final appVersion = ref.read(appVersionProvider).value ?? "";
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appbar
-        const SliverFlexibleAppBar(title: "About"),
+        SliverFlexibleAppBar(title: context.locale.about_tab_title),
         StyledText(
           appVersion,
           fontWeight: FontWeight.bold,
@@ -65,41 +66,39 @@ class TabAbout extends ConsumerWidget {
         ).centered.sliver,
 
         /// Tag line about focus
-        const StyledText(
-          "Focus on what truly Matters",
+        StyledText(
+          context.locale.mindful_tagline,
           fontSize: 16,
           isSubtitle: true,
         ).centered.sliver,
 
         12.vSliverBox,
 
-        const SliverContentTitle(title: "Support us"),
+        SliverContentTitle(title: context.locale.support_us_heading),
         4.vSliverBox,
 
         /// Donation box
         SliverPrimaryActionContainer(
           isVisible: true,
           icon: FluentIcons.handshake_20_regular,
-          title: "Thank you",
-          information:
-              "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
+          title: context.locale.donation_card_title,
+          information: context.locale.donation_card_info,
           positiveBtn: FilledButton.icon(
             icon: const Icon(FluentIcons.heart_20_filled),
-            label: const Text("Donate"),
+            label: Text(context.locale.donation_card_button_donate),
             onPressed: () => MethodChannelService.instance
                 .launchUrl(AppConstants.githubDonationSectionUrl),
           ),
         ),
 
         /// Contribute
-        24.vSliverBox,
-        const SliverContentTitle(title: "Contribute"),
+        SliverContentTitle(title: context.locale.contribute_heading),
 
         /// Source code
         DefaultListTile(
           leadingIcon: FluentIcons.code_20_regular,
-          titleText: "GitHub",
-          subtitleText: "View the source code.",
+          titleText: context.locale.github_tile_title,
+          subtitleText: context.locale.github_tile_subtitle,
           onPressed: () =>
               MethodChannelService.instance.launchUrl(AppConstants.githubUrl),
         ).sliver,
@@ -107,8 +106,8 @@ class TabAbout extends ConsumerWidget {
         /// Issue
         DefaultListTile(
           leadingIcon: FluentIcons.bug_20_regular,
-          titleText: "Report an issue",
-          subtitleText: "You will be redirected to GitHub.",
+          titleText: context.locale.report_issue_tile_title,
+          subtitleText: context.locale.report_issue_tile_subtitle,
           onPressed: () => MethodChannelService.instance
               .launchUrl(AppConstants.githubIssueDirectUrl),
         ).sliver,
@@ -116,18 +115,32 @@ class TabAbout extends ConsumerWidget {
         /// Idea
         DefaultListTile(
           leadingIcon: FluentIcons.lightbulb_filament_20_regular,
-          titleText: "Suggest an idea",
-          subtitleText: "You will be redirected to GitHub.",
+          titleText: context.locale.suggest_idea_tile_title,
+          subtitleText: context.locale.suggest_idea_tile_subtitle,
           onPressed: () => MethodChannelService.instance
               .launchUrl(AppConstants.githubSuggestionDirectUrl),
         ).sliver,
 
         DefaultListTile(
           leadingIcon: FluentIcons.mail_20_regular,
-          titleText: "Write to us via email",
-          subtitleText: "You will be redirected to Email app.",
+          titleText: context.locale.write_email_tile_title,
+          subtitleText: context.locale.write_email_tile_subtitle,
           onPressed: () => MethodChannelService.instance
               .launchUrl(AppConstants.supportEmailUrl),
+        ).sliver,
+
+        /// Privacy policy
+        SliverContentTitle(title: context.locale.privacy_policy_heading),
+        StyledText(context.locale.privacy_policy_info).sliver,
+        12.vSliverBox,
+        Align(
+          alignment: Alignment.centerRight,
+          child: FilledButton.tonalIcon(
+            icon: const Icon(FluentIcons.info_20_regular),
+            label: Text(context.locale.more_details_button),
+            onPressed: () => MethodChannelService.instance
+                .launchUrl(AppConstants.privacyPolicyUrl),
+          ),
         ).sliver,
 
         const SliverTabsBottomPadding(),

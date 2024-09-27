@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/locales.dart';
@@ -36,27 +37,36 @@ class TabGeneral extends ConsumerWidget {
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appbar
-        const SliverFlexibleAppBar(title: "General"),
+        SliverFlexibleAppBar(title: context.locale.general_tab_title),
 
         /// Appearance
-        const SliverContentTitle(title: "Appearance"),
+        SliverContentTitle(title: context.locale.appearance_heading),
 
         /// Theme mode
         DefaultDropdownTile<ThemeMode>(
           value: ref.watch(settingsProvider.select((v) => v.themeMode)),
           dialogIcon: FluentIcons.dark_theme_20_filled,
-          label: "Theme mode",
+          label: context.locale.theme_mode_tile_title,
           onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
           items: [
-            DefaultDropdownItem(label: "System", value: ThemeMode.system),
-            DefaultDropdownItem(label: "Dark", value: ThemeMode.dark),
-            DefaultDropdownItem(label: "Light", value: ThemeMode.light),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_system_label,
+              value: ThemeMode.system,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_dark_label,
+              value: ThemeMode.dark,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_light_label,
+              value: ThemeMode.light,
+            ),
           ],
         ).sliver,
 
         /// Material Color
         DefaultDropdownTile<String>(
-          label: "Material color",
+          label: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: ref.watch(settingsProvider.select((v) => v.color)),
           onSelected: ref.read(settingsProvider.notifier).changeColor,
@@ -77,11 +87,11 @@ class TabGeneral extends ConsumerWidget {
 
         /// Default settings
         12.vSliverBox,
-        const SliverContentTitle(title: "Defaults"),
+        SliverContentTitle(title: context.locale.defaults_heading),
 
         /// Material Color
         DefaultDropdownTile<String>(
-          label: "App Language",
+          label: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: ref.watch(settingsProvider.select((v) => v.localeCode)),
           onSelected: ref.read(settingsProvider.notifier).changeLocale,
@@ -96,11 +106,10 @@ class TabGeneral extends ConsumerWidget {
 
         /// Data reset time
         DefaultListTile(
-          titleText: "Daily data usage reset time",
-          subtitleText:
-              "Specify the time when your daily data cycle renews based on your recharge plan.",
+          titleText: context.locale.data_reset_time_tile_title,
+          subtitleText: context.locale.data_reset_time_tile_subtitle,
           trailing: StyledText(
-            " ${dataUsageResetTime.format(context)}",
+            dataUsageResetTime.format(context),
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
@@ -108,7 +117,7 @@ class TabGeneral extends ConsumerWidget {
             final pickedTime = await showTimePicker(
               context: context,
               initialTime: dataUsageResetTime,
-              helpText: "Select daily data usage reset time",
+              helpText: context.locale.data_reset_time_dialog_hint,
             );
 
             if (pickedTime != null && context.mounted) {

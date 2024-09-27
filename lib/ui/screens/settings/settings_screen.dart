@@ -10,38 +10,33 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/screens/settings/about/tab_about.dart';
 import 'package:mindful/ui/screens/settings/general/tab_general.dart';
 import 'package:mindful/ui/screens/settings/advance/tab_advance.dart';
-import 'package:mindful/ui/screens/settings/privacy/tab_privacy.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const DefaultScaffold(
+    return DefaultScaffold(
       navbarItems: [
         NavbarItem(
-          title: "General",
+          title: context.locale.general_tab_title,
           icon: FluentIcons.color_20_filled,
-          body: TabGeneral(),
+          body: const TabGeneral(),
         ),
         NavbarItem(
-          title: "Advance",
+          title: context.locale.advance_tab_title,
           icon: FluentIcons.launcher_settings_24_filled,
-          body: TabAdvance(),
+          body: const TabAdvance(),
         ),
         NavbarItem(
-          title: "Privacy",
-          icon: FluentIcons.shield_keyhole_20_filled,
-          body: TabPrivacy(),
-        ),
-        NavbarItem(
-          title: "About",
+          title: context.locale.about_tab_title,
           icon: FluentIcons.info_20_filled,
-          body: TabAbout(),
+          body: const TabAbout(),
         ),
       ],
     );

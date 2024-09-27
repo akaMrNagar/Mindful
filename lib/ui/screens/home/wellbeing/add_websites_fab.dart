@@ -31,7 +31,7 @@ class AddWebsitesFAB extends ConsumerWidget {
     return haveAccessibilityPermission
         ? FloatingActionButton.extended(
             heroTag: HeroTags.addDistractingSiteFABTag,
-            label: Text(context.locale.add_website_button_label),
+            label: Text(context.locale.add_website_fab_button),
             icon: const Icon(FluentIcons.add_20_filled),
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,

@@ -21,8 +21,8 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/permissions/dnd_switch_tile.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class FocusConfigurations extends ConsumerWidget {
-  const FocusConfigurations({super.key});
+class FocusQuickActions extends ConsumerWidget {
+  const FocusQuickActions({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

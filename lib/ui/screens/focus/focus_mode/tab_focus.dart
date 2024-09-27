@@ -39,7 +39,7 @@ class TabFocus extends StatelessWidget {
           margin: EdgeInsets.only(top: 12),
         ),
 
-        const FocusConfigurations(),
+        const FocusQuickActions(),
 
         const FocusDistractingAppsList(),
 

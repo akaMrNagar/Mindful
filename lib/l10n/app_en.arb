@@ -1,5 +1,7 @@
 {
     "@@locale": "en",
+    "@----------------------------- SPLASH SCREEN -----------------------------": {},
+    "mindful_tagline": "Focus on what truly Matters",
     "@----------------------------- APP PERMISSIONS -----------------------------": {},
     "permission_status_off": "Off",
     "permission_status_allowed": "Allowed",
@@ -47,6 +49,9 @@
     "dialog_button_cancel": "Cancel",
     "dialog_button_set_timer": "Set timer",
     "dialog_button_delete_timer": "Delete timer",
+    "development_dialog_info": "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!",
+    "development_dialog_button_report_issue": "Report Issue",
+    "development_dialog_button_close": "Close",
     "timer_picker_dialog_info": "This timer will reset at midnight every day, ensuring that your daily usage is tracked accurately.",
     "dnd_settings_tile_title": "Do not disturb settings",
     "dnd_settings_tile_subtitle": "Manage which apps and notifications can reach you in DND.",
@@ -155,12 +160,23 @@
     "block_nsfw_dialog_button_block_anyway": "Block anyway",
     "blocked_websites_heading": "Blocked websites",
     "blocked_websites_empty_list_hint": "Click on '+ Add Website' button to add distracting websites which you wish to block.",
-    "add_website_button_label": "Add Website",
+    "add_website_fab_button": "Add Website",
     "add_website_dialog_title": "Distracting website",
     "add_website_dialog_info": "Enter url of a website which you want to block.",
     "add_website_dialog_button_block": "Block",
     "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
     "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
+    "remove_website_dialog_title": "Remove website",
+    "remove_website_dialog_info": "Are you sure? you want to remove \"{websitehost}\" from blocked websites.",
+    "@remove_website_dialog_info": {
+        "placeholders": {
+            "websitehost": {
+                "type": "String",
+                "example": "example.com"
+            }
+        }
+    },
+    "remove_website_dialog_button_remove": "Remove",
     "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "bedtime_tab_title": "Bedtime",
     "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
@@ -250,7 +266,40 @@
     "focus_session_state_active": "Active",
     "focus_session_state_successful": "Successful",
     "focus_session_state_failed": "Failed",
-    "@----------------------------- APP DASHBOARD SCREEN -----------------------------": {},
+    "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
+    "active_session_tab_title": "Session",
+    "active_session_giveup_dialog_title": "Give up",
+    "active_session_giveup_dialog_info": "Hold on! You're almost there don't give up now! Are you sure you want to end this focus session early? Progress will be lost.",
+    "active_session_giveup_dialog_button_keep_pushing": "Keep pushing",
+    "active_session_giveup_snack_alert": "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going",
+    "active_session_quote_one": "Every step counts, stay strong and keep going!",
+    "active_session_quote_two": "Stay focused! you're making amazing progress!",
+    "active_session_quote_three": "You're crushing it! Keep the momentum going!",
+    "active_session_quote_four": "Just a little more to go, you're doing fantastic!",
+    "active_session_quote_five": "Congratulations! 🎉\n You've completed your focus session of {durationString}.\n\nGreat job—keep up the amazing work!",
+    "@active_session_quote_five": {
+        "placeholders": {
+            "durationString": {
+                "type": "String",
+                "example": "30 minutes"
+            }
+        }
+    },
+    "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
+    "emergency_fab_button": "Emergency",
+    "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",
+    "@emergency_dialog_info": {
+        "placeholders": {
+            "leftPassesCount": {
+                "type": "num",
+                "example": "3"
+            }
+        }
+    },
+    "emergency_dialog_button_use_anyway": "Use anyway",
+    "emergency_started_snack_alert": "The app blocker is paused and will resume blocking in 5 minutes.",
+    "emergency_already_active_snack_alert": "The app blocker is currently either paused or inactive. If notifications are enabled, you will receive updates regarding the remaining time.",
+    "emergency_no_pass_left_snack_alert": "You have used all your emergency passes. The blocked apps will stay blocked until midnight, or the active focus session ends.",
     "app_timer_tile_title": "App timer",
     "app_timer_tile_subtitle_no_timer": "Timer not set.",
     "app_timer_tile_subtitle_unavailable": "Timer not available for important apps.",
@@ -289,5 +338,51 @@
     },
     "go_to_app_settings_tile_title": "Go to app settings",
     "go_to_app_settings_tile_subtitle": "Manage app settings like notifications, permissions, storage and more.",
-    "hey": "hey"
+    "@----------------------------- SETTINGS SCREEN - GENERAL TAB -----------------------------": {},
+    "general_tab_title": "General",
+    "appearance_heading": "Appearance",
+    "theme_mode_tile_title": "Theme mode",
+    "theme_mode_system_label": "System",
+    "theme_mode_light_label": "Light",
+    "theme_mode_dark_label": "Dark",
+    "defaults_heading": "Defaults",
+    "material_color_tile_title": "Material color",
+    "app_language_tile_title": "App language",
+    "data_reset_time_tile_title": "Daily data usage reset time",
+    "data_reset_time_tile_subtitle": "Specify the time when your daily data cycle renews based on your recharge plan.",
+    "data_reset_time_dialog_hint": "Select daily data usage reset time",
+    "@----------------------------- SETTINGS SCREEN - ADVANCE TAB -----------------------------": {},
+    "advance_tab_title": "Advance",
+    "service_heading": "Service",
+    "whitelist_app_info": "If you are still experiencing same issues, even after granting ignore battery optimization, then consider whitelisting Mindful.",
+    "whitelist_app_tile_title": "Whitelist Mindful",
+    "whitelist_app_tile_subtitle": "Allow Mindful to auto start.",
+    "whitelist_app_unsupported_snack_alert": "This device does not support automatic startup management.",
+    "crash_logs_heading": "Crash logs",
+    "crash_logs_info": "If you encounter any issue, you can report it on GitHub along with the log file. The file will include details such as your device's manufacturer, model, Android version, SDK version, and crash logs. This information will help us identify and resolve the problem more effectively.",
+    "crash_logs_share_tile_title": "Share crash logs",
+    "crash_logs_share_tile_subtitle": "Share crash logs as a json file.",
+    "crash_logs_share_failed_snack_alert": "Unable to share logs, something went wrong!!",
+    "crash_logs_clear_tile_title": "Clear logs",
+    "crash_logs_clear_tile_subtitle": "Delete all crash logs from database.",
+    "crash_logs_clear_dialog_info": "Are you sure you wish to clear all crash logs from the database?",
+    "crash_logs_clear_dialog_button_clear_anyway": "Clear anyway",
+    "@----------------------------- SETTINGS SCREEN - ABOUT TAB -----------------------------": {},
+    "about_tab_title": "About",
+    "support_us_heading": "Support us",
+    "donation_card_title": "Thank you",
+    "donation_card_info": "Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.",
+    "donation_card_button_donate": "Donate",
+    "contribute_heading": "Contribute",
+    "github_tile_title": "GitHub",
+    "github_tile_subtitle": "View the source code.",
+    "report_issue_tile_title": "Report an issue",
+    "report_issue_tile_subtitle": "You will be redirected to GitHub.",
+    "suggest_idea_tile_title": "Suggest an idea",
+    "suggest_idea_tile_subtitle": "You will be redirected to GitHub.",
+    "write_email_tile_title": "Write to us via email",
+    "write_email_tile_subtitle": "You will be redirected to Email app.",
+    "privacy_policy_heading": "Privacy policy",
+    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",
+    "more_details_button": "More details"
 }

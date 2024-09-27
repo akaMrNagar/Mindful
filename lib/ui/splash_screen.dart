@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/apps_provider.dart';
@@ -95,10 +96,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               ),
             ),
 
-            const Column(
+            Column(
               children: [
                 /// Title
-                StyledText(
+                const StyledText(
                   "Mindful",
                   fontSize: 48,
                   fontWeight: FontWeight.bold,
@@ -107,7 +108,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
                 /// Tag line
                 StyledText(
-                  "Focus on what truly Matters",
+                  context.locale.mindful_tagline,
                   fontSize: 16,
                   isSubtitle: true,
                 ),

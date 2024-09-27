@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -40,10 +41,9 @@ class WebsiteTile extends ConsumerWidget {
               context: context,
               heroTag: HeroTags.websiteTileTag(websitehost),
               icon: FluentIcons.delete_dismiss_20_filled,
-              positiveLabel: "Remove",
-              title: "Remove website",
-              info:
-                  "Are you sure? you want to remove \"$websitehost\" from blocked websites.",
+              positiveLabel: context.locale.remove_website_dialog_button_remove,
+              title: context.locale.remove_website_dialog_title,
+              info: context.locale.remove_website_dialog_info(websitehost),
             );
 
             if (confirm) {
