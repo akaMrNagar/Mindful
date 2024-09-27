@@ -8,6 +8,9 @@
  *
  */
 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 class AppConstants {
   // Custom packages
   static const removedAppPackage = "com.android.removed";
@@ -30,4 +33,18 @@ class AppConstants {
 
   static const githubFeedbackSectionUrl =
       "https://github.com/akaMrNagar/Mindful/blob/main/README.md#feedback-and-support";
+
+  /// Returns localized list of days in a week in short
+  ///  e.g., ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  static List<String> daysShort(BuildContext context) {
+    List<String> shortDays = [];
+    for (int i = 1; i <= 7; i++) {
+      String shortDay =
+          DateFormat.E(Localizations.localeOf(context).languageCode)
+              .format(DateTime(0, 1, 1 + i));
+      shortDays.add(shortDay);
+    }
+
+    return shortDays;
+  }
 }

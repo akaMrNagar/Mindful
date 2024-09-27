@@ -87,7 +87,7 @@ class SliverUsageCards extends StatelessWidget {
                 context,
                 icon: FluentIcons.phone_20_regular,
                 title: context.locale.screen_time_label,
-                subtitle: screenUsageInfo.seconds.toTimeFull(),
+                subtitle: screenUsageInfo.seconds.toTimeFull(context),
               )
 
             /// Mobile and Wifi usage card

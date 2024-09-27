@@ -100,7 +100,8 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
       context.locale.active_session_quote_three,
       context.locale.active_session_quote_four,
       context.locale.active_session_quote_five(
-          widget.session.duration.toTimeFull(replaceCommaWithAnd: true)),
+        widget.session.duration.toTimeFull(context, replaceCommaWithAnd: true),
+      ),
     ];
     final isSessionActive = _remainingTime.inSeconds > 0;
     final progress = !isSessionActive

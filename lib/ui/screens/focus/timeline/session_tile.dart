@@ -81,19 +81,19 @@ class SessionTile extends StatelessWidget {
                 2.vBox,
                 Skeleton.leaf(
                   child: StyledText(
-                    "${context.locale.focus_session_tile_time_label}: ${dateTime.timeString}",
+                    "${context.locale.focus_session_tile_time_label}: ${dateTime.timeString(context)}",
                     color: Theme.of(context).hintColor,
                   ),
                 ),
                 Skeleton.leaf(
                   child: StyledText(
-                    "${context.locale.focus_session_tile_date_label}: ${dateTime.dateString}",
+                    "${context.locale.focus_session_tile_date_label}: ${dateTime.dateString(context)}",
                     color: Theme.of(context).hintColor,
                   ),
                 ),
                 Skeleton.leaf(
                   child: StyledText(
-                    "${context.locale.focus_session_tile_duration_label}: ${session.duration.toTimeFull()}",
+                    "${context.locale.focus_session_tile_duration_label}: ${session.duration.toTimeFull(context)}",
                     color: Theme.of(context).hintColor,
                   ),
                 ),

@@ -45,6 +45,52 @@
     "permission_battery_optimization_info": "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
     "permission_vpn_title": "Create VPN",
     "permission_vpn_info": "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
+    "@----------------------------- DATE AND TIME -----------------------------": {},
+    "day_today": "Today",
+    "day_yesterday": "Yesterday",
+    "nDays": "{count, plural, =0{0 day} =1{1 day} other{{count} days}}",
+    "@nDays": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "hour_short": "h",
+    "nHours": "{count, plural, =0{0 hour} =1{1 hour} other{{count} hours}}",
+    "@nHours": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "minute_short": "m",
+    "nMinutes": "{count, plural, =0{0 minute} =1{1 minute} other{{count} minutes}}",
+    "@nMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "second_short": "s",
+    "nSeconds": "{count, plural, =0{0 second} =1{1 second} other{{count} seconds}}",
+    "@nSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "time_separator_and": "and",
+    "@time_separator_and": {
+        "description": "Separator used between time like, 10 hours 'and' 15 minutes"
+    },
     "@----------------------------- SHARED STRINGS -----------------------------": {},
     "dialog_button_cancel": "Cancel",
     "dialog_button_set_timer": "Set timer",
@@ -167,7 +213,7 @@
     "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
     "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
     "remove_website_dialog_title": "Remove website",
-    "remove_website_dialog_info": "Are you sure? you want to remove \"{websitehost}\" from blocked websites.",
+    "remove_website_dialog_info": "Are you sure? you want to remove '{websitehost}' from blocked websites.",
     "@remove_website_dialog_info": {
         "placeholders": {
             "websitehost": {

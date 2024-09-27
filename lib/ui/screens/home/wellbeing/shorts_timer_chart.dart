@@ -142,7 +142,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       2.vBox,
                       StyledText(
                         context.locale.shorts_time_left_from(
-                          allowedTimeSec.seconds.toTimeShort(),
+                          allowedTimeSec.seconds.toTimeShort(context),
                         ),
                         fontSize: 14,
                         isSubtitle: true,

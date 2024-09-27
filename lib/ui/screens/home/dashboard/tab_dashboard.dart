@@ -139,10 +139,10 @@ class TabDashboard extends ConsumerWidget {
                             .toDiffPercentage(
                           focusStats.yesterdaysScreenTime.inSeconds,
                         ),
-                        info: focusStats.todaysScreenTime.toTimeShort(),
+                        info: focusStats.todaysScreenTime.toTimeShort(context),
                         onTap: () => context.showSnackAlert(
                           context.locale.screen_time_snack_alert(
-                            focusStats.todaysScreenTime.toTimeFull(),
+                            focusStats.todaysScreenTime.toTimeFull(context),
                           ),
                           icon: FluentIcons.phone_screen_time_20_filled,
                         ),
@@ -157,7 +157,7 @@ class TabDashboard extends ConsumerWidget {
                         invertProgress: true,
                         icon: FluentIcons.person_clock_20_regular,
                         title: context.locale.focused_time_label,
-                        info: focusStats.todaysFocusedTime.toTimeShort(),
+                        info: focusStats.todaysFocusedTime.toTimeShort(context),
                         progressPercentage: focusStats
                             .todaysFocusedTime.inMinutes
                             .toDiffPercentage(
@@ -165,7 +165,7 @@ class TabDashboard extends ConsumerWidget {
                         ),
                         onTap: () => context.showSnackAlert(
                           context.locale.focused_time_snack_alert(
-                            focusStats.todaysFocusedTime.toTimeFull(),
+                            focusStats.todaysFocusedTime.toTimeFull(context),
                           ),
                           icon: FluentIcons.person_clock_20_filled,
                         ),
@@ -178,25 +178,24 @@ class TabDashboard extends ConsumerWidget {
                 UsageGlanceCard(
                   icon: FluentIcons.sound_source_20_regular,
                   title: context.locale.lifetime_focused_time_label,
-                  info: focusStats.lifetimeFocusedTime.toTimeFull(),
+                  info: focusStats.lifetimeFocusedTime.toTimeFull(context),
                   invertProgress: true,
                   onTap: () => context.showSnackAlert(
                     context.locale.lifetime_focused_time_snack_alert(
-                      focusStats.lifetimeFocusedTime.toTimeFull(),
+                      focusStats.lifetimeFocusedTime.toTimeFull(context),
                     ),
                     icon: FluentIcons.sound_source_20_filled,
                   ),
                 ),
 
                 /// Streaks
-                // TODO: Localize days string from streak info.
                 Row(
                   children: [
                     Expanded(
                       child: UsageGlanceCard(
                         title: context.locale.longest_streak_label,
                         icon: FluentIcons.trophy_20_regular,
-                        info: "$longestStreak days",
+                        info: context.locale.nDays(longestStreak),
                       ),
                     ),
                     8.hBox,
@@ -204,7 +203,7 @@ class TabDashboard extends ConsumerWidget {
                       child: UsageGlanceCard(
                         title: context.locale.current_streak_label,
                         icon: FluentIcons.fire_20_regular,
-                        info: "$currentStreak days",
+                        info: context.locale.nDays(currentStreak),
                       ),
                     ),
                   ],

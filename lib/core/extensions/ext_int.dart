@@ -10,8 +10,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/utils/strings.dart';
 import 'package:mindful/core/utils/utils.dart';
 
 extension ExtInt on int {
@@ -30,15 +30,18 @@ extension ExtInt on int {
   /// Converts minutes to [TimeOfDay]
   TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
 
-  /// Generates day's date string based on the current day of week
-  String dateFromDoW() {
+  /// Generates day's date string based on the current day of week only for current week
+  /// this.int should correspond to 0-6 indexed week day.
+  String dateFromDoW(BuildContext context) {
     if (toInt() == todayOfWeek) {
-      return "Today";
+      return context.locale.day_today;
     } else if (toInt() == todayOfWeek - 1) {
-      return "Yesterday";
+      return context.locale.day_yesterday;
     } else {
-      final dt = now.subtract(todayOfWeek.days).add(toInt().days);
-      return "${AppStrings.daysFull[toInt()]}, ${dt.day} ${AppStrings.monthsLabelShort[dt.month - 1]}";
+      return now
+          .subtract(todayOfWeek.days)
+          .add(toInt().days)
+          .dateString(context);
     }
   }
 

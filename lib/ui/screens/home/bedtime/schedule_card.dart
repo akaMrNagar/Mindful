@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -75,7 +75,7 @@ class ScheduleCard extends ConsumerWidget {
             children: [
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
               12.hBox,
-              StyledText(totalDuration.toTimeFull()),
+              StyledText(totalDuration.toTimeFull(context)),
               12.hBox,
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
             ],
@@ -102,16 +102,13 @@ class ScheduleCard extends ConsumerWidget {
                       : () => ref
                           .read(bedtimeProvider.notifier)
                           .toggleScheduleDay(index),
-                  child: Semantics(
-                    hint: AppStrings.daysFull[index],
-                    child: StyledText(
-                      AppStrings.daysShort[index],
-                      fontSize: 16,
-                      isSubtitle: isScheduleOn,
-                      color: scheduleDays[index]
-                          ? Theme.of(context).colorScheme.surface
-                          : null,
-                    ),
+                  child: StyledText(
+                    AppConstants.daysShort(context)[index],
+                    fontSize: 16,
+                    isSubtitle: isScheduleOn,
+                    color: scheduleDays[index]
+                        ? Theme.of(context).colorScheme.surface
+                        : null,
                   ),
                 ),
               ),

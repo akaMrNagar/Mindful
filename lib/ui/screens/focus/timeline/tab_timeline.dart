@@ -78,10 +78,10 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                     isPrimary: true,
                     icon: FluentIcons.clock_20_regular,
                     title: context.locale.selected_month_productive_time_label,
-                    info: timeline.totalProductiveTime.toTimeShort(),
+                    info: timeline.totalProductiveTime.toTimeShort(context),
                     onTap: () => context.showSnackAlert(
                       context.locale.selected_month_productive_time_snack_alert(
-                        timeline.totalProductiveTime.toTimeFull(),
+                        timeline.totalProductiveTime.toTimeFull(context),
                       ),
                       icon: FluentIcons.clock_20_filled,
                     ),
@@ -95,7 +95,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                     isPrimary: true,
                     icon: FluentIcons.calendar_day_20_regular,
                     title: context.locale.selected_month_productive_days_label,
-                    info: "${timeline.daysTypeMap.length} days",
+                    info: context.locale.nDays(timeline.daysTypeMap.length),
                     onTap: () => context.showSnackAlert(
                       context.locale.selected_month_productive_days_snack_alert(
                         timeline.totalProductiveDays,
@@ -112,10 +112,10 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               isPrimary: true,
               icon: FluentIcons.shifts_day_20_regular,
               title: context.locale.selected_day_focused_time_label,
-              info: timeline.todaysFocusedTime.toTimeFull(),
+              info: timeline.todaysFocusedTime.toTimeFull(context),
               onTap: () => context.showSnackAlert(
                 context.locale.selected_day_focused_time_snack_alert(
-                  timeline.todaysFocusedTime.toTimeFull(),
+                  timeline.todaysFocusedTime.toTimeFull(context),
                 ),
                 icon: FluentIcons.shifts_day_20_filled,
               ),
@@ -126,6 +126,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               /// NOTE - datasets map should only contain date and all time related fields should be 0
               datasets: heatMapData,
               flexible: true,
+              showColorTip: false,
               initDate: DateTime.now(),
               borderRadius: 10,
               colorMode: ColorMode.color,

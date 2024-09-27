@@ -62,7 +62,7 @@ class AppTimerPicker extends ConsumerWidget {
               subtitleText: app.isImpSysApp
                   ? context.locale.app_timer_tile_subtitle_unavailable
                   : appTimer > 0
-                      ? appTimer.seconds.toTimeFull()
+                      ? appTimer.seconds.toTimeFull(context)
                       : context.locale.app_timer_tile_subtitle_no_timer,
               leadingIcon: FluentIcons.timer_20_regular,
               accent: isPurged ? Theme.of(context).colorScheme.error : null,

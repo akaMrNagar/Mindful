@@ -64,7 +64,7 @@ class SliverUsageChartPanel extends StatelessWidget {
                     : null,
               ),
               StyledText(
-                selectedDoW.dateFromDoW(),
+                selectedDoW.dateFromDoW(context),
                 color: Theme.of(context).hintColor,
                 fontSize: 14,
               ),
