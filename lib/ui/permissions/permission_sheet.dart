@@ -22,7 +22,7 @@ class PermissionSheet extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.description,
-    required this.onGrantPermission,
+    required this.onTapGrantPermission,
     this.isAccessibilityPerm = false,
     this.deviceSwitchTileLabel,
   });
@@ -30,7 +30,7 @@ class PermissionSheet extends StatelessWidget {
   final IconData icon;
   final String title;
   final String description;
-  final VoidCallback onGrantPermission;
+  final VoidCallback onTapGrantPermission;
   final bool isAccessibilityPerm;
   final String? deviceSwitchTileLabel;
 
@@ -103,12 +103,11 @@ class PermissionSheet extends StatelessWidget {
                   if (isAccessibilityPerm)
                     TextButton(
                       onPressed: Navigator.of(context).maybePop,
-                      child:
-                          Text(context.locale.permission_button_not_now),
+                      child: Text(context.locale.permission_button_not_now),
                     ),
                   const Spacer(),
                   FilledButton(
-                    onPressed: onGrantPermission,
+                    onPressed: onTapGrantPermission,
                     child: Text(positiveButtonLabel),
                   ),
                 ],

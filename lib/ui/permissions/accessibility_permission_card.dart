@@ -33,7 +33,7 @@ class AccessibilityPermissionCard extends ConsumerWidget {
       margin: const EdgeInsets.only(top: 12),
       icon: FluentIcons.accessibility_20_regular,
       title: context.locale.permission_accessibility_title,
-      information: context.locale.permission_accessibility_warning,
+      information: context.locale.permission_accessibility_info,
       negativeBtn: TextButton(
         onPressed: () =>
             MethodChannelService.instance.launchUrl(AppConstants.faqsUrl),
@@ -57,7 +57,7 @@ class AccessibilityPermissionCard extends ConsumerWidget {
         description: context.locale.permission_accessibility_info,
         deviceSwitchTileLabel:
             context.locale.permission_accessibility_device_tile_label,
-        onGrantPermission: () {
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askAccessibilityPermission();
           Navigator.of(sheetContext).maybePop();
         },

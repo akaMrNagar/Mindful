@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
@@ -70,7 +71,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
       navbarItems: [
         NavbarItem(
           icon: FluentIcons.data_pie_20_filled,
-          title: "Dashboard",
+          title: context.locale.dashboard_tab_title,
           fab: const EmergencyFAB(),
           body: CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -126,13 +127,14 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                 ),
               ),
 
-              const SliverContentTitle(title: "Quick actions"),
+              SliverContentTitle(title: context.locale.quick_actions_heading),
 
               /// Available app setting or functions
               widget.app.packageName == AppConstants.removedAppPackage ||
                       widget.app.packageName == AppConstants.tetheringAppPackage
-                  ? const StyledText(
-                      "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
+                  ? StyledText(
+                      context
+                          .locale.custom_apps_quick_actions_unavailable_warning,
                       fontSize: 14,
                     ).sliver
                   : QuickActions(app: widget.app),

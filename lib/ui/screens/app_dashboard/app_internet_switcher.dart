@@ -43,25 +43,23 @@ class AppInternetSwitcher extends ConsumerWidget {
 
     return isIconButton
         ? IconButton(
-            icon: Semantics(
-              hint: "Switch internet access for ${app.name}",
-              child: Icon(
-                haveInternetAccess
-                    ? FluentIcons.globe_20_regular
-                    : FluentIcons.globe_prohibited_20_regular,
-                color: haveInternetAccess
-                    ? null
-                    : Theme.of(context).colorScheme.error,
-              ),
+            icon: Icon(
+              haveInternetAccess
+                  ? FluentIcons.globe_20_regular
+                  : FluentIcons.globe_prohibited_20_regular,
+              color: haveInternetAccess
+                  ? null
+                  : Theme.of(context).colorScheme.error,
             ),
             onPressed: onPressed,
           )
         : DefaultListTile(
             switchValue: haveInternetAccess,
-            titleText: "Internet access",
+            enabled: !app.isImpSysApp,
+            titleText: context.locale.internet_access_tile_title,
             subtitleText: app.isImpSysApp
-                ? "Cannot block important app's internet."
-                : "Switch off to block app's internet.",
+                ? context.locale.internet_access_tile_subtitle_unavailable
+                : context.locale.internet_access_tile_subtitle,
             leadingIcon: haveInternetAccess
                 ? FluentIcons.globe_20_regular
                 : FluentIcons.globe_prohibited_16_filled,
@@ -79,10 +77,9 @@ class AppInternetSwitcher extends ConsumerWidget {
       isScrollControlled: true,
       builder: (sheetContext) => PermissionSheet(
         icon: FluentIcons.channel_share_20_filled,
-        title: "Create VPN",
-        description:
-            "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
-        onGrantPermission: () {
+        title: context.locale.permission_vpn_title,
+        description: context.locale.permission_vpn_info,
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askVpnPermission();
           Navigator.of(sheetContext).maybePop();
         },
@@ -101,7 +98,9 @@ class AppInternetSwitcher extends ConsumerWidget {
         );
 
     context.showSnackAlert(
-      "${app.name}'s internet is ${haveInternetAccess ? 'unblocked.' : 'blocked.'}",
+      haveInternetAccess
+          ? context.locale.internet_access_unblocked_snack_alert(app.name)
+          : context.locale.internet_access_blocked_snack_alert(app.name),
       icon: haveInternetAccess
           ? FluentIcons.globe_20_filled
           : FluentIcons.globe_prohibited_20_filled,

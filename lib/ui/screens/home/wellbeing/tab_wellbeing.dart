@@ -111,12 +111,13 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           remainingTimeSec: remainingTimeSec,
         ).sliver,
 
+        /// Invincible Mode warning
         SliverPrimaryActionContainer(
           isVisible: haveAccessibilityPermission && !isModifiable,
           margin: const EdgeInsets.symmetric(vertical: 16),
           icon: FluentIcons.animal_cat_20_regular,
           title: context.locale.invincible_mode_heading,
-          information: context.locale.short_content_invincible_mode_warning,
+          information: context.locale.short_content_invincible_mode_info,
         ),
 
         /// Quick actions

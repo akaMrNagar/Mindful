@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/android_app.dart';
@@ -37,8 +38,8 @@ class QuickActions extends ConsumerWidget {
 
         /// Launch app button
         DefaultListTile(
-          titleText: "Launch app",
-          subtitleText: "Open ${app.name}",
+          titleText: context.locale.launch_app_tile_title,
+          subtitleText: context.locale.launch_app_tile_subtitle(app.name),
           leadingIcon: FluentIcons.rocket_20_regular,
           onPressed: () async =>
               MethodChannelService.instance.openAppWithPackage(app.packageName),
@@ -46,9 +47,8 @@ class QuickActions extends ConsumerWidget {
 
         /// Launch app settings button
         DefaultListTile(
-          titleText: "Go to app settings",
-          subtitleText:
-              "Manage app settings like notifications, permissions, storage and more.",
+          titleText: context.locale.go_to_app_settings_tile_title,
+          subtitleText: context.locale.go_to_app_settings_tile_subtitle,
           leadingIcon: FluentIcons.launcher_settings_20_regular,
           onPressed: () async => MethodChannelService.instance
               .openAppSettingsForPackage(app.packageName),

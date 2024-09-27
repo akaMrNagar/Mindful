@@ -49,7 +49,7 @@ class ShortsTimerChart extends ConsumerWidget {
     if (newTime < minimumShortTimerSecs) {
       if (context.mounted) {
         context.showSnackAlert(
-          context.locale.short_content_minimum_time_snack_warning,
+          context.locale.short_content_minimum_time_snack_alert,
         );
       }
       return;

@@ -31,7 +31,7 @@
     "permission_overlay_device_tile_label": "Allow display over other apps",
     "permission_accessibility_title": "Accessibility",
     "permission_accessibility_info": "Please grant accessibility permission. This will allow Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers, and filter inappropriate websites.",
-    "permission_accessibility_warning": "Mindful requires accessibility permission to block short content effectively.",
+    "permission_accessibility_required": "Mindful requires accessibility permission to block short content effectively.",
     "permission_accessibility_device_tile_label": "Use Mindful",
     "permission_dnd_title": "Do not disturb",
     "permission_dnd_info": "Please grant Do Not Disturb access. This will allow Mindful to start and stop Do Not Disturb mode during the bedtime schedule.",
@@ -40,18 +40,22 @@
     "permission_battery_optimization_tile_title": "Ignore Battery Optimization",
     "permission_battery_optimization_status_enabled": "Already unrestricted",
     "permission_battery_optimization_status_disabled": "Disable background restriction",
-    "permission_battery_optimization_warning": "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
-    "@----------------------------- COMMON WIDGETS -----------------------------": {},
+    "permission_battery_optimization_info": "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
+    "permission_vpn_title": "Create VPN",
+    "permission_vpn_info": "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
+    "@----------------------------- SHARED STRINGS -----------------------------": {},
     "dialog_button_cancel": "Cancel",
     "dialog_button_set_timer": "Set timer",
     "dialog_button_delete_timer": "Delete timer",
     "timer_picker_dialog_info": "This timer will reset at midnight every day, ensuring that your daily usage is tracked accurately.",
     "dnd_settings_tile_title": "Do not disturb settings",
     "dnd_settings_tile_subtitle": "Manage which apps and notifications can reach you in DND.",
-    "select_distracting_apps_label": "Select distracting apps",
-    "your_distracting_apps_label": "Your distracting apps",
-    "select_more_apps_label": "Select more apps",
+    "quick_actions_heading": "Quick actions",
+    "select_distracting_apps_heading": "Select distracting apps",
+    "your_distracting_apps_heading": "Your distracting apps",
+    "select_more_apps_heading": "Select more apps",
     "imp_distracting_apps_warning": "Adding important system apps to the list of distracting apps is not permitted.",
+    "custom_apps_quick_actions_unavailable_warning": "Screen usage and quick actions are unavailable for this application. At present, only network usage is accessible",
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
     "onboarding_finish_setup_btn_label": "Finish Setup",
@@ -134,8 +138,8 @@
             }
         }
     },
-    "short_content_minimum_time_snack_warning": "Please ensure the timer for short content is set to a minimum of 5 minutes.",
-    "short_content_invincible_mode_warning": "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
+    "short_content_minimum_time_snack_alert": "Please ensure the timer for short content is set to a minimum of 5 minutes.",
+    "short_content_invincible_mode_info": "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
     "block_insta_reels_title": "Block reels",
     "block_insta_reels_subtitle": "Restrict reels on instagram.",
     "block_yt_shorts_title": "Block shorts",
@@ -166,7 +170,6 @@
     "schedule_tile_subtitle": "Enable or disable daily schedule.",
     "bedtime_minimum_duration_snack_alert": "The total bedtime duration must be at least 30 minutes.",
     "bedtime_minimum_apps_snack_alert": "Select at least one distracting app to turn on bedtime schedule",
-    "quick_actions_heading": "Quick actions",
     "distracting_apps_tile_title": "Distracting apps",
     "distracting_apps_tile_subtitle": "Select which apps are distracting you from your bedtime routine.",
     "bedtime_distracting_apps_modify_snack_alert": "Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.",
@@ -176,7 +179,6 @@
     "active_session_card_title": "Active session",
     "active_session_card_info": "You have an active focus session running! Click 'View' to check your progress and see how much time has elapsed.",
     "active_session_card_view_button": "View",
-    "configuration_heading": "Configurations",
     "focus_distracting_apps_removal_snack_alert": "Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.",
     "focus_session_tile_title": "Focus session",
     "focus_session_start_fab_button": "Start Session",
@@ -249,5 +251,43 @@
     "focus_session_state_successful": "Successful",
     "focus_session_state_failed": "Failed",
     "@----------------------------- APP DASHBOARD SCREEN -----------------------------": {},
+    "app_timer_tile_title": "App timer",
+    "app_timer_tile_subtitle_no_timer": "Timer not set.",
+    "app_timer_tile_subtitle_unavailable": "Timer not available for important apps.",
+    "app_timer_tile_trailing_paused": "Paused",
+    "app_timer_invincible_mode_snack_alert": "Due to invincible mode, modifications to paused app's timer is not allowed.",
+    "internet_access_tile_title": "Internet access",
+    "internet_access_tile_subtitle": "Switch off to block app's internet.",
+    "internet_access_tile_subtitle_unavailable": "Cannot block important app's internet.",
+    "internet_access_blocked_snack_alert": "{appName}'s internet is blocked.",
+    "@internet_access_blocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "internet_access_unblocked_snack_alert": "{appName}'s internet is unblocked.",
+    "@internet_access_unblocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "launch_app_tile_title": "Launch app",
+    "launch_app_tile_subtitle": "Open {appName}.",
+    "@launch_app_tile_subtitle": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "go_to_app_settings_tile_title": "Go to app settings",
+    "go_to_app_settings_tile_subtitle": "Manage app settings like notifications, permissions, storage and more.",
     "hey": "hey"
 }

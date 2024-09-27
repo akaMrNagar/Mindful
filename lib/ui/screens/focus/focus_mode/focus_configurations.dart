@@ -33,7 +33,7 @@ class FocusConfigurations extends ConsumerWidget {
 
     return MultiSliver(
       children: [
-        SliverContentTitle(title: context.locale.configuration_heading),
+        SliverContentTitle(title: context.locale.quick_actions_heading),
 
         /// Session tag
         DefaultDropdownTile<SessionType>(

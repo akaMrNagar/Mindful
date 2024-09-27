@@ -53,7 +53,7 @@ class DndSwitchTile extends ConsumerWidget {
         icon: FluentIcons.alert_snooze_20_filled,
         title: context.locale.permission_dnd_title,
         description: context.locale.permission_dnd_info,
-        onGrantPermission: () {
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askDndPermission();
           Navigator.of(sheetContext).maybePop();
         },

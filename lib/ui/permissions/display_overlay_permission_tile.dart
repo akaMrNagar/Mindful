@@ -48,7 +48,7 @@ class DisplayOverlayPermissionTile extends ConsumerWidget {
         description: context.locale.permission_overlay_info,
         deviceSwitchTileLabel:
             context.locale.permission_overlay_device_tile_label,
-        onGrantPermission: () {
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askDisplayOverlayPermission();
           Navigator.of(sheetContext).maybePop();
         },

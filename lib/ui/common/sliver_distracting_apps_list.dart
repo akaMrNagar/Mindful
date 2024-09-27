@@ -41,8 +41,8 @@ class SliverDistractingAppsList extends ConsumerWidget {
       children: [
         SliverContentTitle(
           title: distractingApps.isEmpty
-              ? context.locale.select_distracting_apps_label
-              : context.locale.your_distracting_apps_label,
+              ? context.locale.select_distracting_apps_heading
+              : context.locale.your_distracting_apps_heading,
         ),
 
         /// Apps list
@@ -53,7 +53,7 @@ class SliverDistractingAppsList extends ConsumerWidget {
           child: allApps.hasValue
               ? AnimatedAppsList(
                   itemExtent: 56,
-                  separatorTitle: context.locale.select_more_apps_label,
+                  separatorTitle: context.locale.select_more_apps_heading,
                   appPackages: [
                     /// Selected apps which are installed
                     ...distractingApps.where((e) => allApps.value!.contains(e)),

@@ -110,8 +110,7 @@ class TabAdvance extends ConsumerWidget {
         const SliverContentTitle(title: "Service"),
 
         /// Battery
-        StyledText(context.locale.permission_battery_optimization_warning)
-            .sliver,
+        StyledText(context.locale.permission_battery_optimization_info).sliver,
         6.vSliverBox,
 
         /// Battery permission
