@@ -87,7 +87,7 @@ class TabAbout extends ConsumerWidget {
             icon: const Icon(FluentIcons.heart_20_filled),
             label: const Text("Donate"),
             onPressed: () => MethodChannelService.instance
-                .launchUrl(AppConstants.githubDonationUrl),
+                .launchUrl(AppConstants.githubDonationSectionUrl),
           ),
         ),
 
@@ -110,7 +110,7 @@ class TabAbout extends ConsumerWidget {
           titleText: "Report an issue",
           subtitleText: "You will be redirected to GitHub.",
           onPressed: () => MethodChannelService.instance
-              .launchUrl(AppConstants.githubIssueUrl),
+              .launchUrl(AppConstants.githubIssueDirectUrl),
         ).sliver,
 
         /// Idea
@@ -119,7 +119,15 @@ class TabAbout extends ConsumerWidget {
           titleText: "Suggest an idea",
           subtitleText: "You will be redirected to GitHub.",
           onPressed: () => MethodChannelService.instance
-              .launchUrl(AppConstants.githubSuggestionUrl),
+              .launchUrl(AppConstants.githubSuggestionDirectUrl),
+        ).sliver,
+
+        DefaultListTile(
+          leadingIcon: FluentIcons.mail_20_regular,
+          titleText: "Write to us via email",
+          subtitleText: "You will be redirected to Email app.",
+          onPressed: () => MethodChannelService.instance
+              .launchUrl(AppConstants.supportEmailUrl),
         ).sliver,
 
         const SliverTabsBottomPadding(),

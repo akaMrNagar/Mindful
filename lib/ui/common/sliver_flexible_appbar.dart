@@ -43,7 +43,7 @@ class SliverFlexibleAppBar extends ConsumerWidget {
 
     if (reportIssue) {
       await MethodChannelService.instance
-          .launchUrl(AppConstants.githubIssueUrl);
+          .launchUrl(AppConstants.githubFeedbackSectionUrl);
     }
   }
 

@@ -2,11 +2,11 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-* [🔏 Verify](docs/VERIFICATION.md)
-* [📃 Privacy Policy](https://bemindful.vercel.app/privacy)
-* [👻 Supporters](docs/SUPPORTERS.md)
-* [🛠️ Build & Contribute](docs/CONTRIBUTION.md)
-* [🙋‍♂️ FAQs](https://bemindful.vercel.app/#faqs)
+* **[🔏 Verify](docs/VERIFICATION.md)**
+* **[📃 Privacy Policy](https://bemindful.vercel.app/privacy)**
+* **[👻 Supporters](docs/SUPPORTERS.md)**
+* **[🛠️ Build & Contribute](docs/CONTRIBUTING.md)**
+* **[🙋‍♂️ FAQs](https://bemindful.vercel.app/#faqs)**
 
 ## 👇 Download
 
@@ -61,7 +61,7 @@
 
 ---
 
-# 💖 Donate
+# Donate 💖
 
 Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
 
@@ -72,6 +72,11 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 <a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
 
 
-## 🗨️ Feedback and Support
+## Feedback and Support
 
-Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us on github.
+Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us through the following channels : 
+
+* **[GitHub (bug)](https://github.com/akaMrNagar/Mindful/issues/new?&template=bug_report.md)**
+* **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&tem**plate=feature_request.md)**
+* **[GitHub (vulnerability)](https://github.com/akaMrNagar/Mindful/security/advisories/new)**
+* **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
