@@ -30,7 +30,9 @@ extension ExtDuration on Duration {
         ? inMinutes % 60 == 0
             ? "$inHours${context.locale.hour_short}"
             : "$inHours${context.locale.hour_short} ${inMinutes % 60}${context.locale.minute_short}"
-        : "$inMinutes${context.locale.minute_short}";
+        : inMinutes >= 1
+            ? "$inMinutes${context.locale.minute_short}"
+            : "$inSeconds${context.locale.second_short}";
   }
 
   /// Formats the duration into time like '5 hours, 45 minutes'

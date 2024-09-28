@@ -109,7 +109,8 @@ class SliverUsageCards extends StatelessWidget {
                         context,
                         icon: FluentIcons.wifi_1_20_filled,
                         title: context.locale.wifi_label,
-                        subtitle: wifiUsageInfo.toData(),
+                        // subtitle: wifiUsageInfo.toData(),
+                        subtitle: 25000000000000.toData(),
                       ),
                     ),
                   ],
@@ -135,10 +136,13 @@ class SliverUsageCards extends StatelessWidget {
         fontSize: 14,
       ),
       subtitle: Skeleton.leaf(
-        child: StyledText(
-          subtitle,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+        child: FittedBox(
+          child: StyledText(
+            subtitle,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            overflow: TextOverflow.ellipsis,
+          ),
         ),
       ),
     );

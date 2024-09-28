@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -82,15 +83,13 @@ class ScheduleCard extends ConsumerWidget {
           ),
 
           /// Schedule selected Days
-          FittedBox(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(
-                7,
-                (index) => RoundedContainer(
-                  circularRadius: 48,
-                  height: 48,
-                  width: 48,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              7,
+              (index) => Expanded(
+                child: RoundedContainer(
+                  circularRadius: 200,
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   color: scheduleDays[index]
                       ? isScheduleOn
@@ -102,13 +101,17 @@ class ScheduleCard extends ConsumerWidget {
                       : () => ref
                           .read(bedtimeProvider.notifier)
                           .toggleScheduleDay(index),
-                  child: StyledText(
-                    AppConstants.daysShort(context)[index],
-                    fontSize: 16,
-                    isSubtitle: isScheduleOn,
-                    color: scheduleDays[index]
-                        ? Theme.of(context).colorScheme.surface
-                        : null,
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: StyledText(
+                      AppConstants.daysShort(context)[index],
+                      fontSize: 12,
+                      isSubtitle: isScheduleOn,
+                      textAlign: TextAlign.center,
+                      color: scheduleDays[index]
+                          ? Theme.of(context).colorScheme.surface
+                          : null,
+                    ).centered,
                   ),
                 ),
               ),
