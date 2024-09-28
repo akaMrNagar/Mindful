@@ -27,7 +27,6 @@ import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/statistics/application_tile.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
@@ -66,9 +65,6 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          /// Appbar
-          SliverFlexibleAppBar(title: context.locale.statistics_tab_title),
-
           /// Usage type selector and usage info card
           SliverSkeletonizer.zone(
             enabled: !filteredApps.hasValue,

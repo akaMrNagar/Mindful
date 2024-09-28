@@ -28,7 +28,6 @@ import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
@@ -87,18 +86,15 @@ class TabDashboard extends ConsumerWidget {
 
     final username = ref.watch(settingsProvider.select((v) => v.username));
 
-    return Skeletonizer.zone(
-      enabled: ref.read(appsProvider).isLoading,
-      enableSwitchAnimation: true,
-      ignorePointers: false,
-      child: DefaultRefreshIndicator(
-        onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
+    return DefaultRefreshIndicator(
+      onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
+      child: Skeletonizer.zone(
+        enabled: ref.read(appsProvider).isLoading,
+        enableSwitchAnimation: true,
+        ignorePointers: false,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            /// Appbar
-            SliverFlexibleAppBar(title: context.locale.dashboard_tab_title),
-
             StyledText(context.locale.welcome_greetings).sliver,
 
             /// User name

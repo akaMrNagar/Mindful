@@ -22,7 +22,6 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -93,9 +92,6 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// Appbar
-        SliverFlexibleAppBar(title: context.locale.wellbeing_tab_title),
-
         /// Information about bedtime
         StyledText(context.locale.wellbeing_tab_info).sliver,
 

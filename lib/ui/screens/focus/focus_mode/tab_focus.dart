@@ -13,7 +13,6 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/focus_distracting_apps_list.dart';
@@ -27,9 +26,6 @@ class TabFocus extends StatelessWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// Appbar
-        SliverFlexibleAppBar(title: context.locale.focus_tab_title),
-
         /// Information
         StyledText(context.locale.focus_tab_info).sliver,
 

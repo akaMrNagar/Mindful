@@ -49,6 +49,9 @@ class AppSettings {
   @ignore
   TimeOfDay get dataResetToD => dataResetTimeMins.toTimeOfDay;
 
+  /// Flag indicating if to use bottom navigation or the default sidebar 
+  final bool bottomNavigation;
+
   const AppSettings({
     this.username = "Hustler",
     this.color = 'Indigo',
@@ -56,6 +59,7 @@ class AppSettings {
     this.themeMode = ThemeMode.system,
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
+    this.bottomNavigation = false,
   });
 
   AppSettings copyWith({
@@ -65,6 +69,7 @@ class AppSettings {
     String? localeCode,
     bool? isInvincibleModeOn,
     int? dataResetTimeMins,
+    bool? bottomNavigation,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -73,6 +78,7 @@ class AppSettings {
       localeCode: localeCode ?? this.localeCode,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
+      bottomNavigation: bottomNavigation ?? this.bottomNavigation,
     );
   }
 }

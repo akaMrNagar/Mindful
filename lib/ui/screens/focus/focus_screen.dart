@@ -30,15 +30,17 @@ class FocusScreen extends StatelessWidget {
       initialTabIndex: initialTabIndex,
       navbarItems: [
         NavbarItem(
-          icon: FluentIcons.target_arrow_20_filled,
+          icon: FluentIcons.target_arrow_20_regular,
+          filledIcon: FluentIcons.target_arrow_20_filled,
           title: context.locale.focus_tab_title,
-          body: const TabFocus(),
+          sliverBody: const TabFocus(),
           fab: const StartSessionFAB(),
         ),
         NavbarItem(
-          icon: FluentIcons.history_20_filled,
+          icon: FluentIcons.history_20_regular,
+          filledIcon: FluentIcons.history_20_filled,
           title: context.locale.timeline_tab_title,
-          body: const TabTimeline(),
+          sliverBody: const TabTimeline(),
         ),
       ],
     );

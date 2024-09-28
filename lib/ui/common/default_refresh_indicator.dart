@@ -14,8 +14,8 @@ class DefaultRefreshIndicator extends StatelessWidget {
   /// Global pull to refresh widget
   const DefaultRefreshIndicator({
     super.key,
-    this.edgeOffset = 124,
-    this.displacement = 156,
+    this.edgeOffset = 0,
+    this.displacement = 40,
     required this.onRefresh,
     required this.child,
   });

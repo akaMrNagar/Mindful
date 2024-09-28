@@ -88,24 +88,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       navbarItems: [
         NavbarItem(
           title: context.locale.dashboard_tab_title,
-          icon: FluentIcons.home_20_filled,
-          body: const TabDashboard(),
+          icon: FluentIcons.home_20_regular,
+          filledIcon: FluentIcons.home_20_filled,
+          sliverBody: const TabDashboard(),
         ),
         NavbarItem(
           title: context.locale.statistics_tab_title,
-          icon: FluentIcons.data_pie_24_filled,
-          body: const TabStatistics(),
+          icon: FluentIcons.data_pie_24_regular,
+          filledIcon: FluentIcons.data_pie_24_filled,
+          sliverBody: const TabStatistics(),
         ),
         NavbarItem(
           title: context.locale.wellbeing_tab_title,
-          icon: FluentIcons.brain_circuit_20_filled,
-          body: const TabWellBeing(),
+          icon: FluentIcons.brain_circuit_20_regular,
+          filledIcon: FluentIcons.brain_circuit_20_filled,
           fab: const AddWebsitesFAB(),
+          sliverBody: const TabWellBeing(),
         ),
         NavbarItem(
           title: context.locale.bedtime_tab_title,
-          icon: FluentIcons.sleep_20_filled,
-          body: const TabBedtime(),
+          icon: FluentIcons.sleep_20_regular,
+          filledIcon: FluentIcons.sleep_20_filled,
+          sliverBody: const TabBedtime(),
         ),
       ],
     );

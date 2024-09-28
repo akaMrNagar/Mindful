@@ -17,6 +17,7 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/app_version_provider.dart';
+import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -27,9 +28,11 @@ class SliverFlexibleAppBar extends ConsumerWidget {
   const SliverFlexibleAppBar({
     super.key,
     required this.title,
+    this.materialBarLeading,
   });
 
   final String title;
+  final Widget? materialBarLeading;
 
   void _showBetaDialog(BuildContext context, String version) async {
     final reportIssue = await showConfirmationDialog(
@@ -51,11 +54,11 @@ class SliverFlexibleAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appVersion = ref.read(appVersionProvider).value ?? "v0.0.0";
+    final useBottomNavigation =
+        ref.watch(settingsProvider.select((v) => v.bottomNavigation));
 
     return SliverAppBar(
-      toolbarHeight: 0,
-      // expandedHeight: 96, // without beta tag
-      expandedHeight: 120,
+      expandedHeight: 132,
       elevation: 0,
       scrolledUnderElevation: 0,
       automaticallyImplyLeading: false,
@@ -63,39 +66,49 @@ class SliverFlexibleAppBar extends ConsumerWidget {
         collapseMode: CollapseMode.pin,
         background: SingleChildScrollView(
           reverse: true,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              /// Title
-              StyledText(
-                title,
-                maxLines: 1,
-                fontSize: 32,
-                fontWeight: FontWeight.w600,
-                overflow: TextOverflow.fade,
-              ),
-
-              /// Beta tag
-              DefaultHero(
-                tag: HeroTags.betaWarningTag,
-                child: Semantics(
-                  excludeSemantics: true,
-                  child: RoundedContainer(
-                    width: 48,
-                    height: 24,
-                    circularRadius: 8,
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () => _showBetaDialog(context, appVersion),
-                    child: StyledText(
-                      appVersion.contains('DEBUG') ? "DEBUG" : "DEV",
-                      color: Theme.of(context).colorScheme.onPrimary,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                /// Title
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    if (useBottomNavigation) materialBarLeading ?? 0.vBox,
+                    const Spacer(),
+                    StyledText(
+                      title,
+                      maxLines: 1,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600,
                       overflow: TextOverflow.fade,
+                    ),
+                  ],
+                ),
+
+                /// Beta tag
+                DefaultHero(
+                  tag: HeroTags.betaWarningTag,
+                  child: Semantics(
+                    excludeSemantics: true,
+                    child: RoundedContainer(
+                      width: 48,
+                      height: 24,
+                      circularRadius: 8,
+                      color: Theme.of(context).colorScheme.primary,
+                      onPressed: () => _showBetaDialog(context, appVersion),
+                      child: StyledText(
+                        appVersion.contains('DEBUG') ? "DEBUG" : "DEV",
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              12.vBox
-            ],
+                24.vBox
+              ],
+            ),
           ),
         ),
       ),

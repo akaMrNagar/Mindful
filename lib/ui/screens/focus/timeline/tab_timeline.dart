@@ -21,7 +21,6 @@ import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/focus_timeline_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/focus/timeline/session_tile.dart';
@@ -62,9 +61,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            /// Appbar
-            SliverFlexibleAppBar(title: context.locale.timeline_tab_title),
-
             StyledText(context.locale.timeline_tab_info).sliver,
 
             24.vSliverBox,

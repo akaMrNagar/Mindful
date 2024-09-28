@@ -25,18 +25,21 @@ class SettingsScreen extends StatelessWidget {
       navbarItems: [
         NavbarItem(
           title: context.locale.general_tab_title,
-          icon: FluentIcons.color_20_filled,
-          body: const TabGeneral(),
+          icon: FluentIcons.color_20_regular,
+          filledIcon: FluentIcons.color_20_filled,
+          sliverBody: const TabGeneral(),
         ),
         NavbarItem(
           title: context.locale.advance_tab_title,
-          icon: FluentIcons.launcher_settings_24_filled,
-          body: const TabAdvance(),
+          icon: FluentIcons.launcher_settings_24_regular,
+          filledIcon: FluentIcons.launcher_settings_24_filled,
+          sliverBody: const TabAdvance(),
         ),
         NavbarItem(
           title: context.locale.about_tab_title,
-          icon: FluentIcons.info_20_filled,
-          body: const TabAbout(),
+          icon: FluentIcons.info_20_regular,
+          filledIcon: FluentIcons.info_20_filled,
+          sliverBody: const TabAbout(),
         ),
       ],
     );

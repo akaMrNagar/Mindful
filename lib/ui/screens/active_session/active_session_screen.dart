@@ -26,7 +26,6 @@ import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
@@ -115,17 +114,14 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
     return DefaultScaffold(
       navbarItems: [
         NavbarItem(
-          icon: FluentIcons.brain_circuit_20_filled,
+          icon: FluentIcons.brain_circuit_20_regular,
+          filledIcon: FluentIcons.brain_circuit_20_filled,
           title: context.locale.active_session_tab_title,
-          body: CustomScrollView(
+          appBarTitle: sessionTypeLabels(context)[widget.session.type] ??
+              context.locale.active_session_tab_title,
+          sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              /// Appbar
-              SliverFlexibleAppBar(
-                title: sessionTypeLabels(context)[widget.session.type] ??
-                    context.locale.active_session_tab_title,
-              ),
-
               TimerProgressClock(
                 progress: progress.toDouble(),
               ).sliver,

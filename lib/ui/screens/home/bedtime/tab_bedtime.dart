@@ -17,7 +17,6 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
@@ -32,6 +31,14 @@ class TabBedtime extends ConsumerWidget {
     bool shouldStart,
   ) async {
     final state = ref.read(bedtimeProvider);
+
+    // If none of the days is selected
+    if (!state.scheduleDays.contains(true)) {
+      context.showSnackAlert(
+        context.locale.bedtime_no_days_selected_snack_alert,
+      );
+      return;
+    }
 
     // If the total duration is less than 30 minutes
     if (state.totalDuration.inMinutes < 30) {
@@ -60,13 +67,12 @@ class TabBedtime extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// Appbar
-        SliverFlexibleAppBar(title: context.locale.bedtime_tab_title),
-
         /// Information about bedtime
         StyledText(context.locale.bedtime_tab_info).sliver,
 
         SliverContentTitle(title: context.locale.schedule_tile_title),
+
+        8.vSliverBox,
 
         /// Card with start and end time for schedule
         /// also schedule days

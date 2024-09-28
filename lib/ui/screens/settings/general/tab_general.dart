@@ -20,7 +20,6 @@ import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -36,8 +35,6 @@ class TabGeneral extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// Appbar
-        SliverFlexibleAppBar(title: context.locale.general_tab_title),
 
         /// Appearance
         SliverContentTitle(title: context.locale.appearance_heading),
@@ -89,7 +86,7 @@ class TabGeneral extends ConsumerWidget {
         12.vSliverBox,
         SliverContentTitle(title: context.locale.defaults_heading),
 
-        /// Material Color
+        /// App Language
         DefaultDropdownTile<String>(
           label: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
@@ -102,6 +99,16 @@ class TabGeneral extends ConsumerWidget {
                         Locales.knownLocales[e.languageCode] ?? e.languageCode,
                   ))
               .toList(),
+        ).sliver,
+
+        /// Bottom navigation
+        DefaultListTile(
+          switchValue: ref.watch(
+            settingsProvider.select((v) => v.bottomNavigation),
+          ),
+          titleText: context.locale.bottom_navigation_tile_title,
+          subtitleText: context.locale.bottom_navigation_tile_subtitle,
+          onPressed: ref.read(settingsProvider.notifier).switchBottomNavigation,
         ).sliver,
 
         /// Data reset time

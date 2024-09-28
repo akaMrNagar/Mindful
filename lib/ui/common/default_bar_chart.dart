@@ -42,8 +42,6 @@ class DefaultBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final unselectedGrad = [Colors.blue, Colors.cyan];
-    // final selectedGrad = [Colors.red, Colors.pink];
     final unselectedGrad = [
       Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
       Theme.of(context).colorScheme.secondaryContainer,
@@ -52,8 +50,6 @@ class DefaultBarChart extends StatelessWidget {
       Theme.of(context).colorScheme.primary.withOpacity(0.7),
       Theme.of(context).colorScheme.primary,
     ];
-    // final unselectedGrad = Theme.of(context).colorScheme.secondaryContainer;
-    // final selectedGrad = Theme.of(context).colorScheme.primary;
 
     final dataMax = data.fold(0, (p, e) => math.max(p, e));
     // adding one to show bar chart if all values are zeroes
@@ -77,9 +73,8 @@ class DefaultBarChart extends StatelessWidget {
                   x: index,
                   barRods: [
                     BarChartRodData(
-                      width: 24,
+                      width: 26,
                       toY: toPercentY,
-                      // color: isSelected ? selectedGrad : unselectedGrad,
                       gradient: LinearGradient(
                         colors: isSelected ? selectedGrad : unselectedGrad,
                         begin: Alignment.bottomCenter,

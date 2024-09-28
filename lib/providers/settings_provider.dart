@@ -73,4 +73,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       state = state.copyWith(localeCode: localeCode);
     }
   }
+
+  /// Changes navigation bar from side to bottom
+  void switchBottomNavigation() =>
+      state = state.copyWith(bottomNavigation: !state.bottomNavigation);
 }

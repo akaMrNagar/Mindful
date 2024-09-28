@@ -24,7 +24,6 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/application_icon.dart';
@@ -70,15 +69,14 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     return DefaultScaffold(
       navbarItems: [
         NavbarItem(
-          icon: FluentIcons.data_pie_20_filled,
+          icon: FluentIcons.data_pie_20_regular,
+          filledIcon: FluentIcons.data_pie_20_filled,
           title: context.locale.dashboard_tab_title,
+          appBarTitle: widget.app.name,
           fab: const EmergencyFAB(),
-          body: CustomScrollView(
+          sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              /// App bar
-              SliverFlexibleAppBar(title: widget.app.name),
-
               /// App icon and app package name
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
