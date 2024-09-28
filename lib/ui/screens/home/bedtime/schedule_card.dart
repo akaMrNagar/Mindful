@@ -40,7 +40,7 @@ class ScheduleCard extends ConsumerWidget {
     return RoundedContainer(
       height: 224,
       circularRadius: 24,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

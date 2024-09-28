@@ -8,6 +8,8 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,12 +26,15 @@ class MindfulApp extends ConsumerWidget {
     final themeMode = ref.watch(settingsProvider.select((v) => v.themeMode));
     final materialColor = ref.watch(settingsProvider.select((v) => v.color));
     final localeCode = ref.watch(settingsProvider.select((v) => v.localeCode));
+    final amoledDark = ref.watch(settingsProvider.select((v) => v.amoledDark));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      darkTheme: AppTheme.darkTheme(materialColor),
+      darkTheme: amoledDark
+          ? AppTheme.darkAmoledTheme(materialColor)
+          : AppTheme.darkTheme(materialColor),
       theme: AppTheme.lightTheme(materialColor),
-      themeMode: themeMode,
+      themeMode: ThemeMode.values[min(themeMode.index, ThemeMode.dark.index)],
       routes: AppRoutes.routes,
       initialRoute: AppRoutes.splashScreen,
       localizationsDelegates: const [

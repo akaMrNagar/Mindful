@@ -49,8 +49,11 @@ class AppSettings {
   @ignore
   TimeOfDay get dataResetToD => dataResetTimeMins.toTimeOfDay;
 
-  /// Flag indicating if to use bottom navigation or the default sidebar 
+  /// Flag indicating if to use bottom navigation or the default sidebar
   final bool bottomNavigation;
+
+  /// Flag indicating if to use pure black color for dark theme
+  final bool amoledDark;
 
   const AppSettings({
     this.username = "Hustler",
@@ -60,6 +63,7 @@ class AppSettings {
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
     this.bottomNavigation = false,
+    this.amoledDark = false,
   });
 
   AppSettings copyWith({
@@ -70,6 +74,7 @@ class AppSettings {
     bool? isInvincibleModeOn,
     int? dataResetTimeMins,
     bool? bottomNavigation,
+    bool? amoledDark,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -79,6 +84,7 @@ class AppSettings {
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
       bottomNavigation: bottomNavigation ?? this.bottomNavigation,
+      amoledDark: amoledDark ?? this.amoledDark,
     );
   }
 }

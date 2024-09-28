@@ -17,39 +17,44 @@ const AppSettingsSchema = CollectionSchema(
   name: r'AppSettings',
   id: -5633561779022347008,
   properties: {
-    r'bottomNavigation': PropertySchema(
+    r'amoledDark': PropertySchema(
       id: 0,
+      name: r'amoledDark',
+      type: IsarType.bool,
+    ),
+    r'bottomNavigation': PropertySchema(
+      id: 1,
       name: r'bottomNavigation',
       type: IsarType.bool,
     ),
     r'color': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'color',
       type: IsarType.string,
     ),
     r'dataResetTimeMins': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'dataResetTimeMins',
       type: IsarType.long,
     ),
     r'isInvincibleModeOn': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'isInvincibleModeOn',
       type: IsarType.bool,
     ),
     r'localeCode': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'localeCode',
       type: IsarType.string,
     ),
     r'themeMode': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
     ),
     r'username': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'username',
       type: IsarType.string,
     )
@@ -86,13 +91,14 @@ void _appSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeBool(offsets[0], object.bottomNavigation);
-  writer.writeString(offsets[1], object.color);
-  writer.writeLong(offsets[2], object.dataResetTimeMins);
-  writer.writeBool(offsets[3], object.isInvincibleModeOn);
-  writer.writeString(offsets[4], object.localeCode);
-  writer.writeByte(offsets[5], object.themeMode.index);
-  writer.writeString(offsets[6], object.username);
+  writer.writeBool(offsets[0], object.amoledDark);
+  writer.writeBool(offsets[1], object.bottomNavigation);
+  writer.writeString(offsets[2], object.color);
+  writer.writeLong(offsets[3], object.dataResetTimeMins);
+  writer.writeBool(offsets[4], object.isInvincibleModeOn);
+  writer.writeString(offsets[5], object.localeCode);
+  writer.writeByte(offsets[6], object.themeMode.index);
+  writer.writeString(offsets[7], object.username);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -102,15 +108,16 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings(
-    bottomNavigation: reader.readBoolOrNull(offsets[0]) ?? false,
-    color: reader.readStringOrNull(offsets[1]) ?? 'Indigo',
-    dataResetTimeMins: reader.readLongOrNull(offsets[2]) ?? 0,
-    isInvincibleModeOn: reader.readBoolOrNull(offsets[3]) ?? false,
-    localeCode: reader.readStringOrNull(offsets[4]) ?? 'en',
+    amoledDark: reader.readBoolOrNull(offsets[0]) ?? false,
+    bottomNavigation: reader.readBoolOrNull(offsets[1]) ?? false,
+    color: reader.readStringOrNull(offsets[2]) ?? 'Indigo',
+    dataResetTimeMins: reader.readLongOrNull(offsets[3]) ?? 0,
+    isInvincibleModeOn: reader.readBoolOrNull(offsets[4]) ?? false,
+    localeCode: reader.readStringOrNull(offsets[5]) ?? 'en',
     themeMode:
-        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[5])] ??
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[6])] ??
             ThemeMode.system,
-    username: reader.readStringOrNull(offsets[6]) ?? "Hustler",
+    username: reader.readStringOrNull(offsets[7]) ?? "Hustler",
   );
   return object;
 }
@@ -125,18 +132,20 @@ P _appSettingsDeserializeProp<P>(
     case 0:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 1:
-      return (reader.readStringOrNull(offset) ?? 'Indigo') as P;
-    case 2:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
-    case 3:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 2:
+      return (reader.readStringOrNull(offset) ?? 'Indigo') as P;
+    case 3:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
     case 4:
-      return (reader.readStringOrNull(offset) ?? 'en') as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 5:
+      return (reader.readStringOrNull(offset) ?? 'en') as P;
+    case 6:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
-    case 6:
+    case 7:
       return (reader.readStringOrNull(offset) ?? "Hustler") as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -245,6 +254,16 @@ extension AppSettingsQueryWhere
 
 extension AppSettingsQueryFilter
     on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      amoledDarkEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'amoledDark',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       bottomNavigationEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
@@ -842,6 +861,18 @@ extension AppSettingsQueryLinks
 
 extension AppSettingsQuerySortBy
     on QueryBuilder<AppSettings, AppSettings, QSortBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByAmoledDark() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByAmoledDarkDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
       sortByBottomNavigation() {
     return QueryBuilder.apply(this, (query) {
@@ -935,6 +966,18 @@ extension AppSettingsQuerySortBy
 
 extension AppSettingsQuerySortThenBy
     on QueryBuilder<AppSettings, AppSettings, QSortThenBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByAmoledDark() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByAmoledDarkDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
       thenByBottomNavigation() {
     return QueryBuilder.apply(this, (query) {
@@ -1040,6 +1083,12 @@ extension AppSettingsQuerySortThenBy
 
 extension AppSettingsQueryWhereDistinct
     on QueryBuilder<AppSettings, AppSettings, QDistinct> {
+  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByAmoledDark() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'amoledDark');
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QDistinct>
       distinctByBottomNavigation() {
     return QueryBuilder.apply(this, (query) {
@@ -1094,6 +1143,12 @@ extension AppSettingsQueryProperty
   QueryBuilder<AppSettings, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<AppSettings, bool, QQueryOperations> amoledDarkProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'amoledDark');
     });
   }
 

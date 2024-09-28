@@ -35,9 +35,18 @@ class TabGeneral extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-
         /// Appearance
         SliverContentTitle(title: context.locale.appearance_heading),
+
+        /// Amoled dark
+        DefaultListTile(
+          switchValue: ref.watch(
+            settingsProvider.select((v) => v.amoledDark),
+          ),
+          titleText: context.locale.amoled_dark_tile_title,
+          subtitleText: context.locale.amoled_dark_tile_subtitle,
+          onPressed: ref.read(settingsProvider.notifier).switchAmoledDark,
+        ).sliver,
 
         /// Theme mode
         DefaultDropdownTile<ThemeMode>(

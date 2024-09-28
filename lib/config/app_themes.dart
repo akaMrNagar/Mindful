@@ -61,6 +61,27 @@ class AppTheme {
         ],
       );
 
+  static ThemeData darkAmoledTheme(String seedColor) => ThemeData.from(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          brightness: Brightness.dark,
+          seedColor: materialColors[seedColor] ?? _kSeedColor,
+          surface: Colors.black,
+        ),
+      ).copyWith(
+        pageTransitionsTheme: _kPageTransitionTheme,
+        scaffoldBackgroundColor: Colors.black,
+        extensions: [
+          SkeletonizerConfigData.dark(
+              effect: ShimmerEffect(
+            highlightColor: Colors.white.withOpacity(0.3),
+            baseColor: (materialColors[seedColor] ?? _kSeedColor)
+                .shade50
+                .withOpacity(0.1),
+          )),
+        ],
+      );
+
   static ThemeData lightTheme(String seedColor) => ThemeData.from(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(

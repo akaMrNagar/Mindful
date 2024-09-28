@@ -385,6 +385,8 @@
     "@----------------------------- SETTINGS SCREEN - GENERAL TAB -----------------------------": {},
     "general_tab_title": "General",
     "appearance_heading": "Appearance",
+    "amoled_dark_tile_title": "AMOLED dark",
+    "amoled_dark_tile_subtitle": "Use pure black color for the dark theme.",
     "theme_mode_tile_title": "Theme mode",
     "theme_mode_system_label": "System",
     "theme_mode_light_label": "Light",

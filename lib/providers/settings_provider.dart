@@ -77,4 +77,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Changes navigation bar from side to bottom
   void switchBottomNavigation() =>
       state = state.copyWith(bottomNavigation: !state.bottomNavigation);
+
+  /// Switch AMOLED dark mode
+  void switchAmoledDark() =>
+      state = state.copyWith(amoledDark: !state.amoledDark);
 }
