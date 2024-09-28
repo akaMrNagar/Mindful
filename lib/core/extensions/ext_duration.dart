@@ -28,11 +28,11 @@ extension ExtDuration on Duration {
   String toTimeShort(BuildContext context) {
     return inMinutes >= 60
         ? inMinutes % 60 == 0
-            ? "$inHours${context.locale.hour_short}"
-            : "$inHours${context.locale.hour_short} ${inMinutes % 60}${context.locale.minute_short}"
+            ? "${inHours}h"
+            : "${inHours}h ${inMinutes % 60}m"
         : inMinutes >= 1
-            ? "$inMinutes${context.locale.minute_short}"
-            : "$inSeconds${context.locale.second_short}";
+            ? "${inMinutes}m"
+            : "${inSeconds}s";
   }
 
   /// Formats the duration into time like '5 hours, 45 minutes'

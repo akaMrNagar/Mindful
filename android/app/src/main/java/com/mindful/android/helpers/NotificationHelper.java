@@ -21,7 +21,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -136,7 +135,6 @@ public class NotificationHelper {
             }
         } else {
             Log.d(TAG, "toggleDnd: Do not have permission to modify DND mode");
-            Toast.makeText(context, "Please allow do not disturb access to Mindful", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -152,7 +150,7 @@ public class NotificationHelper {
         return new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setAutoCancel(true)
-                .setContentTitle("Mindful is running")
+                .setContentTitle(context.getString(R.string.service_running_notification_title))
                 .setContentText(content)
                 .build();
     }

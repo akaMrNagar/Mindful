@@ -25,10 +25,10 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SuccessCallback;
+import com.mindful.android.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,11 +60,12 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
-        if (intent.getAction() != null && Intent.ACTION_USER_PRESENT.equals(intent.getAction())) {
+        String action = Utils.getActionFromIntent(intent);
+        if (Intent.ACTION_USER_PRESENT.equals(action)) {
             onDeviceUnlocked();
             mOnChangeCallback.onSuccess(true);
             Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE");
-        } else if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF)) {
+        } else if (Intent.ACTION_SCREEN_OFF.equals(action)) {
             onDeviceLocked();
             mOnChangeCallback.onSuccess(false);
             Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE");

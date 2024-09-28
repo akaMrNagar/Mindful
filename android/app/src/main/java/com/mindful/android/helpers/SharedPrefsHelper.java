@@ -35,6 +35,7 @@ import java.util.HashSet;
 public class SharedPrefsHelper {
     private static SharedPreferences mSharedPrefs;
     private static final String PREFS_SHARED_BOX = "MindfulSharedPreferences";
+    private static final String PREFS_KEY_LOCALE = "mindful.locale";
     private static final String PREFS_KEY_ONBOARDING_STATUS = "mindful.onboardingStatus";
     private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "mindful.emergencyPassesCount";
     private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
@@ -50,6 +51,28 @@ public class SharedPrefsHelper {
         mSharedPrefs = context.getApplicationContext().getSharedPreferences(PREFS_SHARED_BOX, Context.MODE_PRIVATE);
     }
 
+
+    /**
+     * Fetches the current locale
+     *
+     * @param context The application context.
+     * @return String Language code for locale
+     */
+    public static String fetchLocale(Context context) {
+        checkAndInitializePrefs(context);
+        return mSharedPrefs.getString(PREFS_KEY_LOCALE, "");
+    }
+
+    /**
+     * Stores the current locale
+     *
+     * @param context The application context.
+     * @param languageCode  The language code for locale.
+     */
+    public static void storeLocale(Context context, String languageCode) {
+        checkAndInitializePrefs(context);
+        mSharedPrefs.edit().putString(PREFS_KEY_LOCALE, languageCode).apply();
+    }
 
     /**
      * Fetches the current status of onboarding

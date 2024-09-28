@@ -9,7 +9,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
 
 class TimeTextShort extends StatelessWidget {
   /// Rich text widget for displaying [Duration] in hours and minutes
@@ -42,8 +41,6 @@ class TimeTextShort extends StatelessWidget {
       height: 1,
     );
 
-    final hourShort = context.locale.hour_short.toUpperCase();
-    final minuteShort = context.locale.minute_short.toUpperCase();
 
     return Text.rich(
       TextSpan(
@@ -58,7 +55,7 @@ class TimeTextShort extends StatelessWidget {
                       text: (timeDuration.inMinutes ~/ 60).toString(),
                       style: numericStyle,
                     ),
-                    TextSpan(text: hourShort, style: alphaStyle),
+                    TextSpan(text: "H", style: alphaStyle),
                   ]
 
                 /// If have both hours and minutes
@@ -67,12 +64,12 @@ class TimeTextShort extends StatelessWidget {
                       text: (timeDuration.inMinutes ~/ 60).toString(),
                       style: numericStyle,
                     ),
-                    TextSpan(text: hourShort, style: alphaStyle),
+                    TextSpan(text: "H", style: alphaStyle),
                     TextSpan(
                       text: " ${timeDuration.inMinutes % 60}",
                       style: numericStyle,
                     ),
-                    TextSpan(text: minuteShort, style: alphaStyle),
+                    TextSpan(text: "M", style: alphaStyle),
                   ]
 
             /// Less than an hour
@@ -81,7 +78,7 @@ class TimeTextShort extends StatelessWidget {
                   text: (timeDuration.inSeconds ~/ 60).toString(),
                   style: numericStyle,
                 ),
-                TextSpan(text: minuteShort, style: alphaStyle),
+                TextSpan(text: "M", style: alphaStyle),
               ],
       ),
     );

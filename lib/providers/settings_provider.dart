@@ -60,14 +60,17 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
         .setDataResetTime(state.dataResetTimeMins);
   }
 
-  /// Changes app locale.
-  void changeLocale(String localeCode) {
-    if (AppLocalizations.supportedLocales
-        .any((e) => e.languageCode == localeCode)) {
+  /// Changes app locale if it is supported.
+  void changeLocale(String localeCode) async {
+    if (AppLocalizations.supportedLocales.any(
+      (e) => e.languageCode == localeCode,
+    )) {
+      /// Update native side
+      await MethodChannelService.instance
+          .updateLocale(languageCode: localeCode);
+
       /// Update state
       state = state.copyWith(localeCode: localeCode);
-
-      /// TODO: Maybe Update locale on native side
     }
   }
 }

@@ -13,7 +13,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -170,10 +169,10 @@ class DefaultBarChart extends StatelessWidget {
     return switch (usageType) {
       /// Screen usage labels [yData] is in seconds
       UsageType.screenUsage => (yData.inHours > 1)
-          ? "${yData.inHours.round()}${context.locale.hour_short}"
+          ? "${yData.inHours.round()}h"
           : yData.inMinutes >= 1
-              ? "${yData.inMinutes}${context.locale.minute_short}"
-              : "$yData${context.locale.second_short}",
+              ? "${yData.inMinutes}m"
+              : "${yData}s",
 
       /// Network usage labels [yData] is in KBs
       UsageType.networkUsage => (yData.gb >= 1)

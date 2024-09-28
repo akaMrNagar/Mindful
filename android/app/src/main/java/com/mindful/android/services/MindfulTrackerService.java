@@ -138,7 +138,7 @@ public class MindfulTrackerService extends Service {
                 AppConstants.TRACKER_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
-                        "Mindful is now tracking app usage to help you stay focused and manage your digital habits."
+                        getString(R.string.app_blocker_running_notification_info)
                 )
         );
         Log.d(TAG, "startTrackingService: Foreground service started");
@@ -352,7 +352,7 @@ public class MindfulTrackerService extends Service {
                 Drawable appIcon = packageManager.getApplicationIcon(info);
 
 
-                String msg = appName + " will be paused for the rest of the day";
+                String msg = getString(R.string.app_pause_alert_notification_info, appName);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(
                         minutesLeft,
@@ -360,7 +360,7 @@ public class MindfulTrackerService extends Service {
                                 .setOngoing(false)
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(Utils.drawableToBitmap(appIcon))
-                                .setContentTitle(minutesLeft + " minutes left")
+                                .setContentTitle(getString(R.string.app_pause_notification_title, minutesLeft))
                                 .setContentText(msg)
                                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                                 .build()

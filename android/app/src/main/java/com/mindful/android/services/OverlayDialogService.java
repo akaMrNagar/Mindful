@@ -12,10 +12,6 @@
 
 package com.mindful.android.services;
 
-import static com.mindful.android.utils.AppConstants.BEDTIME_APP_PAUSE_MESSAGE;
-import static com.mindful.android.utils.AppConstants.FOCUS_SESSION_APP_PAUSE_MESSAGE;
-import static com.mindful.android.utils.AppConstants.TIMER_APP_PAUSE_MESSAGE;
-
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -98,13 +94,13 @@ public class OverlayDialogService extends Service {
         Intent permissionIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
         permissionIntent.setData(Uri.parse("package:" + getPackageName()));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, permissionIntent, PendingIntent.FLAG_IMMUTABLE);
-        String msg = "Please grant display overlay permission to Mindful by clicking on the notification. On the next screen, find Mindful in the list of apps and click on allow.";
+        String msg = getString(R.string.overlay_permission_denied_notification_info);
         notificationManager.notify(
                 AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setAutoCancel(true)
-                        .setContentTitle("Permission denied")
+                        .setContentTitle(getString(R.string.overlay_permission_denied_notification_title))
                         .setContentText(msg)
                         .setContentIntent(pendingIntent)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
@@ -151,26 +147,23 @@ public class OverlayDialogService extends Service {
             sysTheme = AlertDialog.THEME_DEVICE_DEFAULT_LIGHT;
         }
 
-        String dialogMsg = TIMER_APP_PAUSE_MESSAGE;
+        int msgResourceId = R.string.app_paused_dialog_content_for_timer;
         switch (mDialogType) {
-            case TimerOut:
-                dialogMsg = TIMER_APP_PAUSE_MESSAGE;
-                break;
             case FocusSession:
-                dialogMsg = FOCUS_SESSION_APP_PAUSE_MESSAGE;
+                msgResourceId = R.string.app_paused_dialog_content_for_focus_session;
                 break;
             case BedtimeRoutine:
-                dialogMsg = BEDTIME_APP_PAUSE_MESSAGE;
+                msgResourceId = R.string.app_paused_dialog_content_for_bedtime;
                 break;
         }
 
         return new AlertDialog.Builder(this, sysTheme)
                 .setTitle(appName)
-                .setMessage(dialogMsg)
+                .setMessage(getString(msgResourceId))
                 .setIcon(icon)
                 .setCancelable(false)
-                .setNegativeButton("Emergency", this::onClickEmergency)
-                .setPositiveButton("Close", this::onClickClose)
+                .setNegativeButton(R.string.app_paused_dialog_button_emergency, this::onClickEmergency)
+                .setPositiveButton(R.string.app_paused_dialog_button_close, this::onClickClose)
                 .setOnDismissListener(this::onDialogDismiss)
                 .create();
     }

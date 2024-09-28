@@ -12,12 +12,11 @@
 
 package com.mindful.android.receivers;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
 
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
@@ -32,8 +31,11 @@ import com.mindful.android.utils.Utils;
 public class DeviceBootReceiver extends BroadcastReceiver {
     private static final String TAG = "Mindful.DeviceBootReceiver";
 
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
-    public void onReceive(Context context, @NonNull Intent intent) {
+    public void onReceive(Context context, Intent intent) {
+        /// The null safe method gets the action from the intent so we can suppress the warning
+        // for 'UnsafeProtectedBroadcastReceiver' but the receiver is safe, just moved the logic to a util method
         String action = Utils.getActionFromIntent(intent);
 
         if (Intent.ACTION_BOOT_COMPLETED.equals(action) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {

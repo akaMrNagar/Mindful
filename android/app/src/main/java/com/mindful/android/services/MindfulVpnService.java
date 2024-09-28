@@ -21,6 +21,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.mindful.android.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -99,7 +100,7 @@ public class MindfulVpnService extends android.net.VpnService {
                 AppConstants.VPN_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
-                        "Mindful is now managing internet access to help you stay focused."
+                        getString(R.string.internet_blocker_running_notification_info)
                 )
         );
     }

@@ -19,6 +19,8 @@ import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
@@ -44,6 +47,7 @@ import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
@@ -61,6 +65,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        updateLocale(null);
 
         // Register notification channels
         NotificationHelper.registerNotificationGroupAndChannels(this);
@@ -72,6 +77,19 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
         mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
+    }
+
+    private void updateLocale(@Nullable String languageCode) {
+        String resolvedLanguageCode = languageCode != null ? languageCode : SharedPrefsHelper.fetchLocale(this);
+
+        if (!resolvedLanguageCode.isEmpty()) {
+            Locale newLocale = new Locale(resolvedLanguageCode);
+            Locale.setDefault(newLocale);
+            Resources resources = getResources();
+            Configuration config = resources.getConfiguration();
+            config.setLocale(newLocale);
+            resources.updateConfiguration(config, resources.getDisplayMetrics());
+        }
     }
 
 
@@ -103,6 +121,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             // SECTION: Utility methods -----------------------------------------------------------------------
+            case "updateLocale": {
+                String languageCode = Utils.notNullStr(call.arguments());
+                updateLocale(languageCode);
+                SharedPrefsHelper.storeLocale(this, languageCode);
+                result.success(true);
+                break;
+            }
             case "getOnboardingStatus": {
                 result.success(SharedPrefsHelper.getOnboardingStatus(this));
                 break;
