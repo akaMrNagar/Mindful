@@ -65,7 +65,7 @@ public class FocusSessionService extends Service {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(appPendingIntent)
-                .setContentTitle("Focus Session");
+                .setContentTitle(getString(R.string.focus_session_notification_title));
     }
 
     @Override
@@ -160,11 +160,10 @@ public class FocusSessionService extends Service {
      */
     @NonNull
     private Notification createNotification(int totalLeftSeconds) {
-        String prefixMsg = "Focus session will end in ";
         String remainingTime = Utils.secondsToTimeStr(totalLeftSeconds);
 
         mProgressNotificationBuilder
-                .setContentText(prefixMsg + remainingTime)
+                .setContentText(getString(R.string.focus_session_notification_info, remainingTime))
                 .setProgress(elapsedSeconds + mFocusSession.durationSecs, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
@@ -178,14 +177,14 @@ public class FocusSessionService extends Service {
      */
     private void showSuccessNotification(boolean isSuccessful) {
         String msg =
-                isSuccessful ? "Congratulations! You’ve successfully completed your focus session. Great job staying on track! Keep up the amazing work!" :
-                        "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going";
+                isSuccessful ? getString(R.string.focus_session_success_notification_info) :
+                        getString(R.string.focus_session_giveup_notification_info);
         mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
                         .setContentIntent(appPendingIntent)
-                        .setContentTitle("Focus Session")
+                        .setContentTitle(getString(R.string.focus_session_notification_title))
                         .setContentText(msg)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                         .build()

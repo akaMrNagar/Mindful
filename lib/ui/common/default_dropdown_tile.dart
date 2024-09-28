@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -114,7 +115,7 @@ class _DropdownMenu<T> extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).maybePop(),
-              child: const Text("Cancel"),
+              child: Text(context.locale.dialog_button_cancel),
             ),
           ],
           content: SizedBox(

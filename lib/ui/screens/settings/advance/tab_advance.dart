@@ -22,7 +22,6 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -38,7 +37,7 @@ class TabAdvance extends ConsumerWidget {
 
     if (!success && context.mounted) {
       context.showSnackAlert(
-        "This device does not support automatic startup management.",
+        context.locale.whitelist_app_unsupported_snack_alert,
       );
     }
   }
@@ -79,7 +78,9 @@ class TabAdvance extends ConsumerWidget {
       await MethodChannelService.instance.shareFile(file.path);
     } catch (e) {
       if (context.mounted) {
-        context.showSnackAlert("Something went wrong!!");
+        context.showSnackAlert(
+          context.locale.crash_logs_share_failed_snack_alert,
+        );
       }
     }
   }
@@ -88,10 +89,10 @@ class TabAdvance extends ConsumerWidget {
     final confirm = await showConfirmationDialog(
       context: context,
       heroTag: HeroTags.clearCrashLogsTileTag,
-      title: "Clear logs",
-      info: "Are you sure you wish to clear all crash logs from the database?",
+      title: context.locale.crash_logs_clear_tile_title,
+      info: context.locale.crash_logs_clear_dialog_info,
       icon: FluentIcons.delete_lines_20_filled,
-      positiveLabel: "Clear anyway",
+      positiveLabel: context.locale.crash_logs_clear_dialog_button_clear_anyway,
     );
 
     if (confirm) {
@@ -104,43 +105,34 @@ class TabAdvance extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// Appbar
-        const SliverFlexibleAppBar(title: "Advance"),
-
-        const SliverContentTitle(title: "Service"),
+        SliverContentTitle(title: context.locale.service_heading),
 
         /// Battery
-        const StyledText(
-          "If you are experiencing issues with Mindful suddenly stopping, please consider granting the ignore battery optimization permission. This will allow Mindful to operate in background without interruptions.",
-        ).sliver,
+        StyledText(context.locale.permission_battery_optimization_info).sliver,
         6.vSliverBox,
 
         /// Battery permission
         const BatteryPermissionTile(),
 
         20.vSliverBox,
-        const StyledText(
-          "If you are still experiencing same issues, even after granting ignore battery optimization, then consider whitelisting Mindful.",
-        ).sliver,
+        StyledText(context.locale.whitelist_app_info).sliver,
         6.vSliverBox,
         DefaultListTile(
           leadingIcon: FluentIcons.leaf_three_20_regular,
-          titleText: "Whitelist Mindful",
-          subtitleText: "Allow Mindful to auto start.",
+          titleText: context.locale.whitelist_app_tile_title,
+          subtitleText: context.locale.whitelist_app_tile_subtitle,
           trailing: const Icon(FluentIcons.chevron_right_20_regular),
           onPressed: () => _openAutoStartSettings(context),
         ).sliver,
 
         20.vSliverBox,
-        const SliverContentTitle(title: "Crash logs"),
-        const StyledText(
-          "If you encounter any issue, you can report it on GitHub along with the log file. The file will include details such as your device's manufacturer, model, Android version, SDK version, and crash logs. This information will help us identify and resolve the problem more effectively.",
-        ).sliver,
+        SliverContentTitle(title: context.locale.crash_logs_heading),
+        StyledText(context.locale.crash_logs_info).sliver,
 
         16.vSliverBox,
         DefaultListTile(
-          titleText: "Share crash logs",
-          subtitleText: "Share crash logs as a json file.",
+          titleText: context.locale.crash_logs_share_tile_title,
+          subtitleText: context.locale.crash_logs_share_tile_subtitle,
           leadingIcon: FluentIcons.share_android_20_regular,
           trailing: const Icon(FluentIcons.chevron_right_20_regular),
           onPressed: () => _shareLogs(context),
@@ -150,8 +142,8 @@ class TabAdvance extends ConsumerWidget {
         DefaultHero(
           tag: HeroTags.clearCrashLogsTileTag,
           child: DefaultListTile(
-            titleText: "Clear logs",
-            subtitleText: "Delete all crash logs from database.",
+            titleText: context.locale.crash_logs_clear_tile_title,
+            subtitleText: context.locale.crash_logs_clear_tile_subtitle,
             leadingIcon: FluentIcons.delete_lines_20_regular,
             onPressed: () => _clearLogs(context),
           ),

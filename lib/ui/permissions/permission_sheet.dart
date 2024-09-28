@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -18,27 +19,27 @@ import 'package:mindful/ui/permissions/permission_granting_steps.dart';
 class PermissionSheet extends StatelessWidget {
   const PermissionSheet({
     super.key,
-    required this.title,
     required this.icon,
+    required this.title,
     required this.description,
-    required this.onTapPositiveBtn,
-    this.permissionSwitchTitle,
-    this.positiveBtnLabel = "Grant Permission",
-    this.permissionStatusSubtitle = "Not Allowed",
-    this.negativeBtnLabel,
+    required this.onTapGrantPermission,
+    this.isAccessibilityPerm = false,
+    this.deviceSwitchTileLabel,
   });
 
-  final String title;
   final IconData icon;
+  final String title;
   final String description;
-  final String? permissionSwitchTitle;
-  final String permissionStatusSubtitle;
-  final String positiveBtnLabel;
-  final VoidCallback onTapPositiveBtn;
-  final String? negativeBtnLabel;
+  final VoidCallback onTapGrantPermission;
+  final bool isAccessibilityPerm;
+  final String? deviceSwitchTileLabel;
 
   @override
   Widget build(BuildContext context) {
+    final positiveButtonLabel = isAccessibilityPerm
+        ? context.locale.permission_button_agree_and_continue
+        : context.locale.permission_button_grant_permission;
+
     return BottomSheet(
       enableDrag: false,
       onClosing: () {},
@@ -78,17 +79,17 @@ class PermissionSheet extends StatelessWidget {
                 fontSize: 13,
               ),
 
-              if (permissionSwitchTitle != null) ...[
+              if (deviceSwitchTileLabel != null) ...[
                 12.vBox,
                 PermissionGrantingSteps(
-                  btnLabel: positiveBtnLabel,
-                  lastStepTileTitle: permissionSwitchTitle!,
-                  permissionStatusSubtitle: permissionStatusSubtitle,
+                  labelOfBtnToClick: positiveButtonLabel,
+                  deviceSwitchTileLabel: deviceSwitchTileLabel!,
+                  isAccessibilityPerm: isAccessibilityPerm,
                 ),
               ],
               20.vBox,
               StyledText(
-                "Mindful is 100% secure and works offline. We do not collect or store any personal data.",
+                context.locale.permission_sheet_privacy_info,
                 fontSize: 13,
                 color: Theme.of(context).brightness == Brightness.light
                     ? Colors.green[900]
@@ -99,15 +100,15 @@ class PermissionSheet extends StatelessWidget {
               /// Actions
               Row(
                 children: [
-                  if (negativeBtnLabel != null)
+                  if (isAccessibilityPerm)
                     TextButton(
                       onPressed: Navigator.of(context).maybePop,
-                      child: Text(negativeBtnLabel!),
+                      child: Text(context.locale.permission_button_not_now),
                     ),
                   const Spacer(),
                   FilledButton(
-                    onPressed: onTapPositiveBtn,
-                    child: Text(positiveBtnLabel),
+                    onPressed: onTapGrantPermission,
+                    child: Text(positiveButtonLabel),
                   ),
                 ],
               ),

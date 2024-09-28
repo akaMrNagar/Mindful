@@ -55,6 +55,9 @@ class MethodChannelService {
   Future<String> getAppVersion() async =>
       await _methodChannel.invokeMethod('getAppVersion');
 
+  Future<bool> updateLocale({required String languageCode}) async =>
+      await _methodChannel.invokeMethod('updateLocale', languageCode);
+
   /// Get device info string
   Future<Map<String, String>> getDeviceInfoMap() async =>
       await _methodChannel.invokeMapMethod('getDeviceInfoMap') ?? {};

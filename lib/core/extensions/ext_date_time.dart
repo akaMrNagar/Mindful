@@ -8,7 +8,8 @@
  *
  */
 
-import 'package:mindful/core/utils/strings.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 extension ExtDateTime on DateTime {
   /// Returns the object with date only while resetting all time related field to 0
@@ -20,10 +21,12 @@ extension ExtDateTime on DateTime {
         microsecond: 0,
       );
 
-  /// Returns date only string like (15 August, 2024)
-  String get dateString =>
-      "$day ${AppStrings.monthsLabelFull[month - 1]}, $year";
+  /// Returns date-only string in a localized format (e.g., 15 August, 2024).
+  String dateString(BuildContext context) =>
+      DateFormat.yMMMMd(Localizations.localeOf(context).languageCode)
+          .format(this);
 
-  /// Returns time only string like (7:15 PM)
-  String get timeString => "${hour % 12}:$minute ${hour > 12 ? 'PM' : 'AM'}";
+  /// Returns time-only string in a localized format (e.g., 7:15 PM).
+  String timeString(BuildContext context) =>
+      DateFormat.jm(Localizations.localeOf(context).languageCode).format(this);
 }

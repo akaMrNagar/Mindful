@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
@@ -26,9 +27,11 @@ class UsageAccessPermissionTile extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveUsageAccessPermission));
 
     return DefaultListTile(
-      titleText: "Usage Access",
+      titleText: context.locale.permission_usage_title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
-      subtitleText: havePermission ? "Allowed" : "Not allowed",
+      subtitleText: havePermission
+          ? context.locale.permission_status_allowed
+          : context.locale.permission_status_not_allowed,
       isSelected: havePermission,
       margin: const EdgeInsets.only(bottom: 2),
       onPressed: havePermission ? null : () => _showSheet(context, ref),
@@ -41,11 +44,11 @@ class UsageAccessPermissionTile extends ConsumerWidget {
       isScrollControlled: true,
       builder: (sheetContext) => PermissionSheet(
         icon: FluentIcons.data_pie_20_filled,
-        title: "Usage Access",
-        description:
-            "Please grant usage access permission. This will allow Mindful to monitor app usage and manage access to certain apps, ensuring a more focused and controlled digital environment.",
-        permissionSwitchTitle: "Allow usage access",
-        onTapPositiveBtn: () {
+        title: context.locale.permission_usage_title,
+        description: context.locale.permission_usage_info,
+        deviceSwitchTileLabel:
+            context.locale.permission_usage_device_tile_label,
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askUsageAccessPermission();
           Navigator.of(sheetContext).maybePop();
         },

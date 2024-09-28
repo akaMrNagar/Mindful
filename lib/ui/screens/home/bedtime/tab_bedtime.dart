@@ -17,7 +17,6 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
@@ -33,10 +32,18 @@ class TabBedtime extends ConsumerWidget {
   ) async {
     final state = ref.read(bedtimeProvider);
 
+    // If none of the days is selected
+    if (!state.scheduleDays.contains(true)) {
+      context.showSnackAlert(
+        context.locale.bedtime_no_days_selected_snack_alert,
+      );
+      return;
+    }
+
     // If the total duration is less than 30 minutes
     if (state.totalDuration.inMinutes < 30) {
       context.showSnackAlert(
-        "The total bedtime duration must be at least 30 minutes.",
+        context.locale.bedtime_minimum_duration_snack_alert,
       );
       return;
     }
@@ -44,7 +51,7 @@ class TabBedtime extends ConsumerWidget {
     // If no distracting apps selected
     if (shouldStart && state.distractingApps.isEmpty) {
       context.showSnackAlert(
-        "Select at least one distracting app to turn on bedtime schedule",
+        context.locale.bedtime_minimum_apps_snack_alert,
       );
       return;
     }
@@ -60,18 +67,12 @@ class TabBedtime extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// Appbar
-        const SliverFlexibleAppBar(title: "Bedtime"),
-
         /// Information about bedtime
-        Semantics(
-          excludeSemantics: true,
-          child: const StyledText(
-            "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
-          ),
-        ).sliver,
+        StyledText(context.locale.bedtime_tab_info).sliver,
 
-        const SliverContentTitle(title: "Schedule"),
+        SliverContentTitle(title: context.locale.schedule_tile_title),
+
+        8.vSliverBox,
 
         /// Card with start and end time for schedule
         /// also schedule days
@@ -84,8 +85,8 @@ class TabBedtime extends ConsumerWidget {
           isPrimary: true,
           switchValue: isScheduleOn,
           leadingIcon: FluentIcons.sleep_20_regular,
-          titleText: "Schedule",
-          subtitleText: "Enable or disable daily schedule.",
+          titleText: context.locale.schedule_tile_title,
+          subtitleText: context.locale.schedule_tile_subtitle,
           onPressed: () => _setScheduleStatus(ref, context, !isScheduleOn),
         ).sliver,
 

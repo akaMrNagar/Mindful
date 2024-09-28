@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
@@ -26,9 +27,11 @@ class AlarmPermissionTile extends ConsumerWidget {
         ref.watch(permissionProvider.select((v) => v.haveAlarmsPermission));
 
     return DefaultListTile(
-      titleText: "Alarms & Reminders",
+      titleText: context.locale.permission_alarms_title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
-      subtitleText: havePermission ? "Allowed" : "Not allowed",
+      subtitleText: havePermission
+          ? context.locale.permission_status_allowed
+          : context.locale.permission_status_not_allowed,
       isSelected: havePermission,
       margin: const EdgeInsets.only(bottom: 2),
       onPressed: havePermission ? null : () => _showSheet(context, ref),
@@ -41,11 +44,11 @@ class AlarmPermissionTile extends ConsumerWidget {
       isScrollControlled: true,
       builder: (sheetContext) => PermissionSheet(
         icon: FluentIcons.clock_alarm_20_filled,
-        title: "Alarms & Reminders",
-        description:
-            "Please grant permission for setting alarms and reminders. This will allow Mindful to start your bedtime schedule on time and reset app timers daily at midnight and help you stay on track.",
-        permissionSwitchTitle: "Allow setting alarms and reminders",
-        onTapPositiveBtn: () {
+        title: context.locale.permission_alarms_title,
+        description: context.locale.permission_alarms_info,
+        deviceSwitchTileLabel:
+            context.locale.permission_alarms_device_tile_label,
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askExactAlarmPermission();
           Navigator.of(sheetContext).maybePop();
         },

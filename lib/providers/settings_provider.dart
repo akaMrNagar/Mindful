@@ -14,6 +14,7 @@ import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/app_settings.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// A Riverpod state notifier provider that manages global application settings.
 final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>(
@@ -58,4 +59,26 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
     await MethodChannelService.instance
         .setDataResetTime(state.dataResetTimeMins);
   }
+
+  /// Changes app locale if it is supported.
+  void changeLocale(String localeCode) async {
+    if (AppLocalizations.supportedLocales.any(
+      (e) => e.languageCode == localeCode,
+    )) {
+      /// Update native side
+      await MethodChannelService.instance
+          .updateLocale(languageCode: localeCode);
+
+      /// Update state
+      state = state.copyWith(localeCode: localeCode);
+    }
+  }
+
+  /// Changes navigation bar from side to bottom
+  void switchBottomNavigation() =>
+      state = state.copyWith(bottomNavigation: !state.bottomNavigation);
+
+  /// Switch AMOLED dark mode
+  void switchAmoledDark() =>
+      state = state.copyWith(amoledDark: !state.amoledDark);
 }

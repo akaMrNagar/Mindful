@@ -27,7 +27,6 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -36,6 +35,7 @@ import java.util.Map;
 public class SharedPrefsHelper {
     private static SharedPreferences mSharedPrefs;
     private static final String PREFS_SHARED_BOX = "MindfulSharedPreferences";
+    private static final String PREFS_KEY_LOCALE = "mindful.locale";
     private static final String PREFS_KEY_ONBOARDING_STATUS = "mindful.onboardingStatus";
     private static final String PREF_KEY_EMERGENCY_PASSES_COUNT = "mindful.emergencyPassesCount";
     private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
@@ -46,10 +46,33 @@ public class SharedPrefsHelper {
     private static final String PREF_KEY_SHORTS_SCREEN_TIME = "mindful.shortsScreenTime";
     public static final String PREF_KEY_WELLBEING_SETTINGS = "mindful.wellBeingSettings";
 
-    private static void initialize(@NonNull Context context) {
+    private static void checkAndInitializePrefs(@NonNull Context context) {
+        if (mSharedPrefs != null) return;
         mSharedPrefs = context.getApplicationContext().getSharedPreferences(PREFS_SHARED_BOX, Context.MODE_PRIVATE);
     }
 
+
+    /**
+     * Fetches the current locale
+     *
+     * @param context The application context.
+     * @return String Language code for locale
+     */
+    public static String fetchLocale(Context context) {
+        checkAndInitializePrefs(context);
+        return mSharedPrefs.getString(PREFS_KEY_LOCALE, "");
+    }
+
+    /**
+     * Stores the current locale
+     *
+     * @param context The application context.
+     * @param languageCode  The language code for locale.
+     */
+    public static void storeLocale(Context context, String languageCode) {
+        checkAndInitializePrefs(context);
+        mSharedPrefs.edit().putString(PREFS_KEY_LOCALE, languageCode).apply();
+    }
 
     /**
      * Fetches the current status of onboarding
@@ -58,7 +81,7 @@ public class SharedPrefsHelper {
      * @return Flag indicating if onboarding is completed
      */
     public static boolean getOnboardingStatus(Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         return mSharedPrefs.getBoolean(PREFS_KEY_ONBOARDING_STATUS, false);
     }
 
@@ -68,7 +91,7 @@ public class SharedPrefsHelper {
      * @param context The application context.
      */
     public static void setOnboardingDone(Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putBoolean(PREFS_KEY_ONBOARDING_STATUS, true).apply();
     }
 
@@ -79,7 +102,7 @@ public class SharedPrefsHelper {
      * @param callback The listener to register.
      */
     public static void registerListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.registerOnSharedPreferenceChangeListener(callback);
     }
 
@@ -90,7 +113,7 @@ public class SharedPrefsHelper {
      * @param callback The listener to unregister.
      */
     public static void unregisterListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
     }
 
@@ -101,7 +124,7 @@ public class SharedPrefsHelper {
      * @param timeInMins The time in minutes.
      */
     public static void storeDataResetTimeMins(@NonNull Context context, int timeInMins) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putInt(PREF_KEY_DATA_RESET_TIME_MINS, timeInMins).apply();
     }
 
@@ -112,7 +135,7 @@ public class SharedPrefsHelper {
      * @param count   The number of requests.
      */
     public static void storeNotificationAskCount(@NonNull Context context, int count) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, count).apply();
     }
 
@@ -123,7 +146,7 @@ public class SharedPrefsHelper {
      * @param passesLeftCount The number of emergency passes left.
      */
     public static void storeEmergencyPassesCount(@NonNull Context context, int passesLeftCount) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putInt(PREF_KEY_EMERGENCY_PASSES_COUNT, passesLeftCount).apply();
     }
 
@@ -134,7 +157,7 @@ public class SharedPrefsHelper {
      * @param dartJsonBlockedApps The JSON string of blocked apps.
      */
     public static void storeBlockedAppsJson(@NonNull Context context, @NonNull String dartJsonBlockedApps) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putString(PREF_KEY_BLOCKED_APPS, dartJsonBlockedApps).apply();
     }
 
@@ -145,7 +168,7 @@ public class SharedPrefsHelper {
      * @param dartJsonAppTimers The JSON string of app timers.
      */
     public static void storeAppTimersJson(@NonNull Context context, @NonNull String dartJsonAppTimers) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putString(PREF_KEY_APP_TIMERS, dartJsonAppTimers).apply();
     }
 
@@ -156,7 +179,7 @@ public class SharedPrefsHelper {
      * @param dartJsonBedtimeSettings The JSON string of bedtime settings.
      */
     public static void storeBedtimeSettingsJson(@NonNull Context context, @NonNull String dartJsonBedtimeSettings) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putString(PREF_KEY_BEDTIME_SETTINGS, dartJsonBedtimeSettings).apply();
     }
 
@@ -167,7 +190,7 @@ public class SharedPrefsHelper {
      * @param dartJsonWellBeingSettings The JSON string of well-being settings.
      */
     public static void storeWellBeingSettingsJson(@NonNull Context context, @NonNull String dartJsonWellBeingSettings) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putString(PREF_KEY_WELLBEING_SETTINGS, dartJsonWellBeingSettings).apply();
     }
 
@@ -178,7 +201,7 @@ public class SharedPrefsHelper {
      * @param screenTime The screen time in milliseconds.
      */
     public static void storeShortsScreenTimeMs(@NonNull Context context, long screenTime) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         mSharedPrefs.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply();
     }
 
@@ -189,7 +212,7 @@ public class SharedPrefsHelper {
      * @return The time in minutes.
      */
     public static int fetchDataResetTimeMins(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         return mSharedPrefs.getInt(PREF_KEY_DATA_RESET_TIME_MINS, 0);
     }
 
@@ -200,7 +223,7 @@ public class SharedPrefsHelper {
      * @return The number of requests.
      */
     public static int fetchNotificationAskCount(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         return mSharedPrefs.getInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, 0);
     }
 
@@ -211,7 +234,7 @@ public class SharedPrefsHelper {
      * @return The number of emergency passes left.
      */
     public static int fetchEmergencyPassesCount(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        if (mSharedPrefs == null) checkAndInitializePrefs(context);
         return mSharedPrefs.getInt(PREF_KEY_EMERGENCY_PASSES_COUNT, AppConstants.DEFAULT_EMERGENCY_PASSES_COUNT);
     }
 
@@ -224,12 +247,16 @@ public class SharedPrefsHelper {
      */
     @NonNull
     public static HashSet<String> fetchBlockedApps(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(mSharedPrefs.getString(PREF_KEY_BLOCKED_APPS, ""));
 
         // Filter out apps that may have been uninstalled
-        PackageManager packageManager = context.getPackageManager();
-        blockedApps.removeIf(appPackage -> packageManager.getLaunchIntentForPackage(appPackage) == null);
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            blockedApps.removeIf(appPackage -> packageManager.getLaunchIntentForPackage(appPackage) == null);
+
+        } catch (Exception ignored) {
+        }
         return blockedApps;
     }
 
@@ -242,15 +269,15 @@ public class SharedPrefsHelper {
      */
     @NonNull
     public static HashMap<String, Long> fetchAppTimers(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         HashMap<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(mSharedPrefs.getString(PREF_KEY_APP_TIMERS, ""));
 
         // Filter out apps that may have been uninstalled
-        PackageManager packageManager = context.getPackageManager();
-        for (Map.Entry<String, Long> entry : appTimers.entrySet()) {
-            if (packageManager.getLaunchIntentForPackage(entry.getKey()) == null) {
-                appTimers.remove(entry.getKey());
-            }
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            appTimers.entrySet().removeIf(entry -> packageManager.getLaunchIntentForPackage(entry.getKey()) == null);
+
+        } catch (Exception ignored) {
         }
 
         return appTimers;
@@ -266,7 +293,7 @@ public class SharedPrefsHelper {
     @NonNull
     @Contract("_ -> new")
     public static BedtimeSettings fetchBedtimeSettings(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         BedtimeSettings bedtimeSettings = new BedtimeSettings(mSharedPrefs.getString(PREF_KEY_BEDTIME_SETTINGS, ""));
 
         // Filter out apps that may have been uninstalled
@@ -285,7 +312,7 @@ public class SharedPrefsHelper {
     @NonNull
     @Contract("_ -> new")
     public static WellBeingSettings fetchWellBeingSettings(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         return new WellBeingSettings(mSharedPrefs.getString(PREF_KEY_WELLBEING_SETTINGS, ""));
     }
 
@@ -296,7 +323,7 @@ public class SharedPrefsHelper {
      * @return The screen time in milliseconds.
      */
     public static long fetchShortsScreenTimeMs(@NonNull Context context) {
-        if (mSharedPrefs == null) initialize(context);
+        checkAndInitializePrefs(context);
         return mSharedPrefs.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L);
     }
 }

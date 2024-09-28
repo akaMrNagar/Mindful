@@ -30,12 +30,16 @@ class AppSettings {
   /// Default material color for app
   final String color;
 
+  /// Username shown on the dashboard
   final String username;
+
+  /// App Locale (Language code)
+  final String localeCode;
 
   /// Is invincible mode on if it is ON then user cannot change following :
   ///
   /// 1. App timer if it is purged
-  /// 2. Bedtime settings between the scheduled duration
+  /// 2. Short content time if it is exhausted
   final bool isInvincibleModeOn;
 
   /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
@@ -45,27 +49,42 @@ class AppSettings {
   @ignore
   TimeOfDay get dataResetToD => dataResetTimeMins.toTimeOfDay;
 
+  /// Flag indicating if to use bottom navigation or the default sidebar
+  final bool bottomNavigation;
+
+  /// Flag indicating if to use pure black color for dark theme
+  final bool amoledDark;
+
   const AppSettings({
     this.username = "Hustler",
-    this.themeMode = ThemeMode.system,
     this.color = 'Indigo',
+    this.localeCode = 'en',
+    this.themeMode = ThemeMode.system,
     this.isInvincibleModeOn = false,
     this.dataResetTimeMins = 0, // 12:00 AM
+    this.bottomNavigation = false,
+    this.amoledDark = false,
   });
 
   AppSettings copyWith({
     ThemeMode? themeMode,
     String? color,
     String? username,
+    String? localeCode,
     bool? isInvincibleModeOn,
     int? dataResetTimeMins,
+    bool? bottomNavigation,
+    bool? amoledDark,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
       color: color ?? this.color,
       username: username ?? this.username,
+      localeCode: localeCode ?? this.localeCode,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
+      bottomNavigation: bottomNavigation ?? this.bottomNavigation,
+      amoledDark: amoledDark ?? this.amoledDark,
     );
   }
 }

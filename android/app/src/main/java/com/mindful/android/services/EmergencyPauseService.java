@@ -61,7 +61,7 @@ public class EmergencyPauseService extends Service {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(appPendingIntent)
-                .setContentTitle("Emergency Pause");
+                .setContentTitle(getString(R.string.emergency_pause_notification_title));
     }
 
     @Override
@@ -117,11 +117,10 @@ public class EmergencyPauseService extends Service {
      */
     @NonNull
     private Notification createNotification(int totalLeftSeconds) {
-        String prefixMsg = "App blocker will resume after ";
         String remainingTime = Utils.secondsToTimeStr(totalLeftSeconds);
 
         mProgressNotificationBuilder
-                .setContentText(prefixMsg + remainingTime)
+                .setContentText(getString(R.string.emergency_pause_notification_info, remainingTime))
                 .setProgress(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
@@ -132,13 +131,13 @@ public class EmergencyPauseService extends Service {
      * Displays a notification when the Emergency Pause timer is completed successfully.
      */
     private void showSuccessNotification() {
-        String msg = "Emergency pause is over, and app blocker is back in action. Distractions are now blocked again, stay focused!";
+        String msg = getString(R.string.emergency_pause_ended_notification_info);
         mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
                         .setContentIntent(appPendingIntent)
-                        .setContentTitle("Emergency Pause")
+                        .setContentTitle(getString(R.string.emergency_pause_notification_title))
                         .setContentText(msg)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                         .build()

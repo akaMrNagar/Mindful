@@ -10,9 +10,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -38,7 +40,7 @@ class ScheduleCard extends ConsumerWidget {
     return RoundedContainer(
       height: 224,
       circularRadius: 24,
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
+      color: Theme.of(context).colorScheme.surfaceContainer,
       padding: const EdgeInsets.all(16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -49,7 +51,7 @@ class ScheduleCard extends ConsumerWidget {
             children: [
               /// Schedule start time
               _SelectedTime(
-                label: "Start",
+                label: context.locale.schedule_start_label,
                 enabled: !isScheduleOn,
                 initialTime: startTime,
                 onChange: (t) {
@@ -59,7 +61,7 @@ class ScheduleCard extends ConsumerWidget {
 
               /// Schedule end time
               _SelectedTime(
-                label: "End",
+                label: context.locale.schedule_end_label,
                 enabled: !isScheduleOn,
                 initialTime: endTime,
                 onChange: (t) =>
@@ -74,22 +76,20 @@ class ScheduleCard extends ConsumerWidget {
             children: [
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
               12.hBox,
-              StyledText(totalDuration.toTimeFull()),
+              StyledText(totalDuration.toTimeFull(context)),
               12.hBox,
               Expanded(child: Divider(color: Theme.of(context).focusColor)),
             ],
           ),
 
           /// Schedule selected Days
-          FittedBox(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(
-                7,
-                (index) => RoundedContainer(
-                  circularRadius: 48,
-                  height: 48,
-                  width: 48,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(
+              7,
+              (index) => Expanded(
+                child: RoundedContainer(
+                  circularRadius: 200,
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   color: scheduleDays[index]
                       ? isScheduleOn
@@ -101,16 +101,17 @@ class ScheduleCard extends ConsumerWidget {
                       : () => ref
                           .read(bedtimeProvider.notifier)
                           .toggleScheduleDay(index),
-                  child: Semantics(
-                    hint: AppStrings.daysFull[index],
+                  child: AspectRatio(
+                    aspectRatio: 1,
                     child: StyledText(
-                      AppStrings.daysShort[index],
-                      fontSize: 16,
+                      AppConstants.daysShort(context)[index],
+                      fontSize: 12,
                       isSubtitle: isScheduleOn,
+                      textAlign: TextAlign.center,
                       color: scheduleDays[index]
                           ? Theme.of(context).colorScheme.surface
                           : null,
-                    ),
+                    ).centered,
                   ),
                 ),
               ),
@@ -146,9 +147,11 @@ class _SelectedTime extends StatelessWidget {
               showTimePicker(
                 context: context,
                 initialTime: initialTime,
-              ).then((value) {
-                onChange(value ?? initialTime);
-              });
+              ).then(
+                (value) {
+                  onChange(value ?? initialTime);
+                },
+              );
             }
           : null,
       child: Column(

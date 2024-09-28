@@ -17,29 +17,44 @@ const AppSettingsSchema = CollectionSchema(
   name: r'AppSettings',
   id: -5633561779022347008,
   properties: {
-    r'color': PropertySchema(
+    r'amoledDark': PropertySchema(
       id: 0,
+      name: r'amoledDark',
+      type: IsarType.bool,
+    ),
+    r'bottomNavigation': PropertySchema(
+      id: 1,
+      name: r'bottomNavigation',
+      type: IsarType.bool,
+    ),
+    r'color': PropertySchema(
+      id: 2,
       name: r'color',
       type: IsarType.string,
     ),
     r'dataResetTimeMins': PropertySchema(
-      id: 1,
+      id: 3,
       name: r'dataResetTimeMins',
       type: IsarType.long,
     ),
     r'isInvincibleModeOn': PropertySchema(
-      id: 2,
+      id: 4,
       name: r'isInvincibleModeOn',
       type: IsarType.bool,
     ),
+    r'localeCode': PropertySchema(
+      id: 5,
+      name: r'localeCode',
+      type: IsarType.string,
+    ),
     r'themeMode': PropertySchema(
-      id: 3,
+      id: 6,
       name: r'themeMode',
       type: IsarType.byte,
       enumMap: _AppSettingsthemeModeEnumValueMap,
     ),
     r'username': PropertySchema(
-      id: 4,
+      id: 7,
       name: r'username',
       type: IsarType.string,
     )
@@ -65,6 +80,7 @@ int _appSettingsEstimateSize(
 ) {
   var bytesCount = offsets.last;
   bytesCount += 3 + object.color.length * 3;
+  bytesCount += 3 + object.localeCode.length * 3;
   bytesCount += 3 + object.username.length * 3;
   return bytesCount;
 }
@@ -75,11 +91,14 @@ void _appSettingsSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.color);
-  writer.writeLong(offsets[1], object.dataResetTimeMins);
-  writer.writeBool(offsets[2], object.isInvincibleModeOn);
-  writer.writeByte(offsets[3], object.themeMode.index);
-  writer.writeString(offsets[4], object.username);
+  writer.writeBool(offsets[0], object.amoledDark);
+  writer.writeBool(offsets[1], object.bottomNavigation);
+  writer.writeString(offsets[2], object.color);
+  writer.writeLong(offsets[3], object.dataResetTimeMins);
+  writer.writeBool(offsets[4], object.isInvincibleModeOn);
+  writer.writeString(offsets[5], object.localeCode);
+  writer.writeByte(offsets[6], object.themeMode.index);
+  writer.writeString(offsets[7], object.username);
 }
 
 AppSettings _appSettingsDeserialize(
@@ -89,13 +108,16 @@ AppSettings _appSettingsDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = AppSettings(
-    color: reader.readStringOrNull(offsets[0]) ?? 'Indigo',
-    dataResetTimeMins: reader.readLongOrNull(offsets[1]) ?? 0,
-    isInvincibleModeOn: reader.readBoolOrNull(offsets[2]) ?? false,
+    amoledDark: reader.readBoolOrNull(offsets[0]) ?? false,
+    bottomNavigation: reader.readBoolOrNull(offsets[1]) ?? false,
+    color: reader.readStringOrNull(offsets[2]) ?? 'Indigo',
+    dataResetTimeMins: reader.readLongOrNull(offsets[3]) ?? 0,
+    isInvincibleModeOn: reader.readBoolOrNull(offsets[4]) ?? false,
+    localeCode: reader.readStringOrNull(offsets[5]) ?? 'en',
     themeMode:
-        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[3])] ??
+        _AppSettingsthemeModeValueEnumMap[reader.readByteOrNull(offsets[6])] ??
             ThemeMode.system,
-    username: reader.readStringOrNull(offsets[4]) ?? "Hustler",
+    username: reader.readStringOrNull(offsets[7]) ?? "Hustler",
   );
   return object;
 }
@@ -108,16 +130,22 @@ P _appSettingsDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readStringOrNull(offset) ?? 'Indigo') as P;
-    case 1:
-      return (reader.readLongOrNull(offset) ?? 0) as P;
-    case 2:
       return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 1:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 2:
+      return (reader.readStringOrNull(offset) ?? 'Indigo') as P;
     case 3:
+      return (reader.readLongOrNull(offset) ?? 0) as P;
+    case 4:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 5:
+      return (reader.readStringOrNull(offset) ?? 'en') as P;
+    case 6:
       return (_AppSettingsthemeModeValueEnumMap[
               reader.readByteOrNull(offset)] ??
           ThemeMode.system) as P;
-    case 4:
+    case 7:
       return (reader.readStringOrNull(offset) ?? "Hustler") as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -226,6 +254,26 @@ extension AppSettingsQueryWhere
 
 extension AppSettingsQueryFilter
     on QueryBuilder<AppSettings, AppSettings, QFilterCondition> {
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      amoledDarkEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'amoledDark',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      bottomNavigationEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'bottomNavigation',
+        value: value,
+      ));
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition> colorEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -478,6 +526,142 @@ extension AppSettingsQueryFilter
   }
 
   QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'localeCode',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'localeCode',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'localeCode',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'localeCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
+      localeCodeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'localeCode',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterFilterCondition>
       themeModeEqualTo(ThemeMode value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -677,6 +861,32 @@ extension AppSettingsQueryLinks
 
 extension AppSettingsQuerySortBy
     on QueryBuilder<AppSettings, AppSettings, QSortBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByAmoledDark() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByAmoledDarkDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByBottomNavigation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bottomNavigation', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      sortByBottomNavigationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bottomNavigation', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -717,6 +927,18 @@ extension AppSettingsQuerySortBy
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByLocaleCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByLocaleCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> sortByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -744,6 +966,32 @@ extension AppSettingsQuerySortBy
 
 extension AppSettingsQuerySortThenBy
     on QueryBuilder<AppSettings, AppSettings, QSortThenBy> {
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByAmoledDark() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByAmoledDarkDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'amoledDark', Sort.desc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByBottomNavigation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bottomNavigation', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy>
+      thenByBottomNavigationDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'bottomNavigation', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByColor() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'color', Sort.asc);
@@ -796,6 +1044,18 @@ extension AppSettingsQuerySortThenBy
     });
   }
 
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByLocaleCode() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.asc);
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByLocaleCodeDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'localeCode', Sort.desc);
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QAfterSortBy> thenByThemeMode() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'themeMode', Sort.asc);
@@ -823,6 +1083,19 @@ extension AppSettingsQuerySortThenBy
 
 extension AppSettingsQueryWhereDistinct
     on QueryBuilder<AppSettings, AppSettings, QDistinct> {
+  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByAmoledDark() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'amoledDark');
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QDistinct>
+      distinctByBottomNavigation() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'bottomNavigation');
+    });
+  }
+
   QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByColor(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -841,6 +1114,13 @@ extension AppSettingsQueryWhereDistinct
       distinctByIsInvincibleModeOn() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'isInvincibleModeOn');
+    });
+  }
+
+  QueryBuilder<AppSettings, AppSettings, QDistinct> distinctByLocaleCode(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'localeCode', caseSensitive: caseSensitive);
     });
   }
 
@@ -866,6 +1146,18 @@ extension AppSettingsQueryProperty
     });
   }
 
+  QueryBuilder<AppSettings, bool, QQueryOperations> amoledDarkProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'amoledDark');
+    });
+  }
+
+  QueryBuilder<AppSettings, bool, QQueryOperations> bottomNavigationProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'bottomNavigation');
+    });
+  }
+
   QueryBuilder<AppSettings, String, QQueryOperations> colorProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'color');
@@ -882,6 +1174,12 @@ extension AppSettingsQueryProperty
       isInvincibleModeOnProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'isInvincibleModeOn');
+    });
+  }
+
+  QueryBuilder<AppSettings, String, QQueryOperations> localeCodeProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'localeCode');
     });
   }
 

@@ -8,12 +8,10 @@
  *
  */
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -25,23 +23,19 @@ class SliverPrimaryActionContainer extends StatelessWidget {
     required this.isVisible,
     required this.title,
     required this.information,
-    this.icon,
-    this.onTapAction,
-    this.actionBtnLabel,
-    this.actionBtnIcon,
-    this.helpUrl,
+    required this.icon,
     this.margin = EdgeInsets.zero,
+    this.positiveBtn,
+    this.negativeBtn,
   });
 
   final bool isVisible;
   final String title;
   final String information;
   final EdgeInsets margin;
-  final IconData? icon;
-  final String? actionBtnLabel;
-  final String? helpUrl;
-  final VoidCallback? onTapAction;
-  final Widget? actionBtnIcon;
+  final IconData icon;
+  final Widget? positiveBtn;
+  final Widget? negativeBtn;
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +53,11 @@ class SliverPrimaryActionContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon ?? FluentIcons.alert_urgent_20_regular),
+                Icon(icon),
 
                 6.vBox,
 
-                /// Warning title
+                /// title
                 StyledText(
                   title,
                   fontSize: 16,
@@ -72,7 +66,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
 
                 2.vBox,
 
-                /// Warning info
+                ///  info
                 StyledText(
                   information,
                   fontSize: 12,
@@ -83,23 +77,9 @@ class SliverPrimaryActionContainer extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    /// Help button
-                    if (helpUrl != null)
-                      TextButton(
-                        onPressed: () =>
-                            MethodChannelService.instance.launchUrl(helpUrl!),
-                        child: const Text("Help?"),
-                      ),
-
+                    negativeBtn ?? 0.vBox,
                     const Spacer(),
-
-                    /// Allow permission button
-                    if (onTapAction != null)
-                      FilledButton.icon(
-                        onPressed: onTapAction,
-                        label: Text(actionBtnLabel ?? "Allow"),
-                        icon: actionBtnIcon,
-                      ),
+                    positiveBtn ?? 0.vBox,
                   ],
                 ),
               ],

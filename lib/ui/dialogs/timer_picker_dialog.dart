@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/ui/common/application_icon.dart';
@@ -31,9 +32,11 @@ Future<int> showAppTimerPicker({
   return await Navigator.of(context).push<int>(
         HeroPageRoute(
           builder: (context) => _DurationPickerDialog(
+            heroTag: heroTag,
             icon: ApplicationIcon(app: app),
             title: app.name,
-            heroTag: heroTag,
+            info: context.locale.timer_picker_dialog_info,
+            positiveButtonLabel: context.locale.dialog_button_set_timer,
             initialTimeInSec: initialTime,
           ),
         ),
@@ -52,10 +55,12 @@ Future<int> showShortsTimerPicker({
   return await Navigator.of(context).push<int>(
         HeroPageRoute(
           builder: (context) => _DurationPickerDialog(
-            title: "Short content",
+            title: context.locale.short_content_heading,
+            info: context.locale.timer_picker_dialog_info,
             icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
             heroTag: heroTag,
             initialTimeInSec: initialTime,
+            positiveButtonLabel: context.locale.dialog_button_set_timer,
             showDeleteButton: false,
           ),
         ),
@@ -74,13 +79,12 @@ Future<int?> showFocusTimerPicker({
   return await Navigator.of(context).push<int?>(
     HeroPageRoute(
       builder: (context) => _DurationPickerDialog(
-        title: "Focus Session",
+        title: context.locale.focus_session_tile_title,
         icon: const Icon(FluentIcons.timer_20_regular),
         heroTag: heroTag,
         initialTimeInSec: initialTime,
-        info:
-            "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.",
-        positiveButtonLabel: "Start",
+        info: context.locale.focus_session_dialog_info,
+        positiveButtonLabel: context.locale.focus_session_dialog_button_start,
         showDeleteButton: false,
       ),
     ),
@@ -93,8 +97,8 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.title,
     required this.initialTimeInSec,
     required this.heroTag,
-    this.info,
-    this.positiveButtonLabel = "Set timer",
+    required this.info,
+    required this.positiveButtonLabel,
     this.showDeleteButton = true,
   });
 
@@ -104,7 +108,7 @@ class _DurationPickerDialog extends StatefulWidget {
   final int initialTimeInSec;
   final String positiveButtonLabel;
   final bool showDeleteButton;
-  final String? info;
+  final String info;
 
   @override
   State<_DurationPickerDialog> createState() => _DurationPickerDialogState();
@@ -132,10 +136,7 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
-                  StyledText(
-                    widget.info ??
-                        "This timer will reset at midnight every day, ensuring that your daily usage is tracked accurately.",
-                  ),
+                  StyledText(widget.info),
                   Container(
                     height: 124,
                     margin: const EdgeInsets.symmetric(vertical: 12),
@@ -151,7 +152,7 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                     FittedBox(
                       child: FilledButton.icon(
                         icon: const Icon(FluentIcons.delete_20_regular),
-                        label: const Text("Delete timer"),
+                        label: Text(context.locale.dialog_button_delete_timer),
                         onPressed: () => Navigator.maybePop(
                           context,
                           0,
@@ -163,7 +164,7 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
             ),
             actions: [
               TextButton(
-                child: const Text("cancel"),
+                child: Text(context.locale.dialog_button_cancel),
                 onPressed: () => Navigator.maybePop(context),
               ),
               TextButton(

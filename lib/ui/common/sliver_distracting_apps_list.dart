@@ -41,8 +41,8 @@ class SliverDistractingAppsList extends ConsumerWidget {
       children: [
         SliverContentTitle(
           title: distractingApps.isEmpty
-              ? "Select distracting apps"
-              : "Your distracting apps",
+              ? context.locale.select_distracting_apps_heading
+              : context.locale.your_distracting_apps_heading,
         ),
 
         /// Apps list
@@ -53,7 +53,7 @@ class SliverDistractingAppsList extends ConsumerWidget {
           child: allApps.hasValue
               ? AnimatedAppsList(
                   itemExtent: 56,
-                  separatorTitle: "Select more apps",
+                  separatorTitle: context.locale.select_more_apps_heading,
                   appPackages: [
                     /// Selected apps which are installed
                     ...distractingApps.where((e) => allApps.value!.contains(e)),
@@ -80,7 +80,7 @@ class SliverDistractingAppsList extends ConsumerWidget {
                         /// If app is important system app
                         if (app.isImpSysApp) {
                           context.showSnackAlert(
-                            "Adding important system apps to the list of distracting apps is not permitted.",
+                            context.locale.imp_distracting_apps_warning,
                           );
                           return;
                         }

@@ -26,6 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
+import com.mindful.android.R;
 import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
 
@@ -52,7 +53,6 @@ public class NewActivitiesLaunchHelper {
             context.startActivity(urlIntent);
         } catch (Exception e) {
             Log.e(TAG, "launchUrl: Unable to launch url: " + url, e);
-            Toast.makeText(context, "Invalid url", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -63,7 +63,6 @@ public class NewActivitiesLaunchHelper {
      * @param filePath The URL to be opened.
      */
     public static void shareFile(@NonNull Context context, @NonNull String filePath) {
-
         try {
             File file = new File(filePath);
 
@@ -81,11 +80,9 @@ public class NewActivitiesLaunchHelper {
                 context.startActivity(Intent.createChooser(intent, "Share crash log file"));
             } else {
                 Log.d(TAG, "launchUrl: File does not exist: " + filePath);
-                Toast.makeText(context, "File does not exist", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             Log.e(TAG, "launchUrl: Unable to share file: " + filePath, e);
-            Toast.makeText(context, "Invalid file path", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -100,7 +97,6 @@ public class NewActivitiesLaunchHelper {
     public static void openMindfulAccessibilitySection(@NonNull Context context) {
         if (!Utils.isServiceRunning(context, MindfulAccessibilityService.class.getName())) {
             context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
-            Toast.makeText(context, "Please enable Mindful accessibility service", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -119,7 +115,7 @@ public class NewActivitiesLaunchHelper {
         } else {
             openSettingsForPackage(context, context.getPackageName());
         }
-        Toast.makeText(context, "Please enable notification", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, R.string.toast_enable_notification, Toast.LENGTH_LONG).show();
     }
 
     // SECTION: For device setting sections or pages app ===========================================
@@ -138,7 +134,6 @@ public class NewActivitiesLaunchHelper {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             context.startActivity(intent);
         }
-        Toast.makeText(context, "Please allow usage access to Mindful", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -149,7 +144,6 @@ public class NewActivitiesLaunchHelper {
     public static void openDeviceDoNotDisturbAccessSection(@NonNull Context context) {
         Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
         context.startActivity(intent);
-        Toast.makeText(context, "Please allow do not disturb access to Mindful", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -162,7 +156,6 @@ public class NewActivitiesLaunchHelper {
             context.startActivity(new Intent("android.settings.ZEN_MODE_SETTINGS"));
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "openDeviceDndSettings: Unable to open device DND settings", e);
-            Toast.makeText(context, "Unable to open DND settings", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -217,7 +210,6 @@ public class NewActivitiesLaunchHelper {
             return false;
         }
 
-        Toast.makeText(context, "Please allow Mindful to auto start", Toast.LENGTH_LONG).show();
         return true;
     }
 
@@ -231,7 +223,6 @@ public class NewActivitiesLaunchHelper {
      */
     public static void openAppWithPackage(@NonNull Context context, @Nullable String appPackage) {
         if (appPackage == null || appPackage.isEmpty()) {
-            Toast.makeText(context, "Package not found, unable to launch app", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -243,7 +234,6 @@ public class NewActivitiesLaunchHelper {
             }
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "openAppWithPackage:Package not found, Unable to launch app : " + appPackage, e);
-            Toast.makeText(context, "Unable to open app", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -255,7 +245,6 @@ public class NewActivitiesLaunchHelper {
      */
     public static void openSettingsForPackage(@NonNull Context context, @Nullable String appPackage) {
         if (appPackage == null || appPackage.isEmpty()) {
-            Toast.makeText(context, "Package not found, unable to launch app settings", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -268,7 +257,6 @@ public class NewActivitiesLaunchHelper {
             }
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "openAppSettingsForPackage: Unable to launch app settings for " + appPackage, e);
-            Toast.makeText(context, "Unable to open app settings", Toast.LENGTH_SHORT).show();
         }
     }
 }

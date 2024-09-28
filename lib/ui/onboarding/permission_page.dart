@@ -11,6 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -53,13 +54,12 @@ class PermissionsPage extends ConsumerWidget {
 
     return Column(
       children: [
-        const Expanded(
+        Expanded(
           child: OnboardingPage(
             bottomPadding: 0,
-            title: "Essential Permissions.",
+            title: context.locale.onboarding_page_permissions_title,
             imgArtPath: "assets/illustrations/onboarding_4.png",
-            description:
-                "Mindful requires following essential permissions to track and manage your screen time, helping reduce distractions and improve focus.",
+            description: context.locale.onboarding_page_permissions_info,
           ),
         ),
 

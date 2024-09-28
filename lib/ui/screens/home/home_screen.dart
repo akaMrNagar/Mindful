@@ -14,6 +14,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
@@ -80,34 +81,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     return DefaultScaffold(
       leading: IconButton(
-        icon: Semantics(
-          hint: "Double tab to open app settings",
-          child: const Icon(FluentIcons.settings_20_regular),
-        ),
+        icon: const Icon(FluentIcons.settings_20_regular),
         onPressed: () =>
             Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
       ),
-      navbarItems: const [
+      navbarItems: [
         NavbarItem(
-          title: "Dashboard",
-          icon: FluentIcons.home_20_filled,
-          body: TabDashboard(),
+          title: context.locale.dashboard_tab_title,
+          icon: FluentIcons.home_20_regular,
+          filledIcon: FluentIcons.home_20_filled,
+          sliverBody: const TabDashboard(),
         ),
         NavbarItem(
-          title: "Statistics",
-          icon: FluentIcons.data_pie_24_filled,
-          body: TabStatistics(),
+          title: context.locale.statistics_tab_title,
+          icon: FluentIcons.data_pie_24_regular,
+          filledIcon: FluentIcons.data_pie_24_filled,
+          sliverBody: const TabStatistics(),
         ),
         NavbarItem(
-          title: "Wellbeing",
-          icon: FluentIcons.brain_circuit_20_filled,
-          body: TabWellBeing(),
-          fab: AddWebsitesFAB(),
+          title: context.locale.wellbeing_tab_title,
+          icon: FluentIcons.brain_circuit_20_regular,
+          filledIcon: FluentIcons.brain_circuit_20_filled,
+          fab: const AddWebsitesFAB(),
+          sliverBody: const TabWellBeing(),
         ),
         NavbarItem(
-          title: "Bedtime",
-          icon: FluentIcons.sleep_20_filled,
-          body: TabBedtime(),
+          title: context.locale.bedtime_tab_title,
+          icon: FluentIcons.sleep_20_regular,
+          filledIcon: FluentIcons.sleep_20_filled,
+          sliverBody: const TabBedtime(),
         ),
       ],
     );

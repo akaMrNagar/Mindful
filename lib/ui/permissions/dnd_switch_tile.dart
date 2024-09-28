@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
@@ -35,8 +36,8 @@ class DndSwitchTile extends ConsumerWidget {
     return DefaultListTile(
       enabled: !havePermission || enabled,
       switchValue: switchValue,
-      titleText: "Start DND",
-      subtitleText: "Also enable Do Not Disturb mode.",
+      titleText: context.locale.permission_dnd_tile_title,
+      subtitleText: context.locale.permission_dnd_tile_subtitle,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
       isSelected: havePermission,
       margin: const EdgeInsets.only(bottom: 2),
@@ -50,10 +51,9 @@ class DndSwitchTile extends ConsumerWidget {
       isScrollControlled: true,
       builder: (sheetContext) => PermissionSheet(
         icon: FluentIcons.alert_snooze_20_filled,
-        title: "Do not disturb",
-        description:
-            "Please grant Do Not Disturb access. This will allow Mindful to start and stop Do Not Disturb mode during the bedtime schedule.",
-        onTapPositiveBtn: () {
+        title: context.locale.permission_dnd_title,
+        description: context.locale.permission_dnd_info,
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askDndPermission();
           Navigator.of(sheetContext).maybePop();
         },

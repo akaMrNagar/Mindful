@@ -28,7 +28,7 @@ class FocusDistractingAppsList extends ConsumerWidget {
     // User want to remove app from list and session is active
     if (!isSelected && ref.read(focusModeProvider).activeSession != null) {
       context.showSnackAlert(
-        "Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.",
+        context.locale.focus_distracting_apps_removal_snack_alert,
       );
       return;
     }

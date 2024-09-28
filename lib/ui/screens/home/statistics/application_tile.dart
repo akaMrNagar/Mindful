@@ -73,7 +73,7 @@ class ApplicationTile extends ConsumerWidget {
         subtitle: StyledText(
           selectedUsageType == UsageType.networkUsage
               ? app.networkUsageThisWeek[selectedDoW].toData()
-              : app.screenTimeThisWeek[selectedDoW].seconds.toTimeFull(),
+              : app.screenTimeThisWeek[selectedDoW].seconds.toTimeFull(context),
           fontSize: 14,
           color: Theme.of(context).hintColor,
         ),

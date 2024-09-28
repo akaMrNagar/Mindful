@@ -45,12 +45,9 @@ class AppTimerPicker extends ConsumerWidget {
 
     return isIconButton
         ? IconButton(
-            icon: Semantics(
-              hint: "Set timer for ${app.name}",
-              child: appTimer > 0
-                  ? TimeTextShort(timeDuration: appTimer.seconds)
-                  : const Icon(FluentIcons.timer_20_regular),
-            ),
+            icon: appTimer > 0
+                ? TimeTextShort(timeDuration: appTimer.seconds)
+                : const Icon(FluentIcons.timer_20_regular),
             onPressed: () => _pickAppTimer(
               context,
               ref,
@@ -60,16 +57,18 @@ class AppTimerPicker extends ConsumerWidget {
         : DefaultHero(
             tag: HeroTags.appTimerTileTag(app.packageName),
             child: DefaultListTile(
-              titleText: "App timer",
+              titleText: context.locale.app_timer_tile_title,
               enabled: !app.isImpSysApp,
               subtitleText: app.isImpSysApp
-                  ? "Timer not available for important apps"
+                  ? context.locale.app_timer_tile_subtitle_unavailable
                   : appTimer > 0
-                      ? appTimer.seconds.toTimeFull()
-                      : "No timer",
+                      ? appTimer.seconds.toTimeFull(context)
+                      : context.locale.app_timer_tile_subtitle_no_timer,
               leadingIcon: FluentIcons.timer_20_regular,
               accent: isPurged ? Theme.of(context).colorScheme.error : null,
-              trailing: isPurged ? const Text("Paused") : null,
+              trailing: isPurged
+                  ? Text(context.locale.app_timer_tile_trailing_paused)
+                  : null,
               onPressed: () => _pickAppTimer(
                 context,
                 ref,
@@ -92,7 +91,7 @@ class AppTimerPicker extends ConsumerWidget {
         prevTimer > 0 &&
         app.screenTimeThisWeek[todayOfWeek] >= prevTimer) {
       context.showSnackAlert(
-        "Due to invincible mode, modifications to paused app's timer is not allowed.",
+        context.locale.app_timer_invincible_mode_snack_alert,
       );
       return;
     }

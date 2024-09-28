@@ -55,7 +55,7 @@ class AsyncErrorIndicator extends StatelessWidget {
               await Clipboard.setData(
                   ClipboardData(text: stackTrace.toString()));
               MethodChannelService.instance
-                  .launchUrl(AppConstants.githubIssueUrl);
+                  .launchUrl(AppConstants.githubIssueDirectUrl);
             },
           )
         ],

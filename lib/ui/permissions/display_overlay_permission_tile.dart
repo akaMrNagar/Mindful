@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
@@ -26,9 +27,11 @@ class DisplayOverlayPermissionTile extends ConsumerWidget {
         permissionProvider.select((v) => v.haveDisplayOverlayPermission));
 
     return DefaultListTile(
-      titleText: "Display Overlay",
+      titleText: context.locale.permission_overlay_title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
-      subtitleText: havePermission ? "Allowed" : "Not allowed",
+      subtitleText: havePermission
+          ? context.locale.permission_status_allowed
+          : context.locale.permission_status_not_allowed,
       isSelected: havePermission,
       margin: const EdgeInsets.only(bottom: 2),
       onPressed: havePermission ? null : () => _showSheet(context, ref),
@@ -41,11 +44,11 @@ class DisplayOverlayPermissionTile extends ConsumerWidget {
       isScrollControlled: true,
       builder: (sheetContext) => PermissionSheet(
         icon: FluentIcons.app_recent_20_filled,
-        title: "Display Overlay",
-        description:
-            "Please grant display overlay permission. This will allow Mindful to show an overlay when a paused app is opened, helping you stay focused and maintain your schedule.",
-        permissionSwitchTitle: "Allow display over other apps",
-        onTapPositiveBtn: () {
+        title: context.locale.permission_overlay_title,
+        description: context.locale.permission_overlay_info,
+        deviceSwitchTileLabel:
+            context.locale.permission_overlay_device_tile_label,
+        onTapGrantPermission: () {
           ref.read(permissionProvider.notifier).askDisplayOverlayPermission();
           Navigator.of(sheetContext).maybePop();
         },

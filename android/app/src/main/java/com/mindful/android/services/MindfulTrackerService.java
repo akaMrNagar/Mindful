@@ -71,7 +71,6 @@ public class MindfulTrackerService extends Service {
     };
 
     private boolean mIsServiceRunning = false;
-    private boolean mIsStoppedForcefully = true;
 
     private UsageStatsManager mUsageStatsManager;
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
@@ -139,7 +138,7 @@ public class MindfulTrackerService extends Service {
                 AppConstants.TRACKER_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
-                        "Mindful is now tracking app usage to help you stay focused and manage your digital habits."
+                        getString(R.string.app_blocker_running_notification_info)
                 )
         );
         Log.d(TAG, "startTrackingService: Foreground service started");
@@ -161,7 +160,6 @@ public class MindfulTrackerService extends Service {
      */
     private void stopIfNoUsage() {
         if (mBedtimeDistractingApps.isEmpty() && mAppTimers.isEmpty() && mFocusSessionDistractingApps.isEmpty()) {
-            mIsStoppedForcefully = false;
             Log.d(TAG, "stopIfNoUsage: The service is not required any more therefore, stopping it");
             stopForeground(true);
             stopSelf();
@@ -228,14 +226,6 @@ public class MindfulTrackerService extends Service {
         if (mAppLaunchReceiver != null) {
             mAppLaunchReceiver.cancelTimers();
             unregisterReceiver(mAppLaunchReceiver);
-        }
-
-        if (mIsStoppedForcefully) {
-            Log.d(TAG, "onDestroy: Tracking service destroyed forcefully. Trying to restart it");
-            if (!Utils.isServiceRunning(this, MindfulTrackerService.class.getName())) {
-                startService(new Intent(this, MindfulTrackerService.class).setAction(ACTION_START_SERVICE_TIMER_MODE));
-            }
-            return;
         }
 
         Log.d(TAG, "onDestroy: Tracking service destroyed");
@@ -362,7 +352,7 @@ public class MindfulTrackerService extends Service {
                 Drawable appIcon = packageManager.getApplicationIcon(info);
 
 
-                String msg = appName + " will be paused for the rest of the day";
+                String msg = getString(R.string.app_pause_alert_notification_info, appName);
                 NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.notify(
                         minutesLeft,
@@ -370,7 +360,7 @@ public class MindfulTrackerService extends Service {
                                 .setOngoing(false)
                                 .setSmallIcon(R.drawable.ic_notification)
                                 .setLargeIcon(Utils.drawableToBitmap(appIcon))
-                                .setContentTitle(minutesLeft + " minutes left")
+                                .setContentTitle(getString(R.string.app_pause_notification_title, minutesLeft))
                                 .setContentText(msg)
                                 .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                                 .build()

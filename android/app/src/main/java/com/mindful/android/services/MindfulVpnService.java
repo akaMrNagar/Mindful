@@ -21,6 +21,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.mindful.android.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
@@ -49,7 +50,6 @@ public class MindfulVpnService extends android.net.VpnService {
     private ParcelFileDescriptor mVpnInterface = null;
     private Set<String> mBlockedApps;
     private boolean mShouldRestartVpn = false;
-    private boolean mIsStoppedForcefully = true;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -100,7 +100,7 @@ public class MindfulVpnService extends android.net.VpnService {
                 AppConstants.VPN_SERVICE_NOTIFICATION_ID,
                 NotificationHelper.buildFgServiceNotification(
                         this,
-                        "Mindful is now managing internet access to help you stay focused."
+                        getString(R.string.internet_blocker_running_notification_info)
                 )
         );
     }
@@ -125,7 +125,6 @@ public class MindfulVpnService extends android.net.VpnService {
      */
     private void stopAndDisposeService() {
         disconnectVpn();
-        mIsStoppedForcefully = false;
         stopForeground(STOP_FOREGROUND_REMOVE);
         stopSelf();
     }
@@ -216,14 +215,6 @@ public class MindfulVpnService extends android.net.VpnService {
     public void onDestroy() {
         super.onDestroy();
         disconnectVpn();
-
-        if (mIsStoppedForcefully) {
-            Log.d(TAG, "onDestroy: Vpn service destroyed forcefully. Trying to restart it");
-            if (!Utils.isServiceRunning(this, MindfulVpnService.class.getName())) {
-                startService(new Intent(this, MindfulVpnService.class).setAction(ACTION_START_SERVICE_VPN));
-            }
-            return;
-        }
         Log.d(TAG, "onDestroy: VPN service is destroyed");
     }
 

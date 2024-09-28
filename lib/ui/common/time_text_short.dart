@@ -41,6 +41,7 @@ class TimeTextShort extends StatelessWidget {
       height: 1,
     );
 
+
     return Text.rich(
       TextSpan(
         /// Greater than or equal to an hour

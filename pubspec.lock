@@ -278,14 +278,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
-  flutter_onboarding_slider:
+  flutter_localizations:
     dependency: "direct main"
-    description:
-      name: flutter_onboarding_slider
-      sha256: "70d6b7c8d469abb31f66fd80c61915d7ff9c05d2c9001ec7db659702e7bc4f9d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.11"
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -347,6 +344,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  intl:
+    dependency: "direct main"
+    description:
+      name: intl
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.0"
   io:
     dependency: transitive
     description:
@@ -467,14 +472,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      sha256: "03bac4c528c64c95c722ec99280375a6f2fc708eec17c7b3f07253b626cd2a20"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   package_config:
     dependency: transitive
     description:
@@ -563,14 +560,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.1.2"
   pub_semver:
     dependency: transitive
     description:

@@ -28,9 +28,7 @@ class EmergencyFAB extends ConsumerWidget {
     if (!context.mounted) return;
 
     if (leftPasses <= 0) {
-      context.showSnackAlert(
-        "You have used all your emergency passes. The blocked apps will stay blocked until midnight, or the active focus session ends.",
-      );
+      context.showSnackAlert(context.locale.emergency_no_pass_left_snack_alert);
       return;
     }
 
@@ -38,10 +36,9 @@ class EmergencyFAB extends ConsumerWidget {
       context: context,
       icon: FluentIcons.fire_20_filled,
       heroTag: HeroTags.emergencyTileTag,
-      title: "Emergency",
-      info:
-          "This action will pause the app blocker for next 5 minutes. You have $leftPasses passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",
-      positiveLabel: "Use anyway",
+      title: context.locale.emergency_fab_button,
+      info: context.locale.emergency_dialog_info(leftPasses),
+      positiveLabel: context.locale.emergency_dialog_button_use_anyway,
     );
 
     if (!confirmed) return;
@@ -49,12 +46,12 @@ class EmergencyFAB extends ConsumerWidget {
 
     if (!success && context.mounted) {
       context.showSnackAlert(
-        "The app blocker is currently either paused or inactive. If notifications are enabled, you will receive updates regarding the remaining time.",
+        context.locale.emergency_already_active_snack_alert,
         icon: FluentIcons.fire_16_filled,
       );
     } else if (context.mounted) {
       context.showSnackAlert(
-        "The app blocker is paused and will resume blocking in 5 minutes.",
+        context.locale.emergency_started_snack_alert,
         icon: FluentIcons.fire_16_filled,
       );
     }
@@ -64,7 +61,7 @@ class EmergencyFAB extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return FloatingActionButton.extended(
       heroTag: HeroTags.emergencyTileTag,
-      label: const Text("Emergency"),
+      label: Text(context.locale.emergency_fab_button),
       icon: const Icon(FluentIcons.fire_20_filled),
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,

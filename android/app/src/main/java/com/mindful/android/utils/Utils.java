@@ -284,8 +284,8 @@ public class Utils {
 
         return
                 leftHours > 0 ?
-                        leftHours + ":" + leftMinutes + ":" + leftSeconds + (leftHours > 1 ? " hours" : " hour") :
-                        leftMinutes + ":" + leftSeconds + " minutes";
+                        leftHours + ":" + leftMinutes + ":" + leftSeconds :
+                        leftMinutes + ":" + leftSeconds;
 
     }
 
@@ -320,7 +320,7 @@ public class Utils {
 
         if (totalMBs >= 1024) {
             float GBs = totalMBs / 1024f;
-            String formattedGBs = String.format(Locale.US, "%.2f", GBs);
+            String formattedGBs = String.format(Locale.getDefault(), "%.2f", GBs);
             return formattedGBs + " GB";
         } else {
             return totalMBs + " MB";

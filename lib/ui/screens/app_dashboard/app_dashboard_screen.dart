@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
@@ -23,7 +24,6 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/application_icon.dart';
@@ -69,15 +69,14 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     return DefaultScaffold(
       navbarItems: [
         NavbarItem(
-          icon: FluentIcons.data_pie_20_filled,
-          title: "Dashboard",
+          icon: FluentIcons.data_pie_20_regular,
+          filledIcon: FluentIcons.data_pie_20_filled,
+          title: context.locale.dashboard_tab_title,
+          appBarTitle: widget.app.name,
           fab: const EmergencyFAB(),
-          body: CustomScrollView(
+          sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              /// App bar
-              SliverFlexibleAppBar(title: widget.app.name),
-
               /// App icon and app package name
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -126,13 +125,14 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                 ),
               ),
 
-              const SliverContentTitle(title: "Quick actions"),
+              SliverContentTitle(title: context.locale.quick_actions_heading),
 
               /// Available app setting or functions
               widget.app.packageName == AppConstants.removedAppPackage ||
                       widget.app.packageName == AppConstants.tetheringAppPackage
-                  ? const StyledText(
-                      "Screen usage and quick actions are currently unavailable for this application. At present, only network usage is accessible",
+                  ? StyledText(
+                      context
+                          .locale.custom_apps_quick_actions_unavailable_warning,
                       fontSize: 14,
                     ).sliver
                   : QuickActions(app: widget.app),

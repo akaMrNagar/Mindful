@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -28,12 +29,12 @@ Future<String?> showWebsiteInputDialog({
         keyboardType: TextInputType.url,
         dialogIcon: FluentIcons.globe_search_20_filled,
         fieldIcon: FluentIcons.globe_20_regular,
-        title: "Distracting website",
+        title: context.locale.add_website_dialog_title,
         fieldLabel: "Url",
         hintText: "example.com",
-        helperText: "Enter url of a website which you want to block.",
-        negativeBtnLabel: "Cancel",
-        positiveBtnLabel: "Block",
+        helperText: context.locale.add_website_dialog_info,
+        negativeBtnLabel: context.locale.dialog_button_cancel,
+        positiveBtnLabel: context.locale.add_website_dialog_button_block,
       ),
     ),
   );
@@ -53,12 +54,12 @@ Future<String?> showUsernameInputDialog({
         keyboardType: TextInputType.text,
         dialogIcon: FluentIcons.person_20_filled,
         fieldIcon: FluentIcons.person_20_regular,
-        title: "Username",
-        fieldLabel: "Username",
+        title: context.locale.username_dialog_title,
+        fieldLabel: context.locale.username_dialog_title,
         hintText: "Hustler",
-        helperText: "Enter your username which will be displayed on dashboard.",
-        negativeBtnLabel: "Cancel",
-        positiveBtnLabel: "Apply",
+        helperText: context.locale.username_dialog_info,
+        negativeBtnLabel: context.locale.dialog_button_cancel,
+        positiveBtnLabel: context.locale.username_dialog_button_apply,
       ),
     ),
   );

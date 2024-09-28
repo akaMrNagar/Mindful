@@ -21,7 +21,6 @@ import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/focus_timeline_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/focus/timeline/session_tile.dart';
@@ -62,40 +61,42 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
-            /// Appbar
-            const SliverFlexibleAppBar(title: "Timeline"),
-
-            const StyledText(
-              "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
-            ).sliver,
+            StyledText(context.locale.timeline_tab_info).sliver,
 
             24.vSliverBox,
 
             /// Productivity stats
             Row(
               children: [
+                /// Total productive time
                 Expanded(
                   child: UsageGlanceCard(
                     isPrimary: true,
                     icon: FluentIcons.clock_20_regular,
-                    title: "Productive time",
-                    info: timeline.totalProductiveTime.toTimeShort(),
+                    title: context.locale.selected_month_productive_time_label,
+                    info: timeline.totalProductiveTime.toTimeShort(context),
                     onTap: () => context.showSnackAlert(
-                      "Your total productive time for the selected month is ${timeline.totalProductiveTime.toTimeFull()}.",
+                      context.locale.selected_month_productive_time_snack_alert(
+                        timeline.totalProductiveTime.toTimeFull(context),
+                      ),
                       icon: FluentIcons.clock_20_filled,
                     ),
                   ),
                 ),
                 8.hBox,
+
+                /// Productive days
                 Expanded(
                   child: UsageGlanceCard(
                     isPrimary: true,
                     icon: FluentIcons.calendar_day_20_regular,
-                    title: "Productive days",
-                    info: "${timeline.daysTypeMap.length} days",
+                    title: context.locale.selected_month_productive_days_label,
+                    info: context.locale.nDays(timeline.daysTypeMap.length),
                     onTap: () => context.showSnackAlert(
-                      "You've had a total of ${timeline.totalProductiveDays} productive days in the selected month.",
-                      icon: FluentIcons.shifts_day_20_filled,
+                      context.locale.selected_month_productive_days_snack_alert(
+                        timeline.totalProductiveDays,
+                      ),
+                      icon: FluentIcons.calendar_day_20_filled,
                     ),
                   ),
                 ),
@@ -106,22 +107,24 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             UsageGlanceCard(
               isPrimary: true,
               icon: FluentIcons.shifts_day_20_regular,
-              title: "Focused time",
-              info: timeline.todaysFocusedTime.toTimeFull(),
+              title: context.locale.selected_day_focused_time_label,
+              info: timeline.todaysFocusedTime.toTimeFull(context),
               onTap: () => context.showSnackAlert(
-                "Your total focused time for the selected day is ${timeline.todaysFocusedTime.toTimeFull()}.",
+                context.locale.selected_day_focused_time_snack_alert(
+                  timeline.todaysFocusedTime.toTimeFull(context),
+                ),
                 icon: FluentIcons.shifts_day_20_filled,
               ),
             ).sliver,
 
-            const SliverContentTitle(title: "Calender"),
+            SliverContentTitle(title: context.locale.calender_heading),
             HeatMapCalendar(
               /// NOTE - datasets map should only contain date and all time related fields should be 0
               datasets: heatMapData,
               flexible: true,
+              showColorTip: false,
               initDate: DateTime.now(),
               borderRadius: 10,
-              showColorTip: false,
               colorMode: ColorMode.color,
               weekTextColor: Theme.of(context).iconTheme.color,
               textColor: Theme.of(context).iconTheme.color,
@@ -145,19 +148,19 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             ).sliver,
 
             8.vSliverBox,
-            const SliverContentTitle(title: "Your sessions"),
+            SliverContentTitle(title: context.locale.your_sessions_heading),
             8.vSliverBox,
 
             /// List of today's sessions
             timeline.todaysSessions.value?.isEmpty ?? false
-                ? const SizedBox(
+                ? SizedBox(
                     height: 256,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(FluentIcons.emoji_sad_20_filled, size: 32),
+                        const Icon(FluentIcons.emoji_sad_20_filled, size: 32),
                         StyledText(
-                          "No focus sessions recorded for the selected day.",
+                          context.locale.your_sessions_empty_list_hint,
                           fontSize: 14,
                           isSubtitle: true,
                         ),

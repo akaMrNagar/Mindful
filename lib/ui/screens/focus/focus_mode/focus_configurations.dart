@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/session_type.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
@@ -20,8 +21,8 @@ import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/permissions/dnd_switch_tile.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class FocusConfigurations extends ConsumerWidget {
-  const FocusConfigurations({super.key});
+class FocusQuickActions extends ConsumerWidget {
+  const FocusQuickActions({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,15 +33,16 @@ class FocusConfigurations extends ConsumerWidget {
 
     return MultiSliver(
       children: [
-        const SliverContentTitle(title: "Configurations"),
+        SliverContentTitle(title: context.locale.quick_actions_heading),
 
         /// Session tag
         DefaultDropdownTile<SessionType>(
-          label: "Focus session",
+          label: context.locale.focus_session_tile_title,
           dialogIcon: FluentIcons.door_tag_20_filled,
           value: sessionType,
           onSelected: ref.read(focusModeProvider.notifier).setSessionType,
-          items: sessionTypeLabels.entries
+          items: sessionTypeLabels(context)
+              .entries
               .map((e) => DefaultDropdownItem(label: e.value, value: e.key))
               .toList(),
         ).sliver,

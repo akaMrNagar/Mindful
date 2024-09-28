@@ -10,18 +10,21 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension ExtBuildContext on BuildContext {
+  /// Returns the [AppLocalizations] instance for the current context.
+  /// Which can be used to access Locale Strings
+  AppLocalizations get locale => AppLocalizations.of(this);
+
   void _showSnackBar({
     required IconData icon,
     required String info,
     required Color fgColor,
     required Color bgColor,
-    bool showCopyAction = false,
   }) {
     try {
       if (mounted) {
@@ -33,19 +36,6 @@ extension ExtBuildContext on BuildContext {
               borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
             ),
             backgroundColor: bgColor,
-            action: showCopyAction
-                ? SnackBarAction(
-                    label: "Copy",
-                    backgroundColor: Theme.of(this).colorScheme.primary,
-                    textColor: Theme.of(this).colorScheme.onPrimary,
-                    // textColor: fgColor,
-                    onPressed: () async {
-                      await Clipboard.setData(
-                        ClipboardData(text: info),
-                      );
-                    },
-                  )
-                : null,
             content: Row(
               children: [
                 Icon(icon, color: fgColor),
@@ -72,19 +62,6 @@ extension ExtBuildContext on BuildContext {
     } catch (e) {
       debugPrint("ExtBuildContext._showSnackBar(): Exception $e");
     }
-  }
-
-  /// Shows error snackbar only if the widget is mounted so it is safe to use in async method
-  void showSnackError(String error) {
-    final bgColor = Theme.of(this).colorScheme.errorContainer;
-    final fgColor = Theme.of(this).colorScheme.onErrorContainer;
-    _showSnackBar(
-      icon: FluentIcons.bug_20_regular,
-      info: error,
-      fgColor: fgColor,
-      bgColor: bgColor,
-      showCopyAction: true,
-    );
   }
 
   /// Shows information snackbar only if the widget is mounted so it is safe to use in async method

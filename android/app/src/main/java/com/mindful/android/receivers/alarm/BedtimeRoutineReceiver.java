@@ -28,6 +28,7 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.MindfulTrackerService;
+import com.mindful.android.utils.Utils;
 
 import java.util.Calendar;
 
@@ -41,7 +42,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, @NonNull Intent intent) {
-        String action = intent.getAction();
+        String action = Utils.getActionFromIntent(intent);
 
         if (ACTION_START_BEDTIME.equals(action)) {
             init(context);
@@ -75,7 +76,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
         // Start DND if needed
         if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, true);
-        pushAlertNotification("It's time to wind down. Bedtime routine has started, helping you relax and prepare for a restful night's sleep.");
+        pushAlertNotification(mContext.getString(R.string.bedtime_started_notification_info));
     }
 
     private void stopBedtimeRoutine() {
@@ -84,7 +85,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
         // Stop DND if needed
         if (mBedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(mContext, false);
-        pushAlertNotification("Rise and shine! Bedtime routine has ended, get ready to start the day energized and refreshed.");
+        pushAlertNotification(mContext.getString(R.string.bedtime_ended_notification_info));
     }
 
 
@@ -95,7 +96,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
                         .setOnlyAlertOnce(true)
-                        .setContentTitle("Mindful")
+                        .setContentTitle(mContext.getString(R.string.app_name))
                         .setContentText(alert)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(alert))
                         .build()

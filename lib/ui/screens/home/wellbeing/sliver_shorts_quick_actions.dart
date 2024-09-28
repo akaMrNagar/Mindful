@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 
@@ -59,8 +60,8 @@ class SliverShortsQuickActions extends ConsumerWidget {
             ),
           ),
           enabled: canModifyInsta,
-          titleText: "Block reels",
-          subtitleText: "Restrict reels on instagram.",
+          titleText: context.locale.block_insta_reels_title,
+          subtitleText: context.locale.block_insta_reels_subtitle,
           switchValue: blockInstaReels,
           onPressed: ref.read(wellBeingProvider.notifier).switchBlockInstaReels,
         ),
@@ -75,8 +76,8 @@ class SliverShortsQuickActions extends ConsumerWidget {
             ),
           ),
           enabled: canModifyYt,
-          titleText: "Block shorts",
-          subtitleText: "Restrict shorts on youtube.",
+          titleText: context.locale.block_yt_shorts_title,
+          subtitleText: context.locale.block_yt_shorts_subtitle,
           switchValue: blockYtShorts,
           onPressed: ref.read(wellBeingProvider.notifier).switchBlockYtShorts,
         ),
@@ -91,8 +92,8 @@ class SliverShortsQuickActions extends ConsumerWidget {
             ),
           ),
           enabled: canModifySnap,
-          titleText: "Block spotlight",
-          subtitleText: "Restrict spotlight on snapchat.",
+          titleText: context.locale.block_snap_spotlight_title,
+          subtitleText: context.locale.block_snap_spotlight_subtitle,
           switchValue: blockSnapSpotlight,
           onPressed:
               ref.read(wellBeingProvider.notifier).switchBlockSnapSpotlight,
@@ -108,8 +109,8 @@ class SliverShortsQuickActions extends ConsumerWidget {
             ),
           ),
           enabled: canModifyFb,
-          titleText: "Block reels",
-          subtitleText: "Restrict reels on facebook.",
+          titleText: context.locale.block_fb_reels_title,
+          subtitleText: context.locale.block_fb_reels_subtitle,
           switchValue: blockFbReels,
           onPressed: ref.read(wellBeingProvider.notifier).switchBlockFbReels,
         ),

@@ -26,7 +26,6 @@ import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
-import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
@@ -95,11 +94,13 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
   Widget build(BuildContext context) {
     const timeStyle = TextStyle(fontSize: 48, fontWeight: FontWeight.w600);
     final quotes = [
-      "Every step counts, stay strong and keep going!",
-      "Stay focused! you're making amazing progress!",
-      "You're crushing it! Keep the momentum going!",
-      "Just a little more to go, you're doing fantastic!",
-      "Congratulations! 🎉\n You've completed your focus session of ${widget.session.duration.toTimeFull(replaceCommaWithAnd: true)}.\n\nGreat job—keep up the amazing work!"
+      context.locale.active_session_quote_one,
+      context.locale.active_session_quote_two,
+      context.locale.active_session_quote_three,
+      context.locale.active_session_quote_four,
+      context.locale.active_session_quote_five(
+        widget.session.duration.toTimeFull(context, replaceCommaWithAnd: true),
+      ),
     ];
     final isSessionActive = _remainingTime.inSeconds > 0;
     final progress = !isSessionActive
@@ -113,16 +114,14 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
     return DefaultScaffold(
       navbarItems: [
         NavbarItem(
-          icon: FluentIcons.brain_circuit_20_filled,
-          title: "Session",
-          body: CustomScrollView(
+          icon: FluentIcons.brain_circuit_20_regular,
+          filledIcon: FluentIcons.brain_circuit_20_filled,
+          title: context.locale.active_session_tab_title,
+          appBarTitle: sessionTypeLabels(context)[widget.session.type] ??
+              context.locale.active_session_tab_title,
+          sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              /// Appbar
-              SliverFlexibleAppBar(
-                title: sessionTypeLabels[widget.session.type] ?? "Focus",
-              ),
-
               TimerProgressClock(
                 progress: progress.toDouble(),
               ).sliver,
@@ -180,7 +179,8 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
                 DefaultHero(
                   tag: HeroTags.giveUpFocusSessionTag,
                   child: FilledButton.tonalIcon(
-                    label: const Text("Give Up"),
+                    label:
+                        Text(context.locale.active_session_giveup_dialog_title),
                     icon: const Icon(FluentIcons.thumb_dislike_20_filled),
                     onPressed: _giveUp,
                   ),
@@ -194,14 +194,15 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
 
   void _giveUp() async {
     final confirm = await showConfirmationDialog(
-        context: context,
-        heroTag: HeroTags.giveUpFocusSessionTag,
-        title: "Give Up",
-        info:
-            "Hold on! You're almost there don't give up now! Are you sure you want to end this focus session early? Progress will be lost.",
-        icon: FluentIcons.emoji_sad_20_filled,
-        positiveLabel: "Give up",
-        negativeLabel: "Keep pushing");
+      context: context,
+      heroTag: HeroTags.giveUpFocusSessionTag,
+      title: context.locale.active_session_giveup_dialog_title,
+      info: context.locale.active_session_giveup_dialog_info,
+      icon: FluentIcons.emoji_sad_20_filled,
+      positiveLabel: context.locale.active_session_giveup_dialog_title,
+      negativeLabel:
+          context.locale.active_session_giveup_dialog_button_keep_pushing,
+    );
 
     if (!confirm) return;
     await ref.read(focusModeProvider.notifier).giveUpOnActiveSession();
@@ -209,7 +210,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
     /// Show alert and go back
     if (!mounted) return;
     context.showSnackAlert(
-      "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going",
+      context.locale.active_session_giveup_snack_alert,
     );
     Navigator.of(context).maybePop();
   }

@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/start_session_fab.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/tab_focus.dart';
@@ -27,17 +28,19 @@ class FocusScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return DefaultScaffold(
       initialTabIndex: initialTabIndex,
-      navbarItems: const [
+      navbarItems: [
         NavbarItem(
-          icon: FluentIcons.target_arrow_20_filled,
-          title: "Focus",
-          body: TabFocus(),
-          fab: StartSessionFAB(),
+          icon: FluentIcons.target_arrow_20_regular,
+          filledIcon: FluentIcons.target_arrow_20_filled,
+          title: context.locale.focus_tab_title,
+          sliverBody: const TabFocus(),
+          fab: const StartSessionFAB(),
         ),
         NavbarItem(
-          icon: FluentIcons.history_20_filled,
-          title: "Timeline",
-          body: TabTimeline(),
+          icon: FluentIcons.history_20_regular,
+          filledIcon: FluentIcons.history_20_filled,
+          title: context.locale.timeline_tab_title,
+          sliverBody: const TabTimeline(),
         ),
       ],
     );

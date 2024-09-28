@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/utils/strings.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -42,8 +42,6 @@ class DefaultBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final unselectedGrad = [Colors.blue, Colors.cyan];
-    // final selectedGrad = [Colors.red, Colors.pink];
     final unselectedGrad = [
       Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
       Theme.of(context).colorScheme.secondaryContainer,
@@ -52,8 +50,6 @@ class DefaultBarChart extends StatelessWidget {
       Theme.of(context).colorScheme.primary.withOpacity(0.7),
       Theme.of(context).colorScheme.primary,
     ];
-    // final unselectedGrad = Theme.of(context).colorScheme.secondaryContainer;
-    // final selectedGrad = Theme.of(context).colorScheme.primary;
 
     final dataMax = data.fold(0, (p, e) => math.max(p, e));
     // adding one to show bar chart if all values are zeroes
@@ -77,9 +73,8 @@ class DefaultBarChart extends StatelessWidget {
                   x: index,
                   barRods: [
                     BarChartRodData(
-                      width: 24,
+                      width: 26,
                       toY: toPercentY,
-                      // color: isSelected ? selectedGrad : unselectedGrad,
                       gradient: LinearGradient(
                         colors: isSelected ? selectedGrad : unselectedGrad,
                         begin: Alignment.bottomCenter,
@@ -139,7 +134,7 @@ class DefaultBarChart extends StatelessWidget {
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerRight,
             child: StyledText(
-              _generateSideLabels(yPos * dataMax ~/ 100),
+              _generateSideLabels(context, yPos * dataMax ~/ 100),
               color: Theme.of(context).hintColor,
             ),
           ),
@@ -155,7 +150,7 @@ class DefaultBarChart extends StatelessWidget {
               fit: BoxFit.scaleDown,
               alignment: Alignment.topCenter,
               child: StyledText(
-                AppStrings.daysShort[value.toInt()],
+                AppConstants.daysShort(context)[value.toInt()],
                 color: Theme.of(context).hintColor,
               ),
             ),
@@ -165,14 +160,16 @@ class DefaultBarChart extends StatelessWidget {
     );
   }
 
-  String _generateSideLabels(int yData) {
+  String _generateSideLabels(BuildContext context, int yData) {
     return switch (usageType) {
-      /// Screen usage labels
+      /// Screen usage labels [yData] is in seconds
       UsageType.screenUsage => (yData.inHours > 1)
           ? "${yData.inHours.round()}h"
-          : "${yData.inMinutes}m",
+          : yData.inMinutes >= 1
+              ? "${yData.inMinutes}m"
+              : "${yData}s",
 
-      /// Network usage labels
+      /// Network usage labels [yData] is in KBs
       UsageType.networkUsage => (yData.gb >= 1)
           ? "${yData.gb.round()}gb"
           : (yData.mb >= 1)

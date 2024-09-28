@@ -32,11 +32,13 @@ class DeviceAppsList
   Future<bool> refreshDeviceApps() async {
     state = const AsyncLoading();
     final appsList = await MethodChannelService.instance.getDeviceApps();
-    state = AsyncData(
+    final cache = AsyncData(
       Map.fromEntries(
         appsList.map((e) => MapEntry(e.packageName, e)),
       ),
     );
+
+    state = cache;
     return true;
   }
 }
