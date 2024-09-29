@@ -36,6 +36,9 @@ class WellBeingSettings {
   /// Flag denoting if to block facebook reels or not
   final bool blockFbReels;
 
+  /// Flag denoting if to block reddit shorts or not
+  final bool blockRedditShorts;
+
   /// Flag denoting if the nsfw or adult  websites are blocked or not
   /// i.e if accessibility service is filtering websites or not
   final bool blockNsfwSites;
@@ -51,6 +54,7 @@ class WellBeingSettings {
     this.blockYtShorts = false,
     this.blockSnapSpotlight = false,
     this.blockFbReels = false,
+    this.blockRedditShorts = false,
     this.blockNsfwSites = false,
     this.blockedWebsites = const [],
   });
@@ -61,16 +65,17 @@ class WellBeingSettings {
     bool? blockYtShorts,
     bool? blockSnapSpotlight,
     bool? blockFbReels,
+    bool? blockRedditShorts,
     bool? blockNsfwSites,
     List<String>? blockedWebsites,
   }) {
     return WellBeingSettings(
-      allowedShortContentTimeSec:
-          allowedShortContentTimeSec ?? this.allowedShortContentTimeSec,
+      allowedShortContentTimeSec: allowedShortContentTimeSec ?? this.allowedShortContentTimeSec,
       blockInstaReels: blockInstaReels ?? this.blockInstaReels,
       blockYtShorts: blockYtShorts ?? this.blockYtShorts,
       blockSnapSpotlight: blockSnapSpotlight ?? this.blockSnapSpotlight,
       blockFbReels: blockFbReels ?? this.blockFbReels,
+      blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
       blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
     );
@@ -83,6 +88,7 @@ class WellBeingSettings {
       'blockYtShorts': blockYtShorts,
       'blockSnapSpotlight': blockSnapSpotlight,
       'blockFbReels': blockFbReels,
+      'blockRedditShorts': blockRedditShorts,
       'blockNsfwSites': blockNsfwSites,
       'blockedWebsites': blockedWebsites,
     };

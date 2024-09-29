@@ -49,6 +49,11 @@ public class WellBeingSettings {
     public boolean blockFbReels = false;
 
     /**
+     * Flag indicating whether to block Reddit Shorts.
+     */
+    public boolean blockRedditShorts = false;
+
+    /**
      * Flag indicating whether to block NSFW or adult websites.
      * This is used to determine if the accessibility service is filtering websites.
      */
@@ -84,17 +89,20 @@ public class WellBeingSettings {
                 JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
 
                 // Deserialize fields
-                blockInstaReels = jsonObject.getBoolean("blockInstaReels");
-                blockYtShorts = jsonObject.getBoolean("blockYtShorts");
-                blockSnapSpotlight = jsonObject.getBoolean("blockSnapSpotlight");
-                blockFbReels = jsonObject.getBoolean("blockFbReels");
-                blockNsfwSites = jsonObject.getBoolean("blockNsfwSites");
-                allowedShortContentTimeMs = jsonObject.getInt("allowedShortContentTimeSec") * 1000L;
+                blockInstaReels = jsonObject.optBoolean("blockInstaReels", false);
+                blockYtShorts = jsonObject.optBoolean("blockYtShorts", false);
+                blockSnapSpotlight = jsonObject.optBoolean("blockSnapSpotlight", false);
+                blockFbReels = jsonObject.optBoolean("blockFbReels", false);
+                blockRedditShorts = jsonObject.optBoolean("blockRedditShorts", false);
+                blockNsfwSites = jsonObject.optBoolean("blockNsfwSites", false);
+                allowedShortContentTimeMs = jsonObject.optInt("allowedShortContentTimeSec", 30 * 60) * 1000L;
 
                 // Deserialize blocked websites
-                JSONArray websitesJsonArray = jsonObject.getJSONArray("blockedWebsites");
-                for (int i = 0; i < websitesJsonArray.length(); i++) {
-                    blockedWebsites.add(websitesJsonArray.getString(i));
+                JSONArray websitesJsonArray = jsonObject.optJSONArray("blockedWebsites");
+                if (websitesJsonArray != null) {
+                    for (int i = 0; i < websitesJsonArray.length(); i++) {
+                        blockedWebsites.add(websitesJsonArray.getString(i));
+                    }
                 }
 
             } catch (JSONException e) {

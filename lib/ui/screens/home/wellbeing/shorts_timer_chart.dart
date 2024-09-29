@@ -125,7 +125,7 @@ class ShortsTimerChart extends ConsumerWidget {
                       ? () => _editAllowedTime(context, ref)
                       : null,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Icon(
                         FluentIcons.beach_20_regular,
@@ -139,18 +139,16 @@ class ShortsTimerChart extends ConsumerWidget {
                         fontWeight: FontWeight.bold,
                         fontSize: 32,
                       ),
-                      2.vBox,
+                      4.vBox,
                       StyledText(
                         context.locale.shorts_time_left_from(
                           allowedTimeSec.seconds.toTimeShort(context),
                         ),
                         fontSize: 14,
-                        isSubtitle: true,
-                        fontWeight: FontWeight.w500,
                         textAlign: TextAlign.center,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      32.vBox,
+                      20.vBox,
                       const DefaultHero(
                         tag: HeroTags.shortContentTimerPickerTag,
                         child: Icon(FluentIcons.edit_20_regular),

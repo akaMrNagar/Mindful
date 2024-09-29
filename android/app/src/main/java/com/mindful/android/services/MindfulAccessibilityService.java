@@ -14,6 +14,7 @@ package com.mindful.android.services;
 
 import static com.mindful.android.helpers.ShortsBlockingHelper.FACEBOOK_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.INSTAGRAM_PACKAGE;
+import static com.mindful.android.helpers.ShortsBlockingHelper.REDDIT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.SNAPCHAT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_CLIENT_PACKAGE_PREFIX;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_PACKAGE;
@@ -167,7 +168,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
-
+        logNodeInfoRecursively(node);
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
                 if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
@@ -181,6 +182,11 @@ public class MindfulAccessibilityService extends AccessibilityService implements
                 break;
             case FACEBOOK_PACKAGE:
                 if (mWellBeingSettings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node)) {
+                    checkTimerAndBlockShortContent();
+                }
+                break;
+            case REDDIT_PACKAGE:
+                if (mWellBeingSettings.blockRedditShorts && ShortsBlockingHelper.isRedditShortsOpen(node)) {
                     checkTimerAndBlockShortContent();
                 }
                 break;
@@ -378,6 +384,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         if (mWellBeingSettings.blockInstaReels) allowedAppPackages.add(INSTAGRAM_PACKAGE);
         if (mWellBeingSettings.blockSnapSpotlight) allowedAppPackages.add(SNAPCHAT_PACKAGE);
         if (mWellBeingSettings.blockFbReels) allowedAppPackages.add(FACEBOOK_PACKAGE);
+        if (mWellBeingSettings.blockRedditShorts) allowedAppPackages.add(REDDIT_PACKAGE);
+
         if (mWellBeingSettings.blockYtShorts) {
             // Fetch all the clients available for youtube. It can also include browsers too.
             Intent ytIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"));

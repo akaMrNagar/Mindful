@@ -41,7 +41,6 @@ class TimeTextShort extends StatelessWidget {
       height: 1,
     );
 
-
     return Text.rich(
       TextSpan(
         /// Greater than or equal to an hour
@@ -72,14 +71,24 @@ class TimeTextShort extends StatelessWidget {
                     TextSpan(text: "M", style: alphaStyle),
                   ]
 
-            /// Less than an hour
-            : [
-                TextSpan(
-                  text: (timeDuration.inSeconds ~/ 60).toString(),
-                  style: numericStyle,
-                ),
-                TextSpan(text: "M", style: alphaStyle),
-              ],
+            /// Less than an hour but greater than equal to 1 minute
+            : timeDuration.inSeconds >= 60
+                ? [
+                    TextSpan(
+                      text: (timeDuration.inMinutes).toString(),
+                      style: numericStyle,
+                    ),
+                    TextSpan(text: "M", style: alphaStyle),
+                  ]
+
+                /// Less then a minute
+                : [
+                    TextSpan(
+                      text: (timeDuration.inSeconds).toString(),
+                      style: numericStyle,
+                    ),
+                    TextSpan(text: "S", style: alphaStyle),
+                  ],
       ),
     );
   }

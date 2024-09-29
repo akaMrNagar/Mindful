@@ -60,14 +60,16 @@ public class FocusSession {
                 JSONObject jsonObject = new JSONObject(jsonMapString);
 
                 // Deserialize fields
-                toggleDnd = jsonObject.getBoolean("toggleDnd");
-                durationSecs = jsonObject.getInt("durationSeconds");
-                startTimeMsEpoch = jsonObject.getLong("startTimeMsEpoch");
+                toggleDnd = jsonObject.optBoolean("toggleDnd", false);
+                durationSecs = jsonObject.optInt("durationSeconds", 0);
+                startTimeMsEpoch = jsonObject.optLong("startTimeMsEpoch", 0L);
 
                 // Deserialize distracting apps
-                JSONArray appsJsonArray = jsonObject.getJSONArray("distractingApps");
-                for (int i = 0; i < appsJsonArray.length(); i++) {
-                    distractingApps.add(appsJsonArray.getString(i));
+                JSONArray appsJsonArray = jsonObject.optJSONArray("distractingApps");
+                if (appsJsonArray != null) {
+                    for (int i = 0; i < appsJsonArray.length(); i++) {
+                        distractingApps.add(appsJsonArray.getString(i));
+                    }
                 }
 
             } catch (JSONException e) {
