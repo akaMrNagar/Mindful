@@ -33,7 +33,7 @@ class AccessibilityPermissionCard extends ConsumerWidget {
       margin: const EdgeInsets.only(top: 12),
       icon: FluentIcons.accessibility_20_regular,
       title: context.locale.permission_accessibility_title,
-      information: context.locale.permission_accessibility_info,
+      information: context.locale.permission_accessibility_required,
       negativeBtn: TextButton(
         onPressed: () =>
             MethodChannelService.instance.launchUrl(AppConstants.faqsUrl),
