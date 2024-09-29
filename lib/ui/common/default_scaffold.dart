@@ -132,7 +132,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
                           physics: const ClampingScrollPhysics(),
                           itemBuilder: (context, index) => _TabBarButton(
                             title: widget.navbarItems[index].title,
-                            icon: widget.navbarItems[index].icon,
+                            icon: widget.navbarItems[index].filledIcon,
                             isSelected: _controller.index == index,
                             onTap: () => _onTabButtonPressed(index),
                           ),

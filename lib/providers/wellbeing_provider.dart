@@ -60,6 +60,10 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
   void switchBlockFbReels() =>
       state = state.copyWith(blockFbReels: !state.blockFbReels);
 
+  /// Toggles the block status for Reddit Shorts.
+  void switchBlockRedditShorts() =>
+      state = state.copyWith(blockRedditShorts: !state.blockRedditShorts);
+
   /// Toggles the block status for NSFW websites.
   void switchBlockNsfwSites() =>
       state = state.copyWith(blockNsfwSites: !state.blockNsfwSites);

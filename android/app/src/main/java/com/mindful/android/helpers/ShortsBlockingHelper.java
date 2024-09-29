@@ -33,8 +33,10 @@ public class ShortsBlockingHelper {
     // App package names
     public static final String INSTAGRAM_PACKAGE = "com.instagram.android";
     public static final String YOUTUBE_PACKAGE = "com.google.android.youtube";
+    public static final String YOUTUBE_CLIENT_PACKAGE_PREFIX = ".android.youtube";
     public static final String SNAPCHAT_PACKAGE = "com.snapchat.android";
     public static final String FACEBOOK_PACKAGE = "com.facebook.katana";
+    public static final String REDDIT_PACKAGE = "com.reddit.frontpage";
 
     // Possible URLs of different short-form content platforms
     private static final List<String> instaReelUrls = new ArrayList<>(Arrays.asList("instagram.com/reels/", "m.instagram.com/reels/"));
@@ -74,15 +76,16 @@ public class ShortsBlockingHelper {
     /**
      * Checks if YouTube Shorts is currently open based on accessibility node information.
      *
-     * @param node The AccessibilityNodeInfo of the view.
+     * @param node              The AccessibilityNodeInfo of the view.
+     * @param clientPackageName The package name of the youtube client which is open.
      * @return True if YouTube Shorts is open, false otherwise.
      */
-    public static boolean isYoutubeShortsOpen(@NonNull AccessibilityNodeInfo node) {
+    public static boolean isYoutubeShortsOpen(@NonNull AccessibilityNodeInfo node, @NonNull String clientPackageName) {
         CharSequence nodeId = node.getViewIdResourceName();
         return nodeId != null
-                && (nodeId.equals("com.google.android.youtube:id/reel_progress_bar")
-                || nodeId.equals("com.google.android.youtube:id/reel_player_page_container")
-                || nodeId.equals("com.google.android.youtube:id/reel_recycler"));
+                && (nodeId.equals(clientPackageName + ":id/reel_progress_bar")
+                || nodeId.equals(clientPackageName + ":id/reel_player_page_container")
+                || nodeId.equals(clientPackageName + ":id/reel_recycler"));
     }
 
     /**
@@ -96,12 +99,10 @@ public class ShortsBlockingHelper {
         List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId("com.snapchat.android:id/spotlight_view_count");
         if (nodes != null && !nodes.isEmpty()) {
             CharSequence text = nodes.get(0).getText();
-            if (text != null) return true;
+            return text != null;
         }
 
-        // Find by node's classname equal to 'opera_content_index'
-        String id = node.getViewIdResourceName();
-        return id != null && id.equals("com.snapchat.android:id/opera_content_index");
+        return false;
     }
 
     /**
@@ -115,6 +116,17 @@ public class ShortsBlockingHelper {
         // TODO: Add more string translated from different languages for the node text
         //  as user may have set different language for facebook app
         return txt != null && (txt.equals("Add a comment…") || txt.equals("कमेंट जोड़ें…"));
+    }
+
+    /**
+     * Checks if Reddit Shorts is currently open based on accessibility node information.
+     *
+     * @param node The AccessibilityNodeInfo of the view.
+     * @return True if Reddit Shorts is open, false otherwise.
+     */
+    public static boolean isRedditShortsOpen(@NonNull AccessibilityNodeInfo node) {
+        CharSequence nodeId = node.getViewIdResourceName();
+        return nodeId != null && nodeId.equals("feed_vertical_pager");
     }
 
     /**

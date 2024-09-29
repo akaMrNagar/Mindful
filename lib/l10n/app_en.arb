@@ -196,6 +196,8 @@
     "block_snap_spotlight_subtitle": "Restrict spotlight on snapchat.",
     "block_fb_reels_title": "Block reels",
     "block_fb_reels_subtitle": "Restrict reels on facebook.",
+    "block_reddit_shorts_title": "Block shorts",
+    "block_reddit_shorts_subtitle": "Restrict shorts on reddit.",
     "adult_content_heading": "Adult content",
     "block_nsfw_title": "Block Nsfw",
     "block_nsfw_subtitle": "Restrict browsers from opening adult and porn websites.",

@@ -67,6 +67,7 @@ flutter:
     - assets/icons/fbReels.png
     - assets/icons/snapSpotlight.png
     - assets/icons/ytShorts.png
+    - assets/icons/redditShorts.png
 
   # fonts:
   #   - family: Schyler

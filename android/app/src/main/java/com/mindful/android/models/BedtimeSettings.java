@@ -75,21 +75,25 @@ public class BedtimeSettings {
                 JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
 
                 // Deserialize fields
-                isScheduleOn = jsonObject.getBoolean("isScheduleOn");
-                startTimeInMins = jsonObject.getInt("startTimeInMins");
-                totalDurationInMins = jsonObject.getInt("totalDurationInMins");
-                shouldStartDnd = jsonObject.getBoolean("shouldStartDnd");
+                isScheduleOn = jsonObject.optBoolean("isScheduleOn", false);
+                startTimeInMins = jsonObject.optInt("startTimeInMins", 0);
+                totalDurationInMins = jsonObject.optInt("totalDurationInMins", 0);
+                shouldStartDnd = jsonObject.optBoolean("shouldStartDnd", false);
 
                 // Deserialize schedule days
-                JSONArray daysJsonArray = jsonObject.getJSONArray("scheduleDays");
-                for (int i = 0; i < daysJsonArray.length(); i++) {
-                    scheduleDays.set(i, daysJsonArray.getBoolean(i));
+                JSONArray daysJsonArray = jsonObject.optJSONArray("scheduleDays");
+                if (daysJsonArray != null) {
+                    for (int i = 0; i < daysJsonArray.length(); i++) {
+                        scheduleDays.set(i, daysJsonArray.getBoolean(i));
+                    }
                 }
 
                 // Deserialize distracting apps
-                JSONArray appsJsonArray = jsonObject.getJSONArray("distractingApps");
-                for (int i = 0; i < appsJsonArray.length(); i++) {
-                    distractingApps.add(appsJsonArray.getString(i));
+                JSONArray appsJsonArray = jsonObject.optJSONArray("distractingApps");
+                if (appsJsonArray != null) {
+                    for (int i = 0; i < appsJsonArray.length(); i++) {
+                        distractingApps.add(appsJsonArray.getString(i));
+                    }
                 }
 
             } catch (JSONException e) {

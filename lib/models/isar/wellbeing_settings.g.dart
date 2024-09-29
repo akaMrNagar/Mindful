@@ -37,18 +37,23 @@ const WellBeingSettingsSchema = CollectionSchema(
       name: r'blockNsfwSites',
       type: IsarType.bool,
     ),
-    r'blockSnapSpotlight': PropertySchema(
+    r'blockRedditShorts': PropertySchema(
       id: 4,
+      name: r'blockRedditShorts',
+      type: IsarType.bool,
+    ),
+    r'blockSnapSpotlight': PropertySchema(
+      id: 5,
       name: r'blockSnapSpotlight',
       type: IsarType.bool,
     ),
     r'blockYtShorts': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'blockYtShorts',
       type: IsarType.bool,
     ),
     r'blockedWebsites': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'blockedWebsites',
       type: IsarType.stringList,
     )
@@ -93,9 +98,10 @@ void _wellBeingSettingsSerialize(
   writer.writeBool(offsets[1], object.blockFbReels);
   writer.writeBool(offsets[2], object.blockInstaReels);
   writer.writeBool(offsets[3], object.blockNsfwSites);
-  writer.writeBool(offsets[4], object.blockSnapSpotlight);
-  writer.writeBool(offsets[5], object.blockYtShorts);
-  writer.writeStringList(offsets[6], object.blockedWebsites);
+  writer.writeBool(offsets[4], object.blockRedditShorts);
+  writer.writeBool(offsets[5], object.blockSnapSpotlight);
+  writer.writeBool(offsets[6], object.blockYtShorts);
+  writer.writeStringList(offsets[7], object.blockedWebsites);
 }
 
 WellBeingSettings _wellBeingSettingsDeserialize(
@@ -109,9 +115,10 @@ WellBeingSettings _wellBeingSettingsDeserialize(
     blockFbReels: reader.readBoolOrNull(offsets[1]) ?? false,
     blockInstaReels: reader.readBoolOrNull(offsets[2]) ?? false,
     blockNsfwSites: reader.readBoolOrNull(offsets[3]) ?? false,
-    blockSnapSpotlight: reader.readBoolOrNull(offsets[4]) ?? false,
-    blockYtShorts: reader.readBoolOrNull(offsets[5]) ?? false,
-    blockedWebsites: reader.readStringList(offsets[6]) ?? const [],
+    blockRedditShorts: reader.readBoolOrNull(offsets[4]) ?? false,
+    blockSnapSpotlight: reader.readBoolOrNull(offsets[5]) ?? false,
+    blockYtShorts: reader.readBoolOrNull(offsets[6]) ?? false,
+    blockedWebsites: reader.readStringList(offsets[7]) ?? const [],
   );
   return object;
 }
@@ -136,6 +143,8 @@ P _wellBeingSettingsDeserializeProp<P>(
     case 5:
       return (reader.readBoolOrNull(offset) ?? false) as P;
     case 6:
+      return (reader.readBoolOrNull(offset) ?? false) as P;
+    case 7:
       return (reader.readStringList(offset) ?? const []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -317,6 +326,16 @@ extension WellBeingSettingsQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'blockNsfwSites',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterFilterCondition>
+      blockRedditShortsEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'blockRedditShorts',
         value: value,
       ));
     });
@@ -691,6 +710,20 @@ extension WellBeingSettingsQuerySortBy
   }
 
   QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockRedditShorts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockRedditShorts', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      sortByBlockRedditShortsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockRedditShorts', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       sortByBlockSnapSpotlight() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockSnapSpotlight', Sort.asc);
@@ -778,6 +811,20 @@ extension WellBeingSettingsQuerySortThenBy
   }
 
   QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockRedditShorts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockRedditShorts', Sort.asc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
+      thenByBlockRedditShortsDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'blockRedditShorts', Sort.desc);
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QAfterSortBy>
       thenByBlockSnapSpotlight() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'blockSnapSpotlight', Sort.asc);
@@ -850,6 +897,13 @@ extension WellBeingSettingsQueryWhereDistinct
   }
 
   QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
+      distinctByBlockRedditShorts() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'blockRedditShorts');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, WellBeingSettings, QDistinct>
       distinctByBlockSnapSpotlight() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'blockSnapSpotlight');
@@ -904,6 +958,13 @@ extension WellBeingSettingsQueryProperty
       blockNsfwSitesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'blockNsfwSites');
+    });
+  }
+
+  QueryBuilder<WellBeingSettings, bool, QQueryOperations>
+      blockRedditShortsProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'blockRedditShorts');
     });
   }
 

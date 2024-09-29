@@ -14,7 +14,9 @@ package com.mindful.android.services;
 
 import static com.mindful.android.helpers.ShortsBlockingHelper.FACEBOOK_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.INSTAGRAM_PACKAGE;
+import static com.mindful.android.helpers.ShortsBlockingHelper.REDDIT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.SNAPCHAT_PACKAGE;
+import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_CLIENT_PACKAGE_PREFIX;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_PACKAGE;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 
@@ -166,15 +168,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
-
+        logNodeInfoRecursively(node);
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
                 if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
-                    checkTimerAndBlockShortContent();
-                }
-                break;
-            case YOUTUBE_PACKAGE:
-                if (mWellBeingSettings.blockYtShorts && ShortsBlockingHelper.isYoutubeShortsOpen(node)) {
                     checkTimerAndBlockShortContent();
                 }
                 break;
@@ -188,8 +185,21 @@ public class MindfulAccessibilityService extends AccessibilityService implements
                     checkTimerAndBlockShortContent();
                 }
                 break;
+            case REDDIT_PACKAGE:
+                if (mWellBeingSettings.blockRedditShorts && ShortsBlockingHelper.isRedditShortsOpen(node)) {
+                    checkTimerAndBlockShortContent();
+                }
+                break;
             default:
-                blockDistractionOnBrowsers(node, packageName);
+                // Youtube shorts may be open on original or another clients like revanced so check it out
+                if (mWellBeingSettings.blockYtShorts
+                        && packageName.contains(YOUTUBE_CLIENT_PACKAGE_PREFIX)
+                        && ShortsBlockingHelper.isYoutubeShortsOpen(node, packageName)
+                ) {
+                    checkTimerAndBlockShortContent();
+                } else {
+                    blockDistractionOnBrowsers(node, packageName);
+                }
                 break;
         }
     }
@@ -357,23 +367,38 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * Updates the service info with the latest settings and registered packages.
      */
     private void refreshServiceInfo() {
+        // Using hashset to avoid duplicates
         HashSet<String> allowedAppPackages = new HashSet<>();
+        PackageManager pm = getPackageManager();
 
         // Fetch installed browser packages
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
-        PackageManager pm = getPackageManager();
-        List<ResolveInfo> browsers = pm.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"));
+        List<ResolveInfo> browsers = pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL);
 
         for (ResolveInfo browser : browsers) {
             allowedAppPackages.add(browser.activityInfo.packageName);
-            Log.d(TAG, "refreshServiceInfo: Browser found: " + browser.activityInfo.packageName);
+            Log.d(TAG, "refreshServiceInfo: Browsers found: " + browser.activityInfo.packageName);
         }
 
         // For short form content blocking on their native apps
         if (mWellBeingSettings.blockInstaReels) allowedAppPackages.add(INSTAGRAM_PACKAGE);
-        if (mWellBeingSettings.blockYtShorts) allowedAppPackages.add(YOUTUBE_PACKAGE);
         if (mWellBeingSettings.blockSnapSpotlight) allowedAppPackages.add(SNAPCHAT_PACKAGE);
         if (mWellBeingSettings.blockFbReels) allowedAppPackages.add(FACEBOOK_PACKAGE);
+        if (mWellBeingSettings.blockRedditShorts) allowedAppPackages.add(REDDIT_PACKAGE);
+
+        if (mWellBeingSettings.blockYtShorts) {
+            // Fetch all the clients available for youtube. It can also include browsers too.
+            Intent ytIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"));
+            List<ResolveInfo> ytClients = pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL);
+
+            for (ResolveInfo client : ytClients) {
+                allowedAppPackages.add(client.activityInfo.packageName);
+                Log.d(TAG, "refreshServiceInfo: Youtube clients found: " + client.activityInfo.packageName);
+            }
+
+            // Regardless of the results add original youtube package.
+            allowedAppPackages.add(YOUTUBE_PACKAGE);
+        }
 
         // Load nsfw website domains if needed
         mNsfwWebsites = mWellBeingSettings.blockNsfwSites ? NsfwDomains.init() : new HashMap<>(0);

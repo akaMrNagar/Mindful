@@ -8,8 +8,6 @@
  *
  */
 
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +32,7 @@ class MindfulApp extends ConsumerWidget {
           ? AppTheme.darkAmoledTheme(materialColor)
           : AppTheme.darkTheme(materialColor),
       theme: AppTheme.lightTheme(materialColor),
-      themeMode: ThemeMode.values[min(themeMode.index, ThemeMode.dark.index)],
+      themeMode: themeMode,
       routes: AppRoutes.routes,
       initialRoute: AppRoutes.splashScreen,
       localizationsDelegates: const [

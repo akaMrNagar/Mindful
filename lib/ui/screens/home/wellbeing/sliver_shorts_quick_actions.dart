@@ -38,6 +38,9 @@ class SliverShortsQuickActions extends ConsumerWidget {
     final blockFbReels =
         ref.watch(wellBeingProvider.select((v) => v.blockFbReels));
 
+    final blockRedditShorts =
+        ref.watch(wellBeingProvider.select((v) => v.blockRedditShorts));
+
     final canModifyInsta =
         haveNecessaryPerms && (isModifiable || !blockInstaReels);
 
@@ -47,6 +50,9 @@ class SliverShortsQuickActions extends ConsumerWidget {
         haveNecessaryPerms && (isModifiable || !blockSnapSpotlight);
 
     final canModifyFb = haveNecessaryPerms && (isModifiable || !blockFbReels);
+
+    final canModifyReddit =
+        haveNecessaryPerms && (isModifiable || !blockRedditShorts);
 
     return SliverList.list(
       children: [
@@ -113,6 +119,23 @@ class SliverShortsQuickActions extends ConsumerWidget {
           subtitleText: context.locale.block_fb_reels_subtitle,
           switchValue: blockFbReels,
           onPressed: ref.read(wellBeingProvider.notifier).switchBlockFbReels,
+        ),
+
+        /// Block reddit shorts
+        DefaultListTile(
+          leading: Opacity(
+            opacity: canModifyReddit ? 1 : 0.5,
+            child: Image.asset(
+              "assets/icons/redditShorts.png",
+              width: 32,
+            ),
+          ),
+          enabled: canModifyReddit,
+          titleText: context.locale.block_reddit_shorts_title,
+          subtitleText: context.locale.block_reddit_shorts_subtitle,
+          switchValue: blockRedditShorts,
+          onPressed:
+              ref.read(wellBeingProvider.notifier).switchBlockRedditShorts,
         ),
       ],
     );
