@@ -11,7 +11,7 @@
     "permission_button_not_now": "Not Now",
     "permission_button_help": "Help?",
     "permission_sheet_privacy_info": "Mindful is 100% secure and works offline. We do not collect or store any personal data.",
-    "permission_grant_step_one": "1. Click on {button_label}.",
+    "permission_grant_step_one": "1. Click on {button_label} button.",
     "@permission_grant_step_one": {
         "placeholders": {
             "button_label": {

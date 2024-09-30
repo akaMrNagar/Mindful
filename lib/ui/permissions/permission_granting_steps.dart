@@ -39,14 +39,14 @@ class PermissionGrantingSteps extends StatelessWidget {
         children: [
           /// First step
           StyledText(
-            "1. Click on $labelOfBtnToClick button.",
+            context.locale.permission_grant_step_one(labelOfBtnToClick),
             fontSize: 14,
           ),
           6.vBox,
 
           /// Second step
-          const StyledText(
-            "2. Select Mindful in the next screen.",
+          StyledText(
+            context.locale.permission_grant_step_two,
             fontSize: 14,
           ),
           DefaultListTile(
@@ -63,15 +63,15 @@ class PermissionGrantingSteps extends StatelessWidget {
             ),
             titleText: "Mindful",
             subtitleText: isAccessibilityPerm
-                ? context.locale.permission_status_not_allowed
-                : context.locale.permission_status_off,
+                ? context.locale.permission_status_off
+                : context.locale.permission_status_not_allowed,
           ),
 
           8.vBox,
 
           /// Third step
-          const StyledText(
-            "3. Click and turn on the switch like below.",
+          StyledText(
+            context.locale.permission_grant_step_three,
             fontSize: 14,
           ),
           DefaultListTile(

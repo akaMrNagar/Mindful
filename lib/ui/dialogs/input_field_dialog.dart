@@ -65,7 +65,7 @@ Future<String?> showUsernameInputDialog({
   );
 }
 
-class _InputFieldDialog extends StatelessWidget {
+class _InputFieldDialog extends StatefulWidget {
   const _InputFieldDialog({
     required this.heroTag,
     required this.keyboardType,
@@ -91,31 +91,36 @@ class _InputFieldDialog extends StatelessWidget {
   final String negativeBtnLabel;
 
   @override
-  Widget build(BuildContext context) {
-    final controller = TextEditingController();
+  State<_InputFieldDialog> createState() => _InputFieldDialogState();
+}
 
+class _InputFieldDialogState extends State<_InputFieldDialog> {
+  final _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(48),
       alignment: Alignment.center,
       child: DefaultHero(
-        tag: heroTag,
+        tag: widget.heroTag,
         child: SingleChildScrollView(
           child: AlertDialog(
-            icon: Icon(dialogIcon),
-            title: StyledText(title),
+            icon: Icon(widget.dialogIcon),
+            title: StyledText(widget.title),
             insetPadding: EdgeInsets.zero,
             content: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: TextField(
                 scrollPhysics: const AlwaysScrollableScrollPhysics(),
-                controller: controller,
+                controller: _controller,
                 onSubmitted: (txt) => Navigator.maybePop(context, txt),
-                keyboardType: keyboardType,
+                keyboardType: widget.keyboardType,
                 decoration: InputDecoration(
-                  label: Text(fieldLabel),
-                  hintText: hintText,
-                  prefixIcon: Icon(fieldIcon),
-                  helperText: helperText,
+                  label: Text(widget.fieldLabel),
+                  hintText: widget.hintText,
+                  prefixIcon: Icon(widget.fieldIcon),
+                  helperText: widget.helperText,
                   helperMaxLines: 3,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
@@ -126,11 +131,11 @@ class _InputFieldDialog extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () => Navigator.maybePop(context),
-                child: Text(negativeBtnLabel),
+                child: Text(widget.negativeBtnLabel),
               ),
               TextButton(
-                onPressed: () => Navigator.maybePop(context, controller.text),
-                child: Text(positiveBtnLabel),
+                onPressed: () => Navigator.maybePop(context, _controller.text),
+                child: Text(widget.positiveBtnLabel),
               ),
             ],
           ),
