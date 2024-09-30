@@ -80,7 +80,7 @@ class SliverDistractingAppsList extends ConsumerWidget {
                         /// If app is important system app
                         if (app.isImpSysApp) {
                           context.showSnackAlert(
-                            context.locale.imp_distracting_apps_warning,
+                            context.locale.imp_distracting_apps_snack_alert,
                           );
                           return;
                         }

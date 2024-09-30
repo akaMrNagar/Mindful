@@ -102,7 +102,7 @@
     "select_distracting_apps_heading": "Select distracting apps",
     "your_distracting_apps_heading": "Your distracting apps",
     "select_more_apps_heading": "Select more apps",
-    "imp_distracting_apps_warning": "Adding important system apps to the list of distracting apps is not permitted.",
+    "imp_distracting_apps_snack_alert": "Adding important system apps to the list of distracting apps is not permitted.",
     "custom_apps_quick_actions_unavailable_warning": "Screen usage and quick actions are unavailable for this application. At present, only network usage is accessible",
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
