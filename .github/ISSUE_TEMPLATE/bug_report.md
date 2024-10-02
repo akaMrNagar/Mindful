@@ -6,6 +6,8 @@ labels: bug
 assignees: ""
 ---
 
+**Have you checked it on [Project Progress](https://github.com/users/akaMrNagar/projects/1) ?**
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
