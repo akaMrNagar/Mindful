@@ -1,33 +1,38 @@
-# Mindful
+
+<div align="center">
+    <a href="https://bemindful.vercel.app/">
+        <img alt="Icon" src="docs/assets/mindful.png" width="144px">
+        <h1> <b>Mindful</b></h1>
+    </a>
+    <a href="https://play.google.com/store/apps/details?id=com.mindful.android">
+        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="96">
+    </a>
+    <a href="https://github.com/akamrnagar/mindful/releases/latest">
+        <img src="docs/assets/github_badge.png" height="96">
+    </a>
+</div>
+
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
+* **[🎉 Featured](docs/FEATURED.md)** 
 * **[👻 Supporters](docs/SUPPORTERS.md)**
-* **[🛠️ Build & Contribute](docs/CONTRIBUTING.md)**
 * **[🌍 Translate](https://crowdin.com/project/mindful)**
-* **[🔏 Verify](docs/VERIFICATION.md)**
+* **[🛠️ Build & Contribute](docs/CONTRIBUTING.md)**
 * **[📃 Privacy Policy](https://bemindful.vercel.app/privacy)**
+* **[🔏 Verify](docs/VERIFICATION.md)**
 * **[🙋‍♂️ FAQs](https://bemindful.vercel.app/#faqs)**
 
 ![](https://badges.crowdin.net/mindful/localized.svg)
 
-## 👇 Download
-
-<a href="https://github.com/akamrnagar/mindful/releases/latest"><img src="docs/assets/get-it-on-github.png" height="96"></a>
-&emsp;
-<a href="https://play.google.com/store/apps/details?id=com.mindful.android"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="96"></a>
-
 ---
 
 
-
-![Mindful App Banner](docs/assets/banner.png)
-
 ## 📱 Screenshots
 
-| <img src="docs/assets/screenshot_1.png"> | <img src="docs/assets/screenshot_2.png"> | <img src="docs/assets/screenshot_3.png"> | <img src="docs/assets/screenshot_4.png"> |
-| ---------------------------------------- | ---------------------------------------- | ---------------------------------------- | ---------------------------------------- |
-| <img src="docs/assets/screenshot_5.png"> | <img src="docs/assets/screenshot_6.png"> | <img src="docs/assets/screenshot_7.png"> | <img src="docs/assets/screenshot_8.png"> |
+| <img src="docs/assets/screenshots/screenshot_1.png"> | <img src="docs/assets/screenshots/screenshot_2.png"> | <img src="docs/assets/screenshots/screenshot_3.png"> | <img src="docs/assets/screenshots/screenshot_4.png"> |
+| ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
+| <img src="docs/assets/screenshots/screenshot_5.png"> | <img src="docs/assets/screenshots/screenshot_6.png"> | <img src="docs/assets/screenshots/screenshot_7.png"> | <img src="docs/assets/screenshots/screenshot_8.png"> |
 
 ## 💪 Features
 
@@ -68,7 +73,7 @@
 
 Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
 
-<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/bmc_qr.png" height="208" ></a>
+<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="208" ></a>
 
 <a href="https://buymeacoffee.com/akamrnagar"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-394379?logo=Buy-Me-A-Coffee&logoColor=ffdd00" height="32"></a>
 &emsp;
