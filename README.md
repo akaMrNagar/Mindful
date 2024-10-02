@@ -1,15 +1,9 @@
 
 <div align="center">
-    <a href="https://bemindful.vercel.app/">
-        <img alt="Icon" src="docs/assets/mindful.png" width="144px">
-        <h1> <b>Mindful</b></h1>
-    </a>
-    <a href="https://play.google.com/store/apps/details?id=com.mindful.android">
-        <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="96">
-    </a>
-    <a href="https://github.com/akamrnagar/mindful/releases/latest">
-        <img src="docs/assets/github_badge.png" height="96">
-    </a>
+    <a href="https://bemindful.vercel.app/"><img alt="Icon" src="docs/assets/mindful.png" width="144px" /></a>
+    <h1> <b>Mindful</b></h1>
+    <a href="https://play.google.com/store/apps/details?id=com.mindful.android"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="96" /></a>
+    <a href="https://github.com/akamrnagar/mindful/releases/latest"><img src="docs/assets/github_badge.png" height="96" /></a>
 </div>
 
 
