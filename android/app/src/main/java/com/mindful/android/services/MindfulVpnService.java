@@ -175,6 +175,9 @@ public class MindfulVpnService extends android.net.VpnService {
                 } catch (IOException | IllegalArgumentException e) {
                     Log.e(TAG, "run: VPN connection failed, exiting", e);
                     stopAndDisposeService();
+                } catch (Exception e) {
+                    Log.e(TAG, "run: Something went wrong", e);
+                    stopAndDisposeService();
                 }
             }
         };
