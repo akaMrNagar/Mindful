@@ -78,7 +78,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * <p>
      * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
      */
-    private static final long SHORT_CONTENT_ACTIVITY_APPROX = 60 * 1000;
+    private static final long SHORT_CONTENT_ACTIVITY_APPROX = 30 * 1000;
 
 
     /**
@@ -168,7 +168,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Return if not enough information about node
         if (node == null || node.getClassName() == null) return;
-        logNodeInfoRecursively(node);
         switch (packageName) {
             case INSTAGRAM_PACKAGE:
                 if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
@@ -330,7 +329,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
      */
     private void checkTimerAndBlockShortContent() {
-        if (mTotalShortsScreenTimeMs > (mWellBeingSettings.allowedShortContentTimeMs + SHARED_PREF_INVOKE_INTERVAL_MS)) {
+        if (mWellBeingSettings.allowedShortContentTimeMs < 0 || mTotalShortsScreenTimeMs > (mWellBeingSettings.allowedShortContentTimeMs + SHARED_PREF_INVOKE_INTERVAL_MS)) {
             goBackWithToast();
             return;
         }

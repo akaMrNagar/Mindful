@@ -8,8 +8,6 @@
  *
  */
 
-import 'dart:math';
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -45,16 +43,6 @@ class ShortsTimerChart extends ConsumerWidget {
     );
 
     if (newTime == allowedTimeSec) return;
-
-    if (newTime < minimumShortTimerSecs) {
-      if (context.mounted) {
-        context.showSnackAlert(
-          context.locale.short_content_minimum_time_snack_alert,
-        );
-      }
-      return;
-    }
-
     ref.read(wellBeingProvider.notifier).setAllowedShortContentTime(newTime);
   }
 
@@ -62,10 +50,8 @@ class ShortsTimerChart extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     const double squareDimension = 208;
 
-    final progressValue = max(
-      0.0001,
-      (remainingTimeSec / allowedTimeSec),
-    );
+    final double progressValue =
+        allowedTimeSec > 0 ? (remainingTimeSec / allowedTimeSec) : 0;
 
     final lerpedColor = Color.lerp(
       Theme.of(context).colorScheme.errorContainer,
