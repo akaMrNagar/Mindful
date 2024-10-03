@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.util.Log;
@@ -115,7 +116,7 @@ public class MindfulTrackerService extends Service {
     }
 
     // REVIEW: Suppressing api warnings
-    @SuppressLint("NewApi")
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private void startTrackingService() {
         mAppTimers = SharedPrefsHelper.fetchAppTimers(this);
         if (mIsServiceRunning) return;
@@ -131,7 +132,12 @@ public class MindfulTrackerService extends Service {
 
         // Register app launch receiver
         mAppLaunchReceiver = new AppLaunchReceiver();
-        registerReceiver(mAppLaunchReceiver, new IntentFilter(ACTION_NEW_APP_LAUNCHED), Context.RECEIVER_NOT_EXPORTED);
+        IntentFilter intentFilter = new IntentFilter(ACTION_NEW_APP_LAUNCHED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mAppLaunchReceiver, intentFilter, Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(mAppLaunchReceiver, intentFilter);
+        }
 
         // Create notification
         startForeground(
