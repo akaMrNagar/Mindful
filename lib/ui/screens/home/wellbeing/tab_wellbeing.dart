@@ -77,17 +77,20 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
       permissionProvider.select((v) => v.haveAccessibilityPermission),
     );
 
-    final remainingTimeSec = max(
-      0,
-      (allowedShortContentTimeSec - _shortsScreenTimeSec),
-    );
+    final remainingTimeSec = allowedShortContentTimeSec.isNegative
+        ? 0
+        : max(
+            0,
+            (allowedShortContentTimeSec - _shortsScreenTimeSec),
+          );
 
     final isInvincibleModeOn = ref.watch(
       settingsProvider.select((v) => v.isInvincibleModeOn),
     );
 
-    final isModifiable =
-        !isInvincibleModeOn || (isInvincibleModeOn && remainingTimeSec > 0);
+    final isModifiable = allowedShortContentTimeSec.isNegative ||
+        !isInvincibleModeOn ||
+        (isInvincibleModeOn && remainingTimeSec > 0);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -103,7 +106,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         /// Short usage progress bar
         ShortsTimerChart(
           isModifiable: isModifiable && haveAccessibilityPermission,
-          allowedTimeSec: max(allowedShortContentTimeSec, 1),
+          allowedTimeSec: max(allowedShortContentTimeSec, 0),
           remainingTimeSec: remainingTimeSec,
         ).sliver,
 

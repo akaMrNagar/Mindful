@@ -186,7 +186,6 @@
             }
         }
     },
-    "short_content_minimum_time_snack_alert": "Please ensure the timer for short content is set to a minimum of 5 minutes.",
     "short_content_invincible_mode_info": "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
     "block_insta_reels_title": "Block reels",
     "block_insta_reels_subtitle": "Restrict reels on instagram.",
