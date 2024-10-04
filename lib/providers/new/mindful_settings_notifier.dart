@@ -9,31 +9,35 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/database/daos/unique_records_dao.dart';
+import 'package:mindful/core/database/tables/mindful_settings_table.dart';
+import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/isar/app_settings.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-/// A Riverpod state notifier provider that manages global application settings.
-final settingsProvider = StateNotifierProvider<SettingsNotifier, AppSettings>(
-  (ref) => SettingsNotifier(),
-);
+part 'mindful_settings_notifier.g.dart';
 
-/// This class manages the state of global application settings.
-class SettingsNotifier extends StateNotifier<AppSettings> {
-  SettingsNotifier() : super(const AppSettings()) {
+@Riverpod(keepAlive: true)
+class MindfulSettingsNotifier extends _$MindfulSettingsNotifier {
+  late UniqueRecordsDao _dao;
+
+  @override
+  MindfulSettings build() {
     _init();
+    return MindfulSettingsTable.defaultMindfulSettingsModel;
   }
 
   /// Initializes the settings state by loading from the database and setting up a listener for saving changes.
   void _init() async {
-    state = await IsarDbService.instance.loadAppSettings();
+    _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
+    state = await _dao.loadSettings();
 
     /// Listen to provider and save changes to Isar database
-    addListener((state) async {
-      await IsarDbService.instance.saveAppSettings(state);
+    ref.listenSelf((prev, next) async {
+      _dao.saveSettings(next);
     });
   }
 
@@ -42,11 +46,11 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       state = state.copyWith(isInvincibleModeOn: !state.isInvincibleModeOn);
 
   /// Changes the application's theme mode.
-  void changeThemeMode(ThemeMode mode) =>
+  void changeThemeMode(AppThemeMode mode) =>
       state = state.copyWith(themeMode: mode);
 
   /// Changes the application's color theme.
-  void changeColor(String color) => state = state.copyWith(color: color);
+  void changeColor(String color) => state = state.copyWith(accentColor: color);
 
   /// Changes the username for dashboard.
   void changeUsername(String username) =>
@@ -56,8 +60,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   /// Also updates the native side with the new reset time.
   void changeDataResetTime(TimeOfDay time) async {
     state = state.copyWith(dataResetTimeMins: time.minutes);
-    await MethodChannelService.instance
-        .setDataResetTime(state.dataResetTimeMins);
+    // await MethodChannelService.instance
+    //     .setDataResetTime(state.dataResetTimeMins);
   }
 
   /// Changes app locale if it is supported.
@@ -66,8 +70,8 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
       (e) => e.languageCode == localeCode,
     )) {
       /// Update native side
-      await MethodChannelService.instance
-          .updateLocale(languageCode: localeCode);
+      // await MethodChannelService.instance
+      //     .updateLocale(languageCode: localeCode);
 
       /// Update state
       state = state.copyWith(localeCode: localeCode);
@@ -76,9 +80,9 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
 
   /// Changes navigation bar from side to bottom
   void switchBottomNavigation() =>
-      state = state.copyWith(bottomNavigation: !state.bottomNavigation);
+      state = state.copyWith(useBottomNavigation: !state.useBottomNavigation);
 
   /// Switch AMOLED dark mode
   void switchAmoledDark() =>
-      state = state.copyWith(amoledDark: !state.amoledDark);
+      state = state.copyWith(useAmoledDark: !state.useAmoledDark);
 }

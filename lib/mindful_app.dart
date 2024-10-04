@@ -13,7 +13,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/config/app_themes.dart';
-import 'package:mindful/providers/settings_provider.dart';
+import 'package:mindful/providers/new/mindful_settings_notifier.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MindfulApp extends ConsumerWidget {
@@ -21,18 +21,23 @@ class MindfulApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(settingsProvider.select((v) => v.themeMode));
-    final materialColor = ref.watch(settingsProvider.select((v) => v.color));
-    final localeCode = ref.watch(settingsProvider.select((v) => v.localeCode));
-    final amoledDark = ref.watch(settingsProvider.select((v) => v.amoledDark));
+    final themeMode =
+        ref.watch(mindfulSettingsNotifierProvider.select((v) => v.themeMode));
+
+    final accentColor =
+        ref.watch(mindfulSettingsNotifierProvider.select((v) => v.accentColor));
+
+    final localeCode =
+        ref.watch(mindfulSettingsNotifierProvider.select((v) => v.localeCode));
+
+    final useAmoledDark = ref
+        .watch(mindfulSettingsNotifierProvider.select((v) => v.useAmoledDark));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      darkTheme: amoledDark
-          ? AppTheme.darkAmoledTheme(materialColor)
-          : AppTheme.darkTheme(materialColor),
-      theme: AppTheme.lightTheme(materialColor),
-      themeMode: themeMode,
+      darkTheme: AppTheme.darkTheme(accentColor, useAmoledDark),
+      theme: AppTheme.lightTheme(accentColor),
+      themeMode: ThemeMode.values[themeMode.index],
       routes: AppRoutes.routes,
       initialRoute: AppRoutes.splashScreen,
       localizationsDelegates: const [

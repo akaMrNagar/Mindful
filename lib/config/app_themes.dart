@@ -13,7 +13,7 @@ import 'package:mindful/ui/transitions/default_page_transition_builder.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class AppTheme {
-  static const _kSeedColor = Colors.lightBlue;
+  static const _kSeedColor = Colors.indigo;
 
   /// Custom transition for page routes
   static const _kPageTransitionTheme = PageTransitionsTheme(
@@ -42,35 +42,16 @@ class AppTheme {
     'Yellow': Colors.yellow,
   };
 
-  static ThemeData darkTheme(String seedColor) => ThemeData.from(
+  static ThemeData darkTheme(String seedColor, bool isAmoled) => ThemeData.from(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: materialColors[seedColor] ?? _kSeedColor,
           brightness: Brightness.dark,
+          surface: isAmoled ? Colors.black : null,
         ),
       ).copyWith(
         pageTransitionsTheme: _kPageTransitionTheme,
-        extensions: [
-          SkeletonizerConfigData.dark(
-              effect: ShimmerEffect(
-            highlightColor: Colors.white.withOpacity(0.3),
-            baseColor: (materialColors[seedColor] ?? _kSeedColor)
-                .shade50
-                .withOpacity(0.1),
-          )),
-        ],
-      );
-
-  static ThemeData darkAmoledTheme(String seedColor) => ThemeData.from(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          brightness: Brightness.dark,
-          seedColor: materialColors[seedColor] ?? _kSeedColor,
-          surface: Colors.black,
-        ),
-      ).copyWith(
-        pageTransitionsTheme: _kPageTransitionTheme,
-        scaffoldBackgroundColor: Colors.black,
+        scaffoldBackgroundColor: isAmoled ? Colors.black : null,
         extensions: [
           SkeletonizerConfigData.dark(
               effect: ShimmerEffect(
