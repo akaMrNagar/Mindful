@@ -12,6 +12,8 @@
 
 package com.mindful.android.helpers;
 
+import static com.mindful.android.services.EmergencyPauseService.DEFAULT_EMERGENCY_PASSES_COUNT;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -20,7 +22,6 @@ import androidx.annotation.NonNull;
 
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.models.WellBeingSettings;
-import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
 import org.jetbrains.annotations.Contract;
@@ -66,8 +67,8 @@ public class SharedPrefsHelper {
     /**
      * Stores the current locale
      *
-     * @param context The application context.
-     * @param languageCode  The language code for locale.
+     * @param context      The application context.
+     * @param languageCode The language code for locale.
      */
     public static void storeLocale(Context context, String languageCode) {
         checkAndInitializePrefs(context);
@@ -114,7 +115,10 @@ public class SharedPrefsHelper {
      */
     public static void unregisterListener(Context context, SharedPreferences.OnSharedPreferenceChangeListener callback) {
         checkAndInitializePrefs(context);
-        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
+        try {
+            mSharedPrefs.unregisterOnSharedPreferenceChangeListener(callback);
+        } catch (Exception ignored) {
+        }
     }
 
     /**
@@ -235,7 +239,7 @@ public class SharedPrefsHelper {
      */
     public static int fetchEmergencyPassesCount(@NonNull Context context) {
         if (mSharedPrefs == null) checkAndInitializePrefs(context);
-        return mSharedPrefs.getInt(PREF_KEY_EMERGENCY_PASSES_COUNT, AppConstants.DEFAULT_EMERGENCY_PASSES_COUNT);
+        return mSharedPrefs.getInt(PREF_KEY_EMERGENCY_PASSES_COUNT, DEFAULT_EMERGENCY_PASSES_COUNT);
     }
 
     /**

@@ -27,7 +27,9 @@ Future<void> main() async {
       errorDetails.stack.toString(),
     );
 
-    FlutterError.presentError(errorDetails);
+    if (kDebugMode) {
+      FlutterError.presentError(errorDetails);
+    }
   };
 
   PlatformDispatcher.instance.onError = (error, stack) {
