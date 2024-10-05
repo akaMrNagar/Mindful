@@ -101,15 +101,6 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
     }
 
     /**
-     * Starts the service if it is not already running.
-     */
-    public void startOnly(String action) {
-        if (!Utils.isServiceRunning(mContext, mServiceClass.getName())) {
-            mContext.startService(new Intent(mContext, mServiceClass).setAction(action));
-        }
-    }
-
-    /**
      * Starts and binds the service if it is not already running.
      */
     public void startAndBind(String action) {

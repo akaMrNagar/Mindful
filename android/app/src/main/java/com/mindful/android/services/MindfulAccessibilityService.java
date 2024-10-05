@@ -96,7 +96,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             ":id/bro_omnibar_address_title_text"
     ));
 
-    private final AppInstallUninstallReceiver mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
+    private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
     private String mLastRedirectedUrl = "";
@@ -129,11 +129,14 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         mTotalShortsScreenTimeMs = SharedPrefsHelper.fetchShortsScreenTimeMs(this);
 
         // Register listener for install and uninstall events
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED);
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
-        filter.addDataScheme("package");
-        registerReceiver(mAppInstallUninstallReceiver, filter);
+        if (mAppInstallUninstallReceiver == null) {
+            mAppInstallUninstallReceiver = new AppInstallUninstallReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+            filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+            filter.addDataScheme("package");
+            registerReceiver(mAppInstallUninstallReceiver, filter);
+        }
 
         // Start timer to reset shortsScreen time everyday midnight
         Calendar calendar = Calendar.getInstance();
@@ -433,7 +436,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     public void onDestroy() {
         super.onDestroy();
         // Unregister prefs listener and receiver
-        unregisterReceiver(mAppInstallUninstallReceiver);
+        if (mAppInstallUninstallReceiver != null) {
+            unregisterReceiver(mAppInstallUninstallReceiver);
+            mAppInstallUninstallReceiver = null;
+        }
         SharedPrefsHelper.unregisterListener(this, this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }

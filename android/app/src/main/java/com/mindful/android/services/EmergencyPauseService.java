@@ -12,7 +12,6 @@
 
 package com.mindful.android.services;
 
-import static com.mindful.android.utils.AppConstants.DEFAULT_EMERGENCY_PASS_PERIOD_MS;
 import static com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID;
 
 import android.app.Notification;
@@ -36,6 +35,8 @@ import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.Utils;
 
 public class EmergencyPauseService extends Service {
+    public static final int DEFAULT_EMERGENCY_PASSES_COUNT = 3;
+    private static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
     private static final String TAG = "Mindful.EmergencyPauseService";
     public static final String ACTION_START_SERVICE_EMERGENCY = "com.mindful.android.EmergencyPauseService.START_SERVICE_EMERGENCY";
 

@@ -17,6 +17,7 @@ import android.app.usage.UsageStatsManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -30,14 +31,17 @@ public class ScreenUsageHelper {
 
     /**
      * Fetches screen usage statistics for a specified time interval using usage events.
+     * If the target package is not null then this method will fetch usage for that app only
+     * otherwise for all device apps.
      *
      * @param usageStatsManager The UsageStatsManager used to query screen usage data.
      * @param start             The start time of the interval in milliseconds.
      * @param end               The end time of the interval in milliseconds.
+     * @param targetedPackage   The package name of the app for fetching its screen usage.
      * @return A map with package names as keys and their corresponding screen usage time in seconds as values.
      */
     @NonNull
-    public static HashMap<String, Long> fetchUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end) {
+    public static HashMap<String, Long> fetchUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end, @Nullable String targetedPackage) {
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
         Map<String, UsageEvents.Event> lastResumedEvents = new HashMap<>();
@@ -47,20 +51,30 @@ public class ScreenUsageHelper {
         while (usageEvents.hasNextEvent()) {
             UsageEvents.Event currentEvent = new UsageEvents.Event(); // Do not move this from while loop
             usageEvents.getNextEvent(currentEvent);
-            String packageName = currentEvent.getPackageName();
             int eventType = currentEvent.getEventType();
 
+            String packageName = currentEvent.getPackageName();
+            /// If target package is not null
+            if (targetedPackage != null && !packageName.equals(targetedPackage)) continue;
+
+            String className = currentEvent.getClassName();
+            String eventKey = packageName + className;
+
             if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
-                lastResumedEvents.put(packageName, currentEvent);
+                lastResumedEvents.put(eventKey, currentEvent);
                 isFirstEvent = false;
-            } else if (eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
+            } else if (eventType == UsageEvents.Event.ACTIVITY_STOPPED || eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
                 Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
-                UsageEvents.Event lastResumedEvent = lastResumedEvents.get(packageName);
-                if (lastResumedEvent != null && lastResumedEvent.getPackageName().equals(packageName)) {
+                UsageEvents.Event lastResumedEvent = lastResumedEvents.get(eventKey);
+
+                if (lastResumedEvent != null
+                        && lastResumedEvent.getPackageName().equals(packageName)
+                        && lastResumedEvent.getClassName().equals(className)
+                ) {
                     // Calculate usage from the last ACTIVITY_RESUMED to this ACTIVITY_PAUSED
                     screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
                     oneDayUsageMap.put(packageName, screenTime);
-                    lastResumedEvents.remove(packageName);
+                    lastResumedEvents.remove(eventKey);
                 } else if (isFirstEvent) {
                     // Fallback logic in case no matching ACTIVITY_RESUMED was found. May be this app was opened before START time
                     screenTime += (currentEvent.getTimeStamp() - start);
@@ -90,36 +104,9 @@ public class ScreenUsageHelper {
 
         long start = midNightCal.getTimeInMillis();
         long end = System.currentTimeMillis();
-        UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
-        UsageEvents.Event lastAppResumeEvent = null;
-        long screenTime = 0;
+        long screenTime = fetchUsageForInterval(usageStatsManager, start, end, packageName).getOrDefault(packageName, 0L);
 
-
-        while (usageEvents.hasNextEvent()) {
-            UsageEvents.Event currentEvent = new UsageEvents.Event(); // Do not move this from while loop
-            usageEvents.getNextEvent(currentEvent);
-
-            // Skip it if the event does not belong to the specified app
-            if (!currentEvent.getPackageName().equals(packageName)) continue;
-
-            int eventType = currentEvent.getEventType();
-            if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
-                lastAppResumeEvent = currentEvent;
-            } else if (eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
-                if (lastAppResumeEvent != null) {
-                    screenTime += (currentEvent.getTimeStamp() - lastAppResumeEvent.getTimeStamp());
-                } else {
-                    screenTime += (currentEvent.getTimeStamp() - start);
-                }
-            }
-        }
-
-        // If the app is still open (no PAUSED event yet), calculate time till `end`
-        if (lastAppResumeEvent != null && lastAppResumeEvent.getTimeStamp() < end) {
-            screenTime += (end - lastAppResumeEvent.getTimeStamp());
-        }
-
-        Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + (screenTime / 1000));
-        return (screenTime / 1000);
+        Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
+        return screenTime;
     }
 }
