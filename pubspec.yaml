@@ -34,7 +34,13 @@ dependencies:
   # Util
   intl: ^0.19.0
   sliver_tools: ^0.2.12
-  flutter_riverpod: ^2.4.0
+  flutter_riverpod: ^2.5.1
+  drift: ^2.18.0
+  sqlite3: ^2.4.5
+  path: ^1.9.0
+  riverpod_annotation: ^2.3.5
+  drift_flutter: ^0.2.0
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -42,9 +48,12 @@ dev_dependencies:
 
   # Development dependencies.
   # Generator =>  dart run build_runner build
+  build_runner: ^2.4.11
   flutter_lints: ^2.0.0
+  drift_dev: ^2.18.0
   isar_generator: ^3.1.0+1
-  build_runner: ^2.4.9
+  riverpod_generator: ^2.4.0
+  custom_lint: ^0.6.4
 
 # The following section is specific to Flutter packages.
 flutter:

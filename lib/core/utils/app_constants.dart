@@ -10,8 +10,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mindful/core/enums/app_theme_mode.dart';
 
 class AppConstants {
+  // App Defaults
+  static const defaultThemeMode = AppThemeMode.system;
+  static const defaultMaterialColor = "Indigo";
+  static const defaultLocale = "en";
+  static const defaultUsername = "Hustler";
+
   // Custom packages
   static const removedAppPackage = "com.android.removed";
   static const tetheringAppPackage = "com.android.tethering";

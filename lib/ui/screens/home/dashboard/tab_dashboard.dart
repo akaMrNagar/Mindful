@@ -23,7 +23,7 @@ import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/focus_stats_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
-import 'package:mindful/providers/settings_provider.dart';
+import 'package:mindful/providers/new/mindful_settings_notifier.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
@@ -47,7 +47,7 @@ class TabDashboard extends ConsumerWidget {
     );
 
     if (userName == null) return;
-    ref.read(settingsProvider.notifier).changeUsername(userName);
+    ref.read(mindfulSettingsNotifierProvider.notifier).changeUsername(userName);
   }
 
   void _turnOnInvincibleMode(
@@ -66,7 +66,9 @@ class TabDashboard extends ConsumerWidget {
             context.locale.invincible_mode_dialog_button_start_anyway,
       );
       if (isConfirm) {
-        ref.read(settingsProvider.notifier).switchInvincibleMode();
+        ref
+            .read(mindfulSettingsNotifierProvider.notifier)
+            .switchInvincibleMode();
       }
     }
   }
@@ -79,12 +81,13 @@ class TabDashboard extends ConsumerWidget {
     final longestStreak =
         ref.watch(focusModeProvider.select((v) => v.longestStreak));
 
-    final isInvincibleModeOn =
-        ref.watch(settingsProvider.select((v) => v.isInvincibleModeOn));
+    final isInvincibleModeOn = ref.watch(
+        mindfulSettingsNotifierProvider.select((v) => v.isInvincibleModeOn));
 
     final focusStats = ref.watch(focusStatsProvider);
 
-    final username = ref.watch(settingsProvider.select((v) => v.username));
+    final username =
+        ref.watch(mindfulSettingsNotifierProvider.select((v) => v.username));
 
     return DefaultRefreshIndicator(
       onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,

@@ -12,11 +12,13 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
+import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/locales.dart';
-import 'package:mindful/providers/settings_provider.dart';
+import 'package:mindful/providers/new/mindful_settings_notifier.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -29,8 +31,7 @@ class TabGeneral extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dataUsageResetTime =
-        ref.watch(settingsProvider.select((v) => v.dataResetToD));
+    final mindfulSettings = ref.watch(mindfulSettingsNotifierProvider);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -40,32 +41,35 @@ class TabGeneral extends ConsumerWidget {
 
         /// Amoled dark
         DefaultListTile(
-          switchValue: ref.watch(
-            settingsProvider.select((v) => v.amoledDark),
-          ),
+          switchValue: mindfulSettings.useAmoledDark,
           titleText: context.locale.amoled_dark_tile_title,
           subtitleText: context.locale.amoled_dark_tile_subtitle,
-          onPressed: ref.read(settingsProvider.notifier).switchAmoledDark,
+          onPressed: ref
+              .read(mindfulSettingsNotifierProvider.notifier)
+              .switchAmoledDark,
         ).sliver,
 
         /// Theme mode
-        DefaultDropdownTile<ThemeMode>(
-          value: ref.watch(settingsProvider.select((v) => v.themeMode)),
+        DefaultDropdownTile<AppThemeMode>(
+          value: mindfulSettings.themeMode,
           dialogIcon: FluentIcons.dark_theme_20_filled,
           label: context.locale.theme_mode_tile_title,
-          onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
+          // onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
+          onSelected: ref
+              .read(mindfulSettingsNotifierProvider.notifier)
+              .changeThemeMode,
           items: [
             DefaultDropdownItem(
               label: context.locale.theme_mode_system_label,
-              value: ThemeMode.system,
-            ),
-            DefaultDropdownItem(
-              label: context.locale.theme_mode_dark_label,
-              value: ThemeMode.dark,
+              value: AppThemeMode.system,
             ),
             DefaultDropdownItem(
               label: context.locale.theme_mode_light_label,
-              value: ThemeMode.light,
+              value: AppThemeMode.light,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.theme_mode_dark_label,
+              value: AppThemeMode.dark,
             ),
           ],
         ).sliver,
@@ -74,8 +78,9 @@ class TabGeneral extends ConsumerWidget {
         DefaultDropdownTile<String>(
           label: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
-          value: ref.watch(settingsProvider.select((v) => v.color)),
-          onSelected: ref.read(settingsProvider.notifier).changeColor,
+          value: mindfulSettings.accentColor,
+          onSelected:
+              ref.read(mindfulSettingsNotifierProvider.notifier).changeColor,
           trailingBuilder: (item) => RoundedContainer(
             height: 18,
             width: 18,
@@ -99,8 +104,9 @@ class TabGeneral extends ConsumerWidget {
         DefaultDropdownTile<String>(
           label: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
-          value: ref.watch(settingsProvider.select((v) => v.localeCode)),
-          onSelected: ref.read(settingsProvider.notifier).changeLocale,
+          value: mindfulSettings.localeCode,
+          onSelected:
+              ref.read(mindfulSettingsNotifierProvider.notifier).changeLocale,
           items: AppLocalizations.supportedLocales
               .map((e) => DefaultDropdownItem(
                     value: e.languageCode,
@@ -112,12 +118,12 @@ class TabGeneral extends ConsumerWidget {
 
         /// Bottom navigation
         DefaultListTile(
-          switchValue: ref.watch(
-            settingsProvider.select((v) => v.bottomNavigation),
-          ),
+          switchValue: mindfulSettings.useBottomNavigation,
           titleText: context.locale.bottom_navigation_tile_title,
           subtitleText: context.locale.bottom_navigation_tile_subtitle,
-          onPressed: ref.read(settingsProvider.notifier).switchBottomNavigation,
+          onPressed: ref
+              .read(mindfulSettingsNotifierProvider.notifier)
+              .switchBottomNavigation,
         ).sliver,
 
         /// Data reset time
@@ -125,20 +131,20 @@ class TabGeneral extends ConsumerWidget {
           titleText: context.locale.data_reset_time_tile_title,
           subtitleText: context.locale.data_reset_time_tile_subtitle,
           trailing: StyledText(
-            dataUsageResetTime.format(context),
+            mindfulSettings.dataResetTimeMins.toTimeOfDay.format(context),
             fontSize: 14,
             fontWeight: FontWeight.bold,
           ),
           onPressed: () async {
             final pickedTime = await showTimePicker(
               context: context,
-              initialTime: dataUsageResetTime,
+              initialTime: mindfulSettings.dataResetTimeMins.toTimeOfDay,
               helpText: context.locale.data_reset_time_dialog_hint,
             );
 
             if (pickedTime != null && context.mounted) {
               ref
-                  .read(settingsProvider.notifier)
+                  .read(mindfulSettingsNotifierProvider.notifier)
                   .changeDataResetTime(pickedTime);
             }
           },

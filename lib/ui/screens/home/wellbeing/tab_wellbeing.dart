@@ -17,8 +17,8 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/providers/new/mindful_settings_notifier.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/settings_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -85,7 +85,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           );
 
     final isInvincibleModeOn = ref.watch(
-      settingsProvider.select((v) => v.isInvincibleModeOn),
+      mindfulSettingsNotifierProvider.select((v) => v.isInvincibleModeOn),
     );
 
     final isModifiable = allowedShortContentTimeSec.isNegative ||
