@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -30,11 +32,14 @@ import androidx.annotation.NonNull;
 
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
+import com.mindful.android.generics.SuccessCallback;
 import com.mindful.android.helpers.NetworkUsageHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.utils.AppConstants;
+import com.mindful.android.models.AggregatedUsage;
 import com.mindful.android.utils.Utils;
+
+import org.jetbrains.annotations.Contract;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -48,24 +53,22 @@ import java.util.List;
  * Clicking the widget opens the Mindful app.
  */
 public class DeviceUsageWidget extends AppWidgetProvider {
+    private static final long WIDGET_MANUAL_REFRESH_INTERVAL = 60 * 1000; // 1 minute
     private static long lastRefreshedTime = 0L;
     private static final String TAG = "Mindful.DeviceUsageWidget";
     private static final String WIDGET_ACTION_REFRESH = "com.mindful.android.ACTION_REFRESH";
     private static final String WIDGET_ACTION_LAUNCH_APP = "com.mindful.android.ACTION_LAUNCH_APP";
 
-    private int totalScreenUsageMins = 0;
-    private int totalMobileUsageMBs = 0;
-    private int totalWifiUsageMBs = 0;
-
     @Override
-
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        Log.d(TAG, "onReceive: Received event with action: " + intent.getAction());
-        if (WIDGET_ACTION_REFRESH.equals(intent.getAction())) {
+        String action = Utils.getActionFromIntent(intent);
+        Log.d(TAG, "onReceive: Received event with action: " + action);
+
+        if (WIDGET_ACTION_REFRESH.equals(action)) {
             // Return if interval between last refreshed time is less than the specified interval
             long currentTime = System.currentTimeMillis();
-            if ((currentTime - lastRefreshedTime) <= AppConstants.WIDGET_MANUAL_REFRESH_INTERVAL) {
+            if ((currentTime - lastRefreshedTime) <= WIDGET_MANUAL_REFRESH_INTERVAL) {
                 return;
             }
 
@@ -73,14 +76,14 @@ public class DeviceUsageWidget extends AppWidgetProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName widgetComponent = new ComponentName(context, DeviceUsageWidget.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent);
-            updateWidget(context, appWidgetManager, appWidgetIds, false);
+            updateWidgetAsync(context, appWidgetManager, appWidgetIds, false);
         }
     }
 
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds) {
-        updateWidget(context, appWidgetManager, appWidgetIds, true);
+        updateWidgetAsync(context, appWidgetManager, appWidgetIds, true);
     }
 
     /**
@@ -91,47 +94,71 @@ public class DeviceUsageWidget extends AppWidgetProvider {
      * @param appWidgetIds     The list of widget IDs to update.
      * @param isAutomatic      Indicates if the update is triggered automatically (by system) or manually.
      */
-    private void updateWidget(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds, boolean isAutomatic) {
-        updateUsageData(context);
+    private void updateWidgetAsync(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds, boolean isAutomatic) {
+        // Async callback to run when usages are fetched successfully
+        SuccessCallback<AggregatedUsage> callback = new SuccessCallback<AggregatedUsage>() {
+            @Override
+            public void onSuccess(@NonNull AggregatedUsage result) {
+                // Ensure UI updates run on the main thread
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.device_usage_widget_layout);
+                    views.setTextViewText(R.id.widgetScreenUsage, Utils.formatScreenTime(result.totalScreenUsageMins));
+                    views.setTextViewText(R.id.widgetMobileUsage, Utils.formatDataMBs(result.totalMobileUsageMBs));
+                    views.setTextViewText(R.id.widgetWifiUsage, Utils.formatDataMBs(result.totalWifiUsageMBs));
 
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.device_usage_widget_layout);
-        views.setTextViewText(R.id.widgetScreenUsage, Utils.formatScreenTime(totalScreenUsageMins));
-        views.setTextViewText(R.id.widgetMobileUsage, Utils.formatDataMBs(totalMobileUsageMBs));
-        views.setTextViewText(R.id.widgetWifiUsage, Utils.formatDataMBs(totalWifiUsageMBs));
+                    // Called by system. It may be first time so we need to attach onClick listeners
+                    if (isAutomatic) {
+                        setUpClickListener(context, views);
+                    }
 
-        // Called by system. It may be first time so we need to attach onClick listeners
-        if (isAutomatic) {
-            Intent refreshIntent = new Intent(context, DeviceUsageWidget.class);
-            refreshIntent.setAction(WIDGET_ACTION_REFRESH);
-            PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    for (int appWidgetId : appWidgetIds) {
+                        if (isAutomatic) {
+                            appWidgetManager.updateAppWidget(appWidgetId, views);
+                        } else {
+                            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
+                        }
+                    }
 
-            Intent launchIntent = new Intent(context, MainActivity.class);
-            launchIntent.setAction(WIDGET_ACTION_LAUNCH_APP);
-            PendingIntent launchPendingIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-            views.setOnClickPendingIntent(R.id.widgetRefreshIcon, refreshPendingIntent);
-            views.setOnClickPendingIntent(R.id.widgetRoot, launchPendingIntent);
-        }
-
-        for (int appWidgetId : appWidgetIds) {
-            if (isAutomatic) {
-                appWidgetManager.updateAppWidget(appWidgetId, views);
-            } else {
-                appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
+                    Log.d(TAG, "updateWidgetAsync: Usage widget updated successfully");
+                });
             }
-        }
+        };
 
-        Log.d(TAG, "updateManually: Usage widget updated successfully");
+
+        // Fetch usages on background thread and use callback to update widget data
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AggregatedUsage usage = fetchAggregatedUsage(context);
+                callback.onSuccess(usage);
+            }
+        }).start();
+    }
+
+    private void setUpClickListener(Context context, @NonNull RemoteViews views) {
+        Intent refreshIntent = new Intent(context, DeviceUsageWidget.class);
+        refreshIntent.setAction(WIDGET_ACTION_REFRESH);
+        PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        Intent launchIntent = new Intent(context, MainActivity.class);
+        launchIntent.setAction(WIDGET_ACTION_LAUNCH_APP);
+        PendingIntent launchPendingIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        views.setOnClickPendingIntent(R.id.widgetRefreshIcon, refreshPendingIntent);
+        views.setOnClickPendingIntent(R.id.widgetRoot, launchPendingIntent);
     }
 
 
     /**
      * Fetches device usage data for the current day only from launchable apps, including screen usage, mobile data usage, and wifi data usage.
-     * Calculates total usage for each category and stores them in class variables.
+     * Calculates total usage for each category and stores them in AggregatedUsage model and returns it.
      *
      * @param context The context of the application.
+     * @return AggregatedUsage model with latest usage.
      */
-    private void updateUsageData(@NonNull Context context) {
+    @NonNull
+    @Contract("_ -> new")
+    private AggregatedUsage fetchAggregatedUsage(@NonNull Context context) {
         Calendar screenUsageCal = Calendar.getInstance();
         screenUsageCal.set(Calendar.HOUR_OF_DAY, 0);
         screenUsageCal.set(Calendar.MINUTE, 0);
@@ -153,7 +180,7 @@ public class DeviceUsageWidget extends AppWidgetProvider {
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
 
-        HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours);
+        HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours, null);
         HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
         HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
 
@@ -184,8 +211,10 @@ public class DeviceUsageWidget extends AppWidgetProvider {
         wifiUsageKbs += wifiUsageOneDay.getOrDefault(NetworkStats.Bucket.UID_REMOVED, 0L);
         mobileUsageKbs += mobileUsageOneDay.getOrDefault(NetworkStats.Bucket.UID_REMOVED, 0L);
 
-        totalMobileUsageMBs = Math.toIntExact(mobileUsageKbs / 1024);
-        totalWifiUsageMBs = Math.toIntExact(wifiUsageKbs / 1024);
-        totalScreenUsageMins = Math.toIntExact(screenTimeSec / 60);
+        return new AggregatedUsage(
+                Math.toIntExact(screenTimeSec / 60),
+                Math.toIntExact(mobileUsageKbs / 1024),
+                Math.toIntExact(wifiUsageKbs / 1024)
+        );
     }
 }
