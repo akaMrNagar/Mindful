@@ -32,7 +32,7 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion = ref.read(appVersionProvider).value ?? "";
+    final appVersion = ref.watch(appVersionProvider).value ?? "Loading..";
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),

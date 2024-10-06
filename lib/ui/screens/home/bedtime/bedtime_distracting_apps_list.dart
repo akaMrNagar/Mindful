@@ -26,20 +26,21 @@ class BedtimeDistractingAppsList extends ConsumerWidget {
     bool shouldInsert,
   ) async {
     /// If bedtime schedule is active or ON
-    if (ref.read(bedtimeProvider).isScheduleOn) {
-      context.showSnackAlert(context.locale.bedtime_distracting_apps_modify_snack_alert);
+    if (ref.read(bedtimeScheduleProvider).isScheduleOn) {
+      context.showSnackAlert(
+          context.locale.bedtime_distracting_apps_modify_snack_alert);
       return;
     }
 
     ref
-        .read(bedtimeProvider.notifier)
+        .read(bedtimeScheduleProvider.notifier)
         .insertRemoveDistractingApp(packageName, shouldInsert);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final distractingApps =
-        ref.watch(bedtimeProvider.select((v) => v.distractingApps));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.distractingApps));
 
     return SliverDistractingAppsList(
       distractingApps: distractingApps,

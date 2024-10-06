@@ -9,36 +9,37 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/daos/unique_records_dao.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-part 'mindful_settings_notifier.g.dart';
+/// A Riverpod state notifier provider that manages mindful app's settings.
+final mindfulSettingsProvider =
+    StateNotifierProvider<MindfulSettingsNotifier, MindfulSettings>(
+  (ref) => MindfulSettingsNotifier(),
+);
 
-@Riverpod(keepAlive: true)
-class MindfulSettingsNotifier extends _$MindfulSettingsNotifier {
-  late UniqueRecordsDao _dao;
-
-  @override
-  MindfulSettings build() {
+/// This class manages the state of mindful settings.
+class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
+  MindfulSettingsNotifier()
+      : super(MindfulSettingsTable.defaultMindfulSettingsModel) {
     _init();
-    return MindfulSettingsTable.defaultMindfulSettingsModel;
   }
 
   /// Initializes the settings state by loading from the database and setting up a listener for saving changes.
   void _init() async {
-    _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
-    state = await _dao.loadSettings();
+    final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
+    state = await dao.loadMindfulSettings();
 
     /// Listen to provider and save changes to Isar database
-    ref.listenSelf((prev, next) async {
-      _dao.saveSettings(next);
-    });
+    addListener(
+      fireImmediately: false,
+      (state) => dao.saveMindfulSettings(state),
+    );
   }
 
   /// Toggles the Invincible Mode setting.
@@ -60,6 +61,7 @@ class MindfulSettingsNotifier extends _$MindfulSettingsNotifier {
   /// Also updates the native side with the new reset time.
   void changeDataResetTime(TimeOfDay time) async {
     state = state.copyWith(dataResetTimeMins: time.minutes);
+    // TODO
     // await MethodChannelService.instance
     //     .setDataResetTime(state.dataResetTimeMins);
   }
@@ -70,6 +72,7 @@ class MindfulSettingsNotifier extends _$MindfulSettingsNotifier {
       (e) => e.languageCode == localeCode,
     )) {
       /// Update native side
+      // TODO
       // await MethodChannelService.instance
       //     .updateLocale(languageCode: localeCode);
 

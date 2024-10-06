@@ -37,10 +37,10 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
   @override
   Widget build(BuildContext context) {
     final shouldStartDnd =
-        ref.watch(bedtimeProvider.select((v) => v.shouldStartDnd));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.shouldStartDnd));
 
     final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
     return MultiSliver(
       children: [
@@ -52,7 +52,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           enabled: !isScheduleOn,
           switchValue: shouldStartDnd,
           onPressed: () => ref
-              .read(bedtimeProvider.notifier)
+              .read(bedtimeScheduleProvider.notifier)
               .setShouldStartDnd(!shouldStartDnd),
         ),
 

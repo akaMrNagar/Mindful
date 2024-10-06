@@ -20,11 +20,45 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
     with _$UniqueRecordsDaoMixin {
   UniqueRecordsDao(AppDatabase db) : super(db);
 
-  Future<MindfulSettings> loadSettings() async =>
+  /// Saves a single [MindfulSettings] object to the database.
+  Future<void> saveMindfulSettings(MindfulSettings settings) async =>
+      into(mindfulSettingsTable)
+          .insert(settings, mode: InsertMode.insertOrReplace);
+
+  /// Loads the first (and likely only) [MindfulSettings] object
+  /// from the database. If none exists, returns default instance.
+  Future<MindfulSettings> loadMindfulSettings() async =>
       await select(mindfulSettingsTable).getSingleOrNull() ??
       MindfulSettingsTable.defaultMindfulSettingsModel;
 
-  Future<void> saveSettings(MindfulSettings settings) async =>
-      into(mindfulSettingsTable)
-          .insert(settings, mode: InsertMode.insertOrReplace);
+  /// Saves a single [BedtimeSchedule] object to the database.
+  Future<void> saveBedtimeSchedule(BedtimeSchedule bedtimeSchedule) async =>
+      into(bedtimeScheduleTable)
+          .insert(bedtimeSchedule, mode: InsertMode.insertOrReplace);
+
+  /// Loads the first (and likely only) [BedtimeSchedule] object
+  /// from the database. If none exists, returns default instance.
+  Future<BedtimeSchedule> loadBedtimeSchedule() async =>
+      await select(bedtimeScheduleTable).getSingleOrNull() ??
+      BedtimeScheduleTable.defaultBedtimeScheduleModel;
+
+  /// Saves a single [FocusMode] object to the database.
+  Future<void> saveFocusModeSettings(FocusMode focusMode) async =>
+      into(focusModeTable).insert(focusMode, mode: InsertMode.insertOrReplace);
+
+  /// Loads the first (and likely only) [FocusMode] object
+  /// from the database. If none exists, returns default instance.
+  Future<FocusMode> loadFocusModeSettings() async =>
+      await select(focusModeTable).getSingleOrNull() ??
+      FocusModeTable.defaultFocusModeModel;
+
+  /// Saves a single [Wellbeing] object to the database.
+  Future<void> saveWellBeingSettings(Wellbeing wellbeing) async =>
+      into(wellbeingTable).insert(wellbeing, mode: InsertMode.insertOrReplace);
+
+  /// Loads the first (and likely only) [Wellbeing] object
+  /// from the database. If none exists, returns default instance.
+  Future<Wellbeing> loadWellBeingSettings() async =>
+      await select(wellbeingTable).getSingleOrNull() ??
+      WellbeingTable.defaultWellbeingModel;
 }

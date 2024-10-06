@@ -9,9 +9,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';

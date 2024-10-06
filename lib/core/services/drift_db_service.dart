@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
@@ -26,7 +27,6 @@ class DriftDbService {
   /// to set up the database.
   Future<void> init() async => driftDb = await _createIsolatedDb();
 
-
   /// Creates two separate executors for read and write operations
   Future<AppDatabase> _createIsolatedDb() async {
     final db = LazyDatabase(() async {
@@ -37,9 +37,15 @@ class DriftDbService {
       final cacheBase = (await getTemporaryDirectory()).path;
       sqlite3.tempDirectory = cacheBase;
 
-      QueryExecutor foregroundExecutor = NativeDatabase(file);
-      QueryExecutor backgroundExecutor =
-          NativeDatabase.createInBackground(file);
+      QueryExecutor foregroundExecutor = NativeDatabase(
+        file,
+        logStatements: kDebugMode,
+      );
+
+      QueryExecutor backgroundExecutor = NativeDatabase.createInBackground(
+        file,
+        logStatements: kDebugMode,
+      );
       return MultiExecutor(read: foregroundExecutor, write: backgroundExecutor);
     });
 

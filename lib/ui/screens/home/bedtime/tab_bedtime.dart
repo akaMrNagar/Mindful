@@ -12,7 +12,9 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -30,7 +32,7 @@ class TabBedtime extends ConsumerWidget {
     BuildContext context,
     bool shouldStart,
   ) async {
-    final state = ref.read(bedtimeProvider);
+    final state = ref.read(bedtimeScheduleProvider);
 
     // If none of the days is selected
     if (!state.scheduleDays.contains(true)) {
@@ -41,7 +43,10 @@ class TabBedtime extends ConsumerWidget {
     }
 
     // If the total duration is less than 30 minutes
-    if (state.totalDuration.inMinutes < 30) {
+    final totalDuration = state.endTimeInMins.toTimeOfDay
+        .difference(state.startTimeInMins.toTimeOfDay);
+        
+    if (totalDuration.inMinutes < 30) {
       context.showSnackAlert(
         context.locale.bedtime_minimum_duration_snack_alert,
       );
@@ -56,13 +61,15 @@ class TabBedtime extends ConsumerWidget {
       return;
     }
 
-    ref.read(bedtimeProvider.notifier).switchBedtimeSchedule(shouldStart);
+    ref
+        .read(bedtimeScheduleProvider.notifier)
+        .switchBedtimeSchedule(shouldStart);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),

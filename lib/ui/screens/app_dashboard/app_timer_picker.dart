@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/new/mindful_settings_notifier.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
@@ -84,7 +84,7 @@ class AppTimerPicker extends ConsumerWidget {
     int prevTimer,
   ) async {
     final isInvincibleModeOn = ref.read(
-      mindfulSettingsNotifierProvider.select((v) => v.isInvincibleModeOn),
+      mindfulSettingsProvider.select((v) => v.isInvincibleModeOn),
     );
 
     if (isInvincibleModeOn &&

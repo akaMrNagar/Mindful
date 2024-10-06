@@ -17,13 +17,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -74,8 +74,8 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
     _timer?.cancel();
     _remainingTime = Duration.zero;
 
-    final remaining = widget.session.duration
-        .subtract(DateTime.now().difference(widget.session.startTime));
+    final remaining = widget.session.durationSecs.seconds
+        .subtract(DateTime.now().difference(widget.session.startDateTime));
 
     if (remaining.inSeconds > 0) _remainingTime = remaining.subtract(2.seconds);
 
@@ -99,14 +99,14 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
       context.locale.active_session_quote_three,
       context.locale.active_session_quote_four,
       context.locale.active_session_quote_five(
-        widget.session.duration.toTimeFull(context, replaceCommaWithAnd: true),
+        widget.session.durationSecs.seconds.toTimeFull(context, replaceCommaWithAnd: true),
       ),
     ];
     final isSessionActive = _remainingTime.inSeconds > 0;
     final progress = !isSessionActive
         ? 100
         : 100 -
-            ((_remainingTime.inSeconds / widget.session.duration.inSeconds) *
+            ((_remainingTime.inSeconds / widget.session.durationSecs) *
                 100);
 
     final quoteIndex = (progress / 20).floor() - 1;

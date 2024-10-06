@@ -40,14 +40,14 @@ Future<void> main() async {
     return true;
   };
 
+  /// Initialize method channel
+  await MethodChannelService.instance.init();
+
   /// Initialize drift Database
   await DriftDbService.instance.init();
 
   /// Initialize isar database service
   await IsarDbService.instance.init();
-
-  /// Initialize method channel
-  await MethodChannelService.instance.init();
 
   /// run main app
   runApp(

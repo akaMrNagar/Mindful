@@ -29,6 +29,9 @@ class FocusModeTable extends Table {
   /// The [DateTime] when the streak was updated last time
   DateTimeColumn get lastTimeStreakUpdated => dateTime()();
 
+  /// Id of current active [FocusSession]
+  IntColumn get activeSessionId => integer().nullable()();
+
   static final defaultFocusModeModel = FocusMode(
     id: 0,
     sessionType: SessionType.study,
@@ -37,5 +40,6 @@ class FocusModeTable extends Table {
     longestStreak: 0,
     currentStreak: 0,
     lastTimeStreakUpdated: DateTime(0),
+    activeSessionId: null,
   );
 }

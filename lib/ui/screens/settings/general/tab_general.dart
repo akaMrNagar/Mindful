@@ -18,7 +18,7 @@ import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/locales.dart';
-import 'package:mindful/providers/new/mindful_settings_notifier.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
@@ -31,7 +31,7 @@ class TabGeneral extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mindfulSettings = ref.watch(mindfulSettingsNotifierProvider);
+    final mindfulSettings = ref.watch(mindfulSettingsProvider);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -44,9 +44,8 @@ class TabGeneral extends ConsumerWidget {
           switchValue: mindfulSettings.useAmoledDark,
           titleText: context.locale.amoled_dark_tile_title,
           subtitleText: context.locale.amoled_dark_tile_subtitle,
-          onPressed: ref
-              .read(mindfulSettingsNotifierProvider.notifier)
-              .switchAmoledDark,
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchAmoledDark,
         ).sliver,
 
         /// Theme mode
@@ -55,9 +54,8 @@ class TabGeneral extends ConsumerWidget {
           dialogIcon: FluentIcons.dark_theme_20_filled,
           label: context.locale.theme_mode_tile_title,
           // onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
-          onSelected: ref
-              .read(mindfulSettingsNotifierProvider.notifier)
-              .changeThemeMode,
+          onSelected:
+              ref.read(mindfulSettingsProvider.notifier).changeThemeMode,
           items: [
             DefaultDropdownItem(
               label: context.locale.theme_mode_system_label,
@@ -79,8 +77,7 @@ class TabGeneral extends ConsumerWidget {
           label: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.accentColor,
-          onSelected:
-              ref.read(mindfulSettingsNotifierProvider.notifier).changeColor,
+          onSelected: ref.read(mindfulSettingsProvider.notifier).changeColor,
           trailingBuilder: (item) => RoundedContainer(
             height: 18,
             width: 18,
@@ -105,8 +102,7 @@ class TabGeneral extends ConsumerWidget {
           label: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.localeCode,
-          onSelected:
-              ref.read(mindfulSettingsNotifierProvider.notifier).changeLocale,
+          onSelected: ref.read(mindfulSettingsProvider.notifier).changeLocale,
           items: AppLocalizations.supportedLocales
               .map((e) => DefaultDropdownItem(
                     value: e.languageCode,
@@ -121,9 +117,8 @@ class TabGeneral extends ConsumerWidget {
           switchValue: mindfulSettings.useBottomNavigation,
           titleText: context.locale.bottom_navigation_tile_title,
           subtitleText: context.locale.bottom_navigation_tile_subtitle,
-          onPressed: ref
-              .read(mindfulSettingsNotifierProvider.notifier)
-              .switchBottomNavigation,
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchBottomNavigation,
         ).sliver,
 
         /// Data reset time
@@ -144,7 +139,7 @@ class TabGeneral extends ConsumerWidget {
 
             if (pickedTime != null && context.mounted) {
               ref
-                  .read(mindfulSettingsNotifierProvider.notifier)
+                  .read(mindfulSettingsProvider.notifier)
                   .changeDataResetTime(pickedTime);
             }
           },

@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 
-@DataClassName("FocusSessions")
+@DataClassName("FocusSession")
 class FocusSessionsTable extends Table {
   /// Unique ID for each focus session
   IntColumn get id => integer().autoIncrement()();

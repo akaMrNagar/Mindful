@@ -37,7 +37,7 @@ class StartSessionFAB extends ConsumerWidget {
     final focusMode = ref.read(focusModeProvider);
 
     /// If another focus session is already active
-    if (focusMode.activeSession != null) {
+    if (focusMode.activeSessionId != null) {
       context.showSnackAlert(
         context.locale.focus_session_already_active_snack_alert,
       );
@@ -65,8 +65,10 @@ class StartSessionFAB extends ConsumerWidget {
 
     await Future.delayed(300.ms);
     if (context.mounted) {
-      Navigator.of(context)
-          .pushNamed(AppRoutes.activeSessionScreen, arguments: newSession);
+      Navigator.of(context).pushNamed(
+        AppRoutes.activeSessionScreen,
+        arguments: newSession,
+      );
     }
   }
 }

@@ -12,7 +12,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
@@ -25,17 +27,18 @@ class ScheduleCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
-    final startTime = ref.watch(bedtimeProvider.select((v) => v.startTime));
+    final startTime = ref.watch(
+        bedtimeScheduleProvider.select((v) => v.startTimeInMins.toTimeOfDay));
 
-    final endTime = ref.watch(bedtimeProvider.select((v) => v.endTime));
+    final endTime = ref.watch(
+        bedtimeScheduleProvider.select((v) => v.endTimeInMins.toTimeOfDay));
 
-    final totalDuration =
-        ref.watch(bedtimeProvider.select((v) => v.totalDuration));
+    final totalDuration = endTime.difference(startTime);
 
-    final scheduleDays =
-        ref.watch(bedtimeProvider.select((value) => value.scheduleDays));
+    final scheduleDays = ref
+        .watch(bedtimeScheduleProvider.select((value) => value.scheduleDays));
 
     return RoundedContainer(
       height: 224,
@@ -55,7 +58,7 @@ class ScheduleCard extends ConsumerWidget {
                 enabled: !isScheduleOn,
                 initialTime: startTime,
                 onChange: (t) {
-                  ref.read(bedtimeProvider.notifier).setBedtimeStart(t);
+                  ref.read(bedtimeScheduleProvider.notifier).setBedtimeStart(t);
                 },
               ),
 
@@ -65,7 +68,7 @@ class ScheduleCard extends ConsumerWidget {
                 enabled: !isScheduleOn,
                 initialTime: endTime,
                 onChange: (t) =>
-                    ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
+                    ref.read(bedtimeScheduleProvider.notifier).setBedtimeEnd(t),
               ),
             ],
           ),
@@ -99,7 +102,7 @@ class ScheduleCard extends ConsumerWidget {
                   onPressed: isScheduleOn
                       ? null
                       : () => ref
-                          .read(bedtimeProvider.notifier)
+                          .read(bedtimeScheduleProvider.notifier)
                           .toggleScheduleDay(index),
                   child: AspectRatio(
                     aspectRatio: 1,
