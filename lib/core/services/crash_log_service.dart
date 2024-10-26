@@ -8,9 +8,9 @@
  *
  */
 
-import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/isar/crash_log.dart';
 
 /// A service class responsible for logging Crashes in the Isar database.
 class CrashLogService {
@@ -23,14 +23,15 @@ class CrashLogService {
   /// Create a [CrashLog] object from the provided information and stores it in the database
   void recordCrashError(String error, String stackTrace) async {
     /// Create log
-    final crashLog = CrashLog(
+    final crashLog = CrashLogsTableCompanion.insert(
       appVersion: await MethodChannelService.instance.getAppVersion(),
       error: error,
       stackTrace: stackTrace,
-      timeStampEpoch: DateTime.now().millisecondsSinceEpoch,
+      timeStamp: DateTime.now(),
     );
 
     /// Insert log to database
-    await IsarDbService.instance.insertCrashLog(crashLog);
+    await DriftDbService.instance.driftDb.dynamicRecordsDao
+        .insertCrashLog(crashLog);
   }
 }

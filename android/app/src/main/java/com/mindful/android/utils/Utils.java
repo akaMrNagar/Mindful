@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -267,6 +268,22 @@ public class Utils {
     @NonNull
     public static String getActionFromIntent(@Nullable Intent intent) {
         return intent == null ? "" : notNullStr(intent.getAction());
+    }
+
+    /**
+     * Null safe method that returns hash set of string.
+     *
+     * @param intent The nullable Intent to check.
+     * @param key    The key used for intent extra.
+     * @return hashset of strings with the key.
+     */
+    @NonNull
+    public static HashSet<String> getStringHashSetFromIntent(@Nullable Intent intent, String key) {
+        HashSet<String> set = new HashSet<>(0);
+        if (intent == null) return set;
+
+        ArrayList<String> intentData = intent.getStringArrayListExtra(key);
+        return intentData == null ? set : new HashSet<>(intentData);
     }
 
     /**

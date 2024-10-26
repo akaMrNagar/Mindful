@@ -9,4 +9,6 @@ mixin _$DynamicRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $CrashLogsTableTable get crashLogsTable => attachedDatabase.crashLogsTable;
   $FocusSessionsTableTable get focusSessionsTable =>
       attachedDatabase.focusSessionsTable;
+  $RestrictionGroupsTableTable get restrictionGroupsTable =>
+      attachedDatabase.restrictionGroupsTable;
 }

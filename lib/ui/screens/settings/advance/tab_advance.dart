@@ -17,7 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -44,7 +44,8 @@ class TabAdvance extends ConsumerWidget {
 
   void _shareLogs(BuildContext context) async {
     try {
-      final logs = await IsarDbService.instance.loadCrashLogs();
+      final logs = await DriftDbService.instance.driftDb.dynamicRecordsDao
+          .fetchCrashLogs();
       final deviceInfo = await MethodChannelService.instance.getDeviceInfoMap();
 
       final crashLogMap = {
@@ -52,7 +53,7 @@ class TabAdvance extends ConsumerWidget {
         "Model": deviceInfo['Model'] ?? '',
         "Android Version": deviceInfo['Android Version'] ?? '',
         "SDK Version": deviceInfo['SDK Version'] ?? '',
-        'Crash Logs': logs.map((e) => e.toLogMap()).toList()
+        'Crash Logs': logs.map((e) => e.toJson()).toList()
       };
 
       final jsonString = jsonEncode(crashLogMap);
@@ -96,7 +97,7 @@ class TabAdvance extends ConsumerWidget {
     );
 
     if (confirm) {
-      await IsarDbService.instance.clearCrashLogs();
+      await DriftDbService.instance.driftDb.dynamicRecordsDao.clearCrashLogs();
     }
   }
 

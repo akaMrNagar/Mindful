@@ -77,7 +77,7 @@ public class FocusSessionService extends Service {
 
             /// Start and bind tracking service
             mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopUpdateFocusSession(mFocusSession.distractingApps));
-            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
 
             if (!mFocusSession.distractingApps.isEmpty()) {
                 long diffMs = System.currentTimeMillis() - mFocusSession.startTimeMsEpoch;

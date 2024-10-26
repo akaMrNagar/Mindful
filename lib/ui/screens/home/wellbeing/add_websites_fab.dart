@@ -32,7 +32,7 @@ class AddWebsitesFAB extends ConsumerWidget {
         ? FloatingActionButton.extended(
             heroTag: HeroTags.addDistractingSiteFABTag,
             label: Text(context.locale.add_website_fab_button),
-            icon: const Icon(FluentIcons.add_20_filled),
+            icon: const Icon(FluentIcons.link_add_20_regular),
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             onPressed: () => _onPressedFab(context, ref),
@@ -54,7 +54,7 @@ class AddWebsitesFAB extends ConsumerWidget {
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
       if (context.mounted &&
-          ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
+          ref.read(wellBeingProvider).distractingSites.contains(host)) {
         context.showSnackAlert(
           context.locale.add_website_already_exist_snack_alert,
         );

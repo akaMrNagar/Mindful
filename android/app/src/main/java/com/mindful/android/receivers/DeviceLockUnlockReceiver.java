@@ -12,9 +12,6 @@
 
 package com.mindful.android.receivers;
 
-import static com.mindful.android.services.MindfulTrackerService.ACTION_NEW_APP_LAUNCHED;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
-
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
 import android.content.BroadcastReceiver;
@@ -38,22 +35,18 @@ import java.util.TimerTask;
 public class DeviceLockUnlockReceiver extends BroadcastReceiver {
     private final String TAG = "Mindful.DeviceLockUnlockReceiver";
     private static final long TIMER_RATE = 500; // Interval for tracking app launches in milliseconds
-    private final Context mContext;
     private final UsageStatsManager mUsageStatsManager;
     private final SuccessCallback<Boolean> mOnChangeCallback;
+    private final SuccessCallback<String> mOnAppLaunchCallback;
     private final List<String> mActiveAppsList = new ArrayList<>(3);
     private Timer mAppLaunchTrackingTimer;
     private String mLastLaunchedAppPackage = "";
     private boolean mIsTrackingPaused = false;
 
-    /**
-     * Constructs a DeviceLockUnlockReceiver instance.
-     *
-     * @param context The application context.
-     */
-    public DeviceLockUnlockReceiver(Context context, UsageStatsManager usageStatsManager, SuccessCallback<Boolean> onChangeCallback) {
-        mContext = context;
+
+    public DeviceLockUnlockReceiver(UsageStatsManager usageStatsManager, SuccessCallback<Boolean> onChangeCallback, SuccessCallback<String> onAppLaunchCallback) {
         mOnChangeCallback = onChangeCallback;
+        mOnAppLaunchCallback = onAppLaunchCallback;
         mUsageStatsManager = usageStatsManager;
         onDeviceUnlocked();
     }
@@ -134,13 +127,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
      */
     public void broadcastLastAppLaunchEvent() {
         if (mLastLaunchedAppPackage.isEmpty() || mIsTrackingPaused) return;
-
-        // Create and send the broadcast intent
-        Intent eventIntent = new Intent();
-        eventIntent.setAction(ACTION_NEW_APP_LAUNCHED);
-        eventIntent.setPackage(mContext.getPackageName());
-        eventIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mLastLaunchedAppPackage);
-        mContext.sendBroadcast(eventIntent);
+        mOnAppLaunchCallback.onSuccess(mLastLaunchedAppPackage);
     }
 
     /**

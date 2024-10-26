@@ -46,9 +46,9 @@ import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -176,12 +176,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppTimers": {
                 String dartJsonAppTimers = Utils.notNullStr(call.arguments());
-                Map<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(dartJsonAppTimers);
+                HashMap<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(dartJsonAppTimers);
                 SharedPrefsHelper.storeAppTimersJson(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
                 if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().updateAppTimers();
+                    mTrackerServiceConn.getService().updateRestrictionData(appTimers, null);
                 } else if (!appTimers.isEmpty()) {
-                    mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+                    mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appTimers, null));
+                    mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
                 }
                 result.success(true);
                 break;
@@ -206,8 +207,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                     AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this);
                 } else {
                     AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
-                    Intent serviceIntent = new Intent(this, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_SERVICE_BEDTIME_MODE);
-                    startService(serviceIntent);
                 }
                 result.success(true);
                 break;

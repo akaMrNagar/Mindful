@@ -62,7 +62,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
             // Start the MindfulTrackerService if needed
             if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
                 Intent serviceIntent = new Intent(context, MindfulTrackerService.class);
-                serviceIntent.setAction(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+                serviceIntent.setAction(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     context.startForegroundService(serviceIntent);

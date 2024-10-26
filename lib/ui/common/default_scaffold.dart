@@ -92,6 +92,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
             Theme.of(context).colorScheme.brightness,
       ),
       child: Scaffold(
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
         floatingActionButton: widget.navbarItems[_controller.index].fab,
 
         /// Only visible when using bottom navigation and screen have more than 1 tab

@@ -67,6 +67,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
             /// Reset button
             if (_selectedDate.dateOnly != DateTime.now().dateOnly)
               IconButton(
+                iconSize: 18,
                 onPressed: () {
                   setState(() => _selectedDate = DateTime.now());
                   widget.onMonthChanged(_selectedDate);

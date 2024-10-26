@@ -9,6 +9,8 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/isar/restriction_info.dart';
@@ -20,12 +22,15 @@ final restrictionInfosProvider =
 );
 
 class RestrictionInfos extends StateNotifier<Map<String, RestrictionInfo>> {
+  late DynamicRecordsDao _dao;
+
   RestrictionInfos() : super({}) {
     _init();
   }
 
   /// Initializes the infos state by loading data from the Isar database and setting up a listener to save changes back.
   void _init() async {
+    _dao = DriftDbService.instance.driftDb.dynamicRecordsDao;
     final items = await IsarDbService.instance.loadRestrictionInfos();
     state = Map.fromEntries(items.map((e) => MapEntry(e.appPackage, e)));
 

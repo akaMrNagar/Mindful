@@ -109,4 +109,22 @@ public class ScreenUsageHelper {
         Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
         return screenTime;
     }
+
+    /**
+     * Fetches the screen usage time of a specific application for the current day until now using usage events.
+     *
+     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
+     * @return The total screen usage time of the specified application in seconds.
+     */
+    @NonNull
+    public static HashMap<String, Long> fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager) {
+        Calendar midNightCal = Calendar.getInstance();
+        midNightCal.set(Calendar.HOUR_OF_DAY, 0);
+        midNightCal.set(Calendar.MINUTE, 0);
+        midNightCal.set(Calendar.SECOND, 0);
+
+        long start = midNightCal.getTimeInMillis();
+        long end = System.currentTimeMillis();
+        return fetchUsageForInterval(usageStatsManager, start, end, null);
+    }
 }

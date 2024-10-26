@@ -22,6 +22,7 @@ import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/restriction_infos_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
+import 'package:mindful/ui/screens/home/dashboard/focus_now_fab.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
 import 'package:mindful/ui/screens/home/wellbeing/add_websites_fab.dart';
@@ -91,6 +92,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           icon: FluentIcons.home_20_regular,
           filledIcon: FluentIcons.home_20_filled,
           sliverBody: const TabDashboard(),
+          fab: const FocusNowFab(),
         ),
         NavbarItem(
           title: context.locale.statistics_tab_title,

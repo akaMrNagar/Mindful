@@ -9,7 +9,7 @@ class CrashLogsTable extends Table {
   TextColumn get appVersion => text()();
 
   /// [DateTime] when the error was thrown
-  DateTimeColumn get timeStampEpoch => dateTime()();
+  DateTimeColumn get timeStamp => dateTime()();
 
   /// The error string
   TextColumn get error => text()();

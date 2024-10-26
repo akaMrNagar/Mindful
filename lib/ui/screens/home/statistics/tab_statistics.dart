@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -79,6 +80,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
               onUsageTypeChanged: (type) => setState(() => _usageType = type),
             ),
           ),
+
           20.vSliverBox,
 
           /// Usage bar chart and selected day changer
@@ -92,6 +94,17 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 setState(() => _selectedDayOfWeek = dow),
           ),
 
+          8.vSliverBox,
+          DefaultListTile(
+            leadingIcon: FluentIcons.app_title_20_regular,
+            titleText: context.locale.restriction_groups_tile_title,
+            subtitleText: context.locale.restriction_groups_tile_subtitle,
+            trailing: const Icon(FluentIcons.chevron_right_20_regular),
+            color: Theme.of(context).colorScheme.surfaceContainer,
+            onPressed: () => Navigator.of(context)
+                .pushNamed(AppRoutes.restrictionGroupsScreen),
+          ).sliver,
+          
           SliverContentTitle(title: context.locale.most_used_apps_heading),
 
           /// Most used apps list

@@ -33,6 +33,15 @@ class QuickActions extends ConsumerWidget {
         /// App Timer tile
         AppTimerPicker(app: app).sliver,
 
+        /// Associated restriction group
+        DefaultListTile(
+          titleText: "Social",
+          subtitleText: "Associated restriction group.",
+          leadingIcon: FluentIcons.app_title_20_regular,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () {},
+        ).sliver,
+
         /// Internet access
         AppInternetSwitcher(app: app).sliver,
 

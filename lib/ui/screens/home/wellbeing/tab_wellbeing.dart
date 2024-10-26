@@ -68,7 +68,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
   @override
   Widget build(BuildContext context) {
     final allowedShortContentTimeSec = ref
-        .watch(wellBeingProvider.select((v) => v.allowedShortContentTimeSec));
+        .watch(wellBeingProvider.select((v) => v.allowedShortsTimeSec));
 
     final blockNsfwSites =
         ref.watch(wellBeingProvider.select((v) => v.blockNsfwSites));

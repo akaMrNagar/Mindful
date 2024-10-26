@@ -45,7 +45,7 @@ import com.mindful.android.utils.AppConstants;
 public class OverlayDialogService extends Service {
 
     private static final String TAG = "Mindful.OverlayDialogService";
-    public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
+    public static final String  INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
     public static final String INTENT_EXTRA_DIALOG_TYPE = "overlayDialogType";
 
     private String mPackageName;

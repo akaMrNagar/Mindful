@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver;
 import com.mindful.android.receivers.alarm.MidnightResetReceiver;
+import com.mindful.android.services.MindfulTrackerService;
 
 import java.util.Calendar;
 
@@ -132,6 +133,11 @@ public class AlarmTasksSchedulingHelper {
 
         // Turn off Dnd
         NotificationHelper.toggleDnd(context, false);
+
+        // Let service know
+        Intent serviceIntent = new Intent(context, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
+        context.startService(serviceIntent);
+
         Log.d(TAG, "cancelBedtimeRoutineTasks: Bedtime routine tasks cancelled successfully");
     }
 

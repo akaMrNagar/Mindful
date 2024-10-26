@@ -86,10 +86,15 @@ class DefaultBarChart extends StatelessWidget {
               },
             ),
             maxY: 100,
-            gridData: const FlGridData(
+            gridData: FlGridData(
               show: true,
               drawVerticalLine: false,
-              horizontalInterval: 24,
+              horizontalInterval: 24.9,
+              getDrawingHorizontalLine: (s) => FlLine(
+                color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+                strokeWidth: 0.5,
+                dashArray: [6, 6],
+              ),
             ),
             borderData: FlBorderData(show: false),
             titlesData: _generateTitles(dataMax, context),

@@ -40,19 +40,19 @@ class FocusStatsNotifier extends StateNotifier<FocusStatsModel> {
     final todaysScreenTime = thisWeeksScreenTime[todayOfWeek];
     final yesterdaysScreenTime = thisWeeksScreenTime[max(0, todayOfWeek - 1)];
 
-    final lifetimeFocusedTime = await dao.loadLifetimeSessionsDuration();
+    final lifetimeFocusedTime = await dao.fetchLifetimeSessionsDuration();
 
     final successfulSessions =
-        await dao.loadSessionsCountWithState(SessionState.successful);
+        await dao.fetchSessionsCountWithState(SessionState.successful);
 
     final failedSessions =
-        await dao.loadSessionsCountWithState(SessionState.failed);
+        await dao.fetchSessionsCountWithState(SessionState.failed);
 
     final dateToday = DateTime.now().dateOnly;
-    final todaysFocusedTime = await dao.loadSessionsDurationForInterval(
+    final todaysFocusedTime = await dao.fetchSessionsDurationForInterval(
         dateToday, dateToday.add(1.days));
 
-    final yesterdaysFocusedTime = await dao.loadSessionsDurationForInterval(
+    final yesterdaysFocusedTime = await dao.fetchSessionsDurationForInterval(
         dateToday.subtract(1.days), dateToday);
 
     if (!mounted) return;

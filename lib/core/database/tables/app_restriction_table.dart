@@ -13,4 +13,7 @@ class AppRestrictionTable extends Table {
 
   /// Flag denoting if this app can access internet or not
   BoolColumn get canAccessInternet => boolean()();
+
+  /// ID of the [RestrictionGroup] this app is associated with
+  IntColumn get associatedGroupId => integer().nullable()();
 }

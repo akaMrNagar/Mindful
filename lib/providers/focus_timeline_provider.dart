@@ -49,7 +49,7 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
       millisecond: 999,
     );
 
-    var sessions = await _dao.loadAllSessionsForInterval(
+    var sessions = await _dao.fetchAllSessionsForInterval(
       start: startOfDay,
       end: endOfDay,
     );
@@ -65,7 +65,7 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
 
   /// Reload focus session states when the selected MONTH changes
   Future<void> onMonthChanged(DateTime month) async {
-    final productiveDaysMap = await _dao.loadSessionsDurationMapForInterval(
+    final productiveDaysMap = await _dao.fetchSessionsDurationMapForInterval(
       month.startOfMonth,
       month.endOfMonth,
     );

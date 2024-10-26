@@ -30,9 +30,15 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("can_access_internet" IN (0, 1))'));
+  static const VerificationMeta _associatedGroupIdMeta =
+      const VerificationMeta('associatedGroupId');
+  @override
+  late final GeneratedColumn<int> associatedGroupId = GeneratedColumn<int>(
+      'associated_group_id', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns =>
-      [appPackage, timerSec, canAccessInternet];
+      [appPackage, timerSec, canAccessInternet, associatedGroupId];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -65,6 +71,12 @@ class $AppRestrictionTableTable extends AppRestrictionTable
     } else if (isInserting) {
       context.missing(_canAccessInternetMeta);
     }
+    if (data.containsKey('associated_group_id')) {
+      context.handle(
+          _associatedGroupIdMeta,
+          associatedGroupId.isAcceptableOrUnknown(
+              data['associated_group_id']!, _associatedGroupIdMeta));
+    }
     return context;
   }
 
@@ -80,6 +92,8 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           .read(DriftSqlType.int, data['${effectivePrefix}timer_sec'])!,
       canAccessInternet: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
+      associatedGroupId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}associated_group_id']),
     );
   }
 
@@ -98,16 +112,23 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
 
   /// Flag denoting if this app can access internet or not
   final bool canAccessInternet;
+
+  /// ID of the [RestrictionGroup] this app is associated with
+  final int? associatedGroupId;
   const AppRestriction(
       {required this.appPackage,
       required this.timerSec,
-      required this.canAccessInternet});
+      required this.canAccessInternet,
+      this.associatedGroupId});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['app_package'] = Variable<String>(appPackage);
     map['timer_sec'] = Variable<int>(timerSec);
     map['can_access_internet'] = Variable<bool>(canAccessInternet);
+    if (!nullToAbsent || associatedGroupId != null) {
+      map['associated_group_id'] = Variable<int>(associatedGroupId);
+    }
     return map;
   }
 
@@ -116,6 +137,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       appPackage: Value(appPackage),
       timerSec: Value(timerSec),
       canAccessInternet: Value(canAccessInternet),
+      associatedGroupId: associatedGroupId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(associatedGroupId),
     );
   }
 
@@ -126,6 +150,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       appPackage: serializer.fromJson<String>(json['appPackage']),
       timerSec: serializer.fromJson<int>(json['timerSec']),
       canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
+      associatedGroupId: serializer.fromJson<int?>(json['associatedGroupId']),
     );
   }
   @override
@@ -135,52 +160,65 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       'appPackage': serializer.toJson<String>(appPackage),
       'timerSec': serializer.toJson<int>(timerSec),
       'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
+      'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
     };
   }
 
   AppRestriction copyWith(
-          {String? appPackage, int? timerSec, bool? canAccessInternet}) =>
+          {String? appPackage,
+          int? timerSec,
+          bool? canAccessInternet,
+          Value<int?> associatedGroupId = const Value.absent()}) =>
       AppRestriction(
         appPackage: appPackage ?? this.appPackage,
         timerSec: timerSec ?? this.timerSec,
         canAccessInternet: canAccessInternet ?? this.canAccessInternet,
+        associatedGroupId: associatedGroupId.present
+            ? associatedGroupId.value
+            : this.associatedGroupId,
       );
   @override
   String toString() {
     return (StringBuffer('AppRestriction(')
           ..write('appPackage: $appPackage, ')
           ..write('timerSec: $timerSec, ')
-          ..write('canAccessInternet: $canAccessInternet')
+          ..write('canAccessInternet: $canAccessInternet, ')
+          ..write('associatedGroupId: $associatedGroupId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(appPackage, timerSec, canAccessInternet);
+  int get hashCode =>
+      Object.hash(appPackage, timerSec, canAccessInternet, associatedGroupId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AppRestriction &&
           other.appPackage == this.appPackage &&
           other.timerSec == this.timerSec &&
-          other.canAccessInternet == this.canAccessInternet);
+          other.canAccessInternet == this.canAccessInternet &&
+          other.associatedGroupId == this.associatedGroupId);
 }
 
 class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   final Value<String> appPackage;
   final Value<int> timerSec;
   final Value<bool> canAccessInternet;
+  final Value<int?> associatedGroupId;
   final Value<int> rowid;
   const AppRestrictionTableCompanion({
     this.appPackage = const Value.absent(),
     this.timerSec = const Value.absent(),
     this.canAccessInternet = const Value.absent(),
+    this.associatedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppRestrictionTableCompanion.insert({
     required String appPackage,
     required int timerSec,
     required bool canAccessInternet,
+    this.associatedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : appPackage = Value(appPackage),
         timerSec = Value(timerSec),
@@ -189,12 +227,14 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     Expression<String>? appPackage,
     Expression<int>? timerSec,
     Expression<bool>? canAccessInternet,
+    Expression<int>? associatedGroupId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (appPackage != null) 'app_package': appPackage,
       if (timerSec != null) 'timer_sec': timerSec,
       if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
+      if (associatedGroupId != null) 'associated_group_id': associatedGroupId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -203,11 +243,13 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       {Value<String>? appPackage,
       Value<int>? timerSec,
       Value<bool>? canAccessInternet,
+      Value<int?>? associatedGroupId,
       Value<int>? rowid}) {
     return AppRestrictionTableCompanion(
       appPackage: appPackage ?? this.appPackage,
       timerSec: timerSec ?? this.timerSec,
       canAccessInternet: canAccessInternet ?? this.canAccessInternet,
+      associatedGroupId: associatedGroupId ?? this.associatedGroupId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -224,6 +266,9 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     if (canAccessInternet.present) {
       map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
     }
+    if (associatedGroupId.present) {
+      map['associated_group_id'] = Variable<int>(associatedGroupId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -236,6 +281,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
           ..write('appPackage: $appPackage, ')
           ..write('timerSec: $timerSec, ')
           ..write('canAccessInternet: $canAccessInternet, ')
+          ..write('associatedGroupId: $associatedGroupId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -679,12 +725,12 @@ class $CrashLogsTableTable extends CrashLogsTable
   late final GeneratedColumn<String> appVersion = GeneratedColumn<String>(
       'app_version', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _timeStampEpochMeta =
-      const VerificationMeta('timeStampEpoch');
+  static const VerificationMeta _timeStampMeta =
+      const VerificationMeta('timeStamp');
   @override
-  late final GeneratedColumn<DateTime> timeStampEpoch =
-      GeneratedColumn<DateTime>('time_stamp_epoch', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> timeStamp = GeneratedColumn<DateTime>(
+      'time_stamp', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
   static const VerificationMeta _errorMeta = const VerificationMeta('error');
   @override
   late final GeneratedColumn<String> error = GeneratedColumn<String>(
@@ -698,7 +744,7 @@ class $CrashLogsTableTable extends CrashLogsTable
       type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, appVersion, timeStampEpoch, error, stackTrace];
+      [id, appVersion, timeStamp, error, stackTrace];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -720,13 +766,11 @@ class $CrashLogsTableTable extends CrashLogsTable
     } else if (isInserting) {
       context.missing(_appVersionMeta);
     }
-    if (data.containsKey('time_stamp_epoch')) {
-      context.handle(
-          _timeStampEpochMeta,
-          timeStampEpoch.isAcceptableOrUnknown(
-              data['time_stamp_epoch']!, _timeStampEpochMeta));
+    if (data.containsKey('time_stamp')) {
+      context.handle(_timeStampMeta,
+          timeStamp.isAcceptableOrUnknown(data['time_stamp']!, _timeStampMeta));
     } else if (isInserting) {
-      context.missing(_timeStampEpochMeta);
+      context.missing(_timeStampMeta);
     }
     if (data.containsKey('error')) {
       context.handle(
@@ -755,8 +799,8 @@ class $CrashLogsTableTable extends CrashLogsTable
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       appVersion: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}app_version'])!,
-      timeStampEpoch: attachedDatabase.typeMapping.read(
-          DriftSqlType.dateTime, data['${effectivePrefix}time_stamp_epoch'])!,
+      timeStamp: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}time_stamp'])!,
       error: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}error'])!,
       stackTrace: attachedDatabase.typeMapping
@@ -778,7 +822,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
   final String appVersion;
 
   /// [DateTime] when the error was thrown
-  final DateTime timeStampEpoch;
+  final DateTime timeStamp;
 
   /// The error string
   final String error;
@@ -788,7 +832,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
   const CrashLogs(
       {required this.id,
       required this.appVersion,
-      required this.timeStampEpoch,
+      required this.timeStamp,
       required this.error,
       required this.stackTrace});
   @override
@@ -796,7 +840,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['app_version'] = Variable<String>(appVersion);
-    map['time_stamp_epoch'] = Variable<DateTime>(timeStampEpoch);
+    map['time_stamp'] = Variable<DateTime>(timeStamp);
     map['error'] = Variable<String>(error);
     map['stack_trace'] = Variable<String>(stackTrace);
     return map;
@@ -806,7 +850,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     return CrashLogsTableCompanion(
       id: Value(id),
       appVersion: Value(appVersion),
-      timeStampEpoch: Value(timeStampEpoch),
+      timeStamp: Value(timeStamp),
       error: Value(error),
       stackTrace: Value(stackTrace),
     );
@@ -818,7 +862,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     return CrashLogs(
       id: serializer.fromJson<int>(json['id']),
       appVersion: serializer.fromJson<String>(json['appVersion']),
-      timeStampEpoch: serializer.fromJson<DateTime>(json['timeStampEpoch']),
+      timeStamp: serializer.fromJson<DateTime>(json['timeStamp']),
       error: serializer.fromJson<String>(json['error']),
       stackTrace: serializer.fromJson<String>(json['stackTrace']),
     );
@@ -829,7 +873,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'appVersion': serializer.toJson<String>(appVersion),
-      'timeStampEpoch': serializer.toJson<DateTime>(timeStampEpoch),
+      'timeStamp': serializer.toJson<DateTime>(timeStamp),
       'error': serializer.toJson<String>(error),
       'stackTrace': serializer.toJson<String>(stackTrace),
     };
@@ -838,13 +882,13 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
   CrashLogs copyWith(
           {int? id,
           String? appVersion,
-          DateTime? timeStampEpoch,
+          DateTime? timeStamp,
           String? error,
           String? stackTrace}) =>
       CrashLogs(
         id: id ?? this.id,
         appVersion: appVersion ?? this.appVersion,
-        timeStampEpoch: timeStampEpoch ?? this.timeStampEpoch,
+        timeStamp: timeStamp ?? this.timeStamp,
         error: error ?? this.error,
         stackTrace: stackTrace ?? this.stackTrace,
       );
@@ -853,7 +897,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     return (StringBuffer('CrashLogs(')
           ..write('id: $id, ')
           ..write('appVersion: $appVersion, ')
-          ..write('timeStampEpoch: $timeStampEpoch, ')
+          ..write('timeStamp: $timeStamp, ')
           ..write('error: $error, ')
           ..write('stackTrace: $stackTrace')
           ..write(')'))
@@ -861,15 +905,14 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, appVersion, timeStampEpoch, error, stackTrace);
+  int get hashCode => Object.hash(id, appVersion, timeStamp, error, stackTrace);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is CrashLogs &&
           other.id == this.id &&
           other.appVersion == this.appVersion &&
-          other.timeStampEpoch == this.timeStampEpoch &&
+          other.timeStamp == this.timeStamp &&
           other.error == this.error &&
           other.stackTrace == this.stackTrace);
 }
@@ -877,37 +920,37 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
 class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
   final Value<int> id;
   final Value<String> appVersion;
-  final Value<DateTime> timeStampEpoch;
+  final Value<DateTime> timeStamp;
   final Value<String> error;
   final Value<String> stackTrace;
   const CrashLogsTableCompanion({
     this.id = const Value.absent(),
     this.appVersion = const Value.absent(),
-    this.timeStampEpoch = const Value.absent(),
+    this.timeStamp = const Value.absent(),
     this.error = const Value.absent(),
     this.stackTrace = const Value.absent(),
   });
   CrashLogsTableCompanion.insert({
     this.id = const Value.absent(),
     required String appVersion,
-    required DateTime timeStampEpoch,
+    required DateTime timeStamp,
     required String error,
     required String stackTrace,
   })  : appVersion = Value(appVersion),
-        timeStampEpoch = Value(timeStampEpoch),
+        timeStamp = Value(timeStamp),
         error = Value(error),
         stackTrace = Value(stackTrace);
   static Insertable<CrashLogs> custom({
     Expression<int>? id,
     Expression<String>? appVersion,
-    Expression<DateTime>? timeStampEpoch,
+    Expression<DateTime>? timeStamp,
     Expression<String>? error,
     Expression<String>? stackTrace,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (appVersion != null) 'app_version': appVersion,
-      if (timeStampEpoch != null) 'time_stamp_epoch': timeStampEpoch,
+      if (timeStamp != null) 'time_stamp': timeStamp,
       if (error != null) 'error': error,
       if (stackTrace != null) 'stack_trace': stackTrace,
     });
@@ -916,13 +959,13 @@ class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
   CrashLogsTableCompanion copyWith(
       {Value<int>? id,
       Value<String>? appVersion,
-      Value<DateTime>? timeStampEpoch,
+      Value<DateTime>? timeStamp,
       Value<String>? error,
       Value<String>? stackTrace}) {
     return CrashLogsTableCompanion(
       id: id ?? this.id,
       appVersion: appVersion ?? this.appVersion,
-      timeStampEpoch: timeStampEpoch ?? this.timeStampEpoch,
+      timeStamp: timeStamp ?? this.timeStamp,
       error: error ?? this.error,
       stackTrace: stackTrace ?? this.stackTrace,
     );
@@ -937,8 +980,8 @@ class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
     if (appVersion.present) {
       map['app_version'] = Variable<String>(appVersion.value);
     }
-    if (timeStampEpoch.present) {
-      map['time_stamp_epoch'] = Variable<DateTime>(timeStampEpoch.value);
+    if (timeStamp.present) {
+      map['time_stamp'] = Variable<DateTime>(timeStamp.value);
     }
     if (error.present) {
       map['error'] = Variable<String>(error.value);
@@ -954,7 +997,7 @@ class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
     return (StringBuffer('CrashLogsTableCompanion(')
           ..write('id: $id, ')
           ..write('appVersion: $appVersion, ')
-          ..write('timeStampEpoch: $timeStampEpoch, ')
+          ..write('timeStamp: $timeStamp, ')
           ..write('error: $error, ')
           ..write('stackTrace: $stackTrace')
           ..write(')'))
@@ -2241,6 +2284,277 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   }
 }
 
+class $RestrictionGroupsTableTable extends RestrictionGroupsTable
+    with TableInfo<$RestrictionGroupsTableTable, RestrictionGroup> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RestrictionGroupsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _groupNameMeta =
+      const VerificationMeta('groupName');
+  @override
+  late final GeneratedColumn<String> groupName = GeneratedColumn<String>(
+      'group_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _timerSecMeta =
+      const VerificationMeta('timerSec');
+  @override
+  late final GeneratedColumn<int> timerSec = GeneratedColumn<int>(
+      'timer_sec', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _distractingAppsMeta =
+      const VerificationMeta('distractingApps');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      distractingApps = GeneratedColumn<String>(
+              'distracting_apps', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $RestrictionGroupsTableTable.$converterdistractingApps);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, groupName, timerSec, distractingApps];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'restriction_groups_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<RestrictionGroup> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('group_name')) {
+      context.handle(_groupNameMeta,
+          groupName.isAcceptableOrUnknown(data['group_name']!, _groupNameMeta));
+    } else if (isInserting) {
+      context.missing(_groupNameMeta);
+    }
+    if (data.containsKey('timer_sec')) {
+      context.handle(_timerSecMeta,
+          timerSec.isAcceptableOrUnknown(data['timer_sec']!, _timerSecMeta));
+    } else if (isInserting) {
+      context.missing(_timerSecMeta);
+    }
+    context.handle(_distractingAppsMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  RestrictionGroup map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RestrictionGroup(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      groupName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}group_name'])!,
+      timerSec: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}timer_sec'])!,
+      distractingApps: $RestrictionGroupsTableTable.$converterdistractingApps
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}distracting_apps'])!),
+    );
+  }
+
+  @override
+  $RestrictionGroupsTableTable createAlias(String alias) {
+    return $RestrictionGroupsTableTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<List<String>, String> $converterdistractingApps =
+      const ListStringConverter();
+}
+
+class RestrictionGroup extends DataClass
+    implements Insertable<RestrictionGroup> {
+  /// Unique ID for each restriction group
+  final int id;
+
+  /// Name of the group
+  final String groupName;
+
+  /// The timer set for the group in SECONDS
+  final int timerSec;
+
+  /// List of app's packages which are associated with the group.
+  final List<String> distractingApps;
+  const RestrictionGroup(
+      {required this.id,
+      required this.groupName,
+      required this.timerSec,
+      required this.distractingApps});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['group_name'] = Variable<String>(groupName);
+    map['timer_sec'] = Variable<int>(timerSec);
+    {
+      map['distracting_apps'] = Variable<String>($RestrictionGroupsTableTable
+          .$converterdistractingApps
+          .toSql(distractingApps));
+    }
+    return map;
+  }
+
+  RestrictionGroupsTableCompanion toCompanion(bool nullToAbsent) {
+    return RestrictionGroupsTableCompanion(
+      id: Value(id),
+      groupName: Value(groupName),
+      timerSec: Value(timerSec),
+      distractingApps: Value(distractingApps),
+    );
+  }
+
+  factory RestrictionGroup.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RestrictionGroup(
+      id: serializer.fromJson<int>(json['id']),
+      groupName: serializer.fromJson<String>(json['groupName']),
+      timerSec: serializer.fromJson<int>(json['timerSec']),
+      distractingApps:
+          serializer.fromJson<List<String>>(json['distractingApps']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'groupName': serializer.toJson<String>(groupName),
+      'timerSec': serializer.toJson<int>(timerSec),
+      'distractingApps': serializer.toJson<List<String>>(distractingApps),
+    };
+  }
+
+  RestrictionGroup copyWith(
+          {int? id,
+          String? groupName,
+          int? timerSec,
+          List<String>? distractingApps}) =>
+      RestrictionGroup(
+        id: id ?? this.id,
+        groupName: groupName ?? this.groupName,
+        timerSec: timerSec ?? this.timerSec,
+        distractingApps: distractingApps ?? this.distractingApps,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('RestrictionGroup(')
+          ..write('id: $id, ')
+          ..write('groupName: $groupName, ')
+          ..write('timerSec: $timerSec, ')
+          ..write('distractingApps: $distractingApps')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, groupName, timerSec, distractingApps);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RestrictionGroup &&
+          other.id == this.id &&
+          other.groupName == this.groupName &&
+          other.timerSec == this.timerSec &&
+          other.distractingApps == this.distractingApps);
+}
+
+class RestrictionGroupsTableCompanion
+    extends UpdateCompanion<RestrictionGroup> {
+  final Value<int> id;
+  final Value<String> groupName;
+  final Value<int> timerSec;
+  final Value<List<String>> distractingApps;
+  const RestrictionGroupsTableCompanion({
+    this.id = const Value.absent(),
+    this.groupName = const Value.absent(),
+    this.timerSec = const Value.absent(),
+    this.distractingApps = const Value.absent(),
+  });
+  RestrictionGroupsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String groupName,
+    required int timerSec,
+    required List<String> distractingApps,
+  })  : groupName = Value(groupName),
+        timerSec = Value(timerSec),
+        distractingApps = Value(distractingApps);
+  static Insertable<RestrictionGroup> custom({
+    Expression<int>? id,
+    Expression<String>? groupName,
+    Expression<int>? timerSec,
+    Expression<String>? distractingApps,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (groupName != null) 'group_name': groupName,
+      if (timerSec != null) 'timer_sec': timerSec,
+      if (distractingApps != null) 'distracting_apps': distractingApps,
+    });
+  }
+
+  RestrictionGroupsTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? groupName,
+      Value<int>? timerSec,
+      Value<List<String>>? distractingApps}) {
+    return RestrictionGroupsTableCompanion(
+      id: id ?? this.id,
+      groupName: groupName ?? this.groupName,
+      timerSec: timerSec ?? this.timerSec,
+      distractingApps: distractingApps ?? this.distractingApps,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (groupName.present) {
+      map['group_name'] = Variable<String>(groupName.value);
+    }
+    if (timerSec.present) {
+      map['timer_sec'] = Variable<int>(timerSec.value);
+    }
+    if (distractingApps.present) {
+      map['distracting_apps'] = Variable<String>($RestrictionGroupsTableTable
+          .$converterdistractingApps
+          .toSql(distractingApps.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RestrictionGroupsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('groupName: $groupName, ')
+          ..write('timerSec: $timerSec, ')
+          ..write('distractingApps: $distractingApps')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $WellbeingTableTable extends WellbeingTable
     with TableInfo<$WellbeingTableTable, Wellbeing> {
   @override
@@ -2766,6 +3080,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $FocusSessionsTableTable(this);
   late final $MindfulSettingsTableTable mindfulSettingsTable =
       $MindfulSettingsTableTable(this);
+  late final $RestrictionGroupsTableTable restrictionGroupsTable =
+      $RestrictionGroupsTableTable(this);
   late final $WellbeingTableTable wellbeingTable = $WellbeingTableTable(this);
   late final UniqueRecordsDao uniqueRecordsDao =
       UniqueRecordsDao(this as AppDatabase);
@@ -2782,6 +3098,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         focusModeTable,
         focusSessionsTable,
         mindfulSettingsTable,
+        restrictionGroupsTable,
         wellbeingTable
       ];
 }
@@ -2791,6 +3108,7 @@ typedef $$AppRestrictionTableTableInsertCompanionBuilder
   required String appPackage,
   required int timerSec,
   required bool canAccessInternet,
+  Value<int?> associatedGroupId,
   Value<int> rowid,
 });
 typedef $$AppRestrictionTableTableUpdateCompanionBuilder
@@ -2798,6 +3116,7 @@ typedef $$AppRestrictionTableTableUpdateCompanionBuilder
   Value<String> appPackage,
   Value<int> timerSec,
   Value<bool> canAccessInternet,
+  Value<int?> associatedGroupId,
   Value<int> rowid,
 });
 
@@ -2825,24 +3144,28 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             Value<String> appPackage = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
             Value<bool> canAccessInternet = const Value.absent(),
+            Value<int?> associatedGroupId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion(
             appPackage: appPackage,
             timerSec: timerSec,
             canAccessInternet: canAccessInternet,
+            associatedGroupId: associatedGroupId,
             rowid: rowid,
           ),
           getInsertCompanionBuilder: ({
             required String appPackage,
             required int timerSec,
             required bool canAccessInternet,
+            Value<int?> associatedGroupId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion.insert(
             appPackage: appPackage,
             timerSec: timerSec,
             canAccessInternet: canAccessInternet,
+            associatedGroupId: associatedGroupId,
             rowid: rowid,
           ),
         ));
@@ -2878,6 +3201,11 @@ class $$AppRestrictionTableTableFilterComposer
       column: $state.table.canAccessInternet,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get associatedGroupId => $state.composableBuilder(
+      column: $state.table.associatedGroupId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
 }
 
 class $$AppRestrictionTableTableOrderingComposer
@@ -2895,6 +3223,11 @@ class $$AppRestrictionTableTableOrderingComposer
 
   ColumnOrderings<bool> get canAccessInternet => $state.composableBuilder(
       column: $state.table.canAccessInternet,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get associatedGroupId => $state.composableBuilder(
+      column: $state.table.associatedGroupId,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
@@ -3078,7 +3411,7 @@ typedef $$CrashLogsTableTableInsertCompanionBuilder = CrashLogsTableCompanion
     Function({
   Value<int> id,
   required String appVersion,
-  required DateTime timeStampEpoch,
+  required DateTime timeStamp,
   required String error,
   required String stackTrace,
 });
@@ -3086,7 +3419,7 @@ typedef $$CrashLogsTableTableUpdateCompanionBuilder = CrashLogsTableCompanion
     Function({
   Value<int> id,
   Value<String> appVersion,
-  Value<DateTime> timeStampEpoch,
+  Value<DateTime> timeStamp,
   Value<String> error,
   Value<String> stackTrace,
 });
@@ -3114,28 +3447,28 @@ class $$CrashLogsTableTableTableManager extends RootTableManager<
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<String> appVersion = const Value.absent(),
-            Value<DateTime> timeStampEpoch = const Value.absent(),
+            Value<DateTime> timeStamp = const Value.absent(),
             Value<String> error = const Value.absent(),
             Value<String> stackTrace = const Value.absent(),
           }) =>
               CrashLogsTableCompanion(
             id: id,
             appVersion: appVersion,
-            timeStampEpoch: timeStampEpoch,
+            timeStamp: timeStamp,
             error: error,
             stackTrace: stackTrace,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required String appVersion,
-            required DateTime timeStampEpoch,
+            required DateTime timeStamp,
             required String error,
             required String stackTrace,
           }) =>
               CrashLogsTableCompanion.insert(
             id: id,
             appVersion: appVersion,
-            timeStampEpoch: timeStampEpoch,
+            timeStamp: timeStamp,
             error: error,
             stackTrace: stackTrace,
           ),
@@ -3167,8 +3500,8 @@ class $$CrashLogsTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<DateTime> get timeStampEpoch => $state.composableBuilder(
-      column: $state.table.timeStampEpoch,
+  ColumnFilters<DateTime> get timeStamp => $state.composableBuilder(
+      column: $state.table.timeStamp,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -3196,8 +3529,8 @@ class $$CrashLogsTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<DateTime> get timeStampEpoch => $state.composableBuilder(
-      column: $state.table.timeStampEpoch,
+  ColumnOrderings<DateTime> get timeStamp => $state.composableBuilder(
+      column: $state.table.timeStamp,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -3751,6 +4084,131 @@ class $$MindfulSettingsTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$RestrictionGroupsTableTableInsertCompanionBuilder
+    = RestrictionGroupsTableCompanion Function({
+  Value<int> id,
+  required String groupName,
+  required int timerSec,
+  required List<String> distractingApps,
+});
+typedef $$RestrictionGroupsTableTableUpdateCompanionBuilder
+    = RestrictionGroupsTableCompanion Function({
+  Value<int> id,
+  Value<String> groupName,
+  Value<int> timerSec,
+  Value<List<String>> distractingApps,
+});
+
+class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $RestrictionGroupsTableTable,
+    RestrictionGroup,
+    $$RestrictionGroupsTableTableFilterComposer,
+    $$RestrictionGroupsTableTableOrderingComposer,
+    $$RestrictionGroupsTableTableProcessedTableManager,
+    $$RestrictionGroupsTableTableInsertCompanionBuilder,
+    $$RestrictionGroupsTableTableUpdateCompanionBuilder> {
+  $$RestrictionGroupsTableTableTableManager(
+      _$AppDatabase db, $RestrictionGroupsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$RestrictionGroupsTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$RestrictionGroupsTableTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$RestrictionGroupsTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<String> groupName = const Value.absent(),
+            Value<int> timerSec = const Value.absent(),
+            Value<List<String>> distractingApps = const Value.absent(),
+          }) =>
+              RestrictionGroupsTableCompanion(
+            id: id,
+            groupName: groupName,
+            timerSec: timerSec,
+            distractingApps: distractingApps,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required String groupName,
+            required int timerSec,
+            required List<String> distractingApps,
+          }) =>
+              RestrictionGroupsTableCompanion.insert(
+            id: id,
+            groupName: groupName,
+            timerSec: timerSec,
+            distractingApps: distractingApps,
+          ),
+        ));
+}
+
+class $$RestrictionGroupsTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $RestrictionGroupsTableTable,
+        RestrictionGroup,
+        $$RestrictionGroupsTableTableFilterComposer,
+        $$RestrictionGroupsTableTableOrderingComposer,
+        $$RestrictionGroupsTableTableProcessedTableManager,
+        $$RestrictionGroupsTableTableInsertCompanionBuilder,
+        $$RestrictionGroupsTableTableUpdateCompanionBuilder> {
+  $$RestrictionGroupsTableTableProcessedTableManager(super.$state);
+}
+
+class $$RestrictionGroupsTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $RestrictionGroupsTableTable> {
+  $$RestrictionGroupsTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get groupName => $state.composableBuilder(
+      column: $state.table.groupName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get timerSec => $state.composableBuilder(
+      column: $state.table.timerSec,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get distractingApps => $state.composableBuilder(
+          column: $state.table.distractingApps,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$RestrictionGroupsTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $RestrictionGroupsTableTable> {
+  $$RestrictionGroupsTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get groupName => $state.composableBuilder(
+      column: $state.table.groupName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get timerSec => $state.composableBuilder(
+      column: $state.table.timerSec,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get distractingApps => $state.composableBuilder(
+      column: $state.table.distractingApps,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 typedef $$WellbeingTableTableInsertCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
@@ -3970,6 +4428,9 @@ class _$AppDatabaseManager {
       $$FocusSessionsTableTableTableManager(_db, _db.focusSessionsTable);
   $$MindfulSettingsTableTableTableManager get mindfulSettingsTable =>
       $$MindfulSettingsTableTableTableManager(_db, _db.mindfulSettingsTable);
+  $$RestrictionGroupsTableTableTableManager get restrictionGroupsTable =>
+      $$RestrictionGroupsTableTableTableManager(
+          _db, _db.restrictionGroupsTable);
   $$WellbeingTableTableTableManager get wellbeingTable =>
       $$WellbeingTableTableTableManager(_db, _db.wellbeingTable);
 }

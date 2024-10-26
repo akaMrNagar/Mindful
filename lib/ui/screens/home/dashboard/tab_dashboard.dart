@@ -12,7 +12,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
@@ -226,27 +225,6 @@ class TabDashboard extends ConsumerWidget {
                     ),
                   ],
                 ),
-
-                DefaultListTile(
-                  isPrimary: true,
-                  titleText: context.locale.focus_now_tile_title,
-                  leadingIcon: FluentIcons.target_arrow_20_regular,
-                  subtitleText: context.locale.focus_now_tile_subtitle,
-                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.focusScreen, arguments: 0),
-                ),
-                8.vBox,
-
-                DefaultListTile(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
-                  leadingIcon: FluentIcons.history_20_regular,
-                  titleText: context.locale.focus_timeline_tile_title,
-                  subtitleText: context.locale.focus_timeline_tile_subtitle,
-                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.focusScreen, arguments: 1),
-                ),
               ].animateListWhen(
                 when: !ref.read(appsProvider).hasValue,
                 effects: DefaultEffects.transitionIn,
@@ -272,7 +250,7 @@ class TabDashboard extends ConsumerWidget {
                 isPrimary: true,
                 switchValue: isInvincibleModeOn,
                 enabled: !isInvincibleModeOn,
-                leadingIcon: FluentIcons.animal_cat_20_regular,
+                leadingIcon: FluentIcons.bow_tie_20_regular,
                 titleText: context.locale.invincible_mode_tile_title,
                 onPressed: () =>
                     _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),

@@ -14,9 +14,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/models/isar/bedtime_settings.dart';
-import 'package:mindful/models/isar/wellbeing_settings.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
 ///
@@ -166,10 +165,9 @@ class MethodChannelService {
 
   /// Updates the well-being settings for the foreground service.
   ///
-  /// This method takes a [WellBeingSettings] object and sends it to the native side
+  /// This method takes a [Wellbeing] object and sends it to the native side
   /// to update the foreground service's well-being settings.
-  Future<void> updateWellBeingSettings(
-          WellBeingSettings wellBeingSettings) async =>
+  Future<void> updateWellBeingSettings(Wellbeing wellBeingSettings) async =>
       _methodChannel.invokeMethod(
         'updateWellBeingSettings',
         jsonEncode(wellBeingSettings),
@@ -177,9 +175,9 @@ class MethodChannelService {
 
   /// Updates the bedtime schedule for the foreground service.
   ///
-  /// This method takes a [BedtimeSettings] object and sends it to the native side
+  /// This method takes a [BedtimeSchedule] object and sends it to the native side
   /// to update the foreground service's bedtime schedule.
-  Future<bool> updateBedtimeSchedule(BedtimeSettings bedtimeSettings) async =>
+  Future<bool> updateBedtimeSchedule(BedtimeSchedule bedtimeSettings) async =>
       await _methodChannel.invokeMethod(
         'updateBedtimeSchedule',
         jsonEncode(bedtimeSettings),
