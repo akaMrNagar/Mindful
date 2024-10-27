@@ -111,33 +111,22 @@ class MethodChannelService {
   /// for the current week, including screen time, Wi-Fi usage, and mobile data usage per day. The returned
   /// list contains `AndroidApp` objects with the app details and usage statistics.
   Future<List<AndroidApp>> getDeviceApps() async {
+    List<AndroidApp> appsList = [];
     try {
-      Object result = await _methodChannel.invokeMethod('getDeviceApps');
+      List<Map> result =
+          await _methodChannel.invokeListMethod<Map>('getDeviceApps') ?? [];
 
-      if (result is Iterable) {
-        List<AndroidApp> list = [];
-        for (Object entry in result) {
-          if (entry is Map) {
-            try {
-              list.add(AndroidApp.fromMap(entry));
-            } catch (e, trace) {
-              if (e is AssertionError) {
-                debugPrint(
-                    'MethodChannelService.getDeviceApps() : Unable to add the following app: $entry');
-              } else {
-                debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
-              }
-            }
-          }
+      for (Map entry in result) {
+        try {
+          appsList.add(AndroidApp.fromMap(entry));
+        } catch (e, trace) {
+          debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
         }
-        return list;
-      } else {
-        return List<AndroidApp>.empty();
       }
     } catch (e) {
       debugPrint("MethodChannelService.getDeviceApps() Error: $e");
-      return List<AndroidApp>.empty();
     }
+    return appsList;
   }
 
   // !SECTION

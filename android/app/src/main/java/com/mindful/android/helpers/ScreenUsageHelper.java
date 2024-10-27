@@ -62,7 +62,6 @@ public class ScreenUsageHelper {
 
             if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
                 lastResumedEvents.put(eventKey, currentEvent);
-                isFirstEvent = false;
             } else if (eventType == UsageEvents.Event.ACTIVITY_STOPPED || eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
                 Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
                 UsageEvents.Event lastResumedEvent = lastResumedEvents.get(eventKey);
@@ -73,14 +72,14 @@ public class ScreenUsageHelper {
                 ) {
                     // Calculate usage from the last ACTIVITY_RESUMED to this ACTIVITY_PAUSED
                     screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
-                    oneDayUsageMap.put(packageName, screenTime);
                     lastResumedEvents.remove(eventKey);
                 } else if (isFirstEvent) {
+                    Log.d("TAG", "fetchUsageForInterval: app " + packageName);
                     // Fallback logic in case no matching ACTIVITY_RESUMED was found. May be this app was opened before START time
                     screenTime += (currentEvent.getTimeStamp() - start);
-                    oneDayUsageMap.put(packageName, screenTime);
-                    isFirstEvent = false;
                 }
+                oneDayUsageMap.put(packageName, screenTime);
+                isFirstEvent = false;
             }
         }
 
@@ -88,7 +87,7 @@ public class ScreenUsageHelper {
         oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
         return oneDayUsageMap;
     }
-
+    
     /**
      * Fetches the screen usage time of a specific application for the current day until now using usage events.
      *

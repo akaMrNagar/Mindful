@@ -21,6 +21,24 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   late final GeneratedColumn<int> timerSec = GeneratedColumn<int>(
       'timer_sec', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _launchLimitMeta =
+      const VerificationMeta('launchLimit');
+  @override
+  late final GeneratedColumn<int> launchLimit = GeneratedColumn<int>(
+      'launch_limit', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _sessionTimeSecMeta =
+      const VerificationMeta('sessionTimeSec');
+  @override
+  late final GeneratedColumn<int> sessionTimeSec = GeneratedColumn<int>(
+      'session_time_sec', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _sessionCoolDownTimeSecMeta =
+      const VerificationMeta('sessionCoolDownTimeSec');
+  @override
+  late final GeneratedColumn<int> sessionCoolDownTimeSec = GeneratedColumn<int>(
+      'session_cool_down_time_sec', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _canAccessInternetMeta =
       const VerificationMeta('canAccessInternet');
   @override
@@ -35,10 +53,19 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   @override
   late final GeneratedColumn<int> associatedGroupId = GeneratedColumn<int>(
       'associated_group_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(null));
   @override
-  List<GeneratedColumn> get $columns =>
-      [appPackage, timerSec, canAccessInternet, associatedGroupId];
+  List<GeneratedColumn> get $columns => [
+        appPackage,
+        timerSec,
+        launchLimit,
+        sessionTimeSec,
+        sessionCoolDownTimeSec,
+        canAccessInternet,
+        associatedGroupId
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -62,6 +89,31 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           timerSec.isAcceptableOrUnknown(data['timer_sec']!, _timerSecMeta));
     } else if (isInserting) {
       context.missing(_timerSecMeta);
+    }
+    if (data.containsKey('launch_limit')) {
+      context.handle(
+          _launchLimitMeta,
+          launchLimit.isAcceptableOrUnknown(
+              data['launch_limit']!, _launchLimitMeta));
+    } else if (isInserting) {
+      context.missing(_launchLimitMeta);
+    }
+    if (data.containsKey('session_time_sec')) {
+      context.handle(
+          _sessionTimeSecMeta,
+          sessionTimeSec.isAcceptableOrUnknown(
+              data['session_time_sec']!, _sessionTimeSecMeta));
+    } else if (isInserting) {
+      context.missing(_sessionTimeSecMeta);
+    }
+    if (data.containsKey('session_cool_down_time_sec')) {
+      context.handle(
+          _sessionCoolDownTimeSecMeta,
+          sessionCoolDownTimeSec.isAcceptableOrUnknown(
+              data['session_cool_down_time_sec']!,
+              _sessionCoolDownTimeSecMeta));
+    } else if (isInserting) {
+      context.missing(_sessionCoolDownTimeSecMeta);
     }
     if (data.containsKey('can_access_internet')) {
       context.handle(
@@ -90,6 +142,13 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           .read(DriftSqlType.string, data['${effectivePrefix}app_package'])!,
       timerSec: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}timer_sec'])!,
+      launchLimit: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}launch_limit'])!,
+      sessionTimeSec: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}session_time_sec'])!,
+      sessionCoolDownTimeSec: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}session_cool_down_time_sec'])!,
       canAccessInternet: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
       associatedGroupId: attachedDatabase.typeMapping.read(
@@ -110,14 +169,26 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   /// The timer set for the app in SECONDS
   final int timerSec;
 
+  /// The number of times user can launch this app
+  final int launchLimit;
+
+  /// The max time in user can spend on this app in one session in SECONDS
+  final int sessionTimeSec;
+
+  /// The time for which the app is blocked after a session in SECONDS
+  final int sessionCoolDownTimeSec;
+
   /// Flag denoting if this app can access internet or not
   final bool canAccessInternet;
 
-  /// ID of the [RestrictionGroup] this app is associated with
+  /// ID of the [RestrictionGroup] this app is associated with or NULL
   final int? associatedGroupId;
   const AppRestriction(
       {required this.appPackage,
       required this.timerSec,
+      required this.launchLimit,
+      required this.sessionTimeSec,
+      required this.sessionCoolDownTimeSec,
       required this.canAccessInternet,
       this.associatedGroupId});
   @override
@@ -125,6 +196,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
     final map = <String, Expression>{};
     map['app_package'] = Variable<String>(appPackage);
     map['timer_sec'] = Variable<int>(timerSec);
+    map['launch_limit'] = Variable<int>(launchLimit);
+    map['session_time_sec'] = Variable<int>(sessionTimeSec);
+    map['session_cool_down_time_sec'] = Variable<int>(sessionCoolDownTimeSec);
     map['can_access_internet'] = Variable<bool>(canAccessInternet);
     if (!nullToAbsent || associatedGroupId != null) {
       map['associated_group_id'] = Variable<int>(associatedGroupId);
@@ -136,6 +210,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
     return AppRestrictionTableCompanion(
       appPackage: Value(appPackage),
       timerSec: Value(timerSec),
+      launchLimit: Value(launchLimit),
+      sessionTimeSec: Value(sessionTimeSec),
+      sessionCoolDownTimeSec: Value(sessionCoolDownTimeSec),
       canAccessInternet: Value(canAccessInternet),
       associatedGroupId: associatedGroupId == null && nullToAbsent
           ? const Value.absent()
@@ -149,6 +226,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
     return AppRestriction(
       appPackage: serializer.fromJson<String>(json['appPackage']),
       timerSec: serializer.fromJson<int>(json['timerSec']),
+      launchLimit: serializer.fromJson<int>(json['launchLimit']),
+      sessionTimeSec: serializer.fromJson<int>(json['sessionTimeSec']),
+      sessionCoolDownTimeSec:
+          serializer.fromJson<int>(json['sessionCoolDownTimeSec']),
       canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
       associatedGroupId: serializer.fromJson<int?>(json['associatedGroupId']),
     );
@@ -159,6 +240,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
     return <String, dynamic>{
       'appPackage': serializer.toJson<String>(appPackage),
       'timerSec': serializer.toJson<int>(timerSec),
+      'launchLimit': serializer.toJson<int>(launchLimit),
+      'sessionTimeSec': serializer.toJson<int>(sessionTimeSec),
+      'sessionCoolDownTimeSec': serializer.toJson<int>(sessionCoolDownTimeSec),
       'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
       'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
     };
@@ -167,11 +251,18 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   AppRestriction copyWith(
           {String? appPackage,
           int? timerSec,
+          int? launchLimit,
+          int? sessionTimeSec,
+          int? sessionCoolDownTimeSec,
           bool? canAccessInternet,
           Value<int?> associatedGroupId = const Value.absent()}) =>
       AppRestriction(
         appPackage: appPackage ?? this.appPackage,
         timerSec: timerSec ?? this.timerSec,
+        launchLimit: launchLimit ?? this.launchLimit,
+        sessionTimeSec: sessionTimeSec ?? this.sessionTimeSec,
+        sessionCoolDownTimeSec:
+            sessionCoolDownTimeSec ?? this.sessionCoolDownTimeSec,
         canAccessInternet: canAccessInternet ?? this.canAccessInternet,
         associatedGroupId: associatedGroupId.present
             ? associatedGroupId.value
@@ -182,6 +273,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
     return (StringBuffer('AppRestriction(')
           ..write('appPackage: $appPackage, ')
           ..write('timerSec: $timerSec, ')
+          ..write('launchLimit: $launchLimit, ')
+          ..write('sessionTimeSec: $sessionTimeSec, ')
+          ..write('sessionCoolDownTimeSec: $sessionCoolDownTimeSec, ')
           ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId')
           ..write(')'))
@@ -189,14 +283,23 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(appPackage, timerSec, canAccessInternet, associatedGroupId);
+  int get hashCode => Object.hash(
+      appPackage,
+      timerSec,
+      launchLimit,
+      sessionTimeSec,
+      sessionCoolDownTimeSec,
+      canAccessInternet,
+      associatedGroupId);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is AppRestriction &&
           other.appPackage == this.appPackage &&
           other.timerSec == this.timerSec &&
+          other.launchLimit == this.launchLimit &&
+          other.sessionTimeSec == this.sessionTimeSec &&
+          other.sessionCoolDownTimeSec == this.sessionCoolDownTimeSec &&
           other.canAccessInternet == this.canAccessInternet &&
           other.associatedGroupId == this.associatedGroupId);
 }
@@ -204,12 +307,18 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
 class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   final Value<String> appPackage;
   final Value<int> timerSec;
+  final Value<int> launchLimit;
+  final Value<int> sessionTimeSec;
+  final Value<int> sessionCoolDownTimeSec;
   final Value<bool> canAccessInternet;
   final Value<int?> associatedGroupId;
   final Value<int> rowid;
   const AppRestrictionTableCompanion({
     this.appPackage = const Value.absent(),
     this.timerSec = const Value.absent(),
+    this.launchLimit = const Value.absent(),
+    this.sessionTimeSec = const Value.absent(),
+    this.sessionCoolDownTimeSec = const Value.absent(),
     this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -217,15 +326,24 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   AppRestrictionTableCompanion.insert({
     required String appPackage,
     required int timerSec,
+    required int launchLimit,
+    required int sessionTimeSec,
+    required int sessionCoolDownTimeSec,
     required bool canAccessInternet,
     this.associatedGroupId = const Value.absent(),
     this.rowid = const Value.absent(),
   })  : appPackage = Value(appPackage),
         timerSec = Value(timerSec),
+        launchLimit = Value(launchLimit),
+        sessionTimeSec = Value(sessionTimeSec),
+        sessionCoolDownTimeSec = Value(sessionCoolDownTimeSec),
         canAccessInternet = Value(canAccessInternet);
   static Insertable<AppRestriction> custom({
     Expression<String>? appPackage,
     Expression<int>? timerSec,
+    Expression<int>? launchLimit,
+    Expression<int>? sessionTimeSec,
+    Expression<int>? sessionCoolDownTimeSec,
     Expression<bool>? canAccessInternet,
     Expression<int>? associatedGroupId,
     Expression<int>? rowid,
@@ -233,6 +351,10 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     return RawValuesInsertable({
       if (appPackage != null) 'app_package': appPackage,
       if (timerSec != null) 'timer_sec': timerSec,
+      if (launchLimit != null) 'launch_limit': launchLimit,
+      if (sessionTimeSec != null) 'session_time_sec': sessionTimeSec,
+      if (sessionCoolDownTimeSec != null)
+        'session_cool_down_time_sec': sessionCoolDownTimeSec,
       if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
       if (associatedGroupId != null) 'associated_group_id': associatedGroupId,
       if (rowid != null) 'rowid': rowid,
@@ -242,12 +364,19 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   AppRestrictionTableCompanion copyWith(
       {Value<String>? appPackage,
       Value<int>? timerSec,
+      Value<int>? launchLimit,
+      Value<int>? sessionTimeSec,
+      Value<int>? sessionCoolDownTimeSec,
       Value<bool>? canAccessInternet,
       Value<int?>? associatedGroupId,
       Value<int>? rowid}) {
     return AppRestrictionTableCompanion(
       appPackage: appPackage ?? this.appPackage,
       timerSec: timerSec ?? this.timerSec,
+      launchLimit: launchLimit ?? this.launchLimit,
+      sessionTimeSec: sessionTimeSec ?? this.sessionTimeSec,
+      sessionCoolDownTimeSec:
+          sessionCoolDownTimeSec ?? this.sessionCoolDownTimeSec,
       canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       associatedGroupId: associatedGroupId ?? this.associatedGroupId,
       rowid: rowid ?? this.rowid,
@@ -262,6 +391,16 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     }
     if (timerSec.present) {
       map['timer_sec'] = Variable<int>(timerSec.value);
+    }
+    if (launchLimit.present) {
+      map['launch_limit'] = Variable<int>(launchLimit.value);
+    }
+    if (sessionTimeSec.present) {
+      map['session_time_sec'] = Variable<int>(sessionTimeSec.value);
+    }
+    if (sessionCoolDownTimeSec.present) {
+      map['session_cool_down_time_sec'] =
+          Variable<int>(sessionCoolDownTimeSec.value);
     }
     if (canAccessInternet.present) {
       map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
@@ -280,6 +419,9 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     return (StringBuffer('AppRestrictionTableCompanion(')
           ..write('appPackage: $appPackage, ')
           ..write('timerSec: $timerSec, ')
+          ..write('launchLimit: $launchLimit, ')
+          ..write('sessionTimeSec: $sessionTimeSec, ')
+          ..write('sessionCoolDownTimeSec: $sessionCoolDownTimeSec, ')
           ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId, ')
           ..write('rowid: $rowid')
@@ -3107,6 +3249,9 @@ typedef $$AppRestrictionTableTableInsertCompanionBuilder
     = AppRestrictionTableCompanion Function({
   required String appPackage,
   required int timerSec,
+  required int launchLimit,
+  required int sessionTimeSec,
+  required int sessionCoolDownTimeSec,
   required bool canAccessInternet,
   Value<int?> associatedGroupId,
   Value<int> rowid,
@@ -3115,6 +3260,9 @@ typedef $$AppRestrictionTableTableUpdateCompanionBuilder
     = AppRestrictionTableCompanion Function({
   Value<String> appPackage,
   Value<int> timerSec,
+  Value<int> launchLimit,
+  Value<int> sessionTimeSec,
+  Value<int> sessionCoolDownTimeSec,
   Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
   Value<int> rowid,
@@ -3143,6 +3291,9 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
           getUpdateCompanionBuilder: ({
             Value<String> appPackage = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
+            Value<int> launchLimit = const Value.absent(),
+            Value<int> sessionTimeSec = const Value.absent(),
+            Value<int> sessionCoolDownTimeSec = const Value.absent(),
             Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -3150,6 +3301,9 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
               AppRestrictionTableCompanion(
             appPackage: appPackage,
             timerSec: timerSec,
+            launchLimit: launchLimit,
+            sessionTimeSec: sessionTimeSec,
+            sessionCoolDownTimeSec: sessionCoolDownTimeSec,
             canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
             rowid: rowid,
@@ -3157,6 +3311,9 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
           getInsertCompanionBuilder: ({
             required String appPackage,
             required int timerSec,
+            required int launchLimit,
+            required int sessionTimeSec,
+            required int sessionCoolDownTimeSec,
             required bool canAccessInternet,
             Value<int?> associatedGroupId = const Value.absent(),
             Value<int> rowid = const Value.absent(),
@@ -3164,6 +3321,9 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
               AppRestrictionTableCompanion.insert(
             appPackage: appPackage,
             timerSec: timerSec,
+            launchLimit: launchLimit,
+            sessionTimeSec: sessionTimeSec,
+            sessionCoolDownTimeSec: sessionCoolDownTimeSec,
             canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
             rowid: rowid,
@@ -3197,6 +3357,21 @@ class $$AppRestrictionTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<int> get launchLimit => $state.composableBuilder(
+      column: $state.table.launchLimit,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get sessionTimeSec => $state.composableBuilder(
+      column: $state.table.sessionTimeSec,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get sessionCoolDownTimeSec => $state.composableBuilder(
+      column: $state.table.sessionCoolDownTimeSec,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<bool> get canAccessInternet => $state.composableBuilder(
       column: $state.table.canAccessInternet,
       builder: (column, joinBuilders) =>
@@ -3218,6 +3393,21 @@ class $$AppRestrictionTableTableOrderingComposer
 
   ColumnOrderings<int> get timerSec => $state.composableBuilder(
       column: $state.table.timerSec,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get launchLimit => $state.composableBuilder(
+      column: $state.table.launchLimit,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get sessionTimeSec => $state.composableBuilder(
+      column: $state.table.sessionTimeSec,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get sessionCoolDownTimeSec => $state.composableBuilder(
+      column: $state.table.sessionCoolDownTimeSec,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 

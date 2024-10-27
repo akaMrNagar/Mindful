@@ -18,7 +18,7 @@ import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
@@ -36,7 +36,7 @@ class AppTimerPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTimer = ref.watch(restrictionInfosProvider
+    final appTimer = ref.watch(appsRestrictionsProvider
             .select((value) => value[app.packageName]?.timerSec)) ??
         0;
 
@@ -107,7 +107,7 @@ class AppTimerPicker extends ConsumerWidget {
 
     if (newTimer == prevTimer) return;
     ref
-        .read(restrictionInfosProvider.notifier)
+        .read(appsRestrictionsProvider.notifier)
         .updateAppTimer(app.packageName, newTimer);
   }
 }

@@ -15,7 +15,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/permissions/alarm_permission_tile.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission_tile.dart';
@@ -42,7 +42,7 @@ class PermissionsPage extends ConsumerWidget {
             () {
               Navigator.of(context).maybePop();
               ref
-                  .read(restrictionInfosProvider.notifier)
+                  .read(appsRestrictionsProvider.notifier)
                   .checkAndRestartServices(
                     haveVpnPermission: perms.haveVpnPermission,
                   );

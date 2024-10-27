@@ -9,6 +9,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -31,9 +32,18 @@ class RestrictionGroupCard extends ConsumerWidget {
     );
 
     if (updatedGroup != null) {
+      /// Update group
       ref
           .read(restrictionGroupsProvider.notifier)
           .updateGroup(group: updatedGroup);
+
+      /// Update associated group ids for apps
+      ref.read(appsRestrictionsProvider.notifier).updateAssociatedGroupId(
+          appPackages: updatedGroup.distractingApps,
+          groupId: updatedGroup.id,
+          oldAppPackages: group.distractingApps
+              .where((e) => !updatedGroup.distractingApps.contains(e))
+              .toList());
     }
   }
 
@@ -49,9 +59,9 @@ class RestrictionGroupCard extends ConsumerWidget {
         0, (time, e) => time + (e?.screenTimeThisWeek[todayOfWeek] ?? 0));
 
     final remainingTimeSec = max(0, (group.timerSec - totalTimeSec));
-    final progress = totalTimeSec > 0 && remainingTimeSec > 0
-        ? max(0, remainingTimeSec / group.timerSec)
-        : 1;
+    double progress = totalTimeSec <= 0 || remainingTimeSec <= 0
+        ? 0
+        : max(0, remainingTimeSec / group.timerSec);
     final isPurged = totalTimeSec >= group.timerSec;
 
     return RoundedContainer(
@@ -78,7 +88,7 @@ class RestrictionGroupCard extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.secondaryContainer,
                     ),
                     CircularProgressIndicator(
-                      value: progress.toDouble(),
+                      value: progress,
                       strokeCap: StrokeCap.round,
                     ),
                   ],

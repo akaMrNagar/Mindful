@@ -18,7 +18,7 @@ import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/application_icon.dart';
@@ -43,7 +43,7 @@ class ApplicationTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     /// Watch restriction info for the package
     final restrictionInfo =
-        ref.watch(restrictionInfosProvider.select((e) => e[app.packageName]));
+        ref.watch(appsRestrictionsProvider.select((e) => e[app.packageName]));
 
     final appTimer = restrictionInfo?.timerSec ?? 0;
     final isPurged =

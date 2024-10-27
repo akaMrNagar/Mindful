@@ -1,6 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_bottom_sheet.dart';
 
@@ -29,6 +30,10 @@ class CreateRestrictionGroupFab extends ConsumerWidget {
             );
 
         /// Update associated group ids for apps
+        ref.read(appsRestrictionsProvider.notifier).updateAssociatedGroupId(
+              appPackages: group.distractingApps,
+              groupId: group.id,
+            );
       },
     );
   }

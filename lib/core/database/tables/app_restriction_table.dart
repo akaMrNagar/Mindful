@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:mindful/core/database/app_database.dart';
 
 @DataClassName("AppRestriction")
 class AppRestrictionTable extends Table {
@@ -11,9 +12,28 @@ class AppRestrictionTable extends Table {
   /// The timer set for the app in SECONDS
   IntColumn get timerSec => integer()();
 
+  /// The number of times user can launch this app
+  IntColumn get launchLimit => integer()();
+
+  /// The max time in user can spend on this app in one session in SECONDS
+  IntColumn get sessionTimeSec => integer()();
+
+  /// The time for which the app is blocked after a session in SECONDS
+  IntColumn get sessionCoolDownTimeSec => integer()();
+
   /// Flag denoting if this app can access internet or not
   BoolColumn get canAccessInternet => boolean()();
 
-  /// ID of the [RestrictionGroup] this app is associated with
-  IntColumn get associatedGroupId => integer().nullable()();
+  /// ID of the [RestrictionGroup] this app is associated with or NULL
+  IntColumn get associatedGroupId =>
+      integer().nullable().withDefault(const Constant(null))();
+
+  static const defaultAppRestrictionModel = AppRestriction(
+    appPackage: "",
+    timerSec: 0,
+    launchLimit: 0,
+    sessionTimeSec: 0,
+    sessionCoolDownTimeSec: 0,
+    canAccessInternet: true,
+  );
 }

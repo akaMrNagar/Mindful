@@ -15,10 +15,12 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/screens/app_dashboard/emergency_fab.dart';
 import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -59,7 +61,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appTimer = ref.watch(restrictionInfosProvider
+    final appTimer = ref.watch(appsRestrictionsProvider
             .select((value) => value[widget.app.packageName]?.timerSec)) ??
         0;
 
@@ -125,8 +127,6 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                 ),
               ),
 
-              SliverContentTitle(title: context.locale.quick_actions_heading),
-
               /// Available app setting or functions
               widget.app.packageName == AppConstants.removedAppPackage ||
                       widget.app.packageName == AppConstants.tetheringAppPackage
@@ -136,6 +136,27 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                       fontSize: 14,
                     ).sliver
                   : QuickActions(app: widget.app),
+
+              SliverContentTitle(title: context.locale.quick_actions_heading),
+
+              /// Launch app button
+              DefaultListTile(
+                titleText: context.locale.launch_app_tile_title,
+                subtitleText:
+                    context.locale.launch_app_tile_subtitle(widget.app.name),
+                leadingIcon: FluentIcons.open_20_regular,
+                onPressed: () async => MethodChannelService.instance
+                    .openAppWithPackage(widget.app.packageName),
+              ).sliver,
+
+              /// Launch app settings button
+              DefaultListTile(
+                titleText: context.locale.go_to_app_settings_tile_title,
+                subtitleText: context.locale.go_to_app_settings_tile_subtitle,
+                leadingIcon: FluentIcons.launcher_settings_20_regular,
+                onPressed: () async => MethodChannelService.instance
+                    .openAppSettingsForPackage(widget.app.packageName),
+              ).sliver,
 
               const SliverTabsBottomPadding(),
             ],

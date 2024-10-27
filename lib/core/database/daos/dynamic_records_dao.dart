@@ -23,6 +23,30 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     with _$DynamicRecordsDaoMixin {
   DynamicRecordsDao(AppDatabase db) : super(db);
 
+  /// Loads List of all [AppRestriction] objects from the database,
+  Future<List<AppRestriction>> fetchAppsRestrictions() async =>
+      select(appRestrictionTable).get();
+
+  /// Insert or Update a [AppRestriction] object to/in the database.
+  Future<void> insertAppRestrictionByPackage(
+    AppRestriction restriction,
+  ) async =>
+      into(appRestrictionTable).insert(
+        restriction,
+        mode: InsertMode.insertOrReplace,
+      );
+
+  /// Insert or Update list of multiple [AppRestriction] objects to/in the database.
+  Future<void> insertAppRestrictionsByPackage(
+    List<AppRestriction> restrictions,
+  ) async =>
+      batch(
+        (batch) => batch.insertAll(
+          focusSessionsTable,
+          restrictions,
+        ),
+      );
+
   /// Insert a [CrashLogs] object to the database.
   Future<void> insertCrashLog(CrashLogsTableCompanion log) async =>
       into(crashLogsTable).insert(

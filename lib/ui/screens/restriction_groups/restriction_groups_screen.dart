@@ -24,7 +24,7 @@ class RestrictionGroupsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final groups = ref.watch(restrictionGroupsProvider).reversed.toList();
+    final groups = ref.watch(restrictionGroupsProvider).values.toList();
 
     return DefaultScaffold(
       navbarItems: [

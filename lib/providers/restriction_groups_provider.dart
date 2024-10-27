@@ -13,22 +13,24 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 
-final restrictionGroupsProvider =
-    StateNotifierProvider<RestrictionGroupsNotifier, List<RestrictionGroup>>(
+final restrictionGroupsProvider = StateNotifierProvider<
+    RestrictionGroupsNotifier, Map<int, RestrictionGroup>>(
   (ref) => RestrictionGroupsNotifier(),
 );
 
-class RestrictionGroupsNotifier extends StateNotifier<List<RestrictionGroup>> {
+class RestrictionGroupsNotifier
+    extends StateNotifier<Map<int, RestrictionGroup>> {
   late DynamicRecordsDao _dao;
 
-  RestrictionGroupsNotifier() : super([]) {
+  RestrictionGroupsNotifier() : super({}) {
     _init();
   }
 
   /// Initializes the state by loading data from the database.
   void _init() async {
     _dao = DriftDbService.instance.driftDb.dynamicRecordsDao;
-    state = await _dao.fetchRestrictionGroups();
+    final groupsList = await _dao.fetchRestrictionGroups();
+    state = Map.fromEntries(groupsList.map((e) => MapEntry(e.id, e)));
   }
 
   void createNewGroup({
@@ -42,19 +44,24 @@ class RestrictionGroupsNotifier extends StateNotifier<List<RestrictionGroup>> {
       distractingApps: distractingApps,
     );
 
-    state = state.toList()..add(newGroup);
+    state = {...state}..update(
+        newGroup.id,
+        (value) => newGroup,
+        ifAbsent: () => newGroup,
+      );
   }
 
   void updateGroup({required RestrictionGroup group}) async {
     await _dao.updateRestrictionGroupById(group);
-
-    state = state.toList()
-      ..removeWhere((e) => e.id == group.id)
-      ..add(group);
+    state = {...state}..update(
+        group.id,
+        (value) => group,
+        ifAbsent: () => group,
+      );
   }
 
   void removeGroup({required RestrictionGroup group}) async {
     await _dao.removeRestrictionGroupById(group);
-    state = state.toList()..remove(group);
+    state = {...state}..remove(group.id);
   }
 }

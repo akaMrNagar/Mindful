@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
 
@@ -33,8 +33,8 @@ class AppInternetSwitcher extends ConsumerWidget {
     final havePermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
-    final haveInternetAccess = ref.watch(restrictionInfosProvider
-            .select((value) => value[app.packageName]?.internetAccess)) ??
+    final haveInternetAccess = ref.watch(appsRestrictionsProvider
+            .select((value) => value[app.packageName]?.canAccessInternet)) ??
         true;
 
     onPressed() => havePermission
@@ -92,7 +92,7 @@ class AppInternetSwitcher extends ConsumerWidget {
     WidgetRef ref,
     bool haveInternetAccess,
   ) {
-    ref.read(restrictionInfosProvider.notifier).switchInternetAccess(
+    ref.read(appsRestrictionsProvider.notifier).switchInternetAccess(
           app.packageName,
           haveInternetAccess,
         );

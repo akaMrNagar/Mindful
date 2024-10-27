@@ -96,9 +96,6 @@ public class DeviceAppsHelper {
             // Only include apps which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
 
-                /// Skip Mindful app's data and usage
-//                if (app.packageName.equals(context.getPackageName())) continue;
-
                 int category = -1;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     category = app.applicationInfo.category;
