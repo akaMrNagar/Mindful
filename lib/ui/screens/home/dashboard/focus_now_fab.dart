@@ -10,7 +10,7 @@ class FocusNowFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton.extended(
-      heroTag: HeroTags.focusModeFABTag,
+      heroTag: HeroTags.focusModeTimerTileTag,
       label: Text(context.locale.focus_now_fab_button),
       icon: const Icon(FluentIcons.target_arrow_20_filled),
       backgroundColor: Theme.of(context).colorScheme.primary,

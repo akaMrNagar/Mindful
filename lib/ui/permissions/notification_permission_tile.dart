@@ -31,7 +31,6 @@ class NotificationPermissionTile extends ConsumerWidget {
           ? context.locale.permission_status_allowed
           : context.locale.permission_status_not_allowed,
       isSelected: havePermission,
-      margin: const EdgeInsets.only(bottom: 2),
       onPressed: havePermission
           ? null
           : ref.read(permissionProvider.notifier).askNotificationPermission,

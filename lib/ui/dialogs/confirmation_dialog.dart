@@ -59,30 +59,33 @@ class _ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(48),
-      alignment: Alignment.center,
-      child: DefaultHero(
-        tag: heroTag,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(48),
+        alignment: Alignment.center,
         child: SingleChildScrollView(
-          child: AlertDialog(
-            icon: Icon(icon),
-            title: StyledText(title, fontSize: 16),
-            insetPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: StyledText(info),
+          child: DefaultHero(
+            tag: heroTag,
+            child: AlertDialog(
+              scrollable: true,
+              icon: Icon(icon),
+              title: StyledText(title, fontSize: 16),
+              insetPadding: EdgeInsets.zero,
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(child: StyledText(info)),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.maybePop(context, false),
+                  child: Text(negativeLabel),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => Navigator.maybePop(context, true),
+                  child: Text(positiveLabel),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.maybePop(context, false),
-                child: Text(negativeLabel),
-              ),
-              FilledButton.tonal(
-                onPressed: () => Navigator.maybePop(context, true),
-                child: Text(positiveLabel),
-              ),
-            ],
           ),
         ),
       ),

@@ -19,9 +19,7 @@ import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 class SliverActiveSessionAlert extends ConsumerWidget {
   const SliverActiveSessionAlert({
     super.key,
-    this.margin = const EdgeInsets.only(bottom: 8),
   });
-  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,8 +28,8 @@ class SliverActiveSessionAlert extends ConsumerWidget {
 
     return SliverPrimaryActionContainer(
       isVisible: activeSessionId != null,
-      margin: margin,
       icon: FluentIcons.timer_20_regular,
+      margin: const EdgeInsets.symmetric(vertical: 6),
       title: context.locale.active_session_card_title,
       information: context.locale.active_session_card_info,
       positiveBtn: FilledButton(

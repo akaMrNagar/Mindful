@@ -11,13 +11,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -37,13 +39,21 @@ class SliverDistractingAppsList extends ConsumerWidget {
     final args = (selectedDoW: todayOfWeek, includeAll: true);
     final allApps = ref.watch(packagesByScreenUsageProvider(args));
 
+    /// Selected apps which are installed
+    final selectedApps =
+        distractingApps.where((e) => allApps.value!.contains(e));
+
+    /// Unselected apps which are installed
+    final unselectedApps =
+        allApps.value!.where((e) => !distractingApps.contains(e));
+
     return MultiSliver(
       children: [
-        SliverContentTitle(
+        ContentSectionHeader(
           title: distractingApps.isEmpty
               ? context.locale.select_distracting_apps_heading
               : context.locale.your_distracting_apps_heading,
-        ),
+        ).sliver,
 
         /// Apps list
         SliverAnimatedSwitcher(
@@ -55,26 +65,28 @@ class SliverDistractingAppsList extends ConsumerWidget {
                   itemExtent: 56,
                   separatorTitle: context.locale.select_more_apps_heading,
                   appPackages: [
-                    /// Selected apps which are installed
-                    ...distractingApps.where((e) => allApps.value!.contains(e)),
+                    ...selectedApps,
 
                     /// Will act as a separator
                     if (distractingApps.isNotEmpty) ...[""],
 
-                    /// Unselected apps which are installed
-                    ...allApps.value!
-                        .where((e) => !distractingApps.contains(e)),
+                    ...unselectedApps,
                   ],
-                  itemBuilder: (context, app) {
+                  itemBuilder: (context, app, _) {
                     final isSelected =
                         distractingApps.contains(app.packageName);
                     return DefaultListTile(
                       isSelected: app.isImpSysApp ? null : isSelected,
-                      leading: ApplicationIcon(
-                        app: app,
-                        isGrayedOut: isSelected,
-                        size: 16,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceContainer
+                          .withOpacity(0.5),
+                      position: _resolvePosition(
+                        app.packageName,
+                        selectedApps,
+                        unselectedApps,
                       ),
+                      leading: ApplicationIcon(app: app, size: 16),
                       titleText: app.name,
                       onPressed: () {
                         /// If app is important system app
@@ -95,4 +107,20 @@ class SliverDistractingAppsList extends ConsumerWidget {
       ],
     );
   }
+
+  ItemPosition _resolvePosition(
+    String package,
+    Iterable<String> selected,
+    Iterable<String> unselected,
+  ) =>
+      (selected.length == 1 && selected.first == package) ||
+              (unselected.length == 1 && unselected.first == package)
+          ? ItemPosition.none
+          : (selected.isNotEmpty && selected.first == package) ||
+                  (unselected.isNotEmpty && unselected.first == package)
+              ? ItemPosition.start
+              : (selected.isNotEmpty && selected.last == package) ||
+                      (unselected.isNotEmpty && unselected.last == package)
+                  ? ItemPosition.end
+                  : ItemPosition.mid;
 }

@@ -12,11 +12,13 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
@@ -26,9 +28,11 @@ class SessionTile extends StatelessWidget {
   const SessionTile({
     super.key,
     required this.session,
+    this.position,
   });
 
   final FocusSession session;
+  final ItemPosition? position;
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +53,10 @@ class SessionTile extends StatelessWidget {
     final dateTime = session.startDateTime;
 
     return RoundedContainer(
+      borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
-      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.5),
       circularRadius: 24,
       child: Row(
         children: [

@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -58,6 +59,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
       children: [
         /// Block instagram reels
         DefaultListTile(
+          position: ItemPosition.start,
           leading: Opacity(
             opacity: canModifyInsta ? 1 : 0.5,
             child: Image.asset(
@@ -74,6 +76,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
 
         /// Block youtube shorts
         DefaultListTile(
+          position: ItemPosition.mid,
           leading: Opacity(
             opacity: canModifyYt ? 1 : 0.5,
             child: Image.asset(
@@ -90,6 +93,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
 
         /// Block snapchat spotlight
         DefaultListTile(
+          position: ItemPosition.mid,
           leading: Opacity(
             opacity: canModifySnap ? 1 : 0.5,
             child: Image.asset(
@@ -107,6 +111,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
 
         /// Block facebook reels
         DefaultListTile(
+          position: ItemPosition.mid,
           leading: Opacity(
             opacity: canModifyFb ? 1 : 0.5,
             child: Image.asset(
@@ -123,6 +128,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
 
         /// Block reddit shorts
         DefaultListTile(
+          position: ItemPosition.end,
           leading: Opacity(
             opacity: canModifyReddit ? 1 : 0.5,
             child: Image.asset(

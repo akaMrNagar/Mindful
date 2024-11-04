@@ -1,12 +1,16 @@
 import 'dart:math';
 
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
@@ -15,18 +19,22 @@ import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_bottom_sheet.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class RestrictionGroupCard extends ConsumerWidget {
   const RestrictionGroupCard({
     super.key,
     required this.group,
+    this.position,
   });
 
   final RestrictionGroup group;
+  final ItemPosition? position;
 
   void _updateGroup(BuildContext context, WidgetRef ref) async {
-    final updatedGroup = await showEditInsertRestrictionGroupSheet(
+    final updatedGroup = await showCreateUpdateRestrictionGroupSheet(
       context: context,
       group: group,
     );
@@ -39,16 +47,37 @@ class RestrictionGroupCard extends ConsumerWidget {
 
       /// Update associated group ids for apps
       ref.read(appsRestrictionsProvider.notifier).updateAssociatedGroupId(
-          appPackages: updatedGroup.distractingApps,
-          groupId: updatedGroup.id,
-          oldAppPackages: group.distractingApps
-              .where((e) => !updatedGroup.distractingApps.contains(e))
-              .toList());
+            appPackages: updatedGroup.distractingApps,
+            groupId: updatedGroup.id,
+            removedAppPackages: group.distractingApps
+                .where((e) => !updatedGroup.distractingApps.contains(e))
+                .toList(),
+          );
     }
   }
 
   void _removeGroup(BuildContext context, WidgetRef ref) async {
-    // final confirm = await
+    final confirm = await showConfirmationDialog(
+      context: context,
+      heroTag: HeroTags.removeRestrictionGroupTag(group.id),
+      title: context.locale.remove_restriction_group_dialog_title,
+      info:
+          context.locale.remove_restriction_group_dialog_info(group.groupName),
+      icon: FluentIcons.delete_20_filled,
+      positiveLabel: context.locale.dialog_button_remove,
+    );
+
+    if (!confirm) return;
+
+    /// Update associated group ids for apps
+    ref.read(appsRestrictionsProvider.notifier).updateAssociatedGroupId(
+      appPackages: [],
+      groupId: null,
+      removedAppPackages: group.distractingApps,
+    );
+
+    /// remove group
+    ref.read(restrictionGroupsProvider.notifier).removeGroup(group: group);
   }
 
   @override
@@ -65,9 +94,9 @@ class RestrictionGroupCard extends ConsumerWidget {
     final isPurged = totalTimeSec >= group.timerSec;
 
     return RoundedContainer(
-      circularRadius: 24,
+      borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.symmetric(vertical: 4),
+      margin: const EdgeInsets.symmetric(vertical: 2),
       color: Theme.of(context).colorScheme.surfaceContainer,
       onPressed: () => _updateGroup(context, ref),
       child: Column(
@@ -109,7 +138,9 @@ class RestrictionGroupCard extends ConsumerWidget {
 
                   /// Active/Paused label
                   StyledText(
-                    isPurged ? "PAUSED" : "ACTIVE",
+                    isPurged
+                        ? context.locale.timer_status_paused
+                        : context.locale.timer_status_active,
                     fontWeight: FontWeight.w600,
                     color: isPurged
                         ? Theme.of(context).colorScheme.error
@@ -132,14 +163,16 @@ class RestrictionGroupCard extends ConsumerWidget {
 
           /// Used time
           StyledText(
-            "Used: ${totalTimeSec.seconds.toTimeFull(context)}",
+            context.locale.restriction_group_time_used(totalTimeSec.seconds
+                .toTimeFull(context, replaceCommaWithAnd: true)),
             color: Theme.of(context).hintColor,
             fontSize: 14,
           ),
 
           /// Remaining time
           StyledText(
-            "Remaining: ${remainingTimeSec.seconds.toTimeFull(context)}",
+            context.locale.restriction_group_time_left(remainingTimeSec.seconds
+                .toTimeFull(context, replaceCommaWithAnd: true)),
             color: Theme.of(context).hintColor,
             fontSize: 14,
           ),
@@ -166,10 +199,13 @@ class RestrictionGroupCard extends ConsumerWidget {
           ),
 
           /// Remove button
-          FilledButton.tonal(
-            onPressed: () => _removeGroup(context, ref),
-            child: const Text("Remove"),
-          ).rightCentered,
+          DefaultHero(
+            tag: HeroTags.removeRestrictionGroupTag(group.id),
+            child: FilledButton.tonal(
+              onPressed: () => _removeGroup(context, ref),
+              child: Text(context.locale.dialog_button_remove),
+            ).rightCentered,
+          ),
         ],
       ),
     );

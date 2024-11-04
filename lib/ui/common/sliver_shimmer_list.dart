@@ -29,7 +29,6 @@ class SliverShimmerList extends StatelessWidget {
       child: SliverList.builder(
         itemCount: 20,
         itemBuilder: (_, i) => DefaultListTile(
-          height: 64,
           leading: const Bone.circle(size: 36),
           title: Bone.text(
             width: 120.randomHalf.toDouble(),

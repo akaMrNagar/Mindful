@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -25,7 +26,7 @@ import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -96,16 +97,28 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           8.vSliverBox,
           DefaultListTile(
+            position: ItemPosition.start,
             leadingIcon: FluentIcons.app_title_20_regular,
             titleText: context.locale.restriction_groups_tile_title,
             subtitleText: context.locale.restriction_groups_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
-            color: Theme.of(context).colorScheme.surfaceContainer,
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
             onPressed: () => Navigator.of(context)
                 .pushNamed(AppRoutes.restrictionGroupsScreen),
           ).sliver,
-          
-          SliverContentTitle(title: context.locale.most_used_apps_heading),
+          DefaultListTile(
+            position: ItemPosition.end,
+            leadingIcon: FluentIcons.alert_snooze_20_regular,
+            titleText: "Notification groups",
+            subtitleText: "Limit notifications for group of apps.",
+            trailing: const Icon(FluentIcons.chevron_right_20_regular),
+            color: Theme.of(context).colorScheme.surfaceContainerHigh,
+            onPressed: () => Navigator.of(context)
+                .pushNamed(AppRoutes.restrictionGroupsScreen),
+          ).sliver,
+
+          ContentSectionHeader(title: context.locale.most_used_apps_heading)
+              .sliver,
 
           /// Most used apps list
           SliverAnimatedSwitcher(
@@ -114,10 +127,12 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             switchOutCurve: Curves.easeOut,
             child: filteredApps.hasValue
                 ? AnimatedAppsList(
-                    itemExtent: 64,
+                    itemExtent: 74,
                     appPackages: filteredApps.value ?? [],
-                    itemBuilder: (context, app) => ApplicationTile(
+                    itemBuilder: (context, app, itemPosition) =>
+                        ApplicationTile(
                       app: app,
+                      position: itemPosition,
                       selectedUsageType: _usageType,
                       selectedDoW: _selectedDayOfWeek,
                     ),
@@ -125,13 +140,12 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 : const SliverShimmerList(includeSubtitle: true),
           ),
 
+          20.vSliverBox,
+
           /// Show all apps button
           if (!_includeAllApps && filteredApps.hasValue)
             DefaultListTile(
-              height: 48,
               isPrimary: true,
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              margin: const EdgeInsets.only(top: 20),
               leading: const Icon(FluentIcons.select_all_off_20_regular),
               titleText: context.locale.show_all_apps_tile_title,
               trailing: const Icon(FluentIcons.chevron_down_20_filled),

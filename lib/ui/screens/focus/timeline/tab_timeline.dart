@@ -11,13 +11,14 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/focus_timeline_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/focus/timeline/sliver_heatmap_calender.dart';
@@ -63,7 +64,7 @@ class TabTimeline extends ConsumerWidget {
                     ),
                   ),
                 ),
-                8.hBox,
+                6.hBox,
 
                 /// Productive days
                 Expanded(
@@ -97,7 +98,7 @@ class TabTimeline extends ConsumerWidget {
               ),
             ).sliver,
 
-            SliverContentTitle(title: context.locale.calender_heading),
+            ContentSectionHeader(title: context.locale.calender_heading).sliver,
             SliverHeatMapCalendar(
               heatmapData: timeline.daysTypeMap,
               onDayChanged:
@@ -107,15 +108,23 @@ class TabTimeline extends ConsumerWidget {
             ),
 
             8.vSliverBox,
-            SliverContentTitle(title: context.locale.your_sessions_heading),
+            ContentSectionHeader(title: context.locale.your_sessions_heading)
+                .sliver,
             8.vSliverBox,
 
             /// List of today's sessions
             timeline.selectedDaysSessions.hasValue &&
                     timeline.selectedDaysSessions.value!.isNotEmpty
                 ? SliverList.builder(
-                    itemCount: timeline.selectedDaysSessions.value?.length,
+                    itemCount: timeline.selectedDaysSessions.value!.length,
                     itemBuilder: (context, index) => SessionTile(
+                      position: index == 0
+                          ? ItemPosition.start
+                          : index ==
+                                  timeline.selectedDaysSessions.value!.length -
+                                      1
+                              ? ItemPosition.end
+                              : ItemPosition.mid,
                       session: timeline.selectedDaysSessions.value![index],
                     ),
                   )

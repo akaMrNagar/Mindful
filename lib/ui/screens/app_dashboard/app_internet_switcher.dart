@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -54,6 +55,7 @@ class AppInternetSwitcher extends ConsumerWidget {
             onPressed: onPressed,
           )
         : DefaultListTile(
+            position: ItemPosition.end,
             switchValue: haveInternetAccess,
             enabled: !app.isImpSysApp,
             titleText: context.locale.internet_access_tile_title,
@@ -66,7 +68,6 @@ class AppInternetSwitcher extends ConsumerWidget {
             accent:
                 haveInternetAccess ? null : Theme.of(context).colorScheme.error,
             isSelected: havePermission,
-            margin: const EdgeInsets.only(bottom: 2),
             onPressed: onPressed,
           );
   }

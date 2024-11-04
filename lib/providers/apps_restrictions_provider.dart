@@ -122,13 +122,17 @@ class AppsRestrictionsNotifier
   /// Updates the id of associated [RestrictionGroup] for a specific app package.
   void updateAssociatedGroupId({
     required List<String> appPackages,
-    required int groupId,
-    List<String> oldAppPackages = const [],
+    int? groupId,
+    List<String> removedAppPackages = const [],
   }) async {
     List<AppRestriction> updatedRestrictions = [];
     Map<String, AppRestriction> updatedState = {...state};
 
-    for (var appPackage in appPackages) {
+    // print("*********************** Updated apps : $appPackages");
+    // print("*********************** Removed apps : $removedAppPackages");
+
+    /// Remove associated group id for the removed old packages
+    for (var appPackage in removedAppPackages) {
       final restriction =
           state[appPackage]?.copyWith(associatedGroupId: const Value(null)) ??
               AppRestrictionTable.defaultAppRestrictionModel.copyWith(
@@ -144,6 +148,7 @@ class AppsRestrictionsNotifier
       );
     }
 
+    /// Add/Update associated group id for the new packages
     for (var appPackage in appPackages) {
       final restriction =
           state[appPackage]?.copyWith(associatedGroupId: Value(groupId)) ??
@@ -166,7 +171,7 @@ class AppsRestrictionsNotifier
     _updateTrackerService();
   }
 
-  /// Restart services if they ara inactive but needed
+  /// Restart services if they are inactive but needed
   void checkAndRestartServices({
     required bool haveVpnPermission,
   }) {

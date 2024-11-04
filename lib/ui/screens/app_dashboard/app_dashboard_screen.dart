@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -22,14 +23,14 @@ import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/screens/app_dashboard/emergency_fab.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/application_icon.dart';
-import 'package:mindful/ui/screens/app_dashboard/quick_actions.dart';
+import 'package:mindful/ui/screens/app_dashboard/app_dashboard_quick_actions.dart';
 
 class AppDashboardScreen extends ConsumerStatefulWidget {
   /// App dashboard screen containing detailed usage along with quick actions based on the provided app
@@ -135,12 +136,14 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                           .locale.custom_apps_quick_actions_unavailable_warning,
                       fontSize: 14,
                     ).sliver
-                  : QuickActions(app: widget.app),
+                  : AppDashboardQuickActions(app: widget.app),
 
-              SliverContentTitle(title: context.locale.quick_actions_heading),
+              ContentSectionHeader(title: context.locale.quick_actions_heading)
+                  .sliver,
 
               /// Launch app button
               DefaultListTile(
+                position: ItemPosition.start,
                 titleText: context.locale.launch_app_tile_title,
                 subtitleText:
                     context.locale.launch_app_tile_subtitle(widget.app.name),
@@ -151,6 +154,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
               /// Launch app settings button
               DefaultListTile(
+                position: ItemPosition.end,
                 titleText: context.locale.go_to_app_settings_tile_title,
                 subtitleText: context.locale.go_to_app_settings_tile_subtitle,
                 leadingIcon: FluentIcons.launcher_settings_20_regular,

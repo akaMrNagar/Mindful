@@ -21,8 +21,8 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/restriction_groups/create_restriction_group_fab.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
 
-class RestrictionGroupsScreen extends ConsumerWidget {
-  const RestrictionGroupsScreen({super.key});
+class NotificationGroupsScreen extends ConsumerWidget {
+  const NotificationGroupsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -39,7 +39,7 @@ class RestrictionGroupsScreen extends ConsumerWidget {
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
-              /// Information about groups
+              /// Information about notification groups
               StyledText(context.locale.restriction_group_tab_info).sliver,
 
               16.vSliverBox,

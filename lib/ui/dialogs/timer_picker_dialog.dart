@@ -102,12 +102,12 @@ Future<int?> showRestrictionGroupTimerPicker({
   return await Navigator.of(context).push<int?>(
     HeroPageRoute(
       builder: (context) => _DurationPickerDialog(
-        title: "Restriction Group",
+        title: context.locale.restriction_group_heading,
         icon: const Icon(FluentIcons.timer_20_regular),
         heroTag: heroTag,
         initialTimeInSec: initialTime,
-        info: "Please select timer for the restriction group",
-        positiveButtonLabel: "Set",
+        info: context.locale.timer_picker_dialog_info,
+        positiveButtonLabel: context.locale.dialog_button_set_timer,
         showDeleteButton: false,
       ),
     ),
@@ -142,62 +142,69 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(48),
-      alignment: Alignment.center,
-      child: DefaultHero(
-        tag: widget.heroTag,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(48),
+        alignment: Alignment.center,
         child: SingleChildScrollView(
-          child: AlertDialog(
-            icon: widget.icon,
-            title: StyledText(
-              widget.title,
-              fontSize: 16,
-            ),
-            insetPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  StyledText(widget.info),
-                  Container(
-                    height: 124,
-                    margin: const EdgeInsets.symmetric(vertical: 12),
-                    child: CupertinoTimerPicker(
-                      itemExtent: 32,
-                      mode: CupertinoTimerPickerMode.hm,
-                      initialTimerDuration: widget.initialTimeInSec.seconds,
-                      onTimerDurationChanged: (val) => _selectedDuration = val,
-                    ),
-                  ),
-                  18.vBox,
-                  if (widget.showDeleteButton)
-                    FittedBox(
-                      child: FilledButton.icon(
-                        icon: const Icon(FluentIcons.delete_20_regular),
-                        label: Text(context.locale.dialog_button_delete_timer),
-                        onPressed: () => Navigator.maybePop(
-                          context,
-                          0,
+          child: DefaultHero(
+            tag: widget.heroTag,
+            child: AlertDialog(
+              scrollable: true,
+              icon: widget.icon,
+              title: StyledText(widget.title, fontSize: 16),
+              insetPadding: EdgeInsets.zero,
+              content: Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      StyledText(widget.info),
+                      Container(
+                        height: 124,
+                        margin: const EdgeInsets.symmetric(vertical: 12),
+                        child: CupertinoTimerPicker(
+                          itemExtent: 32,
+                          mode: CupertinoTimerPickerMode.hm,
+                          initialTimerDuration: widget.initialTimeInSec.seconds,
+                          onTimerDurationChanged: (val) =>
+                              _selectedDuration = val,
                         ),
                       ),
-                    )
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                child: Text(context.locale.dialog_button_cancel),
-                onPressed: () => Navigator.maybePop(context),
-              ),
-              TextButton(
-                child: Text(widget.positiveButtonLabel),
-                onPressed: () => Navigator.maybePop(
-                  context,
-                  _selectedDuration?.inSeconds ?? widget.initialTimeInSec,
+                      18.vBox,
+                      if (widget.showDeleteButton)
+                        FittedBox(
+                          child: FilledButton.icon(
+                            icon: const Icon(FluentIcons.delete_20_regular),
+                            label:
+                                Text(context.locale.dialog_button_delete_timer),
+                            onPressed: () => Navigator.maybePop(
+                              context,
+                              0,
+                            ),
+                          ),
+                        )
+                    ],
+                  ),
                 ),
               ),
-            ],
+              actions: [
+                TextButton(
+                  child: Text(context.locale.dialog_button_cancel),
+                  onPressed: () => Navigator.maybePop(context),
+                ),
+                TextButton(
+                  child: Text(widget.positiveButtonLabel),
+                  onPressed: () => Navigator.maybePop(
+                    context,
+                    _selectedDuration?.inSeconds ?? widget.initialTimeInSec,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

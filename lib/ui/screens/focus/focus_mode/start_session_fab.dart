@@ -24,7 +24,7 @@ class StartSessionFAB extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FloatingActionButton.extended(
-      heroTag: HeroTags.focusModeFABTag,
+      // heroTag: HeroTags.focusModeTimerTileTag,
       icon: const Icon(FluentIcons.target_arrow_20_filled),
       label: Text(context.locale.focus_session_start_fab_button),
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -54,7 +54,7 @@ class StartSessionFAB extends ConsumerWidget {
 
     final timerSeconds = await showFocusTimerPicker(
       context: context,
-      heroTag: HeroTags.focusModeFABTag,
+      heroTag: HeroTags.focusModeTimerTileTag,
     );
 
     /// Return if user cancelled duration picker

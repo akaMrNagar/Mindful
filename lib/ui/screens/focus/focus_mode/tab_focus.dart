@@ -29,11 +29,9 @@ class TabFocus extends StatelessWidget {
         /// Information
         StyledText(context.locale.focus_tab_info).sliver,
 
-        12.vSliverBox,
+        8.vSliverBox,
 
-        const SliverActiveSessionAlert(
-          margin: EdgeInsets.only(top: 12),
-        ),
+        const SliverActiveSessionAlert(),
 
         const FocusQuickActions(),
 

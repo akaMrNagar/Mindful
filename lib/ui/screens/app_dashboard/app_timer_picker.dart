@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
@@ -37,7 +38,7 @@ class AppTimerPicker extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTimer = ref.watch(appsRestrictionsProvider
-            .select((value) => value[app.packageName]?.timerSec)) ??
+            .select((v) => v[app.packageName]?.timerSec)) ??
         0;
 
     final isPurged =
@@ -57,6 +58,7 @@ class AppTimerPicker extends ConsumerWidget {
         : DefaultHero(
             tag: HeroTags.appTimerTileTag(app.packageName),
             child: DefaultListTile(
+              position: ItemPosition.start,
               titleText: context.locale.app_timer_tile_title,
               enabled: !app.isImpSysApp,
               subtitleText: app.isImpSysApp
@@ -66,9 +68,8 @@ class AppTimerPicker extends ConsumerWidget {
                       : context.locale.app_timer_tile_subtitle_no_timer,
               leadingIcon: FluentIcons.timer_20_regular,
               accent: isPurged ? Theme.of(context).colorScheme.error : null,
-              trailing: isPurged
-                  ? Text(context.locale.app_timer_tile_trailing_paused)
-                  : null,
+              trailing:
+                  isPurged ? Text(context.locale.timer_status_paused) : null,
               onPressed: () => _pickAppTimer(
                 context,
                 ref,

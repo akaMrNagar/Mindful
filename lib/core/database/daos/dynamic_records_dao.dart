@@ -1,3 +1,13 @@
+/*
+ *
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:drift/drift.dart';
 
 import 'package:mindful/core/database/app_database.dart';
@@ -42,8 +52,9 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   ) async =>
       batch(
         (batch) => batch.insertAll(
-          focusSessionsTable,
+          appRestrictionTable,
           restrictions,
+          mode: InsertMode.insertOrReplace,
         ),
       );
 
@@ -60,6 +71,13 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Clear all [CrashLogs] objects from the database,
   Future<int> clearCrashLogs() async => delete(crashLogsTable).go();
+
+  /// Loads single [RestrictionGroup] object by the ID from the database,
+  Future<RestrictionGroup?> fetchRestrictionGroupById({
+    required int groupId,
+  }) async =>
+      (select(restrictionGroupsTable)..where((e) => e.id.equals(groupId)))
+          .getSingleOrNull();
 
   /// Loads List of all [RestrictionGroup] objects from the database,
   Future<List<RestrictionGroup>> fetchRestrictionGroups() async =>

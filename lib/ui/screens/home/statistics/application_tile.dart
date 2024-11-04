@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
@@ -33,11 +34,13 @@ class ApplicationTile extends ConsumerWidget {
     required this.app,
     required this.selectedUsageType,
     required this.selectedDoW,
+    this.position,
   });
 
   final AndroidApp app;
   final UsageType selectedUsageType;
   final int selectedDoW;
+  final ItemPosition? position;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,6 +55,8 @@ class ApplicationTile extends ConsumerWidget {
     return DefaultHero(
       tag: HeroTags.applicationTileTag(app.packageName),
       child: DefaultListTile(
+        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.5),
+        position: position,
         onPressed: () {
           Navigator.of(context).pushNamed(
             AppRoutes.appDashboardScreen,

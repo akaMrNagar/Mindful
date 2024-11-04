@@ -60,7 +60,7 @@ class SliverUsageCards extends StatelessWidget {
                 ),
               ),
               shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
             ),
             segments: [
@@ -77,23 +77,22 @@ class SliverUsageCards extends StatelessWidget {
             ],
           ),
         ),
-        4.vBox,
 
         /// Usage info cards
-        usageType == UsageType.screenUsage
+        SizedBox(
+          height: 78,
+          child: usageType == UsageType.screenUsage
 
-            /// Screen usage card
-            ? _buildUsageCard(
-                context,
-                icon: FluentIcons.phone_20_regular,
-                title: context.locale.screen_time_label,
-                subtitle: screenUsageInfo.seconds.toTimeFull(context),
-              )
+              /// Screen usage card
+              ? _buildUsageCard(
+                  context,
+                  icon: FluentIcons.phone_20_regular,
+                  title: context.locale.screen_time_label,
+                  subtitle: screenUsageInfo.seconds.toTimeFull(context),
+                )
 
-            /// Mobile and Wifi usage card
-            : SizedBox(
-                height: 68,
-                child: Row(
+              /// Mobile and Wifi usage card
+              : Row(
                   children: [
                     Expanded(
                       child: _buildUsageCard(
@@ -114,7 +113,7 @@ class SliverUsageCards extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+        ),
       ],
     );
   }
@@ -126,7 +125,6 @@ class SliverUsageCards extends StatelessWidget {
     required String subtitle,
   }) {
     return DefaultListTile(
-      height: 68,
       isPrimary: true,
       leading: Icon(icon),
       title: StyledText(

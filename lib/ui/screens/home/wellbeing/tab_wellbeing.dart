@@ -21,7 +21,7 @@ import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -67,8 +67,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
   @override
   Widget build(BuildContext context) {
-    final allowedShortContentTimeSec = ref
-        .watch(wellBeingProvider.select((v) => v.allowedShortsTimeSec));
+    final allowedShortContentTimeSec =
+        ref.watch(wellBeingProvider.select((v) => v.allowedShortsTimeSec));
 
     final blockNsfwSites =
         ref.watch(wellBeingProvider.select((v) => v.blockNsfwSites));
@@ -101,7 +101,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         const AccessibilityPermissionCard(),
 
         /// Short content header
-        SliverContentTitle(title: context.locale.short_content_heading),
+        ContentSectionHeader(title: context.locale.short_content_heading)
+            .sliver,
 
         /// Short usage progress bar
         ShortsTimerChart(
@@ -126,7 +127,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         ),
 
         /// Adult content header
-        SliverContentTitle(title: context.locale.adult_content_heading),
+        ContentSectionHeader(title: context.locale.adult_content_heading)
+            .sliver,
 
         /// Block NSFW websites
         DefaultHero(
@@ -142,7 +144,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         ).sliver,
 
         /// Blocked websites header
-        SliverContentTitle(title: context.locale.blocked_websites_heading),
+        ContentSectionHeader(title: context.locale.blocked_websites_heading)
+            .sliver,
 
         /// Distracting websites list
         const SliverBlockedWebsitesList(),

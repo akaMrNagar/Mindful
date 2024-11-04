@@ -49,9 +49,8 @@ class PermissionGrantingSteps extends StatelessWidget {
             context.locale.permission_grant_step_two,
             fontSize: 14,
           ),
+          6.vBox,
           DefaultListTile(
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
-            margin: const EdgeInsets.only(left: 16, top: 4),
             leading: const RoundedContainer(
               circularRadius: 12,
               color: Colors.white,
@@ -67,15 +66,16 @@ class PermissionGrantingSteps extends StatelessWidget {
                 : context.locale.permission_status_not_allowed,
           ),
 
-          8.vBox,
+          12.vBox,
 
           /// Third step
           StyledText(
             context.locale.permission_grant_step_three,
             fontSize: 14,
           ),
+          6.vBox,
           DefaultListTile(
-            margin: const EdgeInsets.only(left: 16, top: 4),
+            // margin: const EdgeInsets.only(left: 16, top: 4),
             color: Theme.of(context).colorScheme.surfaceContainer,
             switchValue: true,
             titleText: deviceSwitchTileLabel,

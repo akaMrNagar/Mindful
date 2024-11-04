@@ -14,6 +14,7 @@ import 'dart:io';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
@@ -21,7 +22,7 @@ import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -106,7 +107,7 @@ class TabAdvance extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        SliverContentTitle(title: context.locale.service_heading),
+        ContentSectionHeader(title: context.locale.service_heading).sliver,
 
         /// Battery
         StyledText(context.locale.permission_battery_optimization_info).sliver,
@@ -127,11 +128,12 @@ class TabAdvance extends ConsumerWidget {
         ).sliver,
 
         20.vSliverBox,
-        SliverContentTitle(title: context.locale.crash_logs_heading),
+        ContentSectionHeader(title: context.locale.crash_logs_heading).sliver,
         StyledText(context.locale.crash_logs_info).sliver,
 
         16.vSliverBox,
         DefaultListTile(
+          position: ItemPosition.start,
           titleText: context.locale.crash_logs_share_tile_title,
           subtitleText: context.locale.crash_logs_share_tile_subtitle,
           leadingIcon: FluentIcons.share_android_20_regular,
@@ -139,10 +141,10 @@ class TabAdvance extends ConsumerWidget {
           onPressed: () => _shareLogs(context),
         ).sliver,
 
-        2.vSliverBox,
         DefaultHero(
           tag: HeroTags.clearCrashLogsTileTag,
           child: DefaultListTile(
+            position: ItemPosition.end,
             titleText: context.locale.crash_logs_clear_tile_title,
             subtitleText: context.locale.crash_logs_clear_tile_subtitle,
             leadingIcon: FluentIcons.delete_lines_20_regular,

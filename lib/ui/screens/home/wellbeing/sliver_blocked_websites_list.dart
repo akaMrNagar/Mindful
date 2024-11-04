@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
@@ -26,13 +27,17 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
 
     return blockedWebsites.isNotEmpty
         ? SliverFixedExtentList.builder(
-            itemExtent: 40,
+            itemExtent: 64,
             itemCount: blockedWebsites.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: WebsiteTile(
-                websitehost: blockedWebsites[index],
-              ),
+            itemBuilder: (context, index) => WebsiteTile(
+              position: blockedWebsites.length <= 1
+                  ? ItemPosition.none
+                  : index == 0
+                      ? ItemPosition.start
+                      : index == blockedWebsites.length - 1
+                          ? ItemPosition.end
+                          : ItemPosition.mid,
+              websitehost: blockedWebsites[index],
             ),
           )
         : Container(

@@ -46,6 +46,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
         visible: isVisible,
         sliver: RoundedContainer(
           circularRadius: 24,
+          color: Theme.of(context).colorScheme.secondaryContainer,
           padding: const EdgeInsets.all(16),
           margin: margin,
           child: SingleChildScrollView(

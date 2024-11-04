@@ -43,12 +43,24 @@ class HeroTags {
   static String appTimerTileTag(String package) =>
       "appDashboard.timerTile.$package";
 
+  /// Generates a tag for an app launch limit tile based on the provided package name.
+  static String appLaunchLimitTileTag(String package) =>
+      "appDashboard.launchLimitTile.$package";
+
+  /// Generates a tag for an app session and cooldown tile based on the provided package name.
+  static String appSessionAndCooldownTileTag(String package) =>
+      "appDashboard.sessionAndCooldownTile.$package";
+
   /// Tag used to identify the FAB for timer picker in focus mode.
-  static const focusModeFABTag = "focus.focusSessionTimer";
+  static const focusModeTimerTileTag = "focus.focusSessionTimerTile";
 
   /// Tag used to identify the FAB for timer picker in focus mode.
   static const giveUpFocusSessionTag = "activeSession.giveUp";
 
   /// Tag used to identify the tile for clearing crash log in settings.
   static const clearCrashLogsTileTag = "settings.advance.clearCrashLogs";
+
+  /// Tag used to identify the remove button in a restriction group card based on the group ID.
+  static String removeRestrictionGroupTag(int groupId) =>
+      "restrictionGroupScreen.restrictionGroup.$groupId";
 }

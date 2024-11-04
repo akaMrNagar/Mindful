@@ -8,9 +8,10 @@
  *
  */
 
-/// Theme of the app equivalent to [ThemeMode] 
-enum AppThemeMode {
-  system,
-  light,
-  dark,
+/// Position of the item in a list or section
+enum ItemPosition {
+  none,
+  start,
+  mid,
+  end,
 }

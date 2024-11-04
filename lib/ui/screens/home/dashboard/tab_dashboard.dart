@@ -24,14 +24,12 @@ import 'package:mindful/providers/focus_stats_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
-import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
-import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
+import 'package:mindful/ui/screens/home/dashboard/invincible_mode_settings.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -49,27 +47,6 @@ class TabDashboard extends ConsumerWidget {
     ref.read(mindfulSettingsProvider.notifier).changeUsername(userName);
   }
 
-  void _turnOnInvincibleMode(
-    BuildContext context,
-    WidgetRef ref,
-    bool shouldTurnOn,
-  ) async {
-    if (shouldTurnOn) {
-      final isConfirm = await showConfirmationDialog(
-        context: context,
-        icon: FluentIcons.animal_cat_20_filled,
-        heroTag: HeroTags.invincibleModeTileTag,
-        title: context.locale.invincible_mode_heading,
-        info: context.locale.invincible_mode_dialog_info,
-        positiveLabel:
-            context.locale.invincible_mode_dialog_button_start_anyway,
-      );
-      if (isConfirm) {
-        ref.read(mindfulSettingsProvider.notifier).switchInvincibleMode();
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentStreak =
@@ -77,9 +54,6 @@ class TabDashboard extends ConsumerWidget {
 
     final longestStreak =
         ref.watch(focusModeProvider.select((v) => v.longestStreak));
-
-    final isInvincibleModeOn =
-        ref.watch(mindfulSettingsProvider.select((v) => v.isInvincibleModeOn));
 
     final focusStats = ref.watch(focusStatsProvider);
 
@@ -118,144 +92,133 @@ class TabDashboard extends ConsumerWidget {
             24.vSliverBox,
 
             /// Active session
-            const SliverActiveSessionAlert(margin: EdgeInsets.only(bottom: 8)),
+            const SliverActiveSessionAlert(),
 
-            SliverList.list(
-              children: [
-                Row(
-                  children: [
-                    /// Screen time
-                    Expanded(
-                      child: UsageGlanceCard(
-                        isPrimary: true,
-                        title: context.locale.screen_time_label,
-                        icon: FluentIcons.phone_screen_time_20_regular,
-                        progressPercentage: focusStats
-                            .todaysScreenTime.inSeconds
-                            .toDiffPercentage(
-                          focusStats.yesterdaysScreenTime.inSeconds,
-                        ),
-                        info: focusStats.todaysScreenTime.toTimeShort(context),
-                        onTap: () => context.showSnackAlert(
-                          context.locale.screen_time_snack_alert(
-                            focusStats.todaysScreenTime.toTimeFull(context),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      /// Screen time
+                      Expanded(
+                        child: UsageGlanceCard(
+                          isPrimary: true,
+                          title: context.locale.screen_time_label,
+                          icon: FluentIcons.phone_screen_time_20_regular,
+                          progressPercentage: focusStats
+                              .todaysScreenTime.inSeconds
+                              .toDiffPercentage(
+                            focusStats.yesterdaysScreenTime.inSeconds,
                           ),
-                          icon: FluentIcons.phone_screen_time_20_filled,
+                          info:
+                              focusStats.todaysScreenTime.toTimeShort(context),
+                          onTap: () => context.showSnackAlert(
+                            context.locale.screen_time_snack_alert(
+                              focusStats.todaysScreenTime.toTimeFull(context),
+                            ),
+                            icon: FluentIcons.phone_screen_time_20_filled,
+                          ),
                         ),
                       ),
-                    ),
-                    8.hBox,
+                      6.hBox,
 
-                    // Focused time
-                    Expanded(
-                      child: UsageGlanceCard(
-                        isPrimary: true,
-                        invertProgress: true,
-                        icon: FluentIcons.person_clock_20_regular,
-                        title: context.locale.focused_time_label,
-                        info: focusStats.todaysFocusedTime.toTimeShort(context),
-                        progressPercentage: focusStats
-                            .todaysFocusedTime.inMinutes
-                            .toDiffPercentage(
-                          focusStats.yesterdaysFocusedTime.inMinutes,
-                        ),
-                        onTap: () => context.showSnackAlert(
-                          context.locale.focused_time_snack_alert(
-                            focusStats.todaysFocusedTime.toTimeFull(context),
+                      // Focused time
+                      Expanded(
+                        child: UsageGlanceCard(
+                          isPrimary: true,
+                          invertProgress: true,
+                          icon: FluentIcons.person_clock_20_regular,
+                          title: context.locale.focused_time_label,
+                          info:
+                              focusStats.todaysFocusedTime.toTimeShort(context),
+                          progressPercentage: focusStats
+                              .todaysFocusedTime.inMinutes
+                              .toDiffPercentage(
+                            focusStats.yesterdaysFocusedTime.inMinutes,
                           ),
-                          icon: FluentIcons.person_clock_20_filled,
+                          onTap: () => context.showSnackAlert(
+                            context.locale.focused_time_snack_alert(
+                              focusStats.todaysFocusedTime.toTimeFull(context),
+                            ),
+                            icon: FluentIcons.person_clock_20_filled,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-
-                /// Total focused time from install to till now
-                UsageGlanceCard(
-                  icon: FluentIcons.sound_source_20_regular,
-                  title: context.locale.lifetime_focused_time_label,
-                  info: focusStats.lifetimeFocusedTime.toTimeFull(context),
-                  invertProgress: true,
-                  onTap: () => context.showSnackAlert(
-                    context.locale.lifetime_focused_time_snack_alert(
-                      focusStats.lifetimeFocusedTime.toTimeFull(context),
-                    ),
-                    icon: FluentIcons.sound_source_20_filled,
+                    ],
                   ),
+
+                  6.vBox,
+
+                  /// Total focused time from install to till now
+                  UsageGlanceCard(
+                    icon: FluentIcons.sound_source_20_regular,
+                    title: context.locale.lifetime_focused_time_label,
+                    info: focusStats.lifetimeFocusedTime.toTimeFull(context),
+                    invertProgress: true,
+                    onTap: () => context.showSnackAlert(
+                      context.locale.lifetime_focused_time_snack_alert(
+                        focusStats.lifetimeFocusedTime.toTimeFull(context),
+                      ),
+                      icon: FluentIcons.sound_source_20_filled,
+                    ),
+                  ),
+
+                  6.vBox,
+
+                  /// Streaks
+                  Row(
+                    children: [
+                      Expanded(
+                        child: UsageGlanceCard(
+                          title: context.locale.longest_streak_label,
+                          icon: FluentIcons.trophy_20_regular,
+                          info: context.locale.nDays(longestStreak),
+                        ),
+                      ),
+                      6.hBox,
+                      Expanded(
+                        child: UsageGlanceCard(
+                          title: context.locale.current_streak_label,
+                          icon: FluentIcons.fire_20_regular,
+                          info: context.locale.nDays(currentStreak),
+                        ),
+                      ),
+                    ],
+                  ),
+                  6.vBox,
+
+                  /// Sessions
+                  Row(
+                    children: [
+                      Expanded(
+                        child: UsageGlanceCard(
+                          title: context.locale.successful_sessions_label,
+                          icon: FluentIcons.thumb_like_20_regular,
+                          info: focusStats.successfulSessions.toString(),
+                        ),
+                      ),
+                      6.hBox,
+                      Expanded(
+                        child: UsageGlanceCard(
+                          title: context.locale.failed_sessions_label,
+                          icon: FluentIcons.thumb_dislike_20_regular,
+                          info: focusStats.failedSessions.toString(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ].animateListWhen(
+                  when: !ref.read(appsProvider).hasValue,
+                  effects: DefaultEffects.transitionIn,
+                  interval: 100.ms,
                 ),
-
-                /// Streaks
-                Row(
-                  children: [
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.longest_streak_label,
-                        icon: FluentIcons.trophy_20_regular,
-                        info: context.locale.nDays(longestStreak),
-                      ),
-                    ),
-                    8.hBox,
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.current_streak_label,
-                        icon: FluentIcons.fire_20_regular,
-                        info: context.locale.nDays(currentStreak),
-                      ),
-                    ),
-                  ],
-                ),
-
-                /// Sessions
-                Row(
-                  children: [
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.successful_sessions_label,
-                        icon: FluentIcons.thumb_like_20_regular,
-                        info: focusStats.successfulSessions.toString(),
-                      ),
-                    ),
-                    8.hBox,
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.failed_sessions_label,
-                        icon: FluentIcons.thumb_dislike_20_regular,
-                        info: focusStats.failedSessions.toString(),
-                      ),
-                    ),
-                  ],
-                ),
-              ].animateListWhen(
-                when: !ref.read(appsProvider).hasValue,
-                effects: DefaultEffects.transitionIn,
-                interval: 100.ms,
-              ),
-            ),
-
-            20.vSliverBox,
-
-            /// Invincible mode
-            SliverContentTitle(title: context.locale.invincible_mode_heading),
-
-            /// Information about invincible mode
-            StyledText(
-              context.locale.invincible_mode_info,
-            ).sliver,
-            12.vSliverBox,
-
-            /// Invincible mode
-            DefaultHero(
-              tag: HeroTags.invincibleModeTileTag,
-              child: DefaultListTile(
-                isPrimary: true,
-                switchValue: isInvincibleModeOn,
-                enabled: !isInvincibleModeOn,
-                leadingIcon: FluentIcons.bow_tie_20_regular,
-                titleText: context.locale.invincible_mode_tile_title,
-                onPressed: () =>
-                    _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
               ),
             ).sliver,
+
+            8.vSliverBox,
+
+            const InvincibleModeSettings(),
 
             const SliverTabsBottomPadding(),
           ],

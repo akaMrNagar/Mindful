@@ -11,10 +11,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:sliver_tools/sliver_tools.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 
 class AnimatedAppsList extends ConsumerStatefulWidget {
   /// Animated list of android apps keyed to app packages
@@ -30,7 +30,8 @@ class AnimatedAppsList extends ConsumerStatefulWidget {
   final double itemExtent;
   final String? separatorTitle;
   final List<String> appPackages;
-  final Widget Function(BuildContext context, AndroidApp app) itemBuilder;
+  final Widget Function(
+      BuildContext context, AndroidApp app, ItemPosition position) itemBuilder;
 
   @override
   ConsumerState<AnimatedAppsList> createState() => _AnimatedAppsListState();
@@ -61,54 +62,49 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
       (_) => _postFrameCallback(),
     );
 
-    return MultiSliver(
-      children: [
-        /// Apps list
-        SliverFixedExtentList.builder(
-          itemExtent: widget.itemExtent,
-          itemCount: widget.appPackages.length,
-          itemBuilder: (context, index) {
-            final yOffset = _prevIndices.containsKey(widget.appPackages[index])
-                ? _prevIndices[widget.appPackages[index]]! - index
-                : 0;
+    return SliverFixedExtentList.builder(
+      itemExtent: widget.itemExtent,
+      itemCount: widget.appPackages.length,
+      itemBuilder: (context, index) {
+        final yOffset = _prevIndices.containsKey(widget.appPackages[index])
+            ? _prevIndices[widget.appPackages[index]]! - index
+            : 0;
 
-            /// Read the app package entry
-            final app =
-                ref.read(appsProvider).value?[widget.appPackages[index]];
+        /// Read the app package entry
+        final app = ref.read(appsProvider).value?[widget.appPackages[index]];
 
-            /// Application list tile
-            return Animate(
-              key: Key(widget.appPackages[index]),
-              effects: [
-                MoveEffect(
-                  duration: 300.ms,
-                  curve: Curves.easeOutExpo,
-                  begin: Offset(0, yOffset * widget.itemExtent),
-                  end: const Offset(0, 0),
+        /// Application list tile
+        return Animate(
+          key: Key(widget.appPackages[index]),
+          effects: [
+            MoveEffect(
+              duration: 300.ms,
+              curve: Curves.easeOutExpo,
+              begin: Offset(0, yOffset * widget.itemExtent),
+              end: const Offset(0, 0),
+            ),
+          ],
+
+          /// NOTE: App can't be null in any condition but we put divider
+          /// only if we added empty package in list to separate
+          /// selected and unselected apps mainly on
+          /// [TabProtection => Internet Blocker] screen and
+          /// [TabBedtime => Distracting Apps List] screen
+          child: app == null
+              ? widget.separatorTitle == null
+                  ? const Divider(indent: 12, endIndent: 12)
+                  : ContentSectionHeader(title: widget.separatorTitle!)
+              : widget.itemBuilder(
+                  context,
+                  app,
+                  index == 0
+                      ? ItemPosition.start
+                      : index == widget.appPackages.length - 1
+                          ? ItemPosition.end
+                          : ItemPosition.mid,
                 ),
-              ],
-
-              /// NOTE: App can't be null in any condition but we put divider
-              /// only if we added empty package in list to separate
-              /// selected and unselected apps mainly on
-              /// [TabProtection => Internet Blocker] screen and
-              /// [TabBedtime => Distracting Apps List] screen
-              child: app == null
-                  ? widget.separatorTitle == null
-                      ? const Divider(indent: 12, endIndent: 12)
-                      : Align(
-                          alignment: const Alignment(-0.95, 0.5),
-                          child: StyledText(
-                            widget.separatorTitle!,
-                            color: Theme.of(context).colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                  : widget.itemBuilder(context, app),
-            );
-          },
-        ),
-      ],
+        );
+      },
     );
   }
 }

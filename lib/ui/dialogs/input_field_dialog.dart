@@ -99,45 +99,50 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(48),
-      alignment: Alignment.center,
-      child: DefaultHero(
-        tag: widget.heroTag,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(48),
+        alignment: Alignment.center,
         child: SingleChildScrollView(
-          child: AlertDialog(
-            icon: Icon(widget.dialogIcon),
-            title: StyledText(widget.title),
-            insetPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: TextField(
-                scrollPhysics: const AlwaysScrollableScrollPhysics(),
-                controller: _controller,
-                onSubmitted: (txt) => Navigator.maybePop(context, txt),
-                keyboardType: widget.keyboardType,
-                decoration: InputDecoration(
-                  label: Text(widget.fieldLabel),
-                  hintText: widget.hintText,
-                  prefixIcon: Icon(widget.fieldIcon),
-                  helperText: widget.helperText,
-                  helperMaxLines: 3,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
+          child: DefaultHero(
+            tag: widget.heroTag,
+            child: AlertDialog(
+              scrollable: true,
+              icon: Icon(widget.dialogIcon),
+              title: StyledText(widget.title, fontSize: 16),
+              insetPadding: EdgeInsets.zero,
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: TextField(
+                    controller: _controller,
+                    onSubmitted: (txt) => Navigator.maybePop(context, txt),
+                    keyboardType: widget.keyboardType,
+                    decoration: InputDecoration(
+                      label: Text(widget.fieldLabel),
+                      hintText: widget.hintText,
+                      helperText: widget.helperText,
+                      helperMaxLines: 10,
+                      prefixIcon: Icon(widget.fieldIcon),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
                   ),
                 ),
               ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.maybePop(context),
+                  child: Text(widget.negativeBtnLabel),
+                ),
+                TextButton(
+                  onPressed: () =>
+                      Navigator.maybePop(context, _controller.text),
+                  child: Text(widget.positiveBtnLabel),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.maybePop(context),
-                child: Text(widget.negativeBtnLabel),
-              ),
-              TextButton(
-                onPressed: () => Navigator.maybePop(context, _controller.text),
-                child: Text(widget.positiveBtnLabel),
-              ),
-            ],
           ),
         ),
       ),

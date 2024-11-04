@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -21,7 +22,7 @@ import 'package:mindful/core/utils/locales.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,10 +38,13 @@ class TabGeneral extends ConsumerWidget {
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appearance
-        SliverContentTitle(title: context.locale.appearance_heading),
+        ContentSectionHeader(
+          title: context.locale.appearance_heading,
+        ).sliver,
 
         /// Amoled dark
         DefaultListTile(
+          position: ItemPosition.start,
           switchValue: mindfulSettings.useAmoledDark,
           titleText: context.locale.amoled_dark_tile_title,
           subtitleText: context.locale.amoled_dark_tile_subtitle,
@@ -50,10 +54,10 @@ class TabGeneral extends ConsumerWidget {
 
         /// Theme mode
         DefaultDropdownTile<AppThemeMode>(
+          position: ItemPosition.mid,
           value: mindfulSettings.themeMode,
           dialogIcon: FluentIcons.dark_theme_20_filled,
           label: context.locale.theme_mode_tile_title,
-          // onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
           onSelected:
               ref.read(mindfulSettingsProvider.notifier).changeThemeMode,
           items: [
@@ -74,6 +78,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// Material Color
         DefaultDropdownTile<String>(
+          position: ItemPosition.end,
           label: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.accentColor,
@@ -81,7 +86,7 @@ class TabGeneral extends ConsumerWidget {
           trailingBuilder: (item) => RoundedContainer(
             height: 18,
             width: 18,
-            circularRadius: 15,
+            circularRadius: 18,
             color: AppTheme.materialColors[item],
           ),
           items: AppTheme.materialColors.entries
@@ -95,10 +100,11 @@ class TabGeneral extends ConsumerWidget {
 
         /// Default settings
         12.vSliverBox,
-        SliverContentTitle(title: context.locale.defaults_heading),
+        ContentSectionHeader(title: context.locale.defaults_heading).sliver,
 
         /// App Language
         DefaultDropdownTile<String>(
+          position: ItemPosition.start,
           label: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.localeCode,
@@ -114,6 +120,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// Bottom navigation
         DefaultListTile(
+          position: ItemPosition.mid,
           switchValue: mindfulSettings.useBottomNavigation,
           titleText: context.locale.bottom_navigation_tile_title,
           subtitleText: context.locale.bottom_navigation_tile_subtitle,
@@ -123,6 +130,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// Data reset time
         DefaultListTile(
+          position: ItemPosition.end,
           titleText: context.locale.data_reset_time_tile_title,
           subtitleText: context.locale.data_reset_time_tile_subtitle,
           trailing: StyledText(

@@ -89,7 +89,12 @@
         "description": "Separator used between time like, 10 hours 'and' 15 minutes"
     },
     "@----------------------------- SHARED STRINGS -----------------------------": {},
+    "timer_status_active": "Active",
+    "timer_status_paused": "Paused",
+    "create_button": "Create",
+    "update_button": "Update",
     "dialog_button_cancel": "Cancel",
+    "dialog_button_remove": "Remove",
     "dialog_button_set_timer": "Set timer",
     "dialog_button_delete_timer": "Delete timer",
     "development_dialog_info": "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!",
@@ -219,7 +224,6 @@
             }
         }
     },
-    "remove_website_dialog_button_remove": "Remove",
     "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "bedtime_tab_title": "Bedtime",
     "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
@@ -329,6 +333,40 @@
             }
         }
     },
+    "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
+    "create_restriction_group_fab_button": "Create Group",
+    "restriction_group_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
+    "restriction_group_time_used": "Time used: {timeString}",
+    "@restriction_group_time_used": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "1 hour, 30 minutes"
+            }
+        }
+    },
+    "restriction_group_time_left": "Time left: {timeString}",
+    "@restriction_group_time_left": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "1 hour, 30 minutes"
+            }
+        }
+    },
+    "restriction_group_heading": "Restriction group",
+    "restriction_group_label_tile_title": "Label",
+    "restriction_group_timer_tile_title": "Group timer",
+    "remove_restriction_group_dialog_title": "Remove group",
+    "remove_restriction_group_dialog_info": "Are you sure? you want to remove '{groupName}' from restriction groups.",
+    "@remove_restriction_group_dialog_info": {
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Games"
+            }
+        }
+    },
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
     "emergency_fab_button": "Emergency",
     "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",
@@ -347,7 +385,6 @@
     "app_timer_tile_title": "App timer",
     "app_timer_tile_subtitle_no_timer": "Timer not set.",
     "app_timer_tile_subtitle_unavailable": "Timer not available for important apps.",
-    "app_timer_tile_trailing_paused": "Paused",
     "app_timer_invincible_mode_snack_alert": "Due to invincible mode, modifications to paused app's timer is not allowed.",
     "internet_access_tile_title": "Internet access",
     "internet_access_tile_subtitle": "Switch off to block app's internet.",
