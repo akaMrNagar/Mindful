@@ -12,13 +12,14 @@ class CreateRestrictionGroupFab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FloatingActionButton.extended(
-      label: Text(context.locale.create_restriction_group_fab_button),
+      label: Text(context.locale.create_group_fab_button),
       icon: const Icon(FluentIcons.tab_add_20_filled),
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: () async {
-        final group =
-            await showCreateUpdateRestrictionGroupSheet(context: context);
+        final group = await showCreateUpdateRestrictionGroupSheet(
+          context: context,
+        );
 
         if (group == null) return;
 

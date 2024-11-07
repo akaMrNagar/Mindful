@@ -51,7 +51,10 @@ class HeroTags {
   static String appSessionAndCooldownTileTag(String package) =>
       "appDashboard.sessionAndCooldownTile.$package";
 
-  /// Tag used to identify the FAB for timer picker in focus mode.
+  /// Tag used to identify in focus mode.
+  static const focusModeFABTag = "focus.focusModeFab";
+
+  /// Tag used to identify the tile for timer picker in focus mode.
   static const focusModeTimerTileTag = "focus.focusSessionTimerTile";
 
   /// Tag used to identify the FAB for timer picker in focus mode.

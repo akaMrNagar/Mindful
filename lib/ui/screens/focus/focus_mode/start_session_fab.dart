@@ -16,7 +16,6 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
-import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 
 class StartSessionFAB extends ConsumerWidget {
   const StartSessionFAB({super.key});
@@ -24,7 +23,7 @@ class StartSessionFAB extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FloatingActionButton.extended(
-      // heroTag: HeroTags.focusModeTimerTileTag,
+      heroTag: HeroTags.focusModeFABTag,
       icon: const Icon(FluentIcons.target_arrow_20_filled),
       label: Text(context.locale.focus_session_start_fab_button),
       backgroundColor: Theme.of(context).colorScheme.primary,
@@ -34,10 +33,10 @@ class StartSessionFAB extends ConsumerWidget {
   }
 
   void _startFocusSession(BuildContext context, WidgetRef ref) async {
-    final focusMode = ref.read(focusModeProvider);
+    final focusModeModel = ref.read(focusModeProvider);
 
     /// If another focus session is already active
-    if (focusMode.activeSessionId != null) {
+    if (focusModeModel.activeSession != null) {
       context.showSnackAlert(
         context.locale.focus_session_already_active_snack_alert,
       );
@@ -45,23 +44,16 @@ class StartSessionFAB extends ConsumerWidget {
     }
 
     // If no distracting apps selected
-    if (focusMode.distractingApps.isEmpty) {
+    if (focusModeModel.focusProfile.distractingApps.isEmpty) {
       context.showSnackAlert(
         context.locale.focus_session_minimum_apps_snack_alert,
       );
       return;
     }
 
-    final timerSeconds = await showFocusTimerPicker(
-      context: context,
-      heroTag: HeroTags.focusModeTimerTileTag,
-    );
-
-    /// Return if user cancelled duration picker
-    if (timerSeconds == null || timerSeconds <= 0) return;
     final newSession = await ref
         .read(focusModeProvider.notifier)
-        .startNewSession(durationSeconds: timerSeconds);
+        .startNewSession();
 
     await Future.delayed(300.ms);
     if (context.mounted) {

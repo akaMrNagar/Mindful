@@ -23,11 +23,11 @@ class SliverActiveSessionAlert extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeSessionId =
-        ref.watch(focusModeProvider.select((v) => v.activeSessionId));
+    final activeSession =
+        ref.watch(focusModeProvider.select((v) => v.activeSession));
 
     return SliverPrimaryActionContainer(
-      isVisible: activeSessionId != null,
+      isVisible: activeSession != null,
       icon: FluentIcons.timer_20_regular,
       margin: const EdgeInsets.symmetric(vertical: 6),
       title: context.locale.active_session_card_title,
@@ -35,12 +35,11 @@ class SliverActiveSessionAlert extends ConsumerWidget {
       positiveBtn: FilledButton(
         child: Text(context.locale.active_session_card_view_button),
         onPressed: () {
-          final session = ref.read(focusModeProvider.notifier).activeSession;
-          if (session == null) return;
+          if (activeSession == null) return;
 
           Navigator.of(context).pushNamed(
             AppRoutes.activeSessionScreen,
-            arguments: session,
+            arguments: activeSession,
           );
         },
       ),

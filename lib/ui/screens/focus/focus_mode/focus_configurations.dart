@@ -31,24 +31,12 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 class FocusQuickActions extends ConsumerWidget {
   const FocusQuickActions({super.key});
-  void _pickAppTimer(
+
+  void _pickSessionDuration(
     BuildContext context,
     WidgetRef ref,
     int prevTimer,
   ) async {
-    // final isInvincibleModeOn = ref.read(
-    //   mindfulSettingsProvider.select((v) => v.isInvincibleModeOn),
-    // );
-
-    // if (isInvincibleModeOn &&
-    //     prevTimer > 0 &&
-    //     app.screenTimeThisWeek[todayOfWeek] >= prevTimer) {
-    //   context.showSnackAlert(
-    //     context.locale.app_timer_invincible_mode_snack_alert,
-    //   );
-    //   return;
-    // }
-
     final newTimer = await showFocusTimerPicker(
       heroTag: HeroTags.focusModeTimerTileTag,
       context: context,
@@ -56,18 +44,19 @@ class FocusQuickActions extends ConsumerWidget {
     );
 
     if (newTimer == null || newTimer == prevTimer) return;
-
-    // ref
-    //     .read(appsRestrictionsProvider.notifier)
-    //     .updateAppTimer(app.packageName, newTimer);
+    ref.read(focusModeProvider.notifier).setSessionDuration(newTimer);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sessionType =
-        ref.watch(focusModeProvider.select((v) => v.sessionType));
-    final shouldStartDnd =
-        ref.watch(focusModeProvider.select((v) => v.shouldStartDnd));
+        ref.watch(focusModeProvider.select((v) => v.focusMode.sessionType));
+
+    final shouldStartDnd = ref
+        .watch(focusModeProvider.select((v) => v.focusProfile.shouldStartDnd));
+
+    final sessionDuration = ref
+        .watch(focusModeProvider.select((v) => v.focusProfile.sessionDuration));
 
     return MultiSliver(
       children: [
@@ -95,15 +84,14 @@ class FocusQuickActions extends ConsumerWidget {
             position: ItemPosition.mid,
             titleText: "Session duration",
             subtitle: StyledText(
-              5348.seconds.toTimeFull(context),
+              sessionDuration.seconds.toTimeFull(context),
               fontSize: 14,
               isSubtitle: true,
             ),
-            // leadingIcon: FluentIcons.timer_20_regular,
-            onPressed: () => _pickAppTimer(
+            onPressed: () => _pickSessionDuration(
               context,
               ref,
-              0,
+              sessionDuration,
             ),
           ),
         ),

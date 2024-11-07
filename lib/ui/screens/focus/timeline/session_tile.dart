@@ -56,7 +56,7 @@ class SessionTile extends StatelessWidget {
       borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
-      color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.5),
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
       circularRadius: 24,
       child: Row(
         children: [

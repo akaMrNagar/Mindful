@@ -53,6 +53,9 @@ class SliverUsageCards extends StatelessWidget {
             onSelectionChanged: (set) => onUsageTypeChanged(set.first),
             style: const ButtonStyle().copyWith(
               visualDensity: VisualDensity.standard,
+              foregroundColor: WidgetStatePropertyAll(
+                Theme.of(context).iconTheme.color,
+              ),
               padding: const WidgetStatePropertyAll(EdgeInsets.all(12)),
               side: WidgetStatePropertyAll(
                 BorderSide(

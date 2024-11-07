@@ -47,7 +47,7 @@ class UsageGlanceCard extends StatelessWidget {
         : colors[invertProgress ? 0 : 1];
 
     return RoundedContainer(
-      circularRadius: 8,
+      circularRadius: 6,
       padding: const EdgeInsets.all(16),
       color:
           isPrimary ? Theme.of(context).colorScheme.secondaryContainer : null,

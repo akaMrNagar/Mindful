@@ -99,15 +99,15 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
       context.locale.active_session_quote_three,
       context.locale.active_session_quote_four,
       context.locale.active_session_quote_five(
-        widget.session.durationSecs.seconds.toTimeFull(context, replaceCommaWithAnd: true),
+        widget.session.durationSecs.seconds
+            .toTimeFull(context, replaceCommaWithAnd: true),
       ),
     ];
     final isSessionActive = _remainingTime.inSeconds > 0;
     final progress = !isSessionActive
         ? 100
         : 100 -
-            ((_remainingTime.inSeconds / widget.session.durationSecs) *
-                100);
+            ((_remainingTime.inSeconds / widget.session.durationSecs) * 100);
 
     final quoteIndex = (progress / 20).floor() - 1;
 
@@ -181,7 +181,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
                   child: FilledButton.tonalIcon(
                     label:
                         Text(context.locale.active_session_giveup_dialog_title),
-                    icon: const Icon(FluentIcons.thumb_dislike_20_filled),
+                    icon: const Icon(FluentIcons.emoji_sad_20_filled),
                     onPressed: _giveUp,
                   ),
                 ).centered.sliver,
@@ -206,6 +206,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
 
     if (!confirm) return;
     await ref.read(focusModeProvider.notifier).giveUpOnActiveSession();
+    await Future.delayed(1.seconds);
 
     /// Show alert and go back
     if (!mounted) return;

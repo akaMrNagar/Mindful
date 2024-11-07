@@ -71,8 +71,11 @@ class DefaultListTile extends StatelessWidget {
           leadingIcon != null
               ? Icon(
                   leadingIcon,
-                  color:
-                      enabled ? accent : Theme.of(context).colorScheme.outline,
+                  color: enabled
+                      ? accent
+                      : isPrimary
+                          ? Theme.of(context).colorScheme.secondaryContainer
+                          : Theme.of(context).colorScheme.outline,
                 )
               : leading ?? 0.hBox,
 
@@ -90,9 +93,7 @@ class DefaultListTile extends StatelessWidget {
                         titleText!,
                         fontSize: 16,
                         fontWeight: isPrimary ? FontWeight.w500 : null,
-                        color: enabled
-                            ? accent
-                            : Theme.of(context).colorScheme.outline,
+                        color: enabled ? accent : Theme.of(context).hintColor,
                       )
                     : title ?? 0.vBox,
 

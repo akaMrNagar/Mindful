@@ -50,15 +50,17 @@ class TabDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentStreak =
-        ref.watch(focusModeProvider.select((v) => v.currentStreak));
+        ref.watch(focusModeProvider.select((v) => v.focusMode.currentStreak));
 
     final longestStreak =
-        ref.watch(focusModeProvider.select((v) => v.longestStreak));
+        ref.watch(focusModeProvider.select((v) => v.focusMode.longestStreak));
 
     final focusStats = ref.watch(focusStatsProvider);
 
     final username =
         ref.watch(mindfulSettingsProvider.select((v) => v.username));
+
+    const tilesGap = 6;
 
     return DefaultRefreshIndicator(
       onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
@@ -121,7 +123,7 @@ class TabDashboard extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      6.hBox,
+                      tilesGap.hBox,
 
                       // Focused time
                       Expanded(
@@ -148,7 +150,7 @@ class TabDashboard extends ConsumerWidget {
                     ],
                   ),
 
-                  6.vBox,
+                  tilesGap.vBox,
 
                   /// Total focused time from install to till now
                   UsageGlanceCard(
@@ -164,7 +166,7 @@ class TabDashboard extends ConsumerWidget {
                     ),
                   ),
 
-                  6.vBox,
+                  tilesGap.vBox,
 
                   /// Streaks
                   Row(
@@ -176,7 +178,7 @@ class TabDashboard extends ConsumerWidget {
                           info: context.locale.nDays(longestStreak),
                         ),
                       ),
-                      6.hBox,
+                      tilesGap.hBox,
                       Expanded(
                         child: UsageGlanceCard(
                           title: context.locale.current_streak_label,
@@ -186,7 +188,7 @@ class TabDashboard extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  6.vBox,
+                  tilesGap.vBox,
 
                   /// Sessions
                   Row(
@@ -198,7 +200,7 @@ class TabDashboard extends ConsumerWidget {
                           info: focusStats.successfulSessions.toString(),
                         ),
                       ),
-                      6.hBox,
+                      tilesGap.hBox,
                       Expanded(
                         child: UsageGlanceCard(
                           title: context.locale.failed_sessions_label,

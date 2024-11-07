@@ -1,11 +1,14 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_distracting_apps_list.dart';
@@ -22,20 +25,21 @@ Future<RestrictionGroup?> showCreateUpdateRestrictionGroupSheet({
       builder: (sheetContext) => _RestrictionGroupBottomSheet(group: group),
     );
 
-class _RestrictionGroupBottomSheet extends StatefulWidget {
+class _RestrictionGroupBottomSheet extends ConsumerStatefulWidget {
   const _RestrictionGroupBottomSheet({this.group});
 
   final RestrictionGroup? group;
 
   @override
-  State<_RestrictionGroupBottomSheet> createState() =>
+  ConsumerState<_RestrictionGroupBottomSheet> createState() =>
       _RestrictionGroupBottomSheetState();
 }
 
 class _RestrictionGroupBottomSheetState
-    extends State<_RestrictionGroupBottomSheet> {
+    extends ConsumerState<_RestrictionGroupBottomSheet> {
   final _controller = TextEditingController();
   List<String> _selectedApps = [];
+  List<String> _unSelectedApps = [];
   int _timerSec = 0;
 
   @override
@@ -44,6 +48,13 @@ class _RestrictionGroupBottomSheetState
     _controller.text = widget.group?.groupName ?? "Social";
     _timerSec = widget.group?.timerSec ?? 0;
     _selectedApps = widget.group?.distractingApps.toList() ?? [];
+
+    final appRestrictions = ref.read(appsRestrictionsProvider);
+    var allApps =
+        ref.read(appsProvider.select((v) => v.value?.keys.toList())) ?? [];
+
+    _unSelectedApps = allApps
+      ..removeWhere((e) => (appRestrictions[e]?.associatedGroupId) != null);
   }
 
   @override
@@ -76,7 +87,6 @@ class _RestrictionGroupBottomSheetState
             TextField(
               scrollPhysics: const AlwaysScrollableScrollPhysics(),
               controller: _controller,
-              onSubmitted: (txt) => Navigator.maybePop(context, txt),
               decoration: InputDecoration(
                 label: Text(context.locale.restriction_group_label_tile_title),
                 hintText: "Social Media, Entertainment, Games, etc",
@@ -106,6 +116,8 @@ class _RestrictionGroupBottomSheetState
                 slivers: [
                   SliverDistractingAppsList(
                     distractingApps: _selectedApps,
+                    filteredUnselectedApps:
+                        _unSelectedApps.isEmpty ? null : _unSelectedApps,
                     onSelectionChanged: (package, isSelected) {
                       isSelected
                           ? _selectedApps.add(package)
@@ -128,7 +140,9 @@ class _RestrictionGroupBottomSheetState
                     child: Text(context.locale.dialog_button_cancel),
                   ),
                   FilledButton(
-                    onPressed: _selectedApps.isEmpty || _timerSec <= 0
+                    onPressed: _selectedApps.isEmpty ||
+                            _timerSec <= 0 ||
+                            _controller.text.isEmpty
                         ? null
                         : () => Navigator.pop(
                               context,

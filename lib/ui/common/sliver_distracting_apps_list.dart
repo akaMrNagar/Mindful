@@ -28,9 +28,11 @@ class SliverDistractingAppsList extends ConsumerWidget {
     super.key,
     required this.distractingApps,
     required this.onSelectionChanged,
+    this.filteredUnselectedApps,
   });
 
   final List<String> distractingApps;
+  final List<String>? filteredUnselectedApps;
   final Function(String package, bool isSelected) onSelectionChanged;
 
   @override
@@ -41,11 +43,11 @@ class SliverDistractingAppsList extends ConsumerWidget {
 
     /// Selected apps which are installed
     final selectedApps =
-        distractingApps.where((e) => allApps.value!.contains(e));
+        distractingApps.where((e) => allApps.value?.contains(e) ?? false);
 
     /// Unselected apps which are installed
-    final unselectedApps =
-        allApps.value!.where((e) => !distractingApps.contains(e));
+    final unselectedApps = (filteredUnselectedApps ?? allApps.value ?? [])
+        .where((e) => !distractingApps.contains(e));
 
     return MultiSliver(
       children: [
@@ -72,15 +74,13 @@ class SliverDistractingAppsList extends ConsumerWidget {
 
                     ...unselectedApps,
                   ],
+                  // ].where((e) => e.contains("utu")).toList(), // For searching
                   itemBuilder: (context, app, _) {
                     final isSelected =
                         distractingApps.contains(app.packageName);
                     return DefaultListTile(
                       isSelected: app.isImpSysApp ? null : isSelected,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surfaceContainer
-                          .withOpacity(0.5),
+                      color: Theme.of(context).colorScheme.surfaceContainerLow,
                       position: _resolvePosition(
                         app.packageName,
                         selectedApps,

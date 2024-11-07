@@ -26,7 +26,7 @@ class FocusDistractingAppsList extends ConsumerWidget {
     bool isSelected,
   ) async {
     // User want to remove app from list and session is active
-    if (!isSelected && ref.read(focusModeProvider).activeSessionId != null) {
+    if (!isSelected && ref.read(focusModeProvider).activeSession != null) {
       context.showSnackAlert(
         context.locale.focus_distracting_apps_removal_snack_alert,
       );
@@ -41,8 +41,8 @@ class FocusDistractingAppsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final distractingApps =
-        ref.watch(focusModeProvider.select((v) => v.distractingApps));
+    final distractingApps = ref
+        .watch(focusModeProvider.select((v) => v.focusProfile.distractingApps));
 
     return SliverDistractingAppsList(
       distractingApps: distractingApps,

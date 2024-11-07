@@ -13,6 +13,7 @@ import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
+import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
 import 'package:mindful/core/enums/session_state.dart';
@@ -26,6 +27,7 @@ part 'dynamic_records_dao.g.dart';
     AppRestrictionTable,
     CrashLogsTable,
     FocusSessionsTable,
+    FocusProfileTable,
     RestrictionGroupsTable,
   ],
 )
@@ -106,9 +108,27 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   Future<int> removeRestrictionGroupById(RestrictionGroup group) async =>
       delete(restrictionGroupsTable).delete(group);
 
+  /// Fetch the [FocusProfile] from database by id, if not found then return default
+  Future<FocusProfile> fetchFocusProfileBySessionType(
+          SessionType sessionType) async =>
+      await (select(focusProfileTable)
+            ..where((e) => e.sessionType.equalsValue(sessionType)))
+          .getSingleOrNull() ??
+      FocusProfileTable.defaultFocusProfileModel;
+
+  /// Inserts OR Updates a single [FocusSession] object in the database.
+  Future<int> insertFocusProfileBySessionType(FocusProfile profile) async =>
+      into(focusProfileTable).insert(profile, mode: InsertMode.insertOrReplace);
+
   /// Fetch the [FocusSession] from database by id, if not found then return null
   Future<FocusSession?> fetchFocusSessionById(int id) async =>
       (select(focusSessionsTable)..where((e) => e.id.equals(id)))
+          .getSingleOrNull();
+
+  /// Fetch the [FocusSession] from database by [SessionState.active], if not found then return null
+  Future<FocusSession?> fetchLastActiveFocusSession() async =>
+      (select(focusSessionsTable)
+            ..where((e) => e.state.equalsValue(SessionState.active)))
           .getSingleOrNull();
 
   /// Inserts a single [FocusSession] object in the database.

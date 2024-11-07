@@ -1168,24 +1168,6 @@ class $FocusModeTableTable extends FocusModeTable
               type: DriftSqlType.int, requiredDuringInsert: true)
           .withConverter<SessionType>(
               $FocusModeTableTable.$convertersessionType);
-  static const VerificationMeta _shouldStartDndMeta =
-      const VerificationMeta('shouldStartDnd');
-  @override
-  late final GeneratedColumn<bool> shouldStartDnd = GeneratedColumn<bool>(
-      'should_start_dnd', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("should_start_dnd" IN (0, 1))'));
-  static const VerificationMeta _distractingAppsMeta =
-      const VerificationMeta('distractingApps');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<String>, String>
-      distractingApps = GeneratedColumn<String>(
-              'distracting_apps', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>(
-              $FocusModeTableTable.$converterdistractingApps);
   static const VerificationMeta _longestStreakMeta =
       const VerificationMeta('longestStreak');
   @override
@@ -1204,23 +1186,9 @@ class $FocusModeTableTable extends FocusModeTable
   late final GeneratedColumn<DateTime> lastTimeStreakUpdated =
       GeneratedColumn<DateTime>('last_time_streak_updated', aliasedName, false,
           type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _activeSessionIdMeta =
-      const VerificationMeta('activeSessionId');
   @override
-  late final GeneratedColumn<int> activeSessionId = GeneratedColumn<int>(
-      'active_session_id', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns => [
-        id,
-        sessionType,
-        shouldStartDnd,
-        distractingApps,
-        longestStreak,
-        currentStreak,
-        lastTimeStreakUpdated,
-        activeSessionId
-      ];
+  List<GeneratedColumn> get $columns =>
+      [id, sessionType, longestStreak, currentStreak, lastTimeStreakUpdated];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1235,15 +1203,6 @@ class $FocusModeTableTable extends FocusModeTable
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     context.handle(_sessionTypeMeta, const VerificationResult.success());
-    if (data.containsKey('should_start_dnd')) {
-      context.handle(
-          _shouldStartDndMeta,
-          shouldStartDnd.isAcceptableOrUnknown(
-              data['should_start_dnd']!, _shouldStartDndMeta));
-    } else if (isInserting) {
-      context.missing(_shouldStartDndMeta);
-    }
-    context.handle(_distractingAppsMeta, const VerificationResult.success());
     if (data.containsKey('longest_streak')) {
       context.handle(
           _longestStreakMeta,
@@ -1268,12 +1227,6 @@ class $FocusModeTableTable extends FocusModeTable
     } else if (isInserting) {
       context.missing(_lastTimeStreakUpdatedMeta);
     }
-    if (data.containsKey('active_session_id')) {
-      context.handle(
-          _activeSessionIdMeta,
-          activeSessionId.isAcceptableOrUnknown(
-              data['active_session_id']!, _activeSessionIdMeta));
-    }
     return context;
   }
 
@@ -1288,11 +1241,6 @@ class $FocusModeTableTable extends FocusModeTable
       sessionType: $FocusModeTableTable.$convertersessionType.fromSql(
           attachedDatabase.typeMapping
               .read(DriftSqlType.int, data['${effectivePrefix}session_type'])!),
-      shouldStartDnd: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}should_start_dnd'])!,
-      distractingApps: $FocusModeTableTable.$converterdistractingApps.fromSql(
-          attachedDatabase.typeMapping.read(DriftSqlType.string,
-              data['${effectivePrefix}distracting_apps'])!),
       longestStreak: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}longest_streak'])!,
       currentStreak: attachedDatabase.typeMapping
@@ -1300,8 +1248,6 @@ class $FocusModeTableTable extends FocusModeTable
       lastTimeStreakUpdated: attachedDatabase.typeMapping.read(
           DriftSqlType.dateTime,
           data['${effectivePrefix}last_time_streak_updated'])!,
-      activeSessionId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}active_session_id']),
     );
   }
 
@@ -1312,8 +1258,6 @@ class $FocusModeTableTable extends FocusModeTable
 
   static JsonTypeConverter2<SessionType, int, int> $convertersessionType =
       const EnumIndexConverter<SessionType>(SessionType.values);
-  static TypeConverter<List<String>, String> $converterdistractingApps =
-      const ListStringConverter();
 }
 
 class FocusMode extends DataClass implements Insertable<FocusMode> {
@@ -1323,12 +1267,6 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
   /// Selected session type
   final SessionType sessionType;
 
-  /// Flag indicating if to start DND during the focus session
-  final bool shouldStartDnd;
-
-  /// List of app's packages which are selected as distracting apps.
-  final List<String> distractingApps;
-
   /// Longest streak (number of days) till now
   final int longestStreak;
 
@@ -1337,18 +1275,12 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
 
   /// The [DateTime] when the streak was updated last time
   final DateTime lastTimeStreakUpdated;
-
-  /// Id of current active [FocusSession]
-  final int? activeSessionId;
   const FocusMode(
       {required this.id,
       required this.sessionType,
-      required this.shouldStartDnd,
-      required this.distractingApps,
       required this.longestStreak,
       required this.currentStreak,
-      required this.lastTimeStreakUpdated,
-      this.activeSessionId});
+      required this.lastTimeStreakUpdated});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1357,18 +1289,9 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
       map['session_type'] = Variable<int>(
           $FocusModeTableTable.$convertersessionType.toSql(sessionType));
     }
-    map['should_start_dnd'] = Variable<bool>(shouldStartDnd);
-    {
-      map['distracting_apps'] = Variable<String>($FocusModeTableTable
-          .$converterdistractingApps
-          .toSql(distractingApps));
-    }
     map['longest_streak'] = Variable<int>(longestStreak);
     map['current_streak'] = Variable<int>(currentStreak);
     map['last_time_streak_updated'] = Variable<DateTime>(lastTimeStreakUpdated);
-    if (!nullToAbsent || activeSessionId != null) {
-      map['active_session_id'] = Variable<int>(activeSessionId);
-    }
     return map;
   }
 
@@ -1376,14 +1299,9 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
     return FocusModeTableCompanion(
       id: Value(id),
       sessionType: Value(sessionType),
-      shouldStartDnd: Value(shouldStartDnd),
-      distractingApps: Value(distractingApps),
       longestStreak: Value(longestStreak),
       currentStreak: Value(currentStreak),
       lastTimeStreakUpdated: Value(lastTimeStreakUpdated),
-      activeSessionId: activeSessionId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(activeSessionId),
     );
   }
 
@@ -1394,14 +1312,10 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
       id: serializer.fromJson<int>(json['id']),
       sessionType: $FocusModeTableTable.$convertersessionType
           .fromJson(serializer.fromJson<int>(json['sessionType'])),
-      shouldStartDnd: serializer.fromJson<bool>(json['shouldStartDnd']),
-      distractingApps:
-          serializer.fromJson<List<String>>(json['distractingApps']),
       longestStreak: serializer.fromJson<int>(json['longestStreak']),
       currentStreak: serializer.fromJson<int>(json['currentStreak']),
       lastTimeStreakUpdated:
           serializer.fromJson<DateTime>(json['lastTimeStreakUpdated']),
-      activeSessionId: serializer.fromJson<int?>(json['activeSessionId']),
     );
   }
   @override
@@ -1411,153 +1325,106 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
       'id': serializer.toJson<int>(id),
       'sessionType': serializer.toJson<int>(
           $FocusModeTableTable.$convertersessionType.toJson(sessionType)),
-      'shouldStartDnd': serializer.toJson<bool>(shouldStartDnd),
-      'distractingApps': serializer.toJson<List<String>>(distractingApps),
       'longestStreak': serializer.toJson<int>(longestStreak),
       'currentStreak': serializer.toJson<int>(currentStreak),
       'lastTimeStreakUpdated':
           serializer.toJson<DateTime>(lastTimeStreakUpdated),
-      'activeSessionId': serializer.toJson<int?>(activeSessionId),
     };
   }
 
   FocusMode copyWith(
           {int? id,
           SessionType? sessionType,
-          bool? shouldStartDnd,
-          List<String>? distractingApps,
           int? longestStreak,
           int? currentStreak,
-          DateTime? lastTimeStreakUpdated,
-          Value<int?> activeSessionId = const Value.absent()}) =>
+          DateTime? lastTimeStreakUpdated}) =>
       FocusMode(
         id: id ?? this.id,
         sessionType: sessionType ?? this.sessionType,
-        shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
-        distractingApps: distractingApps ?? this.distractingApps,
         longestStreak: longestStreak ?? this.longestStreak,
         currentStreak: currentStreak ?? this.currentStreak,
         lastTimeStreakUpdated:
             lastTimeStreakUpdated ?? this.lastTimeStreakUpdated,
-        activeSessionId: activeSessionId.present
-            ? activeSessionId.value
-            : this.activeSessionId,
       );
   @override
   String toString() {
     return (StringBuffer('FocusMode(')
           ..write('id: $id, ')
           ..write('sessionType: $sessionType, ')
-          ..write('shouldStartDnd: $shouldStartDnd, ')
-          ..write('distractingApps: $distractingApps, ')
           ..write('longestStreak: $longestStreak, ')
           ..write('currentStreak: $currentStreak, ')
-          ..write('lastTimeStreakUpdated: $lastTimeStreakUpdated, ')
-          ..write('activeSessionId: $activeSessionId')
+          ..write('lastTimeStreakUpdated: $lastTimeStreakUpdated')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(
-      id,
-      sessionType,
-      shouldStartDnd,
-      distractingApps,
-      longestStreak,
-      currentStreak,
-      lastTimeStreakUpdated,
-      activeSessionId);
+      id, sessionType, longestStreak, currentStreak, lastTimeStreakUpdated);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is FocusMode &&
           other.id == this.id &&
           other.sessionType == this.sessionType &&
-          other.shouldStartDnd == this.shouldStartDnd &&
-          other.distractingApps == this.distractingApps &&
           other.longestStreak == this.longestStreak &&
           other.currentStreak == this.currentStreak &&
-          other.lastTimeStreakUpdated == this.lastTimeStreakUpdated &&
-          other.activeSessionId == this.activeSessionId);
+          other.lastTimeStreakUpdated == this.lastTimeStreakUpdated);
 }
 
 class FocusModeTableCompanion extends UpdateCompanion<FocusMode> {
   final Value<int> id;
   final Value<SessionType> sessionType;
-  final Value<bool> shouldStartDnd;
-  final Value<List<String>> distractingApps;
   final Value<int> longestStreak;
   final Value<int> currentStreak;
   final Value<DateTime> lastTimeStreakUpdated;
-  final Value<int?> activeSessionId;
   const FocusModeTableCompanion({
     this.id = const Value.absent(),
     this.sessionType = const Value.absent(),
-    this.shouldStartDnd = const Value.absent(),
-    this.distractingApps = const Value.absent(),
     this.longestStreak = const Value.absent(),
     this.currentStreak = const Value.absent(),
     this.lastTimeStreakUpdated = const Value.absent(),
-    this.activeSessionId = const Value.absent(),
   });
   FocusModeTableCompanion.insert({
     this.id = const Value.absent(),
     required SessionType sessionType,
-    required bool shouldStartDnd,
-    required List<String> distractingApps,
     required int longestStreak,
     required int currentStreak,
     required DateTime lastTimeStreakUpdated,
-    this.activeSessionId = const Value.absent(),
   })  : sessionType = Value(sessionType),
-        shouldStartDnd = Value(shouldStartDnd),
-        distractingApps = Value(distractingApps),
         longestStreak = Value(longestStreak),
         currentStreak = Value(currentStreak),
         lastTimeStreakUpdated = Value(lastTimeStreakUpdated);
   static Insertable<FocusMode> custom({
     Expression<int>? id,
     Expression<int>? sessionType,
-    Expression<bool>? shouldStartDnd,
-    Expression<String>? distractingApps,
     Expression<int>? longestStreak,
     Expression<int>? currentStreak,
     Expression<DateTime>? lastTimeStreakUpdated,
-    Expression<int>? activeSessionId,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (sessionType != null) 'session_type': sessionType,
-      if (shouldStartDnd != null) 'should_start_dnd': shouldStartDnd,
-      if (distractingApps != null) 'distracting_apps': distractingApps,
       if (longestStreak != null) 'longest_streak': longestStreak,
       if (currentStreak != null) 'current_streak': currentStreak,
       if (lastTimeStreakUpdated != null)
         'last_time_streak_updated': lastTimeStreakUpdated,
-      if (activeSessionId != null) 'active_session_id': activeSessionId,
     });
   }
 
   FocusModeTableCompanion copyWith(
       {Value<int>? id,
       Value<SessionType>? sessionType,
-      Value<bool>? shouldStartDnd,
-      Value<List<String>>? distractingApps,
       Value<int>? longestStreak,
       Value<int>? currentStreak,
-      Value<DateTime>? lastTimeStreakUpdated,
-      Value<int?>? activeSessionId}) {
+      Value<DateTime>? lastTimeStreakUpdated}) {
     return FocusModeTableCompanion(
       id: id ?? this.id,
       sessionType: sessionType ?? this.sessionType,
-      shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
-      distractingApps: distractingApps ?? this.distractingApps,
       longestStreak: longestStreak ?? this.longestStreak,
       currentStreak: currentStreak ?? this.currentStreak,
       lastTimeStreakUpdated:
           lastTimeStreakUpdated ?? this.lastTimeStreakUpdated,
-      activeSessionId: activeSessionId ?? this.activeSessionId,
     );
   }
 
@@ -1571,14 +1438,6 @@ class FocusModeTableCompanion extends UpdateCompanion<FocusMode> {
       map['session_type'] = Variable<int>(
           $FocusModeTableTable.$convertersessionType.toSql(sessionType.value));
     }
-    if (shouldStartDnd.present) {
-      map['should_start_dnd'] = Variable<bool>(shouldStartDnd.value);
-    }
-    if (distractingApps.present) {
-      map['distracting_apps'] = Variable<String>($FocusModeTableTable
-          .$converterdistractingApps
-          .toSql(distractingApps.value));
-    }
     if (longestStreak.present) {
       map['longest_streak'] = Variable<int>(longestStreak.value);
     }
@@ -1589,9 +1448,6 @@ class FocusModeTableCompanion extends UpdateCompanion<FocusMode> {
       map['last_time_streak_updated'] =
           Variable<DateTime>(lastTimeStreakUpdated.value);
     }
-    if (activeSessionId.present) {
-      map['active_session_id'] = Variable<int>(activeSessionId.value);
-    }
     return map;
   }
 
@@ -1600,12 +1456,293 @@ class FocusModeTableCompanion extends UpdateCompanion<FocusMode> {
     return (StringBuffer('FocusModeTableCompanion(')
           ..write('id: $id, ')
           ..write('sessionType: $sessionType, ')
-          ..write('shouldStartDnd: $shouldStartDnd, ')
-          ..write('distractingApps: $distractingApps, ')
           ..write('longestStreak: $longestStreak, ')
           ..write('currentStreak: $currentStreak, ')
-          ..write('lastTimeStreakUpdated: $lastTimeStreakUpdated, ')
-          ..write('activeSessionId: $activeSessionId')
+          ..write('lastTimeStreakUpdated: $lastTimeStreakUpdated')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FocusProfileTableTable extends FocusProfileTable
+    with TableInfo<$FocusProfileTableTable, FocusProfile> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FocusProfileTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _sessionTypeMeta =
+      const VerificationMeta('sessionType');
+  @override
+  late final GeneratedColumnWithTypeConverter<SessionType, int> sessionType =
+      GeneratedColumn<int>('session_type', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: false)
+          .withConverter<SessionType>(
+              $FocusProfileTableTable.$convertersessionType);
+  static const VerificationMeta _sessionDurationMeta =
+      const VerificationMeta('sessionDuration');
+  @override
+  late final GeneratedColumn<int> sessionDuration = GeneratedColumn<int>(
+      'session_duration', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _shouldStartDndMeta =
+      const VerificationMeta('shouldStartDnd');
+  @override
+  late final GeneratedColumn<bool> shouldStartDnd = GeneratedColumn<bool>(
+      'should_start_dnd', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("should_start_dnd" IN (0, 1))'));
+  static const VerificationMeta _distractingAppsMeta =
+      const VerificationMeta('distractingApps');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      distractingApps = GeneratedColumn<String>(
+              'distracting_apps', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $FocusProfileTableTable.$converterdistractingApps);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [sessionType, sessionDuration, shouldStartDnd, distractingApps];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'focus_profile_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<FocusProfile> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    context.handle(_sessionTypeMeta, const VerificationResult.success());
+    if (data.containsKey('session_duration')) {
+      context.handle(
+          _sessionDurationMeta,
+          sessionDuration.isAcceptableOrUnknown(
+              data['session_duration']!, _sessionDurationMeta));
+    } else if (isInserting) {
+      context.missing(_sessionDurationMeta);
+    }
+    if (data.containsKey('should_start_dnd')) {
+      context.handle(
+          _shouldStartDndMeta,
+          shouldStartDnd.isAcceptableOrUnknown(
+              data['should_start_dnd']!, _shouldStartDndMeta));
+    } else if (isInserting) {
+      context.missing(_shouldStartDndMeta);
+    }
+    context.handle(_distractingAppsMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {sessionType};
+  @override
+  FocusProfile map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FocusProfile(
+      sessionType: $FocusProfileTableTable.$convertersessionType.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}session_type'])!),
+      sessionDuration: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}session_duration'])!,
+      shouldStartDnd: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}should_start_dnd'])!,
+      distractingApps: $FocusProfileTableTable.$converterdistractingApps
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}distracting_apps'])!),
+    );
+  }
+
+  @override
+  $FocusProfileTableTable createAlias(String alias) {
+    return $FocusProfileTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SessionType, int, int> $convertersessionType =
+      const EnumIndexConverter<SessionType>(SessionType.values);
+  static TypeConverter<List<String>, String> $converterdistractingApps =
+      const ListStringConverter();
+}
+
+class FocusProfile extends DataClass implements Insertable<FocusProfile> {
+  /// Selected session type
+  final SessionType sessionType;
+
+  /// Duration in SECONDS for the focus session
+  final int sessionDuration;
+
+  /// Flag indicating if to start DND during the focus session
+  final bool shouldStartDnd;
+
+  /// List of app's packages which are selected as distracting apps.
+  final List<String> distractingApps;
+  const FocusProfile(
+      {required this.sessionType,
+      required this.sessionDuration,
+      required this.shouldStartDnd,
+      required this.distractingApps});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    {
+      map['session_type'] = Variable<int>(
+          $FocusProfileTableTable.$convertersessionType.toSql(sessionType));
+    }
+    map['session_duration'] = Variable<int>(sessionDuration);
+    map['should_start_dnd'] = Variable<bool>(shouldStartDnd);
+    {
+      map['distracting_apps'] = Variable<String>($FocusProfileTableTable
+          .$converterdistractingApps
+          .toSql(distractingApps));
+    }
+    return map;
+  }
+
+  FocusProfileTableCompanion toCompanion(bool nullToAbsent) {
+    return FocusProfileTableCompanion(
+      sessionType: Value(sessionType),
+      sessionDuration: Value(sessionDuration),
+      shouldStartDnd: Value(shouldStartDnd),
+      distractingApps: Value(distractingApps),
+    );
+  }
+
+  factory FocusProfile.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FocusProfile(
+      sessionType: $FocusProfileTableTable.$convertersessionType
+          .fromJson(serializer.fromJson<int>(json['sessionType'])),
+      sessionDuration: serializer.fromJson<int>(json['sessionDuration']),
+      shouldStartDnd: serializer.fromJson<bool>(json['shouldStartDnd']),
+      distractingApps:
+          serializer.fromJson<List<String>>(json['distractingApps']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'sessionType': serializer.toJson<int>(
+          $FocusProfileTableTable.$convertersessionType.toJson(sessionType)),
+      'sessionDuration': serializer.toJson<int>(sessionDuration),
+      'shouldStartDnd': serializer.toJson<bool>(shouldStartDnd),
+      'distractingApps': serializer.toJson<List<String>>(distractingApps),
+    };
+  }
+
+  FocusProfile copyWith(
+          {SessionType? sessionType,
+          int? sessionDuration,
+          bool? shouldStartDnd,
+          List<String>? distractingApps}) =>
+      FocusProfile(
+        sessionType: sessionType ?? this.sessionType,
+        sessionDuration: sessionDuration ?? this.sessionDuration,
+        shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
+        distractingApps: distractingApps ?? this.distractingApps,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('FocusProfile(')
+          ..write('sessionType: $sessionType, ')
+          ..write('sessionDuration: $sessionDuration, ')
+          ..write('shouldStartDnd: $shouldStartDnd, ')
+          ..write('distractingApps: $distractingApps')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      sessionType, sessionDuration, shouldStartDnd, distractingApps);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FocusProfile &&
+          other.sessionType == this.sessionType &&
+          other.sessionDuration == this.sessionDuration &&
+          other.shouldStartDnd == this.shouldStartDnd &&
+          other.distractingApps == this.distractingApps);
+}
+
+class FocusProfileTableCompanion extends UpdateCompanion<FocusProfile> {
+  final Value<SessionType> sessionType;
+  final Value<int> sessionDuration;
+  final Value<bool> shouldStartDnd;
+  final Value<List<String>> distractingApps;
+  const FocusProfileTableCompanion({
+    this.sessionType = const Value.absent(),
+    this.sessionDuration = const Value.absent(),
+    this.shouldStartDnd = const Value.absent(),
+    this.distractingApps = const Value.absent(),
+  });
+  FocusProfileTableCompanion.insert({
+    this.sessionType = const Value.absent(),
+    required int sessionDuration,
+    required bool shouldStartDnd,
+    required List<String> distractingApps,
+  })  : sessionDuration = Value(sessionDuration),
+        shouldStartDnd = Value(shouldStartDnd),
+        distractingApps = Value(distractingApps);
+  static Insertable<FocusProfile> custom({
+    Expression<int>? sessionType,
+    Expression<int>? sessionDuration,
+    Expression<bool>? shouldStartDnd,
+    Expression<String>? distractingApps,
+  }) {
+    return RawValuesInsertable({
+      if (sessionType != null) 'session_type': sessionType,
+      if (sessionDuration != null) 'session_duration': sessionDuration,
+      if (shouldStartDnd != null) 'should_start_dnd': shouldStartDnd,
+      if (distractingApps != null) 'distracting_apps': distractingApps,
+    });
+  }
+
+  FocusProfileTableCompanion copyWith(
+      {Value<SessionType>? sessionType,
+      Value<int>? sessionDuration,
+      Value<bool>? shouldStartDnd,
+      Value<List<String>>? distractingApps}) {
+    return FocusProfileTableCompanion(
+      sessionType: sessionType ?? this.sessionType,
+      sessionDuration: sessionDuration ?? this.sessionDuration,
+      shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
+      distractingApps: distractingApps ?? this.distractingApps,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (sessionType.present) {
+      map['session_type'] = Variable<int>($FocusProfileTableTable
+          .$convertersessionType
+          .toSql(sessionType.value));
+    }
+    if (sessionDuration.present) {
+      map['session_duration'] = Variable<int>(sessionDuration.value);
+    }
+    if (shouldStartDnd.present) {
+      map['should_start_dnd'] = Variable<bool>(shouldStartDnd.value);
+    }
+    if (distractingApps.present) {
+      map['distracting_apps'] = Variable<String>($FocusProfileTableTable
+          .$converterdistractingApps
+          .toSql(distractingApps.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FocusProfileTableCompanion(')
+          ..write('sessionType: $sessionType, ')
+          ..write('sessionDuration: $sessionDuration, ')
+          ..write('shouldStartDnd: $shouldStartDnd, ')
+          ..write('distractingApps: $distractingApps')
           ..write(')'))
         .toString();
   }
@@ -3218,6 +3355,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $BedtimeScheduleTableTable(this);
   late final $CrashLogsTableTable crashLogsTable = $CrashLogsTableTable(this);
   late final $FocusModeTableTable focusModeTable = $FocusModeTableTable(this);
+  late final $FocusProfileTableTable focusProfileTable =
+      $FocusProfileTableTable(this);
   late final $FocusSessionsTableTable focusSessionsTable =
       $FocusSessionsTableTable(this);
   late final $MindfulSettingsTableTable mindfulSettingsTable =
@@ -3238,6 +3377,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         bedtimeScheduleTable,
         crashLogsTable,
         focusModeTable,
+        focusProfileTable,
         focusSessionsTable,
         mindfulSettingsTable,
         restrictionGroupsTable,
@@ -3739,23 +3879,17 @@ typedef $$FocusModeTableTableInsertCompanionBuilder = FocusModeTableCompanion
     Function({
   Value<int> id,
   required SessionType sessionType,
-  required bool shouldStartDnd,
-  required List<String> distractingApps,
   required int longestStreak,
   required int currentStreak,
   required DateTime lastTimeStreakUpdated,
-  Value<int?> activeSessionId,
 });
 typedef $$FocusModeTableTableUpdateCompanionBuilder = FocusModeTableCompanion
     Function({
   Value<int> id,
   Value<SessionType> sessionType,
-  Value<bool> shouldStartDnd,
-  Value<List<String>> distractingApps,
   Value<int> longestStreak,
   Value<int> currentStreak,
   Value<DateTime> lastTimeStreakUpdated,
-  Value<int?> activeSessionId,
 });
 
 class $$FocusModeTableTableTableManager extends RootTableManager<
@@ -3781,42 +3915,30 @@ class $$FocusModeTableTableTableManager extends RootTableManager<
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<SessionType> sessionType = const Value.absent(),
-            Value<bool> shouldStartDnd = const Value.absent(),
-            Value<List<String>> distractingApps = const Value.absent(),
             Value<int> longestStreak = const Value.absent(),
             Value<int> currentStreak = const Value.absent(),
             Value<DateTime> lastTimeStreakUpdated = const Value.absent(),
-            Value<int?> activeSessionId = const Value.absent(),
           }) =>
               FocusModeTableCompanion(
             id: id,
             sessionType: sessionType,
-            shouldStartDnd: shouldStartDnd,
-            distractingApps: distractingApps,
             longestStreak: longestStreak,
             currentStreak: currentStreak,
             lastTimeStreakUpdated: lastTimeStreakUpdated,
-            activeSessionId: activeSessionId,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required SessionType sessionType,
-            required bool shouldStartDnd,
-            required List<String> distractingApps,
             required int longestStreak,
             required int currentStreak,
             required DateTime lastTimeStreakUpdated,
-            Value<int?> activeSessionId = const Value.absent(),
           }) =>
               FocusModeTableCompanion.insert(
             id: id,
             sessionType: sessionType,
-            shouldStartDnd: shouldStartDnd,
-            distractingApps: distractingApps,
             longestStreak: longestStreak,
             currentStreak: currentStreak,
             lastTimeStreakUpdated: lastTimeStreakUpdated,
-            activeSessionId: activeSessionId,
           ),
         ));
 }
@@ -3848,18 +3970,6 @@ class $$FocusModeTableTableFilterComposer
               column,
               joinBuilders: joinBuilders));
 
-  ColumnFilters<bool> get shouldStartDnd => $state.composableBuilder(
-      column: $state.table.shouldStartDnd,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get distractingApps => $state.composableBuilder(
-          column: $state.table.distractingApps,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
   ColumnFilters<int> get longestStreak => $state.composableBuilder(
       column: $state.table.longestStreak,
       builder: (column, joinBuilders) =>
@@ -3874,11 +3984,6 @@ class $$FocusModeTableTableFilterComposer
       column: $state.table.lastTimeStreakUpdated,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get activeSessionId => $state.composableBuilder(
-      column: $state.table.activeSessionId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
 }
 
 class $$FocusModeTableTableOrderingComposer
@@ -3891,16 +3996,6 @@ class $$FocusModeTableTableOrderingComposer
 
   ColumnOrderings<int> get sessionType => $state.composableBuilder(
       column: $state.table.sessionType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get shouldStartDnd => $state.composableBuilder(
-      column: $state.table.shouldStartDnd,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get distractingApps => $state.composableBuilder(
-      column: $state.table.distractingApps,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -3919,9 +4014,131 @@ class $$FocusModeTableTableOrderingComposer
           column: $state.table.lastTimeStreakUpdated,
           builder: (column, joinBuilders) =>
               ColumnOrderings(column, joinBuilders: joinBuilders));
+}
 
-  ColumnOrderings<int> get activeSessionId => $state.composableBuilder(
-      column: $state.table.activeSessionId,
+typedef $$FocusProfileTableTableInsertCompanionBuilder
+    = FocusProfileTableCompanion Function({
+  Value<SessionType> sessionType,
+  required int sessionDuration,
+  required bool shouldStartDnd,
+  required List<String> distractingApps,
+});
+typedef $$FocusProfileTableTableUpdateCompanionBuilder
+    = FocusProfileTableCompanion Function({
+  Value<SessionType> sessionType,
+  Value<int> sessionDuration,
+  Value<bool> shouldStartDnd,
+  Value<List<String>> distractingApps,
+});
+
+class $$FocusProfileTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FocusProfileTableTable,
+    FocusProfile,
+    $$FocusProfileTableTableFilterComposer,
+    $$FocusProfileTableTableOrderingComposer,
+    $$FocusProfileTableTableProcessedTableManager,
+    $$FocusProfileTableTableInsertCompanionBuilder,
+    $$FocusProfileTableTableUpdateCompanionBuilder> {
+  $$FocusProfileTableTableTableManager(
+      _$AppDatabase db, $FocusProfileTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$FocusProfileTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer: $$FocusProfileTableTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$FocusProfileTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<SessionType> sessionType = const Value.absent(),
+            Value<int> sessionDuration = const Value.absent(),
+            Value<bool> shouldStartDnd = const Value.absent(),
+            Value<List<String>> distractingApps = const Value.absent(),
+          }) =>
+              FocusProfileTableCompanion(
+            sessionType: sessionType,
+            sessionDuration: sessionDuration,
+            shouldStartDnd: shouldStartDnd,
+            distractingApps: distractingApps,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<SessionType> sessionType = const Value.absent(),
+            required int sessionDuration,
+            required bool shouldStartDnd,
+            required List<String> distractingApps,
+          }) =>
+              FocusProfileTableCompanion.insert(
+            sessionType: sessionType,
+            sessionDuration: sessionDuration,
+            shouldStartDnd: shouldStartDnd,
+            distractingApps: distractingApps,
+          ),
+        ));
+}
+
+class $$FocusProfileTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $FocusProfileTableTable,
+        FocusProfile,
+        $$FocusProfileTableTableFilterComposer,
+        $$FocusProfileTableTableOrderingComposer,
+        $$FocusProfileTableTableProcessedTableManager,
+        $$FocusProfileTableTableInsertCompanionBuilder,
+        $$FocusProfileTableTableUpdateCompanionBuilder> {
+  $$FocusProfileTableTableProcessedTableManager(super.$state);
+}
+
+class $$FocusProfileTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $FocusProfileTableTable> {
+  $$FocusProfileTableTableFilterComposer(super.$state);
+  ColumnWithTypeConverterFilters<SessionType, SessionType, int>
+      get sessionType => $state.composableBuilder(
+          column: $state.table.sessionType,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get sessionDuration => $state.composableBuilder(
+      column: $state.table.sessionDuration,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get shouldStartDnd => $state.composableBuilder(
+      column: $state.table.shouldStartDnd,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get distractingApps => $state.composableBuilder(
+          column: $state.table.distractingApps,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$FocusProfileTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $FocusProfileTableTable> {
+  $$FocusProfileTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get sessionType => $state.composableBuilder(
+      column: $state.table.sessionType,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get sessionDuration => $state.composableBuilder(
+      column: $state.table.sessionDuration,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get shouldStartDnd => $state.composableBuilder(
+      column: $state.table.shouldStartDnd,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get distractingApps => $state.composableBuilder(
+      column: $state.table.distractingApps,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
@@ -4614,6 +4831,8 @@ class _$AppDatabaseManager {
       $$CrashLogsTableTableTableManager(_db, _db.crashLogsTable);
   $$FocusModeTableTableTableManager get focusModeTable =>
       $$FocusModeTableTableTableManager(_db, _db.focusModeTable);
+  $$FocusProfileTableTableTableManager get focusProfileTable =>
+      $$FocusProfileTableTableTableManager(_db, _db.focusProfileTable);
   $$FocusSessionsTableTableTableManager get focusSessionsTable =>
       $$FocusSessionsTableTableTableManager(_db, _db.focusSessionsTable);
   $$MindfulSettingsTableTableTableManager get mindfulSettingsTable =>

@@ -34,7 +34,7 @@ class RestrictionGroupsScreen extends ConsumerWidget {
         NavbarItem(
           icon: FluentIcons.app_title_20_regular,
           filledIcon: FluentIcons.app_title_20_filled,
-          title: context.locale.restriction_groups_tile_title,
+          title: context.locale.restriction_groups_tab_title,
           fab: const CreateRestrictionGroupFab(),
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),

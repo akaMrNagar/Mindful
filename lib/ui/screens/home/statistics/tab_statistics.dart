@@ -96,25 +96,29 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           ),
 
           8.vSliverBox,
+
+          /// Restriction groups
           DefaultListTile(
             position: ItemPosition.start,
             leadingIcon: FluentIcons.app_title_20_regular,
-            titleText: context.locale.restriction_groups_tile_title,
+            titleText: context.locale.restriction_groups_tab_title,
             subtitleText: context.locale.restriction_groups_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             onPressed: () => Navigator.of(context)
                 .pushNamed(AppRoutes.restrictionGroupsScreen),
           ).sliver,
+
+          /// Notification groups
           DefaultListTile(
             position: ItemPosition.end,
             leadingIcon: FluentIcons.alert_snooze_20_regular,
-            titleText: "Notification groups",
-            subtitleText: "Limit notifications for group of apps.",
+            titleText: context.locale.notification_groups_tab_title,
+            subtitleText: context.locale.notification_groups_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             onPressed: () => Navigator.of(context)
-                .pushNamed(AppRoutes.restrictionGroupsScreen),
+                .pushNamed(AppRoutes.notificationGroupsScreen),
           ).sliver,
 
           ContentSectionHeader(title: context.locale.most_used_apps_heading)

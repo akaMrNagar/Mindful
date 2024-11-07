@@ -109,6 +109,7 @@
     "select_more_apps_heading": "Select more apps",
     "imp_distracting_apps_snack_alert": "Adding important system apps to the list of distracting apps is not permitted.",
     "custom_apps_quick_actions_unavailable_warning": "Screen usage and quick actions are unavailable for this application. At present, only network usage is accessible",
+    "create_group_fab_button": "Create Group",
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
     "onboarding_finish_setup_btn_label": "Finish Setup",
@@ -173,7 +174,6 @@
     "data_segment_label": "Data",
     "mobile_label": "Mobile",
     "wifi_label": "Wifi",
-    "restriction_groups_tile_title": "Restriction groups",
     "restriction_groups_tile_subtitle": "Limit screen time for group of apps.",
     "most_used_apps_heading": "Most used apps",
     "show_all_apps_tile_title": "Show all apps",
@@ -334,7 +334,7 @@
         }
     },
     "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
-    "create_restriction_group_fab_button": "Create Group",
+    "restriction_groups_tab_title": "Restriction groups",
     "restriction_group_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
     "restriction_group_time_used": "Time used: {timeString}",
     "@restriction_group_time_used": {
@@ -367,6 +367,10 @@
             }
         }
     },
+    "@----------------------------- NOTIFICATION GROUPS SCREEN -----------------------------": {},
+    "notification_groups_tab_title": "Notification groups",
+    "notification_groups_tile_subtitle": "Schedule alerts for group of apps.",
+    "notification_group_tab_info": "Group notifications from selected apps and set a schedule, like every X hours or at a specific time. Stay updated without constant interruptions.",
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
     "emergency_fab_button": "Emergency",
     "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",

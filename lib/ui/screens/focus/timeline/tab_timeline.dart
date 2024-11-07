@@ -47,54 +47,69 @@ class TabTimeline extends ConsumerWidget {
             24.vSliverBox,
 
             /// Productivity stats
-            Row(
-              children: [
-                /// Total productive time
-                Expanded(
-                  child: UsageGlanceCard(
-                    isPrimary: true,
-                    icon: FluentIcons.clock_20_regular,
-                    title: context.locale.selected_month_productive_time_label,
-                    info: timeline.totalProductiveTime.toTimeShort(context),
-                    onTap: () => context.showSnackAlert(
-                      context.locale.selected_month_productive_time_snack_alert(
-                        timeline.totalProductiveTime.toTimeFull(context),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      /// Total productive time
+                      Expanded(
+                        child: UsageGlanceCard(
+                          isPrimary: true,
+                          icon: FluentIcons.clock_20_regular,
+                          title: context
+                              .locale.selected_month_productive_time_label,
+                          info:
+                              timeline.totalProductiveTime.toTimeShort(context),
+                          onTap: () => context.showSnackAlert(
+                            context.locale
+                                .selected_month_productive_time_snack_alert(
+                              timeline.totalProductiveTime.toTimeFull(context),
+                            ),
+                            icon: FluentIcons.clock_20_filled,
+                          ),
+                        ),
                       ),
-                      icon: FluentIcons.clock_20_filled,
+                      6.hBox,
+
+                      /// Productive days
+                      Expanded(
+                        child: UsageGlanceCard(
+                          isPrimary: true,
+                          icon: FluentIcons.calendar_day_20_regular,
+                          title: context
+                              .locale.selected_month_productive_days_label,
+                          info: context.locale
+                              .nDays(timeline.totalProductiveDays),
+                          onTap: () => context.showSnackAlert(
+                            context.locale
+                                .selected_month_productive_days_snack_alert(
+                              timeline.totalProductiveDays,
+                            ),
+                            icon: FluentIcons.calendar_day_20_filled,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  5.vBox,
+
+                  /// Today's total focused time
+                  UsageGlanceCard(
+                    isPrimary: true,
+                    icon: FluentIcons.shifts_day_20_regular,
+                    title: context.locale.selected_day_focused_time_label,
+                    info: timeline.selectedDaysFocusedTime.toTimeFull(context),
+                    onTap: () => context.showSnackAlert(
+                      context.locale.selected_day_focused_time_snack_alert(
+                        timeline.selectedDaysFocusedTime.toTimeFull(context),
+                      ),
+                      icon: FluentIcons.shifts_day_20_filled,
                     ),
                   ),
-                ),
-                6.hBox,
-
-                /// Productive days
-                Expanded(
-                  child: UsageGlanceCard(
-                    isPrimary: true,
-                    icon: FluentIcons.calendar_day_20_regular,
-                    title: context.locale.selected_month_productive_days_label,
-                    info: context.locale.nDays(timeline.totalProductiveDays),
-                    onTap: () => context.showSnackAlert(
-                      context.locale.selected_month_productive_days_snack_alert(
-                        timeline.totalProductiveDays,
-                      ),
-                      icon: FluentIcons.calendar_day_20_filled,
-                    ),
-                  ),
-                ),
-              ],
-            ).sliver,
-
-            /// Today's total focused time
-            UsageGlanceCard(
-              isPrimary: true,
-              icon: FluentIcons.shifts_day_20_regular,
-              title: context.locale.selected_day_focused_time_label,
-              info: timeline.selectedDaysFocusedTime.toTimeFull(context),
-              onTap: () => context.showSnackAlert(
-                context.locale.selected_day_focused_time_snack_alert(
-                  timeline.selectedDaysFocusedTime.toTimeFull(context),
-                ),
-                icon: FluentIcons.shifts_day_20_filled,
+                ],
               ),
             ).sliver,
 
@@ -118,13 +133,16 @@ class TabTimeline extends ConsumerWidget {
                 ? SliverList.builder(
                     itemCount: timeline.selectedDaysSessions.value!.length,
                     itemBuilder: (context, index) => SessionTile(
-                      position: index == 0
-                          ? ItemPosition.start
-                          : index ==
-                                  timeline.selectedDaysSessions.value!.length -
-                                      1
-                              ? ItemPosition.end
-                              : ItemPosition.mid,
+                      position: timeline.selectedDaysSessions.value!.length == 1
+                          ? ItemPosition.none
+                          : index == 0
+                              ? ItemPosition.start
+                              : index ==
+                                      timeline.selectedDaysSessions.value!
+                                              .length -
+                                          1
+                                  ? ItemPosition.end
+                                  : ItemPosition.mid,
                       session: timeline.selectedDaysSessions.value![index],
                     ),
                   )

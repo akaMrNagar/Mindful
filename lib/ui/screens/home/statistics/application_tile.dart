@@ -55,7 +55,7 @@ class ApplicationTile extends ConsumerWidget {
     return DefaultHero(
       tag: HeroTags.applicationTileTag(app.packageName),
       child: DefaultListTile(
-        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.surfaceContainerLow,
         position: position,
         onPressed: () {
           Navigator.of(context).pushNamed(

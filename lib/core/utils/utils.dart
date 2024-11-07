@@ -39,13 +39,13 @@ int _formatWeekDayToSunday(int weekDay) {
 BorderRadius getBorderRadiusFromPosition(ItemPosition position) =>
     switch (position) {
       ItemPosition.start => const BorderRadius.vertical(
-          top: Radius.circular(20),
+          top: Radius.circular(24),
           bottom: Radius.circular(6),
         ),
       ItemPosition.mid => BorderRadius.circular(6),
       ItemPosition.end => const BorderRadius.vertical(
           top: Radius.circular(6),
-          bottom: Radius.circular(20),
+          bottom: Radius.circular(24),
         ),
-      ItemPosition.none => BorderRadius.circular(20),
+      ItemPosition.none => BorderRadius.circular(24),
     };
