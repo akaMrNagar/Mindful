@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
@@ -20,6 +21,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/focus_now_fab.dart';
@@ -80,40 +82,47 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultScaffold(
-      leading: IconButton(
-        icon: const Icon(FluentIcons.settings_20_regular),
-        onPressed: () =>
-            Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
+    final homeTab =
+        ref.read((mindfulSettingsProvider.select((v) => v.defaultHomeTab)));
+
+    return PopScope(
+      onPopInvoked: (didPop) => SystemNavigator.pop(),
+      child: DefaultScaffold(
+        initialTabIndex: homeTab.index,
+        leading: IconButton(
+          icon: const Icon(FluentIcons.settings_20_regular),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
+        ),
+        navbarItems: [
+          NavbarItem(
+            title: context.locale.dashboard_tab_title,
+            icon: FluentIcons.home_20_regular,
+            filledIcon: FluentIcons.home_20_filled,
+            sliverBody: const TabDashboard(),
+            fab: const FocusNowFab(),
+          ),
+          NavbarItem(
+            title: context.locale.statistics_tab_title,
+            icon: FluentIcons.data_pie_24_regular,
+            filledIcon: FluentIcons.data_pie_24_filled,
+            sliverBody: const TabStatistics(),
+          ),
+          NavbarItem(
+            title: context.locale.wellbeing_tab_title,
+            icon: FluentIcons.brain_circuit_20_regular,
+            filledIcon: FluentIcons.brain_circuit_20_filled,
+            fab: const AddWebsitesFAB(),
+            sliverBody: const TabWellBeing(),
+          ),
+          NavbarItem(
+            title: context.locale.bedtime_tab_title,
+            icon: FluentIcons.sleep_20_regular,
+            filledIcon: FluentIcons.sleep_20_filled,
+            sliverBody: const TabBedtime(),
+          ),
+        ],
       ),
-      navbarItems: [
-        NavbarItem(
-          title: context.locale.dashboard_tab_title,
-          icon: FluentIcons.home_20_regular,
-          filledIcon: FluentIcons.home_20_filled,
-          sliverBody: const TabDashboard(),
-          fab: const FocusNowFab(),
-        ),
-        NavbarItem(
-          title: context.locale.statistics_tab_title,
-          icon: FluentIcons.data_pie_24_regular,
-          filledIcon: FluentIcons.data_pie_24_filled,
-          sliverBody: const TabStatistics(),
-        ),
-        NavbarItem(
-          title: context.locale.wellbeing_tab_title,
-          icon: FluentIcons.brain_circuit_20_regular,
-          filledIcon: FluentIcons.brain_circuit_20_filled,
-          fab: const AddWebsitesFAB(),
-          sliverBody: const TabWellBeing(),
-        ),
-        NavbarItem(
-          title: context.locale.bedtime_tab_title,
-          icon: FluentIcons.sleep_20_regular,
-          filledIcon: FluentIcons.sleep_20_filled,
-          sliverBody: const TabBedtime(),
-        ),
-      ],
     );
   }
 }

@@ -38,8 +38,8 @@ typedef AppDashboardScreenArgs = ({
 });
 
 class AppRoutes {
-  static const String homeScreen = '/';
-  static const String splashScreen = '/splashScreen';
+  static const String splashScreen = '/';
+  static const String homeScreen = '/homeScreen';
   static const String onboardingScreen = '/onboardingScreen';
   static const String appDashboardScreen = '/appDashboardScreen';
   static const String settingsScreen = '/mindfulSettingsScreen';
@@ -54,15 +54,11 @@ class AppRoutes {
     settingsScreen: (context) => const SettingsScreen(),
     restrictionGroupsScreen: (context) => const RestrictionGroupsScreen(),
     notificationGroupsScreen: (context) => const NotificationGroupsScreen(),
+    focusScreen: (context) => const FocusScreen(),
 
     /// Resolve isOnboardingDone bool from arguments
     onboardingScreen: (context) => OnboardingScreen(
           isOnboardingDone: ModalRoute.of(context)?.settings.arguments as bool,
-        ),
-
-    /// Resolve initial tab index from arguments
-    focusScreen: (context) => FocusScreen(
-          initialTabIndex: ModalRoute.of(context)?.settings.arguments as int,
         ),
 
     /// Resolve [FocusSession] model from arguments

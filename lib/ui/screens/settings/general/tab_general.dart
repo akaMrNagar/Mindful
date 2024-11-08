@@ -134,8 +134,8 @@ class TabGeneral extends ConsumerWidget {
           position: ItemPosition.mid,
           titleText: "Home tab",
           dialogIcon: FluentIcons.color_20_filled,
-          value: DefaultHomeTab.dashboard,
-          onSelected: (_) {},
+          value: mindfulSettings.defaultHomeTab,
+          onSelected: ref.read(mindfulSettingsProvider.notifier).changeHomeTab,
           items: [
             DefaultDropdownItem(
               label: context.locale.dashboard_tab_title,

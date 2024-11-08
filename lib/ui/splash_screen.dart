@@ -20,6 +20,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
@@ -38,13 +39,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      1000.ms,
-      _goToNextScreen,
-    );
+    _goToNextScreen();
   }
 
   void _goToNextScreen() async {
+    await ref.read(mindfulSettingsProvider.notifier).init();
+    await Future.delayed(1.seconds);
+
     final isOnboardingDone =
         await MethodChannelService.instance.getOnboardingStatus();
 
@@ -60,13 +61,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (haveAllEssentialPermissions && isOnboardingDone) {
       ref.read(appsProvider);
-      Navigator.of(context).pop();
       ref
           .read(appsRestrictionsProvider.notifier)
           .checkAndRestartServices(haveVpnPermission: perms.haveVpnPermission);
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.homeScreen,
+        (_) => false,
+      );
     } else {
-      Navigator.of(context).pushReplacementNamed(
+      Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.onboardingScreen,
+        (_) => false,
         arguments: isOnboardingDone,
       );
     }
