@@ -6,7 +6,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -20,9 +20,9 @@ class InvincibleModeSettings extends ConsumerWidget {
   void _turnOnInvincibleMode(
     BuildContext context,
     WidgetRef ref,
-    bool shouldTurnOn,
+    bool isOn,
   ) async {
-    if (shouldTurnOn) {
+    if (!isOn) {
       final isConfirm = await showConfirmationDialog(
         context: context,
         icon: FluentIcons.animal_cat_20_filled,
@@ -33,15 +33,14 @@ class InvincibleModeSettings extends ConsumerWidget {
             context.locale.invincible_mode_dialog_button_start_anyway,
       );
       if (isConfirm) {
-        ref.read(mindfulSettingsProvider.notifier).switchInvincibleMode();
+        ref.read(invincibleModeProvider.notifier).switchInvincibleMode();
       }
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isInvincibleModeOn =
-        ref.watch(mindfulSettingsProvider.select((v) => v.isInvincibleModeOn));
+    final invincibleMode = ref.watch(invincibleModeProvider);
 
     return MultiSliver(
       children: [
@@ -61,47 +60,62 @@ class InvincibleModeSettings extends ConsumerWidget {
           child: DefaultListTile(
             position: ItemPosition.start,
             isPrimary: true,
-            switchValue: isInvincibleModeOn,
-            // enabled: !isInvincibleModeOn,
+            switchValue: invincibleMode.isInvincibleModeOn,
             leadingIcon: FluentIcons.animal_cat_20_regular,
             titleText: context.locale.invincible_mode_tile_title,
-            onPressed: () =>
-                _turnOnInvincibleMode(context, ref, !isInvincibleModeOn),
+            onPressed: () => _turnOnInvincibleMode(
+              context,
+              ref,
+              invincibleMode.isInvincibleModeOn,
+            ),
           ),
         ).sliver,
 
+        /// Apps timer
         DefaultListTile(
           position: ItemPosition.mid,
-          isSelected: true,
+          isSelected: invincibleMode.includeAppsTimer,
           leadingIcon: FluentIcons.timer_20_regular,
-          titleText: "Include app timers",
+          titleText: "Include apps timer",
           subtitleText: "Prevent modification during invincible mode.",
-          onPressed: () {},
+          onPressed:
+              ref.read(invincibleModeProvider.notifier).toggleIncludeAppsTimer,
         ).sliver,
+
+        /// Groups timer
         DefaultListTile(
           position: ItemPosition.mid,
-          isSelected: true,
+          isSelected: invincibleMode.includeGroupsTimer,
           leadingIcon: FluentIcons.app_title_20_regular,
           titleText: "Include groups timer",
           subtitleText: "Prevent modification during invincible mode.",
-          onPressed: () {},
+          onPressed: ref
+              .read(invincibleModeProvider.notifier)
+              .toggleIncludeGroupsTimer,
         ).sliver,
 
+        /// Shorts timer
         DefaultListTile(
           position: ItemPosition.mid,
-          isSelected: true,
+          isSelected: invincibleMode.includeShortsTimer,
           leadingIcon: FluentIcons.video_clip_multiple_20_regular,
           titleText: "Include shorts timer",
           subtitleText: "Prevent modification during invincible mode.",
-          onPressed: () {},
+          onPressed: ref
+              .read(invincibleModeProvider.notifier)
+              .toggleIncludeShortsTimer,
         ).sliver,
+
+        /// Bedtime schedule
         DefaultListTile(
           position: ItemPosition.end,
-          isSelected: true,
+          isSelected: invincibleMode.includeBedtimeSchedule,
           leadingIcon: FluentIcons.sleep_20_regular,
           titleText: "Include bedtime",
           subtitleText: "Prevent modification during invincible mode.",
-          onPressed: () {},
+          onPressed: ref
+              .read(invincibleModeProvider.notifier)
+              .toggleIncludeBedtimeSchedule,
         ).sliver,
       ],
     );

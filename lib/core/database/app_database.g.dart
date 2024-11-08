@@ -2101,15 +2101,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   late final GeneratedColumn<String> localeCode = GeneratedColumn<String>(
       'locale_code', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _isInvincibleModeOnMeta =
-      const VerificationMeta('isInvincibleModeOn');
-  @override
-  late final GeneratedColumn<bool> isInvincibleModeOn = GeneratedColumn<bool>(
-      'is_invincible_mode_on', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_invincible_mode_on" IN (0, 1))'));
   static const VerificationMeta _dataResetTimeMinsMeta =
       const VerificationMeta('dataResetTimeMins');
   @override
@@ -2134,6 +2125,33 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("use_amoled_dark" IN (0, 1))'));
+  static const VerificationMeta _useDynamicColorsMeta =
+      const VerificationMeta('useDynamicColors');
+  @override
+  late final GeneratedColumn<bool> useDynamicColors = GeneratedColumn<bool>(
+      'use_dynamic_colors', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("use_dynamic_colors" IN (0, 1))'));
+  static const VerificationMeta _defaultHomeTabMeta =
+      const VerificationMeta('defaultHomeTab');
+  @override
+  late final GeneratedColumnWithTypeConverter<DefaultHomeTab, int>
+      defaultHomeTab = GeneratedColumn<int>(
+              'default_home_tab', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<DefaultHomeTab>(
+              $MindfulSettingsTableTable.$converterdefaultHomeTab);
+  static const VerificationMeta _excludedAppsMeta =
+      const VerificationMeta('excludedApps');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      excludedApps = GeneratedColumn<String>(
+              'excluded_apps', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $MindfulSettingsTableTable.$converterexcludedApps);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2141,10 +2159,12 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         accentColor,
         username,
         localeCode,
-        isInvincibleModeOn,
         dataResetTimeMins,
         useBottomNavigation,
-        useAmoledDark
+        useAmoledDark,
+        useDynamicColors,
+        defaultHomeTab,
+        excludedApps
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2182,14 +2202,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
     } else if (isInserting) {
       context.missing(_localeCodeMeta);
     }
-    if (data.containsKey('is_invincible_mode_on')) {
-      context.handle(
-          _isInvincibleModeOnMeta,
-          isInvincibleModeOn.isAcceptableOrUnknown(
-              data['is_invincible_mode_on']!, _isInvincibleModeOnMeta));
-    } else if (isInserting) {
-      context.missing(_isInvincibleModeOnMeta);
-    }
     if (data.containsKey('data_reset_time_mins')) {
       context.handle(
           _dataResetTimeMinsMeta,
@@ -2214,6 +2226,16 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
     } else if (isInserting) {
       context.missing(_useAmoledDarkMeta);
     }
+    if (data.containsKey('use_dynamic_colors')) {
+      context.handle(
+          _useDynamicColorsMeta,
+          useDynamicColors.isAcceptableOrUnknown(
+              data['use_dynamic_colors']!, _useDynamicColorsMeta));
+    } else if (isInserting) {
+      context.missing(_useDynamicColorsMeta);
+    }
+    context.handle(_defaultHomeTabMeta, const VerificationResult.success());
+    context.handle(_excludedAppsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2234,14 +2256,20 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       localeCode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}locale_code'])!,
-      isInvincibleModeOn: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}is_invincible_mode_on'])!,
       dataResetTimeMins: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}data_reset_time_mins'])!,
       useBottomNavigation: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}use_bottom_navigation'])!,
       useAmoledDark: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}use_amoled_dark'])!,
+      useDynamicColors: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}use_dynamic_colors'])!,
+      defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
+          .fromSql(attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}default_home_tab'])!),
+      excludedApps: $MindfulSettingsTableTable.$converterexcludedApps.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}excluded_apps'])!),
     );
   }
 
@@ -2252,6 +2280,10 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
 
   static JsonTypeConverter2<AppThemeMode, int, int> $converterthemeMode =
       const EnumIndexConverter<AppThemeMode>(AppThemeMode.values);
+  static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
+      const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
+  static TypeConverter<List<String>, String> $converterexcludedApps =
+      const ListStringConverter();
 }
 
 class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
@@ -2270,12 +2302,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   /// App Locale (Language code)
   final String localeCode;
 
-  /// Is invincible mode on if it is ON then user cannot change following :
-  ///
-  /// 1. App timer if it is purged
-  /// 2. Short content time if it is exhausted
-  final bool isInvincibleModeOn;
-
   /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
   final int dataResetTimeMins;
 
@@ -2284,16 +2310,27 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// Flag indicating if to use pure amoled black color for dark theme
   final bool useAmoledDark;
+
+  /// Flag indicating if to use wallpaper colors for themes
+  final bool useDynamicColors;
+
+  /// Default initial home tab
+  final DefaultHomeTab defaultHomeTab;
+
+  /// List of app's packages which are excluded from the aggregated usage statistics.
+  final List<String> excludedApps;
   const MindfulSettings(
       {required this.id,
       required this.themeMode,
       required this.accentColor,
       required this.username,
       required this.localeCode,
-      required this.isInvincibleModeOn,
       required this.dataResetTimeMins,
       required this.useBottomNavigation,
-      required this.useAmoledDark});
+      required this.useAmoledDark,
+      required this.useDynamicColors,
+      required this.defaultHomeTab,
+      required this.excludedApps});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2305,10 +2342,20 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['accent_color'] = Variable<String>(accentColor);
     map['username'] = Variable<String>(username);
     map['locale_code'] = Variable<String>(localeCode);
-    map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
     map['data_reset_time_mins'] = Variable<int>(dataResetTimeMins);
     map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation);
     map['use_amoled_dark'] = Variable<bool>(useAmoledDark);
+    map['use_dynamic_colors'] = Variable<bool>(useDynamicColors);
+    {
+      map['default_home_tab'] = Variable<int>($MindfulSettingsTableTable
+          .$converterdefaultHomeTab
+          .toSql(defaultHomeTab));
+    }
+    {
+      map['excluded_apps'] = Variable<String>($MindfulSettingsTableTable
+          .$converterexcludedApps
+          .toSql(excludedApps));
+    }
     return map;
   }
 
@@ -2319,10 +2366,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: Value(accentColor),
       username: Value(username),
       localeCode: Value(localeCode),
-      isInvincibleModeOn: Value(isInvincibleModeOn),
       dataResetTimeMins: Value(dataResetTimeMins),
       useBottomNavigation: Value(useBottomNavigation),
       useAmoledDark: Value(useAmoledDark),
+      useDynamicColors: Value(useDynamicColors),
+      defaultHomeTab: Value(defaultHomeTab),
+      excludedApps: Value(excludedApps),
     );
   }
 
@@ -2336,11 +2385,14 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: serializer.fromJson<String>(json['accentColor']),
       username: serializer.fromJson<String>(json['username']),
       localeCode: serializer.fromJson<String>(json['localeCode']),
-      isInvincibleModeOn: serializer.fromJson<bool>(json['isInvincibleModeOn']),
       dataResetTimeMins: serializer.fromJson<int>(json['dataResetTimeMins']),
       useBottomNavigation:
           serializer.fromJson<bool>(json['useBottomNavigation']),
       useAmoledDark: serializer.fromJson<bool>(json['useAmoledDark']),
+      useDynamicColors: serializer.fromJson<bool>(json['useDynamicColors']),
+      defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
+          .fromJson(serializer.fromJson<int>(json['defaultHomeTab'])),
+      excludedApps: serializer.fromJson<List<String>>(json['excludedApps']),
     );
   }
   @override
@@ -2353,10 +2405,14 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'accentColor': serializer.toJson<String>(accentColor),
       'username': serializer.toJson<String>(username),
       'localeCode': serializer.toJson<String>(localeCode),
-      'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
       'dataResetTimeMins': serializer.toJson<int>(dataResetTimeMins),
       'useBottomNavigation': serializer.toJson<bool>(useBottomNavigation),
       'useAmoledDark': serializer.toJson<bool>(useAmoledDark),
+      'useDynamicColors': serializer.toJson<bool>(useDynamicColors),
+      'defaultHomeTab': serializer.toJson<int>($MindfulSettingsTableTable
+          .$converterdefaultHomeTab
+          .toJson(defaultHomeTab)),
+      'excludedApps': serializer.toJson<List<String>>(excludedApps),
     };
   }
 
@@ -2366,20 +2422,24 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           String? accentColor,
           String? username,
           String? localeCode,
-          bool? isInvincibleModeOn,
           int? dataResetTimeMins,
           bool? useBottomNavigation,
-          bool? useAmoledDark}) =>
+          bool? useAmoledDark,
+          bool? useDynamicColors,
+          DefaultHomeTab? defaultHomeTab,
+          List<String>? excludedApps}) =>
       MindfulSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
         accentColor: accentColor ?? this.accentColor,
         username: username ?? this.username,
         localeCode: localeCode ?? this.localeCode,
-        isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
         dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
         useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
         useAmoledDark: useAmoledDark ?? this.useAmoledDark,
+        useDynamicColors: useDynamicColors ?? this.useDynamicColors,
+        defaultHomeTab: defaultHomeTab ?? this.defaultHomeTab,
+        excludedApps: excludedApps ?? this.excludedApps,
       );
   @override
   String toString() {
@@ -2389,10 +2449,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('dataResetTimeMins: $dataResetTimeMins, ')
           ..write('useBottomNavigation: $useBottomNavigation, ')
-          ..write('useAmoledDark: $useAmoledDark')
+          ..write('useAmoledDark: $useAmoledDark, ')
+          ..write('useDynamicColors: $useDynamicColors, ')
+          ..write('defaultHomeTab: $defaultHomeTab, ')
+          ..write('excludedApps: $excludedApps')
           ..write(')'))
         .toString();
   }
@@ -2404,10 +2466,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor,
       username,
       localeCode,
-      isInvincibleModeOn,
       dataResetTimeMins,
       useBottomNavigation,
-      useAmoledDark);
+      useAmoledDark,
+      useDynamicColors,
+      defaultHomeTab,
+      excludedApps);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2417,10 +2481,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.accentColor == this.accentColor &&
           other.username == this.username &&
           other.localeCode == this.localeCode &&
-          other.isInvincibleModeOn == this.isInvincibleModeOn &&
           other.dataResetTimeMins == this.dataResetTimeMins &&
           other.useBottomNavigation == this.useBottomNavigation &&
-          other.useAmoledDark == this.useAmoledDark);
+          other.useAmoledDark == this.useAmoledDark &&
+          other.useDynamicColors == this.useDynamicColors &&
+          other.defaultHomeTab == this.defaultHomeTab &&
+          other.excludedApps == this.excludedApps);
 }
 
 class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
@@ -2429,20 +2495,24 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<String> accentColor;
   final Value<String> username;
   final Value<String> localeCode;
-  final Value<bool> isInvincibleModeOn;
   final Value<int> dataResetTimeMins;
   final Value<bool> useBottomNavigation;
   final Value<bool> useAmoledDark;
+  final Value<bool> useDynamicColors;
+  final Value<DefaultHomeTab> defaultHomeTab;
+  final Value<List<String>> excludedApps;
   const MindfulSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.accentColor = const Value.absent(),
     this.username = const Value.absent(),
     this.localeCode = const Value.absent(),
-    this.isInvincibleModeOn = const Value.absent(),
     this.dataResetTimeMins = const Value.absent(),
     this.useBottomNavigation = const Value.absent(),
     this.useAmoledDark = const Value.absent(),
+    this.useDynamicColors = const Value.absent(),
+    this.defaultHomeTab = const Value.absent(),
+    this.excludedApps = const Value.absent(),
   });
   MindfulSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2450,28 +2520,34 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     required String accentColor,
     required String username,
     required String localeCode,
-    required bool isInvincibleModeOn,
     required int dataResetTimeMins,
     required bool useBottomNavigation,
     required bool useAmoledDark,
+    required bool useDynamicColors,
+    required DefaultHomeTab defaultHomeTab,
+    required List<String> excludedApps,
   })  : themeMode = Value(themeMode),
         accentColor = Value(accentColor),
         username = Value(username),
         localeCode = Value(localeCode),
-        isInvincibleModeOn = Value(isInvincibleModeOn),
         dataResetTimeMins = Value(dataResetTimeMins),
         useBottomNavigation = Value(useBottomNavigation),
-        useAmoledDark = Value(useAmoledDark);
+        useAmoledDark = Value(useAmoledDark),
+        useDynamicColors = Value(useDynamicColors),
+        defaultHomeTab = Value(defaultHomeTab),
+        excludedApps = Value(excludedApps);
   static Insertable<MindfulSettings> custom({
     Expression<int>? id,
     Expression<int>? themeMode,
     Expression<String>? accentColor,
     Expression<String>? username,
     Expression<String>? localeCode,
-    Expression<bool>? isInvincibleModeOn,
     Expression<int>? dataResetTimeMins,
     Expression<bool>? useBottomNavigation,
     Expression<bool>? useAmoledDark,
+    Expression<bool>? useDynamicColors,
+    Expression<int>? defaultHomeTab,
+    Expression<String>? excludedApps,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2479,12 +2555,13 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       if (accentColor != null) 'accent_color': accentColor,
       if (username != null) 'username': username,
       if (localeCode != null) 'locale_code': localeCode,
-      if (isInvincibleModeOn != null)
-        'is_invincible_mode_on': isInvincibleModeOn,
       if (dataResetTimeMins != null) 'data_reset_time_mins': dataResetTimeMins,
       if (useBottomNavigation != null)
         'use_bottom_navigation': useBottomNavigation,
       if (useAmoledDark != null) 'use_amoled_dark': useAmoledDark,
+      if (useDynamicColors != null) 'use_dynamic_colors': useDynamicColors,
+      if (defaultHomeTab != null) 'default_home_tab': defaultHomeTab,
+      if (excludedApps != null) 'excluded_apps': excludedApps,
     });
   }
 
@@ -2494,20 +2571,24 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<String>? accentColor,
       Value<String>? username,
       Value<String>? localeCode,
-      Value<bool>? isInvincibleModeOn,
       Value<int>? dataResetTimeMins,
       Value<bool>? useBottomNavigation,
-      Value<bool>? useAmoledDark}) {
+      Value<bool>? useAmoledDark,
+      Value<bool>? useDynamicColors,
+      Value<DefaultHomeTab>? defaultHomeTab,
+      Value<List<String>>? excludedApps}) {
     return MindfulSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
       accentColor: accentColor ?? this.accentColor,
       username: username ?? this.username,
       localeCode: localeCode ?? this.localeCode,
-      isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
       useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
       useAmoledDark: useAmoledDark ?? this.useAmoledDark,
+      useDynamicColors: useDynamicColors ?? this.useDynamicColors,
+      defaultHomeTab: defaultHomeTab ?? this.defaultHomeTab,
+      excludedApps: excludedApps ?? this.excludedApps,
     );
   }
 
@@ -2531,9 +2612,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (localeCode.present) {
       map['locale_code'] = Variable<String>(localeCode.value);
     }
-    if (isInvincibleModeOn.present) {
-      map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn.value);
-    }
     if (dataResetTimeMins.present) {
       map['data_reset_time_mins'] = Variable<int>(dataResetTimeMins.value);
     }
@@ -2542,6 +2620,19 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     }
     if (useAmoledDark.present) {
       map['use_amoled_dark'] = Variable<bool>(useAmoledDark.value);
+    }
+    if (useDynamicColors.present) {
+      map['use_dynamic_colors'] = Variable<bool>(useDynamicColors.value);
+    }
+    if (defaultHomeTab.present) {
+      map['default_home_tab'] = Variable<int>($MindfulSettingsTableTable
+          .$converterdefaultHomeTab
+          .toSql(defaultHomeTab.value));
+    }
+    if (excludedApps.present) {
+      map['excluded_apps'] = Variable<String>($MindfulSettingsTableTable
+          .$converterexcludedApps
+          .toSql(excludedApps.value));
     }
     return map;
   }
@@ -2554,10 +2645,395 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('dataResetTimeMins: $dataResetTimeMins, ')
           ..write('useBottomNavigation: $useBottomNavigation, ')
-          ..write('useAmoledDark: $useAmoledDark')
+          ..write('useAmoledDark: $useAmoledDark, ')
+          ..write('useDynamicColors: $useDynamicColors, ')
+          ..write('defaultHomeTab: $defaultHomeTab, ')
+          ..write('excludedApps: $excludedApps')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $InvincibleModeTableTable extends InvincibleModeTable
+    with TableInfo<$InvincibleModeTableTable, InvincibleMode> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InvincibleModeTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _isInvincibleModeOnMeta =
+      const VerificationMeta('isInvincibleModeOn');
+  @override
+  late final GeneratedColumn<bool> isInvincibleModeOn = GeneratedColumn<bool>(
+      'is_invincible_mode_on', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("is_invincible_mode_on" IN (0, 1))'));
+  static const VerificationMeta _includeAppsTimerMeta =
+      const VerificationMeta('includeAppsTimer');
+  @override
+  late final GeneratedColumn<bool> includeAppsTimer = GeneratedColumn<bool>(
+      'include_apps_timer', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("include_apps_timer" IN (0, 1))'));
+  static const VerificationMeta _includeGroupsTimerMeta =
+      const VerificationMeta('includeGroupsTimer');
+  @override
+  late final GeneratedColumn<bool> includeGroupsTimer = GeneratedColumn<bool>(
+      'include_groups_timer', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("include_groups_timer" IN (0, 1))'));
+  static const VerificationMeta _includeShortsTimerMeta =
+      const VerificationMeta('includeShortsTimer');
+  @override
+  late final GeneratedColumn<bool> includeShortsTimer = GeneratedColumn<bool>(
+      'include_shorts_timer', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("include_shorts_timer" IN (0, 1))'));
+  static const VerificationMeta _includeBedtimeScheduleMeta =
+      const VerificationMeta('includeBedtimeSchedule');
+  @override
+  late final GeneratedColumn<bool> includeBedtimeSchedule =
+      GeneratedColumn<bool>('include_bedtime_schedule', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("include_bedtime_schedule" IN (0, 1))'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        isInvincibleModeOn,
+        includeAppsTimer,
+        includeGroupsTimer,
+        includeShortsTimer,
+        includeBedtimeSchedule
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'invincible_mode_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<InvincibleMode> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('is_invincible_mode_on')) {
+      context.handle(
+          _isInvincibleModeOnMeta,
+          isInvincibleModeOn.isAcceptableOrUnknown(
+              data['is_invincible_mode_on']!, _isInvincibleModeOnMeta));
+    } else if (isInserting) {
+      context.missing(_isInvincibleModeOnMeta);
+    }
+    if (data.containsKey('include_apps_timer')) {
+      context.handle(
+          _includeAppsTimerMeta,
+          includeAppsTimer.isAcceptableOrUnknown(
+              data['include_apps_timer']!, _includeAppsTimerMeta));
+    } else if (isInserting) {
+      context.missing(_includeAppsTimerMeta);
+    }
+    if (data.containsKey('include_groups_timer')) {
+      context.handle(
+          _includeGroupsTimerMeta,
+          includeGroupsTimer.isAcceptableOrUnknown(
+              data['include_groups_timer']!, _includeGroupsTimerMeta));
+    } else if (isInserting) {
+      context.missing(_includeGroupsTimerMeta);
+    }
+    if (data.containsKey('include_shorts_timer')) {
+      context.handle(
+          _includeShortsTimerMeta,
+          includeShortsTimer.isAcceptableOrUnknown(
+              data['include_shorts_timer']!, _includeShortsTimerMeta));
+    } else if (isInserting) {
+      context.missing(_includeShortsTimerMeta);
+    }
+    if (data.containsKey('include_bedtime_schedule')) {
+      context.handle(
+          _includeBedtimeScheduleMeta,
+          includeBedtimeSchedule.isAcceptableOrUnknown(
+              data['include_bedtime_schedule']!, _includeBedtimeScheduleMeta));
+    } else if (isInserting) {
+      context.missing(_includeBedtimeScheduleMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  InvincibleMode map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InvincibleMode(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      isInvincibleModeOn: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}is_invincible_mode_on'])!,
+      includeAppsTimer: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}include_apps_timer'])!,
+      includeGroupsTimer: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}include_groups_timer'])!,
+      includeShortsTimer: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}include_shorts_timer'])!,
+      includeBedtimeSchedule: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}include_bedtime_schedule'])!,
+    );
+  }
+
+  @override
+  $InvincibleModeTableTable createAlias(String alias) {
+    return $InvincibleModeTableTable(attachedDatabase, alias);
+  }
+}
+
+class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
+  /// Unique ID for Invincible Mode settings
+  final int id;
+
+  /// Flag indicating if invincible mode is ON
+  final bool isInvincibleModeOn;
+
+  /// Flag indicating if apps timer are included in the invincible mode
+  ///
+  /// If included user cannot modify app timer if it is already ran out
+  final bool includeAppsTimer;
+
+  /// Flag indicating if groups timer are included in the invincible mode
+  ///
+  /// If included user cannot modify group timer if it is already ran out
+  final bool includeGroupsTimer;
+
+  /// Flag indicating if short content's timer is included in the invincible mode
+  ///
+  /// If included user cannot modify short content timer if it is already ran out
+  final bool includeShortsTimer;
+
+  /// Flag indicating if bedtime schedule is included in the invincible mode
+  ///
+  /// If included user cannot modify bedtime schedule during the active period
+  final bool includeBedtimeSchedule;
+  const InvincibleMode(
+      {required this.id,
+      required this.isInvincibleModeOn,
+      required this.includeAppsTimer,
+      required this.includeGroupsTimer,
+      required this.includeShortsTimer,
+      required this.includeBedtimeSchedule});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
+    map['include_apps_timer'] = Variable<bool>(includeAppsTimer);
+    map['include_groups_timer'] = Variable<bool>(includeGroupsTimer);
+    map['include_shorts_timer'] = Variable<bool>(includeShortsTimer);
+    map['include_bedtime_schedule'] = Variable<bool>(includeBedtimeSchedule);
+    return map;
+  }
+
+  InvincibleModeTableCompanion toCompanion(bool nullToAbsent) {
+    return InvincibleModeTableCompanion(
+      id: Value(id),
+      isInvincibleModeOn: Value(isInvincibleModeOn),
+      includeAppsTimer: Value(includeAppsTimer),
+      includeGroupsTimer: Value(includeGroupsTimer),
+      includeShortsTimer: Value(includeShortsTimer),
+      includeBedtimeSchedule: Value(includeBedtimeSchedule),
+    );
+  }
+
+  factory InvincibleMode.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InvincibleMode(
+      id: serializer.fromJson<int>(json['id']),
+      isInvincibleModeOn: serializer.fromJson<bool>(json['isInvincibleModeOn']),
+      includeAppsTimer: serializer.fromJson<bool>(json['includeAppsTimer']),
+      includeGroupsTimer: serializer.fromJson<bool>(json['includeGroupsTimer']),
+      includeShortsTimer: serializer.fromJson<bool>(json['includeShortsTimer']),
+      includeBedtimeSchedule:
+          serializer.fromJson<bool>(json['includeBedtimeSchedule']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
+      'includeAppsTimer': serializer.toJson<bool>(includeAppsTimer),
+      'includeGroupsTimer': serializer.toJson<bool>(includeGroupsTimer),
+      'includeShortsTimer': serializer.toJson<bool>(includeShortsTimer),
+      'includeBedtimeSchedule': serializer.toJson<bool>(includeBedtimeSchedule),
+    };
+  }
+
+  InvincibleMode copyWith(
+          {int? id,
+          bool? isInvincibleModeOn,
+          bool? includeAppsTimer,
+          bool? includeGroupsTimer,
+          bool? includeShortsTimer,
+          bool? includeBedtimeSchedule}) =>
+      InvincibleMode(
+        id: id ?? this.id,
+        isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
+        includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
+        includeGroupsTimer: includeGroupsTimer ?? this.includeGroupsTimer,
+        includeShortsTimer: includeShortsTimer ?? this.includeShortsTimer,
+        includeBedtimeSchedule:
+            includeBedtimeSchedule ?? this.includeBedtimeSchedule,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('InvincibleMode(')
+          ..write('id: $id, ')
+          ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
+          ..write('includeAppsTimer: $includeAppsTimer, ')
+          ..write('includeGroupsTimer: $includeGroupsTimer, ')
+          ..write('includeShortsTimer: $includeShortsTimer, ')
+          ..write('includeBedtimeSchedule: $includeBedtimeSchedule')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, isInvincibleModeOn, includeAppsTimer,
+      includeGroupsTimer, includeShortsTimer, includeBedtimeSchedule);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InvincibleMode &&
+          other.id == this.id &&
+          other.isInvincibleModeOn == this.isInvincibleModeOn &&
+          other.includeAppsTimer == this.includeAppsTimer &&
+          other.includeGroupsTimer == this.includeGroupsTimer &&
+          other.includeShortsTimer == this.includeShortsTimer &&
+          other.includeBedtimeSchedule == this.includeBedtimeSchedule);
+}
+
+class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
+  final Value<int> id;
+  final Value<bool> isInvincibleModeOn;
+  final Value<bool> includeAppsTimer;
+  final Value<bool> includeGroupsTimer;
+  final Value<bool> includeShortsTimer;
+  final Value<bool> includeBedtimeSchedule;
+  const InvincibleModeTableCompanion({
+    this.id = const Value.absent(),
+    this.isInvincibleModeOn = const Value.absent(),
+    this.includeAppsTimer = const Value.absent(),
+    this.includeGroupsTimer = const Value.absent(),
+    this.includeShortsTimer = const Value.absent(),
+    this.includeBedtimeSchedule = const Value.absent(),
+  });
+  InvincibleModeTableCompanion.insert({
+    this.id = const Value.absent(),
+    required bool isInvincibleModeOn,
+    required bool includeAppsTimer,
+    required bool includeGroupsTimer,
+    required bool includeShortsTimer,
+    required bool includeBedtimeSchedule,
+  })  : isInvincibleModeOn = Value(isInvincibleModeOn),
+        includeAppsTimer = Value(includeAppsTimer),
+        includeGroupsTimer = Value(includeGroupsTimer),
+        includeShortsTimer = Value(includeShortsTimer),
+        includeBedtimeSchedule = Value(includeBedtimeSchedule);
+  static Insertable<InvincibleMode> custom({
+    Expression<int>? id,
+    Expression<bool>? isInvincibleModeOn,
+    Expression<bool>? includeAppsTimer,
+    Expression<bool>? includeGroupsTimer,
+    Expression<bool>? includeShortsTimer,
+    Expression<bool>? includeBedtimeSchedule,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (isInvincibleModeOn != null)
+        'is_invincible_mode_on': isInvincibleModeOn,
+      if (includeAppsTimer != null) 'include_apps_timer': includeAppsTimer,
+      if (includeGroupsTimer != null)
+        'include_groups_timer': includeGroupsTimer,
+      if (includeShortsTimer != null)
+        'include_shorts_timer': includeShortsTimer,
+      if (includeBedtimeSchedule != null)
+        'include_bedtime_schedule': includeBedtimeSchedule,
+    });
+  }
+
+  InvincibleModeTableCompanion copyWith(
+      {Value<int>? id,
+      Value<bool>? isInvincibleModeOn,
+      Value<bool>? includeAppsTimer,
+      Value<bool>? includeGroupsTimer,
+      Value<bool>? includeShortsTimer,
+      Value<bool>? includeBedtimeSchedule}) {
+    return InvincibleModeTableCompanion(
+      id: id ?? this.id,
+      isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
+      includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
+      includeGroupsTimer: includeGroupsTimer ?? this.includeGroupsTimer,
+      includeShortsTimer: includeShortsTimer ?? this.includeShortsTimer,
+      includeBedtimeSchedule:
+          includeBedtimeSchedule ?? this.includeBedtimeSchedule,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (isInvincibleModeOn.present) {
+      map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn.value);
+    }
+    if (includeAppsTimer.present) {
+      map['include_apps_timer'] = Variable<bool>(includeAppsTimer.value);
+    }
+    if (includeGroupsTimer.present) {
+      map['include_groups_timer'] = Variable<bool>(includeGroupsTimer.value);
+    }
+    if (includeShortsTimer.present) {
+      map['include_shorts_timer'] = Variable<bool>(includeShortsTimer.value);
+    }
+    if (includeBedtimeSchedule.present) {
+      map['include_bedtime_schedule'] =
+          Variable<bool>(includeBedtimeSchedule.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InvincibleModeTableCompanion(')
+          ..write('id: $id, ')
+          ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
+          ..write('includeAppsTimer: $includeAppsTimer, ')
+          ..write('includeGroupsTimer: $includeGroupsTimer, ')
+          ..write('includeShortsTimer: $includeShortsTimer, ')
+          ..write('includeBedtimeSchedule: $includeBedtimeSchedule')
           ..write(')'))
         .toString();
   }
@@ -3361,6 +3837,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $FocusSessionsTableTable(this);
   late final $MindfulSettingsTableTable mindfulSettingsTable =
       $MindfulSettingsTableTable(this);
+  late final $InvincibleModeTableTable invincibleModeTable =
+      $InvincibleModeTableTable(this);
   late final $RestrictionGroupsTableTable restrictionGroupsTable =
       $RestrictionGroupsTableTable(this);
   late final $WellbeingTableTable wellbeingTable = $WellbeingTableTable(this);
@@ -3380,6 +3858,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         focusProfileTable,
         focusSessionsTable,
         mindfulSettingsTable,
+        invincibleModeTable,
         restrictionGroupsTable,
         wellbeingTable
       ];
@@ -4293,10 +4772,12 @@ typedef $$MindfulSettingsTableTableInsertCompanionBuilder
   required String accentColor,
   required String username,
   required String localeCode,
-  required bool isInvincibleModeOn,
   required int dataResetTimeMins,
   required bool useBottomNavigation,
   required bool useAmoledDark,
+  required bool useDynamicColors,
+  required DefaultHomeTab defaultHomeTab,
+  required List<String> excludedApps,
 });
 typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
@@ -4305,10 +4786,12 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<String> accentColor,
   Value<String> username,
   Value<String> localeCode,
-  Value<bool> isInvincibleModeOn,
   Value<int> dataResetTimeMins,
   Value<bool> useBottomNavigation,
   Value<bool> useAmoledDark,
+  Value<bool> useDynamicColors,
+  Value<DefaultHomeTab> defaultHomeTab,
+  Value<List<String>> excludedApps,
 });
 
 class $$MindfulSettingsTableTableTableManager extends RootTableManager<
@@ -4337,10 +4820,12 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<String> accentColor = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> localeCode = const Value.absent(),
-            Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<int> dataResetTimeMins = const Value.absent(),
             Value<bool> useBottomNavigation = const Value.absent(),
             Value<bool> useAmoledDark = const Value.absent(),
+            Value<bool> useDynamicColors = const Value.absent(),
+            Value<DefaultHomeTab> defaultHomeTab = const Value.absent(),
+            Value<List<String>> excludedApps = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion(
             id: id,
@@ -4348,10 +4833,12 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            isInvincibleModeOn: isInvincibleModeOn,
             dataResetTimeMins: dataResetTimeMins,
             useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
+            useDynamicColors: useDynamicColors,
+            defaultHomeTab: defaultHomeTab,
+            excludedApps: excludedApps,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
@@ -4359,10 +4846,12 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             required String accentColor,
             required String username,
             required String localeCode,
-            required bool isInvincibleModeOn,
             required int dataResetTimeMins,
             required bool useBottomNavigation,
             required bool useAmoledDark,
+            required bool useDynamicColors,
+            required DefaultHomeTab defaultHomeTab,
+            required List<String> excludedApps,
           }) =>
               MindfulSettingsTableCompanion.insert(
             id: id,
@@ -4370,10 +4859,12 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            isInvincibleModeOn: isInvincibleModeOn,
             dataResetTimeMins: dataResetTimeMins,
             useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
+            useDynamicColors: useDynamicColors,
+            defaultHomeTab: defaultHomeTab,
+            excludedApps: excludedApps,
           ),
         ));
 }
@@ -4421,11 +4912,6 @@ class $$MindfulSettingsTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<bool> get isInvincibleModeOn => $state.composableBuilder(
-      column: $state.table.isInvincibleModeOn,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
   ColumnFilters<int> get dataResetTimeMins => $state.composableBuilder(
       column: $state.table.dataResetTimeMins,
       builder: (column, joinBuilders) =>
@@ -4440,6 +4926,25 @@ class $$MindfulSettingsTableTableFilterComposer
       column: $state.table.useAmoledDark,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get useDynamicColors => $state.composableBuilder(
+      column: $state.table.useDynamicColors,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<DefaultHomeTab, DefaultHomeTab, int>
+      get defaultHomeTab => $state.composableBuilder(
+          column: $state.table.defaultHomeTab,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get excludedApps => $state.composableBuilder(
+          column: $state.table.excludedApps,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 }
 
 class $$MindfulSettingsTableTableOrderingComposer
@@ -4470,11 +4975,6 @@ class $$MindfulSettingsTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<bool> get isInvincibleModeOn => $state.composableBuilder(
-      column: $state.table.isInvincibleModeOn,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
   ColumnOrderings<int> get dataResetTimeMins => $state.composableBuilder(
       column: $state.table.dataResetTimeMins,
       builder: (column, joinBuilders) =>
@@ -4487,6 +4987,176 @@ class $$MindfulSettingsTableTableOrderingComposer
 
   ColumnOrderings<bool> get useAmoledDark => $state.composableBuilder(
       column: $state.table.useAmoledDark,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get useDynamicColors => $state.composableBuilder(
+      column: $state.table.useDynamicColors,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get defaultHomeTab => $state.composableBuilder(
+      column: $state.table.defaultHomeTab,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get excludedApps => $state.composableBuilder(
+      column: $state.table.excludedApps,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$InvincibleModeTableTableInsertCompanionBuilder
+    = InvincibleModeTableCompanion Function({
+  Value<int> id,
+  required bool isInvincibleModeOn,
+  required bool includeAppsTimer,
+  required bool includeGroupsTimer,
+  required bool includeShortsTimer,
+  required bool includeBedtimeSchedule,
+});
+typedef $$InvincibleModeTableTableUpdateCompanionBuilder
+    = InvincibleModeTableCompanion Function({
+  Value<int> id,
+  Value<bool> isInvincibleModeOn,
+  Value<bool> includeAppsTimer,
+  Value<bool> includeGroupsTimer,
+  Value<bool> includeShortsTimer,
+  Value<bool> includeBedtimeSchedule,
+});
+
+class $$InvincibleModeTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $InvincibleModeTableTable,
+    InvincibleMode,
+    $$InvincibleModeTableTableFilterComposer,
+    $$InvincibleModeTableTableOrderingComposer,
+    $$InvincibleModeTableTableProcessedTableManager,
+    $$InvincibleModeTableTableInsertCompanionBuilder,
+    $$InvincibleModeTableTableUpdateCompanionBuilder> {
+  $$InvincibleModeTableTableTableManager(
+      _$AppDatabase db, $InvincibleModeTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$InvincibleModeTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$InvincibleModeTableTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$InvincibleModeTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> isInvincibleModeOn = const Value.absent(),
+            Value<bool> includeAppsTimer = const Value.absent(),
+            Value<bool> includeGroupsTimer = const Value.absent(),
+            Value<bool> includeShortsTimer = const Value.absent(),
+            Value<bool> includeBedtimeSchedule = const Value.absent(),
+          }) =>
+              InvincibleModeTableCompanion(
+            id: id,
+            isInvincibleModeOn: isInvincibleModeOn,
+            includeAppsTimer: includeAppsTimer,
+            includeGroupsTimer: includeGroupsTimer,
+            includeShortsTimer: includeShortsTimer,
+            includeBedtimeSchedule: includeBedtimeSchedule,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            required bool isInvincibleModeOn,
+            required bool includeAppsTimer,
+            required bool includeGroupsTimer,
+            required bool includeShortsTimer,
+            required bool includeBedtimeSchedule,
+          }) =>
+              InvincibleModeTableCompanion.insert(
+            id: id,
+            isInvincibleModeOn: isInvincibleModeOn,
+            includeAppsTimer: includeAppsTimer,
+            includeGroupsTimer: includeGroupsTimer,
+            includeShortsTimer: includeShortsTimer,
+            includeBedtimeSchedule: includeBedtimeSchedule,
+          ),
+        ));
+}
+
+class $$InvincibleModeTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $InvincibleModeTableTable,
+        InvincibleMode,
+        $$InvincibleModeTableTableFilterComposer,
+        $$InvincibleModeTableTableOrderingComposer,
+        $$InvincibleModeTableTableProcessedTableManager,
+        $$InvincibleModeTableTableInsertCompanionBuilder,
+        $$InvincibleModeTableTableUpdateCompanionBuilder> {
+  $$InvincibleModeTableTableProcessedTableManager(super.$state);
+}
+
+class $$InvincibleModeTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $InvincibleModeTableTable> {
+  $$InvincibleModeTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isInvincibleModeOn => $state.composableBuilder(
+      column: $state.table.isInvincibleModeOn,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get includeAppsTimer => $state.composableBuilder(
+      column: $state.table.includeAppsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get includeGroupsTimer => $state.composableBuilder(
+      column: $state.table.includeGroupsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get includeShortsTimer => $state.composableBuilder(
+      column: $state.table.includeShortsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get includeBedtimeSchedule => $state.composableBuilder(
+      column: $state.table.includeBedtimeSchedule,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$InvincibleModeTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $InvincibleModeTableTable> {
+  $$InvincibleModeTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isInvincibleModeOn => $state.composableBuilder(
+      column: $state.table.isInvincibleModeOn,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get includeAppsTimer => $state.composableBuilder(
+      column: $state.table.includeAppsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get includeGroupsTimer => $state.composableBuilder(
+      column: $state.table.includeGroupsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get includeShortsTimer => $state.composableBuilder(
+      column: $state.table.includeShortsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get includeBedtimeSchedule => $state.composableBuilder(
+      column: $state.table.includeBedtimeSchedule,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
@@ -4837,6 +5507,8 @@ class _$AppDatabaseManager {
       $$FocusSessionsTableTableTableManager(_db, _db.focusSessionsTable);
   $$MindfulSettingsTableTableTableManager get mindfulSettingsTable =>
       $$MindfulSettingsTableTableTableManager(_db, _db.mindfulSettingsTable);
+  $$InvincibleModeTableTableTableManager get invincibleModeTable =>
+      $$InvincibleModeTableTableTableManager(_db, _db.invincibleModeTable);
   $$RestrictionGroupsTableTableTableManager get restrictionGroupsTable =>
       $$RestrictionGroupsTableTableTableManager(
           _db, _db.restrictionGroupsTable);

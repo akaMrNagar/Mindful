@@ -42,10 +42,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     );
   }
 
-  /// Toggles the Invincible Mode setting.
-  void switchInvincibleMode() =>
-      state = state.copyWith(isInvincibleModeOn: !state.isInvincibleModeOn);
-
   /// Changes the application's theme mode.
   void changeThemeMode(AppThemeMode mode) =>
       state = state.copyWith(themeMode: mode);
@@ -88,4 +84,16 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   /// Switch AMOLED dark mode
   void switchAmoledDark() =>
       state = state.copyWith(useAmoledDark: !state.useAmoledDark);
+  
+  /// Switch dynamic color
+  void switchDynamicColor() =>
+      state = state.copyWith(useDynamicColors: !state.useDynamicColors);
+
+  /// Include or Exclude an app from total usage statistics
+  void includeExcludeApp(String appPackage, bool shouldInclude) =>
+      state = state.copyWith(
+        excludedApps: shouldInclude
+            ? [...state.excludedApps, appPackage]
+            : [...state.excludedApps.where((e) => e != appPackage)],
+      );
 }

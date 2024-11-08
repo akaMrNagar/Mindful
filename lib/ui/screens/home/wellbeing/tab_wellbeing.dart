@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -84,13 +84,14 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
             (allowedShortContentTimeSec - _shortsScreenTimeSec),
           );
 
-    final isInvincibleModeOn = ref.watch(
-      mindfulSettingsProvider.select((v) => v.isInvincibleModeOn),
+    final isInvincibleModeRestricted = ref.watch(
+      invincibleModeProvider
+          .select((v) => v.isInvincibleModeOn && v.includeShortsTimer),
     );
 
-    final isModifiable = allowedShortContentTimeSec.isNegative ||
-        !isInvincibleModeOn ||
-        (isInvincibleModeOn && remainingTimeSec > 0);
+    final canModifySettings = allowedShortContentTimeSec.isNegative ||
+        !isInvincibleModeRestricted ||
+        (isInvincibleModeRestricted && remainingTimeSec > 0);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -106,14 +107,14 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
 
         /// Short usage progress bar
         ShortsTimerChart(
-          isModifiable: isModifiable && haveAccessibilityPermission,
+          isModifiable: canModifySettings && haveAccessibilityPermission,
           allowedTimeSec: max(allowedShortContentTimeSec, 0),
           remainingTimeSec: remainingTimeSec,
         ).sliver,
 
         /// Invincible Mode warning
         SliverPrimaryActionContainer(
-          isVisible: haveAccessibilityPermission && !isModifiable,
+          isVisible: haveAccessibilityPermission && !canModifySettings,
           margin: const EdgeInsets.symmetric(vertical: 16),
           icon: FluentIcons.animal_cat_20_regular,
           title: context.locale.invincible_mode_heading,
@@ -123,7 +124,7 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         /// Quick actions
         SliverShortsQuickActions(
           haveNecessaryPerms: haveAccessibilityPermission,
-          isModifiable: isModifiable,
+          isModifiable: canModifySettings,
         ),
 
         /// Adult content header

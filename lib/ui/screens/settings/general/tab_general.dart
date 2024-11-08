@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
+import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
@@ -42,22 +43,12 @@ class TabGeneral extends ConsumerWidget {
           title: context.locale.appearance_heading,
         ).sliver,
 
-        /// Amoled dark
-        DefaultListTile(
-          position: ItemPosition.start,
-          switchValue: mindfulSettings.useAmoledDark,
-          titleText: context.locale.amoled_dark_tile_title,
-          subtitleText: context.locale.amoled_dark_tile_subtitle,
-          onPressed:
-              ref.read(mindfulSettingsProvider.notifier).switchAmoledDark,
-        ).sliver,
-
         /// Theme mode
         DefaultDropdownTile<AppThemeMode>(
-          position: ItemPosition.mid,
+          position: ItemPosition.start,
           value: mindfulSettings.themeMode,
           dialogIcon: FluentIcons.dark_theme_20_filled,
-          label: context.locale.theme_mode_tile_title,
+          titleText: context.locale.theme_mode_tile_title,
           onSelected:
               ref.read(mindfulSettingsProvider.notifier).changeThemeMode,
           items: [
@@ -78,8 +69,8 @@ class TabGeneral extends ConsumerWidget {
 
         /// Material Color
         DefaultDropdownTile<String>(
-          position: ItemPosition.end,
-          label: context.locale.material_color_tile_title,
+          position: ItemPosition.mid,
+          titleText: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.accentColor,
           onSelected: ref.read(mindfulSettingsProvider.notifier).changeColor,
@@ -98,6 +89,26 @@ class TabGeneral extends ConsumerWidget {
               .toList(),
         ).sliver,
 
+        /// Amoled dark
+        DefaultListTile(
+          position: ItemPosition.mid,
+          switchValue: mindfulSettings.useAmoledDark,
+          titleText: context.locale.amoled_dark_tile_title,
+          subtitleText: context.locale.amoled_dark_tile_subtitle,
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchAmoledDark,
+        ).sliver,
+
+        /// Amoled dark
+        DefaultListTile(
+          position: ItemPosition.end,
+          switchValue: mindfulSettings.useDynamicColors,
+          titleText: "Dynamic colors",
+          subtitleText: "Use device colors if supported.",
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchDynamicColor,
+        ).sliver,
+
         /// Default settings
         12.vSliverBox,
         ContentSectionHeader(title: context.locale.defaults_heading).sliver,
@@ -105,7 +116,7 @@ class TabGeneral extends ConsumerWidget {
         /// App Language
         DefaultDropdownTile<String>(
           position: ItemPosition.start,
-          label: context.locale.app_language_tile_title,
+          titleText: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.localeCode,
           onSelected: ref.read(mindfulSettingsProvider.notifier).changeLocale,
@@ -116,6 +127,33 @@ class TabGeneral extends ConsumerWidget {
                         Locales.knownLocales[e.languageCode] ?? e.languageCode,
                   ))
               .toList(),
+        ).sliver,
+
+        /// Default home tab
+        DefaultDropdownTile<DefaultHomeTab>(
+          position: ItemPosition.mid,
+          titleText: "Home tab",
+          dialogIcon: FluentIcons.color_20_filled,
+          value: DefaultHomeTab.dashboard,
+          onSelected: (_) {},
+          items: [
+            DefaultDropdownItem(
+              label: context.locale.dashboard_tab_title,
+              value: DefaultHomeTab.dashboard,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.statistics_tab_title,
+              value: DefaultHomeTab.statistics,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.wellbeing_tab_title,
+              value: DefaultHomeTab.wellbeing,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.bedtime_tab_title,
+              value: DefaultHomeTab.bedtime,
+            ),
+          ],
         ).sliver,
 
         /// Bottom navigation

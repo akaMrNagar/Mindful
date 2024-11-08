@@ -10,14 +10,17 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -34,6 +37,24 @@ class TabBedtime extends ConsumerWidget {
     bool shouldStart,
   ) async {
     final state = ref.read(bedtimeScheduleProvider);
+
+    /// If invincible mode is ON and schedule is ON
+    final isInvincibleModeRestricted = ref.read(invincibleModeProvider
+        .select((v) => v.isInvincibleModeOn && v.includeBedtimeSchedule));
+
+    if (isInvincibleModeRestricted && state.isScheduleOn) {
+      final now = DateTime.now();
+      final start = now.dateOnly.add(state.startTimeInMins.minutes);
+      final end = now.dateOnly.add(state.endTimeInMins.minutes);
+
+      if (start.isBefore(now) && end.isAfter(now)) {
+        context.showSnackAlert(
+          "Modification to active schedule is not permitted due to invincible mode.",
+        );
+
+        return;
+      }
+    }
 
     // If none of the days is selected
     if (!state.scheduleDays.contains(true)) {

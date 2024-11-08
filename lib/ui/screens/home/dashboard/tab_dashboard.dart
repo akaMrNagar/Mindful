@@ -96,125 +96,128 @@ class TabDashboard extends ConsumerWidget {
             /// Active session
             const SliverActiveSessionAlert(),
 
-            ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      /// Screen time
-                      Expanded(
-                        child: UsageGlanceCard(
-                          isPrimary: true,
-                          title: context.locale.screen_time_label,
-                          icon: FluentIcons.phone_screen_time_20_regular,
-                          progressPercentage: focusStats
-                              .todaysScreenTime.inSeconds
-                              .toDiffPercentage(
-                            focusStats.yesterdaysScreenTime.inSeconds,
+            Column(
+              children: [
+                Row(
+                  children: [
+                    /// Screen time
+                    Expanded(
+                      child: UsageGlanceCard(
+                        isPrimary: true,
+                        borderRadius: BorderRadius.circular(6)
+                            .copyWith(topLeft: const Radius.circular(24)),
+                        title: context.locale.screen_time_label,
+                        icon: FluentIcons.phone_screen_time_20_regular,
+                        progressPercentage: focusStats
+                            .todaysScreenTime.inSeconds
+                            .toDiffPercentage(
+                          focusStats.yesterdaysScreenTime.inSeconds,
+                        ),
+                        info: focusStats.todaysScreenTime.toTimeShort(context),
+                        onTap: () => context.showSnackAlert(
+                          context.locale.screen_time_snack_alert(
+                            focusStats.todaysScreenTime.toTimeFull(context),
                           ),
-                          info:
-                              focusStats.todaysScreenTime.toTimeShort(context),
-                          onTap: () => context.showSnackAlert(
-                            context.locale.screen_time_snack_alert(
-                              focusStats.todaysScreenTime.toTimeFull(context),
-                            ),
-                            icon: FluentIcons.phone_screen_time_20_filled,
-                          ),
+                          icon: FluentIcons.phone_screen_time_20_filled,
                         ),
                       ),
-                      tilesGap.hBox,
-
-                      // Focused time
-                      Expanded(
-                        child: UsageGlanceCard(
-                          isPrimary: true,
-                          invertProgress: true,
-                          icon: FluentIcons.person_clock_20_regular,
-                          title: context.locale.focused_time_label,
-                          info:
-                              focusStats.todaysFocusedTime.toTimeShort(context),
-                          progressPercentage: focusStats
-                              .todaysFocusedTime.inMinutes
-                              .toDiffPercentage(
-                            focusStats.yesterdaysFocusedTime.inMinutes,
-                          ),
-                          onTap: () => context.showSnackAlert(
-                            context.locale.focused_time_snack_alert(
-                              focusStats.todaysFocusedTime.toTimeFull(context),
-                            ),
-                            icon: FluentIcons.person_clock_20_filled,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  tilesGap.vBox,
-
-                  /// Total focused time from install to till now
-                  UsageGlanceCard(
-                    icon: FluentIcons.sound_source_20_regular,
-                    title: context.locale.lifetime_focused_time_label,
-                    info: focusStats.lifetimeFocusedTime.toTimeFull(context),
-                    invertProgress: true,
-                    onTap: () => context.showSnackAlert(
-                      context.locale.lifetime_focused_time_snack_alert(
-                        focusStats.lifetimeFocusedTime.toTimeFull(context),
-                      ),
-                      icon: FluentIcons.sound_source_20_filled,
                     ),
-                  ),
+                    tilesGap.hBox,
 
-                  tilesGap.vBox,
-
-                  /// Streaks
-                  Row(
-                    children: [
-                      Expanded(
-                        child: UsageGlanceCard(
-                          title: context.locale.longest_streak_label,
-                          icon: FluentIcons.trophy_20_regular,
-                          info: context.locale.nDays(longestStreak),
+                    // Focused time
+                    Expanded(
+                      child: UsageGlanceCard(
+                        isPrimary: true,
+                        borderRadius: BorderRadius.circular(6)
+                            .copyWith(topRight: const Radius.circular(24)),
+                        invertProgress: true,
+                        icon: FluentIcons.person_clock_20_regular,
+                        title: context.locale.focused_time_label,
+                        info: focusStats.todaysFocusedTime.toTimeShort(context),
+                        progressPercentage: focusStats
+                            .todaysFocusedTime.inMinutes
+                            .toDiffPercentage(
+                          focusStats.yesterdaysFocusedTime.inMinutes,
+                        ),
+                        onTap: () => context.showSnackAlert(
+                          context.locale.focused_time_snack_alert(
+                            focusStats.todaysFocusedTime.toTimeFull(context),
+                          ),
+                          icon: FluentIcons.person_clock_20_filled,
                         ),
                       ),
-                      tilesGap.hBox,
-                      Expanded(
-                        child: UsageGlanceCard(
-                          title: context.locale.current_streak_label,
-                          icon: FluentIcons.fire_20_regular,
-                          info: context.locale.nDays(currentStreak),
-                        ),
-                      ),
-                    ],
-                  ),
-                  tilesGap.vBox,
-
-                  /// Sessions
-                  Row(
-                    children: [
-                      Expanded(
-                        child: UsageGlanceCard(
-                          title: context.locale.successful_sessions_label,
-                          icon: FluentIcons.thumb_like_20_regular,
-                          info: focusStats.successfulSessions.toString(),
-                        ),
-                      ),
-                      tilesGap.hBox,
-                      Expanded(
-                        child: UsageGlanceCard(
-                          title: context.locale.failed_sessions_label,
-                          icon: FluentIcons.thumb_dislike_20_regular,
-                          info: focusStats.failedSessions.toString(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ].animateListWhen(
-                  when: !ref.read(appsProvider).hasValue,
-                  effects: DefaultEffects.transitionIn,
-                  interval: 100.ms,
+                    ),
+                  ],
                 ),
+
+                tilesGap.vBox,
+
+                /// Total focused time from install to till now
+                UsageGlanceCard(
+                  icon: FluentIcons.sound_source_20_regular,
+                  title: context.locale.lifetime_focused_time_label,
+                  info: focusStats.lifetimeFocusedTime.toTimeFull(context),
+                  invertProgress: true,
+                  onTap: () => context.showSnackAlert(
+                    context.locale.lifetime_focused_time_snack_alert(
+                      focusStats.lifetimeFocusedTime.toTimeFull(context),
+                    ),
+                    icon: FluentIcons.sound_source_20_filled,
+                  ),
+                ),
+
+                tilesGap.vBox,
+
+                /// Streaks
+                Row(
+                  children: [
+                    Expanded(
+                      child: UsageGlanceCard(
+                        title: context.locale.longest_streak_label,
+                        icon: FluentIcons.trophy_20_regular,
+                        info: context.locale.nDays(longestStreak),
+                      ),
+                    ),
+                    tilesGap.hBox,
+                    Expanded(
+                      child: UsageGlanceCard(
+                        title: context.locale.current_streak_label,
+                        icon: FluentIcons.fire_20_regular,
+                        info: context.locale.nDays(currentStreak),
+                      ),
+                    ),
+                  ],
+                ),
+                tilesGap.vBox,
+
+                /// Sessions
+                Row(
+                  children: [
+                    Expanded(
+                      child: UsageGlanceCard(
+                        borderRadius: BorderRadius.circular(6)
+                            .copyWith(bottomLeft: const Radius.circular(24)),
+                        title: context.locale.successful_sessions_label,
+                        icon: FluentIcons.thumb_like_20_regular,
+                        info: focusStats.successfulSessions.toString(),
+                      ),
+                    ),
+                    tilesGap.hBox,
+                    Expanded(
+                      child: UsageGlanceCard(
+                        borderRadius: BorderRadius.circular(6)
+                            .copyWith(bottomRight: const Radius.circular(24)),
+                        title: context.locale.failed_sessions_label,
+                        icon: FluentIcons.thumb_dislike_20_regular,
+                        info: focusStats.failedSessions.toString(),
+                      ),
+                    ),
+                  ],
+                ),
+              ].animateListWhen(
+                when: !ref.read(appsProvider).hasValue,
+                effects: DefaultEffects.transitionIn,
+                interval: 100.ms,
               ),
             ).sliver,
 

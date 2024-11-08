@@ -21,6 +21,7 @@ dependencies:
   animated_flip_counter: ^0.3.4
   flutter_confetti: ^0.3.0
   smooth_page_indicator: ^1.2.0+3
+  dynamic_color: ^1.7.0
 
   # Animation
   flutter_animate: ^4.2.0+1

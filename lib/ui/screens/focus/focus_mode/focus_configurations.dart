@@ -67,7 +67,7 @@ class FocusQuickActions extends ConsumerWidget {
         /// Session tag
         DefaultDropdownTile<SessionType>(
           position: ItemPosition.start,
-          label: context.locale.focus_session_tile_title,
+          titleText: context.locale.focus_session_tile_title,
           dialogIcon: FluentIcons.door_tag_20_filled,
           value: sessionType,
           onSelected: ref.read(focusModeProvider.notifier).setSessionType,

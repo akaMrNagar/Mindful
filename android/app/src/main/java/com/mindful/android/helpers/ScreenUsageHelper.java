@@ -74,7 +74,7 @@ public class ScreenUsageHelper {
                     screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
                     lastResumedEvents.remove(eventKey);
                 } else if (isFirstEvent) {
-                    Log.d("TAG", "fetchUsageForInterval: app " + packageName);
+                    // Log.d("TAG", "fetchUsageForInterval: app " + packageName);
                     // Fallback logic in case no matching ACTIVITY_RESUMED was found. May be this app was opened before START time
                     screenTime += (currentEvent.getTimeStamp() - start);
                 }
@@ -105,7 +105,7 @@ public class ScreenUsageHelper {
         long end = System.currentTimeMillis();
         long screenTime = fetchUsageForInterval(usageStatsManager, start, end, packageName).getOrDefault(packageName, 0L);
 
-        Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
+        // Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
         return screenTime;
     }
 

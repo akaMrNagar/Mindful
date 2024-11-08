@@ -47,11 +47,13 @@ class RestrictionGroupsScreen extends ConsumerWidget {
                 itemCount: groups.length,
                 itemBuilder: (context, index) => RestrictionGroupCard(
                   group: groups[index],
-                  position: index == 0
-                      ? ItemPosition.start
-                      : index == groups.length - 1
-                          ? ItemPosition.end
-                          : ItemPosition.mid,
+                  position: groups.length == 1
+                      ? ItemPosition.none
+                      : index == 0
+                          ? ItemPosition.start
+                          : index == groups.length - 1
+                              ? ItemPosition.end
+                              : ItemPosition.mid,
                 ),
               ),
             ],

@@ -37,6 +37,6 @@ class ListStringConverter extends TypeConverter<List<String>, String> {
 
   @override
   String toSql(List<String> value) {
-    return json.encode(value);
+    return json.encode(value.toSet().toList());
   }
 }

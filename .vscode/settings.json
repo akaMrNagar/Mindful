@@ -1,8 +1,0 @@
-{
-    "continue.telemetryEnabled": false,
-    "code-runner.enableAppInsights": false,
-    "cSpell.words": [
-        "Cooldown",
-        "endtemplate"
-    ]
-}

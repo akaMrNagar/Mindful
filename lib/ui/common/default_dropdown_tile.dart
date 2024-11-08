@@ -24,7 +24,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onSelected,
-    required this.label,
+    required this.titleText,
     this.width,
     this.position,
     this.leadingIcon,
@@ -35,7 +35,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
   final IconData? leadingIcon;
   final IconData? dialogIcon;
 
-  final String label;
+  final String titleText;
   final double? width;
   final ItemPosition? position;
   final T value;
@@ -45,7 +45,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final heroTag = "DefaultDropdown.$label";
+    final heroTag = "DefaultDropdown.$titleText";
     final selected =
         items.isNotEmpty ? items.firstWhere((e) => e.value == value) : null;
 
@@ -54,7 +54,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
       child: DefaultListTile(
         position: position,
         leadingIcon: leadingIcon,
-        titleText: label,
+        titleText: titleText,
         subtitleText: selected?.label,
         trailing: trailingBuilder?.call(selected?.value) ??
             const Icon(FluentIcons.caret_down_20_filled),
@@ -62,7 +62,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
           Navigator.of(context).push(
             HeroPageRoute(
               builder: (context) => _DropdownMenuDialog<T>(
-                label: label,
+                label: titleText,
                 heroTag: heroTag,
                 iconData: dialogIcon,
                 selected: selected,

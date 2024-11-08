@@ -13,6 +13,7 @@ import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
 import 'package:mindful/core/database/tables/focus_mode_table.dart';
+import 'package:mindful/core/database/tables/invincible_mode_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/database/tables/wellbeing_table.dart';
 
@@ -21,6 +22,7 @@ part 'unique_records_dao.g.dart';
 @DriftAccessor(
   tables: [
     MindfulSettingsTable,
+    InvincibleModeTable,
     BedtimeScheduleTable,
     FocusModeTable,
     WellbeingTable,
@@ -40,6 +42,18 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   Future<MindfulSettings> loadMindfulSettings() async =>
       await select(mindfulSettingsTable).getSingleOrNull() ??
       MindfulSettingsTable.defaultMindfulSettingsModel;
+
+  /// Saves a single [InvincibleMode] object to the database.
+  Future<void> saveInvincibleModeSettings(
+          InvincibleMode invincibleModeSettings) async =>
+      into(invincibleModeTable)
+          .insert(invincibleModeSettings, mode: InsertMode.insertOrReplace);
+
+  /// Loads the first (and likely only) [InvincibleMode] object
+  /// from the database. If none exists, returns default instance.
+  Future<InvincibleMode> loadInvincibleModeSettings() async =>
+      await select(invincibleModeTable).getSingleOrNull() ??
+      InvincibleModeTable.defaultInvincibleModeModel;
 
   /// Saves a single [BedtimeSchedule] object to the database.
   Future<void> saveBedtimeSchedule(BedtimeSchedule bedtimeSchedule) async =>

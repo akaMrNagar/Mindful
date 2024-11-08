@@ -8,10 +8,10 @@
  *
  */
 
-/// Position of the item in a list or section
-enum ItemPosition {
-  none,
-  start,
-  mid,
-  end,
+/// Default initial home tab
+enum DefaultHomeTab {
+  dashboard,
+  statistics,
+  wellbeing,
+  bedtime,
 }

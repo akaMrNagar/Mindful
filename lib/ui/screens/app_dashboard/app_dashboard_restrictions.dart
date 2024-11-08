@@ -29,10 +29,10 @@ import 'package:mindful/ui/screens/app_dashboard/app_timer_picker.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-/// Displays available actions for the app in [AppDashboard]
+/// Displays available restriction actions for the app in [AppDashboard]
 
-class AppDashboardQuickActions extends ConsumerWidget {
-  const AppDashboardQuickActions({
+class AppDashboardRestrictions extends ConsumerWidget {
+  const AppDashboardRestrictions({
     super.key,
     required this.app,
   });

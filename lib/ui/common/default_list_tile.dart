@@ -75,7 +75,7 @@ class DefaultListTile extends StatelessWidget {
                       ? accent
                       : isPrimary
                           ? Theme.of(context).colorScheme.secondaryContainer
-                          : Theme.of(context).colorScheme.outline,
+                          : Theme.of(context).hintColor,
                 )
               : leading ?? 0.hBox,
 

@@ -10,7 +10,9 @@
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
+import 'package:mindful/core/enums/default_home_tab.dart';
 
 @DataClassName("MindfulSettings")
 class MindfulSettingsTable extends Table {
@@ -32,12 +34,6 @@ class MindfulSettingsTable extends Table {
   /// App Locale (Language code)
   TextColumn get localeCode => text()();
 
-  /// Is invincible mode on if it is ON then user cannot change following :
-  ///
-  /// 1. App timer if it is purged
-  /// 2. Short content time if it is exhausted
-  BoolColumn get isInvincibleModeOn => boolean()();
-
   /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
   IntColumn get dataResetTimeMins => integer()();
 
@@ -47,15 +43,26 @@ class MindfulSettingsTable extends Table {
   /// Flag indicating if to use pure amoled black color for dark theme
   BoolColumn get useAmoledDark => boolean()();
 
+  /// Flag indicating if to use wallpaper colors for themes
+  BoolColumn get useDynamicColors => boolean()();
+
+  /// Default initial home tab
+  IntColumn get defaultHomeTab => intEnum<DefaultHomeTab>()();
+
+  /// List of app's packages which are excluded from the aggregated usage statistics.
+  TextColumn get excludedApps => text().map(const ListStringConverter())();
+
   static const defaultMindfulSettingsModel = MindfulSettings(
     id: 0,
+    defaultHomeTab: DefaultHomeTab.dashboard,
     themeMode: AppThemeMode.system,
     accentColor: "Indigo",
     username: "Hustler",
     localeCode: "en",
-    isInvincibleModeOn: false,
     dataResetTimeMins: 0,
     useBottomNavigation: false,
     useAmoledDark: false,
+    useDynamicColors: false,
+    excludedApps: [],
   );
 }

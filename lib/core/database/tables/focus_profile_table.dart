@@ -15,11 +15,11 @@ import 'package:mindful/core/enums/session_type.dart';
 
 @DataClassName("FocusProfile")
 class FocusProfileTable extends Table {
-  @override
-  Set<Column<Object>>? get primaryKey => {sessionType};
-
   /// Selected session type
   IntColumn get sessionType => intEnum<SessionType>()();
+  
+  @override
+  Set<Column<Object>>? get primaryKey => {sessionType};
 
   /// Duration in SECONDS for the focus session
   IntColumn get sessionDuration => integer()();

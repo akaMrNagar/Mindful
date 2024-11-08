@@ -14,6 +14,7 @@ import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -33,7 +34,21 @@ class RestrictionGroupCard extends ConsumerWidget {
   final RestrictionGroup group;
   final ItemPosition? position;
 
-  void _updateGroup(BuildContext context, WidgetRef ref) async {
+  void _updateGroup(
+    BuildContext context,
+    WidgetRef ref,
+    int remainingTimeSec,
+  ) async {
+    final isInvincibleModeRestricted = ref.read(invincibleModeProvider
+        .select((v) => v.isInvincibleModeOn && v.includeGroupsTimer));
+
+    if (isInvincibleModeRestricted && remainingTimeSec <= 0) {
+      context.showSnackAlert(
+        "Cannot modify group during invincible mode after the timer ran out",
+      );
+      return;
+    }
+
     final updatedGroup = await showCreateUpdateRestrictionGroupSheet(
       context: context,
       group: group,
@@ -56,7 +71,21 @@ class RestrictionGroupCard extends ConsumerWidget {
     }
   }
 
-  void _removeGroup(BuildContext context, WidgetRef ref) async {
+  void _removeGroup(
+    BuildContext context,
+    WidgetRef ref,
+    int remainingTimeSec,
+  ) async {
+    final isInvincibleModeRestricted = ref.read(invincibleModeProvider
+        .select((v) => v.isInvincibleModeOn && v.includeGroupsTimer));
+
+    if (isInvincibleModeRestricted && remainingTimeSec <= 0) {
+      context.showSnackAlert(
+        "Cannot modify group during invincible mode after the timer ran out",
+      );
+      return;
+    }
+
     final confirm = await showConfirmationDialog(
       context: context,
       heroTag: HeroTags.removeRestrictionGroupTag(group.id),
@@ -98,7 +127,7 @@ class RestrictionGroupCard extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.symmetric(vertical: 2),
       color: Theme.of(context).colorScheme.surfaceContainer,
-      onPressed: () => _updateGroup(context, ref),
+      onPressed: () => _updateGroup(context, ref, remainingTimeSec),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -202,7 +231,7 @@ class RestrictionGroupCard extends ConsumerWidget {
           DefaultHero(
             tag: HeroTags.removeRestrictionGroupTag(group.id),
             child: FilledButton.tonal(
-              onPressed: () => _removeGroup(context, ref),
+              onPressed: () => _removeGroup(context, ref, remainingTimeSec),
               child: Text(context.locale.dialog_button_remove),
             ).rightCentered,
           ),

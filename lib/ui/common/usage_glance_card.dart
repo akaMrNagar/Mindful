@@ -22,6 +22,7 @@ class UsageGlanceCard extends StatelessWidget {
     required this.title,
     required this.info,
     this.onTap,
+    this.borderRadius,
     this.progressPercentage = 0,
     this.isPrimary = false,
     this.invertProgress = false,
@@ -34,6 +35,7 @@ class UsageGlanceCard extends StatelessWidget {
   final String info;
   final int progressPercentage;
   final VoidCallback? onTap;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,7 @@ class UsageGlanceCard extends StatelessWidget {
 
     return RoundedContainer(
       circularRadius: 6,
+      borderRadius: borderRadius,
       padding: const EdgeInsets.all(16),
       color:
           isPrimary ? Theme.of(context).colorScheme.secondaryContainer : null,

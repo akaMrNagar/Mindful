@@ -15,6 +15,11 @@ import 'package:skeletonizer/skeletonizer.dart';
 class AppTheme {
   static const _kSeedColor = Colors.indigo;
 
+  static final _kShimmerEffect = ShimmerEffect(
+    highlightColor: Colors.white.withOpacity(0.6),
+    baseColor: Colors.grey.withOpacity(0.3),
+  );
+
   /// Custom transition for page routes
   static const _kPageTransitionTheme = PageTransitionsTheme(
     builders: {TargetPlatform.android: DefaultPageTransitionsBuilder()},
@@ -42,44 +47,27 @@ class AppTheme {
     'Yellow': Colors.yellow,
   };
 
-  static ThemeData darkTheme(String seedColor, bool isAmoled) => ThemeData.from(
+  static ThemeData darkTheme({Color? seedColor, required bool isAmoled}) => ThemeData.from(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: materialColors[seedColor] ?? _kSeedColor,
+          seedColor: seedColor ?? _kSeedColor,
           brightness: Brightness.dark,
           surface: isAmoled ? Colors.black : null,
         ),
       ).copyWith(
         pageTransitionsTheme: _kPageTransitionTheme,
         scaffoldBackgroundColor: isAmoled ? Colors.black : null,
-        extensions: [
-          SkeletonizerConfigData.dark(
-              effect: ShimmerEffect(
-            highlightColor: Colors.white.withOpacity(0.3),
-            baseColor: (materialColors[seedColor] ?? _kSeedColor)
-                .shade50
-                .withOpacity(0.1),
-          )),
-        ],
+        extensions: [SkeletonizerConfigData.dark(effect: _kShimmerEffect)],
       );
 
-  static ThemeData lightTheme(String seedColor) => ThemeData.from(
+  static ThemeData lightTheme({Color? seedColor}) => ThemeData.from(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: materialColors[seedColor] ?? _kSeedColor,
+          seedColor: seedColor ?? _kSeedColor,
           brightness: Brightness.light,
         ),
       ).copyWith(
         pageTransitionsTheme: _kPageTransitionTheme,
-        extensions: [
-          SkeletonizerConfigData(
-            effect: ShimmerEffect(
-              highlightColor: Colors.black.withOpacity(0.3),
-              baseColor: (materialColors[seedColor] ?? _kSeedColor)
-                  .shade900
-                  .withOpacity(0.1),
-            ),
-          ),
-        ],
+        extensions: [SkeletonizerConfigData(effect: _kShimmerEffect)],
       );
 }
