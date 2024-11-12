@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/app_version_provider.dart';
+import 'package:mindful/providers/device_info_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -53,7 +53,8 @@ class SliverFlexibleAppBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion = ref.watch(appVersionProvider).value ?? "Loading..";
+    final appVersion =
+        ref.watch(deviceInfoProvider).value?.mindfulVersion ?? "Loading..";
     final useBottomNavigation =
         ref.watch(mindfulSettingsProvider.select((v) => v.useBottomNavigation));
 

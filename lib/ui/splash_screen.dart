@@ -18,11 +18,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -43,11 +41,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _goToNextScreen() async {
-    await ref.read(mindfulSettingsProvider.notifier).init();
-    await Future.delayed(1.seconds);
-
-    final isOnboardingDone =
-        await MethodChannelService.instance.getOnboardingStatus();
+    final settings = await ref.read(mindfulSettingsProvider.notifier).init();
 
     final perms =
         await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
@@ -57,13 +51,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         perms.haveAlarmsPermission &&
         perms.haveNotificationPermission;
 
+    // await Future.delayed(250.ms);
     if (!mounted) return;
 
-    if (haveAllEssentialPermissions && isOnboardingDone) {
+    if (haveAllEssentialPermissions && settings.isOnboardingDone) {
       ref.read(appsProvider);
-      ref
-          .read(appsRestrictionsProvider.notifier)
-          .checkAndRestartServices(haveVpnPermission: perms.haveVpnPermission);
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.homeScreen,
         (_) => false,
@@ -72,7 +64,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.onboardingScreen,
         (_) => false,
-        arguments: isOnboardingDone,
+        arguments: settings.isOnboardingDone,
       );
     }
   }
@@ -101,11 +93,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               /// Breathing logo
               BreathingWidget(
                 dimension: min(420, MediaQuery.of(context).size.width * 0.8),
-                child: const RoundedContainer(
+                child: RoundedContainer(
                   circularRadius: 420,
-                  padding: EdgeInsets.all(12),
-                  child:
-                      Icon(FluentIcons.weather_sunny_low_20_filled, size: 64),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  padding: const EdgeInsets.all(12),
+                  child: const Icon(FluentIcons.weather_sunny_low_20_filled,
+                      size: 64),
                 ),
               ),
 

@@ -29,9 +29,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.Contract;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
@@ -39,7 +36,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -49,45 +45,6 @@ import java.util.Map;
  */
 public class Utils {
     private static final String TAG = "Mindful.Utils";
-
-    /**
-     * Resolve the version string for the app
-     *
-     * @param context The application context.
-     * @return Version string include version and build code
-     */
-    @NonNull
-    public static String getAppVersion(@NonNull Context context) {
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            String packageName = context.getPackageName();
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-
-            return packageName.contains(".debug")
-                    ? "DEBUG " + "v" + packageInfo.versionName + "+" + packageInfo.versionCode
-                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "getAppVersion: Error in fetching app version", e);
-        }
-        return "v0.0.0";
-    }
-
-    /**
-     * Resolve the device information and  returns it
-     *
-     * @return Map<String, String> containing Manufacturer, Model, Android Version and SDK Version.
-     */
-    @NonNull
-    public static Map<String, String> getDeviceInfoMap() {
-        HashMap<String, String> infoMap = new HashMap<>();
-
-        infoMap.put("Manufacturer", Build.MANUFACTURER);
-        infoMap.put("Model", Build.MODEL);
-        infoMap.put("Android Version", Build.VERSION.RELEASE);
-        infoMap.put("SDK Version", String.valueOf(Build.VERSION.SDK_INT));
-
-        return infoMap;
-    }
 
     /**
      * Checks if a service with the given class name is currently running.
@@ -106,6 +63,40 @@ public class Utils {
 
         return false;
     }
+
+    /**
+     * Resolve the device information and  returns it
+     *
+     * @return Map<String, String> containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
+     */
+    @NonNull
+    public static Map<String, String> getDeviceInfoMap(@NonNull Context context) {
+        HashMap<String, String> infoMap = new HashMap<>();
+        String appVersion = "Unknown";
+
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            String packageName = context.getPackageName();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+
+            appVersion = packageName.contains(".debug")
+                    ? "DEBUG " + "v" + packageInfo.versionName + "+" + packageInfo.versionCode
+                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "getDeviceInfoMap: Error in fetching app version", e);
+        }
+
+
+        infoMap.put("manufacturer", Build.MANUFACTURER);
+        infoMap.put("model", Build.MODEL);
+        infoMap.put("androidVersion", Build.VERSION.RELEASE);
+        infoMap.put("sdkVersion", String.valueOf(Build.VERSION.SDK_INT));
+        infoMap.put("mindfulVersion", appVersion);
+
+
+        return infoMap;
+    }
+
 
     /**
      * Encodes a Drawable (app icon) to a Base64 string.
@@ -159,93 +150,6 @@ public class Utils {
         return bitmap;
     }
 
-    /**
-     * Deserializes a JSON string into a HashMap of String keys and Long values.
-     *
-     * @param jsonString The JSON string to deserialize.
-     * @return A HashMap containing the deserialized data.
-     */
-    @NonNull
-    public static HashMap<String, Long> jsonStrToStringLongHashMap(@NonNull String jsonString) {
-        HashMap<String, Long> map = new HashMap<>();
-        if (jsonString.isEmpty()) return map;
-
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-
-            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
-                String key = it.next();
-                Long value = jsonObject.getLong(key);
-                map.put(key, value);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "jsonStrToAppTimersMap: Error deserializing JSON to timers map ", e);
-        }
-        return map;
-    }
-
-    /**
-     * Deserializes a JSON string into a HashSet of String.
-     *
-     * @param jsonString The JSON string to deserialize.
-     * @return A HashSet containing the deserialized data.
-     */
-    @NonNull
-    public static HashSet<String> jsonStrToStringHashSet(@NonNull String jsonString) {
-        HashSet<String> set = new HashSet<>();
-        if (jsonString.isEmpty()) return set;
-
-        try {
-            JSONArray jsonArray = new JSONArray(jsonString);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                set.add(jsonArray.getString(i));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to locked apps hashset ", e);
-        }
-        return set;
-    }
-
-    /**
-     * Parses the host name from a URL string.
-     *
-     * @param url The URL string to parse.
-     * @return The host name extracted from the URL.
-     */
-    @NonNull
-    public static String parseHostNameFromUrl(String url) {
-        URI uri;
-        String hostName = null;
-
-        try {
-            uri = new URI(url);
-            hostName = uri.getHost();
-        } catch (URISyntaxException e) {
-            Log.w(TAG, "parseHostNameFromUrl: Cannot parse url using URI method, trying different method", e);
-        }
-
-        if (hostName != null) return hostName;
-
-        // If host name is still null then reassign with url
-        hostName = url;
-
-        // Remove prefix from url
-        hostName = hostName.replace("https://", "").replace("http://", "").replace("www.", "");
-
-        // Some websites use mobile. OR m. prefix
-        if (hostName.contains("mobile.")) {
-            hostName = hostName.substring(7);
-        } else if (hostName.contains("m.") && hostName.indexOf("m.") < 3) {
-            hostName = hostName.substring(2);
-        }
-
-        // If the url still contains / then remove it
-        if (hostName.contains("/")) {
-            return hostName.substring(0, hostName.indexOf("/"));
-        }
-
-        return hostName;
-    }
 
     /**
      * Returns an empty string if the provided string is null.
@@ -359,5 +263,46 @@ public class Utils {
         return url.startsWith("https://") ? url :
                 url.startsWith("http://") ?
                         url.replace("http://", "https://") : ("https://" + url);
+    }
+
+    /**
+     * Parses the host name from a URL string.
+     *
+     * @param url The URL string to parse.
+     * @return The host name extracted from the URL.
+     */
+    @NonNull
+    public static String parseHostNameFromUrl(String url) {
+        URI uri;
+        String hostName = null;
+
+        try {
+            uri = new URI(url);
+            hostName = uri.getHost();
+        } catch (URISyntaxException e) {
+            Log.w(TAG, "parseHostNameFromUrl: Cannot parse url using URI method, trying different method", e);
+        }
+
+        if (hostName != null) return hostName;
+
+        // If host name is still null then reassign with url
+        hostName = url;
+
+        // Remove prefix from url
+        hostName = hostName.replace("https://", "").replace("http://", "").replace("www.", "");
+
+        // Some websites use mobile. OR m. prefix
+        if (hostName.contains("mobile.")) {
+            hostName = hostName.substring(7);
+        } else if (hostName.contains("m.") && hostName.indexOf("m.") < 3) {
+            hostName = hostName.substring(2);
+        }
+
+        // If the url still contains / then remove it
+        if (hostName.contains("/")) {
+            return hostName.substring(0, hostName.indexOf("/"));
+        }
+
+        return hostName;
     }
 }

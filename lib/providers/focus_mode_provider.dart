@@ -25,7 +25,7 @@ import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/focus_mode_model.dart';
 
-/// A Riverpod state notifier provider that manages Focus Mode Settings.
+/// A Riverpod state notifier provider that manages [FocusModeModel].
 final focusModeProvider =
     StateNotifierProvider<FocusModeNotifier, FocusModeModel>(
   (ref) => FocusModeNotifier(),

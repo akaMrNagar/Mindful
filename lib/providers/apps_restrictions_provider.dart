@@ -15,38 +15,37 @@ import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/providers/apps_provider.dart';
 
-/// A Riverpod state notifier provider that manages focus settings for individual apps, including timers and internet access.
+/// A Riverpod state notifier provider that manages a map of Package and [AppRestriction].
 final appsRestrictionsProvider = StateNotifierProvider<AppsRestrictionsNotifier,
     Map<String, AppRestriction>>(
-  (ref) => AppsRestrictionsNotifier(),
+  (ref) => AppsRestrictionsNotifier(
+    ref.read(appsProvider).value?.keys.toSet() ?? {},
+  ),
 );
 
 class AppsRestrictionsNotifier
     extends StateNotifier<Map<String, AppRestriction>> {
   late DynamicRecordsDao _dao;
+  final Set<String> _installedApps;
 
-  AppsRestrictionsNotifier() : super({}) {
+  AppsRestrictionsNotifier(this._installedApps) : super({}) {
     _init();
   }
 
-  /// Initializes the infos state by loading data from the Isar database and setting up a listener to save changes back.
+  /// Initializes the infos state by loading data from the database.
   void _init() async {
     _dao = DriftDbService.instance.driftDb.dynamicRecordsDao;
-
     final items = await _dao.fetchAppsRestrictions();
     state = Map.fromEntries(items.map((e) => MapEntry(e.appPackage, e)));
 
-    addListener(
-      (newState) async {
-        /// Save changes to the database whenever the state updates.
-        // await IsarDbService.instance.saveRestrictionInfos(state.values.toList());
-      },
-      fireImmediately: false,
-    );
+    /// Update services
+    _updateTrackerService();
+    _updateVpnService();
   }
 
-  /// Updates the focus timer for a specific app package.
+  /// Updates the timer for a specific app package.
   ///
   /// Anyway updated the platform-specific service.
   Future<void> updateAppTimer(String appPackage, int timerSec) async {
@@ -57,7 +56,7 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateState(appPackage, restriction);
+    _updateRestriction(appPackage, restriction);
     await _dao.insertAppRestrictionByPackage(restriction);
     _updateTrackerService();
   }
@@ -73,31 +72,44 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateState(appPackage, restriction);
+    _updateRestriction(appPackage, restriction);
     await _dao.insertAppRestrictionByPackage(restriction);
     _updateTrackerService();
   }
 
-  /// Updates the launch limit for a specific app package.
+  /// Updates the alert interval for a specific app package.
   ///
   /// Anyway updated the platform-specific service.
-  Future<void> updateAppSessionAndCooldownTime(
+  Future<void> updateAlertInterval(
     String appPackage,
-    int sessionTimeSec,
-    int coolDownTimeSec,
+    int intervalSec,
   ) async {
-    final restriction = state[appPackage]?.copyWith(
-          sessionTimeSec: sessionTimeSec,
-          sessionCoolDownTimeSec: coolDownTimeSec,
-        ) ??
-        AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-          appPackage: appPackage,
-          sessionTimeSec: sessionTimeSec,
-          sessionCoolDownTimeSec: coolDownTimeSec,
-        );
+    final restriction =
+        state[appPackage]?.copyWith(alertInterval: intervalSec) ??
+            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+              appPackage: appPackage,
+              alertInterval: intervalSec,
+            );
 
     /// Update database and state
-    _updateState(appPackage, restriction);
+    _updateRestriction(appPackage, restriction);
+    await _dao.insertAppRestrictionByPackage(restriction);
+    _updateTrackerService();
+  }
+
+  /// Set alert by dialog for a specific app package.
+  ///
+  /// Anyway updated the platform-specific service.
+  void setAlertByDialog(String appPackage, bool alertByDialog) async {
+    final restriction =
+        state[appPackage]?.copyWith(alertByDialog: alertByDialog) ??
+            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+              appPackage: appPackage,
+              alertByDialog: alertByDialog,
+            );
+
+    /// Update database and state
+    _updateRestriction(appPackage, restriction);
     await _dao.insertAppRestrictionByPackage(restriction);
     _updateTrackerService();
   }
@@ -114,7 +126,7 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateState(appPackage, restriction);
+    _updateRestriction(appPackage, restriction);
     await _dao.insertAppRestrictionByPackage(restriction);
     _updateVpnService();
   }
@@ -127,9 +139,6 @@ class AppsRestrictionsNotifier
   }) async {
     List<AppRestriction> updatedRestrictions = [];
     Map<String, AppRestriction> updatedState = {...state};
-
-    // print("*********************** Updated apps : $appPackages");
-    // print("*********************** Removed apps : $removedAppPackages");
 
     /// Remove associated group id for the removed old packages
     for (var appPackage in removedAppPackages) {
@@ -171,15 +180,7 @@ class AppsRestrictionsNotifier
     _updateTrackerService();
   }
 
-  /// Restart services if they are inactive but needed
-  void checkAndRestartServices({
-    required bool haveVpnPermission,
-  }) {
-    _updateTrackerService();
-    if (haveVpnPermission) _updateVpnService();
-  }
-
-  void _updateState(String appPackage, AppRestriction restriction) =>
+  void _updateRestriction(String appPackage, AppRestriction restriction) =>
       state = {...state}..update(
           appPackage,
           (value) => restriction,
@@ -187,21 +188,28 @@ class AppsRestrictionsNotifier
         );
 
   Future<void> _updateTrackerService() async {
-    final appTimers = Map.fromEntries(
-      state.entries
-          .where((i) => i.value.timerSec > 0)
-          .map((e) => MapEntry(e.key, e.value.timerSec)),
-    );
+    final filteredRestrictions = state.values
+        .where(
+          (e) =>
+              _installedApps.contains(e.appPackage) &&
+              (e.timerSec > 0 ||
+                  e.launchLimit > 0 ||
+                  e.associatedGroupId != null),
+        )
+        .toList();
 
-    await MethodChannelService.instance.updateAppTimers(appTimers);
+    await MethodChannelService.instance
+        .updateAppRestrictions(filteredRestrictions);
   }
 
   Future<void> _updateVpnService() async {
     final blockedApps = state.values
-        .where((e) => !e.canAccessInternet)
+        .where(
+          (e) => _installedApps.contains(e.appPackage) && !e.canAccessInternet,
+        )
         .map((e) => e.appPackage)
         .toList();
 
-    await MethodChannelService.instance.updateBlockedApps(blockedApps);
+    await MethodChannelService.instance.updateInternetBlockedApps(blockedApps);
   }
 }

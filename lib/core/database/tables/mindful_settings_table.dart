@@ -52,7 +52,16 @@ class MindfulSettingsTable extends Table {
   /// List of app's packages which are excluded from the aggregated usage statistics.
   TextColumn get excludedApps => text().map(const ListStringConverter())();
 
-  static const defaultMindfulSettingsModel = MindfulSettings(
+  /// Number of emergency break passes left for today
+  IntColumn get leftEmergencyPasses => integer()();
+
+  /// Timestamp of the last used emergency break
+  DateTimeColumn get lastEmergencyUsed => dateTime()();
+
+  /// Flag indicating if onboarding is completed or not
+  BoolColumn get isOnboardingDone => boolean()();
+
+  static final defaultMindfulSettingsModel = MindfulSettings(
     id: 0,
     defaultHomeTab: DefaultHomeTab.dashboard,
     themeMode: AppThemeMode.system,
@@ -64,5 +73,8 @@ class MindfulSettingsTable extends Table {
     useAmoledDark: false,
     useDynamicColors: false,
     excludedApps: [],
+    leftEmergencyPasses: 3,
+    lastEmergencyUsed: DateTime(0),
+    isOnboardingDone: false,
   );
 }

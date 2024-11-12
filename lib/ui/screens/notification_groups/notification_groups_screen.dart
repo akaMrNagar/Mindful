@@ -32,7 +32,7 @@ class NotificationGroupsScreen extends ConsumerWidget {
             physics: const BouncingScrollPhysics(),
             slivers: [
               /// Information about notification groups
-              StyledText(context.locale.notification_group_tab_info).sliver,
+              StyledText(context.locale.notification_groups_tab_info).sliver,
 
               16.vSliverBox,
 

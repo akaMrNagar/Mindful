@@ -15,7 +15,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/models/focus_timeline_model.dart';
 
-/// A Riverpod state notifier provider that manages Focus Timeline.
+/// A Riverpod state notifier provider that manages [FocusTimelineModel].
 final focusTimelineProvider =
     StateNotifierProvider<FocusModeNotifier, FocusTimelineModel>(
   (ref) => FocusModeNotifier(),

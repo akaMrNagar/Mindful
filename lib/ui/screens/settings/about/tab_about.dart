@@ -19,7 +19,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/providers/app_version_provider.dart';
+import 'package:mindful/providers/device_info_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -33,7 +33,8 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion = ref.watch(appVersionProvider).value ?? "Loading..";
+    final appVersion =
+        ref.watch(deviceInfoProvider).value?.mindfulVersion ?? "Loading..";
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -49,10 +50,12 @@ class TabAbout extends ConsumerWidget {
         /// Breathing logo
         BreathingWidget(
           dimension: min(360, MediaQuery.of(context).size.width * 0.7),
-          child: const RoundedContainer(
+          child: RoundedContainer(
             circularRadius: 120,
-            padding: EdgeInsets.all(12),
-            child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            padding: const EdgeInsets.all(12),
+            child:
+                const Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
           ),
         ).sliver,
 

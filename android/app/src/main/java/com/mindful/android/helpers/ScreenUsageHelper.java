@@ -14,7 +14,6 @@ package com.mindful.android.helpers;
 
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -95,7 +94,7 @@ public class ScreenUsageHelper {
      * @param packageName       The package name of the application whose usage time is to be fetched.
      * @return The total screen usage time of the specified application in seconds.
      */
-    public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
+    public static int fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
         Calendar midNightCal = Calendar.getInstance();
         midNightCal.set(Calendar.HOUR_OF_DAY, 0);
         midNightCal.set(Calendar.MINUTE, 0);
@@ -106,7 +105,7 @@ public class ScreenUsageHelper {
         long screenTime = fetchUsageForInterval(usageStatsManager, start, end, packageName).getOrDefault(packageName, 0L);
 
         // Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
-        return screenTime;
+        return (int) screenTime;
     }
 
     /**

@@ -28,6 +28,9 @@ class BedtimeScheduleTable extends Table {
   /// It is stored as total minutes.
   IntColumn get endTimeInMins => integer()();
 
+  /// Total duration of bedtime schedule from start to end in MINUTES
+  IntColumn get totalDurationInMins => integer()();
+
   /// Days on which the task will execute.
   /// The list contains 7 booleans for each day of week.
   /// [TRUE] indicates that schedule task will run that day.
@@ -49,6 +52,7 @@ class BedtimeScheduleTable extends Table {
     id: 0,
     startTimeInMins: 0,
     endTimeInMins: 0,
+    totalDurationInMins: 0,
     scheduleDays: [false, true, true, true, true, true, false],
     isScheduleOn: false,
     shouldStartDnd: false,

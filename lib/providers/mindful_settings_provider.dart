@@ -14,11 +14,13 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 
-/// A Riverpod state notifier provider that manages mindful app's settings.
+/// A Riverpod state notifier provider that manages [MindfulSettings].
 final mindfulSettingsProvider =
     StateNotifierProvider<MindfulSettingsNotifier, MindfulSettings>(
   (ref) => MindfulSettingsNotifier(),
@@ -32,17 +34,20 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   }
 
   /// Initializes the settings state by loading from the database and setting up a listener for saving changes.
-  Future<void> init({bool addListenerToo = false}) async {
+  Future<MindfulSettings> init({bool addListenerToo = false}) async {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await dao.loadMindfulSettings();
+    MethodChannelService.instance.updateLocale(languageCode: state.localeCode);
 
-    if (!addListenerToo) return;
+    if (addListenerToo) {
+      /// Listen to provider and save changes to Isar database
+      addListener(
+        fireImmediately: false,
+        (state) => dao.saveMindfulSettings(state),
+      );
+    }
 
-    /// Listen to provider and save changes to Isar database
-    addListener(
-      fireImmediately: false,
-      (state) => dao.saveMindfulSettings(state),
-    );
+    return state;
   }
 
   /// Changes the username for dashboard.
@@ -69,13 +74,12 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     if (AppLocalizations.supportedLocales.any(
       (e) => e.languageCode == localeCode,
     )) {
-      /// Update native side
-      // TODO
-      // await MethodChannelService.instance
-      //     .updateLocale(languageCode: localeCode);
-
       /// Update state
       state = state.copyWith(localeCode: localeCode);
+
+      /// Update native side
+      await MethodChannelService.instance
+          .updateLocale(languageCode: localeCode);
     }
   }
 
@@ -91,9 +95,8 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   /// Also updates the native side with the new reset time.
   void changeDataResetTime(TimeOfDay time) async {
     state = state.copyWith(dataResetTimeMins: time.minutes);
-    // TODO
-    // await MethodChannelService.instance
-    //     .setDataResetTime(state.dataResetTimeMins);
+    await MethodChannelService.instance
+        .setDataResetTime(state.dataResetTimeMins);
   }
 
   /// Include or Exclude an app from total usage statistics
@@ -103,4 +106,25 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
             ? [...state.excludedApps, appPackage]
             : [...state.excludedApps.where((e) => e != appPackage)],
       );
+
+  /// Check if user can use emergency pause pass
+  bool canUseEmergencyPause() {
+    final todayMidnight = DateTime.now().dateOnly;
+
+    /// Reset emergency passes if the last timestamp is from yesterday
+    if (state.lastEmergencyUsed.isBefore(todayMidnight)) {
+      state = state.copyWith(leftEmergencyPasses: 3);
+    }
+
+    return state.leftEmergencyPasses > 0;
+  }
+
+  /// Use emergency pause pass and pause the tracking service
+  void useEmergencyPausePass() => state = state.copyWith(
+        lastEmergencyUsed: DateTime.now(),
+        leftEmergencyPasses: state.leftEmergencyPasses - 1,
+      );
+
+  /// Mark onboarding as completed
+  void markOnboardingDone() => state = state.copyWith(isOnboardingDone: true);
 }

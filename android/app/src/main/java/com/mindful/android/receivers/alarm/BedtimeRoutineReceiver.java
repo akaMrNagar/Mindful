@@ -49,19 +49,19 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
             startBedtimeRoutine();
 
             // Schedule bedtime stop task for today
-            AlarmTasksSchedulingHelper.scheduleBedtimeStopTask(mContext);
+            AlarmTasksSchedulingHelper.scheduleBedtimeStopTask(mContext, mBedtimeSettings);
         } else if (ACTION_STOP_BEDTIME.equals(action)) {
             init(context);
             stopBedtimeRoutine();
 
             // Schedule bedtime start task for next day
-            AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(mContext);
+            AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(mContext, mBedtimeSettings);
         }
     }
 
     private void init(Context context) {
         mContext = context;
-        mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
+        mBedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(context, null);
 
         // (dayOfWeek -1) for zero based indexing (0-6) of week days (1-7)
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;

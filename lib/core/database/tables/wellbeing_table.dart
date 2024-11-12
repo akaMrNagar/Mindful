@@ -43,7 +43,7 @@ class WellbeingTable extends Table {
   BoolColumn get blockNsfwSites => boolean()();
 
   /// List of website hosts which are blocked.
-  TextColumn get distractingSites => text().map(const ListStringConverter())();
+  TextColumn get blockedWebsites => text().map(const ListStringConverter())();
 
   static const defaultWellbeingModel = Wellbeing(
     id: 0,
@@ -54,6 +54,6 @@ class WellbeingTable extends Table {
     blockFbReels: false,
     blockRedditShorts: false,
     blockNsfwSites: false,
-    distractingSites: [],
+    blockedWebsites: [],
   );
 }

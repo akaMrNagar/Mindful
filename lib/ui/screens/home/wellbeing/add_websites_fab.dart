@@ -54,7 +54,7 @@ class AddWebsitesFAB extends ConsumerWidget {
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
       if (context.mounted &&
-          ref.read(wellBeingProvider).distractingSites.contains(host)) {
+          ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
         context.showSnackAlert(
           context.locale.add_website_already_exist_snack_alert,
         );

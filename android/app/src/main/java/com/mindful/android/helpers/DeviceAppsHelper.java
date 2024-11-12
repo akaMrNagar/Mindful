@@ -130,12 +130,7 @@ public class DeviceAppsHelper {
         screenUsageCal.set(Calendar.MILLISECOND, 0);
 
         // Users may have different timings for their data renewal or reset so keeping it in mind
-        int dataResetTimeMins = SharedPrefsHelper.fetchDataResetTimeMins(context);
-        Calendar dataUsageCal = Calendar.getInstance();
-        dataUsageCal.set(Calendar.HOUR_OF_DAY, dataResetTimeMins / 60);
-        dataUsageCal.set(Calendar.MINUTE, dataResetTimeMins % 60);
-        dataUsageCal.set(Calendar.SECOND, 0);
-        dataUsageCal.set(Calendar.MILLISECOND, 0);
+        Calendar dataUsageCal = SharedPrefsHelper.getSetDataResetTimeMins(context, null);
 
         int todayOfWeek = screenUsageCal.get(Calendar.DAY_OF_WEEK);
         long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds

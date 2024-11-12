@@ -71,8 +71,9 @@ public class BedtimeSettings {
         } else {
             try {
                 // Clean the JSON string and parse it
-                jsonString = jsonString.replace("\\", "");
-                JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
+//                jsonString = jsonString.replace("\\", "");
+//                JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
+                JSONObject jsonObject = new JSONObject(jsonString);
 
                 // Deserialize fields
                 isScheduleOn = jsonObject.optBoolean("isScheduleOn", false);

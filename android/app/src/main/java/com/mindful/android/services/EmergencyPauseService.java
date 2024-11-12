@@ -31,7 +31,6 @@ import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
-import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.Utils;
 
 public class EmergencyPauseService extends Service {
@@ -70,13 +69,6 @@ public class EmergencyPauseService extends Service {
         String action = Utils.getActionFromIntent(intent);
 
         if (ACTION_START_SERVICE_EMERGENCY.equals(action)) {
-            int leftPasses = SharedPrefsHelper.fetchEmergencyPassesCount(this);
-            // Stop if no passes left
-            if (leftPasses <= 0) {
-                stopSelf();
-                return START_NOT_STICKY;
-            }
-            SharedPrefsHelper.storeEmergencyPassesCount(this, leftPasses - 1);
             startEmergencyTimer();
             return START_STICKY;
         }

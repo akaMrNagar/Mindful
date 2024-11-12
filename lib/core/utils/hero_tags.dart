@@ -47,9 +47,9 @@ class HeroTags {
   static String appLaunchLimitTileTag(String package) =>
       "appDashboard.launchLimitTile.$package";
 
-  /// Generates a tag for an app session and cooldown tile based on the provided package name.
-  static String appSessionAndCooldownTileTag(String package) =>
-      "appDashboard.sessionAndCooldownTile.$package";
+  /// Generates a tag for an app alert interval tile based on the provided package name.
+  static String appAlertIntervalTileTag(String package) =>
+      "appDashboard.alertIntervalTile.$package";
 
   /// Tag used to identify in focus mode.
   static const focusModeFABTag = "focus.focusModeFab";

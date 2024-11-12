@@ -16,9 +16,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/permissions_model.dart';
-import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/onboarding/permission_page.dart';
@@ -58,23 +58,14 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
             perms.haveNotificationPermission;
 
         if (!haveAllEssentialPermissions) return;
-        _checkAndFinishOnboarding(haveAllEssentialPermissions);
+        _checkAndFinishOnboarding();
       },
     );
 
     /// Go to permissions page if already done onboarding
     /// but user removed some essential permissions
-    _controller = PageController();
-    MethodChannelService.instance.getOnboardingStatus().then(
-      (isDone) {
-        if (isDone && _controller.hasClients) {
-          _controller.animateToPage(
-            _onboardingPages().length - 1,
-            duration: _animDuration,
-            curve: _animCurve,
-          );
-        }
-      },
+    _controller = PageController(
+      initialPage: widget.isOnboardingDone ? _onboardingPages().length - 1 : 0,
     );
   }
 
@@ -84,18 +75,14 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     _subscription?.close();
   }
 
-  void _checkAndFinishOnboarding(
-    bool haveVpnPermission,
-  ) async {
+  void _checkAndFinishOnboarding() async {
     if (context.mounted) {
       _subscription?.close();
-      MethodChannelService.instance.setOnboardingDone();
+      ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
       Future.delayed(
         250.ms,
         () {
-          ref.read(appsRestrictionsProvider.notifier).checkAndRestartServices(
-                haveVpnPermission: haveVpnPermission,
-              );
+          ref.read(appsProvider);
           Navigator.of(context).pushNamedAndRemoveUntil(
             AppRoutes.homeScreen,
             (_) => false,
@@ -217,9 +204,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                             /// Finish setup
                             ? FilledButton(
                                 onPressed: haveAllEssentialPermissions
-                                    ? () => _checkAndFinishOnboarding(
-                                          perms.haveVpnPermission,
-                                        )
+                                    ? () => _checkAndFinishOnboarding()
                                     : null,
                                 child: Text(
                                   context

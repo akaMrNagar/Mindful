@@ -9,13 +9,13 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -37,7 +37,8 @@ class ScheduleCard extends ConsumerWidget {
     final endTime = ref.watch(
         bedtimeScheduleProvider.select((v) => v.endTimeInMins.toTimeOfDay));
 
-    final totalDuration = endTime.difference(startTime);
+    final totalDuration = ref.watch(
+        bedtimeScheduleProvider.select((v) => v.totalDurationInMins.minutes));
 
     final scheduleDays = ref
         .watch(bedtimeScheduleProvider.select((value) => value.scheduleDays));

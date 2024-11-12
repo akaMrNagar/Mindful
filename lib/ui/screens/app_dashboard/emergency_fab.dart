@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 
 class EmergencyFAB extends ConsumerWidget {
@@ -21,11 +22,9 @@ class EmergencyFAB extends ConsumerWidget {
     super.key,
   });
 
-  void _useEmergency(BuildContext context) async {
+  void _useEmergency(BuildContext context, WidgetRef ref) async {
     int leftPasses =
-        await MethodChannelService.instance.getLeftEmergencyPasses();
-
-    if (!context.mounted) return;
+        ref.read(mindfulSettingsProvider.select((v) => v.leftEmergencyPasses));
 
     if (leftPasses <= 0) {
       context.showSnackAlert(context.locale.emergency_no_pass_left_snack_alert);
@@ -42,16 +41,18 @@ class EmergencyFAB extends ConsumerWidget {
     );
 
     if (!confirmed) return;
-    final success = await MethodChannelService.instance.useEmergencyPass();
+    final success = await MethodChannelService.instance.activeEmergencyPause();
 
-    if (!success && context.mounted) {
-      context.showSnackAlert(
-        context.locale.emergency_already_active_snack_alert,
-        icon: FluentIcons.fire_16_filled,
-      );
-    } else if (context.mounted) {
+    if (success && context.mounted) {
       context.showSnackAlert(
         context.locale.emergency_started_snack_alert,
+        icon: FluentIcons.fire_16_filled,
+      );
+
+      ref.read(mindfulSettingsProvider.notifier).useEmergencyPausePass();
+    } else if (context.mounted) {
+      context.showSnackAlert(
+        context.locale.emergency_already_active_snack_alert,
         icon: FluentIcons.fire_16_filled,
       );
     }
@@ -65,7 +66,7 @@ class EmergencyFAB extends ConsumerWidget {
       icon: const Icon(FluentIcons.fire_20_filled),
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      onPressed: () => _useEmergency(context),
+      onPressed: () => _useEmergency(context, ref),
     );
   }
 }

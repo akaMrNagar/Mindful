@@ -10,7 +10,9 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/models/device_info_model.dart';
 
-final appVersionProvider = FutureProvider<String>((ref) async {
-  return MethodChannelService.instance.getAppVersion();
+/// A Riverpod future provider that manages [DeviceInfoModel].
+final deviceInfoProvider = FutureProvider<DeviceInfoModel>((ref) async {
+  return await MethodChannelService.instance.getDeviceInfo();
 });

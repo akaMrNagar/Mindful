@@ -23,7 +23,7 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final blockedWebsites =
-        ref.watch(wellBeingProvider.select((v) => v.distractingSites));
+        ref.watch(wellBeingProvider.select((v) => v.blockedWebsites));
 
     return blockedWebsites.isNotEmpty
         ? SliverFixedExtentList.builder(

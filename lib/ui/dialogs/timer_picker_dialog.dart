@@ -114,6 +114,31 @@ Future<int?> showRestrictionGroupTimerPicker({
   );
 }
 
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+///
+/// Returns time in seconds and take initial time in seconds
+Future<int?> showAppAlertIntervalPicker({
+  required BuildContext context,
+  required Object heroTag,
+  required int initialTime,
+}) async {
+  return await Navigator.of(context).push<int?>(
+    HeroPageRoute(
+      builder: (context) => _DurationPickerDialog(
+        title: "Alert interval",
+        icon: const Icon(FluentIcons.alert_urgent_20_filled),
+        heroTag: heroTag,
+        initialTimeInSec: initialTime,
+        info:
+            "Choose the interval between alerts when you are using restricted app.",
+        positiveButtonLabel: context.locale.dialog_button_set_timer,
+        showDeleteButton: false,
+        minuteInterval: 5,
+      ),
+    ),
+  );
+}
+
 class _DurationPickerDialog extends StatefulWidget {
   const _DurationPickerDialog({
     required this.icon,
@@ -123,6 +148,7 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.info,
     required this.positiveButtonLabel,
     this.showDeleteButton = true,
+    this.minuteInterval = 1,
   });
 
   final Widget icon;
@@ -131,6 +157,7 @@ class _DurationPickerDialog extends StatefulWidget {
   final int initialTimeInSec;
   final String positiveButtonLabel;
   final bool showDeleteButton;
+  final int minuteInterval;
   final String info;
 
   @override
@@ -168,6 +195,7 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                         margin: const EdgeInsets.symmetric(vertical: 12),
                         child: CupertinoTimerPicker(
                           itemExtent: 32,
+                          minuteInterval: widget.minuteInterval,
                           mode: CupertinoTimerPickerMode.hm,
                           initialTimerDuration: widget.initialTimeInSec.seconds,
                           onTimerDurationChanged: (val) =>

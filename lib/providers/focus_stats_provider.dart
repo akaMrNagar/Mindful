@@ -19,6 +19,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/focus_stats_model.dart';
 import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 
+/// A Riverpod state notifier provider that manages [FocusStatsModel].
 final focusStatsProvider =
     StateNotifierProvider<FocusStatsNotifier, FocusStatsModel>((ref) {
   final aggregatedScreenTime = ref

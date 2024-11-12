@@ -15,7 +15,7 @@ import 'package:mindful/core/database/tables/wellbeing_table.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 
-/// A Riverpod state notifier provider that manages well-being related settings.
+/// A Riverpod state notifier provider that manages [Wellbeing] related settings.
 final wellBeingProvider = StateNotifierProvider<WellBeingNotifier, Wellbeing>(
   (ref) => WellBeingNotifier(),
 );
@@ -67,9 +67,9 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
   /// Adds or removes a website host to the blocked websites list.
   void insertRemoveBlockedSite(String websiteHost, bool shouldInsert) async =>
       state = state.copyWith(
-        distractingSites: shouldInsert
-            ? [...state.distractingSites, websiteHost]
-            : [...state.distractingSites.where((e) => e != websiteHost)],
+        blockedWebsites: shouldInsert
+            ? [...state.blockedWebsites, websiteHost]
+            : [...state.blockedWebsites.where((e) => e != websiteHost)],
       );
 
   /// Sets the allowed time limit for short content consumption.

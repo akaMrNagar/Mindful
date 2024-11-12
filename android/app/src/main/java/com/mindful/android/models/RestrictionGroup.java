@@ -12,10 +12,18 @@
 
 package com.mindful.android.models;
 
+import androidx.annotation.NonNull;
+
+import org.json.JSONObject;
+
 import java.util.HashSet;
 
 public class RestrictionGroup {
     public String groupName;
     public int timerSec;
     public HashSet<String> appsPackage;
+
+
+    public RestrictionGroup(@NonNull JSONObject jsonObject)
+    {}
 }

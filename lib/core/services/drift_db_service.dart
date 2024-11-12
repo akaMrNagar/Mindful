@@ -41,6 +41,8 @@ class DriftDbService {
   Future<AppDatabase> _createIsolatedDb() async {
     final db = LazyDatabase(() async {
       final dbFolder = await getApplicationDocumentsDirectory();
+
+      /// PATH : /data/user/0/com.mindful.android/app_flutter/Mindful.sqlite
       final file = File(path.join(dbFolder.path, 'Mindful.sqlite'));
 
       /// Set cache directory

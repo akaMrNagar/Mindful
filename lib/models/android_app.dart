@@ -43,10 +43,14 @@ class AndroidApp {
   /// The application icon as a byte array provided by the Android system.
   final Uint8List icon;
 
+  /// Number of launches for the current day
+  final int launchCount;
+
   const AndroidApp({
     required this.name,
     required this.packageName,
     required this.icon,
+    required this.launchCount,
     required this.isImpSysApp,
     required this.category,
     required this.screenTimeThisWeek,
@@ -56,12 +60,9 @@ class AndroidApp {
   });
 
   /// Creates an `AndroidApp` instance from a JSON-like map representation.
-  ///
-  /// This factory constructor expects the map to contain keys matching the property names
-  /// of this class (e.g., 'appName', 'packageName', etc.). It parses the values and creates the
-  /// corresponding `AndroidApp` object.
   factory AndroidApp.fromMap(Map<dynamic, dynamic> map) {
     return AndroidApp(
+      launchCount: 0,
       name: map['appName'] as String,
       packageName: map['packageName'] as String,
       icon: base64Decode(map['appIcon'] as String),
@@ -76,68 +77,6 @@ class AndroidApp {
       networkUsageThisWeek:
           List<int>.from(map['dataUsageThisWeek'], growable: false),
     );
-  }
-
-  /// Creates a copy of the `AndroidApp` object with potentially modified properties.
-  ///
-  /// This method allows updating specific properties of an existing `AndroidApp` instance.
-  /// You can provide new values for any or none of the properties. If a property is not
-  /// provided, the original value from the existing object will be used in the copy.
-  AndroidApp copyWith({
-    String? name,
-    String? packageName,
-    bool? isImpSysApp,
-    Uint8List? icon,
-    AppCategory? category,
-    List<int>? screenTimeThisWeek,
-    List<int>? mobileUsageThisWeek,
-    List<int>? wifiUsageThisWeek,
-    List<int>? networkUsageThisWeek,
-  }) {
-    return AndroidApp(
-      name: name ?? this.name,
-      packageName: packageName ?? this.packageName,
-      isImpSysApp: isImpSysApp ?? this.isImpSysApp,
-      icon: icon ?? this.icon,
-      category: category ?? this.category,
-      screenTimeThisWeek: screenTimeThisWeek ?? this.screenTimeThisWeek,
-      mobileUsageThisWeek: mobileUsageThisWeek ?? this.mobileUsageThisWeek,
-      wifiUsageThisWeek: wifiUsageThisWeek ?? this.wifiUsageThisWeek,
-      networkUsageThisWeek: networkUsageThisWeek ?? this.networkUsageThisWeek,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'AndroidApp(name: $name, packageName: $packageName, isImpSysApp: $isImpSysApp, category: $category, screenTimeThisWeek: $screenTimeThisWeek, mobileUsageThisWeek: $mobileUsageThisWeek, wifiUsageThisWeek: $wifiUsageThisWeek, networkUsageThisWeek: $networkUsageThisWeek)';
-  }
-
-  @override
-  bool operator ==(covariant AndroidApp other) {
-    if (identical(this, other)) return true;
-
-    return other.name == name &&
-        other.packageName == packageName &&
-        other.isImpSysApp == isImpSysApp &&
-        other.icon == icon &&
-        other.category == category &&
-        listEquals(other.screenTimeThisWeek, screenTimeThisWeek) &&
-        listEquals(other.mobileUsageThisWeek, mobileUsageThisWeek) &&
-        listEquals(other.wifiUsageThisWeek, wifiUsageThisWeek) &&
-        listEquals(other.networkUsageThisWeek, networkUsageThisWeek);
-  }
-
-  @override
-  int get hashCode {
-    return name.hashCode ^
-        packageName.hashCode ^
-        isImpSysApp.hashCode ^
-        icon.hashCode ^
-        category.hashCode ^
-        screenTimeThisWeek.hashCode ^
-        mobileUsageThisWeek.hashCode ^
-        wifiUsageThisWeek.hashCode ^
-        networkUsageThisWeek.hashCode;
   }
 
   /// Parses an integer representing an app category index into an `AppCategory` enum value.
@@ -155,5 +94,36 @@ class AndroidApp {
       8 => AppCategory.accessibility,
       _ => AppCategory.undefined,
     };
+  }
+
+  AndroidApp copyWith({
+    String? name,
+    String? packageName,
+    bool? isImpSysApp,
+    Uint8List? icon,
+    AppCategory? category,
+    List<int>? screenTimeThisWeek,
+    List<int>? mobileUsageThisWeek,
+    List<int>? wifiUsageThisWeek,
+    List<int>? networkUsageThisWeek,
+    int? launchCount,
+  }) {
+    return AndroidApp(
+      name: name ?? this.name,
+      packageName: packageName ?? this.packageName,
+      isImpSysApp: isImpSysApp ?? this.isImpSysApp,
+      icon: icon ?? this.icon,
+      category: category ?? this.category,
+      screenTimeThisWeek: screenTimeThisWeek ?? this.screenTimeThisWeek,
+      mobileUsageThisWeek: mobileUsageThisWeek ?? this.mobileUsageThisWeek,
+      wifiUsageThisWeek: wifiUsageThisWeek ?? this.wifiUsageThisWeek,
+      networkUsageThisWeek: networkUsageThisWeek ?? this.networkUsageThisWeek,
+      launchCount: launchCount ?? this.launchCount,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'AndroidApp(name: $name, packageName: $packageName, isImpSysApp: $isImpSysApp, category: $category, screenTimeThisWeek: $screenTimeThisWeek, mobileUsageThisWeek: $mobileUsageThisWeek, wifiUsageThisWeek: $wifiUsageThisWeek, networkUsageThisWeek: $networkUsageThisWeek, icon: $icon, launchCount: $launchCount)';
   }
 }

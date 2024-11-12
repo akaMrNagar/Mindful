@@ -12,11 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 
-/// A Riverpod state notifier provider that manages Bedtime settings including schedule, Do Not Disturb, and distracting apps.
+/// A Riverpod state notifier provider that manages [BedtimeSchedule].
 final bedtimeScheduleProvider =
     StateNotifierProvider<BedtimeScheduleNotifier, BedtimeSchedule>(
   (ref) => BedtimeScheduleNotifier(),
@@ -43,17 +44,22 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
   /// Enables or disables the Bedtime schedule.
   void switchBedtimeSchedule(bool shouldStart) async {
     state = state.copyWith(isScheduleOn: shouldStart);
-    //TODO
-    // await MethodChannelService.instance.updateBedtimeSchedule(state);
+    await MethodChannelService.instance.updateBedtimeSchedule(state);
   }
 
   /// Sets the start time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeStart(TimeOfDay startTod) =>
-      state = state.copyWith(startTimeInMins: startTod.minutes);
+  void setBedtimeStart(TimeOfDay startTod) => state = state.copyWith(
+        startTimeInMins: startTod.minutes,
+        totalDurationInMins:
+            state.endTimeInMins.toTimeOfDay.difference(startTod).inMinutes,
+      );
 
   /// Sets the end time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeEnd(TimeOfDay endTod) =>
-      state = state.copyWith(endTimeInMins: endTod.minutes);
+  void setBedtimeEnd(TimeOfDay endTod) => state = state.copyWith(
+        endTimeInMins: endTod.minutes,
+        totalDurationInMins:
+            endTod.difference(state.startTimeInMins.toTimeOfDay).inMinutes,
+      );
 
   /// Toggles the scheduled day for a specific day index.
   void toggleScheduleDay(int index) {

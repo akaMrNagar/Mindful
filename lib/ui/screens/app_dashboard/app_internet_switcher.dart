@@ -55,7 +55,7 @@ class AppInternetSwitcher extends ConsumerWidget {
             onPressed: onPressed,
           )
         : DefaultListTile(
-            position: ItemPosition.end,
+            position: ItemPosition.mid,
             switchValue: haveInternetAccess,
             enabled: !app.isImpSysApp,
             titleText: context.locale.internet_access_tile_title,

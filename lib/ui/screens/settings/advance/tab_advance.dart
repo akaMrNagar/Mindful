@@ -21,6 +21,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/providers/device_info_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -43,17 +44,17 @@ class TabAdvance extends ConsumerWidget {
     }
   }
 
-  void _shareLogs(BuildContext context) async {
+  void _shareLogs(BuildContext context, WidgetRef ref) async {
     try {
       final logs = await DriftDbService.instance.driftDb.dynamicRecordsDao
           .fetchCrashLogs();
-      final deviceInfo = await MethodChannelService.instance.getDeviceInfoMap();
+      final deviceInfo = ref.read(deviceInfoProvider).value;
 
       final crashLogMap = {
-        "Manufacturer": deviceInfo['Manufacturer'] ?? '',
-        "Model": deviceInfo['Model'] ?? '',
-        "Android Version": deviceInfo['Android Version'] ?? '',
-        "SDK Version": deviceInfo['SDK Version'] ?? '',
+        "Manufacturer": deviceInfo?.manufacturer,
+        "Model": deviceInfo?.model,
+        "Android Version": deviceInfo?.androidVersion,
+        "SDK Version": deviceInfo?.sdkVersion,
         'Crash Logs': logs.map((e) => e.toJson()).toList()
       };
 
@@ -138,7 +139,7 @@ class TabAdvance extends ConsumerWidget {
           subtitleText: context.locale.crash_logs_share_tile_subtitle,
           leadingIcon: FluentIcons.share_android_20_regular,
           trailing: const Icon(FluentIcons.chevron_right_20_regular),
-          onPressed: () => _shareLogs(context),
+          onPressed: () => _shareLogs(context, ref),
         ).sliver,
 
         DefaultHero(

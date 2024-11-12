@@ -95,7 +95,7 @@ public class WellBeingSettings {
                 blockFbReels = jsonObject.optBoolean("blockFbReels", false);
                 blockRedditShorts = jsonObject.optBoolean("blockRedditShorts", false);
                 blockNsfwSites = jsonObject.optBoolean("blockNsfwSites", false);
-                allowedShortContentTimeMs = jsonObject.optInt("allowedShortContentTimeSec", 30 * 60) * 1000L;
+                allowedShortContentTimeMs = jsonObject.optInt("allowedShortsTimeSec", 30 * 60) * 1000L;
 
                 // Deserialize blocked websites
                 JSONArray websitesJsonArray = jsonObject.optJSONArray("blockedWebsites");
@@ -110,4 +110,35 @@ public class WellBeingSettings {
             }
         }
     }
+
+
+    /**
+     * Creates a deep copy of the current {@link WellBeingSettings} object.
+     * <p>
+     * This method returns a new {@link WellBeingSettings} instance with the same values
+     * as the current object. It ensures that mutable fields, such as {@code blockedWebsites},
+     * are copied independently to avoid shared references.
+     *
+     * @return A new {@link WellBeingSettings} instance with the same field values.
+     */
+    public WellBeingSettings makeCopy() {
+        WellBeingSettings settings = new WellBeingSettings();
+
+        // Copy primitive boolean values
+        settings.blockInstaReels = this.blockInstaReels;
+        settings.blockYtShorts = this.blockYtShorts;
+        settings.blockSnapSpotlight = this.blockSnapSpotlight;
+        settings.blockFbReels = this.blockFbReels;
+        settings.blockRedditShorts = this.blockRedditShorts;
+        settings.blockNsfwSites = this.blockNsfwSites;
+
+        // Copy long value
+        settings.allowedShortContentTimeMs = this.allowedShortContentTimeMs;
+
+        // Deep copy the list of blocked websites to ensure independence
+        settings.blockedWebsites = new ArrayList<>(this.blockedWebsites);
+
+        return settings;
+    }
+
 }

@@ -335,7 +335,7 @@
     },
     "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
     "restriction_groups_tab_title": "Restriction groups",
-    "restriction_group_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
+    "restriction_groups_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
     "restriction_group_time_used": "Time used: {timeString}",
     "@restriction_group_time_used": {
         "placeholders": {
@@ -370,7 +370,7 @@
     "@----------------------------- NOTIFICATION GROUPS SCREEN -----------------------------": {},
     "notification_groups_tab_title": "Notification groups",
     "notification_groups_tile_subtitle": "Schedule alerts for group of apps.",
-    "notification_group_tab_info": "Group notifications from selected apps and set a schedule, like every X hours or at a specific time. Stay updated without constant interruptions.",
+    "notification_groups_tab_info": "Group notifications from selected apps and set a schedule, like every X hours or at a specific time. Stay updated without constant interruptions.",
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
     "emergency_fab_button": "Emergency",
     "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",

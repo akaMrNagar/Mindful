@@ -25,11 +25,11 @@ class AppRestrictionTable extends Table {
   /// The number of times user can launch this app
   IntColumn get launchLimit => integer()();
 
-  /// The max time in user can spend on this app in one session in SECONDS
-  IntColumn get sessionTimeSec => integer()();
+  /// The interval between each usage alert in SECONDS
+  IntColumn get alertInterval => integer()();
 
-  /// The time for which the app is blocked after a session in SECONDS
-  IntColumn get sessionCoolDownTimeSec => integer()();
+  ///  Whether to alert user by dialog if false user will be alerted by notification
+  BoolColumn get alertByDialog => boolean()();
 
   /// Flag denoting if this app can access internet or not
   BoolColumn get canAccessInternet => boolean()();
@@ -42,8 +42,8 @@ class AppRestrictionTable extends Table {
     appPackage: "",
     timerSec: 0,
     launchLimit: 0,
-    sessionTimeSec: 0,
-    sessionCoolDownTimeSec: 0,
+    alertInterval: 15 * 60, // Every 15 minutes
+    alertByDialog: false,
     canAccessInternet: true,
   );
 }

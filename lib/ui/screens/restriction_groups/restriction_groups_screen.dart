@@ -40,7 +40,7 @@ class RestrictionGroupsScreen extends ConsumerWidget {
             physics: const BouncingScrollPhysics(),
             slivers: [
               /// Information about groups
-              StyledText(context.locale.restriction_group_tab_info).sliver,
+              StyledText(context.locale.restriction_groups_tab_info).sliver,
 
               16.vSliverBox,
               SliverList.builder(
