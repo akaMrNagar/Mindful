@@ -59,9 +59,7 @@ class AppInternetSwitcher extends ConsumerWidget {
             switchValue: haveInternetAccess,
             enabled: !app.isImpSysApp,
             titleText: context.locale.internet_access_tile_title,
-            subtitleText: app.isImpSysApp
-                ? context.locale.internet_access_tile_subtitle_unavailable
-                : context.locale.internet_access_tile_subtitle,
+            subtitleText: context.locale.internet_access_tile_subtitle,
             leadingIcon: haveInternetAccess
                 ? FluentIcons.globe_20_regular
                 : FluentIcons.globe_prohibited_16_filled,

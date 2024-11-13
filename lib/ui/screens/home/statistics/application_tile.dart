@@ -24,7 +24,7 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_internet_switcher.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_timer_picker.dart';
+import 'package:mindful/ui/screens/app_dashboard/app_timer.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 /// List tile used for displaying app usage info based on the bool [selectedUsageType]
@@ -87,7 +87,7 @@ class ApplicationTile extends ConsumerWidget {
         trailing: app.isImpSysApp
             ? null
             : selectedUsageType == UsageType.screenUsage
-                ? AppTimerPicker(app: app, isIconButton: true)
+                ? AppTimer(app: app, isIconButton: true)
                 : AppInternetSwitcher(app: app, isIconButton: true),
       ),
     );

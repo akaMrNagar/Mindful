@@ -15,10 +15,10 @@ package com.mindful.android.services;
 import static com.mindful.android.helpers.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_GROUP_NAME;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PURGE_TYPE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_MAX_PROGRESS;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PROGRESS;
+import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PURGE_TYPE;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -48,13 +48,14 @@ import com.mindful.android.models.PurgedReason;
 import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.receivers.DeviceLockUnlockReceiver;
 import com.mindful.android.utils.AppConstants;
+import com.mindful.android.utils.JsonDeserializer;
 import com.mindful.android.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * A service that tracks app usage, manages timers for app usage limits, and handles bedtime lockdowns.
@@ -66,8 +67,6 @@ public class MindfulTrackerService extends Service {
 
     private final String TAG = "Mindful.MindfulTrackerService";
 
-    // Buffer of ± seconds
-    private final int ALERT_BUFFER_SECONDS = 30;
     public static final String INTENT_EXTRA_DISTRACTING_APPS = "com.mindful.android.MindfulTrackerService.INTENT_EXTRA_DISTRACTING_APPS";
     public static final String ACTION_START_RESTRICTION_MODE = "com.mindful.android.MindfulTrackerService.START_RESTRICTION_MODE";
     public static final String ACTION_START_BEDTIME_MODE = "com.mindful.android.MindfulTrackerService.START_BEDTIME_MODE";
@@ -82,8 +81,8 @@ public class MindfulTrackerService extends Service {
     private final HashMap<String, Integer> mAppsLaunchCount = new HashMap<>();
 
 
-    private HashMap<String, AppRestrictions> mAppsRestrictions = new HashMap<>();
-    private HashMap<Integer, RestrictionGroup> mRestrictionGroups = new HashMap<>();
+    private HashMap<String, AppRestrictions> mAppsRestrictions = new HashMap<>(0);
+    private HashMap<Integer, RestrictionGroup> mRestrictionGroups = new HashMap<>(0);
     private HashSet<String> mBedtimeDistractingApps = new HashSet<>(0);
     private HashSet<String> mFocusSessionDistractingApps = new HashSet<>(0);
 
@@ -100,8 +99,6 @@ public class MindfulTrackerService extends Service {
         lockUnlockFilter.addAction(Intent.ACTION_SCREEN_OFF);
         mLockUnlockReceiver = new DeviceLockUnlockReceiver(mUsageStatsManager, this::onDeviceLockUnlock, this::onNewAppLaunched);
         registerReceiver(mLockUnlockReceiver, lockUnlockFilter);
-
-        Log.d(TAG, "startTrackingService: Foreground service started");
     }
 
     @Override
@@ -117,7 +114,7 @@ public class MindfulTrackerService extends Service {
             }
             case ACTION_START_BEDTIME_MODE: {
                 startForegroundService();
-                mBedtimeDistractingApps = Utils.getStringHashSetFromIntent(intent, INTENT_EXTRA_DISTRACTING_APPS);
+                mBedtimeDistractingApps = JsonDeserializer.getStringHashSetFromIntent(intent, INTENT_EXTRA_DISTRACTING_APPS);
                 if (mLockUnlockReceiver != null) mLockUnlockReceiver.broadcastLastAppLaunchEvent();
                 Log.d(TAG, "onStartCommand: Bedtime routine STARTED successfully");
                 return START_STICKY;
@@ -146,17 +143,21 @@ public class MindfulTrackerService extends Service {
      */
     private void startForegroundService() {
         if (mIsServiceRunning) return;
-
-        // Create notification
-        startForeground(
-                AppConstants.TRACKER_SERVICE_NOTIFICATION_ID,
-                NotificationHelper.buildFgServiceNotification(
-                        this,
-                        getString(R.string.app_blocker_running_notification_info)
-                )
-        );
-        Log.d(TAG, "startTrackingService: Foreground service started");
-        mIsServiceRunning = true;
+        try {
+            // Create notification
+            startForeground(
+                    AppConstants.TRACKER_SERVICE_NOTIFICATION_ID,
+                    NotificationHelper.buildFgServiceNotification(
+                            this,
+                            getString(R.string.app_blocker_running_notification_info)
+                    )
+            );
+            mIsServiceRunning = true;
+            Log.d(TAG, "startForegroundService: Foreground service started successfully");
+        } catch (Exception e) {
+            Log.e(TAG, "startForegroundService: Failed to start foreground service", e);
+            stopSelf();
+        }
     }
 
     /**
@@ -172,6 +173,8 @@ public class MindfulTrackerService extends Service {
     ) {
         if (appsRestrictionsMap != null) mAppsRestrictions = appsRestrictionsMap;
         if (restrictionGroups != null) mRestrictionGroups = restrictionGroups;
+        mPurgedApps.clear();
+        Log.d(TAG, "updateRestrictionData: Restriction data updated");
         stopIfNoUsage();
     }
 
@@ -233,6 +236,8 @@ public class MindfulTrackerService extends Service {
      * @param packageName The package name of the app that was launched.
      */
     private void onNewAppLaunched(String packageName) {
+        Log.d(TAG, "onNewAppLaunched: App launch event received with package: " + packageName);
+
         // Cancel running task
         cancelTimers();
 
@@ -266,7 +271,7 @@ public class MindfulTrackerService extends Service {
         if (appRestrictions.timerSec > 0) {
             long appScreenTime = allAppsScreenUsage.getOrDefault(packageName, 0L);
             if (appScreenTime >= appRestrictions.timerSec) {
-                PurgedReason reason = new PurgedReason(PurgeType.AppTimerOut);
+                PurgedReason reason = new PurgedReason(PurgeType.AppTimerOut, appRestrictions.timerSec);
                 mPurgedApps.put(packageName, reason);
                 showOverlayDialog(packageName, reason, appRestrictions.timerSec, (int) appScreenTime);
                 return;
@@ -276,15 +281,18 @@ public class MindfulTrackerService extends Service {
         }
 
         /// Check for associated group timer
+        Log.d(TAG, "onNewAppLaunched: group id " + appRestrictions.associatedGroupId);
         RestrictionGroup associatedGroup = mRestrictionGroups.get(appRestrictions.associatedGroupId);
+        Log.d(TAG, "onNewAppLaunched: package: " + packageName + " group: " + associatedGroup);
+
         if (associatedGroup != null && associatedGroup.timerSec > 0) {
-            long groupScreenTime = associatedGroup.appsPackage.stream()
+            long groupScreenTime = associatedGroup.distractingApps.stream()
                     .mapToLong(app -> ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager).getOrDefault(app, 0L))
                     .sum();
 
             if (groupScreenTime >= associatedGroup.timerSec) {
-                PurgedReason reason = new PurgedReason(PurgeType.GroupTimerOut, associatedGroup.groupName);
-                associatedGroup.appsPackage.forEach(app -> mPurgedApps.put(app, reason));
+                PurgedReason reason = new PurgedReason(PurgeType.GroupTimerOut, associatedGroup.groupName, associatedGroup.timerSec);
+                associatedGroup.distractingApps.forEach(app -> mPurgedApps.put(app, reason));
                 showOverlayDialog(packageName, reason, associatedGroup.timerSec, Math.toIntExact(groupScreenTime));
                 return;
             }
@@ -300,7 +308,7 @@ public class MindfulTrackerService extends Service {
         if (associatedGroup != null && leftGroupLimit < leftAppLimit) {
             scheduleUsageAlertCountDownTimer(
                     packageName,
-                    new PurgedReason(PurgeType.GroupTimerOut, associatedGroup.groupName),
+                    new PurgedReason(PurgeType.GroupTimerOut, associatedGroup.groupName, associatedGroup.timerSec),
                     associatedGroup.timerSec,
                     (int) leftGroupLimit,
                     appRestrictions.alertByDialog,
@@ -309,7 +317,7 @@ public class MindfulTrackerService extends Service {
         } else {
             scheduleUsageAlertCountDownTimer(
                     packageName,
-                    new PurgedReason(PurgeType.AppTimerOut),
+                    new PurgedReason(PurgeType.AppTimerOut, appRestrictions.timerSec),
                     appRestrictions.timerSec,
                     (int) leftAppLimit,
                     appRestrictions.alertByDialog,
@@ -325,8 +333,9 @@ public class MindfulTrackerService extends Service {
      * @return True if the app is purged or restricted, false otherwise.
      */
     private boolean isAppAlreadyPurged(String packageName) {
-        if (mPurgedApps.containsKey(packageName)) {
-            showOverlayDialog(packageName, mPurgedApps.get(packageName), 0, 0);
+        PurgedReason reason = mPurgedApps.get(packageName);
+        if (reason != null) {
+            showOverlayDialog(packageName, reason, reason.usedLimit, reason.usedLimit);
             return true;
         }
         if (mFocusSessionDistractingApps.contains(packageName)) {
@@ -361,33 +370,37 @@ public class MindfulTrackerService extends Service {
     ) {
         cancelTimers();
 
-        // Remaining Times when alert will be pushed
-        final ArrayList<Integer> alertTimeSeconds = new ArrayList<>(Arrays.asList(60, 5 * 60));
-        for (int i = alertInterval; i <= leftLimit; i += alertInterval) {
-            alertTimeSeconds.add(i);
+        // Initialize alert times
+        final Set<Integer> alertTimeMinutes = new LinkedHashSet<>();
+        if (leftLimit > 300) alertTimeMinutes.add(5); // 5-minute alert
+        if (leftLimit > 60) alertTimeMinutes.add(1);    // 1-minute alert
+
+        // Add additional alerts based on the interval, in minutes, ensuring no duplicates
+        for (int i = alertInterval; i < leftLimit; i += alertInterval) {
+            alertTimeMinutes.add(i / 60);
         }
 
-        Log.d(TAG, "scheduleUsageAlertCountDownTimer: " + alertTimeSeconds);
+        Log.d(TAG, "scheduleUsageAlertCountDownTimer: Alert times in minutes: " + alertTimeMinutes);
 
+        // Schedule the countdown timer on the main thread
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                mOngoingAppTimer = new CountDownTimer(leftLimit * 1000L, 60 * 1000) {
+                mOngoingAppTimer = new CountDownTimer(leftLimit * 1000L, 60 * 1000) { // Tick every minute
                     @Override
                     public void onTick(long millisUntilFinished) {
-                        int secondsRemaining = (int) (millisUntilFinished / 1000);
+                        int minutesRemaining = (int) (millisUntilFinished / 60000); // Convert to minutes
 
-                        // Check if the remaining time is close to any of the notifyTimes with the buffer
-                        for (int alertTime : alertTimeSeconds) {
-                            if (Math.abs(secondsRemaining - alertTime) < ALERT_BUFFER_SECONDS) {
-                                if (alertByDialog) {
-                                    int elapsedTime = totalLimit - secondsRemaining;
-                                    showOverlayDialog(packageName, reason, totalLimit, elapsedTime);
-                                } else {
-                                    pushUsageAlertNotification(packageName, alertTime / 60);
-                                }
-                                break;
+                        // Trigger alert if remaining time in minutes matches any alert time
+                        if (alertTimeMinutes.contains(minutesRemaining)) {
+                            if (alertByDialog) {
+                                int elapsedTime = totalLimit - (minutesRemaining * 60);
+                                showOverlayDialog(packageName, reason, totalLimit, elapsedTime);
+                            } else {
+                                pushUsageAlertNotification(packageName, minutesRemaining);
                             }
+                            // Remove the triggered alert to avoid re-triggering in subsequent ticks
+                            alertTimeMinutes.remove(minutesRemaining);
                         }
                     }
 
@@ -395,11 +408,12 @@ public class MindfulTrackerService extends Service {
                     public void onFinish() {
                         mPurgedApps.put(packageName, reason);
                         showOverlayDialog(packageName, reason, totalLimit, totalLimit);
-                        Log.d(TAG, "scheduleUsageAlertCountDownTimer: Ongoing countdown timer finished for package : " + packageName);
+                        Log.d(TAG, "scheduleUsageAlertCountDownTimer: Countdown finished for package: " + packageName);
                     }
                 };
                 mOngoingAppTimer.start();
-                Log.d(TAG, "scheduleUsageAlertCountDownTimer: Ongoing Countdown timer task scheduled for " + packageName + " :  " + new Date((leftLimit * 1000L) + System.currentTimeMillis()));
+                Log.d(TAG, "scheduleUsageAlertCountDownTimer: Timer scheduled for " + packageName + " ending at: " +
+                        new Date((leftLimit * 1000L) + System.currentTimeMillis()));
             }
         });
     }
@@ -427,7 +441,7 @@ public class MindfulTrackerService extends Service {
                             .setOngoing(false)
                             .setSmallIcon(R.drawable.ic_notification)
                             .setLargeIcon(Utils.drawableToBitmap(appIcon))
-                            .setContentTitle(getString(R.string.app_pause_notification_title, minutesLeft))
+                            .setContentTitle(getString(R.string.app_pause_notification_title, Utils.formatScreenTime(minutesLeft)))
                             .setContentText(notificationInfo)
                             .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationInfo))
                             .build()

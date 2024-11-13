@@ -8,6 +8,8 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -49,11 +51,22 @@ class _LaunchLimitDialog extends StatefulWidget {
 
 class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
   final _controller = TextEditingController();
+  int _launchLimit = 0;
 
   @override
   void initState() {
     super.initState();
     _controller.text = widget.initialCount.toString();
+    _launchLimit = widget.initialCount;
+  }
+
+  void _changeLimit(int direction) {
+    setState(() {
+      _launchLimit = max(
+        0,
+        (direction.isNegative ? (_launchLimit - 5) : (_launchLimit + 5)),
+      );
+    });
   }
 
   @override
@@ -80,7 +93,7 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       StyledText(
-                        context.locale.timer_picker_dialog_info,
+                        context.locale.app_launch_limit_picker_dialog_info,
                       ),
                       32.vBox,
                       Padding(
@@ -91,20 +104,16 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
                           children: [
                             IconButton.filledTonal(
                               icon: const Icon(FluentIcons.subtract_20_filled),
-                              onPressed: () {
-                                print("oilla");
-                              },
+                              onPressed: () => _changeLimit(-1),
                             ),
                             StyledText(
-                              widget.initialCount.toString(),
+                              _launchLimit.toString(),
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
                             ),
                             IconButton.filledTonal(
                               icon: const Icon(FluentIcons.add_20_filled),
-                              onPressed: () {
-                                print("oilla");
-                              },
+                              onPressed: () => _changeLimit(1),
                             ),
                           ],
                         ),
@@ -116,12 +125,11 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.maybePop(context),
-                  child: Text("Cancel"),
+                  child: Text(context.locale.dialog_button_cancel),
                 ),
                 TextButton(
-                  onPressed: () =>
-                      Navigator.maybePop(context, _controller.text),
-                  child: Text("Set"),
+                  onPressed: () => Navigator.maybePop(context, _launchLimit),
+                  child: Text(context.locale.dialog_button_set),
                 ),
               ],
             ),

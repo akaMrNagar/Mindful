@@ -19,7 +19,7 @@ import 'package:mindful/providers/apps_provider.dart';
 final restrictionGroupsProvider = StateNotifierProvider<
     RestrictionGroupsNotifier, Map<int, RestrictionGroup>>(
   (ref) => RestrictionGroupsNotifier(
-    ref.read(appsProvider).value?.keys.toSet() ?? {},
+    ref.watch(appsProvider).value?.keys.toSet() ?? {},
   ),
 );
 
@@ -42,11 +42,11 @@ class RestrictionGroupsNotifier
     state = Map.fromEntries(groupsList.map((e) => MapEntry(e.id, e)));
 
     // Listen to changes and update the tracker service.
-    addListener((_) => _updateTrackerService);
+    addListener((_) => updateGroupsInTrackerService());
   }
 
   /// Creates a new restriction group and adds it to the state.
-  void createNewGroup({
+  Future<RestrictionGroup> createNewGroup({
     required String groupName,
     required int timerSec,
     required List<String> distractingApps,
@@ -62,6 +62,8 @@ class RestrictionGroupsNotifier
         (value) => newGroup,
         ifAbsent: () => newGroup,
       );
+
+    return newGroup;
   }
 
   /// Updates an existing restriction group in the database and state.
@@ -84,7 +86,9 @@ class RestrictionGroupsNotifier
   ///
   /// This method filters the restriction groups based on installed apps and
   /// their timer settings and updates the tracker service accordingly.
-  Future<void> _updateTrackerService() async {
+  Future<void> updateGroupsInTrackerService() async {
+    if (_installedApps.isEmpty) return;
+
     final filteredGroups = state.values
         .where(
           (e) =>

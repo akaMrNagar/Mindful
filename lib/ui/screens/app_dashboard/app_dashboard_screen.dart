@@ -69,9 +69,8 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
     context.showSnackAlert(
       isExcluded
-          ? context.locale
-              .internet_access_unblocked_snack_alert(widget.app.name)
-          : context.locale.internet_access_blocked_snack_alert(widget.app.name),
+          ? context.locale.app_include_to_stats_snack_alert(widget.app.name)
+          : context.locale.app_excluded_from_stats_snack_alert(widget.app.name),
       icon: isExcluded
           ? FluentIcons.group_20_filled
           : FluentIcons.group_dismiss_20_filled,
@@ -190,9 +189,8 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                     ? FluentIcons.group_dismiss_20_regular
                     : FluentIcons.group_20_regular,
                 switchValue: !isExcludedFromStats,
-                titleText: "Include in statistics",
-                subtitleText:
-                    "Switch off to exclude this app from total usage stats.",
+                titleText: context.locale.include_in_stats_tile_title,
+                subtitleText: context.locale.include_in_stats_tile_subtitle,
                 accent: isExcludedFromStats
                     ? Theme.of(context).colorScheme.error
                     : null,

@@ -58,7 +58,7 @@ public class MindfulVpnService extends android.net.VpnService {
 
         if (ACTION_START_SERVICE_VPN.equals(action)) {
             // No need to handle as the caller will also call updateBlockedApps() as soon as the binder is active
-            connectVpn(true);
+            startServiceAndConnectVpn(true);
             return START_STICKY;
         }
 
@@ -71,7 +71,7 @@ public class MindfulVpnService extends android.net.VpnService {
      */
     private void restartVpnService() {
         disconnectVpn();
-        connectVpn(false);
+        startServiceAndConnectVpn(false);
         Log.d(TAG, "restartVpnService: VPN restarted successfully");
     }
 
@@ -81,11 +81,11 @@ public class MindfulVpnService extends android.net.VpnService {
      *
      * @param isFirstTimeConnect Flag denoting if the vpn is starting for the first time
      */
-    private void connectVpn(boolean isFirstTimeConnect) {
+    private void startServiceAndConnectVpn(boolean isFirstTimeConnect) {
         // Check if no blocked apps then STOP service
         // Necessary if the service starts from Boot Receiver
         if (mBlockedApps.isEmpty()) {
-            Log.w(TAG, "connectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
+            Log.w(TAG, "startServiceAndConnectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
             stopAndDisposeService();
             return;
         }
@@ -97,13 +97,20 @@ public class MindfulVpnService extends android.net.VpnService {
         /// Return if this is VPN restart
         if (!isFirstTimeConnect) return;
 
-        startForeground(
-                AppConstants.VPN_SERVICE_NOTIFICATION_ID,
-                NotificationHelper.buildFgServiceNotification(
-                        this,
-                        getString(R.string.internet_blocker_running_notification_info)
-                )
-        );
+        try {
+            startForeground(
+                    AppConstants.VPN_SERVICE_NOTIFICATION_ID,
+                    NotificationHelper.buildFgServiceNotification(
+                            this,
+                            getString(R.string.internet_blocker_running_notification_info)
+                    )
+            );
+            Log.d(TAG, "startServiceAndConnectVpn: Foreground service started successfully");
+
+        } catch (Exception e) {
+            Log.e(TAG, "startServiceAndConnectVpn: Failed to start foreground service", e);
+            stopAndDisposeService();
+        }
     }
 
     /**
@@ -219,7 +226,7 @@ public class MindfulVpnService extends android.net.VpnService {
     public void onDestroy() {
         super.onDestroy();
         disconnectVpn();
-        Log.d(TAG, "onDestroy: VPN service is destroyed");
+        Log.d(TAG, "onDestroy: VPN service destroyed successfully");
     }
 
     @Override

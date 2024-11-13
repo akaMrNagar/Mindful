@@ -34,7 +34,7 @@
         placeholder in app_pause_notification_title will be the left limit
         Example output: "20 minutes left"
     -->
-    <string name="app_pause_notification_title" formatted="true">"%d minutes left"</string>
+    <string name="app_pause_notification_title" formatted="true">"%s left"</string>
     <!--
         placeholder in app_pause_alert_notification_info will be 'AppName'
         Example output: "Instagram will be paused for the rest of the day"
@@ -49,7 +49,7 @@
     <string name="app_paused_dialog_info_for_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
     <string name="app_paused_dialog_info_for_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
     <string name="app_paused_dialog_info_for_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
-    <string name="app_paused_dialog_info_for_app_timer_left">You\’ve been using this app for a while now. Let\’s shift gears and take a break from the screen and focus on something productive</string>
+    <string name="app_paused_dialog_info_for_app_timer_left">You\’ve been using this app for a while now. Let\’s shift gears and take a break from the screen and focus on something productive.</string>
     <string name="app_paused_dialog_info_for_group_timer_out" formatted="true">You\’ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
     <string name="app_paused_dialog_info_for_group_timer_left" formatted="true">You\’ve been using apps from the “%s” group for a while now. It\’s time to take a step back and concentrate on your tasks, not your screen.</string>
 

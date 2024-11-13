@@ -12,9 +12,11 @@
 
 package com.mindful.android.utils;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.mindful.android.models.AppRestrictions;
 import com.mindful.android.models.RestrictionGroup;
@@ -23,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -78,7 +81,29 @@ public class JsonDeserializer {
     }
 
 
+    /**
+     * Safely retrieves a HashSet of Strings from an Intent.
+     *
+     * @param intent The Intent to retrieve data from.
+     * @param key    The key for the data in the Intent.
+     * @return A HashSet of strings, or an empty set if data is null.
+     */
+    @NonNull
+    public static HashSet<String> getStringHashSetFromIntent(@Nullable Intent intent, String key) {
+        HashSet<String> set = new HashSet<>(0);
+        if (intent == null) return set;
 
+        ArrayList<String> intentData = intent.getStringArrayListExtra(key);
+        return intentData == null ? set : new HashSet<>(intentData);
+    }
+
+
+    /**
+     * Converts a JSON string to a HashMap with String keys and AppRestrictions values.
+     *
+     * @param jsonString The JSON string to convert.
+     * @return A HashMap with deserialized AppRestrictions, or an empty map on error.
+     */
     @NonNull
     public static HashMap<String, AppRestrictions> jsonStrToAppRestrictionsHashMap(@NonNull String jsonString) {
         HashMap<String, AppRestrictions> map = new HashMap<>();
@@ -97,6 +122,12 @@ public class JsonDeserializer {
         return map;
     }
 
+    /**
+     * Converts a JSON string to a HashMap with Integer keys and RestrictionGroup values.
+     *
+     * @param jsonString The JSON string to convert.
+     * @return A HashMap with deserialized RestrictionGroups, or an empty map on error.
+     */
     @NonNull
     public static HashMap<Integer, RestrictionGroup> jsonStrToRestrictionGroupsHashMap(@NonNull String jsonString) {
         HashMap<Integer, RestrictionGroup> map = new HashMap<>();
@@ -106,8 +137,8 @@ public class JsonDeserializer {
             JSONArray jsonArray = new JSONArray(jsonString);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObj = jsonArray.getJSONObject(i);
-                RestrictionGroup restrictions = new RestrictionGroup(jsonObj);
-                map.put(i, restrictions);
+                RestrictionGroup group = new RestrictionGroup(jsonObj);
+                map.put(group.id, group);
             }
         } catch (JSONException e) {
             Log.e(TAG, "jsonStrToGroupRestrictionsHashMap: Error deserializing JSON to App Restrictions map ", e);

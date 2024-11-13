@@ -26,6 +26,11 @@ class InvincibleModeTable extends Table {
   ///
   /// If included user cannot modify app timer if it is already ran out
   BoolColumn get includeAppsTimer => boolean()();
+  
+  /// Flag indicating if apps launch count limit is included in the invincible mode
+  ///
+  /// If included user cannot modify app launch count limit if it is already ran out
+  BoolColumn get includeAppsLaunchLimit => boolean()();
 
   /// Flag indicating if groups timer are included in the invincible mode
   ///
@@ -46,6 +51,7 @@ class InvincibleModeTable extends Table {
     id: 0,
     isInvincibleModeOn: false,
     includeAppsTimer: true,
+    includeAppsLaunchLimit: false,
     includeGroupsTimer: false,
     includeShortsTimer: false,
     includeBedtimeSchedule: false,

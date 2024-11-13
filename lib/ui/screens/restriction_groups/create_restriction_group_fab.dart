@@ -17,23 +17,26 @@ class CreateRestrictionGroupFab extends ConsumerWidget {
       backgroundColor: Theme.of(context).colorScheme.primary,
       foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: () async {
-        final group = await showCreateUpdateRestrictionGroupSheet(
+        /// Group with invalid ID -1
+        final placeholderGroup = await showCreateUpdateRestrictionGroupSheet(
           context: context,
         );
 
-        if (group == null) return;
+        if (placeholderGroup == null) return;
 
-        /// Create new group
-        ref.read(restrictionGroupsProvider.notifier).createNewGroup(
-              groupName: group.groupName,
-              timerSec: group.timerSec,
-              distractingApps: group.distractingApps,
-            );
+        /// Create new group and store it. The returned group is valid because,
+        /// it point to valid id in the database
+        final validDatabaseGroup =
+            await ref.read(restrictionGroupsProvider.notifier).createNewGroup(
+                  groupName: placeholderGroup.groupName,
+                  timerSec: placeholderGroup.timerSec,
+                  distractingApps: placeholderGroup.distractingApps,
+                );
 
         /// Update associated group ids for apps
         ref.read(appsRestrictionsProvider.notifier).updateAssociatedGroupId(
-              appPackages: group.distractingApps,
-              groupId: group.id,
+              appPackages: validDatabaseGroup.distractingApps,
+              groupId: validDatabaseGroup.id,
             );
       },
     );

@@ -102,7 +102,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mTrackerServiceConn.bindService();
         mVpnServiceConn.bindService();
         mFocusServiceConn.bindService();
-    }
+}
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -156,17 +156,13 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppRestrictions": {
                 HashMap<String, AppRestrictions> appRestrictions = SharedPrefsHelper.getSetAppRestrictions(this, Utils.notNullStr(call.arguments()));
-                if (!appRestrictions.isEmpty()) {
-                    updateTrackerServiceRestrictions(appRestrictions, null);
-                }
+                updateTrackerServiceRestrictions(appRestrictions, null);
                 result.success(true);
                 break;
             }
             case "updateRestrictionsGroups": {
                 HashMap<Integer, RestrictionGroup> restrictionGroups = SharedPrefsHelper.getSetRestrictionGroups(this, Utils.notNullStr(call.arguments()));
-                if (!restrictionGroups.isEmpty()) {
-                    updateTrackerServiceRestrictions(null, restrictionGroups);
-                }
+                updateTrackerServiceRestrictions(null, restrictionGroups);
                 result.success(true);
                 break;
             }
@@ -330,7 +326,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     ) {
         if (mTrackerServiceConn.isConnected()) {
             mTrackerServiceConn.getService().updateRestrictionData(appRestrictions, restrictionGroups);
-        } else {
+        } else if ((appRestrictions != null && !appRestrictions.isEmpty())
+                || (restrictionGroups != null && !restrictionGroups.isEmpty())
+        ) {
             mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
             mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
         }

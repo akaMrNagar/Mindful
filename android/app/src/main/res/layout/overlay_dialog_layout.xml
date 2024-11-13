@@ -28,8 +28,8 @@
         <!-- icon -->
         <ImageView
             android:id="@+id/overlay_dialog_app_icon"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:contentDescription="@string/app_name"
             android:src="@mipmap/ic_launcher" />
 
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="@string/app_paused_dialog_content_for_app_timer_out"
+        android:text="@string/app_paused_dialog_info_for_app_timer_out"
         android:textColor="@color/textPrimary"
         android:textSize="16sp" />
 
@@ -76,6 +76,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingHorizontal="8dp"
         android:layout_marginTop="8dp">
         <!-- Limit spent -->
         <TextView

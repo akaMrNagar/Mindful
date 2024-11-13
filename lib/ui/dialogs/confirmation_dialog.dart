@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -23,7 +24,7 @@ Future<bool> showConfirmationDialog({
   required String info,
   required IconData icon,
   required String positiveLabel,
-  String negativeLabel = "Cancel",
+  String? negativeLabel,
 }) async {
   return await Navigator.of(context).push<bool>(
         HeroPageRoute(
@@ -33,7 +34,7 @@ Future<bool> showConfirmationDialog({
             info: info,
             icon: icon,
             positiveLabel: positiveLabel,
-            negativeLabel: negativeLabel,
+            negativeLabel: negativeLabel ?? context.locale.dialog_button_cancel,
           ),
         ),
       ) ??

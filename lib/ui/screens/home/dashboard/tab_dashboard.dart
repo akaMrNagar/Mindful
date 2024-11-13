@@ -60,7 +60,7 @@ class TabDashboard extends ConsumerWidget {
     final username =
         ref.watch(mindfulSettingsProvider.select((v) => v.username));
 
-    const tilesGap = 6;
+    const tilesGap = 4;
 
     return DefaultRefreshIndicator(
       onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,

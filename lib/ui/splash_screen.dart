@@ -18,9 +18,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -55,7 +56,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (!mounted) return;
 
     if (haveAllEssentialPermissions && settings.isOnboardingDone) {
-      ref.read(appsProvider);
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.homeScreen,
         (_) => false,
@@ -71,6 +71,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /// watching these providers to only start necessary services but this will not trigger any updates
+    ref.watch(appsRestrictionsProvider.select((v) => v[null]));
+    ref.watch(restrictionGroupsProvider.select((v) => v[null]));
+
     return PopScope(
       canPop: false,
       child: AnnotatedRegion<SystemUiOverlayStyle>(

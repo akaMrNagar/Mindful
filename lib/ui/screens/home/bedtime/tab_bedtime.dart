@@ -48,10 +48,7 @@ class TabBedtime extends ConsumerWidget {
       final end = now.dateOnly.add(state.endTimeInMins.minutes);
 
       if (start.isBefore(now) && end.isAfter(now)) {
-        context.showSnackAlert(
-          "Modification to active schedule is not permitted due to invincible mode.",
-        );
-
+        context.showSnackAlert(context.locale.invincible_mode_snack_alert);
         return;
       }
     }

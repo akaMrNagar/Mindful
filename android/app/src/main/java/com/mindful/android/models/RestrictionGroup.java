@@ -14,16 +14,35 @@ package com.mindful.android.models;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
 
 public class RestrictionGroup {
-    public String groupName;
-    public int timerSec;
-    public HashSet<String> appsPackage;
+    public int id = -1;
+    public String groupName = "";
+    public int timerSec = 0;
+    public HashSet<String> distractingApps = new HashSet<>(0);
 
 
-    public RestrictionGroup(@NonNull JSONObject jsonObject)
-    {}
+    /**
+     * Constructor to initialize from JSON.
+     *
+     * @param jsonObject the JSON object containing restriction group data.
+     */
+    public RestrictionGroup(@NonNull JSONObject jsonObject) throws JSONException {
+        this.id = jsonObject.optInt("id", 0);
+        this.groupName = jsonObject.optString("groupName", "");
+        this.timerSec = jsonObject.optInt("timerSec", 0);
+
+        // Deserialize apps package
+        JSONArray appsJsonArray = jsonObject.optJSONArray("distractingApps");
+        if (appsJsonArray != null) {
+            for (int i = 0; i < appsJsonArray.length(); i++) {
+                this.distractingApps.add(appsJsonArray.getString(i));
+            }
+        }
+    }
 }

@@ -160,7 +160,7 @@ class MethodChannelService {
   /// Start new focus session or only updates the list of distracting apps if already running.
   ///
   /// This method sends a request to the native side to start focus session.
-  Future<bool> startFocusSession({
+  Future<void> startFocusSession({
     required int startTimeMsEpoch,
     required int durationSeconds,
     required bool toggleDnd,
@@ -179,7 +179,7 @@ class MethodChannelService {
   /// Only updates the list of distracting apps if Focus Session is already running.
   ///
   /// This method sends a request to the native side to update focus session.
-  Future<bool> updateFocusSession({
+  Future<void> updateFocusSession({
     required List<String> distractingApps,
   }) async =>
       await _methodChannel.invokeMethod(

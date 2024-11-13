@@ -21,7 +21,7 @@ import 'package:mindful/providers/apps_provider.dart';
 final appsRestrictionsProvider = StateNotifierProvider<AppsRestrictionsNotifier,
     Map<String, AppRestriction>>(
   (ref) => AppsRestrictionsNotifier(
-    ref.read(appsProvider).value?.keys.toSet() ?? {},
+    ref.watch(appsProvider).value?.keys.toSet() ?? {},
   ),
 );
 
@@ -56,9 +56,7 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateRestriction(appPackage, restriction);
-    await _dao.insertAppRestrictionByPackage(restriction);
-    _updateTrackerService();
+    _updateStateAndDb(appPackage, restriction);
   }
 
   /// Updates the launch limit for a specific app package.
@@ -72,9 +70,7 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateRestriction(appPackage, restriction);
-    await _dao.insertAppRestrictionByPackage(restriction);
-    _updateTrackerService();
+    _updateStateAndDb(appPackage, restriction);
   }
 
   /// Updates the alert interval for a specific app package.
@@ -92,9 +88,7 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateRestriction(appPackage, restriction);
-    await _dao.insertAppRestrictionByPackage(restriction);
-    _updateTrackerService();
+    _updateStateAndDb(appPackage, restriction);
   }
 
   /// Set alert by dialog for a specific app package.
@@ -109,9 +103,7 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateRestriction(appPackage, restriction);
-    await _dao.insertAppRestrictionByPackage(restriction);
-    _updateTrackerService();
+    _updateStateAndDb(appPackage, restriction);
   }
 
   /// Toggles internet access permission for a specific app package if package is not empty.
@@ -126,9 +118,7 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateRestriction(appPackage, restriction);
-    await _dao.insertAppRestrictionByPackage(restriction);
-    _updateVpnService();
+    _updateStateAndDb(appPackage, restriction, updateVpn: true);
   }
 
   /// Updates the id of associated [RestrictionGroup] for a specific app package.
@@ -180,14 +170,23 @@ class AppsRestrictionsNotifier
     _updateTrackerService();
   }
 
-  void _updateRestriction(String appPackage, AppRestriction restriction) =>
-      state = {...state}..update(
-          appPackage,
-          (value) => restriction,
-          ifAbsent: () => restriction,
-        );
+  void _updateStateAndDb(
+    String appPackage,
+    AppRestriction restriction, {
+    bool updateVpn = false,
+  }) async {
+    state = {...state}..update(
+        appPackage,
+        (value) => restriction,
+        ifAbsent: () => restriction,
+      );
+    await _dao.insertAppRestrictionByPackage(restriction);
+    updateVpn ? _updateVpnService() : _updateTrackerService();
+  }
 
   Future<void> _updateTrackerService() async {
+    if (_installedApps.isEmpty) return;
+
     final filteredRestrictions = state.values
         .where(
           (e) =>
@@ -203,6 +202,8 @@ class AppsRestrictionsNotifier
   }
 
   Future<void> _updateVpnService() async {
+    if (_installedApps.isEmpty) return;
+
     final blockedApps = state.values
         .where(
           (e) => _installedApps.contains(e.appPackage) && !e.canAccessInternet,

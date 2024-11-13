@@ -33,9 +33,7 @@ import org.jetbrains.annotations.Contract;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 
@@ -175,23 +173,8 @@ public class Utils {
     }
 
     /**
-     * Null safe method that returns hash set of string.
-     *
-     * @param intent The nullable Intent to check.
-     * @param key    The key used for intent extra.
-     * @return hashset of strings with the key.
-     */
-    @NonNull
-    public static HashSet<String> getStringHashSetFromIntent(@Nullable Intent intent, String key) {
-        HashSet<String> set = new HashSet<>(0);
-        if (intent == null) return set;
-
-        ArrayList<String> intentData = intent.getStringArrayListExtra(key);
-        return intentData == null ? set : new HashSet<>(intentData);
-    }
-
-    /**
      * Formats the total screen usage time into a human-readable string.
+     * Example: 2:43:59
      *
      * @param totalSeconds The total screen usage time in seconds.
      * @return A string representing the formatted screen usage time.
@@ -212,6 +195,7 @@ public class Utils {
 
     /**
      * Formats the total screen usage time into a human-readable string.
+     * Example: 12h 45m
      *
      * @param totalMinutes The total screen usage time in minutes.
      * @return A string representing the formatted screen usage time.
@@ -230,6 +214,7 @@ public class Utils {
 
     /**
      * Formats the total data usage into a human-readable string.
+     * Example: 12.35 GB
      *
      * @param totalMBs The total data usage in megabytes (MB).
      * @return A string representing the formatted data usage.

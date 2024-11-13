@@ -35,6 +35,7 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
     private boolean mIsBound = false;
 
     private SuccessCallback<T> mConnectionSuccessCallback = null;
+    private boolean mCallbackInvoked = false;
 
     /**
      * Constructs a SafeServiceConnection instance.
@@ -53,7 +54,10 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
 
         if (mService != null) {
             mIsBound = true;
-            if (mConnectionSuccessCallback != null) mConnectionSuccessCallback.onSuccess(mService);
+            if (mConnectionSuccessCallback != null && !mCallbackInvoked) {
+                mCallbackInvoked = true;
+                mConnectionSuccessCallback.onSuccess(mService);
+            }
         }
     }
 

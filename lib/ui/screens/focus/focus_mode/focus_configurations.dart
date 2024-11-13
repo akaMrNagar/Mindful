@@ -82,9 +82,11 @@ class FocusQuickActions extends ConsumerWidget {
           tag: HeroTags.focusModeTimerTileTag,
           child: DefaultListTile(
             position: ItemPosition.mid,
-            titleText: "Session duration",
+            titleText: context.locale.focus_session_duration_tile_title,
             subtitle: StyledText(
-              sessionDuration.seconds.toTimeFull(context),
+              sessionDuration > 0
+                  ? sessionDuration.seconds.toTimeFull(context)
+                  : context.locale.focus_session_duration_tile_subtitle,
               fontSize: 14,
               isSubtitle: true,
             ),

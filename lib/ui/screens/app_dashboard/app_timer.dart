@@ -25,8 +25,8 @@ import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
-class AppTimerPicker extends ConsumerWidget {
-  const AppTimerPicker({
+class AppTimer extends ConsumerWidget {
+  const AppTimer({
     required this.app,
     this.isIconButton = false,
     super.key,
@@ -61,11 +61,9 @@ class AppTimerPicker extends ConsumerWidget {
               position: ItemPosition.start,
               titleText: context.locale.app_timer_tile_title,
               enabled: !app.isImpSysApp,
-              subtitleText: app.isImpSysApp
-                  ? context.locale.app_timer_tile_subtitle_unavailable
-                  : appTimer > 0
-                      ? appTimer.seconds.toTimeFull(context)
-                      : context.locale.app_timer_tile_subtitle_no_timer,
+              subtitleText: appTimer > 0
+                  ? appTimer.seconds.toTimeFull(context)
+                  : context.locale.app_limit_status_not_set,
               leadingIcon: FluentIcons.timer_20_regular,
               accent: isPurged ? Theme.of(context).colorScheme.error : null,
               trailing:
@@ -84,15 +82,16 @@ class AppTimerPicker extends ConsumerWidget {
     WidgetRef ref,
     int prevTimer,
   ) async {
-    final isInvincibleModeOn = ref.read(
-      invincibleModeProvider.select((v) => v.isInvincibleModeOn),
+    final isInvincibleModeRestricted = ref.read(
+      invincibleModeProvider
+          .select((v) => v.isInvincibleModeOn && v.includeAppsTimer),
     );
 
-    if (isInvincibleModeOn &&
+    if (isInvincibleModeRestricted &&
         prevTimer > 0 &&
         app.screenTimeThisWeek[todayOfWeek] >= prevTimer) {
       context.showSnackAlert(
-        context.locale.app_timer_invincible_mode_snack_alert,
+        context.locale.invincible_mode_snack_alert,
       );
       return;
     }

@@ -89,19 +89,19 @@ public class WellBeingSettings {
                 JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
 
                 // Deserialize fields
-                blockInstaReels = jsonObject.optBoolean("blockInstaReels", false);
-                blockYtShorts = jsonObject.optBoolean("blockYtShorts", false);
-                blockSnapSpotlight = jsonObject.optBoolean("blockSnapSpotlight", false);
-                blockFbReels = jsonObject.optBoolean("blockFbReels", false);
-                blockRedditShorts = jsonObject.optBoolean("blockRedditShorts", false);
-                blockNsfwSites = jsonObject.optBoolean("blockNsfwSites", false);
-                allowedShortContentTimeMs = jsonObject.optInt("allowedShortsTimeSec", 30 * 60) * 1000L;
+                this.blockInstaReels = jsonObject.optBoolean("blockInstaReels", false);
+                this.blockYtShorts = jsonObject.optBoolean("blockYtShorts", false);
+                this.blockSnapSpotlight = jsonObject.optBoolean("blockSnapSpotlight", false);
+                this.blockFbReels = jsonObject.optBoolean("blockFbReels", false);
+                this.blockRedditShorts = jsonObject.optBoolean("blockRedditShorts", false);
+                this.blockNsfwSites = jsonObject.optBoolean("blockNsfwSites", false);
+                this.allowedShortContentTimeMs = jsonObject.optInt("allowedShortsTimeSec", 30 * 60) * 1000L;
 
                 // Deserialize blocked websites
                 JSONArray websitesJsonArray = jsonObject.optJSONArray("blockedWebsites");
                 if (websitesJsonArray != null) {
                     for (int i = 0; i < websitesJsonArray.length(); i++) {
-                        blockedWebsites.add(websitesJsonArray.getString(i));
+                        this.blockedWebsites.add(websitesJsonArray.getString(i));
                     }
                 }
 

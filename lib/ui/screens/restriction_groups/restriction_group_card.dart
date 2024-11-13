@@ -44,7 +44,7 @@ class RestrictionGroupCard extends ConsumerWidget {
 
     if (isInvincibleModeRestricted && remainingTimeSec <= 0) {
       context.showSnackAlert(
-        "Cannot modify group during invincible mode after the timer ran out",
+        context.locale.invincible_mode_snack_alert,
       );
       return;
     }
@@ -81,7 +81,7 @@ class RestrictionGroupCard extends ConsumerWidget {
 
     if (isInvincibleModeRestricted && remainingTimeSec <= 0) {
       context.showSnackAlert(
-        "Cannot modify group during invincible mode after the timer ran out",
+        context.locale.invincible_mode_snack_alert,
       );
       return;
     }

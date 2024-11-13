@@ -103,8 +103,8 @@ class TabGeneral extends ConsumerWidget {
         DefaultListTile(
           position: ItemPosition.end,
           switchValue: mindfulSettings.useDynamicColors,
-          titleText: "Dynamic colors",
-          subtitleText: "Use device colors if supported.",
+          titleText: context.locale.dynamic_colors_tile_title,
+          subtitleText: context.locale.dynamic_colors_tile_subtitle,
           onPressed:
               ref.read(mindfulSettingsProvider.notifier).switchDynamicColor,
         ).sliver,
@@ -132,7 +132,7 @@ class TabGeneral extends ConsumerWidget {
         /// Default home tab
         DefaultDropdownTile<DefaultHomeTab>(
           position: ItemPosition.mid,
-          titleText: "Home tab",
+          titleText: context.locale.default_home_tab_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.defaultHomeTab,
           onSelected: ref.read(mindfulSettingsProvider.notifier).changeHomeTab,

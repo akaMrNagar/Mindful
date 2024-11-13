@@ -34,10 +34,13 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
     state = await _dao.loadWellBeingSettings();
 
     /// Listen to provider and save changes to Isar database and platform service
-    addListener((state) {
-      _dao.saveWellBeingSettings(state);
-      MethodChannelService.instance.updateWellBeingSettings(state);
-    });
+    addListener(
+      fireImmediately: false,
+      (state) {
+        _dao.saveWellBeingSettings(state);
+        MethodChannelService.instance.updateWellBeingSettings(state);
+      },
+    );
   }
 
   /// Toggles the block status for Instagram Reels.

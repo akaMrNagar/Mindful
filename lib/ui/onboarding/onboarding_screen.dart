@@ -17,7 +17,6 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/models/permissions_model.dart';
-import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
@@ -80,9 +79,8 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
       _subscription?.close();
       ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
       Future.delayed(
-        250.ms,
+        200.ms,
         () {
-          ref.read(appsProvider);
           Navigator.of(context).pushNamedAndRemoveUntil(
             AppRoutes.homeScreen,
             (_) => false,

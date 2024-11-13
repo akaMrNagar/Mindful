@@ -76,10 +76,26 @@ class InvincibleModeSettings extends ConsumerWidget {
           position: ItemPosition.mid,
           isSelected: invincibleMode.includeAppsTimer,
           leadingIcon: FluentIcons.timer_20_regular,
-          titleText: "Include apps timer",
-          subtitleText: "Prevent modification during invincible mode.",
+          titleText:
+              context.locale.invincible_mode_include_apps_timer_tile_title,
+          subtitleText:
+              context.locale.invincible_mode_include_apps_timer_tile_subtitle,
           onPressed:
               ref.read(invincibleModeProvider.notifier).toggleIncludeAppsTimer,
+        ).sliver,
+
+        /// Apps launch limit
+        DefaultListTile(
+          position: ItemPosition.mid,
+          isSelected: invincibleMode.includeAppsLaunchLimit,
+          leadingIcon: FluentIcons.rocket_20_regular,
+          titleText: context
+              .locale.invincible_mode_include_apps_launch_limit_tile_title,
+          subtitleText: context
+              .locale.invincible_mode_include_apps_launch_limit_tile_subtitle,
+          onPressed: ref
+              .read(invincibleModeProvider.notifier)
+              .toggleIncludeAppsLaunchLimit,
         ).sliver,
 
         /// Groups timer
@@ -87,8 +103,10 @@ class InvincibleModeSettings extends ConsumerWidget {
           position: ItemPosition.mid,
           isSelected: invincibleMode.includeGroupsTimer,
           leadingIcon: FluentIcons.app_title_20_regular,
-          titleText: "Include groups timer",
-          subtitleText: "Prevent modification during invincible mode.",
+          titleText:
+              context.locale.invincible_mode_include_groups_timer_tile_title,
+          subtitleText:
+              context.locale.invincible_mode_include_groups_timer_tile_subtitle,
           onPressed: ref
               .read(invincibleModeProvider.notifier)
               .toggleIncludeGroupsTimer,
@@ -99,8 +117,10 @@ class InvincibleModeSettings extends ConsumerWidget {
           position: ItemPosition.mid,
           isSelected: invincibleMode.includeShortsTimer,
           leadingIcon: FluentIcons.video_clip_multiple_20_regular,
-          titleText: "Include shorts timer",
-          subtitleText: "Prevent modification during invincible mode.",
+          titleText:
+              context.locale.invincible_mode_include_shorts_timer_tile_title,
+          subtitleText:
+              context.locale.invincible_mode_include_shorts_timer_tile_subtitle,
           onPressed: ref
               .read(invincibleModeProvider.notifier)
               .toggleIncludeShortsTimer,
@@ -111,8 +131,9 @@ class InvincibleModeSettings extends ConsumerWidget {
           position: ItemPosition.end,
           isSelected: invincibleMode.includeBedtimeSchedule,
           leadingIcon: FluentIcons.sleep_20_regular,
-          titleText: "Include bedtime",
-          subtitleText: "Prevent modification during invincible mode.",
+          titleText: context.locale.invincible_mode_include_bedtime_tile_title,
+          subtitleText:
+              context.locale.invincible_mode_include_bedtime_tile_subtitle,
           onPressed: ref
               .read(invincibleModeProvider.notifier)
               .toggleIncludeBedtimeSchedule,

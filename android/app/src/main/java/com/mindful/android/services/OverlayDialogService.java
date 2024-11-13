@@ -46,6 +46,9 @@ import com.mindful.android.utils.Utils;
 
 import org.jetbrains.annotations.Contract;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Service that manages and displays an overlay dialog to inform the user about
  * a specific app whose usage timer has expired. The overlay provides options
@@ -77,6 +80,7 @@ public class OverlayDialogService extends Service {
     private int mMaxProgress = 0;
     private int mProgress = 0;
     private AlertDialog mAlertDialog;
+    private Timer mAutoCloseTimer;
 
     /**
      * Called when the service is started. This method retrieves data from the intent,
@@ -105,6 +109,7 @@ public class OverlayDialogService extends Service {
         // Validate permissions and display the overlay
         if (mPackageName != null && Settings.canDrawOverlays(this)) {
             try {
+                Log.d(TAG, "onStartCommand: Showing dialog for package: " + mPackageName + " type: " + mPurgeDialogType + " group: " + mGroupName + " used: " + mProgress + " total: " + mMaxProgress);
                 showAlertDialog();
                 Log.d(TAG, "onStartCommand: Overlay dialog service started successfully");
                 return START_STICKY;
@@ -149,6 +154,17 @@ public class OverlayDialogService extends Service {
         TextView dialogInfoTxt = dialogView.findViewById(R.id.overlay_dialog_info);
         dialogInfoTxt.setText(resolveDialogInfo());
 
+        // Use anyway and emergency button
+        if (mProgress > 0 && mProgress < mMaxProgress) {
+            Button useAnywayBtn = dialogView.findViewById(R.id.overlay_dialog_button_use_anyway);
+            useAnywayBtn.setVisibility(View.VISIBLE);
+            useAnywayBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.UseAnyway));
+        } else {
+            Button emergencyBtn = dialogView.findViewById(R.id.overlay_dialog_button_emergency);
+            emergencyBtn.setVisibility(View.VISIBLE);
+            emergencyBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.Emergency));
+        }
+
         // Close app button setup
         Button closeAppBtn = dialogView.findViewById(R.id.overlay_dialog_button_close);
         closeAppBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.CloseApp));
@@ -169,15 +185,6 @@ public class OverlayDialogService extends Service {
             int leftLimit = Math.max(0, (mMaxProgress - mProgress));
             limitLeftTxt.setText(getString(R.string.app_paused_dialog_progress_left, Utils.formatScreenTime(leftLimit > 0 ? (leftLimit / 60) : 0)));
 
-            if (mProgress > 0 && mProgress < mMaxProgress) {
-                Button useAnywayBtn = dialogView.findViewById(R.id.overlay_dialog_button_use_anyway);
-                useAnywayBtn.setVisibility(View.VISIBLE);
-                useAnywayBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.UseAnyway));
-            } else {
-                Button emergencyBtn = dialogView.findViewById(R.id.overlay_dialog_button_emergency);
-                emergencyBtn.setVisibility(View.VISIBLE);
-                emergencyBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.Emergency));
-            }
         }
 
         // Setup and display the dialog
@@ -196,6 +203,19 @@ public class OverlayDialogService extends Service {
         }
 
         mAlertDialog.show();
+
+        /// Schedule auto dialog close timer
+        if (mAutoCloseTimer == null) {
+            mAutoCloseTimer = new Timer();
+            mAutoCloseTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if (mAlertDialog != null) mAlertDialog.dismiss();
+                    goToHome();
+                    stopSelf();
+                }
+            }, 60 * 1000);
+        }
     }
 
     /**
@@ -242,12 +262,15 @@ public class OverlayDialogService extends Service {
      * Navigates the user to the home screen.
      */
     private void goToHome() {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        });
+        try {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Intent intent = new Intent(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_HOME);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            });
+        } catch (Exception ignored) {
+        }
     }
 
     /**
@@ -281,6 +304,10 @@ public class OverlayDialogService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mAutoCloseTimer != null) {
+            mAutoCloseTimer.cancel();
+            mAutoCloseTimer = null;
+        }
         Log.d(TAG, "onDestroy: Overlay dialog service destroyed successfully");
     }
 
