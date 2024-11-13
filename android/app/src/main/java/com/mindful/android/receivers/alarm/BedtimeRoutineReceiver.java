@@ -19,7 +19,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.R;
@@ -30,6 +29,7 @@ import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class BedtimeRoutineReceiver extends BroadcastReceiver {
@@ -41,7 +41,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
     private BedtimeSettings mBedtimeSettings;
 
     @Override
-    public void onReceive(Context context, @NonNull Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         String action = Utils.getActionFromIntent(intent);
 
         if (ACTION_START_BEDTIME.equals(action)) {
@@ -49,19 +49,19 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
             startBedtimeRoutine();
 
             // Schedule bedtime stop task for today
-            AlarmTasksSchedulingHelper.scheduleBedtimeStopTask(mContext);
+            AlarmTasksSchedulingHelper.scheduleBedtimeStopTask(mContext, mBedtimeSettings);
         } else if (ACTION_STOP_BEDTIME.equals(action)) {
             init(context);
             stopBedtimeRoutine();
 
             // Schedule bedtime start task for next day
-            AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(mContext);
+            AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(mContext, mBedtimeSettings);
         }
     }
 
     private void init(Context context) {
         mContext = context;
-        mBedtimeSettings = SharedPrefsHelper.fetchBedtimeSettings(context);
+        mBedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(context, null);
 
         // (dayOfWeek -1) for zero based indexing (0-6) of week days (1-7)
         int dayOfWeek = Calendar.getInstance().get(Calendar.DAY_OF_WEEK) - 1;
@@ -71,7 +71,8 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
     private void startBedtimeRoutine() {
         if (!mCanStartRoutineToday) return;
 
-        Intent serviceIntent = new Intent(mContext, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_START_SERVICE_BEDTIME_MODE);
+        Intent serviceIntent = new Intent(mContext, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_START_BEDTIME_MODE);
+        serviceIntent.putExtra(MindfulTrackerService.INTENT_EXTRA_DISTRACTING_APPS, new ArrayList<String>(mBedtimeSettings.distractingApps));
         mContext.startService(serviceIntent);
 
         // Start DND if needed
@@ -80,7 +81,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
     }
 
     private void stopBedtimeRoutine() {
-        Intent serviceIntent = new Intent(mContext, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_SERVICE_BEDTIME_MODE);
+        Intent serviceIntent = new Intent(mContext, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
         mContext.startService(serviceIntent);
 
         // Stop DND if needed

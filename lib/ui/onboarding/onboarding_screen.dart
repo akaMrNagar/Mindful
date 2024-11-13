@@ -8,15 +8,16 @@
  *
  */
 
-import 'dart:io';
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/models/permissions_model.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/onboarding/permission_page.dart';
@@ -39,22 +40,54 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   final _animCurve = Curves.fastEaseInToSlowEaseOut;
   final _animDuration = 300.ms;
   int _currentPage = 0;
+  ProviderSubscription? _subscription;
 
   @override
   void initState() {
     super.initState();
-    _controller = PageController();
-    MethodChannelService.instance.getOnboardingStatus().then(
-      (isDone) {
-        if (isDone && _controller.hasClients) {
-          _controller.animateToPage(
-            _onboardingPages().length - 1,
-            duration: _animDuration,
-            curve: _animCurve,
-          );
-        }
+
+    /// Listen to permission changes an finish onboarding when
+    /// user have granted all essential permissions
+    _subscription = ref.listenManual<PermissionsModel>(
+      permissionProvider,
+      (_, perms) {
+        final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
+            perms.haveDisplayOverlayPermission &&
+            perms.haveAlarmsPermission &&
+            perms.haveNotificationPermission;
+
+        if (!haveAllEssentialPermissions) return;
+        _checkAndFinishOnboarding();
       },
     );
+
+    /// Go to permissions page if already done onboarding
+    /// but user removed some essential permissions
+    _controller = PageController(
+      initialPage: widget.isOnboardingDone ? _onboardingPages().length - 1 : 0,
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _subscription?.close();
+  }
+
+  void _checkAndFinishOnboarding() async {
+    if (context.mounted) {
+      _subscription?.close();
+      ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
+      Future.delayed(
+        200.ms,
+        () {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            AppRoutes.homeScreen,
+            (_) => false,
+          );
+        },
+      );
+    }
   }
 
   List<Widget> _onboardingPages() => [
@@ -87,12 +120,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
         perms.haveNotificationPermission;
 
     return PopScope(
-      canPop: haveAllEssentialPermissions,
-      onPopInvoked: (didPop) {
-        if (!haveAllEssentialPermissions) {
-          exit(0);
-        }
-      },
+      onPopInvoked: (didPop) => SystemNavigator.pop(),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -174,11 +202,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                             /// Finish setup
                             ? FilledButton(
                                 onPressed: haveAllEssentialPermissions
-                                    ? () {
-                                        MethodChannelService.instance
-                                            .setOnboardingDone();
-                                        Navigator.of(context).maybePop();
-                                      }
+                                    ? () => _checkAndFinishOnboarding()
                                     : null,
                                 child: Text(
                                   context

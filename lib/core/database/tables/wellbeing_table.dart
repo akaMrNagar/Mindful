@@ -1,3 +1,13 @@
+/*
+ *
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
@@ -33,7 +43,7 @@ class WellbeingTable extends Table {
   BoolColumn get blockNsfwSites => boolean()();
 
   /// List of website hosts which are blocked.
-  TextColumn get distractingSites => text().map(const ListStringConverter())();
+  TextColumn get blockedWebsites => text().map(const ListStringConverter())();
 
   static const defaultWellbeingModel = Wellbeing(
     id: 0,
@@ -44,6 +54,6 @@ class WellbeingTable extends Table {
     blockFbReels: false,
     blockRedditShorts: false,
     blockNsfwSites: false,
-    distractingSites: [],
+    blockedWebsites: [],
   );
 }

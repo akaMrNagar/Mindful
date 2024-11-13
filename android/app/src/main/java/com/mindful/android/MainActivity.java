@@ -14,6 +14,7 @@ package com.mindful.android;
 
 import static com.mindful.android.services.EmergencyPauseService.ACTION_START_SERVICE_EMERGENCY;
 import static com.mindful.android.services.FocusSessionService.INTENT_EXTRA_FOCUS_SESSION_JSON;
+import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -38,17 +39,20 @@ import com.mindful.android.helpers.NewActivitiesLaunchHelper;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.PermissionsHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
+import com.mindful.android.models.AppRestrictions;
 import com.mindful.android.models.BedtimeSettings;
+import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.services.EmergencyPauseService;
 import com.mindful.android.services.FocusSessionService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AppConstants;
+import com.mindful.android.utils.JsonDeserializer;
 import com.mindful.android.utils.Utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Map;
 
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -65,7 +69,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateLocale(null);
 
         // Register notification channels
         NotificationHelper.registerNotificationGroupAndChannels(this);
@@ -79,11 +82,9 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
     }
 
-    private void updateLocale(@Nullable String languageCode) {
-        String resolvedLanguageCode = languageCode != null ? languageCode : SharedPrefsHelper.fetchLocale(this);
-
-        if (!resolvedLanguageCode.isEmpty()) {
-            Locale newLocale = new Locale(resolvedLanguageCode);
+    private void updateLocale(@NonNull String languageCode) {
+        if (!languageCode.isEmpty()) {
+            Locale newLocale = new Locale(languageCode);
             Locale.setDefault(newLocale);
             Resources resources = getResources();
             Configuration config = resources.getConfiguration();
@@ -101,7 +102,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mTrackerServiceConn.bindService();
         mVpnServiceConn.bindService();
         mFocusServiceConn.bindService();
-    }
+}
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -111,7 +112,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mMethodChannel.setMethodCallHandler(this);
 
         // Check if the app was launched from TLE dialog and update the targeted app
-        String appPackage = getIntent().getStringExtra("appPackage");
+        String appPackage = getIntent().getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
         if (appPackage != null && !appPackage.isEmpty()) {
             mMethodChannel.invokeMethod("updateTargetedApp", appPackage);
         }
@@ -122,27 +123,12 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         switch (call.method) {
             // SECTION: Utility methods -----------------------------------------------------------------------
             case "updateLocale": {
-                String languageCode = Utils.notNullStr(call.arguments());
-                updateLocale(languageCode);
-                SharedPrefsHelper.storeLocale(this, languageCode);
+                updateLocale(Utils.notNullStr(call.arguments()));
                 result.success(true);
-                break;
-            }
-            case "getOnboardingStatus": {
-                result.success(SharedPrefsHelper.getOnboardingStatus(this));
-                break;
-            }
-            case "setOnboardingDone": {
-                SharedPrefsHelper.setOnboardingDone(this);
-                result.success(true);
-                break;
-            }
-            case "getAppVersion": {
-                result.success(Utils.getAppVersion(this));
                 break;
             }
             case "getDeviceInfoMap": {
-                result.success(Utils.getDeviceInfoMap());
+                result.success(Utils.getDeviceInfoMap(this));
                 break;
             }
             case "getDeviceApps": {
@@ -150,79 +136,64 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 break;
             }
             case "getShortsScreenTimeMs": {
-                result.success(SharedPrefsHelper.fetchShortsScreenTimeMs(this));
+                result.success(SharedPrefsHelper.getSetShortsScreenTimeMs(this, null));
+                break;
+            }
+            case "getAppLaunchCounts": {
+                result.success(
+                        mTrackerServiceConn.isConnected() ?
+                                mTrackerServiceConn.getService().getAppsLaunchCount() :
+                                new HashMap<String, Integer>(0)
+                );
                 break;
             }
             case "setDataResetTime": {
-                SharedPrefsHelper.storeDataResetTimeMins(this, call.arguments() == null ? 0 : (int) call.arguments());
+                SharedPrefsHelper.getSetDataResetTimeMins(this, call.arguments() == null ? 0 : call.arguments());
                 result.success(true);
-                break;
-            }
-            case "launchUrl": {
-                NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
-                result.success(true);
-                break;
-            }
-            case "shareFile": {
-                NewActivitiesLaunchHelper.shareFile(this, Utils.notNullStr(call.arguments()));
-                result.success(true);
-                break;
-            }
-            case "parseHostFromUrl": {
-                result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
                 break;
             }
 
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
-            case "updateAppTimers": {
-                String dartJsonAppTimers = Utils.notNullStr(call.arguments());
-                Map<String, Long> appTimers = Utils.jsonStrToStringLongHashMap(dartJsonAppTimers);
-                SharedPrefsHelper.storeAppTimersJson(this, dartJsonAppTimers);  // Cache app timers json string to shared prefs
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().updateAppTimers();
-                } else if (!appTimers.isEmpty()) {
-                    mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
-                }
+            case "updateAppRestrictions": {
+                HashMap<String, AppRestrictions> appRestrictions = SharedPrefsHelper.getSetAppRestrictions(this, Utils.notNullStr(call.arguments()));
+                updateTrackerServiceRestrictions(appRestrictions, null);
                 result.success(true);
                 break;
             }
-            case "updateBlockedApps": {
-                String blockedAppsJson = Utils.notNullStr(call.arguments());
-                HashSet<String> blockedApps = Utils.jsonStrToStringHashSet(blockedAppsJson);
-                SharedPrefsHelper.storeBlockedAppsJson(this, blockedAppsJson);  // Cache blocked apps json string to shared prefs
+            case "updateRestrictionsGroups": {
+                HashMap<Integer, RestrictionGroup> restrictionGroups = SharedPrefsHelper.getSetRestrictionGroups(this, Utils.notNullStr(call.arguments()));
+                updateTrackerServiceRestrictions(null, restrictionGroups);
+                result.success(true);
+                break;
+            }
+            case "updateInternetBlockedApps": {
+                HashSet<String> blockedApps = JsonDeserializer.jsonStrToStringHashSet(Utils.notNullStr(call.arguments()));
                 if (mVpnServiceConn.isConnected()) {
-                    mVpnServiceConn.getService().updateBlockedApps();
+                    mVpnServiceConn.getService().updateBlockedApps(blockedApps);
                 } else if (!blockedApps.isEmpty() && getAndAskVpnPermission(false)) {
+                    mVpnServiceConn.setOnConnectedCallback(service -> service.updateBlockedApps(blockedApps));
                     mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
-                }
-                result.success(true);
-                break;
-            }
-            case "updateBedtimeSchedule": {
-                String dartJsonBedtimeSettings = Utils.notNullStr(call.arguments());
-                SharedPrefsHelper.storeBedtimeSettingsJson(this, dartJsonBedtimeSettings);  // Cache bedtime settings json string to shared pref
-                BedtimeSettings bedtimeSettings = new BedtimeSettings(dartJsonBedtimeSettings);
-                if (bedtimeSettings.isScheduleOn) {
-                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this);
-                } else {
-                    AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
-                    Intent serviceIntent = new Intent(this, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_SERVICE_BEDTIME_MODE);
-                    startService(serviceIntent);
                 }
                 result.success(true);
                 break;
             }
             case "updateWellBeingSettings": {
                 // NOTE: Only updating shared prefs because accessibility service have onSharedPrefsChange listener registered which will eventually reload needed data
-                SharedPrefsHelper.storeWellBeingSettingsJson(this, Utils.notNullStr(call.arguments()));
+                SharedPrefsHelper.getSetWellBeingSettings(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }
-            case "getLeftEmergencyPasses": {
-                result.success(SharedPrefsHelper.fetchEmergencyPassesCount(this));
+            case "updateBedtimeSchedule": {
+                BedtimeSettings bedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(this, Utils.notNullStr(call.arguments()));
+                if (bedtimeSettings.isScheduleOn) {
+                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this, bedtimeSettings);
+                } else {
+                    AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
+                }
+                result.success(true);
                 break;
             }
-            case "useEmergencyPass": {
+            case "activeEmergencyPause": {
                 if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())
                         && Utils.isServiceRunning(this, MindfulTrackerService.class.getName())
                 ) {
@@ -248,8 +219,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             }
             case "UpdateFocusSession": {
                 if (mFocusServiceConn.isConnected()) {
-                    String dartJsonFocusSessionDistractingApps = Utils.notNullStr(call.arguments());
-                    mFocusServiceConn.getService().updateDistractingApps(Utils.jsonStrToStringHashSet(dartJsonFocusSessionDistractingApps));
+                    mFocusServiceConn.getService().updateDistractingApps(JsonDeserializer.jsonStrToStringHashSet(Utils.notNullStr(call.arguments())));
                     result.success(true);
                 } else {
                     result.success(false);
@@ -319,8 +289,48 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 result.success(NewActivitiesLaunchHelper.openAutoStartSettings(this));
                 break;
             }
+            // SECTION: Utility methods ---------------------------------------------------------------------------
+            case "launchUrl": {
+                NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
+                result.success(true);
+                break;
+            }
+            case "shareFile": {
+                NewActivitiesLaunchHelper.shareFile(this, Utils.notNullStr(call.arguments()));
+                result.success(true);
+                break;
+            }
+            case "parseHostFromUrl": {
+                result.success(call.arguments() == null ? "" : Utils.parseHostNameFromUrl(call.arguments()));
+                break;
+            }
             default:
                 result.notImplemented();
+        }
+    }
+
+
+    /**
+     * Updates app and group restrictions in the tracker service.
+     * If the service is connected, sends updates directly; otherwise,
+     * sets a callback to update once the connection is established and starts the service.
+     *
+     * @param appRestrictions   a map of app package names to their respective restrictions,
+     *                          or null if only group restrictions are being updated.
+     * @param restrictionGroups a map of restriction group IDs to their respective restrictions,
+     *                          or null if only app-specific restrictions are being updated.
+     */
+    private void updateTrackerServiceRestrictions(
+            @Nullable HashMap<String, AppRestrictions> appRestrictions,
+            @Nullable HashMap<Integer, RestrictionGroup> restrictionGroups
+    ) {
+        if (mTrackerServiceConn.isConnected()) {
+            mTrackerServiceConn.getService().updateRestrictionData(appRestrictions, restrictionGroups);
+        } else if ((appRestrictions != null && !appRestrictions.isEmpty())
+                || (restrictionGroups != null && !restrictionGroups.isEmpty())
+        ) {
+            mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
+            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
         }
     }
 

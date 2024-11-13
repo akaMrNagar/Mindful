@@ -14,9 +14,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/models/isar/bedtime_settings.dart';
-import 'package:mindful/models/isar/wellbeing_settings.dart';
+import 'package:mindful/models/device_info_model.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
 ///
@@ -49,28 +49,22 @@ class MethodChannelService {
     );
   }
 
-  // SECTION: Utility Methods ======================================================================
+  // SECTION: Setup Methods ======================================================================
 
-  /// Get version string of this app
-  Future<String> getAppVersion() async =>
-      await _methodChannel.invokeMethod('getAppVersion');
-
+  /// Update locale on the native side
   Future<bool> updateLocale({required String languageCode}) async =>
       await _methodChannel.invokeMethod('updateLocale', languageCode);
 
-  /// Get device info string
-  Future<Map<String, String>> getDeviceInfoMap() async =>
-      await _methodChannel.invokeMapMethod('getDeviceInfoMap') ?? {};
-
-  /// Get status of onboarding
+  /// Sets the time of day when app usage data should be reset for the next day.
   ///
-  /// Returns a bool indicating if onboarding is completed or not
-  Future<bool> getOnboardingStatus() async =>
-      await _methodChannel.invokeMethod('getOnboardingStatus');
+  /// This method takes the time of day in minutes and sends it to the native side
+  /// to be set as the data reset time.
+  Future<bool> setDataResetTime(int timeOfDayInMins) async =>
+      await _methodChannel.invokeMethod('setDataResetTime', timeOfDayInMins);
 
-  /// Sets the status of onboarding as completed
-  Future<void> setOnboardingDone() async =>
-      await _methodChannel.invokeMethod('setOnboardingDone');
+  /// Gets the map of device info and create and returns [DeviceInfoModel] .
+  Future<DeviceInfoModel> getDeviceInfo() async => DeviceInfoModel.fromMap(
+      await _methodChannel.invokeMapMethod('getDeviceInfoMap') ?? {});
 
   /// Gets the total short screen time for the device in milliseconds.
   ///
@@ -81,30 +75,9 @@ class MethodChannelService {
     return time ~/ 1000;
   }
 
-  /// Sets the time of day when app usage data should be reset for the next day.
-  ///
-  /// This method takes the time of day in minutes and sends it to the native side
-  /// to be set as the data reset time.
-  Future<bool> setDataResetTime(int timeOfDayInMins) async =>
-      await _methodChannel.invokeMethod('setDataResetTime', timeOfDayInMins);
-
-  /// Parses the host name from a given URL string.
-  ///
-  /// This method sends the URL to the native side and retrieves the parsed host name.
-  Future<String> parseHostFromUrl(String url) async =>
-      await _methodChannel.invokeMethod('parseHostFromUrl', url);
-
-  /// Launches a specified URL in the user's preferred web browser.
-  ///
-  /// This method takes the URL string and sends it to the native side for launching in the browser.
-  Future<bool> launchUrl(String siteUrl) async =>
-      await _methodChannel.invokeMethod('launchUrl', siteUrl);
-
-  /// Share the file from the path using native share chooser.
-  ///
-  /// This method takes the File Path string and sends it to the native side.
-  Future<bool> shareFile(String filePath) async =>
-      await _methodChannel.invokeMethod('shareFile', filePath);
+  /// Gets the map of app package and the number launches for today.
+  Future<Map<String, int>> getAppLaunchCounts() async =>
+      await _methodChannel.invokeMapMethod('getAppLaunchCounts') ?? {};
 
   /// Retrieves a list of all launchable apps installed on the user's device along with their usage statistics.
   ///
@@ -112,64 +85,57 @@ class MethodChannelService {
   /// for the current week, including screen time, Wi-Fi usage, and mobile data usage per day. The returned
   /// list contains `AndroidApp` objects with the app details and usage statistics.
   Future<List<AndroidApp>> getDeviceApps() async {
+    List<AndroidApp> appsList = [];
     try {
-      Object result = await _methodChannel.invokeMethod('getDeviceApps');
+      List<Map> result =
+          await _methodChannel.invokeListMethod<Map>('getDeviceApps') ?? [];
 
-      if (result is Iterable) {
-        List<AndroidApp> list = [];
-        for (Object entry in result) {
-          if (entry is Map) {
-            try {
-              list.add(AndroidApp.fromMap(entry));
-            } catch (e, trace) {
-              if (e is AssertionError) {
-                debugPrint(
-                    'MethodChannelService.getDeviceApps() : Unable to add the following app: $entry');
-              } else {
-                debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
-              }
-            }
-          }
+      for (Map entry in result) {
+        try {
+          appsList.add(AndroidApp.fromMap(entry));
+        } catch (e, trace) {
+          debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
         }
-        return list;
-      } else {
-        return List<AndroidApp>.empty();
       }
     } catch (e) {
       debugPrint("MethodChannelService.getDeviceApps() Error: $e");
-      return List<AndroidApp>.empty();
     }
+    return appsList;
   }
 
   // !SECTION
   // SECTION: Foreground Service and Background Worker Methods ======================================================================
 
-  /// Updates the app timers for the foreground service.
-  ///
-  /// This method takes a map of app packages to their respective timers and sends it to the native side
-  /// to update the foreground service's app timers.
-  Future<void> updateAppTimers(Map<String, int> appTimers) async =>
+  /// Updates the apps restrictions data in the tracking foreground service.
+  Future<void> updateAppRestrictions(
+    List<AppRestriction> appRestrictions,
+  ) async =>
       _methodChannel.invokeMethod(
-        'updateAppTimers',
-        jsonEncode(appTimers),
+        'updateAppRestrictions',
+        jsonEncode(appRestrictions),
       );
 
-  /// Updates the list of blocked apps for the foreground service.
-  ///
-  /// This method takes a list of app packages to be blocked and sends it to the native side
-  /// to update the foreground service's blocked apps list.
-  Future<void> updateBlockedApps(List<String> blockedApps) async =>
+  /// Updates the restriction groups data in the tracking foreground service.
+  Future<void> updateRestrictionsGroups(
+    List<RestrictionGroup> restrictionGroups,
+  ) async =>
       _methodChannel.invokeMethod(
-        'updateBlockedApps',
+        'updateRestrictionsGroups',
+        jsonEncode(restrictionGroups),
+      );
+
+  /// Updates the list of internet blocked apps for the foreground service.
+  Future<void> updateInternetBlockedApps(List<String> blockedApps) async =>
+      _methodChannel.invokeMethod(
+        'updateInternetBlockedApps',
         jsonEncode(blockedApps),
       );
 
   /// Updates the well-being settings for the foreground service.
   ///
-  /// This method takes a [WellBeingSettings] object and sends it to the native side
+  /// This method takes a [Wellbeing] object and sends it to the native side
   /// to update the foreground service's well-being settings.
-  Future<void> updateWellBeingSettings(
-          WellBeingSettings wellBeingSettings) async =>
+  Future<void> updateWellBeingSettings(Wellbeing wellBeingSettings) async =>
       _methodChannel.invokeMethod(
         'updateWellBeingSettings',
         jsonEncode(wellBeingSettings),
@@ -177,31 +143,24 @@ class MethodChannelService {
 
   /// Updates the bedtime schedule for the foreground service.
   ///
-  /// This method takes a [BedtimeSettings] object and sends it to the native side
+  /// This method takes a [BedtimeSchedule] object and sends it to the native side
   /// to update the foreground service's bedtime schedule.
-  Future<bool> updateBedtimeSchedule(BedtimeSettings bedtimeSettings) async =>
+  Future<bool> updateBedtimeSchedule(BedtimeSchedule bedtimeSettings) async =>
       await _methodChannel.invokeMethod(
         'updateBedtimeSchedule',
         jsonEncode(bedtimeSettings),
       );
 
-  /// Gets the number of remaining emergency passes.
-  ///
-  /// This method retrieves the number of available emergency passes from the native side.
-  Future<int> getLeftEmergencyPasses() async {
-    return await _methodChannel.invokeMethod('getLeftEmergencyPasses') as int;
-  }
-
-  /// Uses an emergency pass.
+  /// Uses an emergency pass and pause the tracking service.
   ///
   /// This method sends a request to the native side to use an emergency pass.
-  Future<bool> useEmergencyPass() async =>
-      await _methodChannel.invokeMethod('useEmergencyPass');
+  Future<bool> activeEmergencyPause() async =>
+      await _methodChannel.invokeMethod('activeEmergencyPause');
 
   /// Start new focus session or only updates the list of distracting apps if already running.
   ///
   /// This method sends a request to the native side to start focus session.
-  Future<bool> startFocusSession({
+  Future<void> startFocusSession({
     required int startTimeMsEpoch,
     required int durationSeconds,
     required bool toggleDnd,
@@ -220,7 +179,7 @@ class MethodChannelService {
   /// Only updates the list of distracting apps if Focus Session is already running.
   ///
   /// This method sends a request to the native side to update focus session.
-  Future<bool> updateFocusSession({
+  Future<void> updateFocusSession({
     required List<String> distractingApps,
   }) async =>
       await _methodChannel.invokeMethod(
@@ -338,4 +297,23 @@ class MethodChannelService {
       );
 
   // !SECTION
+  // SECTION: Utility methods ======================================================================
+
+  /// Parses the host name from a given URL string.
+  ///
+  /// This method sends the URL to the native side and retrieves the parsed host name.
+  Future<String> parseHostFromUrl(String url) async =>
+      await _methodChannel.invokeMethod('parseHostFromUrl', url);
+
+  /// Launches a specified URL in the user's preferred web browser.
+  ///
+  /// This method takes the URL string and sends it to the native side for launching in the browser.
+  Future<bool> launchUrl(String siteUrl) async =>
+      await _methodChannel.invokeMethod('launchUrl', siteUrl);
+
+  /// Share the file from the path using native share chooser.
+  ///
+  /// This method takes the File Path string and sends it to the native side.
+  Future<bool> shareFile(String filePath) async =>
+      await _methodChannel.invokeMethod('shareFile', filePath);
 }

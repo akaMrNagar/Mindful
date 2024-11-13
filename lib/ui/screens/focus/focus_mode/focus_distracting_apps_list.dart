@@ -41,8 +41,8 @@ class FocusDistractingAppsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final distractingApps =
-        ref.watch(focusModeProvider.select((v) => v.distractingApps));
+    final distractingApps = ref
+        .watch(focusModeProvider.select((v) => v.focusProfile.distractingApps));
 
     return SliverDistractingAppsList(
       distractingApps: distractingApps,

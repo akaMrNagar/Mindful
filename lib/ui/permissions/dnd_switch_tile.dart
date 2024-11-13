@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -21,12 +22,14 @@ class DndSwitchTile extends ConsumerWidget {
     required this.switchValue,
     required this.onPressed,
     this.enabled = true,
+    this.position,
     super.key,
   });
 
   final bool enabled;
   final bool switchValue;
   final VoidCallback onPressed;
+  final ItemPosition? position;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,11 +39,11 @@ class DndSwitchTile extends ConsumerWidget {
     return DefaultListTile(
       enabled: !havePermission || enabled,
       switchValue: switchValue,
+      position: position,
       titleText: context.locale.permission_dnd_tile_title,
       subtitleText: context.locale.permission_dnd_tile_subtitle,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
       isSelected: havePermission,
-      margin: const EdgeInsets.only(bottom: 2),
       onPressed: havePermission ? onPressed : () => _showSheet(context, ref),
     );
   }

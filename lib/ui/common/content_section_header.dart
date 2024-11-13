@@ -9,15 +9,14 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-class SliverContentTitle extends StatelessWidget {
+class ContentSectionHeader extends StatelessWidget {
   /// Global title text with primary accent mainly used as a header for different sections in a list of widgets
-  const SliverContentTitle({
+  const ContentSectionHeader({
     super.key,
     required this.title,
-    this.padding = const EdgeInsets.only(top: 12, bottom: 4),
+    this.padding = const EdgeInsets.only(top: 18, bottom: 12),
     this.alignment = Alignment.centerLeft,
   });
 
@@ -35,6 +34,6 @@ class SliverContentTitle extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,
       ),
-    ).sliver;
+    );
   }
 }

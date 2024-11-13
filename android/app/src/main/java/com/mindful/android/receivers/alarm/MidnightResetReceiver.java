@@ -12,8 +12,6 @@
 
 package com.mindful.android.receivers.alarm;
 
-import static com.mindful.android.services.EmergencyPauseService.DEFAULT_EMERGENCY_PASSES_COUNT;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,9 +48,6 @@ public class MidnightResetReceiver extends BroadcastReceiver {
 
 
     private void onMidnightReset(@NonNull Context context) {
-        // Reset emergency passes count to default value
-        SharedPrefsHelper.storeEmergencyPassesCount(context, DEFAULT_EMERGENCY_PASSES_COUNT);
-
         // Let tracking service know about midnight reset
         if (Utils.isServiceRunning(context, MindfulTrackerService.class.getName())) {
             Intent serviceIntent = new Intent(context, MindfulTrackerService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
@@ -65,7 +60,7 @@ public class MidnightResetReceiver extends BroadcastReceiver {
             context.startService(serviceIntent);
         } else {
             // Else at least reset short content screen time
-            SharedPrefsHelper.storeShortsScreenTimeMs(context, 0);
+            SharedPrefsHelper.getSetShortsScreenTimeMs(context, 0L);
         }
     }
 }

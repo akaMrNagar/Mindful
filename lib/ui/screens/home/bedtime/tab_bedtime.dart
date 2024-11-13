@@ -10,13 +10,19 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
@@ -30,7 +36,22 @@ class TabBedtime extends ConsumerWidget {
     BuildContext context,
     bool shouldStart,
   ) async {
-    final state = ref.read(bedtimeProvider);
+    final state = ref.read(bedtimeScheduleProvider);
+
+    /// If invincible mode is ON and schedule is ON
+    final isInvincibleModeRestricted = ref.read(invincibleModeProvider
+        .select((v) => v.isInvincibleModeOn && v.includeBedtimeSchedule));
+
+    if (isInvincibleModeRestricted && state.isScheduleOn) {
+      final now = DateTime.now();
+      final start = now.dateOnly.add(state.startTimeInMins.minutes);
+      final end = now.dateOnly.add(state.endTimeInMins.minutes);
+
+      if (start.isBefore(now) && end.isAfter(now)) {
+        context.showSnackAlert(context.locale.invincible_mode_snack_alert);
+        return;
+      }
+    }
 
     // If none of the days is selected
     if (!state.scheduleDays.contains(true)) {
@@ -41,7 +62,10 @@ class TabBedtime extends ConsumerWidget {
     }
 
     // If the total duration is less than 30 minutes
-    if (state.totalDuration.inMinutes < 30) {
+    final totalDuration = state.endTimeInMins.toTimeOfDay
+        .difference(state.startTimeInMins.toTimeOfDay);
+
+    if (totalDuration.inMinutes < 30) {
       context.showSnackAlert(
         context.locale.bedtime_minimum_duration_snack_alert,
       );
@@ -56,13 +80,15 @@ class TabBedtime extends ConsumerWidget {
       return;
     }
 
-    ref.read(bedtimeProvider.notifier).switchBedtimeSchedule(shouldStart);
+    ref
+        .read(bedtimeScheduleProvider.notifier)
+        .switchBedtimeSchedule(shouldStart);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -70,7 +96,7 @@ class TabBedtime extends ConsumerWidget {
         /// Information about bedtime
         StyledText(context.locale.bedtime_tab_info).sliver,
 
-        SliverContentTitle(title: context.locale.schedule_tile_title),
+        ContentSectionHeader(title: context.locale.schedule_tile_title).sliver,
 
         8.vSliverBox,
 
@@ -78,10 +104,11 @@ class TabBedtime extends ConsumerWidget {
         /// also schedule days
         const ScheduleCard().sliver,
 
-        8.vSliverBox,
+        2.vSliverBox,
 
         /// Bedtime schedule status toggler
         DefaultListTile(
+          position: ItemPosition.end,
           isPrimary: true,
           switchValue: isScheduleOn,
           leadingIcon: FluentIcons.sleep_20_regular,

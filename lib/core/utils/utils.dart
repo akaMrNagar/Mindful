@@ -8,6 +8,9 @@
  *
  */
 
+import 'package:flutter/material.dart';
+import 'package:mindful/core/enums/item_position.dart';
+
 /// DateTime.now()
 DateTime get now => DateTime.now();
 
@@ -32,3 +35,17 @@ int _formatWeekDayToSunday(int weekDay) {
     int() => 1,
   };
 }
+
+BorderRadius getBorderRadiusFromPosition(ItemPosition position) =>
+    switch (position) {
+      ItemPosition.start => const BorderRadius.vertical(
+          top: Radius.circular(24),
+          bottom: Radius.circular(6),
+        ),
+      ItemPosition.mid => BorderRadius.circular(6),
+      ItemPosition.end => const BorderRadius.vertical(
+          top: Radius.circular(6),
+          bottom: Radius.circular(24),
+        ),
+      ItemPosition.none => BorderRadius.circular(24),
+    };

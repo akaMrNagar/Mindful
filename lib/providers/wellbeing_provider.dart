@@ -9,32 +9,38 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/database/daos/unique_records_dao.dart';
+import 'package:mindful/core/database/tables/wellbeing_table.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/isar/wellbeing_settings.dart';
 
-
-/// A Riverpod state notifier provider that manages well-being related settings.
-final wellBeingProvider =
-    StateNotifierProvider<WellBeingNotifier, WellBeingSettings>(
+/// A Riverpod state notifier provider that manages [Wellbeing] related settings.
+final wellBeingProvider = StateNotifierProvider<WellBeingNotifier, Wellbeing>(
   (ref) => WellBeingNotifier(),
 );
 
 /// This class manages the state of well-being settings.
-class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
-  WellBeingNotifier() : super(const WellBeingSettings()) {
+class WellBeingNotifier extends StateNotifier<Wellbeing> {
+  late UniqueRecordsDao _dao;
+
+  WellBeingNotifier() : super(WellbeingTable.defaultWellbeingModel) {
     _init();
   }
 
   /// Initializes the well-being settings by loading them from the database and setting up a listener to save changes.
   void _init() async {
-    state = await IsarDbService.instance.loadWellBeingSettings();
+    _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
+    state = await _dao.loadWellBeingSettings();
 
     /// Listen to provider and save changes to Isar database and platform service
-    addListener((state) async {
-      await IsarDbService.instance.saveWellBeingSettings(state);
-      await MethodChannelService.instance.updateWellBeingSettings(state);
-    });
+    addListener(
+      fireImmediately: false,
+      (state) {
+        _dao.saveWellBeingSettings(state);
+        MethodChannelService.instance.updateWellBeingSettings(state);
+      },
+    );
   }
 
   /// Toggles the block status for Instagram Reels.
@@ -70,6 +76,6 @@ class WellBeingNotifier extends StateNotifier<WellBeingSettings> {
       );
 
   /// Sets the allowed time limit for short content consumption.
-  void setAllowedShortContentTime(int timeSec) => state =
-      state.copyWith(allowedShortContentTimeSec: timeSec > 0 ? timeSec : -1);
+  void setAllowedShortContentTime(int timeSec) =>
+      state = state.copyWith(allowedShortsTimeSec: timeSec > 0 ? timeSec : -1);
 }

@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -27,13 +28,13 @@ class UsageAccessPermissionTile extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveUsageAccessPermission));
 
     return DefaultListTile(
+      position: ItemPosition.mid,
       titleText: context.locale.permission_usage_title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
       subtitleText: havePermission
           ? context.locale.permission_status_allowed
           : context.locale.permission_status_not_allowed,
       isSelected: havePermission,
-      margin: const EdgeInsets.only(bottom: 2),
       onPressed: havePermission ? null : () => _showSheet(context, ref),
     );
   }

@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -23,7 +24,7 @@ Future<bool> showConfirmationDialog({
   required String info,
   required IconData icon,
   required String positiveLabel,
-  String negativeLabel = "Cancel",
+  String? negativeLabel,
 }) async {
   return await Navigator.of(context).push<bool>(
         HeroPageRoute(
@@ -33,7 +34,7 @@ Future<bool> showConfirmationDialog({
             info: info,
             icon: icon,
             positiveLabel: positiveLabel,
-            negativeLabel: negativeLabel,
+            negativeLabel: negativeLabel ?? context.locale.dialog_button_cancel,
           ),
         ),
       ) ??
@@ -59,30 +60,33 @@ class _ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(48),
-      alignment: Alignment.center,
-      child: DefaultHero(
-        tag: heroTag,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(48),
+        alignment: Alignment.center,
         child: SingleChildScrollView(
-          child: AlertDialog(
-            icon: Icon(icon),
-            title: StyledText(title, fontSize: 16),
-            insetPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: StyledText(info),
+          child: DefaultHero(
+            tag: heroTag,
+            child: AlertDialog(
+              scrollable: true,
+              icon: Icon(icon),
+              title: StyledText(title, fontSize: 16),
+              insetPadding: EdgeInsets.zero,
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(child: StyledText(info)),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.maybePop(context, false),
+                  child: Text(negativeLabel),
+                ),
+                FilledButton.tonal(
+                  onPressed: () => Navigator.maybePop(context, true),
+                  child: Text(positiveLabel),
+                ),
+              ],
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.maybePop(context, false),
-                child: Text(negativeLabel),
-              ),
-              FilledButton.tonal(
-                onPressed: () => Navigator.maybePop(context, true),
-                child: Text(positiveLabel),
-              ),
-            ],
           ),
         ),
       ),

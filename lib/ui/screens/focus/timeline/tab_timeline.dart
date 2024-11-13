@@ -10,50 +10,31 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/providers/focus_timeline_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/screens/focus/timeline/sliver_heatmap_calender.dart';
 import 'package:mindful/ui/screens/focus/timeline/session_tile.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class TabTimeline extends ConsumerStatefulWidget {
+class TabTimeline extends ConsumerWidget {
   const TabTimeline({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TabTimelineState();
-}
-
-class _TabTimelineState extends ConsumerState<TabTimeline> {
-  DateTime _selectedDay = DateTime.now().dateOnly;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final timeline = ref.watch(focusTimelineProvider);
 
-    /// Manually update selected day Due to the fact that [HeatMapCalendar] does
-    /// not allow to change color for the selected day
-    /// NOTE - Key value for days
-    /// -1 for selected day
-    /// 1 for productive days
-    final heatMapData = {...timeline.daysTypeMap}..update(
-        _selectedDay,
-        (_) => -1,
-        ifAbsent: () => -1,
-      );
-
     return Skeletonizer.zone(
-      enabled: timeline.todaysSessions.isLoading,
+      enabled: timeline.selectedDaysSessions.isLoading,
       ignorePointers: false,
       enableSwitchAnimation: true,
       child: DefaultRefreshIndicator(
@@ -66,94 +47,106 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             24.vSliverBox,
 
             /// Productivity stats
-            Row(
-              children: [
-                /// Total productive time
-                Expanded(
-                  child: UsageGlanceCard(
-                    isPrimary: true,
-                    icon: FluentIcons.clock_20_regular,
-                    title: context.locale.selected_month_productive_time_label,
-                    info: timeline.totalProductiveTime.toTimeShort(context),
-                    onTap: () => context.showSnackAlert(
-                      context.locale.selected_month_productive_time_snack_alert(
-                        timeline.totalProductiveTime.toTimeFull(context),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      /// Total productive time
+                      Expanded(
+                        child: UsageGlanceCard(
+                          isPrimary: true,
+                          icon: FluentIcons.clock_20_regular,
+                          title: context
+                              .locale.selected_month_productive_time_label,
+                          info:
+                              timeline.totalProductiveTime.toTimeShort(context),
+                          onTap: () => context.showSnackAlert(
+                            context.locale
+                                .selected_month_productive_time_snack_alert(
+                              timeline.totalProductiveTime.toTimeFull(context),
+                            ),
+                            icon: FluentIcons.clock_20_filled,
+                          ),
+                        ),
                       ),
-                      icon: FluentIcons.clock_20_filled,
+                      6.hBox,
+
+                      /// Productive days
+                      Expanded(
+                        child: UsageGlanceCard(
+                          isPrimary: true,
+                          icon: FluentIcons.calendar_day_20_regular,
+                          title: context
+                              .locale.selected_month_productive_days_label,
+                          info: context.locale
+                              .nDays(timeline.totalProductiveDays),
+                          onTap: () => context.showSnackAlert(
+                            context.locale
+                                .selected_month_productive_days_snack_alert(
+                              timeline.totalProductiveDays,
+                            ),
+                            icon: FluentIcons.calendar_day_20_filled,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  5.vBox,
+
+                  /// Today's total focused time
+                  UsageGlanceCard(
+                    isPrimary: true,
+                    icon: FluentIcons.shifts_day_20_regular,
+                    title: context.locale.selected_day_focused_time_label,
+                    info: timeline.selectedDaysFocusedTime.toTimeFull(context),
+                    onTap: () => context.showSnackAlert(
+                      context.locale.selected_day_focused_time_snack_alert(
+                        timeline.selectedDaysFocusedTime.toTimeFull(context),
+                      ),
+                      icon: FluentIcons.shifts_day_20_filled,
                     ),
                   ),
-                ),
-                8.hBox,
-
-                /// Productive days
-                Expanded(
-                  child: UsageGlanceCard(
-                    isPrimary: true,
-                    icon: FluentIcons.calendar_day_20_regular,
-                    title: context.locale.selected_month_productive_days_label,
-                    info: context.locale.nDays(timeline.daysTypeMap.length),
-                    onTap: () => context.showSnackAlert(
-                      context.locale.selected_month_productive_days_snack_alert(
-                        timeline.totalProductiveDays,
-                      ),
-                      icon: FluentIcons.calendar_day_20_filled,
-                    ),
-                  ),
-                ),
-              ],
-            ).sliver,
-
-            /// Today's total focused time
-            UsageGlanceCard(
-              isPrimary: true,
-              icon: FluentIcons.shifts_day_20_regular,
-              title: context.locale.selected_day_focused_time_label,
-              info: timeline.todaysFocusedTime.toTimeFull(context),
-              onTap: () => context.showSnackAlert(
-                context.locale.selected_day_focused_time_snack_alert(
-                  timeline.todaysFocusedTime.toTimeFull(context),
-                ),
-                icon: FluentIcons.shifts_day_20_filled,
+                ],
               ),
             ).sliver,
 
-            SliverContentTitle(title: context.locale.calender_heading),
-            HeatMapCalendar(
-              /// NOTE - datasets map should only contain date and all time related fields should be 0
-              datasets: heatMapData,
-              flexible: true,
-              showColorTip: false,
-              initDate: DateTime.now(),
-              borderRadius: 10,
-              colorMode: ColorMode.color,
-              weekTextColor: Theme.of(context).iconTheme.color,
-              textColor: Theme.of(context).iconTheme.color,
-              defaultColor: Colors.transparent,
-              colorsets: {
-                /// NOTE - Key for colors
-                /// -1 for selected day
-                /// 1 for productive days
-                -1: Theme.of(context).colorScheme.primary,
-                1: Theme.of(context)
-                    .colorScheme
-                    .secondaryContainer
-                    .withOpacity(0.5),
-              },
-              onMonthChange:
+            ContentSectionHeader(title: context.locale.calender_heading).sliver,
+            SliverHeatMapCalendar(
+              heatmapData: timeline.daysTypeMap,
+              onDayChanged:
+                  ref.read(focusTimelineProvider.notifier).onDayChanged,
+              onMonthChanged:
                   ref.read(focusTimelineProvider.notifier).onMonthChanged,
-              onClick: (day) {
-                _selectedDay = day;
-                ref.read(focusTimelineProvider.notifier).onDayChanged(day);
-              },
-            ).sliver,
+            ),
 
             8.vSliverBox,
-            SliverContentTitle(title: context.locale.your_sessions_heading),
+            ContentSectionHeader(title: context.locale.your_sessions_heading)
+                .sliver,
             8.vSliverBox,
 
             /// List of today's sessions
-            timeline.todaysSessions.value?.isEmpty ?? false
-                ? SizedBox(
+            timeline.selectedDaysSessions.hasValue &&
+                    timeline.selectedDaysSessions.value!.isNotEmpty
+                ? SliverList.builder(
+                    itemCount: timeline.selectedDaysSessions.value!.length,
+                    itemBuilder: (context, index) => SessionTile(
+                      position: timeline.selectedDaysSessions.value!.length == 1
+                          ? ItemPosition.none
+                          : index == 0
+                              ? ItemPosition.start
+                              : index ==
+                                      timeline.selectedDaysSessions.value!
+                                              .length -
+                                          1
+                                  ? ItemPosition.end
+                                  : ItemPosition.mid,
+                      session: timeline.selectedDaysSessions.value![index],
+                    ),
+                  )
+                : SizedBox(
                     height: 256,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -166,14 +159,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                         ),
                       ],
                     ),
-                  ).sliver
-                : SliverList.builder(
-                    itemCount: timeline.todaysSessions.value?.length ?? 5,
-                    itemBuilder: (context, index) => SessionTile(
-                      session: timeline.todaysSessions.value?[index] ??
-                          FocusSession.placeholder(),
-                    ),
-                  ),
+                  ).sliver,
 
             const SliverTabsBottomPadding(),
           ],

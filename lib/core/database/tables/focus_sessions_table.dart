@@ -1,8 +1,18 @@
+/*
+ *
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:drift/drift.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 
-@DataClassName("FocusSessions")
+@DataClassName("FocusSession")
 class FocusSessionsTable extends Table {
   /// Unique ID for each focus session
   IntColumn get id => integer().autoIncrement()();

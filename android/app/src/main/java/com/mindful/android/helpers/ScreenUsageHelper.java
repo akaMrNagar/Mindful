@@ -14,7 +14,6 @@ package com.mindful.android.helpers;
 
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageStatsManager;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,7 +61,6 @@ public class ScreenUsageHelper {
 
             if (eventType == UsageEvents.Event.ACTIVITY_RESUMED) {
                 lastResumedEvents.put(eventKey, currentEvent);
-                isFirstEvent = false;
             } else if (eventType == UsageEvents.Event.ACTIVITY_STOPPED || eventType == UsageEvents.Event.ACTIVITY_PAUSED) {
                 Long screenTime = oneDayUsageMap.getOrDefault(packageName, 0L);
                 UsageEvents.Event lastResumedEvent = lastResumedEvents.get(eventKey);
@@ -73,14 +71,14 @@ public class ScreenUsageHelper {
                 ) {
                     // Calculate usage from the last ACTIVITY_RESUMED to this ACTIVITY_PAUSED
                     screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
-                    oneDayUsageMap.put(packageName, screenTime);
                     lastResumedEvents.remove(eventKey);
                 } else if (isFirstEvent) {
+                    // Log.d("TAG", "fetchUsageForInterval: app " + packageName);
                     // Fallback logic in case no matching ACTIVITY_RESUMED was found. May be this app was opened before START time
                     screenTime += (currentEvent.getTimeStamp() - start);
-                    oneDayUsageMap.put(packageName, screenTime);
-                    isFirstEvent = false;
                 }
+                oneDayUsageMap.put(packageName, screenTime);
+                isFirstEvent = false;
             }
         }
 
@@ -88,7 +86,7 @@ public class ScreenUsageHelper {
         oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
         return oneDayUsageMap;
     }
-
+    
     /**
      * Fetches the screen usage time of a specific application for the current day until now using usage events.
      *
@@ -96,7 +94,7 @@ public class ScreenUsageHelper {
      * @param packageName       The package name of the application whose usage time is to be fetched.
      * @return The total screen usage time of the specified application in seconds.
      */
-    public static long fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
+    public static int fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
         Calendar midNightCal = Calendar.getInstance();
         midNightCal.set(Calendar.HOUR_OF_DAY, 0);
         midNightCal.set(Calendar.MINUTE, 0);
@@ -106,7 +104,25 @@ public class ScreenUsageHelper {
         long end = System.currentTimeMillis();
         long screenTime = fetchUsageForInterval(usageStatsManager, start, end, packageName).getOrDefault(packageName, 0L);
 
-        Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
-        return screenTime;
+        // Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
+        return (int) screenTime;
+    }
+
+    /**
+     * Fetches the screen usage time of a specific application for the current day until now using usage events.
+     *
+     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
+     * @return The total screen usage time of the specified application in seconds.
+     */
+    @NonNull
+    public static HashMap<String, Long> fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager) {
+        Calendar midNightCal = Calendar.getInstance();
+        midNightCal.set(Calendar.HOUR_OF_DAY, 0);
+        midNightCal.set(Calendar.MINUTE, 0);
+        midNightCal.set(Calendar.SECOND, 0);
+
+        long start = midNightCal.getTimeInMillis();
+        long end = System.currentTimeMillis();
+        return fetchUsageForInterval(usageStatsManager, start, end, null);
     }
 }

@@ -1,0 +1,21 @@
+<!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+  ~  *  *
+  ~  *  * This source code is licensed under the GPL-2.0 license license found in the
+  ~  *  * LICENSE file in the root directory of this source tree.
+  ~  *
+  ~  */
+  -->
+
+<resources>
+    <color name="accent">#bac3ff </color>
+    <color name="textPrimary">#ffffff </color>
+    <color name="textSecondary">#e1e1e1 </color>
+    <color name="surface">#121418 </color>
+    <color name="primaryContainer">#424659 </color>
+    <color name="secondaryContainer">#2a2930 </color>
+    <color name="tertiaryContainer">#1c1b22 </color>
+</resources>

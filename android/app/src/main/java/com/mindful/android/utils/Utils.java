@@ -29,16 +29,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.Contract;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -48,45 +43,6 @@ import java.util.Map;
  */
 public class Utils {
     private static final String TAG = "Mindful.Utils";
-
-    /**
-     * Resolve the version string for the app
-     *
-     * @param context The application context.
-     * @return Version string include version and build code
-     */
-    @NonNull
-    public static String getAppVersion(@NonNull Context context) {
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            String packageName = context.getPackageName();
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-
-            return packageName.contains(".debug")
-                    ? "DEBUG " + "v" + packageInfo.versionName + "+" + packageInfo.versionCode
-                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "getAppVersion: Error in fetching app version", e);
-        }
-        return "v0.0.0";
-    }
-
-    /**
-     * Resolve the device information and  returns it
-     *
-     * @return Map<String, String> containing Manufacturer, Model, Android Version and SDK Version.
-     */
-    @NonNull
-    public static Map<String, String> getDeviceInfoMap() {
-        HashMap<String, String> infoMap = new HashMap<>();
-
-        infoMap.put("Manufacturer", Build.MANUFACTURER);
-        infoMap.put("Model", Build.MODEL);
-        infoMap.put("Android Version", Build.VERSION.RELEASE);
-        infoMap.put("SDK Version", String.valueOf(Build.VERSION.SDK_INT));
-
-        return infoMap;
-    }
 
     /**
      * Checks if a service with the given class name is currently running.
@@ -105,6 +61,40 @@ public class Utils {
 
         return false;
     }
+
+    /**
+     * Resolve the device information and  returns it
+     *
+     * @return Map<String, String> containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
+     */
+    @NonNull
+    public static Map<String, String> getDeviceInfoMap(@NonNull Context context) {
+        HashMap<String, String> infoMap = new HashMap<>();
+        String appVersion = "Unknown";
+
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            String packageName = context.getPackageName();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+
+            appVersion = packageName.contains(".debug")
+                    ? "DEBUG " + "v" + packageInfo.versionName + "+" + packageInfo.versionCode
+                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "getDeviceInfoMap: Error in fetching app version", e);
+        }
+
+
+        infoMap.put("manufacturer", Build.MANUFACTURER);
+        infoMap.put("model", Build.MODEL);
+        infoMap.put("androidVersion", Build.VERSION.RELEASE);
+        infoMap.put("sdkVersion", String.valueOf(Build.VERSION.SDK_INT));
+        infoMap.put("mindfulVersion", appVersion);
+
+
+        return infoMap;
+    }
+
 
     /**
      * Encodes a Drawable (app icon) to a Base64 string.
@@ -158,51 +148,106 @@ public class Utils {
         return bitmap;
     }
 
+
     /**
-     * Deserializes a JSON string into a HashMap of String keys and Long values.
+     * Returns an empty string if the provided string is null.
      *
-     * @param jsonString The JSON string to deserialize.
-     * @return A HashMap containing the deserialized data.
+     * @param nullableString The string to check.
+     * @return The original string if it's not null, otherwise an empty string.
      */
     @NonNull
-    public static HashMap<String, Long> jsonStrToStringLongHashMap(@NonNull String jsonString) {
-        HashMap<String, Long> map = new HashMap<>();
-        if (jsonString.isEmpty()) return map;
-
-        try {
-            JSONObject jsonObject = new JSONObject(jsonString);
-
-            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
-                String key = it.next();
-                Long value = jsonObject.getLong(key);
-                map.put(key, value);
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "jsonStrToAppTimersMap: Error deserializing JSON to timers map ", e);
-        }
-        return map;
+    public static String notNullStr(@Nullable String nullableString) {
+        if (nullableString != null) return nullableString;
+        else return "";
     }
 
     /**
-     * Deserializes a JSON string into a HashSet of String.
+     * Null safe method that returns an empty string if the provided Intent is null or Intent's Action is null.
      *
-     * @param jsonString The JSON string to deserialize.
-     * @return A HashSet containing the deserialized data.
+     * @param intent The nullable Intent to check.
+     * @return The action string if it's not null, otherwise an empty string.
      */
     @NonNull
-    public static HashSet<String> jsonStrToStringHashSet(@NonNull String jsonString) {
-        HashSet<String> set = new HashSet<>();
-        if (jsonString.isEmpty()) return set;
+    public static String getActionFromIntent(@Nullable Intent intent) {
+        return intent == null ? "" : notNullStr(intent.getAction());
+    }
 
-        try {
-            JSONArray jsonArray = new JSONArray(jsonString);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                set.add(jsonArray.getString(i));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to locked apps hashset ", e);
+    /**
+     * Formats the total screen usage time into a human-readable string.
+     * Example: 2:43:59
+     *
+     * @param totalSeconds The total screen usage time in seconds.
+     * @return A string representing the formatted screen usage time.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String secondsToTimeStr(long totalSeconds) {
+        int leftHours = (int) (totalSeconds / 60 / 60);
+        int leftMinutes = (int) ((totalSeconds / 60) % 60);
+        int leftSeconds = (int) (totalSeconds % 60);
+
+        return
+                leftHours > 0 ?
+                        leftHours + ":" + leftMinutes + ":" + leftSeconds :
+                        leftMinutes + ":" + leftSeconds;
+
+    }
+
+    /**
+     * Formats the total screen usage time into a human-readable string.
+     * Example: 12h 45m
+     *
+     * @param totalMinutes The total screen usage time in minutes.
+     * @return A string representing the formatted screen usage time.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String formatScreenTime(int totalMinutes) {
+        totalMinutes = Math.abs(totalMinutes);
+
+        return totalMinutes > 60
+                ? totalMinutes % 60 == 0
+                ? totalMinutes / 60 + "h"
+                : totalMinutes / 60 + "h " + totalMinutes % 60 + "m"
+                : totalMinutes + "m";
+    }
+
+    /**
+     * Formats the total data usage into a human-readable string.
+     * Example: 12.35 GB
+     *
+     * @param totalMBs The total data usage in megabytes (MB).
+     * @return A string representing the formatted data usage.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static String formatDataMBs(int totalMBs) {
+        totalMBs = Math.abs(totalMBs);
+
+        if (totalMBs >= 1024) {
+            float GBs = totalMBs / 1024f;
+            String formattedGBs = String.format(Locale.getDefault(), "%.2f", GBs);
+            return formattedGBs + " GB";
+        } else {
+            return totalMBs + " MB";
         }
-        return set;
+    }
+
+
+    /**
+     * Ensures the given URL uses the HTTPS protocol.
+     *
+     * <p>If the URL starts with "https://", it is returned unchanged. If it starts with
+     * "http://", the protocol is changed to "https://". If no protocol is present,
+     * "https://" is added.</p>
+     *
+     * @param url The URL to validate (must not be null).
+     * @return A URL that starts with "https://".
+     */
+    public static String validateHttpsProtocol(@NonNull String url) {
+        return url.startsWith("https://") ? url :
+                url.startsWith("http://") ?
+                        url.replace("http://", "https://") : ("https://" + url);
     }
 
     /**
@@ -244,103 +289,5 @@ public class Utils {
         }
 
         return hostName;
-    }
-
-    /**
-     * Returns an empty string if the provided string is null.
-     *
-     * @param nullableString The string to check.
-     * @return The original string if it's not null, otherwise an empty string.
-     */
-    @NonNull
-    public static String notNullStr(@Nullable String nullableString) {
-        if (nullableString != null) return nullableString;
-        else return "";
-    }
-
-    /**
-     * Null safe method that returns an empty string if the provided Intent is null or Intent's Action is null.
-     *
-     * @param intent The nullable Intent to check.
-     * @return The action string if it's not null, otherwise an empty string.
-     */
-    @NonNull
-    public static String getActionFromIntent(@Nullable Intent intent) {
-        return intent == null ? "" : notNullStr(intent.getAction());
-    }
-
-    /**
-     * Formats the total screen usage time into a human-readable string.
-     *
-     * @param totalSeconds The total screen usage time in seconds.
-     * @return A string representing the formatted screen usage time.
-     */
-    @NonNull
-    @Contract(pure = true)
-    public static String secondsToTimeStr(long totalSeconds) {
-        int leftHours = (int) (totalSeconds / 60 / 60);
-        int leftMinutes = (int) ((totalSeconds / 60) % 60);
-        int leftSeconds = (int) (totalSeconds % 60);
-
-        return
-                leftHours > 0 ?
-                        leftHours + ":" + leftMinutes + ":" + leftSeconds :
-                        leftMinutes + ":" + leftSeconds;
-
-    }
-
-    /**
-     * Formats the total screen usage time into a human-readable string.
-     *
-     * @param totalMinutes The total screen usage time in minutes.
-     * @return A string representing the formatted screen usage time.
-     */
-    @NonNull
-    @Contract(pure = true)
-    public static String formatScreenTime(int totalMinutes) {
-        totalMinutes = Math.abs(totalMinutes);
-
-        return totalMinutes > 60
-                ? totalMinutes % 60 == 0
-                ? totalMinutes / 60 + "h"
-                : totalMinutes / 60 + "h " + totalMinutes % 60 + "m"
-                : totalMinutes + "m";
-    }
-
-    /**
-     * Formats the total data usage into a human-readable string.
-     *
-     * @param totalMBs The total data usage in megabytes (MB).
-     * @return A string representing the formatted data usage.
-     */
-    @NonNull
-    @Contract(pure = true)
-    public static String formatDataMBs(int totalMBs) {
-        totalMBs = Math.abs(totalMBs);
-
-        if (totalMBs >= 1024) {
-            float GBs = totalMBs / 1024f;
-            String formattedGBs = String.format(Locale.getDefault(), "%.2f", GBs);
-            return formattedGBs + " GB";
-        } else {
-            return totalMBs + " MB";
-        }
-    }
-
-
-    /**
-     * Ensures the given URL uses the HTTPS protocol.
-     *
-     * <p>If the URL starts with "https://", it is returned unchanged. If it starts with
-     * "http://", the protocol is changed to "https://". If no protocol is present,
-     * "https://" is added.</p>
-     *
-     * @param url The URL to validate (must not be null).
-     * @return A URL that starts with "https://".
-     */
-    public static String validateHttpsProtocol(@NonNull String url) {
-        return url.startsWith("https://") ? url :
-                url.startsWith("http://") ?
-                        url.replace("http://", "https://") : ("https://" + url);
     }
 }

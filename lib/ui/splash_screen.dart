@@ -18,10 +18,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -38,15 +38,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-      1000.ms,
-      _goToNextScreen,
-    );
+    _goToNextScreen();
   }
 
   void _goToNextScreen() async {
-    final isOnboardingDone =
-        await MethodChannelService.instance.getOnboardingStatus();
+    final settings = await ref.read(mindfulSettingsProvider.notifier).init();
 
     final perms =
         await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
@@ -56,24 +52,29 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         perms.haveAlarmsPermission &&
         perms.haveNotificationPermission;
 
+    // await Future.delayed(250.ms);
     if (!mounted) return;
 
-    if (haveAllEssentialPermissions && isOnboardingDone) {
-      ref.read(appsProvider);
-      Navigator.of(context).pop();
-      ref
-          .read(restrictionInfosProvider.notifier)
-          .checkAndRestartServices(haveVpnPermission: perms.haveVpnPermission);
+    if (haveAllEssentialPermissions && settings.isOnboardingDone) {
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        AppRoutes.homeScreen,
+        (_) => false,
+      );
     } else {
-      Navigator.of(context).pushReplacementNamed(
+      Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.onboardingScreen,
-        arguments: isOnboardingDone,
+        (_) => false,
+        arguments: settings.isOnboardingDone,
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    /// watching these providers to only start necessary services but this will not trigger any updates
+    ref.watch(appsRestrictionsProvider.select((v) => v[null]));
+    ref.watch(restrictionGroupsProvider.select((v) => v[null]));
+
     return PopScope(
       canPop: false,
       child: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -96,11 +97,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               /// Breathing logo
               BreathingWidget(
                 dimension: min(420, MediaQuery.of(context).size.width * 0.8),
-                child: const RoundedContainer(
+                child: RoundedContainer(
                   circularRadius: 420,
-                  padding: EdgeInsets.all(12),
-                  child:
-                      Icon(FluentIcons.weather_sunny_low_20_filled, size: 64),
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                  padding: const EdgeInsets.all(12),
+                  child: const Icon(FluentIcons.weather_sunny_low_20_filled,
+                      size: 64),
                 ),
               ),
 

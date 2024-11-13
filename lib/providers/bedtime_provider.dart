@@ -10,28 +10,35 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_time_of_day.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/isar/bedtime_settings.dart';
 
-/// A Riverpod state notifier provider that manages Bedtime settings including schedule, Do Not Disturb, and distracting apps.
-final bedtimeProvider = StateNotifierProvider<BedtimeNotifier, BedtimeSettings>(
-  (ref) => BedtimeNotifier(),
+/// A Riverpod state notifier provider that manages [BedtimeSchedule].
+final bedtimeScheduleProvider =
+    StateNotifierProvider<BedtimeScheduleNotifier, BedtimeSchedule>(
+  (ref) => BedtimeScheduleNotifier(),
 );
 
-class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
-  BedtimeNotifier() : super(const BedtimeSettings()) {
+class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
+  BedtimeScheduleNotifier()
+      : super(BedtimeScheduleTable.defaultBedtimeScheduleModel) {
     _init();
   }
 
   /// Initializes the Bedtime state by loading settings from the database and setting up a listener to save changes back.
   void _init() async {
-    state = await IsarDbService.instance.loadBedtimeSettings();
-    addListener((state) async {
-      /// Save changes to the Isar database whenever the state updates.
-      await IsarDbService.instance.saveBedtimeSettings(state);
-    });
+    final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
+    state = await dao.loadBedtimeSchedule();
+
+    /// Save changes to the database whenever the state updates.
+    addListener(
+      fireImmediately: false,
+      (state) => dao.saveBedtimeSchedule(state),
+    );
   }
 
   /// Enables or disables the Bedtime schedule.
@@ -41,12 +48,18 @@ class BedtimeNotifier extends StateNotifier<BedtimeSettings> {
   }
 
   /// Sets the start time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeStart(TimeOfDay startTod) =>
-      state = state.copyWith(startTimeInMins: startTod.minutes);
+  void setBedtimeStart(TimeOfDay startTod) => state = state.copyWith(
+        startTimeInMins: startTod.minutes,
+        totalDurationInMins:
+            state.endTimeInMins.toTimeOfDay.difference(startTod).inMinutes,
+      );
 
   /// Sets the end time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeEnd(TimeOfDay endTod) =>
-      state = state.copyWith(endTimeInMins: endTod.minutes);
+  void setBedtimeEnd(TimeOfDay endTod) => state = state.copyWith(
+        endTimeInMins: endTod.minutes,
+        totalDurationInMins:
+            endTod.difference(state.startTimeInMins.toTimeOfDay).inMinutes,
+      );
 
   /// Toggles the scheduled day for a specific day index.
   void toggleScheduleDay(int index) {

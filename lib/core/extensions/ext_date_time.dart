@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 
 extension ExtDateTime on DateTime {
@@ -20,6 +21,15 @@ extension ExtDateTime on DateTime {
         millisecond: 0,
         microsecond: 0,
       );
+
+  /// Returns date-only for the starting of the month
+  DateTime get startOfMonth => DateTime(year, month, 1);
+
+  /// Returns date-only for the end of the month
+  DateTime get endOfMonth => DateTime(year, month + 1, 1).subtract(1.days);
+
+  /// Returns the total number of day in the [DateTime]'s month
+  int get daysInMonth => endOfMonth.difference(startOfMonth).inDays + 1;
 
   /// Returns date-only string in a localized format (e.g., 15 August, 2024).
   String dateString(BuildContext context) =>

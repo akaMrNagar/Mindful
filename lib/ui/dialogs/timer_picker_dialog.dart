@@ -35,8 +35,8 @@ Future<int> showAppTimerPicker({
             heroTag: heroTag,
             icon: ApplicationIcon(app: app),
             title: app.name,
-            info: context.locale.timer_picker_dialog_info,
-            positiveButtonLabel: context.locale.dialog_button_set_timer,
+            info: context.locale.app_timer_picker_dialog_info,
+            positiveButtonLabel: context.locale.dialog_button_set,
             initialTimeInSec: initialTime,
           ),
         ),
@@ -56,11 +56,11 @@ Future<int> showShortsTimerPicker({
         HeroPageRoute(
           builder: (context) => _DurationPickerDialog(
             title: context.locale.short_content_heading,
-            info: context.locale.timer_picker_dialog_info,
+            info: context.locale.short_content_timer_picker_dialog_info,
             icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
             heroTag: heroTag,
             initialTimeInSec: initialTime,
-            positiveButtonLabel: context.locale.dialog_button_set_timer,
+            positiveButtonLabel: context.locale.dialog_button_set,
             showDeleteButton: false,
           ),
         ),
@@ -83,9 +83,56 @@ Future<int?> showFocusTimerPicker({
         icon: const Icon(FluentIcons.timer_20_regular),
         heroTag: heroTag,
         initialTimeInSec: initialTime,
-        info: context.locale.focus_session_dialog_info,
-        positiveButtonLabel: context.locale.focus_session_dialog_button_start,
+        info: context.locale.focus_session_duration_dialog_info,
+        positiveButtonLabel: context.locale.dialog_button_set,
         showDeleteButton: false,
+      ),
+    ),
+  );
+}
+
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+///
+/// Returns time in seconds and take initial time in seconds
+Future<int?> showRestrictionGroupTimerPicker({
+  required BuildContext context,
+  required Object heroTag,
+  int initialTime = 0,
+}) async {
+  return await Navigator.of(context).push<int?>(
+    HeroPageRoute(
+      builder: (context) => _DurationPickerDialog(
+        title: context.locale.restriction_group_heading,
+        icon: const Icon(FluentIcons.timer_20_regular),
+        heroTag: heroTag,
+        initialTimeInSec: initialTime,
+        info: context.locale.restriction_group_timer_picker_dialog_info,
+        positiveButtonLabel: context.locale.dialog_button_set,
+        showDeleteButton: false,
+      ),
+    ),
+  );
+}
+
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+///
+/// Returns time in seconds and take initial time in seconds
+Future<int?> showAppAlertIntervalPicker({
+  required BuildContext context,
+  required Object heroTag,
+  required int initialTime,
+}) async {
+  return await Navigator.of(context).push<int?>(
+    HeroPageRoute(
+      builder: (context) => _DurationPickerDialog(
+        title: context.locale.app_alert_interval_tile_title,
+        icon: const Icon(FluentIcons.alert_urgent_20_filled),
+        heroTag: heroTag,
+        initialTimeInSec: initialTime,
+        info: context.locale.app_alert_interval_picker_dialog_info,
+        positiveButtonLabel: context.locale.dialog_button_set,
+        showDeleteButton: false,
+        minuteInterval: 5,
       ),
     ),
   );
@@ -100,6 +147,7 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.info,
     required this.positiveButtonLabel,
     this.showDeleteButton = true,
+    this.minuteInterval = 1,
   });
 
   final Widget icon;
@@ -108,6 +156,7 @@ class _DurationPickerDialog extends StatefulWidget {
   final int initialTimeInSec;
   final String positiveButtonLabel;
   final bool showDeleteButton;
+  final int minuteInterval;
   final String info;
 
   @override
@@ -119,62 +168,70 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(48),
-      alignment: Alignment.center,
-      child: DefaultHero(
-        tag: widget.heroTag,
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(48),
+        alignment: Alignment.center,
         child: SingleChildScrollView(
-          child: AlertDialog(
-            icon: widget.icon,
-            title: StyledText(
-              widget.title,
-              fontSize: 16,
-            ),
-            insetPadding: EdgeInsets.zero,
-            content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  StyledText(widget.info),
-                  Container(
-                    height: 124,
-                    margin: const EdgeInsets.symmetric(vertical: 12),
-                    child: CupertinoTimerPicker(
-                      itemExtent: 32,
-                      mode: CupertinoTimerPickerMode.hm,
-                      initialTimerDuration: widget.initialTimeInSec.seconds,
-                      onTimerDurationChanged: (val) => _selectedDuration = val,
-                    ),
-                  ),
-                  18.vBox,
-                  if (widget.showDeleteButton)
-                    FittedBox(
-                      child: FilledButton.icon(
-                        icon: const Icon(FluentIcons.delete_20_regular),
-                        label: Text(context.locale.dialog_button_delete_timer),
-                        onPressed: () => Navigator.maybePop(
-                          context,
-                          0,
+          child: DefaultHero(
+            tag: widget.heroTag,
+            child: AlertDialog(
+              scrollable: true,
+              icon: widget.icon,
+              title: StyledText(widget.title, fontSize: 16),
+              insetPadding: EdgeInsets.zero,
+              content: Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      StyledText(widget.info),
+                      Container(
+                        height: 124,
+                        margin: const EdgeInsets.symmetric(vertical: 12),
+                        child: CupertinoTimerPicker(
+                          itemExtent: 32,
+                          minuteInterval: widget.minuteInterval,
+                          mode: CupertinoTimerPickerMode.hm,
+                          initialTimerDuration: widget.initialTimeInSec.seconds,
+                          onTimerDurationChanged: (val) =>
+                              _selectedDuration = val,
                         ),
                       ),
-                    )
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                child: Text(context.locale.dialog_button_cancel),
-                onPressed: () => Navigator.maybePop(context),
-              ),
-              TextButton(
-                child: Text(widget.positiveButtonLabel),
-                onPressed: () => Navigator.maybePop(
-                  context,
-                  _selectedDuration?.inSeconds ?? widget.initialTimeInSec,
+                      18.vBox,
+                      if (widget.showDeleteButton)
+                        FittedBox(
+                          child: FilledButton.icon(
+                            icon: const Icon(FluentIcons.delete_20_regular),
+                            label:
+                                Text(context.locale.dialog_button_delete_timer),
+                            onPressed: () => Navigator.maybePop(
+                              context,
+                              0,
+                            ),
+                          ),
+                        )
+                    ],
+                  ),
                 ),
               ),
-            ],
+              actions: [
+                TextButton(
+                  child: Text(context.locale.dialog_button_cancel),
+                  onPressed: () => Navigator.maybePop(context),
+                ),
+                TextButton(
+                  child: Text(widget.positiveButtonLabel),
+                  onPressed: () => Navigator.maybePop(
+                    context,
+                    _selectedDuration?.inSeconds ?? widget.initialTimeInSec,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

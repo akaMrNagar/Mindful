@@ -1,3 +1,13 @@
+/*
+ *
+ *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+ *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+ *  *
+ *  * This source code is licensed under the GPL-2.0 license license found in the
+ *  * LICENSE file in the root directory of this source tree.
+ *
+ */
+
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
@@ -17,6 +27,9 @@ class BedtimeScheduleTable extends Table {
   /// [TimeOfDay] in minutes when the bedtime schedule task will end
   /// It is stored as total minutes.
   IntColumn get endTimeInMins => integer()();
+
+  /// Total duration of bedtime schedule from start to end in MINUTES
+  IntColumn get totalDurationInMins => integer()();
 
   /// Days on which the task will execute.
   /// The list contains 7 booleans for each day of week.
@@ -39,6 +52,7 @@ class BedtimeScheduleTable extends Table {
     id: 0,
     startTimeInMins: 0,
     endTimeInMins: 0,
+    totalDurationInMins: 0,
     scheduleDays: [false, true, true, true, true, true, false],
     isScheduleOn: false,
     shouldStartDnd: false,

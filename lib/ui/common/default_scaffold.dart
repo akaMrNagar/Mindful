@@ -15,7 +15,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/new/mindful_settings_notifier.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 
 class DefaultScaffold extends ConsumerStatefulWidget {
@@ -79,8 +79,8 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
 
   @override
   Widget build(BuildContext context) {
-    final useBottomNavigation = ref.watch(
-        mindfulSettingsNotifierProvider.select((v) => v.useBottomNavigation));
+    final useBottomNavigation =
+        ref.watch(mindfulSettingsProvider.select((v) => v.useBottomNavigation));
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -92,6 +92,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
             Theme.of(context).colorScheme.brightness,
       ),
       child: Scaffold(
+        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
         floatingActionButton: widget.navbarItems[_controller.index].fab,
 
         /// Only visible when using bottom navigation and screen have more than 1 tab

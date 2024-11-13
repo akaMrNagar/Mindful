@@ -10,8 +10,8 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -24,8 +24,9 @@ class DefaultDropdownTile<T> extends StatelessWidget {
     required this.value,
     required this.items,
     required this.onSelected,
-    required this.label,
+    required this.titleText,
     this.width,
+    this.position,
     this.leadingIcon,
     this.dialogIcon,
     this.trailingBuilder,
@@ -34,8 +35,9 @@ class DefaultDropdownTile<T> extends StatelessWidget {
   final IconData? leadingIcon;
   final IconData? dialogIcon;
 
-  final String label;
+  final String titleText;
   final double? width;
+  final ItemPosition? position;
   final T value;
   final List<DefaultDropdownItem<T>> items;
   final ValueChanged<T> onSelected;
@@ -43,25 +45,24 @@ class DefaultDropdownTile<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final heroTag = "DefaultDropdown.$label";
+    final heroTag = "DefaultDropdown.$titleText";
     final selected =
         items.isNotEmpty ? items.firstWhere((e) => e.value == value) : null;
 
     return DefaultHero(
       tag: heroTag,
       child: DefaultListTile(
-        height: 64,
-        width: width,
+        position: position,
         leadingIcon: leadingIcon,
-        titleText: label,
+        titleText: titleText,
         subtitleText: selected?.label,
         trailing: trailingBuilder?.call(selected?.value) ??
             const Icon(FluentIcons.caret_down_20_filled),
         onPressed: () {
           Navigator.of(context).push(
             HeroPageRoute(
-              builder: (context) => _DropdownMenu<T>(
-                label: label,
+              builder: (context) => _DropdownMenuDialog<T>(
+                label: titleText,
                 heroTag: heroTag,
                 iconData: dialogIcon,
                 selected: selected,
@@ -77,8 +78,8 @@ class DefaultDropdownTile<T> extends StatelessWidget {
   }
 }
 
-class _DropdownMenu<T> extends StatelessWidget {
-  const _DropdownMenu({
+class _DropdownMenuDialog<T> extends StatelessWidget {
+  const _DropdownMenuDialog({
     required this.heroTag,
     required this.selected,
     required this.label,
@@ -99,51 +100,66 @@ class _DropdownMenu<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 48, vertical: 96),
-      alignment: Alignment.center,
-      child: Hero(
-        tag: heroTag,
-        child: AlertDialog(
-          scrollable: true,
-          icon: Icon(iconData ?? FluentIcons.info_20_regular),
-          title: StyledText(label, fontSize: 16),
-          insetPadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.all(12),
-          actionsPadding:
-              const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).maybePop(),
-              child: Text(context.locale.dialog_button_cancel),
-            ),
-          ],
-          content: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: items
-                  .map(
-                    (e) => DefaultListTile(
-                      leading: IgnorePointer(
-                        child: Radio(
-                          value: e.value == selected?.value,
-                          groupValue: true,
-                          splashRadius: 0,
-                          materialTapTargetSize:
-                              MaterialTapTargetSize.shrinkWrap,
-                          onChanged: (v) {},
+    return SafeArea(
+      child: Container(
+        margin: const EdgeInsets.all(48),
+        alignment: Alignment.center,
+        child: SingleChildScrollView(
+          child: DefaultHero(
+            tag: heroTag,
+            child: AlertDialog(
+              scrollable: true,
+              icon: Icon(iconData ?? FluentIcons.info_20_regular),
+              title: StyledText(label, fontSize: 16),
+              insetPadding: EdgeInsets.zero,
+              contentPadding: const EdgeInsets.all(12),
+              actionsPadding:
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  child: Text(context.locale.dialog_button_cancel),
+                ),
+              ],
+              content: Container(
+                width: MediaQuery.of(context).size.width,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      items.length,
+                      (index) => DefaultListTile(
+                        color:
+                            Theme.of(context).colorScheme.surfaceContainerLow,
+                        position: index == 0
+                            ? ItemPosition.start
+                            : index == items.length - 1
+                                ? ItemPosition.end
+                                : ItemPosition.mid,
+                        leading: IgnorePointer(
+                          child: Radio(
+                            value: items[index].value == selected?.value,
+                            groupValue: true,
+                            splashRadius: 0,
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            onChanged: (v) {},
+                          ),
                         ),
+                        title: StyledText(items[index].label, fontSize: 14),
+                        trailing: trailingBuilder?.call(items[index].value),
+                        onPressed: () {
+                          onSelected(items[index].value);
+                          Navigator.of(context).maybePop();
+                        },
                       ),
-                      title: StyledText(e.label, fontSize: 14),
-                      trailing: trailingBuilder?.call(e.value),
-                      onPressed: () {
-                        onSelected(e.value);
-                        Navigator.of(context).maybePop();
-                      },
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+              ),
             ),
           ),
         ),

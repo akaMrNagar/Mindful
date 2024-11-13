@@ -13,16 +13,17 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/providers/app_version_provider.dart';
+import 'package:mindful/providers/device_info_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -32,7 +33,8 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion = ref.read(appVersionProvider).value ?? "";
+    final appVersion =
+        ref.watch(deviceInfoProvider).value?.mindfulVersion ?? "Loading..";
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -48,10 +50,12 @@ class TabAbout extends ConsumerWidget {
         /// Breathing logo
         BreathingWidget(
           dimension: min(360, MediaQuery.of(context).size.width * 0.7),
-          child: const RoundedContainer(
+          child: RoundedContainer(
             circularRadius: 120,
-            padding: EdgeInsets.all(12),
-            child: Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
+            color: Theme.of(context).colorScheme.secondaryContainer,
+            padding: const EdgeInsets.all(12),
+            child:
+                const Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
           ),
         ).sliver,
 
@@ -71,7 +75,7 @@ class TabAbout extends ConsumerWidget {
 
         12.vSliverBox,
 
-        SliverContentTitle(title: context.locale.support_us_heading),
+        ContentSectionHeader(title: context.locale.support_us_heading).sliver,
         4.vSliverBox,
 
         /// Donation box
@@ -89,10 +93,11 @@ class TabAbout extends ConsumerWidget {
         ),
 
         /// Contribute
-        SliverContentTitle(title: context.locale.contribute_heading),
+        ContentSectionHeader(title: context.locale.contribute_heading).sliver,
 
         /// Source code
         DefaultListTile(
+          position: ItemPosition.start,
           leadingIcon: FluentIcons.code_20_regular,
           titleText: context.locale.github_tile_title,
           subtitleText: context.locale.github_tile_subtitle,
@@ -102,6 +107,7 @@ class TabAbout extends ConsumerWidget {
 
         /// Issue
         DefaultListTile(
+          position: ItemPosition.mid,
           leadingIcon: FluentIcons.bug_20_regular,
           titleText: context.locale.report_issue_tile_title,
           subtitleText: context.locale.report_issue_tile_subtitle,
@@ -111,6 +117,7 @@ class TabAbout extends ConsumerWidget {
 
         /// Idea
         DefaultListTile(
+          position: ItemPosition.mid,
           leadingIcon: FluentIcons.lightbulb_filament_20_regular,
           titleText: context.locale.suggest_idea_tile_title,
           subtitleText: context.locale.suggest_idea_tile_subtitle,
@@ -118,7 +125,9 @@ class TabAbout extends ConsumerWidget {
               .launchUrl(AppConstants.githubSuggestionDirectUrl),
         ).sliver,
 
+        /// Email
         DefaultListTile(
+          position: ItemPosition.end,
           leadingIcon: FluentIcons.mail_20_regular,
           titleText: context.locale.write_email_tile_title,
           subtitleText: context.locale.write_email_tile_subtitle,
@@ -127,7 +136,8 @@ class TabAbout extends ConsumerWidget {
         ).sliver,
 
         /// Privacy policy
-        SliverContentTitle(title: context.locale.privacy_policy_heading),
+        ContentSectionHeader(title: context.locale.privacy_policy_heading)
+            .sliver,
         StyledText(context.locale.privacy_policy_info).sliver,
         12.vSliverBox,
         Align(

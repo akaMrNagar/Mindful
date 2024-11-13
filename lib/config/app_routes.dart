@@ -9,14 +9,16 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/models/isar/focus_session.dart';
 import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/screens/focus/focus_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
+import 'package:mindful/ui/screens/notification_groups/notification_groups_screen.dart';
+import 'package:mindful/ui/screens/restriction_groups/restriction_groups_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
 
@@ -36,11 +38,13 @@ typedef AppDashboardScreenArgs = ({
 });
 
 class AppRoutes {
-  static const String homeScreen = '/';
-  static const String splashScreen = '/splashScreen';
+  static const String splashScreen = '/';
+  static const String homeScreen = '/homeScreen';
   static const String onboardingScreen = '/onboardingScreen';
   static const String appDashboardScreen = '/appDashboardScreen';
   static const String settingsScreen = '/mindfulSettingsScreen';
+  static const String restrictionGroupsScreen = '/restrictionGroupsScreen';
+  static const String notificationGroupsScreen = '/notificationGroupsScreen';
   static const String focusScreen = '/focusScreen';
   static const String activeSessionScreen = '/activeSessionScreen';
 
@@ -48,15 +52,13 @@ class AppRoutes {
     splashScreen: (context) => const SplashScreen(),
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
+    restrictionGroupsScreen: (context) => const RestrictionGroupsScreen(),
+    notificationGroupsScreen: (context) => const NotificationGroupsScreen(),
+    focusScreen: (context) => const FocusScreen(),
 
     /// Resolve isOnboardingDone bool from arguments
     onboardingScreen: (context) => OnboardingScreen(
           isOnboardingDone: ModalRoute.of(context)?.settings.arguments as bool,
-        ),
-
-    /// Resolve initial tab index from arguments
-    focusScreen: (context) => FocusScreen(
-          initialTabIndex: ModalRoute.of(context)?.settings.arguments as int,
         ),
 
     /// Resolve [FocusSession] model from arguments

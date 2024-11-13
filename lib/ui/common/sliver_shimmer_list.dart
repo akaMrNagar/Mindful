@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -24,13 +25,19 @@ class SliverShimmerList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const itemCount = 20;
+
     return SliverSkeletonizer.zone(
       enabled: true,
       child: SliverList.builder(
-        itemCount: 20,
+        itemCount: itemCount,
         itemBuilder: (_, i) => DefaultListTile(
-          height: 64,
-          leading: const Bone.circle(size: 36),
+          position: i == 0
+              ? ItemPosition.start
+              : i == (itemCount - 1)
+                  ? ItemPosition.end
+                  : ItemPosition.mid,
+          leading: const Bone.iconButton(),
           title: Bone.text(
             width: 120.randomHalf.toDouble(),
             fontSize: 16,

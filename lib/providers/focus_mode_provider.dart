@@ -13,44 +13,60 @@ import 'dart:math';
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
+import 'package:mindful/core/database/daos/unique_records_dao.dart';
+import 'package:mindful/core/database/tables/focus_mode_table.dart';
+import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/models/isar/focus_mode_settings.dart';
-import 'package:mindful/models/isar/focus_session.dart';
+import 'package:mindful/models/focus_mode_model.dart';
 
-/// A Riverpod state notifier provider that manages Focus Mode Settings.
+/// A Riverpod state notifier provider that manages [FocusModeModel].
 final focusModeProvider =
-    StateNotifierProvider<FocusModeNotifier, FocusModeSettings>(
+    StateNotifierProvider<FocusModeNotifier, FocusModeModel>(
   (ref) => FocusModeNotifier(),
 );
 
 /// This class manages the state of Focus Mode Settings.
-class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
+class FocusModeNotifier extends StateNotifier<FocusModeModel> {
+  late DynamicRecordsDao _dynamicDao;
+  late UniqueRecordsDao _uniqueDao;
   Timer? _activeSessionTimer;
 
-  FocusModeNotifier() : super(const FocusModeSettings()) {
+  FocusModeNotifier()
+      : super(FocusModeModel(
+          focusMode: FocusModeTable.defaultFocusModeModel,
+          focusProfile: FocusProfileTable.defaultFocusProfileModel,
+        )) {
     _init();
   }
 
   /// Initializes the state by loading from the database and setting up a listener for saving changes.
   void _init() async {
-    state = await IsarDbService.instance.loadFocusModeSettings();
-    await _checkAndUpdateActiveSession();
+    _dynamicDao = DriftDbService.instance.driftDb.dynamicRecordsDao;
+    _uniqueDao = DriftDbService.instance.driftDb.uniqueRecordsDao;
 
-    /// Start service if already not running
-    if (state.activeSession != null) {
-      _startFocusSessionService(state.activeSession!);
-    }
+    /// load from database
+    final focusMode = await _uniqueDao.loadFocusModeSettings();
+    final focusProfile =
+        await _dynamicDao.fetchFocusProfileBySessionType(focusMode.sessionType);
+    final activeSession = await _dynamicDao.fetchLastActiveFocusSession();
 
-    /// Listen to provider and save changes to Isar database
-    addListener(
-      (state) async {
-        await IsarDbService.instance.saveFocusModeSettings(state);
-      },
+    /// update state
+    state = state.copyWith(
+      focusMode: focusMode,
+      focusProfile: focusProfile,
+      activeSession: activeSession,
     );
+
+    /// restart session service if needed
+    if (state.activeSession != null) {
+      _startFocusSessionService(activeSession!);
+    }
   }
 
   /// Enables or disables Do Not Disturb during the Focus Session.
@@ -61,69 +77,75 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
         !await MethodChannelService.instance.getAndAskDndPermission()) {
       return;
     }
-    state = state.copyWith(shouldStartDnd: shouldStartDnd);
+    state = state.copyWith(
+      focusProfile: state.focusProfile.copyWith(shouldStartDnd: shouldStartDnd),
+    );
+
+    _updateFocusProfileInDb();
+  }
+
+  /// set the duration for the session
+  void setSessionDuration(int durationSec) {
+    state = state.copyWith(
+      focusProfile: state.focusProfile.copyWith(sessionDuration: durationSec),
+    );
+
+    _updateFocusProfileInDb();
   }
 
   /// Adds or removes an app package from the list of distracting apps.
   void insertRemoveDistractingApp(String appPackage, bool shouldInsert) async {
     state = state.copyWith(
-      distractingApps: shouldInsert
-          ? [...state.distractingApps, appPackage]
-          : [...state.distractingApps.where((e) => e != appPackage)],
+      focusProfile: state.focusProfile.copyWith(
+        distractingApps: shouldInsert
+            ? [...state.focusProfile.distractingApps, appPackage]
+            : [
+                ...state.focusProfile.distractingApps
+                    .where((e) => e != appPackage)
+              ],
+      ),
     );
 
+    _updateFocusProfileInDb();
+
+    /// Update service if session is active
     if (state.activeSession != null) {
       await MethodChannelService.instance.updateFocusSession(
-        distractingApps: state.distractingApps,
+        distractingApps: state.focusProfile.distractingApps,
       );
     }
   }
 
   /// Set session type for current focus session.
-  void setSessionType(SessionType sessionType) =>
-      state = state.copyWith(sessionType: sessionType);
-
-  /// Update the streaks in database on the basis of current streak
-  void updateSessionsStreak() async {
-    /// If streak is already updated then return
-    final today = DateTime.now().dateOnly;
-    if (state.lastStreakUpdatedDay == today) return;
-
-    final currentStreak = await IsarDbService.instance.loadCurrentStreak();
-
-    /// Return if no change in streaks
-    if (currentStreak == state.currentStreak) return;
-
+  void setSessionType(SessionType sessionType) async {
     state = state.copyWith(
-      currentStreak: currentStreak,
-      longestStreak: max(currentStreak, state.longestStreak),
-      lastStreakUpdatedDayMsEpoch: today.millisecondsSinceEpoch,
+      focusMode: state.focusMode.copyWith(sessionType: sessionType),
+      focusProfile:
+          await _dynamicDao.fetchFocusProfileBySessionType(sessionType),
     );
+
+    /// Update db
+    _updateFocusModeInDb();
   }
 
   /// Starts a new focus session with the specified duration.
   ///
   /// Returns a [FocusSession] object representing the newly started session.
-  Future<FocusSession> startNewSession({
-    required int durationSeconds,
-  }) async {
-    final session = FocusSession(
-      durationSecs: durationSeconds,
-      type: state.sessionType,
-      startTimeMsEpoch: DateTime.now().millisecondsSinceEpoch,
+  Future<FocusSession> startNewSession() async {
+    /// Insert session to database
+    final session = await _dynamicDao.insertFocusSession(
+      type: state.focusMode.sessionType,
+      durationSecs: state.focusProfile.sessionDuration,
     );
 
     /// Start service
     await _startFocusSessionService(session);
 
-    /// Insert session to database
-    await IsarDbService.instance.insertFocusSession(session);
-
     /// Update state
     state = state.copyWith(activeSession: session);
 
     /// Schedule the session timer
-    _scheduleRefreshActiveSessionTimer(durationSeconds.seconds);
+    _scheduleRefreshActiveSessionTimer(session.durationSecs.seconds);
     return session;
   }
 
@@ -135,12 +157,13 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
 
     final updatedSession = state.activeSession!.copyWith(
       state: SessionState.failed,
-      durationSecs:
-          DateTime.now().difference(state.activeSession!.startTime).inSeconds,
+      durationSecs: DateTime.now()
+          .difference(state.activeSession!.startDateTime)
+          .inSeconds,
     );
 
     /// Update session in database
-    await IsarDbService.instance.insertFocusSession(updatedSession);
+    await _dynamicDao.updateFocusSessionById(updatedSession);
 
     /// Start service
     await MethodChannelService.instance.stopFocusSession();
@@ -148,48 +171,16 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
     /// Cancel active session timer
     _activeSessionTimer?.cancel();
 
-    state = state.removeActiveSession();
-  }
-
-  /// Checks and updates the active session status.
-  ///
-  /// This function checks whether the last active focus session is still ongoing
-  /// or if it needs to be marked as successful based on the session's duration.
-  /// If the session is still active, it schedules a future check when the session is expected to complete.
-  Future<void> _checkAndUpdateActiveSession() async {
-    final activeSession =
-        await IsarDbService.instance.loadLastActiveFocusSession();
-
-    if (activeSession != null) {
-      final timeDiffSecs =
-          DateTime.now().difference(activeSession.startTime).inSeconds;
-
-      /// If session is completed then update it's state in Database
-      if (timeDiffSecs >= activeSession.durationSecs) {
-        await IsarDbService.instance.insertFocusSession(
-          activeSession.copyWith(state: SessionState.successful),
-        );
-        state = state.removeActiveSession();
-        updateSessionsStreak();
-        return;
-      } else {
-        // Adding 1 second ensures that the check occurs slightly after the session is supposed to end.
-        final expectedToCompleteInSecs =
-            (activeSession.durationSecs - timeDiffSecs + 1);
-        _scheduleRefreshActiveSessionTimer(expectedToCompleteInSecs.seconds);
-      }
-    }
-
-    state = state.copyWith(activeSession: activeSession);
+    state = state.copyWith(activeSession: null);
   }
 
   /// Starts the focus session service with the given session.
   Future<void> _startFocusSessionService(FocusSession session) async =>
       await MethodChannelService.instance.startFocusSession(
         durationSeconds: session.durationSecs,
-        startTimeMsEpoch: session.startTimeMsEpoch,
-        toggleDnd: state.shouldStartDnd,
-        distractingApps: state.distractingApps,
+        startTimeMsEpoch: session.startDateTime.millisecondsSinceEpoch,
+        toggleDnd: state.focusProfile.shouldStartDnd,
+        distractingApps: state.focusProfile.distractingApps,
       );
 
   /// This function schedules a future check call to [_checkAndUpdateActiveSession]
@@ -198,6 +189,60 @@ class FocusModeNotifier extends StateNotifier<FocusModeSettings> {
     _activeSessionTimer?.cancel();
     _activeSessionTimer = Timer(delay, _checkAndUpdateActiveSession);
   }
+
+  /// Checks and updates the active session status.
+  ///
+  /// This function checks whether the last active focus session is still ongoing
+  /// or if it needs to be marked as successful based on the session's duration.
+  /// If the session is still active, it schedules a future check when the session is expected to complete.
+  Future<void> _checkAndUpdateActiveSession() async {
+    if (state.activeSession != null) {
+      final timeDiffSecs = DateTime.now()
+          .difference(state.activeSession!.startDateTime)
+          .inSeconds;
+
+      /// If session is completed then update it's state in Database
+      if (timeDiffSecs >= state.activeSession!.durationSecs) {
+        await _dynamicDao.updateFocusSessionById(
+          state.activeSession!.copyWith(state: SessionState.successful),
+        );
+
+        state = state.copyWith(activeSession: null);
+        _updateSessionsStreak();
+        return;
+      } else {
+        // Adding 1 second ensures that the check occurs slightly after the session is supposed to end.
+        final expectedToCompleteInSecs =
+            (state.activeSession!.durationSecs - timeDiffSecs + 1);
+        _scheduleRefreshActiveSessionTimer(expectedToCompleteInSecs.seconds);
+      }
+    }
+  }
+
+  /// Update the streaks in database on the basis of current streak
+  void _updateSessionsStreak() async {
+    /// If streak is already updated then return
+    final today = DateTime.now().dateOnly;
+    if (state.focusMode.lastTimeStreakUpdated.dateOnly == today) return;
+
+    final newStreak = state.focusMode.currentStreak + 1;
+
+    state = state.copyWith(
+      focusMode: state.focusMode.copyWith(
+        currentStreak: newStreak,
+        longestStreak: max(newStreak, state.focusMode.longestStreak),
+        lastTimeStreakUpdated: today,
+      ),
+    );
+
+    _updateFocusModeInDb();
+  }
+
+  void _updateFocusModeInDb() async =>
+      await _uniqueDao.saveFocusModeSettings(state.focusMode);
+
+  void _updateFocusProfileInDb() async =>
+      await _dynamicDao.insertFocusProfileBySessionType(state.focusProfile);
 
   @override
   void dispose() {

@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
@@ -20,20 +21,29 @@ import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class WebsiteTile extends ConsumerWidget {
-  const WebsiteTile({required this.websitehost, super.key});
+  const WebsiteTile({
+    super.key,
+    required this.websitehost,
+    this.position,
+  });
 
   final String websitehost;
+  final ItemPosition? position;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DefaultListTile(
-      height: 50,
-      leading: const RoundedContainer(width: 12, height: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      titleText: websitehost,
-      trailing: DefaultHero(
-        tag: HeroTags.websiteTileTag(websitehost),
-        child: IconButton(
+    return DefaultHero(
+      tag: HeroTags.websiteTileTag(websitehost),
+      child: DefaultListTile(
+        position: position,
+        color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.5),
+        leading: RoundedContainer(
+          width: 14,
+          height: 14,
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.75),
+        ),
+        titleText: websitehost,
+        trailing: IconButton(
           iconSize: 18,
           icon: const Icon(FluentIcons.delete_dismiss_20_regular),
           onPressed: () async {
@@ -41,7 +51,7 @@ class WebsiteTile extends ConsumerWidget {
               context: context,
               heroTag: HeroTags.websiteTileTag(websitehost),
               icon: FluentIcons.delete_dismiss_20_filled,
-              positiveLabel: context.locale.remove_website_dialog_button_remove,
+              positiveLabel: context.locale.dialog_button_remove,
               title: context.locale.remove_website_dialog_title,
               info: context.locale.remove_website_dialog_info(websitehost),
             );

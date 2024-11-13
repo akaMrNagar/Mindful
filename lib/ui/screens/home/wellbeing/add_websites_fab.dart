@@ -32,7 +32,7 @@ class AddWebsitesFAB extends ConsumerWidget {
         ? FloatingActionButton.extended(
             heroTag: HeroTags.addDistractingSiteFABTag,
             label: Text(context.locale.add_website_fab_button),
-            icon: const Icon(FluentIcons.add_20_filled),
+            icon: const Icon(FluentIcons.link_add_20_regular),
             backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Theme.of(context).colorScheme.onPrimary,
             onPressed: () => _onPressedFab(context, ref),

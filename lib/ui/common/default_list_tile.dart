@@ -9,7 +9,9 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -19,8 +21,6 @@ class DefaultListTile extends StatelessWidget {
   /// Alternative to [ListTile] as the list tile widget have some artifact when scrolling while in focus state
   const DefaultListTile({
     super.key,
-    this.height,
-    this.width,
     this.leading,
     this.title,
     this.subtitle,
@@ -33,14 +33,11 @@ class DefaultListTile extends StatelessWidget {
     this.onPressed,
     this.switchValue,
     this.isSelected,
+    this.position,
     this.enabled = true,
     this.isPrimary = false,
-    this.margin = EdgeInsets.zero,
-    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
   });
 
-  final double? height;
-  final double? width;
   final Widget? leading;
   final Widget? title;
   final Widget? subtitle;
@@ -52,21 +49,19 @@ class DefaultListTile extends StatelessWidget {
   final Color? accent;
   final bool? switchValue;
   final bool? isSelected;
+  final ItemPosition? position;
   final VoidCallback? onPressed;
   final bool enabled;
   final bool isPrimary;
-  final EdgeInsets padding;
-  final EdgeInsets margin;
 
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
-      height: height,
-      width: width,
-      padding: padding,
-      margin: margin,
-      circularRadius: (height ?? 64) <= 48 ? 14 : 18,
-      color: isPrimary ? null : color ?? Colors.transparent,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(vertical: 2),
+      borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
+      color:
+          isPrimary ? Theme.of(context).colorScheme.secondaryContainer : color,
       onPressed: enabled ? onPressed : null,
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -76,8 +71,11 @@ class DefaultListTile extends StatelessWidget {
           leadingIcon != null
               ? Icon(
                   leadingIcon,
-                  color:
-                      enabled ? accent : Theme.of(context).colorScheme.outline,
+                  color: enabled
+                      ? accent
+                      : isPrimary
+                          ? Theme.of(context).colorScheme.secondaryContainer
+                          : Theme.of(context).hintColor,
                 )
               : leading ?? 0.hBox,
 
@@ -85,6 +83,7 @@ class DefaultListTile extends StatelessWidget {
           if (leading != null || leadingIcon != null) const SizedBox(width: 16),
           Expanded(
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -94,9 +93,7 @@ class DefaultListTile extends StatelessWidget {
                         titleText!,
                         fontSize: 16,
                         fontWeight: isPrimary ? FontWeight.w500 : null,
-                        color: enabled
-                            ? accent
-                            : Theme.of(context).colorScheme.outline,
+                        color: enabled ? accent : Theme.of(context).hintColor,
                       )
                     : title ?? 0.vBox,
 

@@ -41,7 +41,7 @@ public class FocusSessionService extends Service {
     private static final String TAG = "Mindful.FocusSessionService";
     public static final String INTENT_EXTRA_FOCUS_SESSION_JSON = "focusSessionJson";
     public static final String ACTION_START_SERVICE_FOCUS = "com.mindful.android.FocusSessionService.START_SERVICE_FOCUS";
-
+    private final ServiceBinder<FocusSessionService> mBinder = new ServiceBinder<>(FocusSessionService.this);
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
@@ -77,7 +77,7 @@ public class FocusSessionService extends Service {
 
             /// Start and bind tracking service
             mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopUpdateFocusSession(mFocusSession.distractingApps));
-            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
 
             if (!mFocusSession.distractingApps.isEmpty()) {
                 long diffMs = System.currentTimeMillis() - mFocusSession.startTimeMsEpoch;
@@ -205,6 +205,6 @@ public class FocusSessionService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return new ServiceBinder<>(FocusSessionService.this);
+        return mBinder;
     }
 }

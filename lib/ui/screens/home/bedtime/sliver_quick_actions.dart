@@ -12,12 +12,14 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/permissions/dnd_switch_tile.dart';
 import 'package:mindful/ui/screens/home/bedtime/bedtime_distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -37,32 +39,35 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
   @override
   Widget build(BuildContext context) {
     final shouldStartDnd =
-        ref.watch(bedtimeProvider.select((v) => v.shouldStartDnd));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.shouldStartDnd));
 
     final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
     return MultiSliver(
       children: [
         /// Bedtime actions
-        SliverContentTitle(title: context.locale.quick_actions_heading),
+        ContentSectionHeader(title: context.locale.quick_actions_heading)
+            .sliver,
 
         /// Should start dnd
         DndSwitchTile(
+          position: ItemPosition.start,
           enabled: !isScheduleOn,
           switchValue: shouldStartDnd,
           onPressed: () => ref
-              .read(bedtimeProvider.notifier)
+              .read(bedtimeScheduleProvider.notifier)
               .setShouldStartDnd(!shouldStartDnd),
         ),
 
         /// Manage Dnd settings
-        const DeviceDndTile(),
+        const DeviceDndTile(
+          position: ItemPosition.mid,
+        ),
 
         /// Manage distracting apps
         DefaultListTile(
-          color: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          position: ItemPosition.end,
           leading: const Icon(FluentIcons.weather_moon_20_regular),
           titleText: context.locale.distracting_apps_tile_title,
           subtitleText: context.locale.distracting_apps_tile_subtitle,

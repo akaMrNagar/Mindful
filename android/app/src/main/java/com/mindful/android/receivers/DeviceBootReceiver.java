@@ -16,19 +16,30 @@ import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
+import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
+import com.mindful.android.models.AppRestrictions;
+import com.mindful.android.models.BedtimeSettings;
+import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.Utils;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 /**
- * BroadcastReceiver that handles actions after the device boots up.
+ * BroadcastReceiver that listens for device boot and package replacement events
+ * to restart required services and reschedule any pending alarms.
  */
 public class DeviceBootReceiver extends BroadcastReceiver {
     private static final String TAG = "Mindful.DeviceBootReceiver";
@@ -36,53 +47,80 @@ public class DeviceBootReceiver extends BroadcastReceiver {
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
-        /// The null safe method gets the action from the intent so we can suppress the warning
-        // for 'UnsafeProtectedBroadcastReceiver' but the receiver is safe, just moved the logic to a util method
         String action = Utils.getActionFromIntent(intent);
 
         if (Intent.ACTION_BOOT_COMPLETED.equals(action) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(action)) {
-            Log.d(TAG, "onReceive: Device reboot broadcast received. Now doing the needful");
+            Log.d(TAG, "onReceive: Device reboot broadcast received, initializing necessary services and tasks.");
 
-            // Fetch bedtime settings to check if the bedtime schedule is on
-            boolean isBedtimeScheduleOn = SharedPrefsHelper.fetchBedtimeSettings(context).isScheduleOn;
-
-            // Start needful services
-            startServices(context);
-
-            // Reschedule bedtime workers if the bedtime schedule is on
-            if (isBedtimeScheduleOn) AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(context);
-
-            // Reschedule midnight reset worker
-            AlarmTasksSchedulingHelper.scheduleMidnightResetTask(context, false);
+            // Queue a one-time work request to execute BootWorker tasks
+            WorkManager.getInstance(context).enqueue(new OneTimeWorkRequest.Builder(BootWorker.class).build());
         }
     }
 
-    private void startServices(@NonNull Context context) {
-        try {
-            // Start the MindfulTrackerService if needed
-            if (!SharedPrefsHelper.fetchAppTimers(context).isEmpty()) {
-                Intent serviceIntent = new Intent(context, MindfulTrackerService.class);
-                serviceIntent.setAction(MindfulTrackerService.ACTION_START_SERVICE_TIMER_MODE);
+    /**
+     * Worker class to perform tasks required on device boot, such as starting services
+     * and rescheduling alarms for restrictions and bedtime routines.
+     */
+    public static class BootWorker extends Worker {
+        private final Context mContext;
+        private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
+        private final SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(serviceIntent);
-                } else {
-                    context.startService(serviceIntent);
+        public BootWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+            super(context, params);
+            this.mContext = context;
+            this.mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
+            this.mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, context);
+        }
+
+
+        @NonNull
+        @Override
+        public Result doWork() {
+            try {
+                HashMap<String, AppRestrictions> appRestrictions = SharedPrefsHelper.getSetAppRestrictions(mContext, null);
+                HashMap<Integer, RestrictionGroup> restrictionGroups = SharedPrefsHelper.getSetRestrictionGroups(mContext, null);
+
+                // Collect internet-blocked apps
+                HashSet<String> internetBlockedApps = new HashSet<>();
+                appRestrictions.forEach((packageName, restrictions) -> {
+                    if (!restrictions.canAccessInternet) internetBlockedApps.add(packageName);
+                });
+
+                // Start tracker service to update app and group restrictions
+                mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
+                mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
+
+                // Start VPN service to apply internet restrictions on specified apps
+                mVpnServiceConn.setOnConnectedCallback(service -> service.updateBlockedApps(internetBlockedApps));
+                mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
+
+                // Fetch and apply bedtime settings if enabled
+                BedtimeSettings bedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(mContext, null);
+                if (bedtimeSettings.isScheduleOn) {
+                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(mContext, bedtimeSettings);
                 }
-            }
 
-            // Start the MindfulVpnService if needed
-            if (!SharedPrefsHelper.fetchBlockedApps(context).isEmpty() && MindfulVpnService.prepare(context) == null) {
-                Intent serviceIntent = new Intent(context, MindfulVpnService.class);
-                serviceIntent.setAction(MindfulVpnService.ACTION_START_SERVICE_VPN);
+                // Reschedule midnight reset task
+                AlarmTasksSchedulingHelper.scheduleMidnightResetTask(mContext, false);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(serviceIntent);
-                } else {
-                    context.startService(serviceIntent);
-                }
+                return Result.success();
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error during BootWorker execution", e);
+                return Result.failure();
+            } finally {
+                // Ensure service connections are unbound after execution
+                mTrackerServiceConn.unBindService();
+                mVpnServiceConn.unBindService();
             }
-        } catch (Exception ignored) {
+        }
+
+        @Override
+        public void onStopped() {
+            super.onStopped();
+            mTrackerServiceConn.unBindService();
+            mVpnServiceConn.unBindService();
         }
     }
 }

@@ -13,15 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
+import 'package:mindful/core/enums/default_home_tab.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/locales.dart';
-import 'package:mindful/providers/new/mindful_settings_notifier.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/sliver_content_title.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -31,33 +33,24 @@ class TabGeneral extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mindfulSettings = ref.watch(mindfulSettingsNotifierProvider);
+    final mindfulSettings = ref.watch(mindfulSettingsProvider);
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
         /// Appearance
-        SliverContentTitle(title: context.locale.appearance_heading),
-
-        /// Amoled dark
-        DefaultListTile(
-          switchValue: mindfulSettings.useAmoledDark,
-          titleText: context.locale.amoled_dark_tile_title,
-          subtitleText: context.locale.amoled_dark_tile_subtitle,
-          onPressed: ref
-              .read(mindfulSettingsNotifierProvider.notifier)
-              .switchAmoledDark,
+        ContentSectionHeader(
+          title: context.locale.appearance_heading,
         ).sliver,
 
         /// Theme mode
         DefaultDropdownTile<AppThemeMode>(
+          position: ItemPosition.start,
           value: mindfulSettings.themeMode,
           dialogIcon: FluentIcons.dark_theme_20_filled,
-          label: context.locale.theme_mode_tile_title,
-          // onSelected: ref.read(settingsProvider.notifier).changeThemeMode,
-          onSelected: ref
-              .read(mindfulSettingsNotifierProvider.notifier)
-              .changeThemeMode,
+          titleText: context.locale.theme_mode_tile_title,
+          onSelected:
+              ref.read(mindfulSettingsProvider.notifier).changeThemeMode,
           items: [
             DefaultDropdownItem(
               label: context.locale.theme_mode_system_label,
@@ -76,15 +69,15 @@ class TabGeneral extends ConsumerWidget {
 
         /// Material Color
         DefaultDropdownTile<String>(
-          label: context.locale.material_color_tile_title,
+          position: ItemPosition.mid,
+          titleText: context.locale.material_color_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.accentColor,
-          onSelected:
-              ref.read(mindfulSettingsNotifierProvider.notifier).changeColor,
+          onSelected: ref.read(mindfulSettingsProvider.notifier).changeColor,
           trailingBuilder: (item) => RoundedContainer(
             height: 18,
             width: 18,
-            circularRadius: 15,
+            circularRadius: 18,
             color: AppTheme.materialColors[item],
           ),
           items: AppTheme.materialColors.entries
@@ -96,17 +89,37 @@ class TabGeneral extends ConsumerWidget {
               .toList(),
         ).sliver,
 
+        /// Amoled dark
+        DefaultListTile(
+          position: ItemPosition.mid,
+          switchValue: mindfulSettings.useAmoledDark,
+          titleText: context.locale.amoled_dark_tile_title,
+          subtitleText: context.locale.amoled_dark_tile_subtitle,
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchAmoledDark,
+        ).sliver,
+
+        /// Amoled dark
+        DefaultListTile(
+          position: ItemPosition.end,
+          switchValue: mindfulSettings.useDynamicColors,
+          titleText: context.locale.dynamic_colors_tile_title,
+          subtitleText: context.locale.dynamic_colors_tile_subtitle,
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchDynamicColor,
+        ).sliver,
+
         /// Default settings
         12.vSliverBox,
-        SliverContentTitle(title: context.locale.defaults_heading),
+        ContentSectionHeader(title: context.locale.defaults_heading).sliver,
 
         /// App Language
         DefaultDropdownTile<String>(
-          label: context.locale.app_language_tile_title,
+          position: ItemPosition.start,
+          titleText: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.localeCode,
-          onSelected:
-              ref.read(mindfulSettingsNotifierProvider.notifier).changeLocale,
+          onSelected: ref.read(mindfulSettingsProvider.notifier).changeLocale,
           items: AppLocalizations.supportedLocales
               .map((e) => DefaultDropdownItem(
                     value: e.languageCode,
@@ -116,18 +129,46 @@ class TabGeneral extends ConsumerWidget {
               .toList(),
         ).sliver,
 
+        /// Default home tab
+        DefaultDropdownTile<DefaultHomeTab>(
+          position: ItemPosition.mid,
+          titleText: context.locale.default_home_tab_tile_title,
+          dialogIcon: FluentIcons.color_20_filled,
+          value: mindfulSettings.defaultHomeTab,
+          onSelected: ref.read(mindfulSettingsProvider.notifier).changeHomeTab,
+          items: [
+            DefaultDropdownItem(
+              label: context.locale.dashboard_tab_title,
+              value: DefaultHomeTab.dashboard,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.statistics_tab_title,
+              value: DefaultHomeTab.statistics,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.wellbeing_tab_title,
+              value: DefaultHomeTab.wellbeing,
+            ),
+            DefaultDropdownItem(
+              label: context.locale.bedtime_tab_title,
+              value: DefaultHomeTab.bedtime,
+            ),
+          ],
+        ).sliver,
+
         /// Bottom navigation
         DefaultListTile(
+          position: ItemPosition.mid,
           switchValue: mindfulSettings.useBottomNavigation,
           titleText: context.locale.bottom_navigation_tile_title,
           subtitleText: context.locale.bottom_navigation_tile_subtitle,
-          onPressed: ref
-              .read(mindfulSettingsNotifierProvider.notifier)
-              .switchBottomNavigation,
+          onPressed:
+              ref.read(mindfulSettingsProvider.notifier).switchBottomNavigation,
         ).sliver,
 
         /// Data reset time
         DefaultListTile(
+          position: ItemPosition.end,
           titleText: context.locale.data_reset_time_tile_title,
           subtitleText: context.locale.data_reset_time_tile_subtitle,
           trailing: StyledText(
@@ -144,7 +185,7 @@ class TabGeneral extends ConsumerWidget {
 
             if (pickedTime != null && context.mounted) {
               ref
-                  .read(mindfulSettingsNotifierProvider.notifier)
+                  .read(mindfulSettingsProvider.notifier)
                   .changeDataResetTime(pickedTime);
             }
           },

@@ -15,6 +15,8 @@
     <string name="app_name" translatable="false">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block websites and short-form content on apps. It checks URLs and content against your blocklist and prevents access to help you stay focused. \n\n⚠️Note: Your privacy is our priority. Mindful is 100% secure and works offline. We do not collect or store any personal data. </string>
     <string name="toast_enable_notification">Please enable notification</string>
+    <string name="toast_blocked_content">Content blocked!, going back</string>
+    <string name="toast_redirecting">Redirecting to safe search result</string>
     <string name="service_running_notification_title">Mindful is running</string>
 
     <!-- usage widget values = usage home widget for android -->
@@ -29,10 +31,10 @@
     <!-- app blocker service = service for tracking app usage and launched  -->
     <string name="app_blocker_running_notification_info">Mindful is now tracking app usage to help you stay focused and manage your digital habits.</string>
     <!--
-        placeholder in app_pause_notification_title will be one of [20, 10, 5, 1]
+        placeholder in app_pause_notification_title will be the left limit
         Example output: "20 minutes left"
     -->
-    <string name="app_pause_notification_title" formatted="true">"%d minutes left"</string>
+    <string name="app_pause_notification_title" formatted="true">"%s left"</string>
     <!--
         placeholder in app_pause_alert_notification_info will be 'AppName'
         Example output: "Instagram will be paused for the rest of the day"
@@ -42,11 +44,24 @@
     <!-- app paused overlay dialog service = dialog shown when pause app is launched  -->
     <string name="overlay_permission_denied_notification_title">Permission denied</string>
     <string name="overlay_permission_denied_notification_info">Please grant display overlay permission to Mindful by clicking on the notification. On the next screen, find Mindful in the list of apps and click on allow.</string>
-    <string name="app_paused_dialog_content_for_timer">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
-    <string name="app_paused_dialog_content_for_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
-    <string name="app_paused_dialog_content_for_focus_session">It\'s focus time! This app is paused to help you stay on track and make the most of your session.</string>
+
+    <string name="app_paused_dialog_info_for_focus_session">It\'s focus time! This app is paused to help you stay on track and make the most of your session.</string>
+    <string name="app_paused_dialog_info_for_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
+    <string name="app_paused_dialog_info_for_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
+    <string name="app_paused_dialog_info_for_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
+    <string name="app_paused_dialog_info_for_app_timer_left">You\’ve been using this app for a while now. Let\’s shift gears and take a break from the screen and focus on something productive.</string>
+    <string name="app_paused_dialog_info_for_group_timer_out" formatted="true">You\’ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
+    <string name="app_paused_dialog_info_for_group_timer_left" formatted="true">You\’ve been using apps from the “%s” group for a while now. It\’s time to take a step back and concentrate on your tasks, not your screen.</string>
+
+
+    <!-- placeholder in app_paused_dialog_progress_spent will be time formatted string like '4h 13m' for 4 minutes 13 seconds -->
+    <string name="app_paused_dialog_progress_spent" formatted="true">"%s spent"</string>
+    <!-- placeholder in app_paused_dialog_progress_left will be time formatted string like '4h 13m' for 4 minutes 13 seconds -->
+    <string name="app_paused_dialog_progress_left" formatted="true">"%s left"</string>
+
     <string name="app_paused_dialog_button_emergency">Emergency</string>
-    <string name="app_paused_dialog_button_close">Close</string>
+    <string name="app_paused_dialog_button_use_anyway">Use anyway</string>
+    <string name="app_paused_dialog_button_close_app">Close app</string>
 
     <!-- bedtime = scheduled bedtime alert notification -->
     <string name="bedtime_ended_notification_info">Rise and shine! Bedtime routine has ended, get ready to start the day energized and refreshed.</string>

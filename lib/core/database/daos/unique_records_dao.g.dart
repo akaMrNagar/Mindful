@@ -6,6 +6,8 @@ part of 'unique_records_dao.dart';
 mixin _$UniqueRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $MindfulSettingsTableTable get mindfulSettingsTable =>
       attachedDatabase.mindfulSettingsTable;
+  $InvincibleModeTableTable get invincibleModeTable =>
+      attachedDatabase.invincibleModeTable;
   $BedtimeScheduleTableTable get bedtimeScheduleTable =>
       attachedDatabase.bedtimeScheduleTable;
   $FocusModeTableTable get focusModeTable => attachedDatabase.focusModeTable;

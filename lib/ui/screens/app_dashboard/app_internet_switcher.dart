@@ -11,10 +11,11 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
 
@@ -33,8 +34,8 @@ class AppInternetSwitcher extends ConsumerWidget {
     final havePermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
-    final haveInternetAccess = ref.watch(restrictionInfosProvider
-            .select((value) => value[app.packageName]?.internetAccess)) ??
+    final haveInternetAccess = ref.watch(appsRestrictionsProvider
+            .select((value) => value[app.packageName]?.canAccessInternet)) ??
         true;
 
     onPressed() => havePermission
@@ -54,19 +55,17 @@ class AppInternetSwitcher extends ConsumerWidget {
             onPressed: onPressed,
           )
         : DefaultListTile(
+            position: ItemPosition.mid,
             switchValue: haveInternetAccess,
             enabled: !app.isImpSysApp,
             titleText: context.locale.internet_access_tile_title,
-            subtitleText: app.isImpSysApp
-                ? context.locale.internet_access_tile_subtitle_unavailable
-                : context.locale.internet_access_tile_subtitle,
+            subtitleText: context.locale.internet_access_tile_subtitle,
             leadingIcon: haveInternetAccess
                 ? FluentIcons.globe_20_regular
                 : FluentIcons.globe_prohibited_16_filled,
             accent:
                 haveInternetAccess ? null : Theme.of(context).colorScheme.error,
             isSelected: havePermission,
-            margin: const EdgeInsets.only(bottom: 2),
             onPressed: onPressed,
           );
   }
@@ -92,7 +91,7 @@ class AppInternetSwitcher extends ConsumerWidget {
     WidgetRef ref,
     bool haveInternetAccess,
   ) {
-    ref.read(restrictionInfosProvider.notifier).switchInternetAccess(
+    ref.read(appsRestrictionsProvider.notifier).switchInternetAccess(
           app.packageName,
           haveInternetAccess,
         );

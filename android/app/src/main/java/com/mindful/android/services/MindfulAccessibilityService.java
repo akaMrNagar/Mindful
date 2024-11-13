@@ -30,6 +30,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.Browser;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -39,18 +41,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.mindful.android.R;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.helpers.ShortsBlockingHelper;
 import com.mindful.android.models.WellBeingSettings;
 import com.mindful.android.utils.NsfwDomains;
 import com.mindful.android.utils.Utils;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
@@ -96,6 +100,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             ":id/bro_omnibar_address_title_text"
     ));
 
+    // Fixed thread pool for parallel event processing
+    private final ExecutorService mExecutorService = Executors.newFixedThreadPool(4);
     private AppInstallUninstallReceiver mAppInstallUninstallReceiver;
     private WellBeingSettings mWellBeingSettings = new WellBeingSettings();
     private Map<String, Boolean> mNsfwWebsites = new HashMap<>();
@@ -113,7 +119,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         if (ACTION_MIDNIGHT_SERVICE_RESET.equals(action)) {
             mTotalShortsScreenTimeMs = 0;
-            SharedPrefsHelper.storeShortsScreenTimeMs(this, 0);
+            SharedPrefsHelper.getSetShortsScreenTimeMs(this, 0L);
             Log.d(TAG, "onStartCommand: Midnight reset completed");
         }
         return super.onStartCommand(intent, flags, startId);
@@ -123,10 +129,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     protected void onServiceConnected() {
         super.onServiceConnected();
 
-        // Register shared prefs listener
-        SharedPrefsHelper.registerListener(this, this);
-        mWellBeingSettings = SharedPrefsHelper.fetchWellBeingSettings(this);
-        mTotalShortsScreenTimeMs = SharedPrefsHelper.fetchShortsScreenTimeMs(this);
+        // Register shared prefs listener and load data
+        SharedPrefsHelper.registerUnregisterListener(this, true, this);
+        mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null);
+        mTotalShortsScreenTimeMs = SharedPrefsHelper.getSetShortsScreenTimeMs(this, null);
 
         // Register listener for install and uninstall events
         if (mAppInstallUninstallReceiver == null) {
@@ -138,72 +144,83 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             registerReceiver(mAppInstallUninstallReceiver, filter);
         }
 
-        // Start timer to reset shortsScreen time everyday midnight
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        calendar.add(Calendar.DATE, 1);
         refreshServiceInfo();
         Log.d(TAG, "onCreate: Accessibility service started successfully");
     }
 
     @Override
     public void onAccessibilityEvent(@NonNull AccessibilityEvent event) {
-        // Return if no need for blocking
-        if (mWellBeingSettings.blockedWebsites.isEmpty() &&
-                !mWellBeingSettings.blockInstaReels &&
-                !mWellBeingSettings.blockYtShorts &&
-                !mWellBeingSettings.blockSnapSpotlight &&
-                !mWellBeingSettings.blockFbReels &&
-                !mWellBeingSettings.blockNsfwSites
-        ) {
+        // Minimal checks on the main thread
+        if (!shouldBlockContent() || event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null) {
             return;
         }
 
-        if (event.getEventType() != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED || event.getPackageName() == null) {
-            return;
-        }
-
+        // Capture event data for background processing
         String packageName = event.getPackageName().toString();
         AccessibilityNodeInfo node = event.getSource();
 
-        // Return if not enough information about node
+        // Return early if node data is insufficient
         if (node == null || node.getClassName() == null) return;
-        switch (packageName) {
-            case INSTAGRAM_PACKAGE:
-                if (mWellBeingSettings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
-                    checkTimerAndBlockShortContent();
-                }
-                break;
-            case SNAPCHAT_PACKAGE:
-                if (mWellBeingSettings.blockSnapSpotlight && ShortsBlockingHelper.isSnapchatSpotlightOpen(node)) {
-                    checkTimerAndBlockShortContent();
-                }
-                break;
-            case FACEBOOK_PACKAGE:
-                if (mWellBeingSettings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node)) {
-                    checkTimerAndBlockShortContent();
-                }
-                break;
-            case REDDIT_PACKAGE:
-                if (mWellBeingSettings.blockRedditShorts && ShortsBlockingHelper.isRedditShortsOpen(node)) {
-                    checkTimerAndBlockShortContent();
-                }
-                break;
-            default:
-                // Youtube shorts may be open on original or another clients like revanced so check it out
-                if (mWellBeingSettings.blockYtShorts
-                        && packageName.contains(YOUTUBE_CLIENT_PACKAGE_PREFIX)
-                        && ShortsBlockingHelper.isYoutubeShortsOpen(node, packageName)
-                ) {
-                    checkTimerAndBlockShortContent();
-                } else {
-                    blockDistractionOnBrowsers(node, packageName);
-                }
-                break;
+
+        // Offload the main processing to a background thread
+        mExecutorService.submit(() -> processEventInBackground(packageName, node));
+    }
+
+    /**
+     * Processes accessibility event in background thread instead of main thread.
+     *
+     * @param packageName The package name of the app generating the event.
+     * @param node        The accessibility node representing the UI element currently in focus.
+     */
+    private void processEventInBackground(@NonNull String packageName, AccessibilityNodeInfo node) {
+        try {
+            // Copy settings for this thread
+            WellBeingSettings settings = mWellBeingSettings.makeCopy();
+
+            boolean shouldBlock = false;
+            switch (packageName) {
+                case INSTAGRAM_PACKAGE:
+                    shouldBlock = settings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node);
+                    break;
+                case SNAPCHAT_PACKAGE:
+                    shouldBlock = settings.blockSnapSpotlight && ShortsBlockingHelper.isSnapchatSpotlightOpen(node);
+                    break;
+                case FACEBOOK_PACKAGE:
+                    shouldBlock = settings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node);
+                    break;
+                case REDDIT_PACKAGE:
+                    shouldBlock = settings.blockRedditShorts && ShortsBlockingHelper.isRedditShortsOpen(node);
+                    break;
+                default:
+                    if (settings.blockYtShorts && packageName.contains(YOUTUBE_CLIENT_PACKAGE_PREFIX)) {
+                        shouldBlock = ShortsBlockingHelper.isYoutubeShortsOpen(node, packageName);
+                    } else {
+                        blockDistractionOnBrowsers(node, packageName);
+                    }
+                    break;
+            }
+
+            if (shouldBlock) {
+                checkTimerAndBlockShortContent();
+            }
+        } catch (Exception ignored) {
         }
+    }
+
+
+    /**
+     * Determines whether content should be blocked based on the current settings.
+     *
+     * @return {@code true} if content should be blocked based on the current settings,
+     * {@code false} otherwise.
+     */
+    private boolean shouldBlockContent() {
+        return !mWellBeingSettings.blockedWebsites.isEmpty() ||
+                mWellBeingSettings.blockInstaReels ||
+                mWellBeingSettings.blockYtShorts ||
+                mWellBeingSettings.blockSnapSpotlight ||
+                mWellBeingSettings.blockFbReels ||
+                mWellBeingSettings.blockNsfwSites;
     }
 
     /**
@@ -281,21 +298,25 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         long currentTime = System.currentTimeMillis();
 
         if ((currentTime - mLastTimeUrlRedirectInvoked) >= URL_REDIRECT_INVOKE_INTERVAL_MS) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)));
-            intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
-            intent.setPackage(browserPackage);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // Post to the main thread
+            new Handler(Looper.getMainLooper()).post(() -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)));
+                intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
+                intent.setPackage(browserPackage);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                // Popping first to replace head of browser history stack instead of inserting in it.
-                performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                startActivity(intent);
-                Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
-            } else {
-                Log.e(TAG, "No application found to handle the Intent for URL: " + url);
-            }
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    Toast.makeText(MindfulAccessibilityService.this, getString(R.string.toast_redirecting), Toast.LENGTH_LONG).show();
+                    // Popping first to replace head of browser history stack instead of inserting in it.
+                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
+                    startActivity(intent);
+                    Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
+                } else {
+                    Log.e(TAG, "No application found to handle the Intent for URL: " + url);
+                }
 
-            mLastTimeUrlRedirectInvoked = currentTime;
+                mLastTimeUrlRedirectInvoked = currentTime;
+            });
         }
     }
 
@@ -308,23 +329,27 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      */
     @NonNull
     private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
-        for (String id : mUrlBarNodeIds) {
-            List<AccessibilityNodeInfo> urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id);
-            if (urlBarNodes != null && !urlBarNodes.isEmpty()) {
-                CharSequence txtSequence = urlBarNodes.get(0).getText();
+        try {
+            for (String id : mUrlBarNodeIds) {
+                List<AccessibilityNodeInfo> urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id);
+                if (urlBarNodes != null && !urlBarNodes.isEmpty()) {
+                    CharSequence txtSequence = urlBarNodes.get(0).getText();
+                    if (txtSequence != null && txtSequence.length() > 1) {
+                        return txtSequence.toString();
+                    }
+                }
+            }
+
+            // Find by input field class
+            if (node.getClassName().equals("android.widget.EditText")) {
+                CharSequence txtSequence = node.getText();
                 if (txtSequence != null && txtSequence.length() > 1) {
                     return txtSequence.toString();
                 }
             }
+        } catch (Exception ignored) {
         }
 
-        // Find by input field class
-        if (node.getClassName().equals("android.widget.EditText")) {
-            CharSequence txtSequence = node.getText();
-            if (txtSequence != null && txtSequence.length() > 1) {
-                return txtSequence.toString();
-            }
-        }
         return "";
     }
 
@@ -347,7 +372,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Check if the minimum interval has passed before calling shared preferences
         if ((currentTime - mLastTimeSharedPrefInvoked) > SHARED_PREF_INVOKE_INTERVAL_MS) {
-            SharedPrefsHelper.storeShortsScreenTimeMs(this, mTotalShortsScreenTimeMs);
+            SharedPrefsHelper.getSetShortsScreenTimeMs(this, mTotalShortsScreenTimeMs);
             mLastTimeSharedPrefInvoked = currentTime;
             Log.d(TAG, "checkTimerAndBlockShortContent: shorts time saved: " + (mTotalShortsScreenTimeMs / 1000L) + " seconds");
         }
@@ -360,8 +385,14 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         long currentTime = System.currentTimeMillis();
         if (currentTime - mLastTimeBackActionInvoked >= BACK_ACTION_INVOKE_INTERVAL_MS) {
             mLastTimeBackActionInvoked = currentTime;
-            performGlobalAction(GLOBAL_ACTION_BACK);
-            Toast.makeText(MindfulAccessibilityService.this, "Content blocked!, going back", Toast.LENGTH_SHORT).show();
+
+            new Handler(Looper.getMainLooper()).post(() -> {
+                // Perform the back action (can be done on background thread)
+                performGlobalAction(GLOBAL_ACTION_BACK);
+
+                // Post Toast to main thread
+                Toast.makeText(MindfulAccessibilityService.this, getString(R.string.toast_blocked_content), Toast.LENGTH_LONG).show();
+            });
         }
     }
 
@@ -423,24 +454,26 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     public void onSharedPreferenceChanged(SharedPreferences prefs, @Nullable String changedKey) {
         if (changedKey != null && changedKey.equals(SharedPrefsHelper.PREF_KEY_WELLBEING_SETTINGS)) {
             Log.d(TAG, "OnSharedPrefsChanged: Key changed = " + changedKey);
-            mWellBeingSettings = SharedPrefsHelper.fetchWellBeingSettings(this);
+            mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null);
             refreshServiceInfo();
         }
     }
 
     @Override
     public void onInterrupt() {
+        mExecutorService.shutdown();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mExecutorService.shutdown();
         // Unregister prefs listener and receiver
         if (mAppInstallUninstallReceiver != null) {
             unregisterReceiver(mAppInstallUninstallReceiver);
             mAppInstallUninstallReceiver = null;
         }
-        SharedPrefsHelper.unregisterListener(this, this);
+        SharedPrefsHelper.registerUnregisterListener(this, false, this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }
 

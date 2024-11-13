@@ -11,12 +11,14 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/models/isar/focus_session.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
@@ -26,9 +28,11 @@ class SessionTile extends StatelessWidget {
   const SessionTile({
     super.key,
     required this.session,
+    this.position,
   });
 
   final FocusSession session;
+  final ItemPosition? position;
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +50,10 @@ class SessionTile extends StatelessWidget {
 
     final stateColor = stateColors[session.state.index];
     final stateLabel = stateLabels[session.state.index];
-    final dateTime = session.startTime;
+    final dateTime = session.startDateTime;
 
     return RoundedContainer(
+      borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.all(12),
       color: Theme.of(context).colorScheme.surfaceContainerLow,
@@ -83,18 +88,21 @@ class SessionTile extends StatelessWidget {
                   child: StyledText(
                     "${context.locale.focus_session_tile_time_label}: ${dateTime.timeString(context)}",
                     color: Theme.of(context).hintColor,
+                    fontSize: 14,
                   ),
                 ),
                 Skeleton.leaf(
                   child: StyledText(
                     "${context.locale.focus_session_tile_date_label}: ${dateTime.dateString(context)}",
                     color: Theme.of(context).hintColor,
+                    fontSize: 14,
                   ),
                 ),
                 Skeleton.leaf(
                   child: StyledText(
-                    "${context.locale.focus_session_tile_duration_label}: ${session.duration.toTimeFull(context)}",
+                    "${context.locale.focus_session_tile_duration_label}: ${session.durationSecs.seconds.toTimeFull(context)}",
                     color: Theme.of(context).hintColor,
+                    fontSize: 14,
                   ),
                 ),
 

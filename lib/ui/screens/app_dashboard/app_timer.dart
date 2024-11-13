@@ -12,20 +12,21 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/new/mindful_settings_notifier.dart';
-import 'package:mindful/providers/restriction_infos_provider.dart';
+import 'package:mindful/providers/invincible_mode_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
-class AppTimerPicker extends ConsumerWidget {
-  const AppTimerPicker({
+class AppTimer extends ConsumerWidget {
+  const AppTimer({
     required this.app,
     this.isIconButton = false,
     super.key,
@@ -36,8 +37,8 @@ class AppTimerPicker extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTimer = ref.watch(restrictionInfosProvider
-            .select((value) => value[app.packageName]?.timerSec)) ??
+    final appTimer = ref.watch(appsRestrictionsProvider
+            .select((v) => v[app.packageName]?.timerSec)) ??
         0;
 
     final isPurged =
@@ -57,18 +58,16 @@ class AppTimerPicker extends ConsumerWidget {
         : DefaultHero(
             tag: HeroTags.appTimerTileTag(app.packageName),
             child: DefaultListTile(
+              position: ItemPosition.start,
               titleText: context.locale.app_timer_tile_title,
               enabled: !app.isImpSysApp,
-              subtitleText: app.isImpSysApp
-                  ? context.locale.app_timer_tile_subtitle_unavailable
-                  : appTimer > 0
-                      ? appTimer.seconds.toTimeFull(context)
-                      : context.locale.app_timer_tile_subtitle_no_timer,
+              subtitleText: appTimer > 0
+                  ? appTimer.seconds.toTimeFull(context)
+                  : context.locale.app_limit_status_not_set,
               leadingIcon: FluentIcons.timer_20_regular,
               accent: isPurged ? Theme.of(context).colorScheme.error : null,
-              trailing: isPurged
-                  ? Text(context.locale.app_timer_tile_trailing_paused)
-                  : null,
+              trailing:
+                  isPurged ? Text(context.locale.timer_status_paused) : null,
               onPressed: () => _pickAppTimer(
                 context,
                 ref,
@@ -83,15 +82,16 @@ class AppTimerPicker extends ConsumerWidget {
     WidgetRef ref,
     int prevTimer,
   ) async {
-    final isInvincibleModeOn = ref.read(
-      mindfulSettingsNotifierProvider.select((v) => v.isInvincibleModeOn),
+    final isInvincibleModeRestricted = ref.read(
+      invincibleModeProvider
+          .select((v) => v.isInvincibleModeOn && v.includeAppsTimer),
     );
 
-    if (isInvincibleModeOn &&
+    if (isInvincibleModeRestricted &&
         prevTimer > 0 &&
         app.screenTimeThisWeek[todayOfWeek] >= prevTimer) {
       context.showSnackAlert(
-        context.locale.app_timer_invincible_mode_snack_alert,
+        context.locale.invincible_mode_snack_alert,
       );
       return;
     }
@@ -107,7 +107,7 @@ class AppTimerPicker extends ConsumerWidget {
 
     if (newTimer == prevTimer) return;
     ref
-        .read(restrictionInfosProvider.notifier)
+        .read(appsRestrictionsProvider.notifier)
         .updateAppTimer(app.packageName, newTimer);
   }
 }

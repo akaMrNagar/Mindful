@@ -32,9 +32,17 @@ class DeviceAppsList
   Future<bool> refreshDeviceApps() async {
     state = const AsyncLoading();
     final appsList = await MethodChannelService.instance.getDeviceApps();
+    final appLaunches =
+        await MethodChannelService.instance.getAppLaunchCounts();
+
     final cache = AsyncData(
       Map.fromEntries(
-        appsList.map((e) => MapEntry(e.packageName, e)),
+        appsList.map(
+          (e) => MapEntry(
+            e.packageName,
+            e.copyWith(launchCount: appLaunches[e.packageName] ?? 0),
+          ),
+        ),
       ),
     );
 

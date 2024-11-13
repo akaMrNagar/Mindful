@@ -70,21 +70,19 @@ public class BedtimeSettings {
             Log.d("Mindful.BedtimeSettings", "JSON string passed to the constructor is empty");
         } else {
             try {
-                // Clean the JSON string and parse it
-                jsonString = jsonString.replace("\\", "");
-                JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
+                JSONObject jsonObject = new JSONObject(jsonString);
 
                 // Deserialize fields
-                isScheduleOn = jsonObject.optBoolean("isScheduleOn", false);
-                startTimeInMins = jsonObject.optInt("startTimeInMins", 0);
-                totalDurationInMins = jsonObject.optInt("totalDurationInMins", 0);
-                shouldStartDnd = jsonObject.optBoolean("shouldStartDnd", false);
+                this.isScheduleOn = jsonObject.optBoolean("isScheduleOn", false);
+                this.startTimeInMins = jsonObject.optInt("startTimeInMins", 0);
+                this.totalDurationInMins = jsonObject.optInt("totalDurationInMins", 0);
+                this.shouldStartDnd = jsonObject.optBoolean("shouldStartDnd", false);
 
                 // Deserialize schedule days
                 JSONArray daysJsonArray = jsonObject.optJSONArray("scheduleDays");
                 if (daysJsonArray != null) {
                     for (int i = 0; i < daysJsonArray.length(); i++) {
-                        scheduleDays.set(i, daysJsonArray.getBoolean(i));
+                        this.scheduleDays.set(i, daysJsonArray.getBoolean(i));
                     }
                 }
 
@@ -92,7 +90,7 @@ public class BedtimeSettings {
                 JSONArray appsJsonArray = jsonObject.optJSONArray("distractingApps");
                 if (appsJsonArray != null) {
                     for (int i = 0; i < appsJsonArray.length(); i++) {
-                        distractingApps.add(appsJsonArray.getString(i));
+                        this.distractingApps.add(appsJsonArray.getString(i));
                     }
                 }
 

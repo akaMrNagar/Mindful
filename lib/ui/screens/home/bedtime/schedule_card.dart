@@ -9,12 +9,16 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
+import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -25,23 +29,24 @@ class ScheduleCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isScheduleOn =
-        ref.watch(bedtimeProvider.select((v) => v.isScheduleOn));
+        ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
-    final startTime = ref.watch(bedtimeProvider.select((v) => v.startTime));
+    final startTime = ref.watch(
+        bedtimeScheduleProvider.select((v) => v.startTimeInMins.toTimeOfDay));
 
-    final endTime = ref.watch(bedtimeProvider.select((v) => v.endTime));
+    final endTime = ref.watch(
+        bedtimeScheduleProvider.select((v) => v.endTimeInMins.toTimeOfDay));
 
-    final totalDuration =
-        ref.watch(bedtimeProvider.select((v) => v.totalDuration));
+    final totalDuration = ref.watch(
+        bedtimeScheduleProvider.select((v) => v.totalDurationInMins.minutes));
 
-    final scheduleDays =
-        ref.watch(bedtimeProvider.select((value) => value.scheduleDays));
+    final scheduleDays = ref
+        .watch(bedtimeScheduleProvider.select((value) => value.scheduleDays));
 
     return RoundedContainer(
       height: 224,
-      circularRadius: 24,
-      color: Theme.of(context).colorScheme.surfaceContainer,
-      padding: const EdgeInsets.all(16),
+      borderRadius: getBorderRadiusFromPosition(ItemPosition.start),
+      padding: const EdgeInsets.all(12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -55,7 +60,7 @@ class ScheduleCard extends ConsumerWidget {
                 enabled: !isScheduleOn,
                 initialTime: startTime,
                 onChange: (t) {
-                  ref.read(bedtimeProvider.notifier).setBedtimeStart(t);
+                  ref.read(bedtimeScheduleProvider.notifier).setBedtimeStart(t);
                 },
               ),
 
@@ -65,7 +70,7 @@ class ScheduleCard extends ConsumerWidget {
                 enabled: !isScheduleOn,
                 initialTime: endTime,
                 onChange: (t) =>
-                    ref.read(bedtimeProvider.notifier).setBedtimeEnd(t),
+                    ref.read(bedtimeScheduleProvider.notifier).setBedtimeEnd(t),
               ),
             ],
           ),
@@ -99,7 +104,7 @@ class ScheduleCard extends ConsumerWidget {
                   onPressed: isScheduleOn
                       ? null
                       : () => ref
-                          .read(bedtimeProvider.notifier)
+                          .read(bedtimeScheduleProvider.notifier)
                           .toggleScheduleDay(index),
                   child: AspectRatio(
                     aspectRatio: 1,

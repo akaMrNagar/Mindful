@@ -18,6 +18,7 @@ class AppConstants {
   static const defaultMaterialColor = "Indigo";
   static const defaultLocale = "en";
   static const defaultUsername = "Hustler";
+  static const defaultCurve = Curves.easeOut;
 
   // Custom packages
   static const removedAppPackage = "com.android.removed";
