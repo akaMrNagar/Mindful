@@ -23,9 +23,11 @@ import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.models.WellBeingSettings;
 import com.mindful.android.utils.JsonDeserializer;
+import com.mindful.android.utils.Utils;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -37,6 +39,7 @@ public class SharedPrefsHelper {
     private static final String PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "mindful.notificationPermissionCount";
     private static final String PREF_KEY_DATA_RESET_TIME_MINS = "mindful.dataResetTimeMins";
     private static final String PREF_KEY_SHORTS_SCREEN_TIME = "mindful.shortsScreenTime";
+    private static final String PREF_KEY_EXCLUDED_APPS = "mindful.excludedApps";
     private static final String PREF_KEY_APP_RESTRICTIONS = "mindful.appRestrictions";
     private static final String PREF_KEY_RESTRICTION_GROUPS = "mindful.restrictionGroups";
     private static final String PREF_KEY_BEDTIME_SETTINGS = "mindful.bedtimeSettings";
@@ -109,12 +112,18 @@ public class SharedPrefsHelper {
     }
 
 
-    /**
-     * Stores the screen time in milliseconds for shorts.
-     *
-     * @param context    The application context.
-     * @param screenTime The screen time in milliseconds.
-     */
+    @NonNull
+    public static HashSet<String> getSetExcludedApps(@NonNull Context context, @Nullable String jsonExcludedApps) {
+        checkAndInitializePrefs(context);
+        if (jsonExcludedApps == null) {
+            return JsonDeserializer.jsonStrToStringHashSet(Utils.notNullStr(mSharedPrefs.getString(PREF_KEY_EXCLUDED_APPS, "")));
+        } else {
+            mSharedPrefs.edit().putString(PREF_KEY_EXCLUDED_APPS, jsonExcludedApps).apply();
+            return JsonDeserializer.jsonStrToStringHashSet(jsonExcludedApps);
+        }
+    }
+
+
     public static long getSetShortsScreenTimeMs(@NonNull Context context, @Nullable Long screenTime) {
         checkAndInitializePrefs(context);
         if (screenTime == null) {

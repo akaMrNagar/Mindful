@@ -43,6 +43,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 
@@ -53,7 +54,7 @@ import java.util.List;
  * Clicking the widget opens the Mindful app.
  */
 public class DeviceUsageWidget extends AppWidgetProvider {
-    private static final long WIDGET_MANUAL_REFRESH_INTERVAL = 60 * 1000; // 1 minute
+    private static final long WIDGET_MANUAL_REFRESH_INTERVAL = 5 * 1000;  // 5 seconds
     private static long lastRefreshedTime = 0L;
     private static final String TAG = "Mindful.DeviceUsageWidget";
     private static final String WIDGET_ACTION_REFRESH = "com.mindful.android.ACTION_REFRESH";
@@ -144,7 +145,7 @@ public class DeviceUsageWidget extends AppWidgetProvider {
         launchIntent.setAction(WIDGET_ACTION_LAUNCH_APP);
         PendingIntent launchPendingIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        views.setOnClickPendingIntent(R.id.widgetRefreshIcon, refreshPendingIntent);
+        views.setOnClickPendingIntent(R.id.widgetRefreshButton, refreshPendingIntent);
         views.setOnClickPendingIntent(R.id.widgetRoot, launchPendingIntent);
     }
 
@@ -185,6 +186,9 @@ public class DeviceUsageWidget extends AppWidgetProvider {
         List<PackageInfo> deviceApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA);
 
 
+        // Fetch excluded apps
+        HashSet<String> excludedApps = SharedPrefsHelper.getSetExcludedApps(context, null);
+
         Long wifiUsageKbs = 0L;
         Long mobileUsageKbs = 0L;
         Long screenTimeSec = 0L;
@@ -192,10 +196,14 @@ public class DeviceUsageWidget extends AppWidgetProvider {
         for (PackageInfo app : deviceApps) {
             // Only include apps which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
-                screenTimeSec += screenUsageOneDay.getOrDefault(app.packageName, 0L);
                 int appUid = app.applicationInfo.uid;
                 mobileUsageKbs += mobileUsageOneDay.getOrDefault(appUid, 0L);
                 wifiUsageKbs += wifiUsageOneDay.getOrDefault(appUid, 0L);
+
+
+                // skip excluded apps
+                if (excludedApps.contains(app.packageName)) continue;
+                screenTimeSec += screenUsageOneDay.getOrDefault(app.packageName, 0L);
             }
         }
 

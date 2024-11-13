@@ -96,15 +96,13 @@
 
 
         <!--    Refresh icon layer  -->
-        <ImageView
-            android:id="@+id/widgetRefreshIcon"
+        <ImageButton
+            android:id="@+id/widgetRefreshButton"
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_gravity="top|end"
-            android:clickable="true"
-            android:focusable="true"
-            android:importantForAccessibility="no"
-            android:padding="16dp"
+            android:background="@drawable/circular_button_bg"
+            android:contentDescription="@string/app_name"
             android:src="@drawable/ic_refresh"
             tools:ignore="RtlSymmetry" />
     </FrameLayout>

@@ -460,9 +460,9 @@
     },
     "go_to_app_settings_tile_title": "Go to app settings",
     "go_to_app_settings_tile_subtitle": "Manage app settings like notifications, permissions, storage and more.",
-    "include_in_stats_tile_title": "Include in statistics",
-    "include_in_stats_tile_subtitle": "Switch off to exclude this app from total usage stats.",
-    "app_excluded_from_stats_snack_alert": "{appName} is excluded from statistics.",
+    "include_in_stats_tile_title": "Include in screen usage",
+    "include_in_stats_tile_subtitle": "Switch off to exclude this app from total screen usage.",
+    "app_excluded_from_stats_snack_alert": "{appName} is excluded from total screen usage.",
     "@app_excluded_from_stats_snack_alert": {
         "placeholders": {
             "appName": {
@@ -471,7 +471,7 @@
             }
         }
     },
-    "app_include_to_stats_snack_alert": "{appName} is include to statistics.",
+    "app_include_to_stats_snack_alert": "{appName} is included to total screen usage.",
     "@app_include_to_stats_snack_alert": {
         "placeholders": {
             "appName": {

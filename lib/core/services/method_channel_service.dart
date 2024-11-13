@@ -55,7 +55,14 @@ class MethodChannelService {
   Future<bool> updateLocale({required String languageCode}) async =>
       await _methodChannel.invokeMethod('updateLocale', languageCode);
 
-  /// Sets the time of day when app usage data should be reset for the next day.
+  /// Update excluded apps for widget purpose
+  Future<bool> updateExcludedApps({required List<String> excludedApps}) async =>
+      await _methodChannel.invokeMethod(
+        'updateExcludedApps',
+        jsonEncode(excludedApps),
+      );
+
+  /// Sets the time of day when app data usage should be reset for the next day.
   ///
   /// This method takes the time of day in minutes and sends it to the native side
   /// to be set as the data reset time.
