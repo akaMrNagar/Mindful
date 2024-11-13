@@ -33,14 +33,24 @@ class AggregatedUsageStatsModel {
     this.networkUsageThisWeek = const [0, 0, 0, 0, 0, 0, 0],
   });
 
-  factory AggregatedUsageStatsModel.fromApps(List<AndroidApp> apps) {
+  factory AggregatedUsageStatsModel.fromApps(
+      List<AndroidApp> apps, List<String> excludedApps) {
     List<int> screenTime = [];
     List<int> mobile = [];
     List<int> wifi = [];
     List<int> totalNetwork = [];
 
     for (var i = 0; i < 7; i++) {
-      screenTime.add(apps.fold(0, (p, e) => p + e.screenTimeThisWeek[i]));
+      screenTime.add(
+        apps.fold(
+          0,
+          (p, e) =>
+              p +
+              (excludedApps.contains(e.packageName)
+                  ? 0
+                  : e.screenTimeThisWeek[i]),
+        ),
+      );
       mobile.add(apps.fold(0, (p, e) => p + e.mobileUsageThisWeek[i]));
       wifi.add(apps.fold(0, (p, e) => p + e.wifiUsageThisWeek[i]));
       totalNetwork.add(apps.fold(0, (p, e) => p + e.networkUsageThisWeek[i]));

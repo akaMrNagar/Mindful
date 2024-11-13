@@ -102,7 +102,7 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mTrackerServiceConn.bindService();
         mVpnServiceConn.bindService();
         mFocusServiceConn.bindService();
-}
+    }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -124,6 +124,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
             // SECTION: Utility methods -----------------------------------------------------------------------
             case "updateLocale": {
                 updateLocale(Utils.notNullStr(call.arguments()));
+                result.success(true);
+                break;
+            }
+            case "updateExcludedApps": {
+                SharedPrefsHelper.getSetExcludedApps(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }

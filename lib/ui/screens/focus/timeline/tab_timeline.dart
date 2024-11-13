@@ -71,7 +71,7 @@ class TabTimeline extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      6.hBox,
+                      4.hBox,
 
                       /// Productive days
                       Expanded(
@@ -94,7 +94,7 @@ class TabTimeline extends ConsumerWidget {
                     ],
                   ),
 
-                  5.vBox,
+                  4.vBox,
 
                   /// Today's total focused time
                   UsageGlanceCard(

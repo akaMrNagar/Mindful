@@ -72,8 +72,8 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
           ? context.locale.app_include_to_stats_snack_alert(widget.app.name)
           : context.locale.app_excluded_from_stats_snack_alert(widget.app.name),
       icon: isExcluded
-          ? FluentIcons.group_20_filled
-          : FluentIcons.group_dismiss_20_filled,
+          ? FluentIcons.phone_20_filled
+          : FluentIcons.phone_dismiss_20_filled,
     );
   }
 
@@ -186,8 +186,8 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
               DefaultListTile(
                 position: ItemPosition.end,
                 leadingIcon: isExcludedFromStats
-                    ? FluentIcons.group_dismiss_20_regular
-                    : FluentIcons.group_20_regular,
+                    ? FluentIcons.phone_dismiss_20_regular
+                    : FluentIcons.phone_20_regular,
                 switchValue: !isExcludedFromStats,
                 titleText: context.locale.include_in_stats_tile_title,
                 subtitleText: context.locale.include_in_stats_tile_subtitle,

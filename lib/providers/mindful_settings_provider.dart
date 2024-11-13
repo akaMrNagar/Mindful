@@ -100,12 +100,16 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   }
 
   /// Include or Exclude an app from total usage statistics
-  void includeExcludeApp(String appPackage, bool shouldInclude) =>
-      state = state.copyWith(
-        excludedApps: shouldInclude
-            ? [...state.excludedApps, appPackage]
-            : [...state.excludedApps.where((e) => e != appPackage)],
-      );
+  void includeExcludeApp(String appPackage, bool shouldInclude) async {
+    state = state.copyWith(
+      excludedApps: shouldInclude
+          ? [...state.excludedApps, appPackage]
+          : [...state.excludedApps.where((e) => e != appPackage)],
+    );
+
+    await MethodChannelService.instance
+        .updateExcludedApps(excludedApps: state.excludedApps);
+  }
 
   /// Check if user can use emergency pause pass
   bool canUseEmergencyPause() {

@@ -10,12 +10,11 @@
   ~  */
   -->
 
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid /> <!-- Background color -->
-    <corners android:radius="24dp" /> <!-- Corner radius for rounded effect -->
-    <padding
-        android:bottom="16dp"
-        android:left="16dp"
-        android:right="16dp"
-        android:top="16dp" />
-</shape>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/secondaryContainer">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="?android:attr/colorBackground" /> <!-- Base color of the button -->
+        </shape>
+    </item>
+</ripple>
