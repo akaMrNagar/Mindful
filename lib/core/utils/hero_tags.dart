@@ -57,8 +57,8 @@ class HeroTags {
   /// Tag used to identify the tile for timer picker in focus mode.
   static const focusModeTimerTileTag = "focus.focusSessionTimerTile";
 
-  /// Tag used to identify the FAB for timer picker in focus mode.
-  static const giveUpFocusSessionTag = "activeSession.giveUp";
+  /// Tag used to identify the button for give up or finish session in active session screen.
+  static const giveUpOrFinishFocusSessionTag = "activeSession.giveUpOrFinish";
 
   /// Tag used to identify the tile for clearing crash log in settings.
   static const clearCrashLogsTileTag = "settings.advance.clearCrashLogs";

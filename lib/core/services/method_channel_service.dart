@@ -113,7 +113,10 @@ class MethodChannelService {
   // !SECTION
   // SECTION: Foreground Service and Background Worker Methods ======================================================================
 
-  /// Updates the apps restrictions data in the tracking foreground service.
+  /// Safe method to update app restrictions list in the TRACKER service.
+  ///
+  /// This method push the updated list to the service if it is already running
+  /// otherwise only start service if list is not empty
   Future<void> updateAppRestrictions(
     List<AppRestriction> appRestrictions,
   ) async =>
@@ -122,7 +125,10 @@ class MethodChannelService {
         jsonEncode(appRestrictions),
       );
 
-  /// Updates the restriction groups data in the tracking foreground service.
+  /// Safe method to update restriction groups list in the TRACKER service.
+  ///
+  /// This method push the updated list to the service if it is already running
+  /// otherwise only start service if list is not empty
   Future<void> updateRestrictionsGroups(
     List<RestrictionGroup> restrictionGroups,
   ) async =>
@@ -131,7 +137,10 @@ class MethodChannelService {
         jsonEncode(restrictionGroups),
       );
 
-  /// Updates the list of internet blocked apps for the foreground service.
+  /// Safe method to update internet blocked apps in the VPN service.
+  ///
+  /// This method push the updated list to the service if it is already running
+  /// otherwise only start service if list is not empty
   Future<void> updateInternetBlockedApps(List<String> blockedApps) async =>
       _methodChannel.invokeMethod(
         'updateInternetBlockedApps',
@@ -167,38 +176,30 @@ class MethodChannelService {
   /// Start new focus session or only updates the list of distracting apps if already running.
   ///
   /// This method sends a request to the native side to start focus session.
-  Future<void> startFocusSession({
-    required int startTimeMsEpoch,
-    required int durationSeconds,
-    required bool toggleDnd,
-    required List<String> distractingApps,
+  Future<void> updateFocusSession({
+    required FocusSession session,
+    required FocusProfile profile,
   }) async =>
       await _methodChannel.invokeMethod(
-        'startFocusSession',
+        'updateFocusSession',
         jsonEncode({
-          'startTimeMsEpoch': startTimeMsEpoch,
-          'durationSeconds': durationSeconds,
-          'toggleDnd': toggleDnd,
-          'distractingApps': distractingApps,
+          'startTimeMsEpoch': session.startDateTime.millisecondsSinceEpoch,
+          'durationSeconds': session.durationSecs,
+          'toggleDnd': profile.shouldStartDnd,
+          'distractingApps': profile.distractingApps,
         }),
       );
 
-  /// Only updates the list of distracting apps if Focus Session is already running.
-  ///
-  /// This method sends a request to the native side to update focus session.
-  Future<void> updateFocusSession({
-    required List<String> distractingApps,
-  }) async =>
-      await _methodChannel.invokeMethod(
-        'UpdateFocusSession',
-        jsonEncode(distractingApps),
-      );
-
-  /// Stop running focus session.
+  /// Giveup or Finish running focus session with success or failure.
   ///
   /// This method sends a request to the native side to stop already running focus session.
-  Future<bool> stopFocusSession() async =>
-      await _methodChannel.invokeMethod('stopFocusSession');
+  Future<bool> giveUpOrFinishFocusSession({
+    required bool isTheSessionSuccessful,
+  }) async =>
+      await _methodChannel.invokeMethod(
+        'giveUpOrFinishFocusSession',
+        isTheSessionSuccessful,
+      );
 
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================

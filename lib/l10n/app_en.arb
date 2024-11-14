@@ -328,15 +328,17 @@
     "focus_session_state_failed": "Failed",
     "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
     "active_session_tab_title": "Session",
+    "active_session_dialog_button_keep_pushing": "Keep pushing",
+    "active_session_finish_dialog_title": "Finish",
+    "active_session_finish_dialog_info": "Stay strong! You're building valuable focus. Are you sure you want to end this focus session? Every extra moment counts toward your goals.",
     "active_session_giveup_dialog_title": "Give up",
     "active_session_giveup_dialog_info": "Hold on! You're almost there don't give up now! Are you sure you want to end this focus session early? Progress will be lost.",
-    "active_session_giveup_dialog_button_keep_pushing": "Keep pushing",
     "active_session_giveup_snack_alert": "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going",
-    "active_session_quote_one": "Every step counts, stay strong and keep going!",
-    "active_session_quote_two": "Stay focused! you're making amazing progress!",
-    "active_session_quote_three": "You're crushing it! Keep the momentum going!",
-    "active_session_quote_four": "Just a little more to go, you're doing fantastic!",
-    "active_session_quote_five": "Congratulations! 🎉\n You've completed your focus session of {durationString}.\n\nGreat job—keep up the amazing work!",
+    "active_session_quote_one": "Every step counts, stay strong and keep going",
+    "active_session_quote_two": "Stay focused! you're making amazing progress",
+    "active_session_quote_three": "You're crushing it! Keep the momentum going",
+    "active_session_quote_four": "Just a little more to go, you're doing fantastic",
+    "active_session_quote_five": "Congratulations 🎉 \n You've completed your focus session of {durationString}.\n\nGreat job, keep up the amazing work",
     "@active_session_quote_five": {
         "placeholders": {
             "durationString": {

@@ -13,7 +13,7 @@
 package com.mindful.android;
 
 import static com.mindful.android.services.EmergencyPauseService.ACTION_START_SERVICE_EMERGENCY;
-import static com.mindful.android.services.FocusSessionService.INTENT_EXTRA_FOCUS_SESSION_JSON;
+import static com.mindful.android.services.FocusSessionService.ACTION_START_FOCUS_SERVICE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.annotation.SuppressLint;
@@ -41,6 +41,7 @@ import com.mindful.android.helpers.PermissionsHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.AppRestrictions;
 import com.mindful.android.models.BedtimeSettings;
+import com.mindful.android.models.FocusSession;
 import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.services.EmergencyPauseService;
 import com.mindful.android.services.FocusSessionService;
@@ -209,32 +210,21 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
                 }
                 break;
             }
-            case "startFocusSession": {
-                if (!Utils.isServiceRunning(this, FocusSessionService.class.getName())) {
-                    Intent intent = new Intent(this, FocusSessionService.class);
-                    intent.setAction(FocusSessionService.ACTION_START_SERVICE_FOCUS);
-                    intent.putExtra(INTENT_EXTRA_FOCUS_SESSION_JSON, Utils.notNullStr(call.arguments()));
-                    startService(intent);
-                    mFocusServiceConn.bindService();
-                    result.success(true);
+            case "updateFocusSession": {
+                FocusSession focusSession = new FocusSession(Utils.notNullStr(call.arguments()));
+                if (mFocusServiceConn.isConnected()) {
+                    mFocusServiceConn.getService().updateFocusSession(focusSession);
                 } else {
-                    result.success(false);
+                    mFocusServiceConn.setOnConnectedCallback(service -> service.startFocusSession(focusSession));
+                    mFocusServiceConn.startAndBind(ACTION_START_FOCUS_SERVICE);
                 }
+                result.success(true);
                 break;
             }
-            case "UpdateFocusSession": {
+            case "giveUpOrFinishFocusSession": {
                 if (mFocusServiceConn.isConnected()) {
-                    mFocusServiceConn.getService().updateDistractingApps(JsonDeserializer.jsonStrToStringHashSet(Utils.notNullStr(call.arguments())));
-                    result.success(true);
-                } else {
-                    result.success(false);
-                }
-                break;
-            }
-
-            case "stopFocusSession": {
-                if (mFocusServiceConn.isConnected()) {
-                    mFocusServiceConn.getService().giveUpAndStopSession();
+                    mFocusServiceConn.getService().giveUpOrStopFocusSession(Boolean.TRUE.equals(call.arguments()));
+                    mFocusServiceConn.unBindService();
                 }
                 result.success(true);
                 break;

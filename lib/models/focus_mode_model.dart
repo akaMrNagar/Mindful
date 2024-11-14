@@ -11,29 +11,41 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/database/app_database.dart';
 
-
 /// A model containing both [FocusMode] and [FocusProfile] along with nullable active [FocusSession].
 @immutable
 class FocusModeModel {
   final FocusMode focusMode;
   final FocusProfile focusProfile;
   final FocusSession? activeSession;
+  final int elapsedTimeSec;
 
   const FocusModeModel({
     required this.focusMode,
     required this.focusProfile,
     this.activeSession,
+    this.elapsedTimeSec = 0,
   });
+
+  FocusModeModel removeActiveSession() {
+    return FocusModeModel(
+      focusMode: focusMode,
+      focusProfile: focusProfile,
+      elapsedTimeSec: elapsedTimeSec,
+      activeSession: null,
+    );
+  }
 
   FocusModeModel copyWith({
     FocusMode? focusMode,
     FocusProfile? focusProfile,
     FocusSession? activeSession,
+    int? elapsedTimeSec,
   }) {
     return FocusModeModel(
       focusMode: focusMode ?? this.focusMode,
       focusProfile: focusProfile ?? this.focusProfile,
-      activeSession: activeSession,
+      elapsedTimeSec: elapsedTimeSec ?? this.elapsedTimeSec,
+      activeSession: activeSession ?? this.activeSession,
     );
   }
 }

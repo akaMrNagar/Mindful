@@ -178,12 +178,12 @@ public class OverlayDialogService extends Service {
 
             TextView limitSpentTxt = dialogView.findViewById(R.id.overlay_dialog_limit_used);
             limitSpentTxt.setVisibility(View.VISIBLE);
-            limitSpentTxt.setText(getString(R.string.app_paused_dialog_progress_spent, Utils.formatScreenTime(mProgress / 60)));
+            limitSpentTxt.setText(getString(R.string.app_paused_dialog_progress_spent, Utils.minutesToTimeStr(mProgress / 60)));
 
             TextView limitLeftTxt = dialogView.findViewById(R.id.overlay_dialog_limit_total);
             limitLeftTxt.setVisibility(View.VISIBLE);
             int leftLimit = Math.max(0, (mMaxProgress - mProgress));
-            limitLeftTxt.setText(getString(R.string.app_paused_dialog_progress_left, Utils.formatScreenTime(leftLimit > 0 ? (leftLimit / 60) : 0)));
+            limitLeftTxt.setText(getString(R.string.app_paused_dialog_progress_left, Utils.minutesToTimeStr(leftLimit > 0 ? (leftLimit / 60) : 0)));
 
         }
 

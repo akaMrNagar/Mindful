@@ -141,7 +141,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
               ? Theme.of(context).colorScheme.primary
               : heatmapValue > 0 && maxHeatmapValue > 0
                   ? _getHeatmapColor(maxHeatmapValue, heatmapValue)
-                  : Colors.transparent,
+                  : Colors.grey.withOpacity(0.025),
           onPressed: () {
             setState(() {
               _selectedDate = currentDay;
@@ -154,7 +154,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
             color:
                 isSelectedDay ? Theme.of(context).colorScheme.onPrimary : null,
           ),
-        ).animate(key: Key(currentDay.toString())).fadeIn(delay: (day * 20).ms),
+        ).animate(key: Key(currentDay.toString())).fade(delay: (day * 25).ms),
       );
     }
 
@@ -166,7 +166,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
 
     // Interpolate the color based on the normalized value
     return Color.lerp(
-      Theme.of(context).colorScheme.primaryContainer.withOpacity(0.25),
+      Theme.of(context).colorScheme.primaryContainer.withOpacity(0.05),
       Theme.of(context).colorScheme.primaryContainer,
       normalizedValue.clamp(0.0, 1.0),
     )!;

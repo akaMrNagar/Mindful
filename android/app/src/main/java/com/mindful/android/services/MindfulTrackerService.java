@@ -187,7 +187,6 @@ public class MindfulTrackerService extends Service {
     public void startStopUpdateFocusSession(@Nullable HashSet<String> distractingApps) {
         if (distractingApps != null) {
             mFocusSessionDistractingApps = distractingApps;
-            mPurgedApps.clear();
             Log.d(TAG, "startStopUpdateFocusSession: Focus Session STARTED or UPDATED successfully");
         } else {
             mFocusSessionDistractingApps.clear();
@@ -441,7 +440,7 @@ public class MindfulTrackerService extends Service {
                             .setOngoing(false)
                             .setSmallIcon(R.drawable.ic_notification)
                             .setLargeIcon(Utils.drawableToBitmap(appIcon))
-                            .setContentTitle(getString(R.string.app_pause_notification_title, Utils.formatScreenTime(minutesLeft)))
+                            .setContentTitle(getString(R.string.app_pause_notification_title, Utils.minutesToTimeStr(minutesLeft)))
                             .setContentText(notificationInfo)
                             .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationInfo))
                             .build()

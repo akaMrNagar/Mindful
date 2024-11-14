@@ -69,13 +69,7 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
   }
 
   /// Enables or disables Do Not Disturb during the Bedtime schedule.
-  ///
-  /// Checks for Do Not Disturb permission before enabling it.
   void setShouldStartDnd(bool shouldStartDnd) async {
-    if (shouldStartDnd &&
-        !await MethodChannelService.instance.getAndAskDndPermission()) {
-      return;
-    }
     state = state.copyWith(shouldStartDnd: shouldStartDnd);
   }
 

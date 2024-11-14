@@ -182,16 +182,22 @@ public class Utils {
     @NonNull
     @Contract(pure = true)
     public static String secondsToTimeStr(long totalSeconds) {
-        int leftHours = (int) (totalSeconds / 60 / 60);
-        int leftMinutes = (int) ((totalSeconds / 60) % 60);
+        int leftHours = (int) (totalSeconds / 3600);
+        int leftMinutes = (int) ((totalSeconds % 3600) / 60);
         int leftSeconds = (int) (totalSeconds % 60);
 
-        return
-                leftHours > 0 ?
-                        leftHours + ":" + leftMinutes + ":" + leftSeconds :
-                        leftMinutes + ":" + leftSeconds;
+        StringBuilder timeStr = new StringBuilder();
 
+        if (leftHours > 0) {
+            timeStr.append(String.format(Locale.ENGLISH, "%02d", leftHours)).append("h ");
+        }
+
+        timeStr.append(String.format(Locale.ENGLISH, "%02d", leftMinutes)).append("m ");
+        timeStr.append(String.format(Locale.ENGLISH, "%02d", leftSeconds)).append("s");
+
+        return timeStr.toString();
     }
+
 
     /**
      * Formats the total screen usage time into a human-readable string.
@@ -202,7 +208,7 @@ public class Utils {
      */
     @NonNull
     @Contract(pure = true)
-    public static String formatScreenTime(int totalMinutes) {
+    public static String minutesToTimeStr(int totalMinutes) {
         totalMinutes = Math.abs(totalMinutes);
 
         return totalMinutes > 60

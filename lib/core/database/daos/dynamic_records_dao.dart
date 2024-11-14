@@ -110,11 +110,13 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Fetch the [FocusProfile] from database by id, if not found then return default
   Future<FocusProfile> fetchFocusProfileBySessionType(
-          SessionType sessionType) async =>
+    SessionType sessionType,
+  ) async =>
       await (select(focusProfileTable)
             ..where((e) => e.sessionType.equalsValue(sessionType)))
           .getSingleOrNull() ??
-      FocusProfileTable.defaultFocusProfileModel;
+      FocusProfileTable.defaultFocusProfileModel
+          .copyWith(sessionType: sessionType);
 
   /// Inserts OR Updates a single [FocusSession] object in the database.
   Future<int> insertFocusProfileBySessionType(FocusProfile profile) async =>
@@ -128,7 +130,8 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   /// Fetch the [FocusSession] from database by [SessionState.active], if not found then return null
   Future<FocusSession?> fetchLastActiveFocusSession() async =>
       (select(focusSessionsTable)
-            ..where((e) => e.state.equalsValue(SessionState.active)))
+            ..where((e) => e.state.equalsValue(SessionState.active))
+            ..limit(1))
           .getSingleOrNull();
 
   /// Inserts a single [FocusSession] object in the database.

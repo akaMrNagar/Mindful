@@ -33,7 +33,7 @@ class TabFocus extends StatelessWidget {
 
         const SliverActiveSessionAlert(),
 
-        const FocusQuickActions(),
+        const FocusConfigurations(),
 
         const FocusDistractingAppsList(),
 

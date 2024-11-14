@@ -82,10 +82,12 @@
     <!--
        placeholder in focus_session_notification_info will be time formatted string like '1:15:13' for 1 hour 15 minutes 13 seconds
        time can be in hours or just minutes either way seconds will be suffixed
-       Example output: "Focus session will end in 1:3:15"  for 1 hour 3 minutes and 15 seconds
-       Example output: "Focus session will end in 45:15"  for 45 minutes and 15 seconds
+       Example output: "Focus session will end in 1h 3m 15s"  for 1 hour 3 minutes and 15 seconds
+       Example output: "Focus session will end in 45m 15s"  for 45 minutes and 15 seconds
     -->
     <string name="focus_session_notification_info" formatted="true">"Focus session will end in %s"</string>
+    <string name="focus_session_infinite_notification_info" formatted="true">You\'ve been focused for %s</string>
+
     <string name="focus_session_success_notification_info">Congratulations! You’ve successfully completed your focus session. Great job staying on track! Keep up the amazing work!</string>
     <string name="focus_session_giveup_notification_info">You gave up! Don\'t worry, you can do better next time. Every effort counts - just keep going</string>
 
