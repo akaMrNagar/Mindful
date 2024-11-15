@@ -15,8 +15,8 @@
     <string name="app_name" translatable="false">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block websites and short-form content on apps. It checks URLs and content against your blocklist and prevents access to help you stay focused. \n\n⚠️Note: Your privacy is our priority. Mindful is 100% secure and works offline. We do not collect or store any personal data. </string>
     <string name="toast_enable_notification">Please enable notification</string>
-    <string name="toast_blocked_content">Content blocked!, going back</string>
-    <string name="toast_redirecting">Redirecting to safe search result</string>
+    <string name="toast_blocked_content">Content blocked! going back</string>
+    <string name="toast_redirecting">Filtering search results</string>
     <string name="service_running_notification_title">Mindful is running</string>
 
     <!-- usage widget values = usage home widget for android -->

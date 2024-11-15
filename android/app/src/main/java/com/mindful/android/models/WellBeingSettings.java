@@ -84,9 +84,7 @@ public class WellBeingSettings {
             Log.d("Mindful.WellBeingSettings", "JSON string passed to the constructor is empty");
         } else {
             try {
-                // Clean the JSON string and parse it
-                jsonString = jsonString.replace("\\", "");
-                JSONObject jsonObject = new JSONObject(jsonString.substring(1, jsonString.length() - 1));
+                JSONObject jsonObject = new JSONObject(jsonString);
 
                 // Deserialize fields
                 this.blockInstaReels = jsonObject.optBoolean("blockInstaReels", false);
