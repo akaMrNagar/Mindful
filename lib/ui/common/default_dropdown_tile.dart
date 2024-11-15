@@ -25,6 +25,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
     required this.items,
     required this.onSelected,
     required this.titleText,
+    this.enabled = true,
     this.width,
     this.position,
     this.leadingIcon,
@@ -34,6 +35,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
 
   final IconData? leadingIcon;
   final IconData? dialogIcon;
+  final bool enabled;
 
   final String titleText;
   final double? width;
@@ -53,11 +55,15 @@ class DefaultDropdownTile<T> extends StatelessWidget {
       tag: heroTag,
       child: DefaultListTile(
         position: position,
+        enabled: enabled,
         leadingIcon: leadingIcon,
         titleText: titleText,
         subtitleText: selected?.label,
         trailing: trailingBuilder?.call(selected?.value) ??
-            const Icon(FluentIcons.caret_down_20_filled),
+            Icon(
+              FluentIcons.caret_down_20_filled,
+              color: enabled ? null : Theme.of(context).disabledColor,
+            ),
         onPressed: () {
           Navigator.of(context).push(
             HeroPageRoute(

@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
@@ -55,6 +56,11 @@ class RestrictionGroupsNotifier
       groupName: groupName,
       timerSec: timerSec,
       distractingApps: distractingApps,
+
+      /// FIXME: Change the period
+      periodDurationInMins: 0,
+      activePeriodStart: const TimeOfDayAdapter.zero(),
+      activePeriodEnd: const TimeOfDayAdapter.zero(),
     );
 
     state = {...state}..update(

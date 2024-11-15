@@ -17,6 +17,7 @@ import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/android_app.dart';
@@ -24,9 +25,11 @@ import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
+import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/common/time_period_start_end_cards.dart';
 import 'package:mindful/ui/dialogs/app_launch_limit_dialog.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_internet_switcher.dart';
@@ -70,6 +73,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
         DefaultHero(
           tag: HeroTags.appLaunchLimitTileTag(app.packageName),
           child: DefaultListTile(
+            enabled: !app.isImpSysApp,
             position: ItemPosition.mid,
             titleText: context.locale.app_launch_limit_tile_title,
             subtitleText:
@@ -107,11 +111,89 @@ class AppDashboardRestrictions extends ConsumerWidget {
           ),
         ).sliver,
 
+        /// Active period
+        DefaultExpandableListTile(
+          enabled: !app.isImpSysApp,
+          position: ItemPosition.mid,
+          contentPosition: ItemPosition.mid,
+          leadingIcon: FluentIcons.drink_coffee_20_regular,
+          titleText: context.locale.app_active_period_tile_title,
+          subtitleText: context.locale.app_active_period_tile_subtitle(
+            restriction.activePeriodStart.format(context),
+            restriction.activePeriodEnd.format(context),
+          ),
+          content: Column(
+            children: [
+              StyledText(
+                restriction.activePeriodEnd
+                    .difference(restriction.activePeriodStart)
+                    .toTimeFull(context),
+              ),
+
+              /// Info
+              StyledText(
+                context.locale.app_active_period_tile_info,
+                color: Theme.of(context).hintColor,
+              ),
+
+              24.vBox,
+
+              /// Period time
+              TimePeriodStartEndCards(
+                bgColor: Theme.of(context)
+                    .colorScheme
+                    .surfaceContainerHigh
+                    .withOpacity(0.5),
+                startTime: restriction.activePeriodStart,
+                endTime: restriction.activePeriodEnd,
+                onStartTimeChanged: (start) => ref
+                    .read(appsRestrictionsProvider.notifier)
+                    .updateActivePeriod(
+                      app.packageName,
+                      start,
+                      restriction.activePeriodEnd,
+                    ),
+                onEndTimeChanged: (end) => ref
+                    .read(appsRestrictionsProvider.notifier)
+                    .updateActivePeriod(
+                      app.packageName,
+                      restriction.activePeriodStart,
+                      end,
+                    ),
+              ),
+              12.vBox,
+            ],
+          ),
+        ).sliver,
+
+        /// Internet access
+        AppInternetSwitcher(app: app).sliver,
+
+        /// Associated restriction group
+        DefaultListTile(
+          enabled: !app.isImpSysApp,
+          position: ItemPosition.end,
+          titleText: context.locale.restriction_group_heading,
+          subtitleText:
+              restrictionGroupName ?? context.locale.app_limit_status_not_set,
+          leadingIcon: FluentIcons.app_title_20_regular,
+          trailing: Icon(
+            FluentIcons.chevron_right_20_regular,
+            color: app.isImpSysApp ? Theme.of(context).disabledColor : null,
+          ),
+          onPressed: () => Navigator.of(context)
+              .pushNamed(AppRoutes.restrictionGroupsScreen),
+        ).sliver,
+
+        /// Alerts section
+        ContentSectionHeader(title: context.locale.usage_alerts_heading).sliver,
+
         /// Alert interval
         DefaultHero(
           tag: HeroTags.appAlertIntervalTileTag(app.packageName),
           child: DefaultListTile(
-            position: ItemPosition.mid,
+            enabled: !app.isImpSysApp,
+            position: ItemPosition.start,
             titleText: context.locale.app_alert_interval_tile_title,
             subtitleText: context.locale.app_alert_interval_tile_subtitle(
               restriction.alertInterval.seconds.toTimeFull(context),
@@ -134,7 +216,8 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
         /// Alert type
         DefaultDropdownTile<bool>(
-          position: ItemPosition.mid,
+          enabled: !app.isImpSysApp,
+          position: ItemPosition.end,
           value: restriction.alertByDialog,
           leadingIcon: FluentIcons.channel_alert_20_regular,
           dialogIcon: FluentIcons.channel_alert_20_filled,
@@ -152,21 +235,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
               value: true,
             ),
           ],
-        ).sliver,
-
-        /// Internet access
-        AppInternetSwitcher(app: app).sliver,
-
-        /// Associated restriction group
-        DefaultListTile(
-          position: ItemPosition.end,
-          titleText: context.locale.restriction_group_heading,
-          subtitleText:
-              restrictionGroupName ?? context.locale.app_limit_status_not_set,
-          leadingIcon: FluentIcons.app_title_20_regular,
-          trailing: const Icon(FluentIcons.chevron_right_20_regular),
-          onPressed: () => Navigator.of(context)
-              .pushNamed(AppRoutes.restrictionGroupsScreen),
         ).sliver,
       ],
     );

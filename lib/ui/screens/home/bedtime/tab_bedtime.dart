@@ -17,7 +17,6 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
@@ -44,8 +43,8 @@ class TabBedtime extends ConsumerWidget {
 
     if (isInvincibleModeRestricted && state.isScheduleOn) {
       final now = DateTime.now();
-      final start = now.dateOnly.add(state.startTimeInMins.minutes);
-      final end = now.dateOnly.add(state.endTimeInMins.minutes);
+      final start = now.dateOnly.add(state.scheduleStartTime.toMinutes.minutes);
+      final end = now.dateOnly.add(state.scheduleEndTime.toMinutes.minutes);
 
       if (start.isBefore(now) && end.isAfter(now)) {
         context.showSnackAlert(context.locale.invincible_mode_snack_alert);
@@ -62,8 +61,7 @@ class TabBedtime extends ConsumerWidget {
     }
 
     // If the total duration is less than 30 minutes
-    final totalDuration = state.endTimeInMins.toTimeOfDay
-        .difference(state.startTimeInMins.toTimeOfDay);
+    final totalDuration = state.scheduleDurationInMins;
 
     if (totalDuration.inMinutes < 30) {
       context.showSnackAlert(

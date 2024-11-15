@@ -2,6 +2,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
@@ -151,6 +152,10 @@ class _RestrictionGroupBottomSheetState
                                 groupName: _controller.text,
                                 timerSec: _timerSec,
                                 distractingApps: _selectedApps,
+                                activePeriodStart:
+                                    const TimeOfDayAdapter.zero(),
+                                activePeriodEnd: const TimeOfDayAdapter.zero(),
+                                periodDurationInMins: 0,
                               ),
                             ),
                     child: Text(

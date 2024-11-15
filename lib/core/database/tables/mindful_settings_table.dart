@@ -9,6 +9,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
@@ -35,7 +36,7 @@ class MindfulSettingsTable extends Table {
   TextColumn get localeCode => text()();
 
   /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
-  IntColumn get dataResetTimeMins => integer()();
+  IntColumn get dataResetTime => integer().map(const TimeOfDayAdapterConverter())();
 
   /// Flag indicating if to use bottom navigation or the default sidebar
   BoolColumn get useBottomNavigation => boolean()();
@@ -68,7 +69,7 @@ class MindfulSettingsTable extends Table {
     accentColor: "Indigo",
     username: "Hustler",
     localeCode: "en",
-    dataResetTimeMins: 0,
+    dataResetTime: const TimeOfDayAdapter.zero(),
     useBottomNavigation: false,
     useAmoledDark: false,
     useDynamicColors: false,

@@ -22,6 +22,12 @@ class HeroTags {
   static String applicationTileTag(String package) =>
       "home.statistics.applicationTile.$package";
 
+  /// Tag used to identify the schedule start time picker.
+  static const scheduleStartTimePickerTag = "schedule.startTimePicker";
+
+  /// Tag used to identify the schedule end time picker.
+  static const scheduleEndTimePickerTag = "schedule.endTimePicker";
+
   /// Tag used to identify the short content timer picker.
   static const shortContentTimerPickerTag = "home.wellBeing.shortsTimerPicker";
 
@@ -60,6 +66,9 @@ class HeroTags {
   /// Tag used to identify the button for give up or finish session in active session screen.
   static const giveUpOrFinishFocusSessionTag = "activeSession.giveUpOrFinish";
 
+  /// Tag used to identify the tile for data reset time in settings.
+  static const dataResetTimeTileTag = "settings.general.dataResetTime";
+  
   /// Tag used to identify the tile for clearing crash log in settings.
   static const clearCrashLogsTileTag = "settings.advance.clearCrashLogs";
 

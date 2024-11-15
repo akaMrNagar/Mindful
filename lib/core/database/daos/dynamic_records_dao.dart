@@ -16,6 +16,7 @@ import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
@@ -90,12 +91,18 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     required String groupName,
     required int timerSec,
     required List<String> distractingApps,
+    required TimeOfDayAdapter activePeriodStart,
+    required TimeOfDayAdapter activePeriodEnd,
+    required int periodDurationInMins,
   }) async =>
       into(restrictionGroupsTable).insertReturning(
         RestrictionGroupsTableCompanion.insert(
           groupName: groupName,
           timerSec: timerSec,
           distractingApps: distractingApps,
+          activePeriodStart: activePeriodStart,
+          activePeriodEnd: activePeriodEnd,
+          periodDurationInMins: periodDurationInMins,
         ),
         mode: InsertMode.insertOrReplace,
       );

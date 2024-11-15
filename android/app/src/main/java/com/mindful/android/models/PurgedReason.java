@@ -19,20 +19,20 @@ public class PurgedReason {
     public String groupName = "";
     public int usedLimit = 0;
 
+    // total limit and used limit
+
     public PurgedReason(PurgeType type, String groupName, int usedLimit) {
         this.type = type;
         this.groupName = groupName;
-        this.usedLimit= usedLimit;
+        this.usedLimit = usedLimit;
     }
 
     public PurgedReason(PurgeType type) {
         this.type = type;
     }
+
     public PurgedReason(PurgeType type, int usedLimit) {
         this.type = type;
         this.usedLimit = usedLimit;
-    }
-
-    public PurgedReason() {
     }
 }

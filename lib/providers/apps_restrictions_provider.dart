@@ -10,6 +10,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
@@ -56,7 +57,7 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
   }
 
   /// Updates the launch limit for a specific app package.
@@ -70,40 +71,33 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
   }
 
-  /// Updates the alert interval for a specific app package.
+  /// Updates the active period time for a specific app package.
   ///
   /// Anyway updated the platform-specific service.
-  Future<void> updateAlertInterval(
+  Future<void> updateActivePeriod(
     String appPackage,
-    int intervalSec,
+    TimeOfDayAdapter startTime,
+    TimeOfDayAdapter endTime,
   ) async {
-    final restriction =
-        state[appPackage]?.copyWith(alertInterval: intervalSec) ??
-            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-              appPackage: appPackage,
-              alertInterval: intervalSec,
-            );
+    final periodDuration = endTime.difference(startTime).inMinutes;
+
+    final restriction = state[appPackage]?.copyWith(
+          activePeriodStart: startTime,
+          activePeriodEnd: endTime,
+          periodDurationInMins: periodDuration,
+        ) ??
+        AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+          appPackage: appPackage,
+          activePeriodStart: startTime,
+          activePeriodEnd: endTime,
+          periodDurationInMins: periodDuration,
+        );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
-  }
-
-  /// Set alert by dialog for a specific app package.
-  ///
-  /// Anyway updated the platform-specific service.
-  void setAlertByDialog(String appPackage, bool alertByDialog) async {
-    final restriction =
-        state[appPackage]?.copyWith(alertByDialog: alertByDialog) ??
-            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-              appPackage: appPackage,
-              alertByDialog: alertByDialog,
-            );
-
-    /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
   }
 
   /// Toggles internet access permission for a specific app package if package is not empty.
@@ -118,7 +112,7 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction, updateVpn: true);
+    _updateStateDbAndServices(appPackage, restriction, updateVpn: true);
   }
 
   /// Updates the id of associated [RestrictionGroup] for a specific app package.
@@ -170,7 +164,43 @@ class AppsRestrictionsNotifier
     _updateTrackerService();
   }
 
-  void _updateStateAndDb(
+  /// Updates the alert interval for a specific app package.
+  ///
+  /// Anyway updated the platform-specific service.
+  Future<void> updateAlertInterval(
+    String appPackage,
+    int intervalSec,
+  ) async {
+    final restriction =
+        state[appPackage]?.copyWith(alertInterval: intervalSec) ??
+            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+              appPackage: appPackage,
+              alertInterval: intervalSec,
+            );
+
+    /// Update database and state
+    _updateStateDbAndServices(appPackage, restriction);
+  }
+
+  /// Set alert by dialog for a specific app package.
+  ///
+  /// Anyway updated the platform-specific service.
+  void setAlertByDialog(String appPackage, bool alertByDialog) async {
+    final restriction =
+        state[appPackage]?.copyWith(alertByDialog: alertByDialog) ??
+            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+              appPackage: appPackage,
+              alertByDialog: alertByDialog,
+            );
+
+    /// Update database and state
+    _updateStateDbAndServices(appPackage, restriction);
+  }
+
+  /// Updates state and database with the provided data.
+  ///
+  /// Also update VPN service if flag is TRUE else update Tracker service
+  void _updateStateDbAndServices(
     String appPackage,
     AppRestriction restriction, {
     bool updateVpn = false,
@@ -184,6 +214,9 @@ class AppsRestrictionsNotifier
     updateVpn ? _updateVpnService() : _updateTrackerService();
   }
 
+  /// Filter restriction and remove uninstalled app packages
+  ///
+  /// At last update restrictions in Tracker service
   Future<void> _updateTrackerService() async {
     if (_installedApps.isEmpty) return;
 
@@ -201,6 +234,9 @@ class AppsRestrictionsNotifier
         .updateAppRestrictions(filteredRestrictions);
   }
 
+  /// Filter restriction and remove uninstalled app packages
+  ///
+  /// At last update restrictions in VPN service
   Future<void> _updateVpnService() async {
     if (_installedApps.isEmpty) return;
 

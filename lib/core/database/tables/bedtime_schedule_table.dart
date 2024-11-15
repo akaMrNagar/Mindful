@@ -9,6 +9,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 
@@ -22,14 +23,14 @@ class BedtimeScheduleTable extends Table {
 
   /// [TimeOfDay] in minutes from where the bedtime schedule task will start.
   /// It is stored as total minutes.
-  IntColumn get startTimeInMins => integer()();
+  IntColumn get scheduleStartTime => integer().map(const TimeOfDayAdapterConverter())();
 
   /// [TimeOfDay] in minutes when the bedtime schedule task will end
   /// It is stored as total minutes.
-  IntColumn get endTimeInMins => integer()();
+  IntColumn get scheduleEndTime => integer().map(const TimeOfDayAdapterConverter())();
 
   /// Total duration of bedtime schedule from start to end in MINUTES
-  IntColumn get totalDurationInMins => integer()();
+  IntColumn get scheduleDurationInMins => integer()();
 
   /// Days on which the task will execute.
   /// The list contains 7 booleans for each day of week.
@@ -50,9 +51,9 @@ class BedtimeScheduleTable extends Table {
 
   static const defaultBedtimeScheduleModel = BedtimeSchedule(
     id: 0,
-    startTimeInMins: 0,
-    endTimeInMins: 0,
-    totalDurationInMins: 0,
+    scheduleStartTime: TimeOfDayAdapter.zero(),
+    scheduleEndTime: TimeOfDayAdapter.zero(),
+    scheduleDurationInMins: 0,
     scheduleDays: [false, true, true, true, true, true, false],
     isScheduleOn: false,
     shouldStartDnd: false,

@@ -97,6 +97,8 @@
     "dialog_button_remove": "Remove",
     "dialog_button_set": "Set",
     "dialog_button_delete_timer": "Delete timer",
+    "schedule_start_label": "Start",
+    "schedule_end_label": "End",
     "development_dialog_info": "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!",
     "development_dialog_button_report_issue": "Report Issue",
     "development_dialog_button_close": "Close",
@@ -107,7 +109,7 @@
     "your_distracting_apps_heading": "Your distracting apps",
     "select_more_apps_heading": "Select more apps",
     "imp_distracting_apps_snack_alert": "Adding important system apps to the list of distracting apps is not permitted.",
-    "custom_apps_quick_actions_unavailable_warning": "Screen usage and quick actions are unavailable for this application. At present, only network usage is accessible",
+    "custom_apps_quick_actions_unavailable_warning": "Screen usage and restrictions are unavailable for this application. At present, only network usage is accessible",
     "create_group_fab_button": "Create Group",
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
@@ -238,8 +240,6 @@
     "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "bedtime_tab_title": "Bedtime",
     "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
-    "schedule_start_label": "Start",
-    "schedule_end_label": "End",
     "schedule_tile_title": "Schedule",
     "schedule_tile_subtitle": "Enable or disable daily schedule.",
     "bedtime_no_days_selected_snack_alert": "Select at least one day of the week.",
@@ -405,7 +405,7 @@
     "app_limit_status_not_set": "Not set",
     "app_timer_tile_title": "App timer",
     "app_timer_picker_dialog_info": "Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.",
-    "app_launch_limit_tile_title": "App launch limit",
+    "app_launch_limit_tile_title": "Launch limit",
     "app_launch_limit_tile_subtitle": "Launched {count} times today.",
     "@app_launch_limit_tile_subtitle": {
         "placeholders": {
@@ -416,20 +416,21 @@
         }
     },
     "app_launch_limit_picker_dialog_info": "Set how many times you can open this app each day. Once the limit is reached, it will be paused until midnight.",
-    "app_alert_interval_tile_title": "Alert interval",
-    "app_alert_interval_tile_subtitle": "Every {intervalString}.",
-    "@app_alert_interval_tile_subtitle": {
+    "app_active_period_tile_title": "Active period",
+    "app_active_period_tile_info": "Set a time period during which the app will be accessible. Outside of this time frame, the app will remain blocked.",
+    "app_active_period_tile_subtitle": "From {startTime} to {endTime}",
+    "@app_active_period_tile_subtitle": {
         "placeholders": {
-            "intervalString": {
+            "startTime": {
                 "type": "String",
-                "example": "15 minutes"
+                "example": "10:00pm"
+            },
+            "endTime": {
+                "type": "String",
+                "example": "15"
             }
         }
     },
-    "app_alert_interval_picker_dialog_info": "Set the interval for alerts to remind you of your screen time while using this app.",
-    "app_alert_type_tile_title": "Alert type",
-    "app_alert_type_notification": "Notification",
-    "app_alert_type_dialog": "Dialog",
     "internet_access_tile_title": "Internet access",
     "internet_access_tile_subtitle": "Switch off to block app's internet.",
     "internet_access_blocked_snack_alert": "{appName}'s internet is blocked.",
@@ -450,6 +451,21 @@
             }
         }
     },
+    "usage_alerts_heading": "Usage alerts",
+    "app_alert_interval_tile_title": "Alert interval",
+    "app_alert_interval_tile_subtitle": "Every {intervalString}.",
+    "@app_alert_interval_tile_subtitle": {
+        "placeholders": {
+            "intervalString": {
+                "type": "String",
+                "example": "15 minutes"
+            }
+        }
+    },
+    "app_alert_interval_picker_dialog_info": "Set the interval for alerts to remind you of your screen time while using this app.",
+    "app_alert_type_tile_title": "Alert type",
+    "app_alert_type_notification": "Notification",
+    "app_alert_type_dialog": "Dialog",
     "launch_app_tile_title": "Launch app",
     "launch_app_tile_subtitle": "Open {appName}.",
     "@launch_app_tile_subtitle": {
@@ -501,7 +517,6 @@
     "bottom_navigation_tile_subtitle": "Switch to bottom navigation system.",
     "data_reset_time_tile_title": "Daily data usage reset time",
     "data_reset_time_tile_subtitle": "Specify the time when your daily data cycle renews based on your recharge plan.",
-    "data_reset_time_dialog_hint": "Select daily data usage reset time",
     "@----------------------------- SETTINGS SCREEN - ADVANCE TAB -----------------------------": {},
     "advance_tab_title": "Advance",
     "service_heading": "Service",

@@ -11,7 +11,6 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
-import 'package:mindful/core/extensions/ext_int.dart';
 
 part 'app_settings.g.dart';
 
@@ -44,10 +43,6 @@ class AppSettings {
 
   /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
   final int dataResetTimeMins;
-
-  /// Getter for daily data usage renew and reset time
-  @ignore
-  TimeOfDay get dataResetToD => dataResetTimeMins.toTimeOfDay;
 
   /// Flag indicating if to use bottom navigation or the default sidebar
   final bool bottomNavigation;

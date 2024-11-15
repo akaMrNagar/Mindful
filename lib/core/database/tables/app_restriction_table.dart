@@ -9,6 +9,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 
 @DataClassName("AppRestriction")
@@ -25,11 +26,18 @@ class AppRestrictionTable extends Table {
   /// The number of times user can launch this app
   IntColumn get launchLimit => integer()();
 
-  /// The interval between each usage alert in SECONDS
-  IntColumn get alertInterval => integer()();
+  /// [TimeOfDay] in minutes from where the active period will start.
+  /// It is stored as total minutes.
+  IntColumn get activePeriodStart =>
+      integer().map(const TimeOfDayAdapterConverter())();
 
-  ///  Whether to alert user by dialog if false user will be alerted by notification
-  BoolColumn get alertByDialog => boolean()();
+  /// [TimeOfDay] in minutes when the active period will end
+  /// It is stored as total minutes.
+  IntColumn get activePeriodEnd =>
+      integer().map(const TimeOfDayAdapterConverter())();
+
+  /// Total duration of active period from start to end in MINUTES
+  IntColumn get periodDurationInMins => integer()();
 
   /// Flag denoting if this app can access internet or not
   BoolColumn get canAccessInternet => boolean()();
@@ -38,12 +46,21 @@ class AppRestrictionTable extends Table {
   IntColumn get associatedGroupId =>
       integer().nullable().withDefault(const Constant(null))();
 
+  /// The interval between each usage alert in SECONDS
+  IntColumn get alertInterval => integer()();
+
+  ///  Whether to alert user by dialog if false user will be alerted by notification
+  BoolColumn get alertByDialog => boolean()();
+
   static const defaultAppRestrictionModel = AppRestriction(
     appPackage: "",
     timerSec: 0,
     launchLimit: 0,
+    activePeriodStart: TimeOfDayAdapter.zero(),
+    activePeriodEnd: TimeOfDayAdapter.zero(),
+    periodDurationInMins: 0,
+    canAccessInternet: true,
     alertInterval: 15 * 60, // Every 15 minutes
     alertByDialog: false,
-    canAccessInternet: true,
   );
 }

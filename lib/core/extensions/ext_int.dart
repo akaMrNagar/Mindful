@@ -27,9 +27,6 @@ extension ExtInt on int {
   /// Converts Seconds to Hours
   double get inHours => this / 3600;
 
-  /// Converts minutes to [TimeOfDay]
-  TimeOfDay get toTimeOfDay => TimeOfDay(hour: this ~/ 60, minute: this % 60);
-
   /// Generates day's date string based on the current day of week only for current week
   /// this.int should correspond to 0-6 indexed week day.
   String dateFromDoW(BuildContext context) {
