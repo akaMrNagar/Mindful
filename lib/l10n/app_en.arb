@@ -96,7 +96,7 @@
     "dialog_button_cancel": "Cancel",
     "dialog_button_remove": "Remove",
     "dialog_button_set": "Set",
-    "dialog_button_delete_timer": "Delete timer",
+    "dialog_button_reset": "Reset",
     "schedule_start_label": "Start",
     "schedule_end_label": "End",
     "development_dialog_info": "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!",
@@ -111,6 +111,8 @@
     "imp_distracting_apps_snack_alert": "Adding important system apps to the list of distracting apps is not permitted.",
     "custom_apps_quick_actions_unavailable_warning": "Screen usage and restrictions are unavailable for this application. At present, only network usage is accessible",
     "create_group_fab_button": "Create Group",
+    "active_period_info": "Set a time period during which access will be allowed. Outside of this time frame, access will be restricted.",
+    "minimum_distracting_apps_snack_alert": "Select at least one distracting app.",
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
     "onboarding_finish_setup_btn_label": "Finish Setup",
@@ -170,14 +172,15 @@
     "invincible_mode_snack_alert": "Due to invincible mode, modifications to restrictions is not allowed.",
     "invincible_mode_dialog_info": "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
     "invincible_mode_dialog_button_start_anyway": "Start anyway",
-    "invincible_mode_include_apps_timer_tile_title": "Include apps timer",
-    "invincible_mode_include_apps_timer_tile_subtitle": "Prevents changes after exceeding the app's daily time limit.",
-    "invincible_mode_include_apps_launch_limit_tile_title": "Include app launch limit",
-    "invincible_mode_include_apps_launch_limit_tile_subtitle": "Prevents changes after exceeding the app's daily launch count.",
+    "invincible_mode_include_timer_tile_title": "Include timer",
+    "invincible_mode_include_launch_limit_tile_title": "Include launch limit",
+    "invincible_mode_include_active_period_tile_title": "Include active period",
+    "invincible_mode_app_restrictions_tile_title": "App restrictions",
+    "invincible_mode_app_restrictions_tile_subtitle": "Prevent changes to the app's selected restrictions once the daily limits are exceeded.",
+    "invincible_mode_group_restrictions_tile_title": "Group restrictions",
+    "invincible_mode_group_restrictions_tile_subtitle": "Prevent changes to the group's selected restrictions once the daily limits are exceeded.",
     "invincible_mode_include_shorts_timer_tile_title": "Include shorts timer",
     "invincible_mode_include_shorts_timer_tile_subtitle": "Prevents changes after reaching your daily shorts limit.",
-    "invincible_mode_include_groups_timer_tile_title": "Include groups timer",
-    "invincible_mode_include_groups_timer_tile_subtitle": "Prevents changes after exceeding the group's daily time limit.",
     "invincible_mode_include_bedtime_tile_title": "Include bedtime",
     "invincible_mode_include_bedtime_tile_subtitle": "Prevents changes during the active bedtime schedule.",
     "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
@@ -244,7 +247,6 @@
     "schedule_tile_subtitle": "Enable or disable daily schedule.",
     "bedtime_no_days_selected_snack_alert": "Select at least one day of the week.",
     "bedtime_minimum_duration_snack_alert": "The total bedtime duration must be at least 30 minutes.",
-    "bedtime_minimum_apps_snack_alert": "Select at least one distracting app to turn on bedtime schedule",
     "distracting_apps_tile_title": "Distracting apps",
     "distracting_apps_tile_subtitle": "Select which apps are distracting you from your bedtime routine.",
     "bedtime_distracting_apps_modify_snack_alert": "Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.",
@@ -350,28 +352,13 @@
     "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
     "restriction_groups_tab_title": "Restriction groups",
     "restriction_groups_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
-    "restriction_group_time_used": "Time used: {timeString}",
-    "@restriction_group_time_used": {
-        "placeholders": {
-            "timeString": {
-                "type": "String",
-                "example": "1 hour, 30 minutes"
-            }
-        }
-    },
-    "restriction_group_time_left": "Time left: {timeString}",
-    "@restriction_group_time_left": {
-        "placeholders": {
-            "timeString": {
-                "type": "String",
-                "example": "1 hour, 30 minutes"
-            }
-        }
-    },
-    "restriction_group_heading": "Restriction group",
-    "restriction_group_timer_picker_dialog_info": "Set a daily time limit for this group. Once your limit is reached, all the apps in this group will be paused until midnight.",
-    "restriction_group_label_tile_title": "Label",
+    "restriction_group_time_spent_label": "Time spent today",
+    "restriction_group_time_left_label": "Time left today",
+    "restriction_group_name_tile_title": "Group name",
+    "restriction_group_name_picker_dialog_info": "Enter a name for the restriction group to help identify and manage it easily.",
     "restriction_group_timer_tile_title": "Group timer",
+    "restriction_group_timer_picker_dialog_info": "Set a daily time limit for this group. Once your limit is reached, all the apps in this group will be paused until midnight.",
+    "restriction_group_active_period_tile_title": "Group active period",
     "remove_restriction_group_dialog_title": "Remove group",
     "remove_restriction_group_dialog_info": "Are you sure? you want to remove '{groupName}' from restriction groups.",
     "@remove_restriction_group_dialog_info": {
@@ -382,6 +369,7 @@
             }
         }
     },
+    "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
     "@----------------------------- NOTIFICATION GROUPS SCREEN -----------------------------": {},
     "notification_groups_tab_title": "Notification groups",
     "notification_groups_tile_subtitle": "Schedule alerts for group of apps.",
@@ -417,7 +405,6 @@
     },
     "app_launch_limit_picker_dialog_info": "Set how many times you can open this app each day. Once the limit is reached, it will be paused until midnight.",
     "app_active_period_tile_title": "Active period",
-    "app_active_period_tile_info": "Set a time period during which the app will be accessible. Outside of this time frame, the app will remain blocked.",
     "app_active_period_tile_subtitle": "From {startTime} to {endTime}",
     "@app_active_period_tile_subtitle": {
         "placeholders": {

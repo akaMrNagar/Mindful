@@ -18,8 +18,9 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/restriction_groups/create_restriction_group_fab.dart';
+import 'package:mindful/ui/screens/restriction_groups/create_update_group_screen.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
+import 'package:mindful/ui/screens/restriction_groups/sample_restriction_group.dart';
 
 class RestrictionGroupsScreen extends ConsumerWidget {
   const RestrictionGroupsScreen({super.key});
@@ -35,7 +36,16 @@ class RestrictionGroupsScreen extends ConsumerWidget {
           icon: FluentIcons.app_title_20_regular,
           filledIcon: FluentIcons.app_title_20_filled,
           title: context.locale.restriction_groups_tab_title,
-          fab: const CreateRestrictionGroupFab(),
+          fab: FloatingActionButton.extended(
+            label: Text(context.locale.create_group_fab_button),
+            icon: const Icon(FluentIcons.tab_add_20_filled),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    const CreateUpdateRestrictionGroupScreen(),
+              ),
+            ),
+          ),
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
@@ -43,19 +53,22 @@ class RestrictionGroupsScreen extends ConsumerWidget {
               StyledText(context.locale.restriction_groups_tab_info).sliver,
 
               16.vSliverBox,
-              SliverList.builder(
-                itemCount: groups.length,
-                itemBuilder: (context, index) => RestrictionGroupCard(
-                  group: groups[index],
-                  position: groups.length == 1
-                      ? ItemPosition.none
-                      : index == 0
-                          ? ItemPosition.start
-                          : index == groups.length - 1
-                              ? ItemPosition.end
-                              : ItemPosition.mid,
-                ),
-              ),
+
+              groups.isEmpty
+                  ? const SampleRestrictionGroup().sliver
+                  : SliverList.builder(
+                      itemCount: groups.length,
+                      itemBuilder: (context, index) => RestrictionGroupCard(
+                        group: groups[index],
+                        position: groups.length == 1
+                            ? ItemPosition.none
+                            : index == 0
+                                ? ItemPosition.start
+                                : index == groups.length - 1
+                                    ? ItemPosition.end
+                                    : ItemPosition.mid,
+                      ),
+                    ),
             ],
           ),
         )

@@ -33,10 +33,11 @@ class ScheduleCard extends ConsumerWidget {
     final startTime =
         ref.watch(bedtimeScheduleProvider.select((v) => v.scheduleStartTime));
 
-    final endTime = ref.watch(bedtimeScheduleProvider.select((v) => v.scheduleEndTime));
+    final endTime =
+        ref.watch(bedtimeScheduleProvider.select((v) => v.scheduleEndTime));
 
-    final totalDuration = ref.watch(
-        bedtimeScheduleProvider.select((v) => v.scheduleDurationInMins.minutes));
+    final totalDuration = ref.watch(bedtimeScheduleProvider
+        .select((v) => v.scheduleDurationInMins.minutes));
 
     final scheduleDays = ref
         .watch(bedtimeScheduleProvider.select((value) => value.scheduleDays));

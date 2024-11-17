@@ -63,9 +63,9 @@ class TimeTextShort extends StatelessWidget {
                       text: (timeDuration.inMinutes ~/ 60).toString(),
                       style: numericStyle,
                     ),
-                    TextSpan(text: "H", style: alphaStyle),
+                    TextSpan(text: "H ", style: alphaStyle),
                     TextSpan(
-                      text: " ${timeDuration.inMinutes % 60}",
+                      text: (timeDuration.inMinutes % 60).toString(),
                       style: numericStyle,
                     ),
                     TextSpan(text: "M", style: alphaStyle),

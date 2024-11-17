@@ -28,11 +28,11 @@ class SliverDistractingAppsList extends ConsumerWidget {
     super.key,
     required this.distractingApps,
     required this.onSelectionChanged,
-    this.filteredUnselectedApps,
+    this.hiddenApps = const [],
   });
 
   final List<String> distractingApps;
-  final List<String>? filteredUnselectedApps;
+  final List<String> hiddenApps;
   final Function(String package, bool isSelected) onSelectionChanged;
 
   @override
@@ -46,8 +46,8 @@ class SliverDistractingAppsList extends ConsumerWidget {
         distractingApps.where((e) => allApps.value?.contains(e) ?? false);
 
     /// Unselected apps which are installed
-    final unselectedApps = (filteredUnselectedApps ?? allApps.value ?? [])
-        .where((e) => !distractingApps.contains(e));
+    final unselectedApps = (allApps.value ?? [])
+        .where((e) => !distractingApps.contains(e) && !hiddenApps.contains(e));
 
     return MultiSliver(
       children: [

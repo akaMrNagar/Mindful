@@ -116,16 +116,22 @@ class AppsRestrictionsNotifier
   }
 
   /// Updates the id of associated [RestrictionGroup] for a specific app package.
-  void updateAssociatedGroupId({
+  Future<void> updateAssociatedGroupId({
     required List<String> appPackages,
+    bool removeIds = false,
     int? groupId,
-    List<String> removedAppPackages = const [],
   }) async {
     List<AppRestriction> updatedRestrictions = [];
     Map<String, AppRestriction> updatedState = {...state};
 
+    final skippedApps = removeIds
+        ? appPackages
+        : state.values
+            .where((e) => (e.associatedGroupId ?? -1) == groupId)
+            .map((e) => e.appPackage);
+
     /// Remove associated group id for the removed old packages
-    for (var appPackage in removedAppPackages) {
+    for (var appPackage in skippedApps) {
       final restriction =
           state[appPackage]?.copyWith(associatedGroupId: const Value(null)) ??
               AppRestrictionTable.defaultAppRestrictionModel.copyWith(
@@ -141,21 +147,23 @@ class AppsRestrictionsNotifier
       );
     }
 
-    /// Add/Update associated group id for the new packages
-    for (var appPackage in appPackages) {
-      final restriction =
-          state[appPackage]?.copyWith(associatedGroupId: Value(groupId)) ??
-              AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-                appPackage: appPackage,
-                associatedGroupId: Value(groupId),
-              );
+    if (!removeIds) {
+      /// Add/Update associated group id for the new packages
+      for (var appPackage in appPackages) {
+        final restriction =
+            state[appPackage]?.copyWith(associatedGroupId: Value(groupId)) ??
+                AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+                  appPackage: appPackage,
+                  associatedGroupId: Value(groupId),
+                );
 
-      updatedRestrictions.add(restriction);
-      updatedState.update(
-        appPackage,
-        (value) => restriction,
-        ifAbsent: () => restriction,
-      );
+        updatedRestrictions.add(restriction);
+        updatedState.update(
+          appPackage,
+          (value) => restriction,
+          ifAbsent: () => restriction,
+        );
+      }
     }
 
     /// Update database and state

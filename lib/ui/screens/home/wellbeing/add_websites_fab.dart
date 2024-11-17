@@ -12,7 +12,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -33,11 +32,9 @@ class AddWebsitesFAB extends ConsumerWidget {
             heroTag: HeroTags.addDistractingSiteFABTag,
             label: Text(context.locale.add_website_fab_button),
             icon: const Icon(FluentIcons.link_add_20_regular),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            foregroundColor: Theme.of(context).colorScheme.onPrimary,
             onPressed: () => _onPressedFab(context, ref),
           )
-        : 0.vBox;
+        : const SizedBox.shrink();
   }
 
   void _onPressedFab(BuildContext context, WidgetRef ref) async {

@@ -207,10 +207,10 @@ class $AppRestrictionTableTable extends AppRestrictionTable
     return $AppRestrictionTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<TimeOfDayAdapter, int> $converteractivePeriodStart =
-      const TimeOfDayAdapterConverter();
-  static TypeConverter<TimeOfDayAdapter, int> $converteractivePeriodEnd =
-      const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodStart = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodEnd = const TimeOfDayAdapterConverter();
 }
 
 class AppRestriction extends DataClass implements Insertable<AppRestriction> {
@@ -306,10 +306,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       appPackage: serializer.fromJson<String>(json['appPackage']),
       timerSec: serializer.fromJson<int>(json['timerSec']),
       launchLimit: serializer.fromJson<int>(json['launchLimit']),
-      activePeriodStart:
-          serializer.fromJson<TimeOfDayAdapter>(json['activePeriodStart']),
-      activePeriodEnd:
-          serializer.fromJson<TimeOfDayAdapter>(json['activePeriodEnd']),
+      activePeriodStart: $AppRestrictionTableTable.$converteractivePeriodStart
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodStart'])),
+      activePeriodEnd: $AppRestrictionTableTable.$converteractivePeriodEnd
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodEnd'])),
       periodDurationInMins:
           serializer.fromJson<int>(json['periodDurationInMins']),
       canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
@@ -325,9 +325,12 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       'appPackage': serializer.toJson<String>(appPackage),
       'timerSec': serializer.toJson<int>(timerSec),
       'launchLimit': serializer.toJson<int>(launchLimit),
-      'activePeriodStart':
-          serializer.toJson<TimeOfDayAdapter>(activePeriodStart),
-      'activePeriodEnd': serializer.toJson<TimeOfDayAdapter>(activePeriodEnd),
+      'activePeriodStart': serializer.toJson<dynamic>($AppRestrictionTableTable
+          .$converteractivePeriodStart
+          .toJson(activePeriodStart)),
+      'activePeriodEnd': serializer.toJson<dynamic>($AppRestrictionTableTable
+          .$converteractivePeriodEnd
+          .toJson(activePeriodEnd)),
       'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
       'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
       'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
@@ -733,10 +736,10 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
     return $BedtimeScheduleTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<TimeOfDayAdapter, int> $converterscheduleStartTime =
-      const TimeOfDayAdapterConverter();
-  static TypeConverter<TimeOfDayAdapter, int> $converterscheduleEndTime =
-      const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterscheduleStartTime = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterscheduleEndTime = const TimeOfDayAdapterConverter();
   static TypeConverter<List<bool>, String> $converterscheduleDays =
       const ListBoolConverter();
   static TypeConverter<List<String>, String> $converterdistractingApps =
@@ -831,10 +834,10 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BedtimeSchedule(
       id: serializer.fromJson<int>(json['id']),
-      scheduleStartTime:
-          serializer.fromJson<TimeOfDayAdapter>(json['scheduleStartTime']),
-      scheduleEndTime:
-          serializer.fromJson<TimeOfDayAdapter>(json['scheduleEndTime']),
+      scheduleStartTime: $BedtimeScheduleTableTable.$converterscheduleStartTime
+          .fromJson(serializer.fromJson<dynamic>(json['scheduleStartTime'])),
+      scheduleEndTime: $BedtimeScheduleTableTable.$converterscheduleEndTime
+          .fromJson(serializer.fromJson<dynamic>(json['scheduleEndTime'])),
       scheduleDurationInMins:
           serializer.fromJson<int>(json['scheduleDurationInMins']),
       scheduleDays: serializer.fromJson<List<bool>>(json['scheduleDays']),
@@ -849,9 +852,12 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'scheduleStartTime':
-          serializer.toJson<TimeOfDayAdapter>(scheduleStartTime),
-      'scheduleEndTime': serializer.toJson<TimeOfDayAdapter>(scheduleEndTime),
+      'scheduleStartTime': serializer.toJson<dynamic>($BedtimeScheduleTableTable
+          .$converterscheduleStartTime
+          .toJson(scheduleStartTime)),
+      'scheduleEndTime': serializer.toJson<dynamic>($BedtimeScheduleTableTable
+          .$converterscheduleEndTime
+          .toJson(scheduleEndTime)),
       'scheduleDurationInMins': serializer.toJson<int>(scheduleDurationInMins),
       'scheduleDays': serializer.toJson<List<bool>>(scheduleDays),
       'isScheduleOn': serializer.toJson<bool>(isScheduleOn),
@@ -2540,8 +2546,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
 
   static JsonTypeConverter2<AppThemeMode, int, int> $converterthemeMode =
       const EnumIndexConverter<AppThemeMode>(AppThemeMode.values);
-  static TypeConverter<TimeOfDayAdapter, int> $converterdataResetTime =
-      const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterdataResetTime = const TimeOfDayAdapterConverter();
   static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
   static TypeConverter<List<String>, String> $converterexcludedApps =
@@ -2669,8 +2675,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: serializer.fromJson<String>(json['accentColor']),
       username: serializer.fromJson<String>(json['username']),
       localeCode: serializer.fromJson<String>(json['localeCode']),
-      dataResetTime:
-          serializer.fromJson<TimeOfDayAdapter>(json['dataResetTime']),
+      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime
+          .fromJson(serializer.fromJson<dynamic>(json['dataResetTime'])),
       useBottomNavigation:
           serializer.fromJson<bool>(json['useBottomNavigation']),
       useAmoledDark: serializer.fromJson<bool>(json['useAmoledDark']),
@@ -2695,7 +2701,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'accentColor': serializer.toJson<String>(accentColor),
       'username': serializer.toJson<String>(username),
       'localeCode': serializer.toJson<String>(localeCode),
-      'dataResetTime': serializer.toJson<TimeOfDayAdapter>(dataResetTime),
+      'dataResetTime': serializer.toJson<dynamic>($MindfulSettingsTableTable
+          .$converterdataResetTime
+          .toJson(dataResetTime)),
       'useBottomNavigation': serializer.toJson<bool>(useBottomNavigation),
       'useAmoledDark': serializer.toJson<bool>(useAmoledDark),
       'useDynamicColors': serializer.toJson<bool>(useDynamicColors),
@@ -3043,6 +3051,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
           requiredDuringInsert: true,
           defaultConstraints: GeneratedColumn.constraintIsAlways(
               'CHECK ("include_apps_launch_limit" IN (0, 1))'));
+  static const VerificationMeta _includeAppsActivePeriodMeta =
+      const VerificationMeta('includeAppsActivePeriod');
+  @override
+  late final GeneratedColumn<bool> includeAppsActivePeriod =
+      GeneratedColumn<bool>('include_apps_active_period', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("include_apps_active_period" IN (0, 1))'));
   static const VerificationMeta _includeGroupsTimerMeta =
       const VerificationMeta('includeGroupsTimer');
   @override
@@ -3052,6 +3069,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("include_groups_timer" IN (0, 1))'));
+  static const VerificationMeta _includeGroupsActivePeriodMeta =
+      const VerificationMeta('includeGroupsActivePeriod');
+  @override
+  late final GeneratedColumn<bool> includeGroupsActivePeriod =
+      GeneratedColumn<bool>('include_groups_active_period', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("include_groups_active_period" IN (0, 1))'));
   static const VerificationMeta _includeShortsTimerMeta =
       const VerificationMeta('includeShortsTimer');
   @override
@@ -3076,7 +3102,9 @@ class $InvincibleModeTableTable extends InvincibleModeTable
         isInvincibleModeOn,
         includeAppsTimer,
         includeAppsLaunchLimit,
+        includeAppsActivePeriod,
         includeGroupsTimer,
+        includeGroupsActivePeriod,
         includeShortsTimer,
         includeBedtimeSchedule
       ];
@@ -3117,6 +3145,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
     } else if (isInserting) {
       context.missing(_includeAppsLaunchLimitMeta);
     }
+    if (data.containsKey('include_apps_active_period')) {
+      context.handle(
+          _includeAppsActivePeriodMeta,
+          includeAppsActivePeriod.isAcceptableOrUnknown(
+              data['include_apps_active_period']!,
+              _includeAppsActivePeriodMeta));
+    } else if (isInserting) {
+      context.missing(_includeAppsActivePeriodMeta);
+    }
     if (data.containsKey('include_groups_timer')) {
       context.handle(
           _includeGroupsTimerMeta,
@@ -3124,6 +3161,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
               data['include_groups_timer']!, _includeGroupsTimerMeta));
     } else if (isInserting) {
       context.missing(_includeGroupsTimerMeta);
+    }
+    if (data.containsKey('include_groups_active_period')) {
+      context.handle(
+          _includeGroupsActivePeriodMeta,
+          includeGroupsActivePeriod.isAcceptableOrUnknown(
+              data['include_groups_active_period']!,
+              _includeGroupsActivePeriodMeta));
+    } else if (isInserting) {
+      context.missing(_includeGroupsActivePeriodMeta);
     }
     if (data.containsKey('include_shorts_timer')) {
       context.handle(
@@ -3159,8 +3205,14 @@ class $InvincibleModeTableTable extends InvincibleModeTable
       includeAppsLaunchLimit: attachedDatabase.typeMapping.read(
           DriftSqlType.bool,
           data['${effectivePrefix}include_apps_launch_limit'])!,
+      includeAppsActivePeriod: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}include_apps_active_period'])!,
       includeGroupsTimer: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}include_groups_timer'])!,
+      includeGroupsActivePeriod: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}include_groups_active_period'])!,
       includeShortsTimer: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}include_shorts_timer'])!,
       includeBedtimeSchedule: attachedDatabase.typeMapping.read(
@@ -3192,10 +3244,20 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   /// If included user cannot modify app launch count limit if it is already ran out
   final bool includeAppsLaunchLimit;
 
+  /// Flag indicating if apps active period is included in the invincible mode
+  ///
+  /// If included user cannot modify app launch count limit if it is already ran out
+  final bool includeAppsActivePeriod;
+
   /// Flag indicating if groups timer are included in the invincible mode
   ///
   /// If included user cannot modify group timer if it is already ran out
   final bool includeGroupsTimer;
+
+  /// Flag indicating if groups active period is included in the invincible mode
+  ///
+  /// If included user cannot modify group timer if it is already ran out
+  final bool includeGroupsActivePeriod;
 
   /// Flag indicating if short content's timer is included in the invincible mode
   ///
@@ -3211,7 +3273,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       required this.isInvincibleModeOn,
       required this.includeAppsTimer,
       required this.includeAppsLaunchLimit,
+      required this.includeAppsActivePeriod,
       required this.includeGroupsTimer,
+      required this.includeGroupsActivePeriod,
       required this.includeShortsTimer,
       required this.includeBedtimeSchedule});
   @override
@@ -3221,7 +3285,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
     map['include_apps_timer'] = Variable<bool>(includeAppsTimer);
     map['include_apps_launch_limit'] = Variable<bool>(includeAppsLaunchLimit);
+    map['include_apps_active_period'] = Variable<bool>(includeAppsActivePeriod);
     map['include_groups_timer'] = Variable<bool>(includeGroupsTimer);
+    map['include_groups_active_period'] =
+        Variable<bool>(includeGroupsActivePeriod);
     map['include_shorts_timer'] = Variable<bool>(includeShortsTimer);
     map['include_bedtime_schedule'] = Variable<bool>(includeBedtimeSchedule);
     return map;
@@ -3233,7 +3300,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       isInvincibleModeOn: Value(isInvincibleModeOn),
       includeAppsTimer: Value(includeAppsTimer),
       includeAppsLaunchLimit: Value(includeAppsLaunchLimit),
+      includeAppsActivePeriod: Value(includeAppsActivePeriod),
       includeGroupsTimer: Value(includeGroupsTimer),
+      includeGroupsActivePeriod: Value(includeGroupsActivePeriod),
       includeShortsTimer: Value(includeShortsTimer),
       includeBedtimeSchedule: Value(includeBedtimeSchedule),
     );
@@ -3248,7 +3317,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       includeAppsTimer: serializer.fromJson<bool>(json['includeAppsTimer']),
       includeAppsLaunchLimit:
           serializer.fromJson<bool>(json['includeAppsLaunchLimit']),
+      includeAppsActivePeriod:
+          serializer.fromJson<bool>(json['includeAppsActivePeriod']),
       includeGroupsTimer: serializer.fromJson<bool>(json['includeGroupsTimer']),
+      includeGroupsActivePeriod:
+          serializer.fromJson<bool>(json['includeGroupsActivePeriod']),
       includeShortsTimer: serializer.fromJson<bool>(json['includeShortsTimer']),
       includeBedtimeSchedule:
           serializer.fromJson<bool>(json['includeBedtimeSchedule']),
@@ -3262,7 +3335,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
       'includeAppsTimer': serializer.toJson<bool>(includeAppsTimer),
       'includeAppsLaunchLimit': serializer.toJson<bool>(includeAppsLaunchLimit),
+      'includeAppsActivePeriod':
+          serializer.toJson<bool>(includeAppsActivePeriod),
       'includeGroupsTimer': serializer.toJson<bool>(includeGroupsTimer),
+      'includeGroupsActivePeriod':
+          serializer.toJson<bool>(includeGroupsActivePeriod),
       'includeShortsTimer': serializer.toJson<bool>(includeShortsTimer),
       'includeBedtimeSchedule': serializer.toJson<bool>(includeBedtimeSchedule),
     };
@@ -3273,7 +3350,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           bool? isInvincibleModeOn,
           bool? includeAppsTimer,
           bool? includeAppsLaunchLimit,
+          bool? includeAppsActivePeriod,
           bool? includeGroupsTimer,
+          bool? includeGroupsActivePeriod,
           bool? includeShortsTimer,
           bool? includeBedtimeSchedule}) =>
       InvincibleMode(
@@ -3282,7 +3361,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
         includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
         includeAppsLaunchLimit:
             includeAppsLaunchLimit ?? this.includeAppsLaunchLimit,
+        includeAppsActivePeriod:
+            includeAppsActivePeriod ?? this.includeAppsActivePeriod,
         includeGroupsTimer: includeGroupsTimer ?? this.includeGroupsTimer,
+        includeGroupsActivePeriod:
+            includeGroupsActivePeriod ?? this.includeGroupsActivePeriod,
         includeShortsTimer: includeShortsTimer ?? this.includeShortsTimer,
         includeBedtimeSchedule:
             includeBedtimeSchedule ?? this.includeBedtimeSchedule,
@@ -3294,7 +3377,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
+          ..write('includeAppsActivePeriod: $includeAppsActivePeriod, ')
           ..write('includeGroupsTimer: $includeGroupsTimer, ')
+          ..write('includeGroupsActivePeriod: $includeGroupsActivePeriod, ')
           ..write('includeShortsTimer: $includeShortsTimer, ')
           ..write('includeBedtimeSchedule: $includeBedtimeSchedule')
           ..write(')'))
@@ -3307,7 +3392,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       isInvincibleModeOn,
       includeAppsTimer,
       includeAppsLaunchLimit,
+      includeAppsActivePeriod,
       includeGroupsTimer,
+      includeGroupsActivePeriod,
       includeShortsTimer,
       includeBedtimeSchedule);
   @override
@@ -3318,7 +3405,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           other.isInvincibleModeOn == this.isInvincibleModeOn &&
           other.includeAppsTimer == this.includeAppsTimer &&
           other.includeAppsLaunchLimit == this.includeAppsLaunchLimit &&
+          other.includeAppsActivePeriod == this.includeAppsActivePeriod &&
           other.includeGroupsTimer == this.includeGroupsTimer &&
+          other.includeGroupsActivePeriod == this.includeGroupsActivePeriod &&
           other.includeShortsTimer == this.includeShortsTimer &&
           other.includeBedtimeSchedule == this.includeBedtimeSchedule);
 }
@@ -3328,7 +3417,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   final Value<bool> isInvincibleModeOn;
   final Value<bool> includeAppsTimer;
   final Value<bool> includeAppsLaunchLimit;
+  final Value<bool> includeAppsActivePeriod;
   final Value<bool> includeGroupsTimer;
+  final Value<bool> includeGroupsActivePeriod;
   final Value<bool> includeShortsTimer;
   final Value<bool> includeBedtimeSchedule;
   const InvincibleModeTableCompanion({
@@ -3336,7 +3427,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     this.isInvincibleModeOn = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
+    this.includeAppsActivePeriod = const Value.absent(),
     this.includeGroupsTimer = const Value.absent(),
+    this.includeGroupsActivePeriod = const Value.absent(),
     this.includeShortsTimer = const Value.absent(),
     this.includeBedtimeSchedule = const Value.absent(),
   });
@@ -3345,13 +3438,17 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     required bool isInvincibleModeOn,
     required bool includeAppsTimer,
     required bool includeAppsLaunchLimit,
+    required bool includeAppsActivePeriod,
     required bool includeGroupsTimer,
+    required bool includeGroupsActivePeriod,
     required bool includeShortsTimer,
     required bool includeBedtimeSchedule,
   })  : isInvincibleModeOn = Value(isInvincibleModeOn),
         includeAppsTimer = Value(includeAppsTimer),
         includeAppsLaunchLimit = Value(includeAppsLaunchLimit),
+        includeAppsActivePeriod = Value(includeAppsActivePeriod),
         includeGroupsTimer = Value(includeGroupsTimer),
+        includeGroupsActivePeriod = Value(includeGroupsActivePeriod),
         includeShortsTimer = Value(includeShortsTimer),
         includeBedtimeSchedule = Value(includeBedtimeSchedule);
   static Insertable<InvincibleMode> custom({
@@ -3359,7 +3456,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     Expression<bool>? isInvincibleModeOn,
     Expression<bool>? includeAppsTimer,
     Expression<bool>? includeAppsLaunchLimit,
+    Expression<bool>? includeAppsActivePeriod,
     Expression<bool>? includeGroupsTimer,
+    Expression<bool>? includeGroupsActivePeriod,
     Expression<bool>? includeShortsTimer,
     Expression<bool>? includeBedtimeSchedule,
   }) {
@@ -3370,8 +3469,12 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       if (includeAppsTimer != null) 'include_apps_timer': includeAppsTimer,
       if (includeAppsLaunchLimit != null)
         'include_apps_launch_limit': includeAppsLaunchLimit,
+      if (includeAppsActivePeriod != null)
+        'include_apps_active_period': includeAppsActivePeriod,
       if (includeGroupsTimer != null)
         'include_groups_timer': includeGroupsTimer,
+      if (includeGroupsActivePeriod != null)
+        'include_groups_active_period': includeGroupsActivePeriod,
       if (includeShortsTimer != null)
         'include_shorts_timer': includeShortsTimer,
       if (includeBedtimeSchedule != null)
@@ -3384,7 +3487,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       Value<bool>? isInvincibleModeOn,
       Value<bool>? includeAppsTimer,
       Value<bool>? includeAppsLaunchLimit,
+      Value<bool>? includeAppsActivePeriod,
       Value<bool>? includeGroupsTimer,
+      Value<bool>? includeGroupsActivePeriod,
       Value<bool>? includeShortsTimer,
       Value<bool>? includeBedtimeSchedule}) {
     return InvincibleModeTableCompanion(
@@ -3393,7 +3498,11 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
       includeAppsLaunchLimit:
           includeAppsLaunchLimit ?? this.includeAppsLaunchLimit,
+      includeAppsActivePeriod:
+          includeAppsActivePeriod ?? this.includeAppsActivePeriod,
       includeGroupsTimer: includeGroupsTimer ?? this.includeGroupsTimer,
+      includeGroupsActivePeriod:
+          includeGroupsActivePeriod ?? this.includeGroupsActivePeriod,
       includeShortsTimer: includeShortsTimer ?? this.includeShortsTimer,
       includeBedtimeSchedule:
           includeBedtimeSchedule ?? this.includeBedtimeSchedule,
@@ -3416,8 +3525,16 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       map['include_apps_launch_limit'] =
           Variable<bool>(includeAppsLaunchLimit.value);
     }
+    if (includeAppsActivePeriod.present) {
+      map['include_apps_active_period'] =
+          Variable<bool>(includeAppsActivePeriod.value);
+    }
     if (includeGroupsTimer.present) {
       map['include_groups_timer'] = Variable<bool>(includeGroupsTimer.value);
+    }
+    if (includeGroupsActivePeriod.present) {
+      map['include_groups_active_period'] =
+          Variable<bool>(includeGroupsActivePeriod.value);
     }
     if (includeShortsTimer.present) {
       map['include_shorts_timer'] = Variable<bool>(includeShortsTimer.value);
@@ -3436,7 +3553,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
+          ..write('includeAppsActivePeriod: $includeAppsActivePeriod, ')
           ..write('includeGroupsTimer: $includeGroupsTimer, ')
+          ..write('includeGroupsActivePeriod: $includeGroupsActivePeriod, ')
           ..write('includeShortsTimer: $includeShortsTimer, ')
           ..write('includeBedtimeSchedule: $includeBedtimeSchedule')
           ..write(')'))
@@ -3585,10 +3704,10 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
     return $RestrictionGroupsTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<TimeOfDayAdapter, int> $converteractivePeriodStart =
-      const TimeOfDayAdapterConverter();
-  static TypeConverter<TimeOfDayAdapter, int> $converteractivePeriodEnd =
-      const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodStart = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodEnd = const TimeOfDayAdapterConverter();
   static TypeConverter<List<String>, String> $converterdistractingApps =
       const ListStringConverter();
 }
@@ -3669,10 +3788,11 @@ class RestrictionGroup extends DataClass
       id: serializer.fromJson<int>(json['id']),
       groupName: serializer.fromJson<String>(json['groupName']),
       timerSec: serializer.fromJson<int>(json['timerSec']),
-      activePeriodStart:
-          serializer.fromJson<TimeOfDayAdapter>(json['activePeriodStart']),
-      activePeriodEnd:
-          serializer.fromJson<TimeOfDayAdapter>(json['activePeriodEnd']),
+      activePeriodStart: $RestrictionGroupsTableTable
+          .$converteractivePeriodStart
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodStart'])),
+      activePeriodEnd: $RestrictionGroupsTableTable.$converteractivePeriodEnd
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodEnd'])),
       periodDurationInMins:
           serializer.fromJson<int>(json['periodDurationInMins']),
       distractingApps:
@@ -3686,9 +3806,12 @@ class RestrictionGroup extends DataClass
       'id': serializer.toJson<int>(id),
       'groupName': serializer.toJson<String>(groupName),
       'timerSec': serializer.toJson<int>(timerSec),
-      'activePeriodStart':
-          serializer.toJson<TimeOfDayAdapter>(activePeriodStart),
-      'activePeriodEnd': serializer.toJson<TimeOfDayAdapter>(activePeriodEnd),
+      'activePeriodStart': serializer.toJson<dynamic>(
+          $RestrictionGroupsTableTable.$converteractivePeriodStart
+              .toJson(activePeriodStart)),
+      'activePeriodEnd': serializer.toJson<dynamic>($RestrictionGroupsTableTable
+          .$converteractivePeriodEnd
+          .toJson(activePeriodEnd)),
       'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
       'distractingApps': serializer.toJson<List<String>>(distractingApps),
     };
@@ -5686,7 +5809,9 @@ typedef $$InvincibleModeTableTableInsertCompanionBuilder
   required bool isInvincibleModeOn,
   required bool includeAppsTimer,
   required bool includeAppsLaunchLimit,
+  required bool includeAppsActivePeriod,
   required bool includeGroupsTimer,
+  required bool includeGroupsActivePeriod,
   required bool includeShortsTimer,
   required bool includeBedtimeSchedule,
 });
@@ -5696,7 +5821,9 @@ typedef $$InvincibleModeTableTableUpdateCompanionBuilder
   Value<bool> isInvincibleModeOn,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
+  Value<bool> includeAppsActivePeriod,
   Value<bool> includeGroupsTimer,
+  Value<bool> includeGroupsActivePeriod,
   Value<bool> includeShortsTimer,
   Value<bool> includeBedtimeSchedule,
 });
@@ -5726,7 +5853,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
+            Value<bool> includeAppsActivePeriod = const Value.absent(),
             Value<bool> includeGroupsTimer = const Value.absent(),
+            Value<bool> includeGroupsActivePeriod = const Value.absent(),
             Value<bool> includeShortsTimer = const Value.absent(),
             Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
@@ -5735,7 +5864,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
+            includeAppsActivePeriod: includeAppsActivePeriod,
             includeGroupsTimer: includeGroupsTimer,
+            includeGroupsActivePeriod: includeGroupsActivePeriod,
             includeShortsTimer: includeShortsTimer,
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
@@ -5744,7 +5875,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             required bool isInvincibleModeOn,
             required bool includeAppsTimer,
             required bool includeAppsLaunchLimit,
+            required bool includeAppsActivePeriod,
             required bool includeGroupsTimer,
+            required bool includeGroupsActivePeriod,
             required bool includeShortsTimer,
             required bool includeBedtimeSchedule,
           }) =>
@@ -5753,7 +5886,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
+            includeAppsActivePeriod: includeAppsActivePeriod,
             includeGroupsTimer: includeGroupsTimer,
+            includeGroupsActivePeriod: includeGroupsActivePeriod,
             includeShortsTimer: includeShortsTimer,
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
@@ -5796,8 +5931,18 @@ class $$InvincibleModeTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<bool> get includeAppsActivePeriod => $state.composableBuilder(
+      column: $state.table.includeAppsActivePeriod,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<bool> get includeGroupsTimer => $state.composableBuilder(
       column: $state.table.includeGroupsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get includeGroupsActivePeriod => $state.composableBuilder(
+      column: $state.table.includeGroupsActivePeriod,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -5835,10 +5980,21 @@ class $$InvincibleModeTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<bool> get includeAppsActivePeriod => $state.composableBuilder(
+      column: $state.table.includeAppsActivePeriod,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<bool> get includeGroupsTimer => $state.composableBuilder(
       column: $state.table.includeGroupsTimer,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get includeGroupsActivePeriod =>
+      $state.composableBuilder(
+          column: $state.table.includeGroupsActivePeriod,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
 
   ColumnOrderings<bool> get includeShortsTimer => $state.composableBuilder(
       column: $state.table.includeShortsTimer,

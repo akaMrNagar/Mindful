@@ -30,7 +30,6 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
 import 'package:mindful/ui/screens/active_session/timer_progress_clock.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class ActiveSessionScreen extends ConsumerStatefulWidget {
@@ -111,6 +110,22 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
           title: context.locale.active_session_tab_title,
           appBarTitle: sessionTypeLabels(context)[widget.session.type] ??
               context.locale.active_session_tab_title,
+          fab: _isCompleted
+              ? const SizedBox.shrink()
+              : FloatingActionButton.extended(
+                  heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
+                  label: Text(
+                    _isFinite
+                        ? context.locale.active_session_giveup_dialog_title
+                        : context.locale.active_session_finish_dialog_title,
+                  ),
+                  icon: Icon(
+                    _isFinite
+                        ? FluentIcons.emoji_sad_20_filled
+                        : FluentIcons.emoji_surprise_20_filled,
+                  ),
+                  onPressed: _giveUpOrFinishActiveSession,
+                ),
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
@@ -173,26 +188,6 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
                 sinColor: Theme.of(context).colorScheme.primaryContainer,
                 cosColor: Theme.of(context).colorScheme.primary,
               ).sliver,
-
-              64.vSliverBox,
-
-              if (!_isCompleted)
-                DefaultHero(
-                  tag: HeroTags.giveUpOrFinishFocusSessionTag,
-                  child: FilledButton.tonalIcon(
-                    label: Text(
-                      _isFinite
-                          ? context.locale.active_session_giveup_dialog_title
-                          : context.locale.active_session_finish_dialog_title,
-                    ),
-                    icon: Icon(
-                      _isFinite
-                          ? FluentIcons.emoji_sad_20_filled
-                          : FluentIcons.emoji_surprise_20_filled,
-                    ),
-                    onPressed: _giveUpOrFinishActiveSession,
-                  ),
-                ).centered.sliver,
             ],
           ),
         ),
@@ -201,7 +196,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
   }
 
   void _giveUpOrFinishActiveSession() async {
-    final keepPushing = await showConfirmationDialog(
+    final confirm = await showConfirmationDialog(
       context: context,
       heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
       title: _isFinite
@@ -213,13 +208,14 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
       icon: _isFinite
           ? FluentIcons.emoji_sad_20_filled
           : FluentIcons.emoji_surprise_20_filled,
-      negativeLabel: _isFinite
+      positiveLabel: _isFinite
           ? context.locale.active_session_giveup_dialog_title
           : context.locale.active_session_finish_dialog_title,
-      positiveLabel: context.locale.active_session_dialog_button_keep_pushing,
+      negativeLabel: context.locale.active_session_dialog_button_keep_pushing,
     );
 
-    if (keepPushing) return;
+    if (!confirm) return;
+
     await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
           isTheSessionSuccessful: !_isFinite,
         );

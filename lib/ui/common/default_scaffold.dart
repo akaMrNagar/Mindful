@@ -93,7 +93,8 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
       ),
       child: Scaffold(
         floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-        floatingActionButton: widget.navbarItems[_controller.index].fab,
+        floatingActionButton: widget.navbarItems[_controller.index].fab ??
+            const SizedBox.shrink(),
 
         /// Only visible when using bottom navigation and screen have more than 1 tab
         bottomNavigationBar:

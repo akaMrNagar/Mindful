@@ -77,13 +77,15 @@ class SliverFlexibleAppBar extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (useBottomNavigation) materialBarLeading ?? 0.vBox,
-                    const Spacer(),
-                    StyledText(
-                      title,
-                      maxLines: 1,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.fade,
+                    Expanded(
+                      child: StyledText(
+                        title,
+                        maxLines: 1,
+                        fontSize: 32,
+                        fontWeight: FontWeight.w600,
+                        textAlign: TextAlign.right,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ],
                 ),

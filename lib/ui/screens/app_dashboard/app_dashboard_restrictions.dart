@@ -16,20 +16,20 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
+import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/time_period_start_end_cards.dart';
 import 'package:mindful/ui/dialogs/app_launch_limit_dialog.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_internet_switcher.dart';
@@ -47,6 +47,33 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
   final AndroidApp app;
 
+  void _onLaunchCountPressed({
+    required BuildContext context,
+    required WidgetRef ref,
+    required int launchCount,
+    required int launchLimit,
+  }) {
+    final isAppLimitRestricted = ref.read(invincibleModeProvider
+        .select((v) => v.isInvincibleModeOn && v.includeAppsLaunchLimit));
+
+    /// Show snack bar and return if restricted
+    if (isAppLimitRestricted && launchLimit > 0 && launchCount > launchLimit) {
+      context.showSnackAlert(context.locale.invincible_mode_snack_alert);
+      return;
+    }
+
+    showAppLaunchLimitDialog(
+      context: context,
+      heroTag: HeroTags.appLaunchLimitTileTag(app.packageName),
+      initialCount: launchLimit,
+    ).then(
+      (v) => ref.read(appsRestrictionsProvider.notifier).updateAppLaunchLimit(
+            app.packageName,
+            v ?? launchLimit,
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final restriction = ref.watch(
@@ -59,8 +86,13 @@ class AppDashboardRestrictions extends ConsumerWidget {
     final restrictionGroupName = ref.watch(restrictionGroupsProvider
         .select((v) => v[restriction.associatedGroupId]?.groupName));
 
-    final isAppLimitRestricted = ref.watch(invincibleModeProvider
-        .select((v) => v.isInvincibleModeOn && v.includeAppsLaunchLimit));
+    final canModifyActivePeriod = !(restriction.periodDurationInMins > 0 &&
+        ref.watch(invincibleModeProvider.select(
+            (v) => v.isInvincibleModeOn && v.includeAppsActivePeriod)) &&
+        !DateTime.now().isBetweenTod(
+          restriction.activePeriodStart,
+          restriction.activePeriodEnd,
+        ));
 
     return MultiSliver(
       children: [
@@ -91,23 +123,12 @@ class AppDashboardRestrictions extends ConsumerWidget {
                     context.locale.app_limit_status_not_set,
                     isSubtitle: true,
                   ),
-            onPressed: () => isAppLimitRestricted &&
-                    restriction.launchLimit > 0 &&
-                    app.launchCount >= restriction.launchLimit
-                ? context
-                    .showSnackAlert(context.locale.invincible_mode_snack_alert)
-                : showAppLaunchLimitDialog(
-                    context: context,
-                    heroTag: HeroTags.appLaunchLimitTileTag(app.packageName),
-                    initialCount: restriction.launchLimit,
-                  ).then(
-                    (v) => ref
-                        .read(appsRestrictionsProvider.notifier)
-                        .updateAppLaunchLimit(
-                          app.packageName,
-                          v ?? restriction.launchLimit,
-                        ),
-                  ),
+            onPressed: () => _onLaunchCountPressed(
+              context: context,
+              ref: ref,
+              launchCount: app.launchCount,
+              launchLimit: restriction.launchLimit,
+            ),
           ),
         ).sliver,
 
@@ -118,51 +139,30 @@ class AppDashboardRestrictions extends ConsumerWidget {
           contentPosition: ItemPosition.mid,
           leadingIcon: FluentIcons.drink_coffee_20_regular,
           titleText: context.locale.app_active_period_tile_title,
-          subtitleText: context.locale.app_active_period_tile_subtitle(
-            restriction.activePeriodStart.format(context),
-            restriction.activePeriodEnd.format(context),
-          ),
-          content: Column(
-            children: [
-              StyledText(
-                restriction.activePeriodEnd
-                    .difference(restriction.activePeriodStart)
-                    .toTimeFull(context),
-              ),
+          subtitleText: restriction.periodDurationInMins > 0
+              ? context.locale.app_active_period_tile_subtitle(
+                  restriction.activePeriodStart.format(context),
+                  restriction.activePeriodEnd.format(context),
+                )
+              : context.locale.app_limit_status_not_set,
+          content: ActivePeriodTileContent(
+            totalDuration: restriction.periodDurationInMins.minutes,
+            startTime: restriction.activePeriodStart,
+            endTime: restriction.activePeriodEnd,
+            isModifiable: () {
+              if (!canModifyActivePeriod) {
+                context
+                    .showSnackAlert(context.locale.invincible_mode_snack_alert);
+              }
 
-              /// Info
-              StyledText(
-                context.locale.app_active_period_tile_info,
-                color: Theme.of(context).hintColor,
-              ),
-
-              24.vBox,
-
-              /// Period time
-              TimePeriodStartEndCards(
-                bgColor: Theme.of(context)
-                    .colorScheme
-                    .surfaceContainerHigh
-                    .withOpacity(0.5),
-                startTime: restriction.activePeriodStart,
-                endTime: restriction.activePeriodEnd,
-                onStartTimeChanged: (start) => ref
-                    .read(appsRestrictionsProvider.notifier)
-                    .updateActivePeriod(
+              return canModifyActivePeriod;
+            },
+            onTimeChanged: (start, end) =>
+                ref.read(appsRestrictionsProvider.notifier).updateActivePeriod(
                       app.packageName,
                       start,
-                      restriction.activePeriodEnd,
-                    ),
-                onEndTimeChanged: (end) => ref
-                    .read(appsRestrictionsProvider.notifier)
-                    .updateActivePeriod(
-                      app.packageName,
-                      restriction.activePeriodStart,
                       end,
                     ),
-              ),
-              12.vBox,
-            ],
           ),
         ).sliver,
 
@@ -173,7 +173,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
         DefaultListTile(
           enabled: !app.isImpSysApp,
           position: ItemPosition.end,
-          titleText: context.locale.restriction_group_heading,
+          titleText: context.locale.restriction_groups_tab_title,
           subtitleText:
               restrictionGroupName ?? context.locale.app_limit_status_not_set,
           leadingIcon: FluentIcons.app_title_20_regular,

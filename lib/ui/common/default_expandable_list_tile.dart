@@ -31,22 +31,26 @@ class DefaultExpandableListTile extends StatefulWidget {
     this.titleText,
     this.subtitleText,
     this.color,
+    this.contentBgColor,
     this.accent,
+    this.contentBottomMargin = 2,
     this.position = ItemPosition.none,
     this.enabled = true,
     this.isPrimary = false,
   });
 
-  final Widget? leading;
-  final Widget? title;
-  final Widget? subtitle;
-  final Widget content;
   final IconData? leadingIcon;
+  final Widget? leading;
   final String? titleText;
+  final Widget? title;
   final String? subtitleText;
+  final Widget? subtitle;
   final Color? color;
   final Color? accent;
   final ItemPosition position;
+  final Widget content;
+  final Color? contentBgColor;
+  final double contentBottomMargin;
   final ItemPosition contentPosition;
   final bool enabled;
   final bool isPrimary;
@@ -72,6 +76,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
           titleText: widget.titleText,
           subtitleText: widget.subtitleText,
           color: widget.color,
+          accent: widget.accent,
           position: widget.position,
           enabled: widget.enabled,
           isPrimary: widget.isPrimary,
@@ -90,7 +95,10 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
         RoundedContainer(
           borderRadius: getBorderRadiusFromPosition(widget.contentPosition),
           alignment: Alignment.topCenter,
-          margin: EdgeInsets.only(bottom: _isExpanded ? 2 : 0),
+          margin: EdgeInsets.only(
+            bottom: _isExpanded ? widget.contentBottomMargin : 0,
+          ),
+          color: widget.contentBgColor,
           child: FractionallySizedBox(
             widthFactor: 1,
             child: AnimatedSize(
@@ -98,10 +106,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
               duration: 250.ms,
               curve: Curves.easeInOut,
               child: _isExpanded
-                  ? Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: widget.content,
-                    )
+                  ? widget.content
                   : const SizedBox.shrink(), // Collapsed state
             ),
           ),

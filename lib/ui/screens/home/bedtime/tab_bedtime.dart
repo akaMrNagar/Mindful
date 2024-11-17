@@ -10,12 +10,10 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
@@ -42,11 +40,8 @@ class TabBedtime extends ConsumerWidget {
         .select((v) => v.isInvincibleModeOn && v.includeBedtimeSchedule));
 
     if (isInvincibleModeRestricted && state.isScheduleOn) {
-      final now = DateTime.now();
-      final start = now.dateOnly.add(state.scheduleStartTime.toMinutes.minutes);
-      final end = now.dateOnly.add(state.scheduleEndTime.toMinutes.minutes);
-
-      if (start.isBefore(now) && end.isAfter(now)) {
+      if (DateTime.now()
+          .isBetweenTod(state.scheduleStartTime, state.scheduleEndTime)) {
         context.showSnackAlert(context.locale.invincible_mode_snack_alert);
         return;
       }
@@ -61,9 +56,7 @@ class TabBedtime extends ConsumerWidget {
     }
 
     // If the total duration is less than 30 minutes
-    final totalDuration = state.scheduleDurationInMins;
-
-    if (totalDuration.inMinutes < 30) {
+    if (state.scheduleDurationInMins < 30) {
       context.showSnackAlert(
         context.locale.bedtime_minimum_duration_snack_alert,
       );
@@ -73,7 +66,7 @@ class TabBedtime extends ConsumerWidget {
     // If no distracting apps selected
     if (shouldStart && state.distractingApps.isEmpty) {
       context.showSnackAlert(
-        context.locale.bedtime_minimum_apps_snack_alert,
+        context.locale.minimum_distracting_apps_snack_alert,
       );
       return;
     }

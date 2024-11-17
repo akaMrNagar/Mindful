@@ -90,7 +90,6 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
                 ),
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       StyledText(
                         context.locale.app_launch_limit_picker_dialog_info,
@@ -118,6 +117,17 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
                           ],
                         ),
                       ),
+                      18.vBox,
+                      FittedBox(
+                        child: FilledButton.icon(
+                          icon: const Icon(FluentIcons.arrow_reset_20_filled),
+                          label: Text(context.locale.dialog_button_reset),
+                          onPressed: () => Navigator.maybePop(
+                            context,
+                            0,
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),

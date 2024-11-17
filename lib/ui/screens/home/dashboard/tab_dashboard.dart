@@ -37,10 +37,12 @@ import 'package:skeletonizer/skeletonizer.dart';
 class TabDashboard extends ConsumerWidget {
   const TabDashboard({super.key});
 
-  void _editUserName(BuildContext context, WidgetRef ref) async {
+  void _editUserName(
+      BuildContext context, WidgetRef ref, String initialName) async {
     final userName = await showUsernameInputDialog(
       context: context,
       heroTag: HeroTags.editUsernameTag,
+      initialText: initialName,
     );
 
     if (userName == null) return;
@@ -77,7 +79,7 @@ class TabDashboard extends ConsumerWidget {
             DefaultHero(
               tag: HeroTags.editUsernameTag,
               child: InkWell(
-                onLongPress: () => _editUserName(context, ref),
+                onLongPress: () => _editUserName(context, ref, username),
                 onTap: () => context.showSnackAlert(
                   context.locale.username_snack_alert,
                   icon: FluentIcons.edit_20_filled,

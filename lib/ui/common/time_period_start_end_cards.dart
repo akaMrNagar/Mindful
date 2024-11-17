@@ -22,6 +22,7 @@ class TimePeriodStartEndCards extends StatelessWidget {
   const TimePeriodStartEndCards({
     super.key,
     this.bgColor,
+    this.isModifiable,
     this.enabled = true,
     required this.startTime,
     required this.endTime,
@@ -29,8 +30,9 @@ class TimePeriodStartEndCards extends StatelessWidget {
     required this.onEndTimeChanged,
   });
 
-  final bool enabled;
   final Color? bgColor;
+  final bool Function()? isModifiable;
+  final bool enabled;
   final TimeOfDayAdapter startTime;
   final TimeOfDayAdapter endTime;
   final Function(TimeOfDayAdapter timeTod) onStartTimeChanged;
@@ -45,6 +47,7 @@ class TimePeriodStartEndCards extends StatelessWidget {
         Expanded(
           child: _SelectedTime(
             enabled: enabled,
+            isModifiable: isModifiable,
             label: context.locale.schedule_start_label,
             heroTag: HeroTags.scheduleStartTimePickerTag,
             initialTime: startTime,
@@ -59,6 +62,7 @@ class TimePeriodStartEndCards extends StatelessWidget {
         Expanded(
           child: _SelectedTime(
             enabled: enabled,
+            isModifiable: isModifiable,
             label: context.locale.schedule_end_label,
             heroTag: HeroTags.scheduleEndTimePickerTag,
             initialTime: endTime,
@@ -79,6 +83,7 @@ class _SelectedTime extends StatelessWidget {
     required this.onChange,
     required this.initialTime,
     this.color,
+    this.isModifiable,
   });
 
   final String label;
@@ -86,6 +91,7 @@ class _SelectedTime extends StatelessWidget {
   final bool enabled;
   final TimeOfDayAdapter initialTime;
   final Function(TimeOfDayAdapter time) onChange;
+  final bool Function()? isModifiable;
   final Color? color;
 
   @override
@@ -97,6 +103,8 @@ class _SelectedTime extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         onPressed: enabled
             ? () {
+                if (!(isModifiable?.call() ?? true)) return;
+
                 showCustomTimePickerDialog(
                   context: context,
                   initialTime: initialTime,

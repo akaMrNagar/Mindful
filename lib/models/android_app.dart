@@ -28,16 +28,16 @@ class AndroidApp {
   /// The application category as defined within its manifest file used by the Android system.
   final AppCategory category;
 
-  /// A list containing the total screen time usage for the app in milliseconds for each day of the current week (7 entries).
+  /// A list containing the total screen time usage for the app in SECONDS for each day of the current week (7 entries).
   final List<int> screenTimeThisWeek;
 
-  /// A list containing the total mobile data usage for the app in kilobytes for each day of the current week (7 entries).
+  /// A list containing the total mobile data usage for the app in KILOBYTES for each day of the current week (7 entries).
   final List<int> mobileUsageThisWeek;
 
-  /// A list containing the total Wi-Fi data usage for the app in kilobytes for each day of the current week (7 entries).
+  /// A list containing the total Wi-Fi data usage for the app in KILOBYTES for each day of the current week (7 entries).
   final List<int> wifiUsageThisWeek;
 
-  /// A list containing the combined total data usage (mobile + Wi-Fi) for the app in kilobytes for each day of the current week (7 entries).
+  /// A list containing the combined total data usage (mobile + Wi-Fi) for the app in KILOBYTES for each day of the current week (7 entries).
   final List<int> networkUsageThisWeek;
 
   /// The application icon as a byte array provided by the Android system.

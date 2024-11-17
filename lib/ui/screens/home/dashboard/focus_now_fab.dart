@@ -13,8 +13,6 @@ class FocusNowFab extends StatelessWidget {
       heroTag: HeroTags.focusModeFABTag,
       label: Text(context.locale.focus_now_fab_button),
       icon: const Icon(FluentIcons.target_arrow_20_filled),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: () =>
           Navigator.of(context).pushNamed(AppRoutes.focusScreen, arguments: 0),
     );

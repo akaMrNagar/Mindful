@@ -50,17 +50,18 @@ class RestrictionGroupsNotifier
   Future<RestrictionGroup> createNewGroup({
     required String groupName,
     required int timerSec,
+    required TimeOfDayAdapter activePeriodStart,
+    required TimeOfDayAdapter activePeriodEnd,
+    required int periodDurationInMins,
     required List<String> distractingApps,
   }) async {
     final newGroup = await _dao.insertRestrictionGroup(
       groupName: groupName,
       timerSec: timerSec,
+      activePeriodStart: activePeriodStart,
+      activePeriodEnd: activePeriodEnd,
+      periodDurationInMins: periodDurationInMins,
       distractingApps: distractingApps,
-
-      /// FIXME: Change the period
-      periodDurationInMins: 0,
-      activePeriodStart: const TimeOfDayAdapter.zero(),
-      activePeriodEnd: const TimeOfDayAdapter.zero(),
     );
 
     state = {...state}..update(
@@ -73,7 +74,7 @@ class RestrictionGroupsNotifier
   }
 
   /// Updates an existing restriction group in the database and state.
-  void updateGroup({required RestrictionGroup group}) async {
+  Future<void> updateGroup({required RestrictionGroup group}) async {
     await _dao.updateRestrictionGroupById(group);
     state = {...state}..update(
         group.id,

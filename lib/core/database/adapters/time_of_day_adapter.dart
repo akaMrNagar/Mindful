@@ -43,7 +43,8 @@ class TimeOfDayAdapter extends TimeOfDay {
   }
 }
 
-class TimeOfDayAdapterConverter extends TypeConverter<TimeOfDayAdapter, int> {
+class TimeOfDayAdapterConverter extends TypeConverter<TimeOfDayAdapter, int>
+    with JsonTypeConverter2 {
   const TimeOfDayAdapterConverter();
 
   @override
@@ -53,4 +54,10 @@ class TimeOfDayAdapterConverter extends TypeConverter<TimeOfDayAdapter, int> {
   int toSql(TimeOfDayAdapter value) {
     return value.toMinutes;
   }
+
+  @override
+  TimeOfDayAdapter fromJson(json) => TimeOfDayAdapter.fromMinutes(json as int);
+
+  @override
+  toJson(TimeOfDayAdapter value) => value.toMinutes;
 }
