@@ -12,6 +12,8 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
@@ -23,6 +25,7 @@ import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/focus_stats_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -197,8 +200,7 @@ class TabDashboard extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: UsageGlanceCard(
-                        borderRadius: BorderRadius.circular(6)
-                            .copyWith(bottomLeft: const Radius.circular(24)),
+                        borderRadius: BorderRadius.circular(6),
                         title: context.locale.successful_sessions_label,
                         icon: FluentIcons.thumb_like_20_regular,
                         info: focusStats.successfulSessions.toString(),
@@ -207,8 +209,7 @@ class TabDashboard extends ConsumerWidget {
                     tilesGap.hBox,
                     Expanded(
                       child: UsageGlanceCard(
-                        borderRadius: BorderRadius.circular(6)
-                            .copyWith(bottomRight: const Radius.circular(24)),
+                        borderRadius: BorderRadius.circular(6),
                         title: context.locale.failed_sessions_label,
                         icon: FluentIcons.thumb_dislike_20_regular,
                         info: focusStats.failedSessions.toString(),
@@ -216,10 +217,35 @@ class TabDashboard extends ConsumerWidget {
                     ),
                   ],
                 ),
+                2.vBox,
+
+                /// Go to focus tab
+                DefaultListTile(
+                  position: ItemPosition.mid,
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  titleText: context.locale.focus_now_tile_title,
+                  leadingIcon: FluentIcons.target_arrow_20_regular,
+                  subtitleText: context.locale.focus_now_tile_subtitle,
+                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(AppRoutes.focusScreen, arguments: 0),
+                ),
+
+                /// Go to focus timeline tab
+                DefaultListTile(
+                  position: ItemPosition.end,
+                  color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                  leadingIcon: FluentIcons.history_20_regular,
+                  titleText: context.locale.focus_timeline_tile_title,
+                  subtitleText: context.locale.focus_timeline_tile_subtitle,
+                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(AppRoutes.focusScreen, arguments: 1),
+                ),
               ].animateListWhen(
                 when: !ref.read(appsProvider).hasValue,
                 effects: DefaultEffects.transitionIn,
-                interval: 100.ms,
+                interval: 50.ms,
               ),
             ).sliver,
 

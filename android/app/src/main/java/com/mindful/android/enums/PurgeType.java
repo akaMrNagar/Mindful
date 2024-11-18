@@ -17,7 +17,9 @@ public enum PurgeType {
     BedtimeRoutine,
     AppTimerOut,
     AppLaunchLimitOut,
-    GroupTimerOut;
+    AppActivePeriodOver,
+    GroupTimerOut,
+    GroupActivePeriodOver;
 
 
     public static PurgeType fromInteger(int x) {
@@ -31,7 +33,11 @@ public enum PurgeType {
             case 3:
                 return PurgeType.AppLaunchLimitOut;
             case 4:
+                return PurgeType.AppActivePeriodOver;
+            case 5:
                 return PurgeType.GroupTimerOut;
+            case 6:
+                return PurgeType.GroupActivePeriodOver;
         }
         return PurgeType.AppTimerOut;
     }
@@ -46,8 +52,12 @@ public enum PurgeType {
                 return 2;
             case AppLaunchLimitOut:
                 return 3;
-            case GroupTimerOut:
+            case AppActivePeriodOver:
                 return 4;
+            case GroupTimerOut:
+                return 5;
+            case GroupActivePeriodOver:
+                return 6;
         }
         return 2;
     }

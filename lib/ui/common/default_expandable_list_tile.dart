@@ -10,8 +10,8 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -82,7 +82,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
           isPrimary: widget.isPrimary,
           onPressed: () => setState(() => _isExpanded = !_isExpanded),
           trailing: AnimatedRotation(
-            duration: 250.ms,
+            duration: AppConstants.defaultAnimDuration,
             turns: _isExpanded ? 0.5 : 1,
             child: Icon(
               FluentIcons.chevron_down_20_filled,
@@ -103,8 +103,8 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
             widthFactor: 1,
             child: AnimatedSize(
               alignment: Alignment.topCenter,
-              duration: 250.ms,
-              curve: Curves.easeInOut,
+              duration: AppConstants.defaultAnimDuration,
+              curve: AppConstants.defaultCurve,
               child: _isExpanded
                   ? widget.content
                   : const SizedBox.shrink(), // Collapsed state

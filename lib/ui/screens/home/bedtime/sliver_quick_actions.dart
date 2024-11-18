@@ -10,12 +10,12 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
@@ -72,7 +72,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
           titleText: context.locale.distracting_apps_tile_title,
           subtitleText: context.locale.distracting_apps_tile_subtitle,
           trailing: AnimatedRotation(
-            duration: 250.ms,
+            duration: AppConstants.defaultAnimDuration,
             turns: isDistractingAppsListExpanded ? 0.5 : 1,
             child: const Icon(FluentIcons.chevron_down_20_filled),
           ),
@@ -84,8 +84,8 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
 
         /// Distracting apps list
         SliverAnimatedPaintExtent(
-          duration: 500.ms,
-          curve: Curves.easeOut,
+          duration: AppConstants.defaultAnimDuration,
+          curve: AppConstants.defaultCurve,
           child: isDistractingAppsListExpanded
               ? const BedtimeDistractingAppsList()
               : 0.vSliverBox,

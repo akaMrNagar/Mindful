@@ -68,10 +68,16 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
           : DateTime.now().difference(activeSession.startDateTime).inSeconds,
     );
 
-    /// restart session service if needed
-    if (state.activeSession != null) {
-      _startSessionServiceAndTimer(activeSession!);
-    }
+    /// Run after a delay to avoid database deadlock
+    Future.delayed(1.seconds, () {
+      /// restart session service if needed
+      if (state.activeSession != null) {
+        _startSessionServiceAndTimer(activeSession!);
+      }
+
+      /// Reset streak if needed
+      _incrementOrResetStreaks(shouldIncrement: false);
+    });
   }
 
   /// Starts a session timer and service for managing focus sessions.
@@ -216,29 +222,34 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
     state = state.removeActiveSession();
 
     if (isTheSessionSuccessful) {
+      _incrementOrResetStreaks();
       _sessionSuccessCallback?.call();
-      _incrementAndUpdateStreaks();
     }
   }
 
   /// Updates the user's streak count in the database.
   /// Increments the streak if it hasn’t been updated today or resets if there is a gap day.
-  void _incrementAndUpdateStreaks() async {
+  void _incrementOrResetStreaks({bool shouldIncrement = true}) async {
     /// If streak is already updated then return
     final today = DateTime.now().dateOnly;
     final lastUpdatedDay = state.focusMode.lastTimeStreakUpdated.dateOnly;
+
+    /// Return if already updated today
     if (lastUpdatedDay == today) return;
 
-    /// Reset if have gap in sessions
-    final newStreak = today.difference(lastUpdatedDay).inDays > 0
-        ? 0
-        : state.focusMode.currentStreak + 1;
+    /// Reset if have gap in streak
+    final oldStreak = state.focusMode.currentStreak;
+    final newStreak = shouldIncrement
+        ? oldStreak + 1
+        : today.difference(lastUpdatedDay).inDays > 1
+            ? 0
+            : oldStreak;
 
     state = state.copyWith(
       focusMode: state.focusMode.copyWith(
         currentStreak: newStreak,
         longestStreak: max(newStreak, state.focusMode.longestStreak),
-        lastTimeStreakUpdated: today,
+        lastTimeStreakUpdated: shouldIncrement ? today : null,
       ),
     );
 

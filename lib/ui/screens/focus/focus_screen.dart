@@ -17,14 +17,14 @@ import 'package:mindful/ui/screens/focus/focus_mode/tab_focus.dart';
 import 'package:mindful/ui/screens/focus/timeline/tab_timeline.dart';
 
 class FocusScreen extends StatelessWidget {
-  const FocusScreen({
-    super.key,
-  });
+  const FocusScreen({super.key, this.initialTabIndex = 0});
 
+  final int initialTabIndex;
 
   @override
   Widget build(BuildContext context) {
     return DefaultScaffold(
+      initialTabIndex: initialTabIndex,
       navbarItems: [
         NavbarItem(
           icon: FluentIcons.target_arrow_20_regular,

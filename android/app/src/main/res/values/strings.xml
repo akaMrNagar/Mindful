@@ -47,11 +47,15 @@
 
     <string name="app_paused_dialog_info_for_focus_session">It\'s focus time! This app is paused to help you stay on track and make the most of your session.</string>
     <string name="app_paused_dialog_info_for_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
-    <string name="app_paused_dialog_info_for_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
-    <string name="app_paused_dialog_info_for_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
     <string name="app_paused_dialog_info_for_app_timer_left">You\’ve been using this app for a while now. Let\’s shift gears and take a break from the screen and focus on something productive.</string>
-    <string name="app_paused_dialog_info_for_group_timer_out" formatted="true">You\’ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
+    <string name="app_paused_dialog_info_for_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
+    <string name="app_paused_dialog_info_for_active_period_over">Access to this app is currently paused because it’s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
+    <string name="app_paused_dialog_info_for_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
+
+    <!--  restriction groups related dialog infos the placeholder in these will be the name of the associated group  -->
     <string name="app_paused_dialog_info_for_group_timer_left" formatted="true">You\’ve been using apps from the “%s” group for a while now. It\’s time to take a step back and concentrate on your tasks, not your screen.</string>
+    <string name="group_paused_dialog_info_for_active_period_over" formatted="true"> Apps in the “%s” group are currently paused as it’s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
+    <string name="app_paused_dialog_info_for_group_timer_out" formatted="true">You\’ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
 
 
     <!-- placeholder in app_paused_dialog_progress_spent will be time formatted string like '4h 13m' for 4 minutes 13 seconds -->

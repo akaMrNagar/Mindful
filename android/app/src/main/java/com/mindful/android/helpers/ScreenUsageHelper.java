@@ -109,7 +109,7 @@ public class ScreenUsageHelper {
     }
 
     /**
-     * Fetches the screen usage time of a specific application for the current day until now using usage events.
+     * Fetches the screen usage time of a all installed application for the current day until now using usage events.
      *
      * @param usageStatsManager The UsageStatsManager used to query screen usage data.
      * @return The total screen usage time of the specified application in seconds.

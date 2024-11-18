@@ -23,6 +23,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
@@ -166,7 +167,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
               40.vSliverBox,
 
               SliverAnimatedPaintExtent(
-                duration: 300.ms,
+                duration: AppConstants.defaultAnimDuration,
                 child: StyledText(
                   _isCompleted
                       ? context.locale.active_session_quote_five(

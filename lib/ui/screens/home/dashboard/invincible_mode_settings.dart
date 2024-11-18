@@ -36,6 +36,10 @@ class InvincibleModeSettings extends ConsumerWidget {
       if (isConfirm) {
         ref.read(invincibleModeProvider.notifier).switchInvincibleMode();
       }
+    } else {
+      context.showSnackAlert(
+        context.locale.invincible_mode_turn_off_snack_alert,
+      );
     }
   }
 
@@ -86,6 +90,8 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Apps timer
               DefaultListTile(
                 position: ItemPosition.mid,
+                enabled: !invincibleMode.isInvincibleModeOn ||
+                    !invincibleMode.includeAppsTimer,
                 isSelected: invincibleMode.includeAppsTimer,
                 leadingIcon: FluentIcons.timer_20_regular,
                 titleText:
@@ -98,6 +104,8 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Apps launch limit
               DefaultListTile(
                 position: ItemPosition.mid,
+                enabled: !invincibleMode.isInvincibleModeOn ||
+                    !invincibleMode.includeAppsLaunchLimit,
                 isSelected: invincibleMode.includeAppsLaunchLimit,
                 leadingIcon: FluentIcons.rocket_20_regular,
                 titleText: context
@@ -110,6 +118,8 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Apps active period
               DefaultListTile(
                 position: ItemPosition.mid,
+                enabled: !invincibleMode.isInvincibleModeOn ||
+                    !invincibleMode.includeAppsActivePeriod,
                 isSelected: invincibleMode.includeAppsActivePeriod,
                 leadingIcon: FluentIcons.drink_coffee_20_regular,
                 titleText: context
@@ -137,6 +147,8 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Groups timer
               DefaultListTile(
                 position: ItemPosition.mid,
+                enabled: !invincibleMode.isInvincibleModeOn ||
+                    !invincibleMode.includeGroupsTimer,
                 isSelected: invincibleMode.includeGroupsTimer,
                 leadingIcon: FluentIcons.timer_20_regular,
                 titleText:
@@ -149,6 +161,8 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Groups active period
               DefaultListTile(
                 position: ItemPosition.mid,
+                enabled: !invincibleMode.isInvincibleModeOn ||
+                    !invincibleMode.includeGroupsActivePeriod,
                 isSelected: invincibleMode.includeGroupsActivePeriod,
                 leadingIcon: FluentIcons.drink_coffee_20_regular,
                 titleText: context
@@ -164,6 +178,8 @@ class InvincibleModeSettings extends ConsumerWidget {
         /// Shorts timer
         DefaultListTile(
           position: ItemPosition.mid,
+          enabled: !invincibleMode.isInvincibleModeOn ||
+              !invincibleMode.includeShortsTimer,
           isSelected: invincibleMode.includeShortsTimer,
           leadingIcon: FluentIcons.video_clip_multiple_20_regular,
           titleText:
@@ -178,6 +194,8 @@ class InvincibleModeSettings extends ConsumerWidget {
         /// Bedtime schedule
         DefaultListTile(
           position: ItemPosition.end,
+          enabled: !invincibleMode.isInvincibleModeOn ||
+              !invincibleMode.includeBedtimeSchedule,
           isSelected: invincibleMode.includeBedtimeSchedule,
           leadingIcon: FluentIcons.sleep_20_regular,
           titleText: context.locale.invincible_mode_include_bedtime_tile_title,

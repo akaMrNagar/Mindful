@@ -21,10 +21,43 @@ import org.json.JSONObject;
 import java.util.HashSet;
 
 public class RestrictionGroup {
-    public int id = -1;
-    public String groupName = "";
-    public int timerSec = 0;
-    public HashSet<String> distractingApps = new HashSet<>(0);
+
+    /**
+     * Unique ID for each restriction group
+     */
+    public final int id;
+
+    /**
+     * Name of the group
+     */
+    public final String groupName;
+
+    /**
+     * The timer set for the group in SECONDS
+     */
+    public final int timerSec;
+
+    /**
+     * [TimeOfDay] in minutes from where the active period will start.
+     * It is stored as total minutes.
+     */
+    public final int activePeriodStart;
+
+    /**
+     * [TimeOfDay] in minutes when the active period will end
+     * It is stored as total minutes.
+     */
+    public final int activePeriodEnd;
+
+    /**
+     * Total duration of active period from start to end in MINUTES
+     */
+    public final int periodDurationInMins;
+
+    /**
+     * List of app's packages which are associated with the group.
+     */
+    public final HashSet<String> distractingApps;
 
 
     /**
@@ -36,13 +69,19 @@ public class RestrictionGroup {
         this.id = jsonObject.optInt("id", 0);
         this.groupName = jsonObject.optString("groupName", "");
         this.timerSec = jsonObject.optInt("timerSec", 0);
+        this.activePeriodStart = jsonObject.optInt("activePeriodStart", 0);
+        this.activePeriodEnd = jsonObject.optInt("activePeriodEnd", 0);
+        this.periodDurationInMins = jsonObject.optInt("periodDurationInMins", 0);
 
         // Deserialize apps package
         JSONArray appsJsonArray = jsonObject.optJSONArray("distractingApps");
+        HashSet<String> distractingApps = new HashSet<>(0);
         if (appsJsonArray != null) {
             for (int i = 0; i < appsJsonArray.length(); i++) {
-                this.distractingApps.add(appsJsonArray.getString(i));
+                distractingApps.add(appsJsonArray.getString(i));
             }
         }
+
+        this.distractingApps = distractingApps;
     }
 }

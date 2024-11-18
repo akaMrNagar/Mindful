@@ -93,19 +93,16 @@ class SliverFlexibleAppBar extends ConsumerWidget {
                 /// Beta tag
                 DefaultHero(
                   tag: HeroTags.betaWarningTag,
-                  child: Semantics(
-                    excludeSemantics: true,
-                    child: RoundedContainer(
-                      width: 48,
-                      height: 24,
-                      circularRadius: 8,
-                      color: Theme.of(context).colorScheme.primary,
-                      onPressed: () => _showBetaDialog(context, appVersion),
-                      child: StyledText(
-                        appVersion.contains('DEBUG') ? "DEBUG" : "DEV",
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        overflow: TextOverflow.fade,
-                      ),
+                  child: RoundedContainer(
+                    width: 56,
+                    height: 24,
+                    circularRadius: 8,
+                    color: Theme.of(context).colorScheme.primary,
+                    onPressed: () => _showBetaDialog(context, appVersion),
+                    child: StyledText(
+                      appVersion.contains('DEBUG') ? "DEBUG" : "BETA",
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      overflow: TextOverflow.fade,
                     ),
                   ),
                 ),

@@ -72,18 +72,36 @@ class _ConfirmationDialog extends StatelessWidget {
               icon: Icon(icon),
               title: StyledText(title, fontSize: 16),
               insetPadding: EdgeInsets.zero,
-              content: SizedBox(
+              content: Container(
                 width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(child: StyledText(info)),
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.6,
+                ),
+                child: SingleChildScrollView(
+                  child: StyledText(
+                    info,
+                    overflow: TextOverflow.clip,
+                  ),
+                ),
               ),
               actions: [
-                TextButton(
-                  onPressed: () => Navigator.maybePop(context, false),
-                  child: Text(negativeLabel),
+                FittedBox(
+                  child: TextButton(
+                    onPressed: () => Navigator.maybePop(context, false),
+                    child: Text(
+                      negativeLabel,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
                 ),
-                FilledButton.tonal(
-                  onPressed: () => Navigator.maybePop(context, true),
-                  child: Text(positiveLabel),
+                FittedBox(
+                  child: FilledButton.tonal(
+                    onPressed: () => Navigator.maybePop(context, true),
+                    child: Text(
+                      positiveLabel,
+                      overflow: TextOverflow.clip,
+                    ),
+                  ),
                 ),
               ],
             ),

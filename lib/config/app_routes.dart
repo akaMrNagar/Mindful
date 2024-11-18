@@ -54,7 +54,6 @@ class AppRoutes {
     settingsScreen: (context) => const SettingsScreen(),
     restrictionGroupsScreen: (context) => const RestrictionGroupsScreen(),
     notificationGroupsScreen: (context) => const NotificationGroupsScreen(),
-    focusScreen: (context) => const FocusScreen(),
 
     /// Resolve isOnboardingDone bool from arguments
     onboardingScreen: (context) => OnboardingScreen(
@@ -67,6 +66,11 @@ class AppRoutes {
           ModalRoute.of(context)?.settings.arguments as FocusSession;
       return ActiveSessionScreen(session: session);
     },
+
+    /// Resolve initial tab index from arguments
+    focusScreen: (context) => FocusScreen(
+          initialTabIndex: ModalRoute.of(context)?.settings.arguments as int,
+        ),
 
     /// Resolve [AppDashboardScreenArgs] from arguments
     appDashboardScreen: (context) {

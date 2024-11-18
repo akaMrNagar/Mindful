@@ -11,6 +11,7 @@
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
+import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/models/focus_timeline_model.dart';
@@ -54,8 +55,13 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
       end: endOfDay,
     );
 
-    final todaysFocusedTime =
-        sessions.fold(0, (prev, e) => prev + e.durationSecs).seconds;
+    final todaysFocusedTime = sessions
+        .fold(
+          0,
+          (prev, e) =>
+              prev + (e.state == SessionState.active ? 0 : e.durationSecs),
+        )
+        .seconds;
 
     state = state.copyWith(
       selectedDaysSessions: AsyncData(sessions),

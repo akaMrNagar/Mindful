@@ -185,9 +185,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   }) async =>
       (select(focusSessionsTable)
             ..where(
-              (e) =>
-                  e.state.isNotValue(SessionState.active.index) &
-                  e.startDateTime.isBetweenValues(start, end),
+              (e) => e.startDateTime.isBetweenValues(start, end),
             )
             ..orderBy([(tbl) => OrderingTerm.desc(tbl.startDateTime)]))
           .get();

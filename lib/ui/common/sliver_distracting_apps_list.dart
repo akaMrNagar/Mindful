@@ -9,11 +9,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
@@ -59,9 +59,9 @@ class SliverDistractingAppsList extends ConsumerWidget {
 
         /// Apps list
         SliverAnimatedSwitcher(
-          duration: 300.ms,
-          switchInCurve: Curves.easeIn,
-          switchOutCurve: Curves.easeOut,
+          duration: AppConstants.defaultAnimDuration,
+          switchInCurve: AppConstants.defaultCurve,
+          switchOutCurve: AppConstants.defaultCurve.flipped,
           child: allApps.hasValue
               ? AnimatedAppsList(
                   itemExtent: 56,

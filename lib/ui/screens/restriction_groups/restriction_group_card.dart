@@ -90,10 +90,12 @@ class RestrictionGroupCard extends ConsumerWidget {
 
                     /// Active period
                     StyledText(
-                      context.locale.app_active_period_tile_subtitle(
-                        group.activePeriodStart.format(context),
-                        group.activePeriodEnd.format(context),
-                      ),
+                      group.periodDurationInMins > 0
+                          ? context.locale.app_active_period_tile_subtitle(
+                              group.activePeriodStart.format(context),
+                              group.activePeriodEnd.format(context),
+                            )
+                          : context.locale.app_limit_status_not_set,
                       color: Theme.of(context).hintColor,
                     ),
                   ],

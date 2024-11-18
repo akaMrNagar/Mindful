@@ -11,10 +11,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 
@@ -58,7 +58,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
           ? widget.initialTabIndex
           : 0,
       length: widget.navbarItems.length,
-      animationDuration: 300.ms,
+      animationDuration: AppConstants.defaultAnimDuration,
     );
   }
 
@@ -71,7 +71,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
   void _onTabButtonPressed(int tabIndex) {
     _controller.animateTo(
       tabIndex,
-      curve: Curves.fastEaseInToSlowEaseOut,
+      curve: AppConstants.defaultCurve,
     );
     widget.onTabChanged?.call(tabIndex);
     setState(() {});

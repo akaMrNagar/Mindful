@@ -97,18 +97,11 @@ public class SharedPrefsHelper {
     public static Calendar getSetDataResetTimeMins(@NonNull Context context, @Nullable Integer timeInMins) {
         checkAndInitializePrefs(context);
         if (timeInMins == null) {
-            timeInMins = mSharedPrefs.getInt(PREF_KEY_DATA_RESET_TIME_MINS, 0);
+            return Utils.todToTodayCal(mSharedPrefs.getInt(PREF_KEY_DATA_RESET_TIME_MINS, 0));
         } else {
             mSharedPrefs.edit().putInt(PREF_KEY_DATA_RESET_TIME_MINS, timeInMins).apply();
+            return Utils.todToTodayCal(timeInMins);
         }
-
-        Calendar dataUsageCal = Calendar.getInstance();
-        dataUsageCal.set(Calendar.HOUR_OF_DAY, timeInMins / 60);
-        dataUsageCal.set(Calendar.MINUTE, timeInMins % 60);
-        dataUsageCal.set(Calendar.SECOND, 0);
-        dataUsageCal.set(Calendar.MILLISECOND, 0);
-
-        return dataUsageCal;
     }
 
 
