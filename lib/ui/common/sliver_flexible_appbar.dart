@@ -58,6 +58,9 @@ class SliverFlexibleAppBar extends ConsumerWidget {
     final useBottomNavigation =
         ref.watch(mindfulSettingsProvider.select((v) => v.useBottomNavigation));
 
+    final showDevTag =
+        appVersion.contains('debug') || appVersion.contains('beta');
+
     return SliverAppBar(
       expandedHeight: 132,
       elevation: 0,
@@ -91,21 +94,22 @@ class SliverFlexibleAppBar extends ConsumerWidget {
                 ),
 
                 /// Beta tag
-                DefaultHero(
-                  tag: HeroTags.betaWarningTag,
-                  child: RoundedContainer(
-                    width: 56,
-                    height: 24,
-                    circularRadius: 8,
-                    color: Theme.of(context).colorScheme.primary,
-                    onPressed: () => _showBetaDialog(context, appVersion),
-                    child: StyledText(
-                      appVersion.contains('DEBUG') ? "DEBUG" : "BETA",
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      overflow: TextOverflow.fade,
+                if (showDevTag)
+                  DefaultHero(
+                    tag: HeroTags.betaWarningTag,
+                    child: RoundedContainer(
+                      width: 56,
+                      height: 24,
+                      circularRadius: 8,
+                      color: Theme.of(context).colorScheme.primary,
+                      onPressed: () => _showBetaDialog(context, appVersion),
+                      child: StyledText(
+                        appVersion.contains('debug') ? "DEBUG" : "BETA",
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        overflow: TextOverflow.fade,
+                      ),
                     ),
                   ),
-                ),
                 24.vBox
               ],
             ),
