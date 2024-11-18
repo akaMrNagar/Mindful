@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -58,7 +59,7 @@ Future<String?> showUsernameInputDialog({
         fieldIcon: FluentIcons.person_20_regular,
         title: context.locale.username_dialog_title,
         fieldLabel: context.locale.username_dialog_title,
-        hintText: "Hustler",
+        hintText: AppConstants.defaultUsername,
         helperText: context.locale.username_dialog_info,
         negativeBtnLabel: context.locale.dialog_button_cancel,
         positiveBtnLabel: context.locale.username_dialog_button_apply,

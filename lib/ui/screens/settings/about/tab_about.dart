@@ -88,7 +88,7 @@ class TabAbout extends ConsumerWidget {
             icon: const Icon(FluentIcons.heart_20_filled),
             label: Text(context.locale.donation_card_button_donate),
             onPressed: () => MethodChannelService.instance
-                .launchUrl(AppConstants.githubDonationSectionUrl),
+                .launchUrl(AppConstants.buyMeCoffeeDonationUrl),
           ),
         ),
 

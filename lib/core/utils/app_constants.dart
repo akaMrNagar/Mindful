@@ -17,7 +17,7 @@ class AppConstants {
   static const defaultThemeMode = AppThemeMode.system;
   static const defaultMaterialColor = "Indigo";
   static const defaultLocale = "en";
-  static const defaultUsername = "Hustler";
+  static const defaultUsername = "Achiever";
   static const defaultCurve = Curves.fastEaseInToSlowEaseOut;
   static const defaultAnimDuration = Duration(milliseconds: 350);
 
@@ -37,8 +37,7 @@ class AppConstants {
   static const githubSuggestionDirectUrl =
       "https://github.com/akaMrNagar/Mindful/issues/new?template=feature_request.md";
 
-  static const githubDonationSectionUrl =
-      "https://github.com/akaMrNagar/Mindful/blob/main/README.md#donate-";
+  static const buyMeCoffeeDonationUrl = "https://buymeacoffee.com/akamrnagar";
 
   static const githubFeedbackSectionUrl =
       "https://github.com/akaMrNagar/Mindful/blob/main/README.md#feedback-and-support";

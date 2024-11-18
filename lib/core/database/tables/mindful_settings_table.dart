@@ -14,6 +14,7 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 
 @DataClassName("MindfulSettings")
 class MindfulSettingsTable extends Table {
@@ -65,10 +66,10 @@ class MindfulSettingsTable extends Table {
   static final defaultMindfulSettingsModel = MindfulSettings(
     id: 0,
     defaultHomeTab: DefaultHomeTab.dashboard,
-    themeMode: AppThemeMode.system,
-    accentColor: "Indigo",
-    username: "Hustler",
-    localeCode: "en",
+    themeMode: AppConstants.defaultThemeMode,
+    accentColor: AppConstants.defaultMaterialColor,
+    username: AppConstants.defaultUsername,
+    localeCode: AppConstants.defaultLocale,
     dataResetTime: const TimeOfDayAdapter.zero(),
     useBottomNavigation: false,
     useAmoledDark: false,

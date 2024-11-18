@@ -79,7 +79,7 @@ public class Utils {
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
 
             appVersion = packageName.contains(".debug")
-                    ? "DEBUG " + "v" + packageInfo.versionName + "+" + packageInfo.versionCode
+                    ? "v" + packageInfo.versionName + "-debug+" + packageInfo.versionCode
                     : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             Log.e(TAG, "getDeviceInfoMap: Error in fetching app version", e);
