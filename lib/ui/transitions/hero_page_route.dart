@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 
 class HeroPageRoute<T> extends PageRoute<T> {
   HeroPageRoute({
@@ -30,7 +31,7 @@ class HeroPageRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  Duration get transitionDuration => const Duration(milliseconds: 300);
+  Duration get transitionDuration => AppConstants.defaultAnimDuration * 1.5;
 
   @override
   bool get maintainState => true;

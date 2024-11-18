@@ -9,20 +9,17 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-* **[🎉 Featured](docs/FEATURED.md)** 
-* **[👻 Supporters](docs/SUPPORTERS.md)**
-* **[🌍 Translate](https://crowdin.com/project/mindful)**
-* **[🛠️ Build & Contribute](docs/CONTRIBUTING.md)**
-* **[📃 Privacy Policy](https://bemindful.vercel.app/privacy)**
-* **[🔏 Verify](docs/VERIFICATION.md)**
-* **[🙋‍♂️ FAQs](https://bemindful.vercel.app/#faqs)**
 
-![](https://badges.crowdin.net/mindful/localized.svg)
+[![](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
+[![](https://img.shields.io/badge/Supporters-👻-black)](docs/SUPPORTERS.md) 
+[![](https://img.shields.io/badge/Build_&_Contribute-🛠️-black)](docs/CONTRIBUTING.md)
+[![](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
+[![](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
+[![](https://img.shields.io/badge/FAQs-🙋-black)](https://bemindful.vercel.app/#faqs) 
+
+[![](https://badges.crowdin.net/mindful/localized.svg)](https://bemindful.vercel.app/#faqs)
 
 ---
-
-
-## 📱 Screenshots
 
 | <img src="docs/assets/screenshots/screenshot_1.png"> | <img src="docs/assets/screenshots/screenshot_2.png"> | <img src="docs/assets/screenshots/screenshot_3.png"> | <img src="docs/assets/screenshots/screenshot_4.png"> |
 | ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
@@ -30,40 +27,32 @@
 
 ## 💪 Features
 
-### 1. 🧘‍♂️ **Focus Mode**
+### 1. Focus Mode 
+Pause distracting apps and stay productive with session types like Study, Work, or Creative. Choose between countdown or stopwatch modes and track your progress over time.
 
-- **Boost Productivity**: Pause distracting apps and activate Do Not Disturb during focus sessions.
-- **Customizable Sessions**: Choose from various session types like Study, Work, or Creative.
-- **Track Your Progress**: Review your focus journey over time and see how much you've achieved.
+### 2. Screen Time Management
+Set daily limits on apps, including addictive short-form content like Reels and YouTube Shorts. Group apps together and add shared limits for better control. Struggling with serious addiction? Turn on Invincible Mode for extra discipline.
 
-### 2. 📲 **Screen Time Management**
+### 3. Detailed Statistics
+Track your weekly app usage with insights on time spent and data consumed for each app, helping you stay aware and in control.
 
-- **Set Usage Limits**: Restrict the time you spend on any app, including addictive short-form content like Reels and YouTube Shorts.
-- **Automatic Pausing**: When the timer runs out, the app pauses, helping you stay on track.
+### 4. Internet Blocker
+Block internet access for distracting apps in a single tap. Filter out adult content and create a safe browsing environment. You can also block unwanted apps to stay focused.
 
-### 3. 🌛 **Bedtime Mode**
+### 5. Bedtime Mode
+Unwind effectively by pausing distracting apps and enabling Do Not Disturb during bedtime. Start your mornings fresh as apps automatically unblock and notifications resume.
 
-- **Unwind Effectively**: Automatically pause distracting apps and enable Do Not Disturb during bedtime to ensure a peaceful sleep.
-- **Wake-Up Routine**: Start your day fresh by unblocking apps and resuming notifications.
+### 6. Completely Ad-Free & Privacy-Focused
+Enjoy a distraction-free experience without any ads. Mindful works entirely offline, keeping your data secure on your device.
 
-### 4. 🌏 **Web Safety**
 
-- **Block Adult Sites**: Ensure a safe browsing environment by blocking adult content.
-- **Custom Website Blocking**: Add any distracting or unwanted websites to your blocklist.
-- **One-Click Internet Block**: Instantly cut off internet access for specific apps, keeping distractions at bay.
+> ### ⚠️ Note: *INTERNET* permission
+> Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
 
-### 5. ♾️ **Invincible Mode**
-
-- **Stay Disciplined**: Prevent changes to app timers when they ran out and short content timer after running out of allowed time quota.
-
-### 6. 🚫 **Completely Ad-Free & Privacy-Focused**
-
-- **No Ads**: Enjoy an uninterrupted experience without any ads.
-- **Privacy First**: Mindful operates entirely offline, ensuring your data stays on your device.
 
 ---
 
-# Donate 💖
+# Donate 
 
 Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
 
@@ -73,8 +62,9 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 &emsp;
 <a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
 
+---
 
-## Feedback and Support
+# Feedback and Support
 
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us through the following channels : 
 

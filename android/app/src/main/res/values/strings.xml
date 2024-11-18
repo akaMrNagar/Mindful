@@ -15,8 +15,8 @@
     <string name="app_name" translatable="false">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block websites and short-form content on apps. It checks URLs and content against your blocklist and prevents access to help you stay focused. \n\n⚠️Note: Your privacy is our priority. Mindful is 100% secure and works offline. We do not collect or store any personal data. </string>
     <string name="toast_enable_notification">Please enable notification</string>
-    <string name="toast_blocked_content">Content blocked!, going back</string>
-    <string name="toast_redirecting">Redirecting to safe search result</string>
+    <string name="toast_blocked_content">Content blocked! going back</string>
+    <string name="toast_redirecting">Filtering search results</string>
     <string name="service_running_notification_title">Mindful is running</string>
 
     <!-- usage widget values = usage home widget for android -->
@@ -47,11 +47,15 @@
 
     <string name="app_paused_dialog_info_for_focus_session">It\'s focus time! This app is paused to help you stay on track and make the most of your session.</string>
     <string name="app_paused_dialog_info_for_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
-    <string name="app_paused_dialog_info_for_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
-    <string name="app_paused_dialog_info_for_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
     <string name="app_paused_dialog_info_for_app_timer_left">You\’ve been using this app for a while now. Let\’s shift gears and take a break from the screen and focus on something productive.</string>
-    <string name="app_paused_dialog_info_for_group_timer_out" formatted="true">You\’ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
+    <string name="app_paused_dialog_info_for_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
+    <string name="app_paused_dialog_info_for_active_period_over">Access to this app is currently paused because it’s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
+    <string name="app_paused_dialog_info_for_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
+
+    <!--  restriction groups related dialog infos the placeholder in these will be the name of the associated group  -->
     <string name="app_paused_dialog_info_for_group_timer_left" formatted="true">You\’ve been using apps from the “%s” group for a while now. It\’s time to take a step back and concentrate on your tasks, not your screen.</string>
+    <string name="group_paused_dialog_info_for_active_period_over" formatted="true"> Apps in the “%s” group are currently paused as it’s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
+    <string name="app_paused_dialog_info_for_group_timer_out" formatted="true">You\’ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
 
 
     <!-- placeholder in app_paused_dialog_progress_spent will be time formatted string like '4h 13m' for 4 minutes 13 seconds -->
@@ -82,10 +86,12 @@
     <!--
        placeholder in focus_session_notification_info will be time formatted string like '1:15:13' for 1 hour 15 minutes 13 seconds
        time can be in hours or just minutes either way seconds will be suffixed
-       Example output: "Focus session will end in 1:3:15"  for 1 hour 3 minutes and 15 seconds
-       Example output: "Focus session will end in 45:15"  for 45 minutes and 15 seconds
+       Example output: "Focus session will end in 1h 3m 15s"  for 1 hour 3 minutes and 15 seconds
+       Example output: "Focus session will end in 45m 15s"  for 45 minutes and 15 seconds
     -->
     <string name="focus_session_notification_info" formatted="true">"Focus session will end in %s"</string>
+    <string name="focus_session_infinite_notification_info" formatted="true">You\'ve been focused for %s</string>
+
     <string name="focus_session_success_notification_info">Congratulations! You’ve successfully completed your focus session. Great job staying on track! Keep up the amazing work!</string>
     <string name="focus_session_giveup_notification_info">You gave up! Don\'t worry, you can do better next time. Every effort counts - just keep going</string>
 

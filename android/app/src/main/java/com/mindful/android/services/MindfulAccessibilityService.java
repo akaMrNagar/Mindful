@@ -73,11 +73,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 10 * 1000;
 
     /**
-     * The minimum interval between redirecting user to safe search result
-     */
-    private static final long URL_REDIRECT_INVOKE_INTERVAL_MS = 3 * 1000;
-
-    /**
      * The interval which is used for approximating if user may have closed short content.
      * <p>
      * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
@@ -110,7 +105,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     private long mLastTimeShortsCheck = 0L;
     private long mLastTimeSharedPrefInvoked = 0L;
     private long mLastTimeBackActionInvoked = 0L;
-    private long mLastTimeUrlRedirectInvoked = 0L;
     private long mTotalShortsScreenTimeMs = 0L;
 
     @Override
@@ -235,6 +229,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Return if url is empty or does not contain dot or have space this basically means its not url
         if (url.contains(" ") || !url.contains(".")) return;
 
+        // Clean google AMP from the url if found (some site can appear in the AMP container with google's amp domain)
+        url = url.replace("google.com/amp/s/amp.", "");
+
         // Block websites
         String host = Utils.parseHostNameFromUrl(url);
         if (mWellBeingSettings.blockedWebsites.contains(host) || mNsfwWebsites.get(host) != null) {
@@ -257,6 +254,39 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     }
 
     /**
+     * Extracts the URL from the given AccessibilityNodeInfo based on the app package name.
+     *
+     * @param node        The AccessibilityNodeInfo of the current view.
+     * @param packageName The package name of the app.
+     * @return The extracted URL as a string.
+     */
+    @NonNull
+    private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
+        try {
+            for (String id : mUrlBarNodeIds) {
+                List<AccessibilityNodeInfo> urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id);
+                if (!urlBarNodes.isEmpty()) {
+                    CharSequence txtSequence = urlBarNodes.get(0).getText();
+                    if (txtSequence != null && txtSequence.length() > 1) {
+                        return txtSequence.toString();
+                    }
+                }
+            }
+
+            // Find by input field class
+            if (node.getClassName().equals("android.widget.EditText")) {
+                CharSequence txtSequence = node.getText();
+                if (txtSequence != null && txtSequence.length() > 1) {
+                    return txtSequence.toString();
+                }
+            }
+        } catch (Exception ignored) {
+        }
+
+        return "";
+    }
+
+    /**
      * Redirects the user to safe search results by using different techniques on different search engines.
      * Supported search engines are GOOGLE, BRAVE, BING, DUCKDUCKGO
      *
@@ -270,12 +300,8 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // For GOOGLE and BING search engines
         if (!url.contains("safe=active") && (url.contains("google.com/search?") || url.contains("bing.com/search?"))) {
-            // Caching last redirect url because sometime google removes the '&safe=active' parameter
-            // thus it can trigger redirect whenever something changes
-            if (mLastRedirectedUrl.equals(url)) return;
-            String safeUrl = url + "&safe=active";
+            String safeUrl = url.replace("/search?", "/search?safe=active&");
             redirectUserToUrl(safeUrl, browserPackage);
-            mLastRedirectedUrl = url;
         }
         // For DUCKDUCKGO and BRAVE search engines
         else if (!hostDomain.contains("safe.") && (url.contains("search.brave.com/search?") || url.contains("duckduckgo.com/?"))) {
@@ -295,62 +321,28 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * @param browserPackage The package name of the browser app.
      */
     private void redirectUserToUrl(String url, String browserPackage) {
-        long currentTime = System.currentTimeMillis();
+        // Return if received request for the same URL as previous
+        if (mLastRedirectedUrl.equals(url)) return;
+        mLastRedirectedUrl = url;
 
-        if ((currentTime - mLastTimeUrlRedirectInvoked) >= URL_REDIRECT_INVOKE_INTERVAL_MS) {
-            // Post to the main thread
-            new Handler(Looper.getMainLooper()).post(() -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)));
-                intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
-                intent.setPackage(browserPackage);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        // Post to the main thread
+        new Handler(Looper.getMainLooper()).post(() -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)));
+            intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage);
+            intent.setPackage(browserPackage);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    Toast.makeText(MindfulAccessibilityService.this, getString(R.string.toast_redirecting), Toast.LENGTH_LONG).show();
-                    // Popping first to replace head of browser history stack instead of inserting in it.
-                    performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
-                    startActivity(intent);
-                    Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
-                } else {
-                    Log.e(TAG, "No application found to handle the Intent for URL: " + url);
-                }
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                Toast.makeText(MindfulAccessibilityService.this, getString(R.string.toast_redirecting), Toast.LENGTH_SHORT).show();
+                startActivity(intent);
+                Log.d(TAG, "Redirecting user to safe search results in " + browserPackage + " for url: " + url);
 
-                mLastTimeUrlRedirectInvoked = currentTime;
-            });
-        }
-    }
-
-    /**
-     * Extracts the URL from the given AccessibilityNodeInfo based on the app package name.
-     *
-     * @param node        The AccessibilityNodeInfo of the current view.
-     * @param packageName The package name of the app.
-     * @return The extracted URL as a string.
-     */
-    @NonNull
-    private String extractBrowserUrl(@NonNull AccessibilityNodeInfo node, String packageName) {
-        try {
-            for (String id : mUrlBarNodeIds) {
-                List<AccessibilityNodeInfo> urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id);
-                if (urlBarNodes != null && !urlBarNodes.isEmpty()) {
-                    CharSequence txtSequence = urlBarNodes.get(0).getText();
-                    if (txtSequence != null && txtSequence.length() > 1) {
-                        return txtSequence.toString();
-                    }
-                }
+                // Clean redirection url after approximate loading time
+                new Handler().postDelayed(() -> mLastRedirectedUrl = "", 500L);
+            } else {
+                Log.e(TAG, "No application found to handle the Intent for URL: " + url);
             }
-
-            // Find by input field class
-            if (node.getClassName().equals("android.widget.EditText")) {
-                CharSequence txtSequence = node.getText();
-                if (txtSequence != null && txtSequence.length() > 1) {
-                    return txtSequence.toString();
-                }
-            }
-        } catch (Exception ignored) {
-        }
-
-        return "";
+        });
     }
 
     /**
@@ -511,24 +503,15 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * @param parentNode The root node from which to start logging. This should be the
      *                   top-level accessibility node to explore its hierarchy.
      */
-    private void logNodeInfoRecursively(AccessibilityNodeInfo parentNode) {
-        logNode(parentNode, 0);
+    private void logNodeInfoRecursively(AccessibilityNodeInfo parentNode, int level) {
+        logNode(parentNode, level);
+        level++;
 
         for (int i = 0; i < parentNode.getChildCount(); i++) {
             AccessibilityNodeInfo childNode = parentNode.getChild(i);
-            logNode(childNode, 1);
+            logNode(childNode, level);
             if (childNode == null) continue;
-
-            for (int j = 0; j < childNode.getChildCount(); j++) {
-                AccessibilityNodeInfo nthChildNode = childNode.getChild(j);
-                logNode(nthChildNode, 2);
-                if (nthChildNode == null) continue;
-
-                for (int k = 0; k < nthChildNode.getChildCount(); k++) {
-                    AccessibilityNodeInfo leafNode = nthChildNode.getChild(k);
-                    logNode(leafNode, 3);
-                }
-            }
+            logNodeInfoRecursively(childNode, level);
         }
     }
 

@@ -16,6 +16,7 @@ import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
@@ -90,12 +91,18 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     required String groupName,
     required int timerSec,
     required List<String> distractingApps,
+    required TimeOfDayAdapter activePeriodStart,
+    required TimeOfDayAdapter activePeriodEnd,
+    required int periodDurationInMins,
   }) async =>
       into(restrictionGroupsTable).insertReturning(
         RestrictionGroupsTableCompanion.insert(
           groupName: groupName,
           timerSec: timerSec,
           distractingApps: distractingApps,
+          activePeriodStart: activePeriodStart,
+          activePeriodEnd: activePeriodEnd,
+          periodDurationInMins: periodDurationInMins,
         ),
         mode: InsertMode.insertOrReplace,
       );
@@ -110,11 +117,13 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Fetch the [FocusProfile] from database by id, if not found then return default
   Future<FocusProfile> fetchFocusProfileBySessionType(
-          SessionType sessionType) async =>
+    SessionType sessionType,
+  ) async =>
       await (select(focusProfileTable)
             ..where((e) => e.sessionType.equalsValue(sessionType)))
           .getSingleOrNull() ??
-      FocusProfileTable.defaultFocusProfileModel;
+      FocusProfileTable.defaultFocusProfileModel
+          .copyWith(sessionType: sessionType);
 
   /// Inserts OR Updates a single [FocusSession] object in the database.
   Future<int> insertFocusProfileBySessionType(FocusProfile profile) async =>
@@ -128,7 +137,8 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   /// Fetch the [FocusSession] from database by [SessionState.active], if not found then return null
   Future<FocusSession?> fetchLastActiveFocusSession() async =>
       (select(focusSessionsTable)
-            ..where((e) => e.state.equalsValue(SessionState.active)))
+            ..where((e) => e.state.equalsValue(SessionState.active))
+            ..limit(1))
           .getSingleOrNull();
 
   /// Inserts a single [FocusSession] object in the database.
@@ -175,9 +185,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   }) async =>
       (select(focusSessionsTable)
             ..where(
-              (e) =>
-                  e.state.isNotValue(SessionState.active.index) &
-                  e.startDateTime.isBetweenValues(start, end),
+              (e) => e.startDateTime.isBetweenValues(start, end),
             )
             ..orderBy([(tbl) => OrderingTerm.desc(tbl.startDateTime)]))
           .get();

@@ -22,6 +22,12 @@ class HeroTags {
   static String applicationTileTag(String package) =>
       "home.statistics.applicationTile.$package";
 
+  /// Tag used to identify the schedule start time picker.
+  static const scheduleStartTimePickerTag = "schedule.startTimePicker";
+
+  /// Tag used to identify the schedule end time picker.
+  static const scheduleEndTimePickerTag = "schedule.endTimePicker";
+
   /// Tag used to identify the short content timer picker.
   static const shortContentTimerPickerTag = "home.wellBeing.shortsTimerPicker";
 
@@ -57,13 +63,24 @@ class HeroTags {
   /// Tag used to identify the tile for timer picker in focus mode.
   static const focusModeTimerTileTag = "focus.focusSessionTimerTile";
 
-  /// Tag used to identify the FAB for timer picker in focus mode.
-  static const giveUpFocusSessionTag = "activeSession.giveUp";
+  /// Tag used to identify the button for give up or finish session in active session screen.
+  static const giveUpOrFinishFocusSessionTag = "activeSession.giveUpOrFinish";
 
+  /// Tag used to identify the tile for data reset time in settings.
+  static const dataResetTimeTileTag = "settings.general.dataResetTime";
+  
   /// Tag used to identify the tile for clearing crash log in settings.
   static const clearCrashLogsTileTag = "settings.advance.clearCrashLogs";
 
   /// Tag used to identify the remove button in a restriction group card based on the group ID.
   static String removeRestrictionGroupTag(int groupId) =>
       "restrictionGroupScreen.restrictionGroup.$groupId";
+  
+  /// Tag used to identify the restriction group name tile based on the group ID.
+  static String restrictionGroupNameTileTag(int groupId) =>
+      "restrictionGroupScreen.restrictionGroupName.$groupId";
+ 
+  /// Tag used to identify the restriction group timer tile based on the group ID.
+  static String restrictionGroupTimerTileTag(int groupId) =>
+      "restrictionGroupScreen.restrictionGroupTimer.$groupId";
 }

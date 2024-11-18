@@ -35,21 +35,22 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.models.FocusSession;
 import com.mindful.android.utils.Utils;
 
-import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class FocusSessionService extends Service {
     private static final String TAG = "Mindful.FocusSessionService";
-    public static final String INTENT_EXTRA_FOCUS_SESSION_JSON = "focusSessionJson";
-    public static final String ACTION_START_SERVICE_FOCUS = "com.mindful.android.FocusSessionService.START_SERVICE_FOCUS";
+    public static final String ACTION_START_FOCUS_SERVICE = "com.mindful.android.FocusSessionService.START_SERVICE_FOCUS";
     private final ServiceBinder<FocusSessionService> mBinder = new ServiceBinder<>(FocusSessionService.this);
 
     private CountDownTimer mCountDownTimer;
+    private Timer mStopWatchTimer;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private FocusSession mFocusSession = null;
     private PendingIntent appPendingIntent;
-    private int elapsedSeconds = 0;
+    private int mElapsedSeconds = 0;
 
     @Override
     public void onCreate() {
@@ -72,29 +73,60 @@ public class FocusSessionService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = Utils.getActionFromIntent(intent);
 
-        if (ACTION_START_SERVICE_FOCUS.equals(action)) {
-            mFocusSession = new FocusSession(Utils.notNullStr(intent.getStringExtra(INTENT_EXTRA_FOCUS_SESSION_JSON)));
-
-            /// Start and bind tracking service
-            mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopUpdateFocusSession(mFocusSession.distractingApps));
-            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
-
-            if (!mFocusSession.distractingApps.isEmpty()) {
-                long diffMs = System.currentTimeMillis() - mFocusSession.startTimeMsEpoch;
-                elapsedSeconds = diffMs > 0 ? (int) (diffMs / 1000) : 0;
-                startFocusTimer();
-                return START_STICKY;
-            }
+        if (ACTION_START_FOCUS_SERVICE.equals(action)) {
+            return START_STICKY;
         }
 
         stopSelf();
         return START_NOT_STICKY;
     }
 
+
     /**
-     * Stops the running focus session and push give-up notification
+     * Starts a countdown timer for a focus session. Configures notifications to show the remaining time
+     * and handles DND mode if needed.
      */
-    public void giveUpAndStopSession() {
+    public void startFocusSession(@NonNull FocusSession focusSession) {
+        mFocusSession = focusSession;
+        if (mFocusSession.distractingApps.isEmpty()) {
+            stopSelf();
+            return;
+        }
+
+        /// Start and bind tracking service
+        mTrackerServiceConn.setOnConnectedCallback(service -> service.startStopUpdateFocusSession(mFocusSession.distractingApps));
+        mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
+
+        long diffMs = System.currentTimeMillis() - mFocusSession.startTimeMsEpoch;
+        mElapsedSeconds = diffMs > 0 ? (int) (diffMs / 1000) : 0;
+
+        // Toggle DND according to the session configurations
+        if (mFocusSession.toggleDnd) NotificationHelper.toggleDnd(this, true);
+
+        try {
+            startForeground(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mFocusSession.durationSecs));
+            Log.d(TAG, "startFocusSession: Focus session service started successfully");
+        } catch (Exception ignored) {
+        }
+
+
+        // Check and start timer on the basis of duration
+        if (mFocusSession.durationSecs > 0) {
+            startCountDownTimer();
+        } else {
+            startStopWatchTimer();
+        }
+    }
+
+
+    public void updateFocusSession(FocusSession session) {
+        if (mTrackerServiceConn.isConnected()) {
+            mTrackerServiceConn.getService().startStopUpdateFocusSession(session.distractingApps);
+            Log.d(TAG, "updateDistractingApps: Focus session's distracting app's list updated successfully");
+        }
+    }
+
+    public void giveUpOrStopFocusSession(boolean isTheSessionSuccessful) {
         if (mFocusSession != null && mFocusSession.toggleDnd) {
             NotificationHelper.toggleDnd(this, false);
         }
@@ -102,32 +134,26 @@ public class FocusSessionService extends Service {
             mTrackerServiceConn.getService().startStopUpdateFocusSession(null);
         }
         stopSelf();
-        showSuccessNotification(false);
+        showSuccessNotification(isTheSessionSuccessful);
     }
 
-    /**
-     * Updates the list of distracting apps for the current running focus session
-     *
-     * @param distractingApps List of distracting app's packages.
-     */
-    public void updateDistractingApps(HashSet<String> distractingApps) {
-        if (mTrackerServiceConn.isConnected()) {
-            mTrackerServiceConn.getService().startStopUpdateFocusSession(distractingApps);
-            Log.d(TAG, "updateDistractingApps: Focus session's distracting app's list updated successfully");
-        }
+
+    private void startStopWatchTimer() {
+        Log.d(TAG, "startStopWatchTimer: Starting");
+        mStopWatchTimer = new Timer();
+        mStopWatchTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                mElapsedSeconds++;
+                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mElapsedSeconds));
+            }
+        }, 0L, 1000L);
     }
 
-    /**
-     * Starts a countdown timer for a focus session. Configures notifications to show the remaining time
-     * and handles DND mode if needed.
-     */
-    private void startFocusTimer() {
-        // Toggle DND according to the session configurations
-        if (mFocusSession.toggleDnd) NotificationHelper.toggleDnd(this, true);
-        startForeground(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mFocusSession.durationSecs));
 
-
-        long timerDuration = (mFocusSession.durationSecs - elapsedSeconds) * 1000L;
+    private void startCountDownTimer() {
+        Log.d(TAG, "startCountDownTimer: Starting");
+        long timerDuration = (mFocusSession.durationSecs - mElapsedSeconds) * 1000L;
         mCountDownTimer = new CountDownTimer(timerDuration, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -136,19 +162,9 @@ public class FocusSessionService extends Service {
 
             @Override
             public void onFinish() {
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().startStopUpdateFocusSession(null);
-                }
-                if (mFocusSession.toggleDnd) {
-                    NotificationHelper.toggleDnd(FocusSessionService.this, false);
-                }
-                Log.d(TAG, "startFocusTimer: Focus session completed successfully");
-                stopSelf();
-                showSuccessNotification(true);
+                giveUpOrStopFocusSession(true);
             }
         }.start();
-
-        Log.d(TAG, "startFocusTimer: Focus session service started successfully");
     }
 
 
@@ -160,11 +176,16 @@ public class FocusSessionService extends Service {
      */
     @NonNull
     private Notification createNotification(int totalLeftSeconds) {
-        String remainingTime = Utils.secondsToTimeStr(totalLeftSeconds);
+        String notificationInfo = getString(
+                mFocusSession.durationSecs > 0
+                        ? R.string.focus_session_notification_info
+                        : R.string.focus_session_infinite_notification_info,
+                Utils.secondsToTimeStr(totalLeftSeconds)
+        );
 
         mProgressNotificationBuilder
-                .setContentText(getString(R.string.focus_session_notification_info, remainingTime))
-                .setProgress(elapsedSeconds + mFocusSession.durationSecs, totalLeftSeconds, false);
+                .setContentText(notificationInfo)
+                .setProgress(mElapsedSeconds + mFocusSession.durationSecs, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
     }
@@ -197,7 +218,14 @@ public class FocusSessionService extends Service {
         mTrackerServiceConn.unBindService();
         if (mCountDownTimer != null) {
             mCountDownTimer.cancel();
+            mCountDownTimer = null;
         }
+
+        if (mStopWatchTimer != null) {
+            mStopWatchTimer.cancel();
+            mStopWatchTimer = null;
+        }
+
         stopForeground(STOP_FOREGROUND_REMOVE);
         Log.d(TAG, "onDestroy: Focus session service destroyed");
     }

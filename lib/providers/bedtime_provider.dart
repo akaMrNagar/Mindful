@@ -8,12 +8,10 @@
  *
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 
@@ -48,17 +46,17 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
   }
 
   /// Sets the start time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeStart(TimeOfDay startTod) => state = state.copyWith(
-        startTimeInMins: startTod.minutes,
-        totalDurationInMins:
-            state.endTimeInMins.toTimeOfDay.difference(startTod).inMinutes,
+  void setBedtimeStart(TimeOfDayAdapter startTime) => state = state.copyWith(
+        scheduleStartTime: startTime,
+        scheduleDurationInMins:
+            state.scheduleEndTime.difference(startTime).inMinutes,
       );
 
   /// Sets the end time of the Bedtime schedule using TimeOfDay minutes.
-  void setBedtimeEnd(TimeOfDay endTod) => state = state.copyWith(
-        endTimeInMins: endTod.minutes,
-        totalDurationInMins:
-            endTod.difference(state.startTimeInMins.toTimeOfDay).inMinutes,
+  void setBedtimeEnd(TimeOfDayAdapter endTime) => state = state.copyWith(
+        scheduleEndTime: endTime,
+        scheduleDurationInMins:
+            endTime.difference(state.scheduleStartTime).inMinutes,
       );
 
   /// Toggles the scheduled day for a specific day index.
@@ -69,13 +67,7 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
   }
 
   /// Enables or disables Do Not Disturb during the Bedtime schedule.
-  ///
-  /// Checks for Do Not Disturb permission before enabling it.
   void setShouldStartDnd(bool shouldStartDnd) async {
-    if (shouldStartDnd &&
-        !await MethodChannelService.instance.getAndAskDndPermission()) {
-      return;
-    }
     state = state.copyWith(shouldStartDnd: shouldStartDnd);
   }
 

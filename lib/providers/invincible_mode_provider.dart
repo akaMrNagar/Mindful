@@ -47,8 +47,14 @@ class InvincibleModeNotifier extends StateNotifier<InvincibleMode> {
   void toggleIncludeAppsLaunchLimit() => state =
       state.copyWith(includeAppsLaunchLimit: !state.includeAppsLaunchLimit);
 
+  void toggleIncludeAppsActivePeriod() => state =
+      state.copyWith(includeAppsActivePeriod: !state.includeAppsActivePeriod);
+
   void toggleIncludeGroupsTimer() =>
       state = state.copyWith(includeGroupsTimer: !state.includeGroupsTimer);
+
+  void toggleIncludeGroupsActivePeriod() => state = state.copyWith(
+      includeGroupsActivePeriod: !state.includeGroupsActivePeriod);
 
   void toggleIncludeShortsTimer() =>
       state = state.copyWith(includeShortsTimer: !state.includeShortsTimer);

@@ -27,21 +27,30 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   late final GeneratedColumn<int> launchLimit = GeneratedColumn<int>(
       'launch_limit', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _alertIntervalMeta =
-      const VerificationMeta('alertInterval');
+  static const VerificationMeta _activePeriodStartMeta =
+      const VerificationMeta('activePeriodStart');
   @override
-  late final GeneratedColumn<int> alertInterval = GeneratedColumn<int>(
-      'alert_interval', aliasedName, false,
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      activePeriodStart = GeneratedColumn<int>(
+              'active_period_start', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $AppRestrictionTableTable.$converteractivePeriodStart);
+  static const VerificationMeta _activePeriodEndMeta =
+      const VerificationMeta('activePeriodEnd');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      activePeriodEnd = GeneratedColumn<int>(
+              'active_period_end', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $AppRestrictionTableTable.$converteractivePeriodEnd);
+  static const VerificationMeta _periodDurationInMinsMeta =
+      const VerificationMeta('periodDurationInMins');
+  @override
+  late final GeneratedColumn<int> periodDurationInMins = GeneratedColumn<int>(
+      'period_duration_in_mins', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _alertByDialogMeta =
-      const VerificationMeta('alertByDialog');
-  @override
-  late final GeneratedColumn<bool> alertByDialog = GeneratedColumn<bool>(
-      'alert_by_dialog', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("alert_by_dialog" IN (0, 1))'));
   static const VerificationMeta _canAccessInternetMeta =
       const VerificationMeta('canAccessInternet');
   @override
@@ -59,15 +68,33 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(null));
+  static const VerificationMeta _alertIntervalMeta =
+      const VerificationMeta('alertInterval');
+  @override
+  late final GeneratedColumn<int> alertInterval = GeneratedColumn<int>(
+      'alert_interval', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _alertByDialogMeta =
+      const VerificationMeta('alertByDialog');
+  @override
+  late final GeneratedColumn<bool> alertByDialog = GeneratedColumn<bool>(
+      'alert_by_dialog', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("alert_by_dialog" IN (0, 1))'));
   @override
   List<GeneratedColumn> get $columns => [
         appPackage,
         timerSec,
         launchLimit,
-        alertInterval,
-        alertByDialog,
+        activePeriodStart,
+        activePeriodEnd,
+        periodDurationInMins,
         canAccessInternet,
-        associatedGroupId
+        associatedGroupId,
+        alertInterval,
+        alertByDialog
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -101,6 +128,30 @@ class $AppRestrictionTableTable extends AppRestrictionTable
     } else if (isInserting) {
       context.missing(_launchLimitMeta);
     }
+    context.handle(_activePeriodStartMeta, const VerificationResult.success());
+    context.handle(_activePeriodEndMeta, const VerificationResult.success());
+    if (data.containsKey('period_duration_in_mins')) {
+      context.handle(
+          _periodDurationInMinsMeta,
+          periodDurationInMins.isAcceptableOrUnknown(
+              data['period_duration_in_mins']!, _periodDurationInMinsMeta));
+    } else if (isInserting) {
+      context.missing(_periodDurationInMinsMeta);
+    }
+    if (data.containsKey('can_access_internet')) {
+      context.handle(
+          _canAccessInternetMeta,
+          canAccessInternet.isAcceptableOrUnknown(
+              data['can_access_internet']!, _canAccessInternetMeta));
+    } else if (isInserting) {
+      context.missing(_canAccessInternetMeta);
+    }
+    if (data.containsKey('associated_group_id')) {
+      context.handle(
+          _associatedGroupIdMeta,
+          associatedGroupId.isAcceptableOrUnknown(
+              data['associated_group_id']!, _associatedGroupIdMeta));
+    }
     if (data.containsKey('alert_interval')) {
       context.handle(
           _alertIntervalMeta,
@@ -117,20 +168,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
     } else if (isInserting) {
       context.missing(_alertByDialogMeta);
     }
-    if (data.containsKey('can_access_internet')) {
-      context.handle(
-          _canAccessInternetMeta,
-          canAccessInternet.isAcceptableOrUnknown(
-              data['can_access_internet']!, _canAccessInternetMeta));
-    } else if (isInserting) {
-      context.missing(_canAccessInternetMeta);
-    }
-    if (data.containsKey('associated_group_id')) {
-      context.handle(
-          _associatedGroupIdMeta,
-          associatedGroupId.isAcceptableOrUnknown(
-              data['associated_group_id']!, _associatedGroupIdMeta));
-    }
     return context;
   }
 
@@ -146,14 +183,22 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           .read(DriftSqlType.int, data['${effectivePrefix}timer_sec'])!,
       launchLimit: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}launch_limit'])!,
-      alertInterval: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}alert_interval'])!,
-      alertByDialog: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}alert_by_dialog'])!,
+      activePeriodStart: $AppRestrictionTableTable.$converteractivePeriodStart
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}active_period_start'])!),
+      activePeriodEnd: $AppRestrictionTableTable.$converteractivePeriodEnd
+          .fromSql(attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}active_period_end'])!),
+      periodDurationInMins: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}period_duration_in_mins'])!,
       canAccessInternet: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
       associatedGroupId: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}associated_group_id']),
+      alertInterval: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}alert_interval'])!,
+      alertByDialog: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}alert_by_dialog'])!,
     );
   }
 
@@ -161,6 +206,11 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   $AppRestrictionTableTable createAlias(String alias) {
     return $AppRestrictionTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodStart = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodEnd = const TimeOfDayAdapterConverter();
 }
 
 class AppRestriction extends DataClass implements Insertable<AppRestriction> {
@@ -173,37 +223,62 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   /// The number of times user can launch this app
   final int launchLimit;
 
-  /// The interval between each usage alert in SECONDS
-  final int alertInterval;
+  /// [TimeOfDay] in minutes from where the active period will start.
+  /// It is stored as total minutes.
+  final TimeOfDayAdapter activePeriodStart;
 
-  ///  Whether to alert user by dialog if false user will be alerted by notification
-  final bool alertByDialog;
+  /// [TimeOfDay] in minutes when the active period will end
+  /// It is stored as total minutes.
+  final TimeOfDayAdapter activePeriodEnd;
+
+  /// Total duration of active period from start to end in MINUTES
+  final int periodDurationInMins;
 
   /// Flag denoting if this app can access internet or not
   final bool canAccessInternet;
 
   /// ID of the [RestrictionGroup] this app is associated with or NULL
   final int? associatedGroupId;
+
+  /// The interval between each usage alert in SECONDS
+  final int alertInterval;
+
+  ///  Whether to alert user by dialog if false user will be alerted by notification
+  final bool alertByDialog;
   const AppRestriction(
       {required this.appPackage,
       required this.timerSec,
       required this.launchLimit,
-      required this.alertInterval,
-      required this.alertByDialog,
+      required this.activePeriodStart,
+      required this.activePeriodEnd,
+      required this.periodDurationInMins,
       required this.canAccessInternet,
-      this.associatedGroupId});
+      this.associatedGroupId,
+      required this.alertInterval,
+      required this.alertByDialog});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['app_package'] = Variable<String>(appPackage);
     map['timer_sec'] = Variable<int>(timerSec);
     map['launch_limit'] = Variable<int>(launchLimit);
-    map['alert_interval'] = Variable<int>(alertInterval);
-    map['alert_by_dialog'] = Variable<bool>(alertByDialog);
+    {
+      map['active_period_start'] = Variable<int>($AppRestrictionTableTable
+          .$converteractivePeriodStart
+          .toSql(activePeriodStart));
+    }
+    {
+      map['active_period_end'] = Variable<int>($AppRestrictionTableTable
+          .$converteractivePeriodEnd
+          .toSql(activePeriodEnd));
+    }
+    map['period_duration_in_mins'] = Variable<int>(periodDurationInMins);
     map['can_access_internet'] = Variable<bool>(canAccessInternet);
     if (!nullToAbsent || associatedGroupId != null) {
       map['associated_group_id'] = Variable<int>(associatedGroupId);
     }
+    map['alert_interval'] = Variable<int>(alertInterval);
+    map['alert_by_dialog'] = Variable<bool>(alertByDialog);
     return map;
   }
 
@@ -212,12 +287,15 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       appPackage: Value(appPackage),
       timerSec: Value(timerSec),
       launchLimit: Value(launchLimit),
-      alertInterval: Value(alertInterval),
-      alertByDialog: Value(alertByDialog),
+      activePeriodStart: Value(activePeriodStart),
+      activePeriodEnd: Value(activePeriodEnd),
+      periodDurationInMins: Value(periodDurationInMins),
       canAccessInternet: Value(canAccessInternet),
       associatedGroupId: associatedGroupId == null && nullToAbsent
           ? const Value.absent()
           : Value(associatedGroupId),
+      alertInterval: Value(alertInterval),
+      alertByDialog: Value(alertByDialog),
     );
   }
 
@@ -228,10 +306,16 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       appPackage: serializer.fromJson<String>(json['appPackage']),
       timerSec: serializer.fromJson<int>(json['timerSec']),
       launchLimit: serializer.fromJson<int>(json['launchLimit']),
-      alertInterval: serializer.fromJson<int>(json['alertInterval']),
-      alertByDialog: serializer.fromJson<bool>(json['alertByDialog']),
+      activePeriodStart: $AppRestrictionTableTable.$converteractivePeriodStart
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodStart'])),
+      activePeriodEnd: $AppRestrictionTableTable.$converteractivePeriodEnd
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodEnd'])),
+      periodDurationInMins:
+          serializer.fromJson<int>(json['periodDurationInMins']),
       canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
       associatedGroupId: serializer.fromJson<int?>(json['associatedGroupId']),
+      alertInterval: serializer.fromJson<int>(json['alertInterval']),
+      alertByDialog: serializer.fromJson<bool>(json['alertByDialog']),
     );
   }
   @override
@@ -241,10 +325,17 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       'appPackage': serializer.toJson<String>(appPackage),
       'timerSec': serializer.toJson<int>(timerSec),
       'launchLimit': serializer.toJson<int>(launchLimit),
-      'alertInterval': serializer.toJson<int>(alertInterval),
-      'alertByDialog': serializer.toJson<bool>(alertByDialog),
+      'activePeriodStart': serializer.toJson<dynamic>($AppRestrictionTableTable
+          .$converteractivePeriodStart
+          .toJson(activePeriodStart)),
+      'activePeriodEnd': serializer.toJson<dynamic>($AppRestrictionTableTable
+          .$converteractivePeriodEnd
+          .toJson(activePeriodEnd)),
+      'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
       'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
       'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
+      'alertInterval': serializer.toJson<int>(alertInterval),
+      'alertByDialog': serializer.toJson<bool>(alertByDialog),
     };
   }
 
@@ -252,20 +343,26 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           {String? appPackage,
           int? timerSec,
           int? launchLimit,
-          int? alertInterval,
-          bool? alertByDialog,
+          TimeOfDayAdapter? activePeriodStart,
+          TimeOfDayAdapter? activePeriodEnd,
+          int? periodDurationInMins,
           bool? canAccessInternet,
-          Value<int?> associatedGroupId = const Value.absent()}) =>
+          Value<int?> associatedGroupId = const Value.absent(),
+          int? alertInterval,
+          bool? alertByDialog}) =>
       AppRestriction(
         appPackage: appPackage ?? this.appPackage,
         timerSec: timerSec ?? this.timerSec,
         launchLimit: launchLimit ?? this.launchLimit,
-        alertInterval: alertInterval ?? this.alertInterval,
-        alertByDialog: alertByDialog ?? this.alertByDialog,
+        activePeriodStart: activePeriodStart ?? this.activePeriodStart,
+        activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
+        periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
         canAccessInternet: canAccessInternet ?? this.canAccessInternet,
         associatedGroupId: associatedGroupId.present
             ? associatedGroupId.value
             : this.associatedGroupId,
+        alertInterval: alertInterval ?? this.alertInterval,
+        alertByDialog: alertByDialog ?? this.alertByDialog,
       );
   @override
   String toString() {
@@ -273,17 +370,29 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           ..write('appPackage: $appPackage, ')
           ..write('timerSec: $timerSec, ')
           ..write('launchLimit: $launchLimit, ')
-          ..write('alertInterval: $alertInterval, ')
-          ..write('alertByDialog: $alertByDialog, ')
+          ..write('activePeriodStart: $activePeriodStart, ')
+          ..write('activePeriodEnd: $activePeriodEnd, ')
+          ..write('periodDurationInMins: $periodDurationInMins, ')
           ..write('canAccessInternet: $canAccessInternet, ')
-          ..write('associatedGroupId: $associatedGroupId')
+          ..write('associatedGroupId: $associatedGroupId, ')
+          ..write('alertInterval: $alertInterval, ')
+          ..write('alertByDialog: $alertByDialog')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(appPackage, timerSec, launchLimit,
-      alertInterval, alertByDialog, canAccessInternet, associatedGroupId);
+  int get hashCode => Object.hash(
+      appPackage,
+      timerSec,
+      launchLimit,
+      activePeriodStart,
+      activePeriodEnd,
+      periodDurationInMins,
+      canAccessInternet,
+      associatedGroupId,
+      alertInterval,
+      alertByDialog);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -291,64 +400,86 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           other.appPackage == this.appPackage &&
           other.timerSec == this.timerSec &&
           other.launchLimit == this.launchLimit &&
-          other.alertInterval == this.alertInterval &&
-          other.alertByDialog == this.alertByDialog &&
+          other.activePeriodStart == this.activePeriodStart &&
+          other.activePeriodEnd == this.activePeriodEnd &&
+          other.periodDurationInMins == this.periodDurationInMins &&
           other.canAccessInternet == this.canAccessInternet &&
-          other.associatedGroupId == this.associatedGroupId);
+          other.associatedGroupId == this.associatedGroupId &&
+          other.alertInterval == this.alertInterval &&
+          other.alertByDialog == this.alertByDialog);
 }
 
 class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   final Value<String> appPackage;
   final Value<int> timerSec;
   final Value<int> launchLimit;
-  final Value<int> alertInterval;
-  final Value<bool> alertByDialog;
+  final Value<TimeOfDayAdapter> activePeriodStart;
+  final Value<TimeOfDayAdapter> activePeriodEnd;
+  final Value<int> periodDurationInMins;
   final Value<bool> canAccessInternet;
   final Value<int?> associatedGroupId;
+  final Value<int> alertInterval;
+  final Value<bool> alertByDialog;
   final Value<int> rowid;
   const AppRestrictionTableCompanion({
     this.appPackage = const Value.absent(),
     this.timerSec = const Value.absent(),
     this.launchLimit = const Value.absent(),
-    this.alertInterval = const Value.absent(),
-    this.alertByDialog = const Value.absent(),
+    this.activePeriodStart = const Value.absent(),
+    this.activePeriodEnd = const Value.absent(),
+    this.periodDurationInMins = const Value.absent(),
     this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
+    this.alertInterval = const Value.absent(),
+    this.alertByDialog = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppRestrictionTableCompanion.insert({
     required String appPackage,
     required int timerSec,
     required int launchLimit,
-    required int alertInterval,
-    required bool alertByDialog,
+    required TimeOfDayAdapter activePeriodStart,
+    required TimeOfDayAdapter activePeriodEnd,
+    required int periodDurationInMins,
     required bool canAccessInternet,
     this.associatedGroupId = const Value.absent(),
+    required int alertInterval,
+    required bool alertByDialog,
     this.rowid = const Value.absent(),
   })  : appPackage = Value(appPackage),
         timerSec = Value(timerSec),
         launchLimit = Value(launchLimit),
+        activePeriodStart = Value(activePeriodStart),
+        activePeriodEnd = Value(activePeriodEnd),
+        periodDurationInMins = Value(periodDurationInMins),
+        canAccessInternet = Value(canAccessInternet),
         alertInterval = Value(alertInterval),
-        alertByDialog = Value(alertByDialog),
-        canAccessInternet = Value(canAccessInternet);
+        alertByDialog = Value(alertByDialog);
   static Insertable<AppRestriction> custom({
     Expression<String>? appPackage,
     Expression<int>? timerSec,
     Expression<int>? launchLimit,
-    Expression<int>? alertInterval,
-    Expression<bool>? alertByDialog,
+    Expression<int>? activePeriodStart,
+    Expression<int>? activePeriodEnd,
+    Expression<int>? periodDurationInMins,
     Expression<bool>? canAccessInternet,
     Expression<int>? associatedGroupId,
+    Expression<int>? alertInterval,
+    Expression<bool>? alertByDialog,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (appPackage != null) 'app_package': appPackage,
       if (timerSec != null) 'timer_sec': timerSec,
       if (launchLimit != null) 'launch_limit': launchLimit,
-      if (alertInterval != null) 'alert_interval': alertInterval,
-      if (alertByDialog != null) 'alert_by_dialog': alertByDialog,
+      if (activePeriodStart != null) 'active_period_start': activePeriodStart,
+      if (activePeriodEnd != null) 'active_period_end': activePeriodEnd,
+      if (periodDurationInMins != null)
+        'period_duration_in_mins': periodDurationInMins,
       if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
       if (associatedGroupId != null) 'associated_group_id': associatedGroupId,
+      if (alertInterval != null) 'alert_interval': alertInterval,
+      if (alertByDialog != null) 'alert_by_dialog': alertByDialog,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -357,19 +488,25 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       {Value<String>? appPackage,
       Value<int>? timerSec,
       Value<int>? launchLimit,
-      Value<int>? alertInterval,
-      Value<bool>? alertByDialog,
+      Value<TimeOfDayAdapter>? activePeriodStart,
+      Value<TimeOfDayAdapter>? activePeriodEnd,
+      Value<int>? periodDurationInMins,
       Value<bool>? canAccessInternet,
       Value<int?>? associatedGroupId,
+      Value<int>? alertInterval,
+      Value<bool>? alertByDialog,
       Value<int>? rowid}) {
     return AppRestrictionTableCompanion(
       appPackage: appPackage ?? this.appPackage,
       timerSec: timerSec ?? this.timerSec,
       launchLimit: launchLimit ?? this.launchLimit,
-      alertInterval: alertInterval ?? this.alertInterval,
-      alertByDialog: alertByDialog ?? this.alertByDialog,
+      activePeriodStart: activePeriodStart ?? this.activePeriodStart,
+      activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
+      periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
       canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       associatedGroupId: associatedGroupId ?? this.associatedGroupId,
+      alertInterval: alertInterval ?? this.alertInterval,
+      alertByDialog: alertByDialog ?? this.alertByDialog,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -386,17 +523,31 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     if (launchLimit.present) {
       map['launch_limit'] = Variable<int>(launchLimit.value);
     }
-    if (alertInterval.present) {
-      map['alert_interval'] = Variable<int>(alertInterval.value);
+    if (activePeriodStart.present) {
+      map['active_period_start'] = Variable<int>($AppRestrictionTableTable
+          .$converteractivePeriodStart
+          .toSql(activePeriodStart.value));
     }
-    if (alertByDialog.present) {
-      map['alert_by_dialog'] = Variable<bool>(alertByDialog.value);
+    if (activePeriodEnd.present) {
+      map['active_period_end'] = Variable<int>($AppRestrictionTableTable
+          .$converteractivePeriodEnd
+          .toSql(activePeriodEnd.value));
+    }
+    if (periodDurationInMins.present) {
+      map['period_duration_in_mins'] =
+          Variable<int>(periodDurationInMins.value);
     }
     if (canAccessInternet.present) {
       map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
     }
     if (associatedGroupId.present) {
       map['associated_group_id'] = Variable<int>(associatedGroupId.value);
+    }
+    if (alertInterval.present) {
+      map['alert_interval'] = Variable<int>(alertInterval.value);
+    }
+    if (alertByDialog.present) {
+      map['alert_by_dialog'] = Variable<bool>(alertByDialog.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -410,10 +561,13 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
           ..write('appPackage: $appPackage, ')
           ..write('timerSec: $timerSec, ')
           ..write('launchLimit: $launchLimit, ')
-          ..write('alertInterval: $alertInterval, ')
-          ..write('alertByDialog: $alertByDialog, ')
+          ..write('activePeriodStart: $activePeriodStart, ')
+          ..write('activePeriodEnd: $activePeriodEnd, ')
+          ..write('periodDurationInMins: $periodDurationInMins, ')
           ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId, ')
+          ..write('alertInterval: $alertInterval, ')
+          ..write('alertByDialog: $alertByDialog, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -433,23 +587,29 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _startTimeInMinsMeta =
-      const VerificationMeta('startTimeInMins');
+  static const VerificationMeta _scheduleStartTimeMeta =
+      const VerificationMeta('scheduleStartTime');
   @override
-  late final GeneratedColumn<int> startTimeInMins = GeneratedColumn<int>(
-      'start_time_in_mins', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _endTimeInMinsMeta =
-      const VerificationMeta('endTimeInMins');
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      scheduleStartTime = GeneratedColumn<int>(
+              'schedule_start_time', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $BedtimeScheduleTableTable.$converterscheduleStartTime);
+  static const VerificationMeta _scheduleEndTimeMeta =
+      const VerificationMeta('scheduleEndTime');
   @override
-  late final GeneratedColumn<int> endTimeInMins = GeneratedColumn<int>(
-      'end_time_in_mins', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _totalDurationInMinsMeta =
-      const VerificationMeta('totalDurationInMins');
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      scheduleEndTime = GeneratedColumn<int>(
+              'schedule_end_time', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $BedtimeScheduleTableTable.$converterscheduleEndTime);
+  static const VerificationMeta _scheduleDurationInMinsMeta =
+      const VerificationMeta('scheduleDurationInMins');
   @override
-  late final GeneratedColumn<int> totalDurationInMins = GeneratedColumn<int>(
-      'total_duration_in_mins', aliasedName, false,
+  late final GeneratedColumn<int> scheduleDurationInMins = GeneratedColumn<int>(
+      'schedule_duration_in_mins', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _scheduleDaysMeta =
       const VerificationMeta('scheduleDays');
@@ -489,9 +649,9 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
   @override
   List<GeneratedColumn> get $columns => [
         id,
-        startTimeInMins,
-        endTimeInMins,
-        totalDurationInMins,
+        scheduleStartTime,
+        scheduleEndTime,
+        scheduleDurationInMins,
         scheduleDays,
         isScheduleOn,
         shouldStartDnd,
@@ -510,29 +670,15 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('start_time_in_mins')) {
+    context.handle(_scheduleStartTimeMeta, const VerificationResult.success());
+    context.handle(_scheduleEndTimeMeta, const VerificationResult.success());
+    if (data.containsKey('schedule_duration_in_mins')) {
       context.handle(
-          _startTimeInMinsMeta,
-          startTimeInMins.isAcceptableOrUnknown(
-              data['start_time_in_mins']!, _startTimeInMinsMeta));
+          _scheduleDurationInMinsMeta,
+          scheduleDurationInMins.isAcceptableOrUnknown(
+              data['schedule_duration_in_mins']!, _scheduleDurationInMinsMeta));
     } else if (isInserting) {
-      context.missing(_startTimeInMinsMeta);
-    }
-    if (data.containsKey('end_time_in_mins')) {
-      context.handle(
-          _endTimeInMinsMeta,
-          endTimeInMins.isAcceptableOrUnknown(
-              data['end_time_in_mins']!, _endTimeInMinsMeta));
-    } else if (isInserting) {
-      context.missing(_endTimeInMinsMeta);
-    }
-    if (data.containsKey('total_duration_in_mins')) {
-      context.handle(
-          _totalDurationInMinsMeta,
-          totalDurationInMins.isAcceptableOrUnknown(
-              data['total_duration_in_mins']!, _totalDurationInMinsMeta));
-    } else if (isInserting) {
-      context.missing(_totalDurationInMinsMeta);
+      context.missing(_scheduleDurationInMinsMeta);
     }
     context.handle(_scheduleDaysMeta, const VerificationResult.success());
     if (data.containsKey('is_schedule_on')) {
@@ -563,12 +709,15 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
     return BedtimeSchedule(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      startTimeInMins: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}start_time_in_mins'])!,
-      endTimeInMins: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}end_time_in_mins'])!,
-      totalDurationInMins: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}total_duration_in_mins'])!,
+      scheduleStartTime: $BedtimeScheduleTableTable.$converterscheduleStartTime
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}schedule_start_time'])!),
+      scheduleEndTime: $BedtimeScheduleTableTable.$converterscheduleEndTime
+          .fromSql(attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}schedule_end_time'])!),
+      scheduleDurationInMins: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}schedule_duration_in_mins'])!,
       scheduleDays: $BedtimeScheduleTableTable.$converterscheduleDays.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}schedule_days'])!),
@@ -587,6 +736,10 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
     return $BedtimeScheduleTableTable(attachedDatabase, alias);
   }
 
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterscheduleStartTime = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterscheduleEndTime = const TimeOfDayAdapterConverter();
   static TypeConverter<List<bool>, String> $converterscheduleDays =
       const ListBoolConverter();
   static TypeConverter<List<String>, String> $converterdistractingApps =
@@ -599,14 +752,14 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
 
   /// [TimeOfDay] in minutes from where the bedtime schedule task will start.
   /// It is stored as total minutes.
-  final int startTimeInMins;
+  final TimeOfDayAdapter scheduleStartTime;
 
   /// [TimeOfDay] in minutes when the bedtime schedule task will end
   /// It is stored as total minutes.
-  final int endTimeInMins;
+  final TimeOfDayAdapter scheduleEndTime;
 
   /// Total duration of bedtime schedule from start to end in MINUTES
-  final int totalDurationInMins;
+  final int scheduleDurationInMins;
 
   /// Days on which the task will execute.
   /// The list contains 7 booleans for each day of week.
@@ -626,9 +779,9 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
   final List<String> distractingApps;
   const BedtimeSchedule(
       {required this.id,
-      required this.startTimeInMins,
-      required this.endTimeInMins,
-      required this.totalDurationInMins,
+      required this.scheduleStartTime,
+      required this.scheduleEndTime,
+      required this.scheduleDurationInMins,
       required this.scheduleDays,
       required this.isScheduleOn,
       required this.shouldStartDnd,
@@ -637,9 +790,17 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
-    map['start_time_in_mins'] = Variable<int>(startTimeInMins);
-    map['end_time_in_mins'] = Variable<int>(endTimeInMins);
-    map['total_duration_in_mins'] = Variable<int>(totalDurationInMins);
+    {
+      map['schedule_start_time'] = Variable<int>($BedtimeScheduleTableTable
+          .$converterscheduleStartTime
+          .toSql(scheduleStartTime));
+    }
+    {
+      map['schedule_end_time'] = Variable<int>($BedtimeScheduleTableTable
+          .$converterscheduleEndTime
+          .toSql(scheduleEndTime));
+    }
+    map['schedule_duration_in_mins'] = Variable<int>(scheduleDurationInMins);
     {
       map['schedule_days'] = Variable<String>($BedtimeScheduleTableTable
           .$converterscheduleDays
@@ -658,9 +819,9 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
   BedtimeScheduleTableCompanion toCompanion(bool nullToAbsent) {
     return BedtimeScheduleTableCompanion(
       id: Value(id),
-      startTimeInMins: Value(startTimeInMins),
-      endTimeInMins: Value(endTimeInMins),
-      totalDurationInMins: Value(totalDurationInMins),
+      scheduleStartTime: Value(scheduleStartTime),
+      scheduleEndTime: Value(scheduleEndTime),
+      scheduleDurationInMins: Value(scheduleDurationInMins),
       scheduleDays: Value(scheduleDays),
       isScheduleOn: Value(isScheduleOn),
       shouldStartDnd: Value(shouldStartDnd),
@@ -673,10 +834,12 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return BedtimeSchedule(
       id: serializer.fromJson<int>(json['id']),
-      startTimeInMins: serializer.fromJson<int>(json['startTimeInMins']),
-      endTimeInMins: serializer.fromJson<int>(json['endTimeInMins']),
-      totalDurationInMins:
-          serializer.fromJson<int>(json['totalDurationInMins']),
+      scheduleStartTime: $BedtimeScheduleTableTable.$converterscheduleStartTime
+          .fromJson(serializer.fromJson<dynamic>(json['scheduleStartTime'])),
+      scheduleEndTime: $BedtimeScheduleTableTable.$converterscheduleEndTime
+          .fromJson(serializer.fromJson<dynamic>(json['scheduleEndTime'])),
+      scheduleDurationInMins:
+          serializer.fromJson<int>(json['scheduleDurationInMins']),
       scheduleDays: serializer.fromJson<List<bool>>(json['scheduleDays']),
       isScheduleOn: serializer.fromJson<bool>(json['isScheduleOn']),
       shouldStartDnd: serializer.fromJson<bool>(json['shouldStartDnd']),
@@ -689,9 +852,13 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
-      'startTimeInMins': serializer.toJson<int>(startTimeInMins),
-      'endTimeInMins': serializer.toJson<int>(endTimeInMins),
-      'totalDurationInMins': serializer.toJson<int>(totalDurationInMins),
+      'scheduleStartTime': serializer.toJson<dynamic>($BedtimeScheduleTableTable
+          .$converterscheduleStartTime
+          .toJson(scheduleStartTime)),
+      'scheduleEndTime': serializer.toJson<dynamic>($BedtimeScheduleTableTable
+          .$converterscheduleEndTime
+          .toJson(scheduleEndTime)),
+      'scheduleDurationInMins': serializer.toJson<int>(scheduleDurationInMins),
       'scheduleDays': serializer.toJson<List<bool>>(scheduleDays),
       'isScheduleOn': serializer.toJson<bool>(isScheduleOn),
       'shouldStartDnd': serializer.toJson<bool>(shouldStartDnd),
@@ -701,18 +868,19 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
 
   BedtimeSchedule copyWith(
           {int? id,
-          int? startTimeInMins,
-          int? endTimeInMins,
-          int? totalDurationInMins,
+          TimeOfDayAdapter? scheduleStartTime,
+          TimeOfDayAdapter? scheduleEndTime,
+          int? scheduleDurationInMins,
           List<bool>? scheduleDays,
           bool? isScheduleOn,
           bool? shouldStartDnd,
           List<String>? distractingApps}) =>
       BedtimeSchedule(
         id: id ?? this.id,
-        startTimeInMins: startTimeInMins ?? this.startTimeInMins,
-        endTimeInMins: endTimeInMins ?? this.endTimeInMins,
-        totalDurationInMins: totalDurationInMins ?? this.totalDurationInMins,
+        scheduleStartTime: scheduleStartTime ?? this.scheduleStartTime,
+        scheduleEndTime: scheduleEndTime ?? this.scheduleEndTime,
+        scheduleDurationInMins:
+            scheduleDurationInMins ?? this.scheduleDurationInMins,
         scheduleDays: scheduleDays ?? this.scheduleDays,
         isScheduleOn: isScheduleOn ?? this.isScheduleOn,
         shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
@@ -722,9 +890,9 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
   String toString() {
     return (StringBuffer('BedtimeSchedule(')
           ..write('id: $id, ')
-          ..write('startTimeInMins: $startTimeInMins, ')
-          ..write('endTimeInMins: $endTimeInMins, ')
-          ..write('totalDurationInMins: $totalDurationInMins, ')
+          ..write('scheduleStartTime: $scheduleStartTime, ')
+          ..write('scheduleEndTime: $scheduleEndTime, ')
+          ..write('scheduleDurationInMins: $scheduleDurationInMins, ')
           ..write('scheduleDays: $scheduleDays, ')
           ..write('isScheduleOn: $isScheduleOn, ')
           ..write('shouldStartDnd: $shouldStartDnd, ')
@@ -736,9 +904,9 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
   @override
   int get hashCode => Object.hash(
       id,
-      startTimeInMins,
-      endTimeInMins,
-      totalDurationInMins,
+      scheduleStartTime,
+      scheduleEndTime,
+      scheduleDurationInMins,
       scheduleDays,
       isScheduleOn,
       shouldStartDnd,
@@ -748,9 +916,9 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
       identical(this, other) ||
       (other is BedtimeSchedule &&
           other.id == this.id &&
-          other.startTimeInMins == this.startTimeInMins &&
-          other.endTimeInMins == this.endTimeInMins &&
-          other.totalDurationInMins == this.totalDurationInMins &&
+          other.scheduleStartTime == this.scheduleStartTime &&
+          other.scheduleEndTime == this.scheduleEndTime &&
+          other.scheduleDurationInMins == this.scheduleDurationInMins &&
           other.scheduleDays == this.scheduleDays &&
           other.isScheduleOn == this.isScheduleOn &&
           other.shouldStartDnd == this.shouldStartDnd &&
@@ -759,18 +927,18 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
 
 class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
   final Value<int> id;
-  final Value<int> startTimeInMins;
-  final Value<int> endTimeInMins;
-  final Value<int> totalDurationInMins;
+  final Value<TimeOfDayAdapter> scheduleStartTime;
+  final Value<TimeOfDayAdapter> scheduleEndTime;
+  final Value<int> scheduleDurationInMins;
   final Value<List<bool>> scheduleDays;
   final Value<bool> isScheduleOn;
   final Value<bool> shouldStartDnd;
   final Value<List<String>> distractingApps;
   const BedtimeScheduleTableCompanion({
     this.id = const Value.absent(),
-    this.startTimeInMins = const Value.absent(),
-    this.endTimeInMins = const Value.absent(),
-    this.totalDurationInMins = const Value.absent(),
+    this.scheduleStartTime = const Value.absent(),
+    this.scheduleEndTime = const Value.absent(),
+    this.scheduleDurationInMins = const Value.absent(),
     this.scheduleDays = const Value.absent(),
     this.isScheduleOn = const Value.absent(),
     this.shouldStartDnd = const Value.absent(),
@@ -778,25 +946,25 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
   });
   BedtimeScheduleTableCompanion.insert({
     this.id = const Value.absent(),
-    required int startTimeInMins,
-    required int endTimeInMins,
-    required int totalDurationInMins,
+    required TimeOfDayAdapter scheduleStartTime,
+    required TimeOfDayAdapter scheduleEndTime,
+    required int scheduleDurationInMins,
     required List<bool> scheduleDays,
     required bool isScheduleOn,
     required bool shouldStartDnd,
     required List<String> distractingApps,
-  })  : startTimeInMins = Value(startTimeInMins),
-        endTimeInMins = Value(endTimeInMins),
-        totalDurationInMins = Value(totalDurationInMins),
+  })  : scheduleStartTime = Value(scheduleStartTime),
+        scheduleEndTime = Value(scheduleEndTime),
+        scheduleDurationInMins = Value(scheduleDurationInMins),
         scheduleDays = Value(scheduleDays),
         isScheduleOn = Value(isScheduleOn),
         shouldStartDnd = Value(shouldStartDnd),
         distractingApps = Value(distractingApps);
   static Insertable<BedtimeSchedule> custom({
     Expression<int>? id,
-    Expression<int>? startTimeInMins,
-    Expression<int>? endTimeInMins,
-    Expression<int>? totalDurationInMins,
+    Expression<int>? scheduleStartTime,
+    Expression<int>? scheduleEndTime,
+    Expression<int>? scheduleDurationInMins,
     Expression<String>? scheduleDays,
     Expression<bool>? isScheduleOn,
     Expression<bool>? shouldStartDnd,
@@ -804,10 +972,10 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (startTimeInMins != null) 'start_time_in_mins': startTimeInMins,
-      if (endTimeInMins != null) 'end_time_in_mins': endTimeInMins,
-      if (totalDurationInMins != null)
-        'total_duration_in_mins': totalDurationInMins,
+      if (scheduleStartTime != null) 'schedule_start_time': scheduleStartTime,
+      if (scheduleEndTime != null) 'schedule_end_time': scheduleEndTime,
+      if (scheduleDurationInMins != null)
+        'schedule_duration_in_mins': scheduleDurationInMins,
       if (scheduleDays != null) 'schedule_days': scheduleDays,
       if (isScheduleOn != null) 'is_schedule_on': isScheduleOn,
       if (shouldStartDnd != null) 'should_start_dnd': shouldStartDnd,
@@ -817,18 +985,19 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
 
   BedtimeScheduleTableCompanion copyWith(
       {Value<int>? id,
-      Value<int>? startTimeInMins,
-      Value<int>? endTimeInMins,
-      Value<int>? totalDurationInMins,
+      Value<TimeOfDayAdapter>? scheduleStartTime,
+      Value<TimeOfDayAdapter>? scheduleEndTime,
+      Value<int>? scheduleDurationInMins,
       Value<List<bool>>? scheduleDays,
       Value<bool>? isScheduleOn,
       Value<bool>? shouldStartDnd,
       Value<List<String>>? distractingApps}) {
     return BedtimeScheduleTableCompanion(
       id: id ?? this.id,
-      startTimeInMins: startTimeInMins ?? this.startTimeInMins,
-      endTimeInMins: endTimeInMins ?? this.endTimeInMins,
-      totalDurationInMins: totalDurationInMins ?? this.totalDurationInMins,
+      scheduleStartTime: scheduleStartTime ?? this.scheduleStartTime,
+      scheduleEndTime: scheduleEndTime ?? this.scheduleEndTime,
+      scheduleDurationInMins:
+          scheduleDurationInMins ?? this.scheduleDurationInMins,
       scheduleDays: scheduleDays ?? this.scheduleDays,
       isScheduleOn: isScheduleOn ?? this.isScheduleOn,
       shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
@@ -842,14 +1011,19 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
     if (id.present) {
       map['id'] = Variable<int>(id.value);
     }
-    if (startTimeInMins.present) {
-      map['start_time_in_mins'] = Variable<int>(startTimeInMins.value);
+    if (scheduleStartTime.present) {
+      map['schedule_start_time'] = Variable<int>($BedtimeScheduleTableTable
+          .$converterscheduleStartTime
+          .toSql(scheduleStartTime.value));
     }
-    if (endTimeInMins.present) {
-      map['end_time_in_mins'] = Variable<int>(endTimeInMins.value);
+    if (scheduleEndTime.present) {
+      map['schedule_end_time'] = Variable<int>($BedtimeScheduleTableTable
+          .$converterscheduleEndTime
+          .toSql(scheduleEndTime.value));
     }
-    if (totalDurationInMins.present) {
-      map['total_duration_in_mins'] = Variable<int>(totalDurationInMins.value);
+    if (scheduleDurationInMins.present) {
+      map['schedule_duration_in_mins'] =
+          Variable<int>(scheduleDurationInMins.value);
     }
     if (scheduleDays.present) {
       map['schedule_days'] = Variable<String>($BedtimeScheduleTableTable
@@ -874,9 +1048,9 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
   String toString() {
     return (StringBuffer('BedtimeScheduleTableCompanion(')
           ..write('id: $id, ')
-          ..write('startTimeInMins: $startTimeInMins, ')
-          ..write('endTimeInMins: $endTimeInMins, ')
-          ..write('totalDurationInMins: $totalDurationInMins, ')
+          ..write('scheduleStartTime: $scheduleStartTime, ')
+          ..write('scheduleEndTime: $scheduleEndTime, ')
+          ..write('scheduleDurationInMins: $scheduleDurationInMins, ')
           ..write('scheduleDays: $scheduleDays, ')
           ..write('isScheduleOn: $isScheduleOn, ')
           ..write('shouldStartDnd: $shouldStartDnd, ')
@@ -2141,12 +2315,15 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   late final GeneratedColumn<String> localeCode = GeneratedColumn<String>(
       'locale_code', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dataResetTimeMinsMeta =
-      const VerificationMeta('dataResetTimeMins');
+  static const VerificationMeta _dataResetTimeMeta =
+      const VerificationMeta('dataResetTime');
   @override
-  late final GeneratedColumn<int> dataResetTimeMins = GeneratedColumn<int>(
-      'data_reset_time_mins', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      dataResetTime = GeneratedColumn<int>(
+              'data_reset_time', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $MindfulSettingsTableTable.$converterdataResetTime);
   static const VerificationMeta _useBottomNavigationMeta =
       const VerificationMeta('useBottomNavigation');
   @override
@@ -2220,7 +2397,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         accentColor,
         username,
         localeCode,
-        dataResetTimeMins,
+        dataResetTime,
         useBottomNavigation,
         useAmoledDark,
         useDynamicColors,
@@ -2266,14 +2443,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
     } else if (isInserting) {
       context.missing(_localeCodeMeta);
     }
-    if (data.containsKey('data_reset_time_mins')) {
-      context.handle(
-          _dataResetTimeMinsMeta,
-          dataResetTimeMins.isAcceptableOrUnknown(
-              data['data_reset_time_mins']!, _dataResetTimeMinsMeta));
-    } else if (isInserting) {
-      context.missing(_dataResetTimeMinsMeta);
-    }
+    context.handle(_dataResetTimeMeta, const VerificationResult.success());
     if (data.containsKey('use_bottom_navigation')) {
       context.handle(
           _useBottomNavigationMeta,
@@ -2344,8 +2514,9 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       localeCode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}locale_code'])!,
-      dataResetTimeMins: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}data_reset_time_mins'])!,
+      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}data_reset_time'])!),
       useBottomNavigation: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}use_bottom_navigation'])!,
       useAmoledDark: attachedDatabase.typeMapping
@@ -2375,6 +2546,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
 
   static JsonTypeConverter2<AppThemeMode, int, int> $converterthemeMode =
       const EnumIndexConverter<AppThemeMode>(AppThemeMode.values);
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterdataResetTime = const TimeOfDayAdapterConverter();
   static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
   static TypeConverter<List<String>, String> $converterexcludedApps =
@@ -2398,7 +2571,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   final String localeCode;
 
   /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
-  final int dataResetTimeMins;
+  final TimeOfDayAdapter dataResetTime;
 
   /// Flag indicating if to use bottom navigation or the default sidebar
   final bool useBottomNavigation;
@@ -2429,7 +2602,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.accentColor,
       required this.username,
       required this.localeCode,
-      required this.dataResetTimeMins,
+      required this.dataResetTime,
       required this.useBottomNavigation,
       required this.useAmoledDark,
       required this.useDynamicColors,
@@ -2449,7 +2622,11 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['accent_color'] = Variable<String>(accentColor);
     map['username'] = Variable<String>(username);
     map['locale_code'] = Variable<String>(localeCode);
-    map['data_reset_time_mins'] = Variable<int>(dataResetTimeMins);
+    {
+      map['data_reset_time'] = Variable<int>($MindfulSettingsTableTable
+          .$converterdataResetTime
+          .toSql(dataResetTime));
+    }
     map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation);
     map['use_amoled_dark'] = Variable<bool>(useAmoledDark);
     map['use_dynamic_colors'] = Variable<bool>(useDynamicColors);
@@ -2476,7 +2653,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: Value(accentColor),
       username: Value(username),
       localeCode: Value(localeCode),
-      dataResetTimeMins: Value(dataResetTimeMins),
+      dataResetTime: Value(dataResetTime),
       useBottomNavigation: Value(useBottomNavigation),
       useAmoledDark: Value(useAmoledDark),
       useDynamicColors: Value(useDynamicColors),
@@ -2498,7 +2675,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: serializer.fromJson<String>(json['accentColor']),
       username: serializer.fromJson<String>(json['username']),
       localeCode: serializer.fromJson<String>(json['localeCode']),
-      dataResetTimeMins: serializer.fromJson<int>(json['dataResetTimeMins']),
+      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime
+          .fromJson(serializer.fromJson<dynamic>(json['dataResetTime'])),
       useBottomNavigation:
           serializer.fromJson<bool>(json['useBottomNavigation']),
       useAmoledDark: serializer.fromJson<bool>(json['useAmoledDark']),
@@ -2523,7 +2701,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'accentColor': serializer.toJson<String>(accentColor),
       'username': serializer.toJson<String>(username),
       'localeCode': serializer.toJson<String>(localeCode),
-      'dataResetTimeMins': serializer.toJson<int>(dataResetTimeMins),
+      'dataResetTime': serializer.toJson<dynamic>($MindfulSettingsTableTable
+          .$converterdataResetTime
+          .toJson(dataResetTime)),
       'useBottomNavigation': serializer.toJson<bool>(useBottomNavigation),
       'useAmoledDark': serializer.toJson<bool>(useAmoledDark),
       'useDynamicColors': serializer.toJson<bool>(useDynamicColors),
@@ -2543,7 +2723,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           String? accentColor,
           String? username,
           String? localeCode,
-          int? dataResetTimeMins,
+          TimeOfDayAdapter? dataResetTime,
           bool? useBottomNavigation,
           bool? useAmoledDark,
           bool? useDynamicColors,
@@ -2558,7 +2738,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         accentColor: accentColor ?? this.accentColor,
         username: username ?? this.username,
         localeCode: localeCode ?? this.localeCode,
-        dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
+        dataResetTime: dataResetTime ?? this.dataResetTime,
         useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
         useAmoledDark: useAmoledDark ?? this.useAmoledDark,
         useDynamicColors: useDynamicColors ?? this.useDynamicColors,
@@ -2576,7 +2756,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('dataResetTimeMins: $dataResetTimeMins, ')
+          ..write('dataResetTime: $dataResetTime, ')
           ..write('useBottomNavigation: $useBottomNavigation, ')
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
@@ -2596,7 +2776,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor,
       username,
       localeCode,
-      dataResetTimeMins,
+      dataResetTime,
       useBottomNavigation,
       useAmoledDark,
       useDynamicColors,
@@ -2614,7 +2794,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.accentColor == this.accentColor &&
           other.username == this.username &&
           other.localeCode == this.localeCode &&
-          other.dataResetTimeMins == this.dataResetTimeMins &&
+          other.dataResetTime == this.dataResetTime &&
           other.useBottomNavigation == this.useBottomNavigation &&
           other.useAmoledDark == this.useAmoledDark &&
           other.useDynamicColors == this.useDynamicColors &&
@@ -2631,7 +2811,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<String> accentColor;
   final Value<String> username;
   final Value<String> localeCode;
-  final Value<int> dataResetTimeMins;
+  final Value<TimeOfDayAdapter> dataResetTime;
   final Value<bool> useBottomNavigation;
   final Value<bool> useAmoledDark;
   final Value<bool> useDynamicColors;
@@ -2646,7 +2826,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.accentColor = const Value.absent(),
     this.username = const Value.absent(),
     this.localeCode = const Value.absent(),
-    this.dataResetTimeMins = const Value.absent(),
+    this.dataResetTime = const Value.absent(),
     this.useBottomNavigation = const Value.absent(),
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
@@ -2662,7 +2842,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     required String accentColor,
     required String username,
     required String localeCode,
-    required int dataResetTimeMins,
+    required TimeOfDayAdapter dataResetTime,
     required bool useBottomNavigation,
     required bool useAmoledDark,
     required bool useDynamicColors,
@@ -2675,7 +2855,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
         accentColor = Value(accentColor),
         username = Value(username),
         localeCode = Value(localeCode),
-        dataResetTimeMins = Value(dataResetTimeMins),
+        dataResetTime = Value(dataResetTime),
         useBottomNavigation = Value(useBottomNavigation),
         useAmoledDark = Value(useAmoledDark),
         useDynamicColors = Value(useDynamicColors),
@@ -2690,7 +2870,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<String>? accentColor,
     Expression<String>? username,
     Expression<String>? localeCode,
-    Expression<int>? dataResetTimeMins,
+    Expression<int>? dataResetTime,
     Expression<bool>? useBottomNavigation,
     Expression<bool>? useAmoledDark,
     Expression<bool>? useDynamicColors,
@@ -2706,7 +2886,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       if (accentColor != null) 'accent_color': accentColor,
       if (username != null) 'username': username,
       if (localeCode != null) 'locale_code': localeCode,
-      if (dataResetTimeMins != null) 'data_reset_time_mins': dataResetTimeMins,
+      if (dataResetTime != null) 'data_reset_time': dataResetTime,
       if (useBottomNavigation != null)
         'use_bottom_navigation': useBottomNavigation,
       if (useAmoledDark != null) 'use_amoled_dark': useAmoledDark,
@@ -2726,7 +2906,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<String>? accentColor,
       Value<String>? username,
       Value<String>? localeCode,
-      Value<int>? dataResetTimeMins,
+      Value<TimeOfDayAdapter>? dataResetTime,
       Value<bool>? useBottomNavigation,
       Value<bool>? useAmoledDark,
       Value<bool>? useDynamicColors,
@@ -2741,7 +2921,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       accentColor: accentColor ?? this.accentColor,
       username: username ?? this.username,
       localeCode: localeCode ?? this.localeCode,
-      dataResetTimeMins: dataResetTimeMins ?? this.dataResetTimeMins,
+      dataResetTime: dataResetTime ?? this.dataResetTime,
       useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
       useAmoledDark: useAmoledDark ?? this.useAmoledDark,
       useDynamicColors: useDynamicColors ?? this.useDynamicColors,
@@ -2773,8 +2953,10 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (localeCode.present) {
       map['locale_code'] = Variable<String>(localeCode.value);
     }
-    if (dataResetTimeMins.present) {
-      map['data_reset_time_mins'] = Variable<int>(dataResetTimeMins.value);
+    if (dataResetTime.present) {
+      map['data_reset_time'] = Variable<int>($MindfulSettingsTableTable
+          .$converterdataResetTime
+          .toSql(dataResetTime.value));
     }
     if (useBottomNavigation.present) {
       map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation.value);
@@ -2815,7 +2997,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('dataResetTimeMins: $dataResetTimeMins, ')
+          ..write('dataResetTime: $dataResetTime, ')
           ..write('useBottomNavigation: $useBottomNavigation, ')
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
@@ -2869,6 +3051,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
           requiredDuringInsert: true,
           defaultConstraints: GeneratedColumn.constraintIsAlways(
               'CHECK ("include_apps_launch_limit" IN (0, 1))'));
+  static const VerificationMeta _includeAppsActivePeriodMeta =
+      const VerificationMeta('includeAppsActivePeriod');
+  @override
+  late final GeneratedColumn<bool> includeAppsActivePeriod =
+      GeneratedColumn<bool>('include_apps_active_period', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("include_apps_active_period" IN (0, 1))'));
   static const VerificationMeta _includeGroupsTimerMeta =
       const VerificationMeta('includeGroupsTimer');
   @override
@@ -2878,6 +3069,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
       requiredDuringInsert: true,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("include_groups_timer" IN (0, 1))'));
+  static const VerificationMeta _includeGroupsActivePeriodMeta =
+      const VerificationMeta('includeGroupsActivePeriod');
+  @override
+  late final GeneratedColumn<bool> includeGroupsActivePeriod =
+      GeneratedColumn<bool>('include_groups_active_period', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("include_groups_active_period" IN (0, 1))'));
   static const VerificationMeta _includeShortsTimerMeta =
       const VerificationMeta('includeShortsTimer');
   @override
@@ -2902,7 +3102,9 @@ class $InvincibleModeTableTable extends InvincibleModeTable
         isInvincibleModeOn,
         includeAppsTimer,
         includeAppsLaunchLimit,
+        includeAppsActivePeriod,
         includeGroupsTimer,
+        includeGroupsActivePeriod,
         includeShortsTimer,
         includeBedtimeSchedule
       ];
@@ -2943,6 +3145,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
     } else if (isInserting) {
       context.missing(_includeAppsLaunchLimitMeta);
     }
+    if (data.containsKey('include_apps_active_period')) {
+      context.handle(
+          _includeAppsActivePeriodMeta,
+          includeAppsActivePeriod.isAcceptableOrUnknown(
+              data['include_apps_active_period']!,
+              _includeAppsActivePeriodMeta));
+    } else if (isInserting) {
+      context.missing(_includeAppsActivePeriodMeta);
+    }
     if (data.containsKey('include_groups_timer')) {
       context.handle(
           _includeGroupsTimerMeta,
@@ -2950,6 +3161,15 @@ class $InvincibleModeTableTable extends InvincibleModeTable
               data['include_groups_timer']!, _includeGroupsTimerMeta));
     } else if (isInserting) {
       context.missing(_includeGroupsTimerMeta);
+    }
+    if (data.containsKey('include_groups_active_period')) {
+      context.handle(
+          _includeGroupsActivePeriodMeta,
+          includeGroupsActivePeriod.isAcceptableOrUnknown(
+              data['include_groups_active_period']!,
+              _includeGroupsActivePeriodMeta));
+    } else if (isInserting) {
+      context.missing(_includeGroupsActivePeriodMeta);
     }
     if (data.containsKey('include_shorts_timer')) {
       context.handle(
@@ -2985,8 +3205,14 @@ class $InvincibleModeTableTable extends InvincibleModeTable
       includeAppsLaunchLimit: attachedDatabase.typeMapping.read(
           DriftSqlType.bool,
           data['${effectivePrefix}include_apps_launch_limit'])!,
+      includeAppsActivePeriod: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}include_apps_active_period'])!,
       includeGroupsTimer: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}include_groups_timer'])!,
+      includeGroupsActivePeriod: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}include_groups_active_period'])!,
       includeShortsTimer: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}include_shorts_timer'])!,
       includeBedtimeSchedule: attachedDatabase.typeMapping.read(
@@ -3018,10 +3244,20 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   /// If included user cannot modify app launch count limit if it is already ran out
   final bool includeAppsLaunchLimit;
 
+  /// Flag indicating if apps active period is included in the invincible mode
+  ///
+  /// If included user cannot modify app launch count limit if it is already ran out
+  final bool includeAppsActivePeriod;
+
   /// Flag indicating if groups timer are included in the invincible mode
   ///
   /// If included user cannot modify group timer if it is already ran out
   final bool includeGroupsTimer;
+
+  /// Flag indicating if groups active period is included in the invincible mode
+  ///
+  /// If included user cannot modify group timer if it is already ran out
+  final bool includeGroupsActivePeriod;
 
   /// Flag indicating if short content's timer is included in the invincible mode
   ///
@@ -3037,7 +3273,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       required this.isInvincibleModeOn,
       required this.includeAppsTimer,
       required this.includeAppsLaunchLimit,
+      required this.includeAppsActivePeriod,
       required this.includeGroupsTimer,
+      required this.includeGroupsActivePeriod,
       required this.includeShortsTimer,
       required this.includeBedtimeSchedule});
   @override
@@ -3047,7 +3285,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
     map['include_apps_timer'] = Variable<bool>(includeAppsTimer);
     map['include_apps_launch_limit'] = Variable<bool>(includeAppsLaunchLimit);
+    map['include_apps_active_period'] = Variable<bool>(includeAppsActivePeriod);
     map['include_groups_timer'] = Variable<bool>(includeGroupsTimer);
+    map['include_groups_active_period'] =
+        Variable<bool>(includeGroupsActivePeriod);
     map['include_shorts_timer'] = Variable<bool>(includeShortsTimer);
     map['include_bedtime_schedule'] = Variable<bool>(includeBedtimeSchedule);
     return map;
@@ -3059,7 +3300,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       isInvincibleModeOn: Value(isInvincibleModeOn),
       includeAppsTimer: Value(includeAppsTimer),
       includeAppsLaunchLimit: Value(includeAppsLaunchLimit),
+      includeAppsActivePeriod: Value(includeAppsActivePeriod),
       includeGroupsTimer: Value(includeGroupsTimer),
+      includeGroupsActivePeriod: Value(includeGroupsActivePeriod),
       includeShortsTimer: Value(includeShortsTimer),
       includeBedtimeSchedule: Value(includeBedtimeSchedule),
     );
@@ -3074,7 +3317,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       includeAppsTimer: serializer.fromJson<bool>(json['includeAppsTimer']),
       includeAppsLaunchLimit:
           serializer.fromJson<bool>(json['includeAppsLaunchLimit']),
+      includeAppsActivePeriod:
+          serializer.fromJson<bool>(json['includeAppsActivePeriod']),
       includeGroupsTimer: serializer.fromJson<bool>(json['includeGroupsTimer']),
+      includeGroupsActivePeriod:
+          serializer.fromJson<bool>(json['includeGroupsActivePeriod']),
       includeShortsTimer: serializer.fromJson<bool>(json['includeShortsTimer']),
       includeBedtimeSchedule:
           serializer.fromJson<bool>(json['includeBedtimeSchedule']),
@@ -3088,7 +3335,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
       'includeAppsTimer': serializer.toJson<bool>(includeAppsTimer),
       'includeAppsLaunchLimit': serializer.toJson<bool>(includeAppsLaunchLimit),
+      'includeAppsActivePeriod':
+          serializer.toJson<bool>(includeAppsActivePeriod),
       'includeGroupsTimer': serializer.toJson<bool>(includeGroupsTimer),
+      'includeGroupsActivePeriod':
+          serializer.toJson<bool>(includeGroupsActivePeriod),
       'includeShortsTimer': serializer.toJson<bool>(includeShortsTimer),
       'includeBedtimeSchedule': serializer.toJson<bool>(includeBedtimeSchedule),
     };
@@ -3099,7 +3350,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           bool? isInvincibleModeOn,
           bool? includeAppsTimer,
           bool? includeAppsLaunchLimit,
+          bool? includeAppsActivePeriod,
           bool? includeGroupsTimer,
+          bool? includeGroupsActivePeriod,
           bool? includeShortsTimer,
           bool? includeBedtimeSchedule}) =>
       InvincibleMode(
@@ -3108,7 +3361,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
         includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
         includeAppsLaunchLimit:
             includeAppsLaunchLimit ?? this.includeAppsLaunchLimit,
+        includeAppsActivePeriod:
+            includeAppsActivePeriod ?? this.includeAppsActivePeriod,
         includeGroupsTimer: includeGroupsTimer ?? this.includeGroupsTimer,
+        includeGroupsActivePeriod:
+            includeGroupsActivePeriod ?? this.includeGroupsActivePeriod,
         includeShortsTimer: includeShortsTimer ?? this.includeShortsTimer,
         includeBedtimeSchedule:
             includeBedtimeSchedule ?? this.includeBedtimeSchedule,
@@ -3120,7 +3377,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
+          ..write('includeAppsActivePeriod: $includeAppsActivePeriod, ')
           ..write('includeGroupsTimer: $includeGroupsTimer, ')
+          ..write('includeGroupsActivePeriod: $includeGroupsActivePeriod, ')
           ..write('includeShortsTimer: $includeShortsTimer, ')
           ..write('includeBedtimeSchedule: $includeBedtimeSchedule')
           ..write(')'))
@@ -3133,7 +3392,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
       isInvincibleModeOn,
       includeAppsTimer,
       includeAppsLaunchLimit,
+      includeAppsActivePeriod,
       includeGroupsTimer,
+      includeGroupsActivePeriod,
       includeShortsTimer,
       includeBedtimeSchedule);
   @override
@@ -3144,7 +3405,9 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           other.isInvincibleModeOn == this.isInvincibleModeOn &&
           other.includeAppsTimer == this.includeAppsTimer &&
           other.includeAppsLaunchLimit == this.includeAppsLaunchLimit &&
+          other.includeAppsActivePeriod == this.includeAppsActivePeriod &&
           other.includeGroupsTimer == this.includeGroupsTimer &&
+          other.includeGroupsActivePeriod == this.includeGroupsActivePeriod &&
           other.includeShortsTimer == this.includeShortsTimer &&
           other.includeBedtimeSchedule == this.includeBedtimeSchedule);
 }
@@ -3154,7 +3417,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   final Value<bool> isInvincibleModeOn;
   final Value<bool> includeAppsTimer;
   final Value<bool> includeAppsLaunchLimit;
+  final Value<bool> includeAppsActivePeriod;
   final Value<bool> includeGroupsTimer;
+  final Value<bool> includeGroupsActivePeriod;
   final Value<bool> includeShortsTimer;
   final Value<bool> includeBedtimeSchedule;
   const InvincibleModeTableCompanion({
@@ -3162,7 +3427,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     this.isInvincibleModeOn = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
+    this.includeAppsActivePeriod = const Value.absent(),
     this.includeGroupsTimer = const Value.absent(),
+    this.includeGroupsActivePeriod = const Value.absent(),
     this.includeShortsTimer = const Value.absent(),
     this.includeBedtimeSchedule = const Value.absent(),
   });
@@ -3171,13 +3438,17 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     required bool isInvincibleModeOn,
     required bool includeAppsTimer,
     required bool includeAppsLaunchLimit,
+    required bool includeAppsActivePeriod,
     required bool includeGroupsTimer,
+    required bool includeGroupsActivePeriod,
     required bool includeShortsTimer,
     required bool includeBedtimeSchedule,
   })  : isInvincibleModeOn = Value(isInvincibleModeOn),
         includeAppsTimer = Value(includeAppsTimer),
         includeAppsLaunchLimit = Value(includeAppsLaunchLimit),
+        includeAppsActivePeriod = Value(includeAppsActivePeriod),
         includeGroupsTimer = Value(includeGroupsTimer),
+        includeGroupsActivePeriod = Value(includeGroupsActivePeriod),
         includeShortsTimer = Value(includeShortsTimer),
         includeBedtimeSchedule = Value(includeBedtimeSchedule);
   static Insertable<InvincibleMode> custom({
@@ -3185,7 +3456,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     Expression<bool>? isInvincibleModeOn,
     Expression<bool>? includeAppsTimer,
     Expression<bool>? includeAppsLaunchLimit,
+    Expression<bool>? includeAppsActivePeriod,
     Expression<bool>? includeGroupsTimer,
+    Expression<bool>? includeGroupsActivePeriod,
     Expression<bool>? includeShortsTimer,
     Expression<bool>? includeBedtimeSchedule,
   }) {
@@ -3196,8 +3469,12 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       if (includeAppsTimer != null) 'include_apps_timer': includeAppsTimer,
       if (includeAppsLaunchLimit != null)
         'include_apps_launch_limit': includeAppsLaunchLimit,
+      if (includeAppsActivePeriod != null)
+        'include_apps_active_period': includeAppsActivePeriod,
       if (includeGroupsTimer != null)
         'include_groups_timer': includeGroupsTimer,
+      if (includeGroupsActivePeriod != null)
+        'include_groups_active_period': includeGroupsActivePeriod,
       if (includeShortsTimer != null)
         'include_shorts_timer': includeShortsTimer,
       if (includeBedtimeSchedule != null)
@@ -3210,7 +3487,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       Value<bool>? isInvincibleModeOn,
       Value<bool>? includeAppsTimer,
       Value<bool>? includeAppsLaunchLimit,
+      Value<bool>? includeAppsActivePeriod,
       Value<bool>? includeGroupsTimer,
+      Value<bool>? includeGroupsActivePeriod,
       Value<bool>? includeShortsTimer,
       Value<bool>? includeBedtimeSchedule}) {
     return InvincibleModeTableCompanion(
@@ -3219,7 +3498,11 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
       includeAppsLaunchLimit:
           includeAppsLaunchLimit ?? this.includeAppsLaunchLimit,
+      includeAppsActivePeriod:
+          includeAppsActivePeriod ?? this.includeAppsActivePeriod,
       includeGroupsTimer: includeGroupsTimer ?? this.includeGroupsTimer,
+      includeGroupsActivePeriod:
+          includeGroupsActivePeriod ?? this.includeGroupsActivePeriod,
       includeShortsTimer: includeShortsTimer ?? this.includeShortsTimer,
       includeBedtimeSchedule:
           includeBedtimeSchedule ?? this.includeBedtimeSchedule,
@@ -3242,8 +3525,16 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       map['include_apps_launch_limit'] =
           Variable<bool>(includeAppsLaunchLimit.value);
     }
+    if (includeAppsActivePeriod.present) {
+      map['include_apps_active_period'] =
+          Variable<bool>(includeAppsActivePeriod.value);
+    }
     if (includeGroupsTimer.present) {
       map['include_groups_timer'] = Variable<bool>(includeGroupsTimer.value);
+    }
+    if (includeGroupsActivePeriod.present) {
+      map['include_groups_active_period'] =
+          Variable<bool>(includeGroupsActivePeriod.value);
     }
     if (includeShortsTimer.present) {
       map['include_shorts_timer'] = Variable<bool>(includeShortsTimer.value);
@@ -3262,7 +3553,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
+          ..write('includeAppsActivePeriod: $includeAppsActivePeriod, ')
           ..write('includeGroupsTimer: $includeGroupsTimer, ')
+          ..write('includeGroupsActivePeriod: $includeGroupsActivePeriod, ')
           ..write('includeShortsTimer: $includeShortsTimer, ')
           ..write('includeBedtimeSchedule: $includeBedtimeSchedule')
           ..write(')'))
@@ -3297,6 +3590,30 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
   late final GeneratedColumn<int> timerSec = GeneratedColumn<int>(
       'timer_sec', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _activePeriodStartMeta =
+      const VerificationMeta('activePeriodStart');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      activePeriodStart = GeneratedColumn<int>(
+              'active_period_start', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $RestrictionGroupsTableTable.$converteractivePeriodStart);
+  static const VerificationMeta _activePeriodEndMeta =
+      const VerificationMeta('activePeriodEnd');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      activePeriodEnd = GeneratedColumn<int>(
+              'active_period_end', aliasedName, false,
+              type: DriftSqlType.int, requiredDuringInsert: true)
+          .withConverter<TimeOfDayAdapter>(
+              $RestrictionGroupsTableTable.$converteractivePeriodEnd);
+  static const VerificationMeta _periodDurationInMinsMeta =
+      const VerificationMeta('periodDurationInMins');
+  @override
+  late final GeneratedColumn<int> periodDurationInMins = GeneratedColumn<int>(
+      'period_duration_in_mins', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   static const VerificationMeta _distractingAppsMeta =
       const VerificationMeta('distractingApps');
   @override
@@ -3307,8 +3624,15 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
           .withConverter<List<String>>(
               $RestrictionGroupsTableTable.$converterdistractingApps);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, groupName, timerSec, distractingApps];
+  List<GeneratedColumn> get $columns => [
+        id,
+        groupName,
+        timerSec,
+        activePeriodStart,
+        activePeriodEnd,
+        periodDurationInMins,
+        distractingApps
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -3334,6 +3658,16 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
     } else if (isInserting) {
       context.missing(_timerSecMeta);
     }
+    context.handle(_activePeriodStartMeta, const VerificationResult.success());
+    context.handle(_activePeriodEndMeta, const VerificationResult.success());
+    if (data.containsKey('period_duration_in_mins')) {
+      context.handle(
+          _periodDurationInMinsMeta,
+          periodDurationInMins.isAcceptableOrUnknown(
+              data['period_duration_in_mins']!, _periodDurationInMinsMeta));
+    } else if (isInserting) {
+      context.missing(_periodDurationInMinsMeta);
+    }
     context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
   }
@@ -3350,6 +3684,15 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
           .read(DriftSqlType.string, data['${effectivePrefix}group_name'])!,
       timerSec: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}timer_sec'])!,
+      activePeriodStart: $RestrictionGroupsTableTable
+          .$converteractivePeriodStart
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}active_period_start'])!),
+      activePeriodEnd: $RestrictionGroupsTableTable.$converteractivePeriodEnd
+          .fromSql(attachedDatabase.typeMapping.read(
+              DriftSqlType.int, data['${effectivePrefix}active_period_end'])!),
+      periodDurationInMins: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}period_duration_in_mins'])!,
       distractingApps: $RestrictionGroupsTableTable.$converterdistractingApps
           .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}distracting_apps'])!),
@@ -3361,6 +3704,10 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
     return $RestrictionGroupsTableTable(attachedDatabase, alias);
   }
 
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodStart = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteractivePeriodEnd = const TimeOfDayAdapterConverter();
   static TypeConverter<List<String>, String> $converterdistractingApps =
       const ListStringConverter();
 }
@@ -3376,12 +3723,26 @@ class RestrictionGroup extends DataClass
   /// The timer set for the group in SECONDS
   final int timerSec;
 
+  /// [TimeOfDay] in minutes from where the active period will start.
+  /// It is stored as total minutes.
+  final TimeOfDayAdapter activePeriodStart;
+
+  /// [TimeOfDay] in minutes when the active period will end
+  /// It is stored as total minutes.
+  final TimeOfDayAdapter activePeriodEnd;
+
+  /// Total duration of active period from start to end in MINUTES
+  final int periodDurationInMins;
+
   /// List of app's packages which are associated with the group.
   final List<String> distractingApps;
   const RestrictionGroup(
       {required this.id,
       required this.groupName,
       required this.timerSec,
+      required this.activePeriodStart,
+      required this.activePeriodEnd,
+      required this.periodDurationInMins,
       required this.distractingApps});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3389,6 +3750,17 @@ class RestrictionGroup extends DataClass
     map['id'] = Variable<int>(id);
     map['group_name'] = Variable<String>(groupName);
     map['timer_sec'] = Variable<int>(timerSec);
+    {
+      map['active_period_start'] = Variable<int>($RestrictionGroupsTableTable
+          .$converteractivePeriodStart
+          .toSql(activePeriodStart));
+    }
+    {
+      map['active_period_end'] = Variable<int>($RestrictionGroupsTableTable
+          .$converteractivePeriodEnd
+          .toSql(activePeriodEnd));
+    }
+    map['period_duration_in_mins'] = Variable<int>(periodDurationInMins);
     {
       map['distracting_apps'] = Variable<String>($RestrictionGroupsTableTable
           .$converterdistractingApps
@@ -3402,6 +3774,9 @@ class RestrictionGroup extends DataClass
       id: Value(id),
       groupName: Value(groupName),
       timerSec: Value(timerSec),
+      activePeriodStart: Value(activePeriodStart),
+      activePeriodEnd: Value(activePeriodEnd),
+      periodDurationInMins: Value(periodDurationInMins),
       distractingApps: Value(distractingApps),
     );
   }
@@ -3413,6 +3788,13 @@ class RestrictionGroup extends DataClass
       id: serializer.fromJson<int>(json['id']),
       groupName: serializer.fromJson<String>(json['groupName']),
       timerSec: serializer.fromJson<int>(json['timerSec']),
+      activePeriodStart: $RestrictionGroupsTableTable
+          .$converteractivePeriodStart
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodStart'])),
+      activePeriodEnd: $RestrictionGroupsTableTable.$converteractivePeriodEnd
+          .fromJson(serializer.fromJson<dynamic>(json['activePeriodEnd'])),
+      periodDurationInMins:
+          serializer.fromJson<int>(json['periodDurationInMins']),
       distractingApps:
           serializer.fromJson<List<String>>(json['distractingApps']),
     );
@@ -3424,6 +3806,13 @@ class RestrictionGroup extends DataClass
       'id': serializer.toJson<int>(id),
       'groupName': serializer.toJson<String>(groupName),
       'timerSec': serializer.toJson<int>(timerSec),
+      'activePeriodStart': serializer.toJson<dynamic>(
+          $RestrictionGroupsTableTable.$converteractivePeriodStart
+              .toJson(activePeriodStart)),
+      'activePeriodEnd': serializer.toJson<dynamic>($RestrictionGroupsTableTable
+          .$converteractivePeriodEnd
+          .toJson(activePeriodEnd)),
+      'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
       'distractingApps': serializer.toJson<List<String>>(distractingApps),
     };
   }
@@ -3432,11 +3821,17 @@ class RestrictionGroup extends DataClass
           {int? id,
           String? groupName,
           int? timerSec,
+          TimeOfDayAdapter? activePeriodStart,
+          TimeOfDayAdapter? activePeriodEnd,
+          int? periodDurationInMins,
           List<String>? distractingApps}) =>
       RestrictionGroup(
         id: id ?? this.id,
         groupName: groupName ?? this.groupName,
         timerSec: timerSec ?? this.timerSec,
+        activePeriodStart: activePeriodStart ?? this.activePeriodStart,
+        activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
+        periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
         distractingApps: distractingApps ?? this.distractingApps,
       );
   @override
@@ -3445,13 +3840,17 @@ class RestrictionGroup extends DataClass
           ..write('id: $id, ')
           ..write('groupName: $groupName, ')
           ..write('timerSec: $timerSec, ')
+          ..write('activePeriodStart: $activePeriodStart, ')
+          ..write('activePeriodEnd: $activePeriodEnd, ')
+          ..write('periodDurationInMins: $periodDurationInMins, ')
           ..write('distractingApps: $distractingApps')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, groupName, timerSec, distractingApps);
+  int get hashCode => Object.hash(id, groupName, timerSec, activePeriodStart,
+      activePeriodEnd, periodDurationInMins, distractingApps);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3459,6 +3858,9 @@ class RestrictionGroup extends DataClass
           other.id == this.id &&
           other.groupName == this.groupName &&
           other.timerSec == this.timerSec &&
+          other.activePeriodStart == this.activePeriodStart &&
+          other.activePeriodEnd == this.activePeriodEnd &&
+          other.periodDurationInMins == this.periodDurationInMins &&
           other.distractingApps == this.distractingApps);
 }
 
@@ -3467,31 +3869,50 @@ class RestrictionGroupsTableCompanion
   final Value<int> id;
   final Value<String> groupName;
   final Value<int> timerSec;
+  final Value<TimeOfDayAdapter> activePeriodStart;
+  final Value<TimeOfDayAdapter> activePeriodEnd;
+  final Value<int> periodDurationInMins;
   final Value<List<String>> distractingApps;
   const RestrictionGroupsTableCompanion({
     this.id = const Value.absent(),
     this.groupName = const Value.absent(),
     this.timerSec = const Value.absent(),
+    this.activePeriodStart = const Value.absent(),
+    this.activePeriodEnd = const Value.absent(),
+    this.periodDurationInMins = const Value.absent(),
     this.distractingApps = const Value.absent(),
   });
   RestrictionGroupsTableCompanion.insert({
     this.id = const Value.absent(),
     required String groupName,
     required int timerSec,
+    required TimeOfDayAdapter activePeriodStart,
+    required TimeOfDayAdapter activePeriodEnd,
+    required int periodDurationInMins,
     required List<String> distractingApps,
   })  : groupName = Value(groupName),
         timerSec = Value(timerSec),
+        activePeriodStart = Value(activePeriodStart),
+        activePeriodEnd = Value(activePeriodEnd),
+        periodDurationInMins = Value(periodDurationInMins),
         distractingApps = Value(distractingApps);
   static Insertable<RestrictionGroup> custom({
     Expression<int>? id,
     Expression<String>? groupName,
     Expression<int>? timerSec,
+    Expression<int>? activePeriodStart,
+    Expression<int>? activePeriodEnd,
+    Expression<int>? periodDurationInMins,
     Expression<String>? distractingApps,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (groupName != null) 'group_name': groupName,
       if (timerSec != null) 'timer_sec': timerSec,
+      if (activePeriodStart != null) 'active_period_start': activePeriodStart,
+      if (activePeriodEnd != null) 'active_period_end': activePeriodEnd,
+      if (periodDurationInMins != null)
+        'period_duration_in_mins': periodDurationInMins,
       if (distractingApps != null) 'distracting_apps': distractingApps,
     });
   }
@@ -3500,11 +3921,17 @@ class RestrictionGroupsTableCompanion
       {Value<int>? id,
       Value<String>? groupName,
       Value<int>? timerSec,
+      Value<TimeOfDayAdapter>? activePeriodStart,
+      Value<TimeOfDayAdapter>? activePeriodEnd,
+      Value<int>? periodDurationInMins,
       Value<List<String>>? distractingApps}) {
     return RestrictionGroupsTableCompanion(
       id: id ?? this.id,
       groupName: groupName ?? this.groupName,
       timerSec: timerSec ?? this.timerSec,
+      activePeriodStart: activePeriodStart ?? this.activePeriodStart,
+      activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
+      periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
       distractingApps: distractingApps ?? this.distractingApps,
     );
   }
@@ -3521,6 +3948,20 @@ class RestrictionGroupsTableCompanion
     if (timerSec.present) {
       map['timer_sec'] = Variable<int>(timerSec.value);
     }
+    if (activePeriodStart.present) {
+      map['active_period_start'] = Variable<int>($RestrictionGroupsTableTable
+          .$converteractivePeriodStart
+          .toSql(activePeriodStart.value));
+    }
+    if (activePeriodEnd.present) {
+      map['active_period_end'] = Variable<int>($RestrictionGroupsTableTable
+          .$converteractivePeriodEnd
+          .toSql(activePeriodEnd.value));
+    }
+    if (periodDurationInMins.present) {
+      map['period_duration_in_mins'] =
+          Variable<int>(periodDurationInMins.value);
+    }
     if (distractingApps.present) {
       map['distracting_apps'] = Variable<String>($RestrictionGroupsTableTable
           .$converterdistractingApps
@@ -3535,6 +3976,9 @@ class RestrictionGroupsTableCompanion
           ..write('id: $id, ')
           ..write('groupName: $groupName, ')
           ..write('timerSec: $timerSec, ')
+          ..write('activePeriodStart: $activePeriodStart, ')
+          ..write('activePeriodEnd: $activePeriodEnd, ')
+          ..write('periodDurationInMins: $periodDurationInMins, ')
           ..write('distractingApps: $distractingApps')
           ..write(')'))
         .toString();
@@ -4100,10 +4544,13 @@ typedef $$AppRestrictionTableTableInsertCompanionBuilder
   required String appPackage,
   required int timerSec,
   required int launchLimit,
-  required int alertInterval,
-  required bool alertByDialog,
+  required TimeOfDayAdapter activePeriodStart,
+  required TimeOfDayAdapter activePeriodEnd,
+  required int periodDurationInMins,
   required bool canAccessInternet,
   Value<int?> associatedGroupId,
+  required int alertInterval,
+  required bool alertByDialog,
   Value<int> rowid,
 });
 typedef $$AppRestrictionTableTableUpdateCompanionBuilder
@@ -4111,10 +4558,13 @@ typedef $$AppRestrictionTableTableUpdateCompanionBuilder
   Value<String> appPackage,
   Value<int> timerSec,
   Value<int> launchLimit,
-  Value<int> alertInterval,
-  Value<bool> alertByDialog,
+  Value<TimeOfDayAdapter> activePeriodStart,
+  Value<TimeOfDayAdapter> activePeriodEnd,
+  Value<int> periodDurationInMins,
   Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
+  Value<int> alertInterval,
+  Value<bool> alertByDialog,
   Value<int> rowid,
 });
 
@@ -4142,40 +4592,52 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             Value<String> appPackage = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
             Value<int> launchLimit = const Value.absent(),
-            Value<int> alertInterval = const Value.absent(),
-            Value<bool> alertByDialog = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
+            Value<int> periodDurationInMins = const Value.absent(),
             Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
+            Value<int> alertInterval = const Value.absent(),
+            Value<bool> alertByDialog = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion(
             appPackage: appPackage,
             timerSec: timerSec,
             launchLimit: launchLimit,
-            alertInterval: alertInterval,
-            alertByDialog: alertByDialog,
+            activePeriodStart: activePeriodStart,
+            activePeriodEnd: activePeriodEnd,
+            periodDurationInMins: periodDurationInMins,
             canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
+            alertInterval: alertInterval,
+            alertByDialog: alertByDialog,
             rowid: rowid,
           ),
           getInsertCompanionBuilder: ({
             required String appPackage,
             required int timerSec,
             required int launchLimit,
-            required int alertInterval,
-            required bool alertByDialog,
+            required TimeOfDayAdapter activePeriodStart,
+            required TimeOfDayAdapter activePeriodEnd,
+            required int periodDurationInMins,
             required bool canAccessInternet,
             Value<int?> associatedGroupId = const Value.absent(),
+            required int alertInterval,
+            required bool alertByDialog,
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion.insert(
             appPackage: appPackage,
             timerSec: timerSec,
             launchLimit: launchLimit,
-            alertInterval: alertInterval,
-            alertByDialog: alertByDialog,
+            activePeriodStart: activePeriodStart,
+            activePeriodEnd: activePeriodEnd,
+            periodDurationInMins: periodDurationInMins,
             canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
+            alertInterval: alertInterval,
+            alertByDialog: alertByDialog,
             rowid: rowid,
           ),
         ));
@@ -4212,13 +4674,22 @@ class $$AppRestrictionTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get alertInterval => $state.composableBuilder(
-      column: $state.table.alertInterval,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodStart => $state.composableBuilder(
+          column: $state.table.activePeriodStart,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 
-  ColumnFilters<bool> get alertByDialog => $state.composableBuilder(
-      column: $state.table.alertByDialog,
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodEnd => $state.composableBuilder(
+          column: $state.table.activePeriodEnd,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get periodDurationInMins => $state.composableBuilder(
+      column: $state.table.periodDurationInMins,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -4229,6 +4700,16 @@ class $$AppRestrictionTableTableFilterComposer
 
   ColumnFilters<int> get associatedGroupId => $state.composableBuilder(
       column: $state.table.associatedGroupId,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get alertInterval => $state.composableBuilder(
+      column: $state.table.alertInterval,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get alertByDialog => $state.composableBuilder(
+      column: $state.table.alertByDialog,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 }
@@ -4251,13 +4732,18 @@ class $$AppRestrictionTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get alertInterval => $state.composableBuilder(
-      column: $state.table.alertInterval,
+  ColumnOrderings<int> get activePeriodStart => $state.composableBuilder(
+      column: $state.table.activePeriodStart,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<bool> get alertByDialog => $state.composableBuilder(
-      column: $state.table.alertByDialog,
+  ColumnOrderings<int> get activePeriodEnd => $state.composableBuilder(
+      column: $state.table.activePeriodEnd,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get periodDurationInMins => $state.composableBuilder(
+      column: $state.table.periodDurationInMins,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -4270,14 +4756,24 @@ class $$AppRestrictionTableTableOrderingComposer
       column: $state.table.associatedGroupId,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get alertInterval => $state.composableBuilder(
+      column: $state.table.alertInterval,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get alertByDialog => $state.composableBuilder(
+      column: $state.table.alertByDialog,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
 typedef $$BedtimeScheduleTableTableInsertCompanionBuilder
     = BedtimeScheduleTableCompanion Function({
   Value<int> id,
-  required int startTimeInMins,
-  required int endTimeInMins,
-  required int totalDurationInMins,
+  required TimeOfDayAdapter scheduleStartTime,
+  required TimeOfDayAdapter scheduleEndTime,
+  required int scheduleDurationInMins,
   required List<bool> scheduleDays,
   required bool isScheduleOn,
   required bool shouldStartDnd,
@@ -4286,9 +4782,9 @@ typedef $$BedtimeScheduleTableTableInsertCompanionBuilder
 typedef $$BedtimeScheduleTableTableUpdateCompanionBuilder
     = BedtimeScheduleTableCompanion Function({
   Value<int> id,
-  Value<int> startTimeInMins,
-  Value<int> endTimeInMins,
-  Value<int> totalDurationInMins,
+  Value<TimeOfDayAdapter> scheduleStartTime,
+  Value<TimeOfDayAdapter> scheduleEndTime,
+  Value<int> scheduleDurationInMins,
   Value<List<bool>> scheduleDays,
   Value<bool> isScheduleOn,
   Value<bool> shouldStartDnd,
@@ -4317,9 +4813,9 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
               $$BedtimeScheduleTableTableProcessedTableManager(p),
           getUpdateCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            Value<int> startTimeInMins = const Value.absent(),
-            Value<int> endTimeInMins = const Value.absent(),
-            Value<int> totalDurationInMins = const Value.absent(),
+            Value<TimeOfDayAdapter> scheduleStartTime = const Value.absent(),
+            Value<TimeOfDayAdapter> scheduleEndTime = const Value.absent(),
+            Value<int> scheduleDurationInMins = const Value.absent(),
             Value<List<bool>> scheduleDays = const Value.absent(),
             Value<bool> isScheduleOn = const Value.absent(),
             Value<bool> shouldStartDnd = const Value.absent(),
@@ -4327,9 +4823,9 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
           }) =>
               BedtimeScheduleTableCompanion(
             id: id,
-            startTimeInMins: startTimeInMins,
-            endTimeInMins: endTimeInMins,
-            totalDurationInMins: totalDurationInMins,
+            scheduleStartTime: scheduleStartTime,
+            scheduleEndTime: scheduleEndTime,
+            scheduleDurationInMins: scheduleDurationInMins,
             scheduleDays: scheduleDays,
             isScheduleOn: isScheduleOn,
             shouldStartDnd: shouldStartDnd,
@@ -4337,9 +4833,9 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required int startTimeInMins,
-            required int endTimeInMins,
-            required int totalDurationInMins,
+            required TimeOfDayAdapter scheduleStartTime,
+            required TimeOfDayAdapter scheduleEndTime,
+            required int scheduleDurationInMins,
             required List<bool> scheduleDays,
             required bool isScheduleOn,
             required bool shouldStartDnd,
@@ -4347,9 +4843,9 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
           }) =>
               BedtimeScheduleTableCompanion.insert(
             id: id,
-            startTimeInMins: startTimeInMins,
-            endTimeInMins: endTimeInMins,
-            totalDurationInMins: totalDurationInMins,
+            scheduleStartTime: scheduleStartTime,
+            scheduleEndTime: scheduleEndTime,
+            scheduleDurationInMins: scheduleDurationInMins,
             scheduleDays: scheduleDays,
             isScheduleOn: isScheduleOn,
             shouldStartDnd: shouldStartDnd,
@@ -4379,18 +4875,22 @@ class $$BedtimeScheduleTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get startTimeInMins => $state.composableBuilder(
-      column: $state.table.startTimeInMins,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get scheduleStartTime => $state.composableBuilder(
+          column: $state.table.scheduleStartTime,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get endTimeInMins => $state.composableBuilder(
-      column: $state.table.endTimeInMins,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get scheduleEndTime => $state.composableBuilder(
+          column: $state.table.scheduleEndTime,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get totalDurationInMins => $state.composableBuilder(
-      column: $state.table.totalDurationInMins,
+  ColumnFilters<int> get scheduleDurationInMins => $state.composableBuilder(
+      column: $state.table.scheduleDurationInMins,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -4427,18 +4927,18 @@ class $$BedtimeScheduleTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get startTimeInMins => $state.composableBuilder(
-      column: $state.table.startTimeInMins,
+  ColumnOrderings<int> get scheduleStartTime => $state.composableBuilder(
+      column: $state.table.scheduleStartTime,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get endTimeInMins => $state.composableBuilder(
-      column: $state.table.endTimeInMins,
+  ColumnOrderings<int> get scheduleEndTime => $state.composableBuilder(
+      column: $state.table.scheduleEndTime,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get totalDurationInMins => $state.composableBuilder(
-      column: $state.table.totalDurationInMins,
+  ColumnOrderings<int> get scheduleDurationInMins => $state.composableBuilder(
+      column: $state.table.scheduleDurationInMins,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -5019,7 +5519,7 @@ typedef $$MindfulSettingsTableTableInsertCompanionBuilder
   required String accentColor,
   required String username,
   required String localeCode,
-  required int dataResetTimeMins,
+  required TimeOfDayAdapter dataResetTime,
   required bool useBottomNavigation,
   required bool useAmoledDark,
   required bool useDynamicColors,
@@ -5036,7 +5536,7 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<String> accentColor,
   Value<String> username,
   Value<String> localeCode,
-  Value<int> dataResetTimeMins,
+  Value<TimeOfDayAdapter> dataResetTime,
   Value<bool> useBottomNavigation,
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
@@ -5073,7 +5573,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<String> accentColor = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> localeCode = const Value.absent(),
-            Value<int> dataResetTimeMins = const Value.absent(),
+            Value<TimeOfDayAdapter> dataResetTime = const Value.absent(),
             Value<bool> useBottomNavigation = const Value.absent(),
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
@@ -5089,7 +5589,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            dataResetTimeMins: dataResetTimeMins,
+            dataResetTime: dataResetTime,
             useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
@@ -5105,7 +5605,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             required String accentColor,
             required String username,
             required String localeCode,
-            required int dataResetTimeMins,
+            required TimeOfDayAdapter dataResetTime,
             required bool useBottomNavigation,
             required bool useAmoledDark,
             required bool useDynamicColors,
@@ -5121,7 +5621,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            dataResetTimeMins: dataResetTimeMins,
+            dataResetTime: dataResetTime,
             useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
@@ -5177,10 +5677,12 @@ class $$MindfulSettingsTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get dataResetTimeMins => $state.composableBuilder(
-      column: $state.table.dataResetTimeMins,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get dataResetTime => $state.composableBuilder(
+          column: $state.table.dataResetTime,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 
   ColumnFilters<bool> get useBottomNavigation => $state.composableBuilder(
       column: $state.table.useBottomNavigation,
@@ -5255,8 +5757,8 @@ class $$MindfulSettingsTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get dataResetTimeMins => $state.composableBuilder(
-      column: $state.table.dataResetTimeMins,
+  ColumnOrderings<int> get dataResetTime => $state.composableBuilder(
+      column: $state.table.dataResetTime,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -5307,7 +5809,9 @@ typedef $$InvincibleModeTableTableInsertCompanionBuilder
   required bool isInvincibleModeOn,
   required bool includeAppsTimer,
   required bool includeAppsLaunchLimit,
+  required bool includeAppsActivePeriod,
   required bool includeGroupsTimer,
+  required bool includeGroupsActivePeriod,
   required bool includeShortsTimer,
   required bool includeBedtimeSchedule,
 });
@@ -5317,7 +5821,9 @@ typedef $$InvincibleModeTableTableUpdateCompanionBuilder
   Value<bool> isInvincibleModeOn,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
+  Value<bool> includeAppsActivePeriod,
   Value<bool> includeGroupsTimer,
+  Value<bool> includeGroupsActivePeriod,
   Value<bool> includeShortsTimer,
   Value<bool> includeBedtimeSchedule,
 });
@@ -5347,7 +5853,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
+            Value<bool> includeAppsActivePeriod = const Value.absent(),
             Value<bool> includeGroupsTimer = const Value.absent(),
+            Value<bool> includeGroupsActivePeriod = const Value.absent(),
             Value<bool> includeShortsTimer = const Value.absent(),
             Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
@@ -5356,7 +5864,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
+            includeAppsActivePeriod: includeAppsActivePeriod,
             includeGroupsTimer: includeGroupsTimer,
+            includeGroupsActivePeriod: includeGroupsActivePeriod,
             includeShortsTimer: includeShortsTimer,
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
@@ -5365,7 +5875,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             required bool isInvincibleModeOn,
             required bool includeAppsTimer,
             required bool includeAppsLaunchLimit,
+            required bool includeAppsActivePeriod,
             required bool includeGroupsTimer,
+            required bool includeGroupsActivePeriod,
             required bool includeShortsTimer,
             required bool includeBedtimeSchedule,
           }) =>
@@ -5374,7 +5886,9 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
+            includeAppsActivePeriod: includeAppsActivePeriod,
             includeGroupsTimer: includeGroupsTimer,
+            includeGroupsActivePeriod: includeGroupsActivePeriod,
             includeShortsTimer: includeShortsTimer,
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
@@ -5417,8 +5931,18 @@ class $$InvincibleModeTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnFilters<bool> get includeAppsActivePeriod => $state.composableBuilder(
+      column: $state.table.includeAppsActivePeriod,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnFilters<bool> get includeGroupsTimer => $state.composableBuilder(
       column: $state.table.includeGroupsTimer,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get includeGroupsActivePeriod => $state.composableBuilder(
+      column: $state.table.includeGroupsActivePeriod,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
@@ -5456,10 +5980,21 @@ class $$InvincibleModeTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
+  ColumnOrderings<bool> get includeAppsActivePeriod => $state.composableBuilder(
+      column: $state.table.includeAppsActivePeriod,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
   ColumnOrderings<bool> get includeGroupsTimer => $state.composableBuilder(
       column: $state.table.includeGroupsTimer,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get includeGroupsActivePeriod =>
+      $state.composableBuilder(
+          column: $state.table.includeGroupsActivePeriod,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
 
   ColumnOrderings<bool> get includeShortsTimer => $state.composableBuilder(
       column: $state.table.includeShortsTimer,
@@ -5477,6 +6012,9 @@ typedef $$RestrictionGroupsTableTableInsertCompanionBuilder
   Value<int> id,
   required String groupName,
   required int timerSec,
+  required TimeOfDayAdapter activePeriodStart,
+  required TimeOfDayAdapter activePeriodEnd,
+  required int periodDurationInMins,
   required List<String> distractingApps,
 });
 typedef $$RestrictionGroupsTableTableUpdateCompanionBuilder
@@ -5484,6 +6022,9 @@ typedef $$RestrictionGroupsTableTableUpdateCompanionBuilder
   Value<int> id,
   Value<String> groupName,
   Value<int> timerSec,
+  Value<TimeOfDayAdapter> activePeriodStart,
+  Value<TimeOfDayAdapter> activePeriodEnd,
+  Value<int> periodDurationInMins,
   Value<List<String>> distractingApps,
 });
 
@@ -5511,24 +6052,36 @@ class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> groupName = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
+            Value<int> periodDurationInMins = const Value.absent(),
             Value<List<String>> distractingApps = const Value.absent(),
           }) =>
               RestrictionGroupsTableCompanion(
             id: id,
             groupName: groupName,
             timerSec: timerSec,
+            activePeriodStart: activePeriodStart,
+            activePeriodEnd: activePeriodEnd,
+            periodDurationInMins: periodDurationInMins,
             distractingApps: distractingApps,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             required String groupName,
             required int timerSec,
+            required TimeOfDayAdapter activePeriodStart,
+            required TimeOfDayAdapter activePeriodEnd,
+            required int periodDurationInMins,
             required List<String> distractingApps,
           }) =>
               RestrictionGroupsTableCompanion.insert(
             id: id,
             groupName: groupName,
             timerSec: timerSec,
+            activePeriodStart: activePeriodStart,
+            activePeriodEnd: activePeriodEnd,
+            periodDurationInMins: periodDurationInMins,
             distractingApps: distractingApps,
           ),
         ));
@@ -5565,6 +6118,25 @@ class $$RestrictionGroupsTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodStart => $state.composableBuilder(
+          column: $state.table.activePeriodStart,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodEnd => $state.composableBuilder(
+          column: $state.table.activePeriodEnd,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get periodDurationInMins => $state.composableBuilder(
+      column: $state.table.periodDurationInMins,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
   ColumnWithTypeConverterFilters<List<String>, List<String>, String>
       get distractingApps => $state.composableBuilder(
           column: $state.table.distractingApps,
@@ -5588,6 +6160,21 @@ class $$RestrictionGroupsTableTableOrderingComposer
 
   ColumnOrderings<int> get timerSec => $state.composableBuilder(
       column: $state.table.timerSec,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get activePeriodStart => $state.composableBuilder(
+      column: $state.table.activePeriodStart,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get activePeriodEnd => $state.composableBuilder(
+      column: $state.table.activePeriodEnd,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get periodDurationInMins => $state.composableBuilder(
+      column: $state.table.periodDurationInMins,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 

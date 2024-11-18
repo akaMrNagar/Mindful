@@ -8,13 +8,9 @@
  *
  */
 
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-
-import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 
 part 'bedtime_settings.g.dart';
 
@@ -24,18 +20,6 @@ part 'bedtime_settings.g.dart';
 class BedtimeSettings {
   /// ID for isar database
   Id get id => 0;
-
-  /// Getter for bedtime start [TimeOfDay]
-  @ignore
-  TimeOfDay get startTime => startTimeInMins.toTimeOfDay;
-
-  /// Getter for bedtime end [TimeOfDay]
-  @ignore
-  TimeOfDay get endTime => endTimeInMins.toTimeOfDay;
-
-  /// Getter for total duration between [startTime] amd [endTime]
-  @ignore
-  Duration get totalDuration => endTime.difference(startTime);
 
   /// [TimeOfDay] in seconds from where the bedtime schedule task will start.
   /// It is stored as total minutes.
@@ -90,23 +74,8 @@ class BedtimeSettings {
     );
   }
 
-  /// NOTE: Don't modify this method.
-  /// This can lead to json deserializaion error on native side
-  /// in [BedtimeSettings] model's constructor
-  Map<String, dynamic> _toMapForSharedPrefs() {
-    return {
-      'isScheduleOn': isScheduleOn,
-      'startTimeInMins': startTimeInMins,
-      // Added [totalDurationInMins] this to map for native worker task
-      'totalDurationInMins': totalDuration.inMinutes,
-      'shouldStartDnd': shouldStartDnd,
-      'scheduleDays': scheduleDays,
-      'distractingApps': distractingApps,
-    };
-  }
-
-  String toJson() => json.encode(_toMapForSharedPrefs());
-
+ 
+  
   @override
   String toString() {
     return 'BedtimeSettings(startTimeInMins: $startTimeInMins, endTimeInMins: $endTimeInMins, scheduleDays: $scheduleDays, isScheduleOn: $isScheduleOn, shouldStartDnd: $shouldStartDnd, distractingApps: $distractingApps)';

@@ -26,8 +26,6 @@ class StartSessionFAB extends ConsumerWidget {
       heroTag: HeroTags.focusModeFABTag,
       icon: const Icon(FluentIcons.target_arrow_20_filled),
       label: Text(context.locale.focus_session_start_fab_button),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: () => _startFocusSession(context, ref),
     );
   }
@@ -51,9 +49,8 @@ class StartSessionFAB extends ConsumerWidget {
       return;
     }
 
-    final newSession = await ref
-        .read(focusModeProvider.notifier)
-        .startNewSession();
+    final newSession =
+        await ref.read(focusModeProvider.notifier).startNewSession();
 
     await Future.delayed(300.ms);
     if (context.mounted) {

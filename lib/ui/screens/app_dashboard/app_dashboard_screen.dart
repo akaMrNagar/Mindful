@@ -89,6 +89,10 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     final isExcludedFromStats = ref.watch(mindfulSettingsProvider
         .select((v) => v.excludedApps.contains(widget.app.packageName)));
 
+    final isNetworkOnlyApp =
+        widget.app.packageName == AppConstants.removedAppPackage ||
+            widget.app.packageName == AppConstants.tetheringAppPackage;
+
     return DefaultScaffold(
       navbarItems: [
         NavbarItem(
@@ -149,8 +153,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
               ),
 
               /// Available app setting or functions
-              widget.app.packageName == AppConstants.removedAppPackage ||
-                      widget.app.packageName == AppConstants.tetheringAppPackage
+              isNetworkOnlyApp
                   ? StyledText(
                       context
                           .locale.custom_apps_quick_actions_unavailable_warning,
@@ -184,6 +187,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
               /// Exclude from usage chart
               DefaultListTile(
+                enabled: !isNetworkOnlyApp,
                 position: ItemPosition.end,
                 leadingIcon: isExcludedFromStats
                     ? FluentIcons.phone_dismiss_20_regular

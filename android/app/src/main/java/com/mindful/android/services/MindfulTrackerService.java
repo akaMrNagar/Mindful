@@ -14,11 +14,10 @@ package com.mindful.android.services;
 
 import static com.mindful.android.helpers.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_GROUP_NAME;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_MAX_PROGRESS;
+import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_DIALOG_INFO;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PROGRESS;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PURGE_TYPE;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -35,11 +34,11 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.R;
-import com.mindful.android.enums.PurgeType;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.ScreenUsageHelper;
@@ -187,7 +186,6 @@ public class MindfulTrackerService extends Service {
     public void startStopUpdateFocusSession(@Nullable HashSet<String> distractingApps) {
         if (distractingApps != null) {
             mFocusSessionDistractingApps = distractingApps;
-            mPurgedApps.clear();
             Log.d(TAG, "startStopUpdateFocusSession: Focus Session STARTED or UPDATED successfully");
         } else {
             mFocusSessionDistractingApps.clear();
@@ -246,84 +244,129 @@ public class MindfulTrackerService extends Service {
         launchCount++;
         mAppsLaunchCount.put(packageName, launchCount);
 
-
         /// Return if app is already purged
         if (isAppAlreadyPurged(packageName)) return;
 
-
+        /// Return if no restriction applied
         AppRestrictions appRestrictions = mAppsRestrictions.get(packageName);
         if (appRestrictions == null) return;
+        long recallDelayMS = Long.MAX_VALUE;
+        PurgedReason recallReason = null;
+        boolean isPeriodRecall = false;
 
         /// Check for app launch limit
         if (appRestrictions.launchLimit > 0 && launchCount > appRestrictions.launchLimit) {
-            PurgedReason reason = new PurgedReason(PurgeType.AppLaunchLimitOut);
+            PurgedReason reason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_launch_count_out));
             mPurgedApps.put(packageName, reason);
-            showOverlayDialog(packageName, reason, appRestrictions.launchLimit, launchCount);
+            showOverlayDialog(packageName, reason);
             return;
+        }
+
+        /// Check for app's active period
+        if (appRestrictions.periodDurationInMins > 0) {
+            PurgedReason reason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_active_period_over));
+
+            /// Outside active period
+            if (Utils.isTimeOutsideTODs(appRestrictions.activePeriodStart, appRestrictions.activePeriodEnd)) {
+                mPurgedApps.put(packageName, reason);
+                showOverlayDialog(packageName, reason);
+                return;
+            }
+
+            /// Between active period so update recall delay
+            long willOverInMs = Utils.todDifferenceFromNow(appRestrictions.activePeriodEnd);
+            if (willOverInMs < recallDelayMS) {
+                recallDelayMS = willOverInMs;
+                isPeriodRecall = true;
+                recallReason = reason;
+            }
         }
 
         /// Fetch usage for all apps
         HashMap<String, Long> allAppsScreenUsage = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager);
-        long leftAppLimit = Integer.MAX_VALUE;
-        long leftGroupLimit = Integer.MAX_VALUE;
 
         /// Check for app timer
         if (appRestrictions.timerSec > 0) {
-            long appScreenTime = allAppsScreenUsage.getOrDefault(packageName, 0L);
-            if (appScreenTime >= appRestrictions.timerSec) {
-                PurgedReason reason = new PurgedReason(PurgeType.AppTimerOut, appRestrictions.timerSec);
+            long appScreenTimeSec = allAppsScreenUsage.getOrDefault(packageName, 0L);
+
+            /// App timer ran out
+            if (appScreenTimeSec >= appRestrictions.timerSec) {
+                PurgedReason reason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_app_timer_out), appRestrictions.timerSec, appScreenTimeSec);
                 mPurgedApps.put(packageName, reason);
-                showOverlayDialog(packageName, reason, appRestrictions.timerSec, (int) appScreenTime);
+                showOverlayDialog(packageName, reason);
                 return;
             }
 
-            leftAppLimit = appRestrictions.timerSec - appScreenTime;
+            /// App timer left so update recall delay
+            long leftAppLimitMs = (appRestrictions.timerSec - appScreenTimeSec) * 1000;
+            if (leftAppLimitMs < recallDelayMS) {
+                recallDelayMS = leftAppLimitMs;
+                recallReason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_app_timer_left), appRestrictions.timerSec, appScreenTimeSec);
+                isPeriodRecall = false;
+            }
         }
 
-        /// Check for associated group timer
-        Log.d(TAG, "onNewAppLaunched: group id " + appRestrictions.associatedGroupId);
+
+        /// Check for associated group
         RestrictionGroup associatedGroup = mRestrictionGroups.get(appRestrictions.associatedGroupId);
-        Log.d(TAG, "onNewAppLaunched: package: " + packageName + " group: " + associatedGroup);
+        if (associatedGroup != null) {
 
-        if (associatedGroup != null && associatedGroup.timerSec > 0) {
-            long groupScreenTime = associatedGroup.distractingApps.stream()
-                    .mapToLong(app -> ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager).getOrDefault(app, 0L))
-                    .sum();
+            /// Check for group's active period
+            if (associatedGroup.periodDurationInMins > 0) {
+                PurgedReason reason = new PurgedReason(getString(R.string.group_paused_dialog_info_for_active_period_over, associatedGroup.groupName));
+                /// Outside active period
+                if (Utils.isTimeOutsideTODs(associatedGroup.activePeriodStart, associatedGroup.activePeriodEnd)) {
+                    mPurgedApps.put(packageName, reason);
+                    showOverlayDialog(packageName, reason);
+                    return;
+                }
 
-            if (groupScreenTime >= associatedGroup.timerSec) {
-                PurgedReason reason = new PurgedReason(PurgeType.GroupTimerOut, associatedGroup.groupName, associatedGroup.timerSec);
-                associatedGroup.distractingApps.forEach(app -> mPurgedApps.put(app, reason));
-                showOverlayDialog(packageName, reason, associatedGroup.timerSec, Math.toIntExact(groupScreenTime));
-                return;
+                /// Between active period so update recall delay
+                long willOverInMs = Utils.todDifferenceFromNow(associatedGroup.activePeriodEnd);
+                if (willOverInMs < recallDelayMS) {
+                    recallDelayMS = willOverInMs;
+                    isPeriodRecall = true;
+                    recallReason = reason;
+                }
             }
 
-            leftGroupLimit = associatedGroup.timerSec - groupScreenTime;
+
+            /// Check for associated group's timer
+            if (associatedGroup.timerSec > 0) {
+                long groupScreenTimeSec = associatedGroup.distractingApps.stream()
+                        .mapToLong(app -> ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager).getOrDefault(app, 0L))
+                        .sum();
+
+                /// Group timer ran out
+                if (groupScreenTimeSec >= associatedGroup.timerSec) {
+                    PurgedReason reason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_group_timer_out, associatedGroup.groupName), associatedGroup.timerSec, groupScreenTimeSec);
+                    mPurgedApps.put(packageName, reason);
+                    showOverlayDialog(packageName, reason);
+                    return;
+                }
+
+                /// Group timer left so update recall delay
+                long leftGroupLimitMs = (associatedGroup.timerSec - groupScreenTimeSec) * 1000;
+                if (leftGroupLimitMs < recallDelayMS) {
+                    recallDelayMS = leftGroupLimitMs;
+                    recallReason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_group_timer_left, associatedGroup.groupName), associatedGroup.timerSec, groupScreenTimeSec);
+                    isPeriodRecall = false;
+                }
+            }
         }
 
 
-        // Return if do not have any left limits
-        if (leftAppLimit == Integer.MAX_VALUE && leftGroupLimit == Integer.MAX_VALUE) return;
+        // Return if delay doesn't changed
+        if (recallDelayMS == Long.MAX_VALUE) return;
 
-        // schedule timer for the lowest left limit from app and group
-        if (associatedGroup != null && leftGroupLimit < leftAppLimit) {
-            scheduleUsageAlertCountDownTimer(
-                    packageName,
-                    new PurgedReason(PurgeType.GroupTimerOut, associatedGroup.groupName, associatedGroup.timerSec),
-                    associatedGroup.timerSec,
-                    (int) leftGroupLimit,
-                    appRestrictions.alertByDialog,
-                    appRestrictions.alertInterval
-            );
-        } else {
-            scheduleUsageAlertCountDownTimer(
-                    packageName,
-                    new PurgedReason(PurgeType.AppTimerOut, appRestrictions.timerSec),
-                    appRestrictions.timerSec,
-                    (int) leftAppLimit,
-                    appRestrictions.alertByDialog,
-                    appRestrictions.alertInterval
-            );
-        }
+        // schedule timer for lowest time to recall for usage recheck
+        scheduleUsageAlertCountDownTimer(
+                packageName,
+                recallReason,
+                appRestrictions.alertInterval,
+                appRestrictions.alertByDialog && !isPeriodRecall,
+                recallDelayMS
+        );
     }
 
     /**
@@ -335,15 +378,15 @@ public class MindfulTrackerService extends Service {
     private boolean isAppAlreadyPurged(String packageName) {
         PurgedReason reason = mPurgedApps.get(packageName);
         if (reason != null) {
-            showOverlayDialog(packageName, reason, reason.usedLimit, reason.usedLimit);
+            showOverlayDialog(packageName, reason);
             return true;
         }
         if (mFocusSessionDistractingApps.contains(packageName)) {
-            showOverlayDialog(packageName, new PurgedReason(PurgeType.FocusSession), 0, 0);
+            showOverlayDialog(packageName, new PurgedReason(getString(R.string.app_paused_dialog_info_for_focus_session)));
             return true;
         }
         if (mBedtimeDistractingApps.contains(packageName)) {
-            showOverlayDialog(packageName, new PurgedReason(PurgeType.BedtimeRoutine), 0, 0);
+            showOverlayDialog(packageName, new PurgedReason(getString(R.string.app_paused_dialog_info_for_bedtime)));
             return true;
         }
         return false;
@@ -353,70 +396,59 @@ public class MindfulTrackerService extends Service {
      * Schedules a countdown timer to alert the user of remaining time for a specific app.
      * Provides notifications or overlay dialogs based on specified alert intervals and thresholds.
      *
-     * @param packageName   The package name of the app.
-     * @param reason        The reason for which to schedule timer.
-     * @param totalLimit    The total allowed usage time in seconds.
-     * @param leftLimit     The remaining usage time in seconds.
-     * @param alertByDialog True if alerts should be shown as overlay dialogs, otherwise as notifications.
-     * @param alertInterval The interval at which alerts should occur.
+     * @param packageName      The package name of the app.
+     * @param reason           The reason for which to schedule timer.
+     * @param alertByDialog    True if alerts should be shown as overlay dialogs, otherwise as notifications.
+     * @param alertIntervalSec The interval at which alerts should occur in SECONDS.
+     * @param millisInFuture   The time in Ms in future till the countdown timer will run.
      */
     private void scheduleUsageAlertCountDownTimer(
             String packageName,
             PurgedReason reason,
-            int totalLimit,
-            int leftLimit,
+            int alertIntervalSec,
             boolean alertByDialog,
-            int alertInterval
+            long millisInFuture
     ) {
         cancelTimers();
-
-        // Initialize alert times
-        final Set<Integer> alertTimeMinutes = new LinkedHashSet<>();
-        if (leftLimit > 300) alertTimeMinutes.add(5); // 5-minute alert
-        if (leftLimit > 60) alertTimeMinutes.add(1);    // 1-minute alert
-
-        // Add additional alerts based on the interval, in minutes, ensuring no duplicates
-        for (int i = alertInterval; i < leftLimit; i += alertInterval) {
-            alertTimeMinutes.add(i / 60);
-        }
-
-        Log.d(TAG, "scheduleUsageAlertCountDownTimer: Alert times in minutes: " + alertTimeMinutes);
+        final Set<Integer> alertMinuteTicks = getAlertTickFromDuration(millisInFuture, alertIntervalSec);
 
         // Schedule the countdown timer on the main thread
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                mOngoingAppTimer = new CountDownTimer(leftLimit * 1000L, 60 * 1000) { // Tick every minute
+                mOngoingAppTimer = new CountDownTimer(millisInFuture, 60 * 1000) {
+                    // Ticks every minute
                     @Override
                     public void onTick(long millisUntilFinished) {
-                        int minutesRemaining = (int) (millisUntilFinished / 60000); // Convert to minutes
+                        // Convert to minutes
+                        int minutesRemaining = (int) (millisUntilFinished / 60000);
 
                         // Trigger alert if remaining time in minutes matches any alert time
-                        if (alertTimeMinutes.contains(minutesRemaining)) {
+                        if (alertMinuteTicks.contains(minutesRemaining)) {
                             if (alertByDialog) {
-                                int elapsedTime = totalLimit - (minutesRemaining * 60);
-                                showOverlayDialog(packageName, reason, totalLimit, elapsedTime);
+                                showOverlayDialog(packageName, reason);
                             } else {
                                 pushUsageAlertNotification(packageName, minutesRemaining);
                             }
                             // Remove the triggered alert to avoid re-triggering in subsequent ticks
-                            alertTimeMinutes.remove(minutesRemaining);
+                            alertMinuteTicks.remove(minutesRemaining);
                         }
                     }
 
                     @Override
                     public void onFinish() {
                         mPurgedApps.put(packageName, reason);
-                        showOverlayDialog(packageName, reason, totalLimit, totalLimit);
+                        showOverlayDialog(packageName, reason);
                         Log.d(TAG, "scheduleUsageAlertCountDownTimer: Countdown finished for package: " + packageName);
                     }
                 };
                 mOngoingAppTimer.start();
                 Log.d(TAG, "scheduleUsageAlertCountDownTimer: Timer scheduled for " + packageName + " ending at: " +
-                        new Date((leftLimit * 1000L) + System.currentTimeMillis()));
+                        new Date(millisInFuture + System.currentTimeMillis()));
             }
         });
     }
+
 
     /**
      * Displays a notification to alert the user about the remaining usage time for an app.
@@ -441,7 +473,7 @@ public class MindfulTrackerService extends Service {
                             .setOngoing(false)
                             .setSmallIcon(R.drawable.ic_notification)
                             .setLargeIcon(Utils.drawableToBitmap(appIcon))
-                            .setContentTitle(getString(R.string.app_pause_notification_title, Utils.formatScreenTime(minutesLeft)))
+                            .setContentTitle(getString(R.string.app_pause_notification_title, Utils.minutesToTimeStr(minutesLeft)))
                             .setContentText(notificationInfo)
                             .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationInfo))
                             .build()
@@ -458,26 +490,41 @@ public class MindfulTrackerService extends Service {
      *
      * @param packageName The package name of the app.
      * @param reason      The reason for which to show dialog.
-     * @param maxProgress The maximum time allowed for usage.
-     * @param progress    The current progress of usage time.
      */
-    private void showOverlayDialog(
-            String packageName,
-            PurgedReason reason,
-            int maxProgress,
-            int progress
-    ) {
+    private void showOverlayDialog(String packageName, PurgedReason reason) {
         if (!Utils.isServiceRunning(this, OverlayDialogService.class.getName())) {
             Intent intent = new Intent(this, OverlayDialogService.class);
             intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
-            intent.putExtra(INTENT_EXTRA_PURGE_TYPE, reason.type.toInteger());
-            intent.putExtra(INTENT_EXTRA_GROUP_NAME, reason.groupName);
-            intent.putExtra(INTENT_EXTRA_MAX_PROGRESS, maxProgress);
-            intent.putExtra(INTENT_EXTRA_PROGRESS, progress);
+            intent.putExtra(INTENT_EXTRA_DIALOG_INFO, reason.reasonMsg);
+            intent.putExtra(INTENT_EXTRA_MAX_PROGRESS, reason.totalLimit);
+            intent.putExtra(INTENT_EXTRA_PROGRESS, reason.usedLimit);
             startService(intent);
 
             Log.d(TAG, "showOverlayDialog: Starting overlay dialog service for package : " + packageName);
         }
+    }
+
+    /**
+     * Creates a set of minute ticks based on interval until duration
+     *
+     * @param timerDurationMS The total duration of the timer in MS
+     * @param intervalSec     The interval between each tick in SECONDS
+     * @return Set of alert ticks for minutes
+     */
+    @NonNull
+    private Set<Integer> getAlertTickFromDuration(long timerDurationMS, int intervalSec) {
+        int timerSeconds = (int) (timerDurationMS / 1000);
+        final Set<Integer> alertTicks = new LinkedHashSet<>();
+        if (timerSeconds > 300) alertTicks.add(5); // 5-minute alert
+        if (timerSeconds > 60) alertTicks.add(1);    // 1-minute alert
+
+        // Add additional alerts based on the interval, in minutes, ensuring no duplicates
+        for (int i = intervalSec; i < timerSeconds; i += intervalSec) {
+            alertTicks.add(i / 60);
+        }
+
+        Log.d(TAG, "getAlertTickFromDuration: Alert tick in minutes: " + alertTicks);
+        return alertTicks;
     }
 
     /**

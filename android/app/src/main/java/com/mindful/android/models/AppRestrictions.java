@@ -23,38 +23,55 @@ public class AppRestrictions {
     /**
      * Package name of the related app
      */
-    public String appPackage = "";
+    public final String appPackage;
 
     /**
      * The timer set for the app in SECONDS
      */
-    public int timerSec = 0;
+    public final int timerSec;
 
     /**
      * The number of times user can launch this app
      */
-    public int launchLimit = 0;
+    public final int launchLimit;
 
     /**
      * Flag denoting if this app can access internet or not
      */
-    public boolean canAccessInternet = true;
+    public final boolean canAccessInternet;
 
     /**
      * The interval between each usage alert in SECONDS
      */
-    public int alertInterval = 60 * 15;
+    public final int alertInterval;
 
     /**
      * Whether to alert user by dialog if false user will be alerted by notification
      */
-    public boolean alertByDialog = false;
+    public final boolean alertByDialog;
+
+    /**
+     * [TimeOfDay] in minutes from where the active period will start.
+     * It is stored as total minutes.
+     */
+    public final int activePeriodStart;
+
+    /**
+     * [TimeOfDay] in minutes when the active period will end
+     * It is stored as total minutes.
+     */
+    public final int activePeriodEnd;
+
+    /**
+     * Total duration of active period from start to end in MINUTES
+     */
+    public final int periodDurationInMins;
 
     /**
      * ID of the [RestrictionGroup] this app is associated with or NULL
      */
     @Nullable
-    public Integer associatedGroupId = null;
+    public final Integer associatedGroupId;
 
 
     /**
@@ -69,6 +86,9 @@ public class AppRestrictions {
         this.canAccessInternet = jsonObject.optBoolean("canAccessInternet", true);
         this.alertInterval = jsonObject.optInt("alertInterval", 0);
         this.alertByDialog = jsonObject.optBoolean("alertByDialog", false);
+        this.activePeriodStart = jsonObject.optInt("activePeriodStart", 0);
+        this.activePeriodEnd = jsonObject.optInt("activePeriodEnd", 0);
+        this.periodDurationInMins = jsonObject.optInt("periodDurationInMins", 0);
 
         // Handles nullable Integer field for associatedGroupId
         if (jsonObject.has("associatedGroupId") && !jsonObject.isNull("associatedGroupId")) {

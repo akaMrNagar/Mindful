@@ -17,6 +17,8 @@ class TimerProgressClock extends StatelessWidget {
     required this.progress,
     this.dimension = 184,
   });
+
+  /// Progress from 0-100
   final double progress;
   final double dimension;
 

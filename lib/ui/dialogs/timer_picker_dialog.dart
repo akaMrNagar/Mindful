@@ -61,7 +61,6 @@ Future<int> showShortsTimerPicker({
             heroTag: heroTag,
             initialTimeInSec: initialTime,
             positiveButtonLabel: context.locale.dialog_button_set,
-            showDeleteButton: false,
           ),
         ),
       ) ??
@@ -85,7 +84,7 @@ Future<int?> showFocusTimerPicker({
         initialTimeInSec: initialTime,
         info: context.locale.focus_session_duration_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
-        showDeleteButton: false,
+        showResetButton: false,
       ),
     ),
   );
@@ -97,18 +96,18 @@ Future<int?> showFocusTimerPicker({
 Future<int?> showRestrictionGroupTimerPicker({
   required BuildContext context,
   required Object heroTag,
+  required String groupName,
   int initialTime = 0,
 }) async {
   return await Navigator.of(context).push<int?>(
     HeroPageRoute(
       builder: (context) => _DurationPickerDialog(
-        title: context.locale.restriction_group_heading,
+        title: groupName,
         icon: const Icon(FluentIcons.timer_20_regular),
         heroTag: heroTag,
         initialTimeInSec: initialTime,
         info: context.locale.restriction_group_timer_picker_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
-        showDeleteButton: false,
       ),
     ),
   );
@@ -131,7 +130,7 @@ Future<int?> showAppAlertIntervalPicker({
         initialTimeInSec: initialTime,
         info: context.locale.app_alert_interval_picker_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
-        showDeleteButton: false,
+        showResetButton: false,
         minuteInterval: 5,
       ),
     ),
@@ -146,7 +145,7 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.heroTag,
     required this.info,
     required this.positiveButtonLabel,
-    this.showDeleteButton = true,
+    this.showResetButton = true,
     this.minuteInterval = 1,
   });
 
@@ -155,7 +154,7 @@ class _DurationPickerDialog extends StatefulWidget {
   final Object heroTag;
   final int initialTimeInSec;
   final String positiveButtonLabel;
-  final bool showDeleteButton;
+  final bool showResetButton;
   final int minuteInterval;
   final String info;
 
@@ -202,12 +201,11 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                         ),
                       ),
                       18.vBox,
-                      if (widget.showDeleteButton)
+                      if (widget.showResetButton)
                         FittedBox(
                           child: FilledButton.icon(
-                            icon: const Icon(FluentIcons.delete_20_regular),
-                            label:
-                                Text(context.locale.dialog_button_delete_timer),
+                            icon: const Icon(FluentIcons.arrow_reset_20_filled),
+                            label: Text(context.locale.dialog_button_reset),
                             onPressed: () => Navigator.maybePop(
                               context,
                               0,

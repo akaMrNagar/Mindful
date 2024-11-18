@@ -64,8 +64,6 @@ class EmergencyFAB extends ConsumerWidget {
       heroTag: HeroTags.emergencyTileTag,
       label: Text(context.locale.emergency_fab_button),
       icon: const Icon(FluentIcons.fire_20_filled),
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      foregroundColor: Theme.of(context).colorScheme.onPrimary,
       onPressed: () => _useEmergency(context, ref),
     );
   }

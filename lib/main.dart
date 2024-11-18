@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/crash_log_service.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/services/isar_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/mindful_app.dart';
 
@@ -22,9 +21,6 @@ Future<void> main() async {
 
   /// Initialize method channel
   await MethodChannelService.instance.init();
-
-  /// Initialize isar database service
-  await IsarDbService.instance.init();
 
   /// Initialize drift Database
   await DriftDbService.instance.init();

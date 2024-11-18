@@ -10,6 +10,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
@@ -56,7 +57,7 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
   }
 
   /// Updates the launch limit for a specific app package.
@@ -70,7 +71,105 @@ class AppsRestrictionsNotifier
         );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
+  }
+
+  /// Updates the active period time for a specific app package.
+  ///
+  /// Anyway updated the platform-specific service.
+  Future<void> updateActivePeriod(
+    String appPackage,
+    TimeOfDayAdapter startTime,
+    TimeOfDayAdapter endTime,
+  ) async {
+    final periodDuration = endTime.difference(startTime).inMinutes;
+
+    final restriction = state[appPackage]?.copyWith(
+          activePeriodStart: startTime,
+          activePeriodEnd: endTime,
+          periodDurationInMins: periodDuration,
+        ) ??
+        AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+          appPackage: appPackage,
+          activePeriodStart: startTime,
+          activePeriodEnd: endTime,
+          periodDurationInMins: periodDuration,
+        );
+
+    /// Update database and state
+    _updateStateDbAndServices(appPackage, restriction);
+  }
+
+  /// Toggles internet access permission for a specific app package if package is not empty.
+  ///
+  /// Anyway call the platform channel service to potentially start or stop a VPN.
+  void switchInternetAccess(String appPackage, bool canAccessInternet) async {
+    final restriction =
+        state[appPackage]?.copyWith(canAccessInternet: canAccessInternet) ??
+            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+              appPackage: appPackage,
+              canAccessInternet: canAccessInternet,
+            );
+
+    /// Update database and state
+    _updateStateDbAndServices(appPackage, restriction, updateVpn: true);
+  }
+
+  /// Updates the id of associated [RestrictionGroup] for a specific app package.
+  Future<void> updateAssociatedGroupId({
+    required List<String> appPackages,
+    bool removeIds = false,
+    int? groupId,
+  }) async {
+    List<AppRestriction> updatedRestrictions = [];
+    Map<String, AppRestriction> updatedState = {...state};
+
+    final skippedApps = removeIds
+        ? appPackages
+        : state.values
+            .where((e) => (e.associatedGroupId ?? -1) == groupId)
+            .map((e) => e.appPackage);
+
+    /// Remove associated group id for the removed old packages
+    for (var appPackage in skippedApps) {
+      final restriction =
+          state[appPackage]?.copyWith(associatedGroupId: const Value(null)) ??
+              AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+                appPackage: appPackage,
+                associatedGroupId: const Value(null),
+              );
+
+      updatedRestrictions.add(restriction);
+      updatedState.update(
+        appPackage,
+        (value) => restriction,
+        ifAbsent: () => restriction,
+      );
+    }
+
+    if (!removeIds) {
+      /// Add/Update associated group id for the new packages
+      for (var appPackage in appPackages) {
+        final restriction =
+            state[appPackage]?.copyWith(associatedGroupId: Value(groupId)) ??
+                AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+                  appPackage: appPackage,
+                  associatedGroupId: Value(groupId),
+                );
+
+        updatedRestrictions.add(restriction);
+        updatedState.update(
+          appPackage,
+          (value) => restriction,
+          ifAbsent: () => restriction,
+        );
+      }
+    }
+
+    /// Update database and state
+    state = updatedState;
+    await _dao.insertAppRestrictionsByPackage(updatedRestrictions);
+    _updateTrackerService();
   }
 
   /// Updates the alert interval for a specific app package.
@@ -88,7 +187,7 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
   }
 
   /// Set alert by dialog for a specific app package.
@@ -103,74 +202,13 @@ class AppsRestrictionsNotifier
             );
 
     /// Update database and state
-    _updateStateAndDb(appPackage, restriction);
+    _updateStateDbAndServices(appPackage, restriction);
   }
 
-  /// Toggles internet access permission for a specific app package if package is not empty.
+  /// Updates state and database with the provided data.
   ///
-  /// Anyway call the platform channel service to potentially start or stop a VPN.
-  void switchInternetAccess(String appPackage, bool canAccessInternet) async {
-    final restriction =
-        state[appPackage]?.copyWith(canAccessInternet: canAccessInternet) ??
-            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-              appPackage: appPackage,
-              canAccessInternet: canAccessInternet,
-            );
-
-    /// Update database and state
-    _updateStateAndDb(appPackage, restriction, updateVpn: true);
-  }
-
-  /// Updates the id of associated [RestrictionGroup] for a specific app package.
-  void updateAssociatedGroupId({
-    required List<String> appPackages,
-    int? groupId,
-    List<String> removedAppPackages = const [],
-  }) async {
-    List<AppRestriction> updatedRestrictions = [];
-    Map<String, AppRestriction> updatedState = {...state};
-
-    /// Remove associated group id for the removed old packages
-    for (var appPackage in removedAppPackages) {
-      final restriction =
-          state[appPackage]?.copyWith(associatedGroupId: const Value(null)) ??
-              AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-                appPackage: appPackage,
-                associatedGroupId: const Value(null),
-              );
-
-      updatedRestrictions.add(restriction);
-      updatedState.update(
-        appPackage,
-        (value) => restriction,
-        ifAbsent: () => restriction,
-      );
-    }
-
-    /// Add/Update associated group id for the new packages
-    for (var appPackage in appPackages) {
-      final restriction =
-          state[appPackage]?.copyWith(associatedGroupId: Value(groupId)) ??
-              AppRestrictionTable.defaultAppRestrictionModel.copyWith(
-                appPackage: appPackage,
-                associatedGroupId: Value(groupId),
-              );
-
-      updatedRestrictions.add(restriction);
-      updatedState.update(
-        appPackage,
-        (value) => restriction,
-        ifAbsent: () => restriction,
-      );
-    }
-
-    /// Update database and state
-    state = updatedState;
-    await _dao.insertAppRestrictionsByPackage(updatedRestrictions);
-    _updateTrackerService();
-  }
-
-  void _updateStateAndDb(
+  /// Also update VPN service if flag is TRUE else update Tracker service
+  void _updateStateDbAndServices(
     String appPackage,
     AppRestriction restriction, {
     bool updateVpn = false,
@@ -184,6 +222,9 @@ class AppsRestrictionsNotifier
     updateVpn ? _updateVpnService() : _updateTrackerService();
   }
 
+  /// Filter restriction and remove uninstalled app packages
+  ///
+  /// At last update restrictions in Tracker service
   Future<void> _updateTrackerService() async {
     if (_installedApps.isEmpty) return;
 
@@ -201,6 +242,9 @@ class AppsRestrictionsNotifier
         .updateAppRestrictions(filteredRestrictions);
   }
 
+  /// Filter restriction and remove uninstalled app packages
+  ///
+  /// At last update restrictions in VPN service
   Future<void> _updateVpnService() async {
     if (_installedApps.isEmpty) return;
 

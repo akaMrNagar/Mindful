@@ -16,7 +16,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/models/permissions_model.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
@@ -37,8 +39,8 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingState extends ConsumerState<OnboardingScreen> {
   late PageController _controller;
-  final _animCurve = Curves.fastEaseInToSlowEaseOut;
-  final _animDuration = 300.ms;
+  final _animCurve = AppConstants.defaultCurve;
+  final _animDuration = AppConstants.defaultAnimDuration;
   int _currentPage = 0;
   ProviderSubscription? _subscription;
 
@@ -81,6 +83,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
       Future.delayed(
         200.ms,
         () {
+          ref.read(appsProvider.notifier).refreshDeviceApps();
           Navigator.of(context).pushNamedAndRemoveUntil(
             AppRoutes.homeScreen,
             (_) => false,
@@ -194,7 +197,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                             .animate(
                               target: _currentPage > 0 && !isLastPage ? 1 : 0,
                             )
-                            .scale(duration: 100.ms),
+                            .scale(duration: 150.ms),
                         4.hBox,
 
                         isLastPage
@@ -209,7 +212,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                                       .locale.onboarding_finish_setup_btn_label,
                                 ),
                               ).animate(target: isLastPage ? 1 : 0).scale(
-                                  duration: 200.ms,
+                                  duration: 250.ms,
                                   alignment: Alignment.centerRight,
                                 )
 
@@ -224,7 +227,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                                     FluentIcons.caret_right_20_filled),
                               )
                                 .animate(target: isLastPage ? 0 : 1)
-                                .scale(duration: 100.ms),
+                                .scale(duration: 150.ms),
 
                         /// Finish setup
                       ],

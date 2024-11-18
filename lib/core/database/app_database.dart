@@ -9,6 +9,7 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';

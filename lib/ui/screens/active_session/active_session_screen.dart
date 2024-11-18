@@ -23,6 +23,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
@@ -30,7 +31,6 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
 import 'package:mindful/ui/screens/active_session/timer_progress_clock.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class ActiveSessionScreen extends ConsumerStatefulWidget {
@@ -43,73 +43,65 @@ class ActiveSessionScreen extends ConsumerStatefulWidget {
       _ActiveSessionScreenState();
 }
 
-class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
-    with WidgetsBindingObserver {
-  Timer? _timer;
-  Duration _remainingTime = Duration.zero;
+class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
+  bool _isCompleted = false;
+  late bool _isFinite;
 
   @override
   void initState() {
     super.initState();
-    _startSessionTimer();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState appState) async {
-    if (appState == AppLifecycleState.resumed) {
-      _startSessionTimer();
-    }
+    _isFinite = widget.session.durationSecs > 0;
+    ref.read(focusModeProvider.notifier).setSessionSuccessCallback(
+      () {
+        if (!mounted) return;
+        setState(() => _isCompleted = true);
+        _launchConfetti();
+      },
+    );
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _timer?.cancel();
     super.dispose();
   }
 
-  void _startSessionTimer() {
-    // Cancel if timer is already running
-    _timer?.cancel();
-    _remainingTime = Duration.zero;
+  List<String> _getQuotes(BuildContext context) => [
+        context.locale.active_session_quote_one,
+        context.locale.active_session_quote_two,
+        context.locale.active_session_quote_three,
+        context.locale.active_session_quote_four,
+      ];
 
-    final remaining = widget.session.durationSecs.seconds
-        .subtract(DateTime.now().difference(widget.session.startDateTime));
-
-    if (remaining.inSeconds > 0) _remainingTime = remaining.subtract(2.seconds);
-
-    _timer = Timer.periodic(1.seconds, (timer) {
-      /// Decrease remaining duration or cancel timer if remaining duration is 0
-      if (_remainingTime.inSeconds > 0) {
-        setState(() => _remainingTime = _remainingTime.subtract(1.seconds));
-      } else {
-        _timer!.cancel();
-        _launchConfetti();
-      }
-    });
+  double _getProgress(int elapsedSec) {
+    if (_isFinite) {
+      return _isCompleted
+          ? 100
+          : 100 - ((elapsedSec / widget.session.durationSecs) * 100);
+    } else {
+      return (elapsedSec / 12.hours.inSeconds) * 100;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     const timeStyle = TextStyle(fontSize: 48, fontWeight: FontWeight.w600);
-    final quotes = [
-      context.locale.active_session_quote_one,
-      context.locale.active_session_quote_two,
-      context.locale.active_session_quote_three,
-      context.locale.active_session_quote_four,
-      context.locale.active_session_quote_five(
-        widget.session.durationSecs.seconds
-            .toTimeFull(context, replaceCommaWithAnd: true),
-      ),
-    ];
-    final isSessionActive = _remainingTime.inSeconds > 0;
-    final progress = !isSessionActive
-        ? 100
-        : 100 -
-            ((_remainingTime.inSeconds / widget.session.durationSecs) * 100);
+    final elapsedSeconds =
+        ref.watch(focusModeProvider.select((v) => v.elapsedTimeSec));
+    final progress = _getProgress(elapsedSeconds);
 
-    final quoteIndex = (progress / 20).floor() - 1;
+    final totalDuration = (_isFinite
+            ? _isCompleted
+                ? widget.session.durationSecs
+                : widget.session.durationSecs - elapsedSeconds
+            : elapsedSeconds)
+        .seconds;
+
+    final hoursTick = totalDuration.inHours;
+    final minutesTick = totalDuration.inMinutes % 60;
+    final secondsTick = totalDuration.inSeconds % 60;
+
+    final quoteIndex = (progress / 25).floor() - 1;
+    final quotes = _getQuotes(context);
 
     return DefaultScaffold(
       navbarItems: [
@@ -119,6 +111,22 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
           title: context.locale.active_session_tab_title,
           appBarTitle: sessionTypeLabels(context)[widget.session.type] ??
               context.locale.active_session_tab_title,
+          fab: _isCompleted
+              ? const SizedBox.shrink()
+              : FloatingActionButton.extended(
+                  heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
+                  label: Text(
+                    _isFinite
+                        ? context.locale.active_session_giveup_dialog_title
+                        : context.locale.active_session_finish_dialog_title,
+                  ),
+                  icon: Icon(
+                    _isFinite
+                        ? FluentIcons.emoji_sad_20_filled
+                        : FluentIcons.emoji_surprise_20_filled,
+                  ),
+                  onPressed: _giveUpOrFinishActiveSession,
+                ),
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
@@ -132,36 +140,45 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   /// Hours
-                  if (_remainingTime.inHours > 0)
+                  if (hoursTick > 0)
                     AnimatedFlipCounter(
+                      prefix: hoursTick < 10 ? "0" : null,
+                      value: hoursTick,
                       suffix: ":",
-                      value: _remainingTime.inHours,
                       textStyle: timeStyle,
                     ),
 
                   /// Minutes
                   AnimatedFlipCounter(
+                    prefix: minutesTick < 10 ? "0" : null,
+                    value: minutesTick,
                     suffix: ":",
-                    value: _remainingTime.inMinutes % 60,
                     textStyle: timeStyle,
                   ),
 
                   /// Seconds
                   AnimatedFlipCounter(
-                    value: _remainingTime.inSeconds % 60,
+                    prefix: secondsTick < 10 ? "0" : null,
+                    value: secondsTick,
                     textStyle: timeStyle,
                   ),
                 ],
               ).sliver,
-              64.vSliverBox,
+              40.vSliverBox,
 
               SliverAnimatedPaintExtent(
-                duration: 300.ms,
+                duration: AppConstants.defaultAnimDuration,
                 child: StyledText(
-                  quotes[max(quoteIndex, 0)],
+                  _isCompleted
+                      ? context.locale.active_session_quote_five(
+                          totalDuration.toTimeFull(
+                            context,
+                            replaceCommaWithAnd: true,
+                          ),
+                        )
+                      : quotes[max(quoteIndex, 0)],
                   fontSize: 14,
                   textAlign: TextAlign.center,
-                  color: isSessionActive ? Theme.of(context).hintColor : null,
                 ).centered.sliver,
               ),
 
@@ -172,19 +189,6 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
                 sinColor: Theme.of(context).colorScheme.primaryContainer,
                 cosColor: Theme.of(context).colorScheme.primary,
               ).sliver,
-
-              64.vSliverBox,
-
-              if (_remainingTime.inSeconds > 20)
-                DefaultHero(
-                  tag: HeroTags.giveUpFocusSessionTag,
-                  child: FilledButton.tonalIcon(
-                    label:
-                        Text(context.locale.active_session_giveup_dialog_title),
-                    icon: const Icon(FluentIcons.emoji_sad_20_filled),
-                    onPressed: _giveUp,
-                  ),
-                ).centered.sliver,
             ],
           ),
         ),
@@ -192,31 +196,46 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen>
     );
   }
 
-  void _giveUp() async {
+  void _giveUpOrFinishActiveSession() async {
     final confirm = await showConfirmationDialog(
       context: context,
-      heroTag: HeroTags.giveUpFocusSessionTag,
-      title: context.locale.active_session_giveup_dialog_title,
-      info: context.locale.active_session_giveup_dialog_info,
-      icon: FluentIcons.emoji_sad_20_filled,
-      positiveLabel: context.locale.active_session_giveup_dialog_title,
-      negativeLabel:
-          context.locale.active_session_giveup_dialog_button_keep_pushing,
+      heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
+      title: _isFinite
+          ? context.locale.active_session_giveup_dialog_title
+          : context.locale.active_session_finish_dialog_title,
+      info: _isFinite
+          ? context.locale.active_session_giveup_dialog_info
+          : context.locale.active_session_finish_dialog_info,
+      icon: _isFinite
+          ? FluentIcons.emoji_sad_20_filled
+          : FluentIcons.emoji_surprise_20_filled,
+      positiveLabel: _isFinite
+          ? context.locale.active_session_giveup_dialog_title
+          : context.locale.active_session_finish_dialog_title,
+      negativeLabel: context.locale.active_session_dialog_button_keep_pushing,
     );
 
     if (!confirm) return;
-    await ref.read(focusModeProvider.notifier).giveUpOnActiveSession();
-    await Future.delayed(1.seconds);
 
-    /// Show alert and go back
-    if (!mounted) return;
-    context.showSnackAlert(
-      context.locale.active_session_giveup_snack_alert,
-    );
-    Navigator.of(context).maybePop();
+    await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
+          isTheSessionSuccessful: !_isFinite,
+        );
+
+    if (_isFinite) {
+      await Future.delayed(1.seconds);
+
+      /// Show alert and go back
+      if (!mounted) return;
+      context.showSnackAlert(context.locale.active_session_giveup_snack_alert);
+      Navigator.of(context).maybePop();
+    } else {
+      _launchConfetti();
+    }
   }
 
   void _launchConfetti() {
+    if (!mounted) return;
+
     final colors = [
       Theme.of(context).colorScheme.primary,
       Theme.of(context).colorScheme.onSecondaryContainer,

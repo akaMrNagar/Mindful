@@ -9,11 +9,11 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
@@ -28,11 +28,11 @@ class SliverDistractingAppsList extends ConsumerWidget {
     super.key,
     required this.distractingApps,
     required this.onSelectionChanged,
-    this.filteredUnselectedApps,
+    this.hiddenApps = const [],
   });
 
   final List<String> distractingApps;
-  final List<String>? filteredUnselectedApps;
+  final List<String> hiddenApps;
   final Function(String package, bool isSelected) onSelectionChanged;
 
   @override
@@ -46,8 +46,8 @@ class SliverDistractingAppsList extends ConsumerWidget {
         distractingApps.where((e) => allApps.value?.contains(e) ?? false);
 
     /// Unselected apps which are installed
-    final unselectedApps = (filteredUnselectedApps ?? allApps.value ?? [])
-        .where((e) => !distractingApps.contains(e));
+    final unselectedApps = (allApps.value ?? [])
+        .where((e) => !distractingApps.contains(e) && !hiddenApps.contains(e));
 
     return MultiSliver(
       children: [
@@ -59,9 +59,9 @@ class SliverDistractingAppsList extends ConsumerWidget {
 
         /// Apps list
         SliverAnimatedSwitcher(
-          duration: 300.ms,
-          switchInCurve: Curves.easeIn,
-          switchOutCurve: Curves.easeOut,
+          duration: AppConstants.defaultAnimDuration,
+          switchInCurve: AppConstants.defaultCurve,
+          switchOutCurve: AppConstants.defaultCurve.flipped,
           child: allApps.hasValue
               ? AnimatedAppsList(
                   itemExtent: 56,

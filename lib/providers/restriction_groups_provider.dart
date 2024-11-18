@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
@@ -49,11 +50,17 @@ class RestrictionGroupsNotifier
   Future<RestrictionGroup> createNewGroup({
     required String groupName,
     required int timerSec,
+    required TimeOfDayAdapter activePeriodStart,
+    required TimeOfDayAdapter activePeriodEnd,
+    required int periodDurationInMins,
     required List<String> distractingApps,
   }) async {
     final newGroup = await _dao.insertRestrictionGroup(
       groupName: groupName,
       timerSec: timerSec,
+      activePeriodStart: activePeriodStart,
+      activePeriodEnd: activePeriodEnd,
+      periodDurationInMins: periodDurationInMins,
       distractingApps: distractingApps,
     );
 
@@ -67,7 +74,7 @@ class RestrictionGroupsNotifier
   }
 
   /// Updates an existing restriction group in the database and state.
-  void updateGroup({required RestrictionGroup group}) async {
+  Future<void> updateGroup({required RestrictionGroup group}) async {
     await _dao.updateRestrictionGroupById(group);
     state = {...state}..update(
         group.id,

@@ -33,18 +33,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
-import com.mindful.android.enums.PurgeType;
 import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
-
-import org.jetbrains.annotations.Contract;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,17 +64,15 @@ public class OverlayDialogService extends Service {
     // Class constants
     private static final String TAG = "Mindful.OverlayDialogService";
     public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
-    public static final String INTENT_EXTRA_PURGE_TYPE = "overlayPurgeDialogType";
-    public static final String INTENT_EXTRA_GROUP_NAME = "associatedGroupName";
+    public static final String INTENT_EXTRA_DIALOG_INFO = "dialogInformation";
     public static final String INTENT_EXTRA_MAX_PROGRESS = "maxProgress";
     public static final String INTENT_EXTRA_PROGRESS = "progress";
 
     // Instance variables
     private String mPackageName = "";
-    private String mGroupName = "";
-    private PurgeType mPurgeDialogType = PurgeType.AppTimerOut;
-    private int mMaxProgress = 0;
-    private int mProgress = 0;
+    private String mDialogInfo = "";
+    private int mMaxProgress = -1;
+    private int mProgress = -1;
     private AlertDialog mAlertDialog;
     private Timer mAutoCloseTimer;
 
@@ -101,15 +95,14 @@ public class OverlayDialogService extends Service {
 
         // Extracting intent data
         mPackageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
-        mGroupName = intent.getStringExtra(INTENT_EXTRA_GROUP_NAME);
+        mDialogInfo = intent.getStringExtra(INTENT_EXTRA_DIALOG_INFO);
         mMaxProgress = intent.getIntExtra(INTENT_EXTRA_MAX_PROGRESS, 0);
         mProgress = intent.getIntExtra(INTENT_EXTRA_PROGRESS, 0);
-        mPurgeDialogType = PurgeType.fromInteger(intent.getIntExtra(INTENT_EXTRA_PURGE_TYPE, 0));
 
         // Validate permissions and display the overlay
         if (mPackageName != null && Settings.canDrawOverlays(this)) {
             try {
-                Log.d(TAG, "onStartCommand: Showing dialog for package: " + mPackageName + " type: " + mPurgeDialogType + " group: " + mGroupName + " used: " + mProgress + " total: " + mMaxProgress);
+                Log.d(TAG, "onStartCommand: Showing dialog for package: " + mPackageName + " msg: " + mDialogInfo + " used: " + mProgress + " total: " + mMaxProgress);
                 showAlertDialog();
                 Log.d(TAG, "onStartCommand: Overlay dialog service started successfully");
                 return START_STICKY;
@@ -152,14 +145,34 @@ public class OverlayDialogService extends Service {
 
         // Dialog message setup
         TextView dialogInfoTxt = dialogView.findViewById(R.id.overlay_dialog_info);
-        dialogInfoTxt.setText(resolveDialogInfo());
+        dialogInfoTxt.setText(mDialogInfo);
 
-        // Use anyway and emergency button
-        if (mProgress > 0 && mProgress < mMaxProgress) {
-            Button useAnywayBtn = dialogView.findViewById(R.id.overlay_dialog_button_use_anyway);
-            useAnywayBtn.setVisibility(View.VISIBLE);
-            useAnywayBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.UseAnyway));
-        } else {
+        // Progress info setup
+        if (mProgress > 0 && mMaxProgress > 0) {
+            ProgressBar progressBar = dialogView.findViewById(R.id.overlay_dialog_progress);
+            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setMax(mMaxProgress);
+            progressBar.setProgress(mProgress, true);
+
+            TextView limitSpentTxt = dialogView.findViewById(R.id.overlay_dialog_limit_used);
+            limitSpentTxt.setVisibility(View.VISIBLE);
+            limitSpentTxt.setText(getString(R.string.app_paused_dialog_progress_spent, Utils.minutesToTimeStr(mProgress / 60)));
+
+            TextView limitLeftTxt = dialogView.findViewById(R.id.overlay_dialog_limit_total);
+            limitLeftTxt.setVisibility(View.VISIBLE);
+            int leftLimit = Math.max(0, (mMaxProgress - mProgress));
+            limitLeftTxt.setText(getString(R.string.app_paused_dialog_progress_left, Utils.minutesToTimeStr(leftLimit > 0 ? (leftLimit / 60) : 0)));
+
+            // If limit is remaining
+            if (mProgress < mMaxProgress) {
+                Button useAnywayBtn = dialogView.findViewById(R.id.overlay_dialog_button_use_anyway);
+                useAnywayBtn.setVisibility(View.VISIBLE);
+                useAnywayBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.UseAnyway));
+            }
+        }
+
+        // Emergency button setup
+        if (mProgress >= mMaxProgress) {
             Button emergencyBtn = dialogView.findViewById(R.id.overlay_dialog_button_emergency);
             emergencyBtn.setVisibility(View.VISIBLE);
             emergencyBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.Emergency));
@@ -168,24 +181,6 @@ public class OverlayDialogService extends Service {
         // Close app button setup
         Button closeAppBtn = dialogView.findViewById(R.id.overlay_dialog_button_close);
         closeAppBtn.setOnClickListener(v -> onDialogButtonClick(DialogButtonType.CloseApp));
-
-        // Setup progress information
-        if (mPurgeDialogType == PurgeType.AppTimerOut || mPurgeDialogType == PurgeType.GroupTimerOut) {
-            ProgressBar progressBar = dialogView.findViewById(R.id.overlay_dialog_progress);
-            progressBar.setVisibility(View.VISIBLE);
-            progressBar.setMax(mMaxProgress);
-            progressBar.setProgress(mProgress, true);
-
-            TextView limitSpentTxt = dialogView.findViewById(R.id.overlay_dialog_limit_used);
-            limitSpentTxt.setVisibility(View.VISIBLE);
-            limitSpentTxt.setText(getString(R.string.app_paused_dialog_progress_spent, Utils.formatScreenTime(mProgress / 60)));
-
-            TextView limitLeftTxt = dialogView.findViewById(R.id.overlay_dialog_limit_total);
-            limitLeftTxt.setVisibility(View.VISIBLE);
-            int leftLimit = Math.max(0, (mMaxProgress - mProgress));
-            limitLeftTxt.setText(getString(R.string.app_paused_dialog_progress_left, Utils.formatScreenTime(leftLimit > 0 ? (leftLimit / 60) : 0)));
-
-        }
 
         // Setup and display the dialog
         mAlertDialog = new AlertDialog
@@ -271,33 +266,6 @@ public class OverlayDialogService extends Service {
             });
         } catch (Exception ignored) {
         }
-    }
-
-    /**
-     * Retrieves the appropriate dialog information based on the DialogType.
-     *
-     * @return The message to display in the dialog.
-     */
-    @NonNull
-    @Contract(pure = true)
-    private String resolveDialogInfo() {
-        switch (mPurgeDialogType) {
-            case FocusSession:
-                return getString(R.string.app_paused_dialog_info_for_focus_session);
-            case BedtimeRoutine:
-                return getString(R.string.app_paused_dialog_info_for_bedtime);
-            case AppLaunchLimitOut:
-                return getString(R.string.app_paused_dialog_info_for_launch_count_out);
-            case AppTimerOut:
-                return mProgress > 0 && mProgress < mMaxProgress ?
-                        getString(R.string.app_paused_dialog_info_for_app_timer_left)
-                        : getString(R.string.app_paused_dialog_info_for_app_timer_out);
-            case GroupTimerOut:
-                return mProgress > 0 && mProgress < mMaxProgress ?
-                        getString(R.string.app_paused_dialog_info_for_group_timer_left, mGroupName)
-                        : getString(R.string.app_paused_dialog_info_for_group_timer_out, mGroupName);
-        }
-        return getString(R.string.app_paused_dialog_info_for_app_timer_out);
     }
 
 

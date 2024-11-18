@@ -12,9 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
@@ -22,6 +20,7 @@ import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/common/time_period_start_end_cards.dart';
 
 class ScheduleCard extends ConsumerWidget {
   const ScheduleCard({super.key});
@@ -31,14 +30,14 @@ class ScheduleCard extends ConsumerWidget {
     final isScheduleOn =
         ref.watch(bedtimeScheduleProvider.select((v) => v.isScheduleOn));
 
-    final startTime = ref.watch(
-        bedtimeScheduleProvider.select((v) => v.startTimeInMins.toTimeOfDay));
+    final startTime =
+        ref.watch(bedtimeScheduleProvider.select((v) => v.scheduleStartTime));
 
-    final endTime = ref.watch(
-        bedtimeScheduleProvider.select((v) => v.endTimeInMins.toTimeOfDay));
+    final endTime =
+        ref.watch(bedtimeScheduleProvider.select((v) => v.scheduleEndTime));
 
-    final totalDuration = ref.watch(
-        bedtimeScheduleProvider.select((v) => v.totalDurationInMins.minutes));
+    final totalDuration = ref.watch(bedtimeScheduleProvider
+        .select((v) => v.scheduleDurationInMins.minutes));
 
     final scheduleDays = ref
         .watch(bedtimeScheduleProvider.select((value) => value.scheduleDays));
@@ -51,28 +50,14 @@ class ScheduleCard extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           /// Schedule time Start and End
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              /// Schedule start time
-              _SelectedTime(
-                label: context.locale.schedule_start_label,
-                enabled: !isScheduleOn,
-                initialTime: startTime,
-                onChange: (t) {
-                  ref.read(bedtimeScheduleProvider.notifier).setBedtimeStart(t);
-                },
-              ),
-
-              /// Schedule end time
-              _SelectedTime(
-                label: context.locale.schedule_end_label,
-                enabled: !isScheduleOn,
-                initialTime: endTime,
-                onChange: (t) =>
-                    ref.read(bedtimeScheduleProvider.notifier).setBedtimeEnd(t),
-              ),
-            ],
+          TimePeriodStartEndCards(
+            enabled: !isScheduleOn,
+            startTime: startTime,
+            endTime: endTime,
+            onStartTimeChanged:
+                ref.read(bedtimeScheduleProvider.notifier).setBedtimeStart,
+            onEndTimeChanged:
+                ref.read(bedtimeScheduleProvider.notifier).setBedtimeEnd,
           ),
 
           /// Total calculated bedtime duration
@@ -121,74 +106,6 @@ class ScheduleCard extends ConsumerWidget {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SelectedTime extends StatelessWidget {
-  const _SelectedTime({
-    required this.label,
-    required this.enabled,
-    required this.onChange,
-    required this.initialTime,
-  });
-
-  final String label;
-  final bool enabled;
-  final TimeOfDay initialTime;
-  final Function(TimeOfDay time) onChange;
-
-  @override
-  Widget build(BuildContext context) {
-    return RoundedContainer(
-      height: 96,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      color: Colors.transparent,
-      onPressed: enabled
-          ? () {
-              showTimePicker(
-                context: context,
-                initialTime: initialTime,
-              ).then(
-                (value) {
-                  onChange(value ?? initialTime);
-                },
-              );
-            }
-          : null,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          /// Labels "START" and "END"
-          StyledText(
-            label,
-            isSubtitle: !enabled,
-          ),
-          4.vBox,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              /// Time in hour and minutes
-              StyledText(
-                initialTime.format(context).split(' ').first,
-                height: 1,
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                isSubtitle: !enabled,
-              ),
-              4.hBox,
-
-              /// Time period AM/PM
-              StyledText(
-                initialTime.period.name,
-                height: 2,
-                isSubtitle: !enabled,
-              ),
-            ],
           ),
         ],
       ),

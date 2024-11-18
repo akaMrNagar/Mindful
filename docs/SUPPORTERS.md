@@ -8,3 +8,4 @@ Every contribution, no matter the size, makes a real difference. Whether you’v
 ## 👻 Supporters
 
 1. [Bill Butter](https://www.reddit.com/user/Bill_Buttersr)
+2. [WreckingBANG](https://github.com/WreckingBANG)

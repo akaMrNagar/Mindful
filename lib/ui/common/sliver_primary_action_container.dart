@@ -9,9 +9,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -40,8 +40,8 @@ class SliverPrimaryActionContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAnimatedPaintExtent(
-      duration: 500.ms,
-      curve: Curves.easeOutExpo,
+      duration: AppConstants.defaultAnimDuration,
+      curve: AppConstants.defaultCurve,
       child: SliverVisibility(
         visible: isVisible,
         sliver: RoundedContainer(

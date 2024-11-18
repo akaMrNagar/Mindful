@@ -62,88 +62,85 @@ class ShortsTimerChart extends ConsumerWidget {
     return Opacity(
       opacity: isModifiable ? 1 : 0.4,
       child: Padding(
-        padding: const EdgeInsets.only(top: 12, bottom: 16),
+        padding: const EdgeInsets.only(top: 8, bottom: 24),
         child: SizedBox.square(
           dimension: squareDimension,
-          child: Stack(
-            alignment: Alignment.center,
-            fit: StackFit.passthrough,
-            children: [
-              /// Background ring with color based on progress
-              Semantics(
-                excludeSemantics: true,
-                child: RotatedBox(
-                  quarterTurns: 2,
-                  child: FittedBox(
+          child: FittedBox(
+            fit: BoxFit.fitHeight,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                /// Background ring with color based on progress
+                SizedBox.square(
+                  dimension: squareDimension,
+                  child: CircularProgressIndicator(
+                    value: 1,
+                    strokeWidth: 18,
+                    strokeAlign: BorderSide.strokeAlignCenter,
+                    color: lerpedColor,
+                  ),
+                ),
+
+                /// Remaining time progress bar
+                SizedBox.square(
+                  dimension: squareDimension,
+                  child: RotatedBox(
+                    quarterTurns: 2,
                     child: CircularProgressIndicator(
-                      value: 1,
-                      strokeWidth: 4,
+                      value: progressValue,
+                      strokeWidth: 12,
+                      strokeCap: StrokeCap.round,
                       strokeAlign: BorderSide.strokeAlignCenter,
-                      color: lerpedColor,
                     ),
                   ),
                 ),
-              ),
 
-              /// Remaining time progress bar
-              RotatedBox(
-                quarterTurns: 2,
-                child: FittedBox(
-                  child: CircularProgressIndicator(
-                    value: progressValue,
-                    strokeWidth: 2.5,
-                    strokeCap: StrokeCap.round,
-                    strokeAlign: BorderSide.strokeAlignCenter,
+                /// Remaining time
+                DefaultHero(
+                  tag: HeroTags.shortContentTimerPickerTag,
+                  child: RoundedContainer(
+                    width: squareDimension * 0.85,
+                    height: squareDimension * 0.85,
+                    circularRadius: squareDimension,
+                    padding: const EdgeInsets.all(12),
+                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                    onPressed: isModifiable
+                        ? () => _editAllowedTime(context, ref)
+                        : null,
+                    child: FittedBox(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            FluentIcons.beach_20_regular,
+                            size: 42,
+                          ),
+                          12.vBox,
+
+                          /// Remaining Time text
+                          TimeTextShort(
+                            timeDuration: remainingTimeSec.seconds,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 32,
+                          ),
+                          4.vBox,
+                          StyledText(
+                            context.locale.shorts_time_left_from(
+                              allowedTimeSec.seconds.toTimeShort(context),
+                            ),
+                            fontSize: 14,
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          20.vBox,
+                          const Icon(FluentIcons.edit_20_regular),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-              ),
-
-              /// Remaining time
-              FittedBox(
-                child: RoundedContainer(
-                  width: squareDimension,
-                  height: squareDimension,
-                  circularRadius: squareDimension,
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(12),
-                  color: lerpedColor,
-                  onPressed: isModifiable
-                      ? () => _editAllowedTime(context, ref)
-                      : null,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Icon(
-                        FluentIcons.beach_20_regular,
-                        size: 56,
-                      ),
-                      12.vBox,
-
-                      /// Remaining Time text
-                      TimeTextShort(
-                        timeDuration: remainingTimeSec.seconds,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 32,
-                      ),
-                      4.vBox,
-                      StyledText(
-                        context.locale.shorts_time_left_from(
-                          allowedTimeSec.seconds.toTimeShort(context),
-                        ),
-                        fontSize: 14,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      20.vBox,
-                      const DefaultHero(
-                        tag: HeroTags.shortContentTimerPickerTag,
-                        child: Icon(FluentIcons.edit_20_regular),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

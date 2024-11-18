@@ -29,8 +29,8 @@ import 'package:mindful/ui/permissions/dnd_switch_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class FocusQuickActions extends ConsumerWidget {
-  const FocusQuickActions({super.key});
+class FocusConfigurations extends ConsumerWidget {
+  const FocusConfigurations({super.key});
 
   void _pickSessionDuration(
     BuildContext context,

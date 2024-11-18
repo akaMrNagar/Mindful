@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -78,8 +79,8 @@ class _AnimatedAppsListState extends ConsumerState<AnimatedAppsList> {
           key: Key(widget.appPackages[index]),
           effects: [
             MoveEffect(
-              duration: 300.ms,
-              curve: Curves.easeOutExpo,
+              duration: AppConstants.defaultAnimDuration,
+              curve: AppConstants.defaultCurve,
               begin: Offset(0, yOffset * widget.itemExtent),
               end: const Offset(0, 0),
             ),

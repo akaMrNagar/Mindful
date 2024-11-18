@@ -11,6 +11,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 
 class DefaultHero extends StatelessWidget {
   const DefaultHero({
@@ -44,7 +45,7 @@ class _DefaultRectTween extends RectTween {
 
   @override
   Rect lerp(double t) {
-    final elasticCurveValue = Curves.fastEaseInToSlowEaseOut.transform(t);
+    final elasticCurveValue =  AppConstants.defaultCurve.transform(t);
     return Rect.fromLTRB(
       lerpDouble(begin?.left, end?.left, elasticCurveValue) ?? 0,
       lerpDouble(begin?.top, end?.top, elasticCurveValue) ?? 0,

@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 
 // Offset from offscreen to the right to fully on screen.
 final Animatable<Offset> _kRightMiddleTween = Tween<Offset>(
@@ -39,8 +40,8 @@ class DefaultPageTransitionsBuilder extends PageTransitionsBuilder {
     return SlideTransition(
       position: CurvedAnimation(
         parent: animation,
-        curve: Curves.fastEaseInToSlowEaseOut,
-        reverseCurve: Curves.fastEaseInToSlowEaseOut.flipped,
+        curve: AppConstants.defaultCurve,
+        reverseCurve: AppConstants.defaultCurve.flipped,
       ).drive(_kRightMiddleTween),
       textDirection: textDirection,
       transformHitTests: false,

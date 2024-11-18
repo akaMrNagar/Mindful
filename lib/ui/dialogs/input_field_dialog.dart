@@ -46,11 +46,13 @@ Future<String?> showWebsiteInputDialog({
 Future<String?> showUsernameInputDialog({
   required BuildContext context,
   required Object heroTag,
+  required String initialText,
 }) async {
   return await Navigator.of(context).push<String>(
     HeroPageRoute(
       builder: (context) => _InputFieldDialog(
         heroTag: heroTag,
+        initialText: initialText,
         keyboardType: TextInputType.text,
         dialogIcon: FluentIcons.person_20_filled,
         fieldIcon: FluentIcons.person_20_regular,
@@ -60,6 +62,33 @@ Future<String?> showUsernameInputDialog({
         helperText: context.locale.username_dialog_info,
         negativeBtnLabel: context.locale.dialog_button_cancel,
         positiveBtnLabel: context.locale.username_dialog_button_apply,
+      ),
+    ),
+  );
+}
+
+/// Animates the hero widget to a alert dialog with input field to enter group name
+///
+/// Returns the entered text
+Future<String?> showGroupNameInputDialog({
+  required BuildContext context,
+  required Object heroTag,
+  required String initialText,
+}) async {
+  return await Navigator.of(context).push<String>(
+    HeroPageRoute(
+      builder: (context) => _InputFieldDialog(
+        heroTag: heroTag,
+        initialText: initialText,
+        keyboardType: TextInputType.text,
+        dialogIcon: FluentIcons.tab_desktop_bottom_20_filled,
+        fieldIcon: FluentIcons.tab_desktop_bottom_20_regular,
+        title: context.locale.restriction_group_name_tile_title,
+        fieldLabel: context.locale.restriction_group_name_tile_title,
+        hintText: "Social Media, Entertainment, Games, etc",
+        helperText: context.locale.restriction_group_name_picker_dialog_info,
+        negativeBtnLabel: context.locale.dialog_button_cancel,
+        positiveBtnLabel: context.locale.dialog_button_set,
       ),
     ),
   );
@@ -77,6 +106,7 @@ class _InputFieldDialog extends StatefulWidget {
     required this.helperText,
     required this.positiveBtnLabel,
     required this.negativeBtnLabel,
+    this.initialText = "",
   });
 
   final Object heroTag;
@@ -87,6 +117,8 @@ class _InputFieldDialog extends StatefulWidget {
   final String fieldLabel;
   final String hintText;
   final String helperText;
+  final String initialText;
+
   final String positiveBtnLabel;
   final String negativeBtnLabel;
 
@@ -95,7 +127,15 @@ class _InputFieldDialog extends StatefulWidget {
 }
 
 class _InputFieldDialogState extends State<_InputFieldDialog> {
-  final _controller = TextEditingController();
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialText,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

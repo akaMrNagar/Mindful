@@ -12,27 +12,20 @@
 
 package com.mindful.android.models;
 
-import com.mindful.android.enums.PurgeType;
-
 public class PurgedReason {
-    public PurgeType type = PurgeType.AppTimerOut;
-    public String groupName = "";
-    public int usedLimit = 0;
+    public final String reasonMsg;
+    public final long totalLimit;
+    public final long usedLimit;
 
-    public PurgedReason(PurgeType type, String groupName, int usedLimit) {
-        this.type = type;
-        this.groupName = groupName;
-        this.usedLimit= usedLimit;
-    }
-
-    public PurgedReason(PurgeType type) {
-        this.type = type;
-    }
-    public PurgedReason(PurgeType type, int usedLimit) {
-        this.type = type;
+    public PurgedReason(String reasonMsg, long totalLimit, long usedLimit) {
+        this.reasonMsg = reasonMsg;
+        this.totalLimit = totalLimit;
         this.usedLimit = usedLimit;
     }
 
-    public PurgedReason() {
+    public PurgedReason(String reasonMsg) {
+        this.reasonMsg = reasonMsg;
+        this.totalLimit = -1;
+        this.usedLimit = -1;
     }
 }

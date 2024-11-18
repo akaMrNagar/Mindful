@@ -33,6 +33,7 @@ import org.jetbrains.annotations.Contract;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -182,16 +183,64 @@ public class Utils {
     @NonNull
     @Contract(pure = true)
     public static String secondsToTimeStr(long totalSeconds) {
-        int leftHours = (int) (totalSeconds / 60 / 60);
-        int leftMinutes = (int) ((totalSeconds / 60) % 60);
+        int leftHours = (int) (totalSeconds / 3600);
+        int leftMinutes = (int) ((totalSeconds % 3600) / 60);
         int leftSeconds = (int) (totalSeconds % 60);
 
-        return
-                leftHours > 0 ?
-                        leftHours + ":" + leftMinutes + ":" + leftSeconds :
-                        leftMinutes + ":" + leftSeconds;
+        StringBuilder timeStr = new StringBuilder();
 
+        if (leftHours > 0) {
+            timeStr.append(String.format(Locale.ENGLISH, "%02d", leftHours)).append("h ");
+        }
+
+        timeStr.append(String.format(Locale.ENGLISH, "%02d", leftMinutes)).append("m ");
+        timeStr.append(String.format(Locale.ENGLISH, "%02d", leftSeconds)).append("s");
+
+        return timeStr.toString();
     }
+
+    /**
+     * Create a calender instance from the Time Of Day total minutes.
+     *
+     * @param totalMinutes The total minutes from Time Of Day dart object.
+     * @return Calender representing the time of day for today.
+     */
+    @NonNull
+    @Contract(pure = true)
+    public static Calendar todToTodayCal(int totalMinutes) {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, totalMinutes / 60);
+        cal.set(Calendar.MINUTE, totalMinutes % 60);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+
+        return cal;
+    }
+
+    /**
+     * Calculated the difference between time now and future tod minutes.
+     *
+     * @param totalMinutes The total minutes from Time Of Day dart object.
+     * @return The different in MS. If the difference is negative then return 0
+     */
+    public static long todDifferenceFromNow(int totalMinutes) {
+        long diff = System.currentTimeMillis() - todToTodayCal(totalMinutes).getTimeInMillis();
+        return diff > 0 ? diff : 0;
+    }
+
+    /**
+     * Checks if current system time is outside the star and end Time Of Day for today
+     *
+     * @param startTod The start TOD in minutes
+     * @param endTod   The end TOD in minutes
+     * @return Boolean indicating if now is outside startTod and endTod
+     */
+    public static boolean isTimeOutsideTODs(int startTod, int endTod) {
+        long now = System.currentTimeMillis();
+        return !(todToTodayCal(startTod).getTimeInMillis() < now && now < todToTodayCal(endTod).getTimeInMillis());
+    }
+
 
     /**
      * Formats the total screen usage time into a human-readable string.
@@ -202,7 +251,7 @@ public class Utils {
      */
     @NonNull
     @Contract(pure = true)
-    public static String formatScreenTime(int totalMinutes) {
+    public static String minutesToTimeStr(int totalMinutes) {
         totalMinutes = Math.abs(totalMinutes);
 
         return totalMinutes > 60
@@ -211,6 +260,7 @@ public class Utils {
                 : totalMinutes / 60 + "h " + totalMinutes % 60 + "m"
                 : totalMinutes + "m";
     }
+
 
     /**
      * Formats the total data usage into a human-readable string.

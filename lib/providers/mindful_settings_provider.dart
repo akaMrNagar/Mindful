@@ -8,14 +8,13 @@
  *
  */
 
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_time_of_day.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -93,10 +92,10 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
 
   /// Changes the time of day when app usage data is reset.
   /// Also updates the native side with the new reset time.
-  void changeDataResetTime(TimeOfDay time) async {
-    state = state.copyWith(dataResetTimeMins: time.minutes);
+  void changeDataResetTime(TimeOfDayAdapter time) async {
+    state = state.copyWith(dataResetTime: time);
     await MethodChannelService.instance
-        .setDataResetTime(state.dataResetTimeMins);
+        .setDataResetTime(state.dataResetTime.toMinutes);
   }
 
   /// Include or Exclude an app from total usage statistics

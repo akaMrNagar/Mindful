@@ -96,7 +96,9 @@
     "dialog_button_cancel": "Cancel",
     "dialog_button_remove": "Remove",
     "dialog_button_set": "Set",
-    "dialog_button_delete_timer": "Delete timer",
+    "dialog_button_reset": "Reset",
+    "schedule_start_label": "Start",
+    "schedule_end_label": "End",
     "development_dialog_info": "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!",
     "development_dialog_button_report_issue": "Report Issue",
     "development_dialog_button_close": "Close",
@@ -107,8 +109,10 @@
     "your_distracting_apps_heading": "Your distracting apps",
     "select_more_apps_heading": "Select more apps",
     "imp_distracting_apps_snack_alert": "Adding important system apps to the list of distracting apps is not permitted.",
-    "custom_apps_quick_actions_unavailable_warning": "Screen usage and quick actions are unavailable for this application. At present, only network usage is accessible",
+    "custom_apps_quick_actions_unavailable_warning": "Screen usage and restrictions are unavailable for this application. At present, only network usage is accessible",
     "create_group_fab_button": "Create Group",
+    "active_period_info": "Set a time period during which access will be allowed. Outside of this time frame, access will be restricted.",
+    "minimum_distracting_apps_snack_alert": "Select at least one distracting app.",
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
     "onboarding_skip_btn_label": "Skip",
     "onboarding_finish_setup_btn_label": "Finish Setup",
@@ -161,21 +165,26 @@
     "current_streak_label": "Current streak",
     "successful_sessions_label": "Successful sessions",
     "failed_sessions_label": "Failed sessions",
-    "focus_now_fab_button": "Focus now",
+    "focus_now_tile_title": "Focus now",
+    "focus_now_tile_subtitle": "Let's get productive.",
+    "focus_timeline_tile_title": "Focus timeline",
+    "focus_timeline_tile_subtitle": "View all your achievements.",
     "invincible_mode_heading": "Invincible mode",
     "invincible_mode_tile_title": "Activate invincible mode",
     "invincible_mode_info": "When Invincible Mode is on, you won't be able to adjust selected limits after reaching your daily quota. Limits reset at midnight, so you'll be able to make changes the next day.",
     "invincible_mode_snack_alert": "Due to invincible mode, modifications to restrictions is not allowed.",
     "invincible_mode_dialog_info": "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
+    "invincible_mode_turn_off_snack_alert": "Invincible Mode cannot be turned off as long as this app remains installed on your device.",
     "invincible_mode_dialog_button_start_anyway": "Start anyway",
-    "invincible_mode_include_apps_timer_tile_title": "Include apps timer",
-    "invincible_mode_include_apps_timer_tile_subtitle": "Prevents changes after exceeding the app's daily time limit.",
-    "invincible_mode_include_apps_launch_limit_tile_title": "Include app launch limit",
-    "invincible_mode_include_apps_launch_limit_tile_subtitle": "Prevents changes after exceeding the app's daily launch count.",
+    "invincible_mode_include_timer_tile_title": "Include timer",
+    "invincible_mode_include_launch_limit_tile_title": "Include launch limit",
+    "invincible_mode_include_active_period_tile_title": "Include active period",
+    "invincible_mode_app_restrictions_tile_title": "App restrictions",
+    "invincible_mode_app_restrictions_tile_subtitle": "Prevent changes to the app's selected restrictions once the daily limits are exceeded.",
+    "invincible_mode_group_restrictions_tile_title": "Group restrictions",
+    "invincible_mode_group_restrictions_tile_subtitle": "Prevent changes to the group's selected restrictions once the daily limits are exceeded.",
     "invincible_mode_include_shorts_timer_tile_title": "Include shorts timer",
     "invincible_mode_include_shorts_timer_tile_subtitle": "Prevents changes after reaching your daily shorts limit.",
-    "invincible_mode_include_groups_timer_tile_title": "Include groups timer",
-    "invincible_mode_include_groups_timer_tile_subtitle": "Prevents changes after exceeding the group's daily time limit.",
     "invincible_mode_include_bedtime_tile_title": "Include bedtime",
     "invincible_mode_include_bedtime_tile_subtitle": "Prevents changes during the active bedtime schedule.",
     "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
@@ -238,13 +247,10 @@
     "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "bedtime_tab_title": "Bedtime",
     "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
-    "schedule_start_label": "Start",
-    "schedule_end_label": "End",
     "schedule_tile_title": "Schedule",
     "schedule_tile_subtitle": "Enable or disable daily schedule.",
     "bedtime_no_days_selected_snack_alert": "Select at least one day of the week.",
     "bedtime_minimum_duration_snack_alert": "The total bedtime duration must be at least 30 minutes.",
-    "bedtime_minimum_apps_snack_alert": "Select at least one distracting app to turn on bedtime schedule",
     "distracting_apps_tile_title": "Distracting apps",
     "distracting_apps_tile_subtitle": "Select which apps are distracting you from your bedtime routine.",
     "bedtime_distracting_apps_modify_snack_alert": "Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.",
@@ -328,15 +334,17 @@
     "focus_session_state_failed": "Failed",
     "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
     "active_session_tab_title": "Session",
+    "active_session_dialog_button_keep_pushing": "Keep pushing",
+    "active_session_finish_dialog_title": "Finish",
+    "active_session_finish_dialog_info": "Stay strong! You're building valuable focus. Are you sure you want to end this focus session? Every extra moment counts toward your goals.",
     "active_session_giveup_dialog_title": "Give up",
     "active_session_giveup_dialog_info": "Hold on! You're almost there don't give up now! Are you sure you want to end this focus session early? Progress will be lost.",
-    "active_session_giveup_dialog_button_keep_pushing": "Keep pushing",
     "active_session_giveup_snack_alert": "You gave up! Don't worry, you can do better next time. Every effort counts - just keep going",
-    "active_session_quote_one": "Every step counts, stay strong and keep going!",
-    "active_session_quote_two": "Stay focused! you're making amazing progress!",
-    "active_session_quote_three": "You're crushing it! Keep the momentum going!",
-    "active_session_quote_four": "Just a little more to go, you're doing fantastic!",
-    "active_session_quote_five": "Congratulations! 🎉\n You've completed your focus session of {durationString}.\n\nGreat job—keep up the amazing work!",
+    "active_session_quote_one": "Every step counts, stay strong and keep going",
+    "active_session_quote_two": "Stay focused! you're making amazing progress",
+    "active_session_quote_three": "You're crushing it! Keep the momentum going",
+    "active_session_quote_four": "Just a little more to go, you're doing fantastic",
+    "active_session_quote_five": "Congratulations 🎉 \n You've completed your focus session of {durationString}.\n\nGreat job, keep up the amazing work",
     "@active_session_quote_five": {
         "placeholders": {
             "durationString": {
@@ -348,28 +356,13 @@
     "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
     "restriction_groups_tab_title": "Restriction groups",
     "restriction_groups_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
-    "restriction_group_time_used": "Time used: {timeString}",
-    "@restriction_group_time_used": {
-        "placeholders": {
-            "timeString": {
-                "type": "String",
-                "example": "1 hour, 30 minutes"
-            }
-        }
-    },
-    "restriction_group_time_left": "Time left: {timeString}",
-    "@restriction_group_time_left": {
-        "placeholders": {
-            "timeString": {
-                "type": "String",
-                "example": "1 hour, 30 minutes"
-            }
-        }
-    },
-    "restriction_group_heading": "Restriction group",
-    "restriction_group_timer_picker_dialog_info": "Set a daily time limit for this group. Once your limit is reached, all the apps in this group will be paused until midnight.",
-    "restriction_group_label_tile_title": "Label",
+    "restriction_group_time_spent_label": "Time spent today",
+    "restriction_group_time_left_label": "Time left today",
+    "restriction_group_name_tile_title": "Group name",
+    "restriction_group_name_picker_dialog_info": "Enter a name for the restriction group to help identify and manage it easily.",
     "restriction_group_timer_tile_title": "Group timer",
+    "restriction_group_timer_picker_dialog_info": "Set a daily time limit for this group. Once your limit is reached, all the apps in this group will be paused until midnight.",
+    "restriction_group_active_period_tile_title": "Group active period",
     "remove_restriction_group_dialog_title": "Remove group",
     "remove_restriction_group_dialog_info": "Are you sure? you want to remove '{groupName}' from restriction groups.",
     "@remove_restriction_group_dialog_info": {
@@ -380,6 +373,7 @@
             }
         }
     },
+    "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
     "@----------------------------- NOTIFICATION GROUPS SCREEN -----------------------------": {},
     "notification_groups_tab_title": "Notification groups",
     "notification_groups_tile_subtitle": "Schedule alerts for group of apps.",
@@ -403,7 +397,7 @@
     "app_limit_status_not_set": "Not set",
     "app_timer_tile_title": "App timer",
     "app_timer_picker_dialog_info": "Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.",
-    "app_launch_limit_tile_title": "App launch limit",
+    "app_launch_limit_tile_title": "Launch limit",
     "app_launch_limit_tile_subtitle": "Launched {count} times today.",
     "@app_launch_limit_tile_subtitle": {
         "placeholders": {
@@ -414,20 +408,20 @@
         }
     },
     "app_launch_limit_picker_dialog_info": "Set how many times you can open this app each day. Once the limit is reached, it will be paused until midnight.",
-    "app_alert_interval_tile_title": "Alert interval",
-    "app_alert_interval_tile_subtitle": "Every {intervalString}.",
-    "@app_alert_interval_tile_subtitle": {
+    "app_active_period_tile_title": "Active period",
+    "app_active_period_tile_subtitle": "From {startTime} to {endTime}",
+    "@app_active_period_tile_subtitle": {
         "placeholders": {
-            "intervalString": {
+            "startTime": {
                 "type": "String",
-                "example": "15 minutes"
+                "example": "10:00pm"
+            },
+            "endTime": {
+                "type": "String",
+                "example": "15"
             }
         }
     },
-    "app_alert_interval_picker_dialog_info": "Set the interval for alerts to remind you of your screen time while using this app.",
-    "app_alert_type_tile_title": "Alert type",
-    "app_alert_type_notification": "Notification",
-    "app_alert_type_dialog": "Dialog",
     "internet_access_tile_title": "Internet access",
     "internet_access_tile_subtitle": "Switch off to block app's internet.",
     "internet_access_blocked_snack_alert": "{appName}'s internet is blocked.",
@@ -448,6 +442,21 @@
             }
         }
     },
+    "usage_alerts_heading": "Usage alerts",
+    "app_alert_interval_tile_title": "Alert interval",
+    "app_alert_interval_tile_subtitle": "Every {intervalString}.",
+    "@app_alert_interval_tile_subtitle": {
+        "placeholders": {
+            "intervalString": {
+                "type": "String",
+                "example": "15 minutes"
+            }
+        }
+    },
+    "app_alert_interval_picker_dialog_info": "Set the interval for alerts to remind you of your screen time while using this app.",
+    "app_alert_type_tile_title": "Alert type",
+    "app_alert_type_notification": "Notification",
+    "app_alert_type_dialog": "Dialog",
     "launch_app_tile_title": "Launch app",
     "launch_app_tile_subtitle": "Open {appName}.",
     "@launch_app_tile_subtitle": {
@@ -499,7 +508,6 @@
     "bottom_navigation_tile_subtitle": "Switch to bottom navigation system.",
     "data_reset_time_tile_title": "Daily data usage reset time",
     "data_reset_time_tile_subtitle": "Specify the time when your daily data cycle renews based on your recharge plan.",
-    "data_reset_time_dialog_hint": "Select daily data usage reset time",
     "@----------------------------- SETTINGS SCREEN - ADVANCE TAB -----------------------------": {},
     "advance_tab_title": "Advance",
     "service_heading": "Service",

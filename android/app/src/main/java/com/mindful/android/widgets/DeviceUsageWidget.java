@@ -103,7 +103,7 @@ public class DeviceUsageWidget extends AppWidgetProvider {
                 // Ensure UI updates run on the main thread
                 new Handler(Looper.getMainLooper()).post(() -> {
                     RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.device_usage_widget_layout);
-                    views.setTextViewText(R.id.widgetScreenUsage, Utils.formatScreenTime(result.totalScreenUsageMins));
+                    views.setTextViewText(R.id.widgetScreenUsage, Utils.minutesToTimeStr(result.totalScreenUsageMins));
                     views.setTextViewText(R.id.widgetMobileUsage, Utils.formatDataMBs(result.totalMobileUsageMBs));
                     views.setTextViewText(R.id.widgetWifiUsage, Utils.formatDataMBs(result.totalWifiUsageMBs));
 
