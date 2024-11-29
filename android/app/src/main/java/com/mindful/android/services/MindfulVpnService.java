@@ -84,13 +84,13 @@ public class MindfulVpnService extends android.net.VpnService {
     private void startServiceAndConnectVpn(boolean isFirstTimeConnect) {
         // Check if no blocked apps then STOP service
         // Necessary if the service starts from Boot Receiver
-        if (mBlockedApps.isEmpty()) {
+        if (mBlockedApps.isEmpty() && !isFirstTimeConnect) {
             Log.w(TAG, "startServiceAndConnectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
             stopAndDisposeService();
             return;
         }
 
-        final Thread newThread = new Thread(getVpnRunnable(), TAG);
+        final Thread newThread = new Thread(getVpnThread(), TAG);
         setVpnThread(newThread);
         newThread.start();
 
@@ -144,7 +144,7 @@ public class MindfulVpnService extends android.net.VpnService {
      */
     @NonNull
     @Contract(" -> new")
-    private Runnable getVpnRunnable() {
+    private Runnable getVpnThread() {
         return new Runnable() {
             @Override
             public void run() {
@@ -167,24 +167,24 @@ public class MindfulVpnService extends android.net.VpnService {
                         try {
                             builder.addAllowedApplication(packageName);
                         } catch (PackageManager.NameNotFoundException e) {
-                            Log.w(TAG, "getVpnRunnable: Cannot find app with package " + packageName);
+                            Log.w(TAG, "getVpnThread: Cannot find app with package " + packageName);
                         }
                     }
 
                     synchronized (MindfulVpnService.this) {
                         mVpnInterface = builder.establish();
-                        Log.d(TAG, "getVpnRunnable: VPN connected successfully");
+                        Log.d(TAG, "getVpnThread: VPN connected successfully");
                     }
 
 
                 } catch (SocketException e) {
-                    Log.e(TAG, "run: Cannot use socket for VPN", e);
+                    Log.e(TAG, "getVpnThread: Cannot use socket for VPN", e);
                     stopAndDisposeService();
                 } catch (IOException | IllegalArgumentException e) {
-                    Log.e(TAG, "run: VPN connection failed, exiting", e);
+                    Log.e(TAG, "getVpnThread: VPN connection failed, exiting", e);
                     stopAndDisposeService();
                 } catch (Exception e) {
-                    Log.e(TAG, "run: Something went wrong", e);
+                    Log.e(TAG, "getVpnThread: Something went wrong", e);
                     stopAndDisposeService();
                 }
             }
@@ -208,6 +208,7 @@ public class MindfulVpnService extends android.net.VpnService {
      */
     public void updateBlockedApps(HashSet<String> blockedApps) {
         mBlockedApps = blockedApps;
+        Log.d(TAG, "updateBlockedApps: Internet blocked apps updated successfully");
         if (mBlockedApps.isEmpty()) stopAndDisposeService();
         else mShouldRestartVpn = true;
     }

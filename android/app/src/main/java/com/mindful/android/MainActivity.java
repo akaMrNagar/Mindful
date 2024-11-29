@@ -81,6 +81,11 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
         mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
+
+        /// Bind to Services if they are already running
+        mTrackerServiceConn.bindService();
+        mVpnServiceConn.bindService();
+        mFocusServiceConn.bindService();
     }
 
     private void updateLocale(@NonNull String languageCode) {
@@ -94,16 +99,6 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
         }
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        /// Bind to Services if they are already running
-        mTrackerServiceConn.bindService();
-        mVpnServiceConn.bindService();
-        mFocusServiceConn.bindService();
-    }
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -402,11 +397,15 @@ public class MainActivity extends FlutterActivity implements MethodChannel.Metho
     @Override
     protected void onStop() {
         super.onStop();
-
         // Notify VPN service that it can restart if needed
         if (mVpnServiceConn.isConnected()) {
             mVpnServiceConn.getService().onApplicationStop();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
         // Unbind services
         mTrackerServiceConn.unBindService();
