@@ -18,16 +18,18 @@ class FocusSessionsTable extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// Type of focus session [SessionType]
-  IntColumn get type => intEnum<SessionType>()();
+  IntColumn get type => intEnum<SessionType>().withDefault(const Constant(0))();
 
   /// Current state of focus session [SessionState]
-  IntColumn get state => intEnum<SessionState>()();
+  IntColumn get state =>
+      intEnum<SessionState>().withDefault(const Constant(0))();
 
   /// [DateTime] when the focus session is started
-  DateTimeColumn get startDateTime => dateTime()();
+  DateTimeColumn get startDateTime =>
+      dateTime().withDefault(Constant(DateTime(0)))();
 
   /// Total duration of the focus session in SECONDS
   /// If the session state is [SessionState.failed] then the duration
   /// is considered as the time spent before giveup
-  IntColumn get durationSecs => integer()();
+  IntColumn get durationSecs => integer().withDefault(const Constant(0))();
 }

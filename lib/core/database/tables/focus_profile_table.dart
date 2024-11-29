@@ -8,6 +8,8 @@
  *
  */
 
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
@@ -22,13 +24,16 @@ class FocusProfileTable extends Table {
   Set<Column<Object>>? get primaryKey => {sessionType};
 
   /// Duration in SECONDS for the focus session
-  IntColumn get sessionDuration => integer()();
+  IntColumn get sessionDuration => integer().withDefault(const Constant(0))();
 
   /// Flag indicating if to start DND during the focus session
-  BoolColumn get shouldStartDnd => boolean()();
+  BoolColumn get shouldStartDnd =>
+      boolean().withDefault(const Constant(false))();
 
   /// List of app's packages which are selected as distracting apps.
-  TextColumn get distractingApps => text().map(const ListStringConverter())();
+  TextColumn get distractingApps => text()
+      .map(const ListStringConverter())
+      .withDefault(Constant(jsonEncode([])))();
 
   static const defaultFocusProfileModel = FocusProfile(
     sessionType: SessionType.study,
