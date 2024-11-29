@@ -42,9 +42,9 @@ public class FocusSessionService extends Service {
     private static final String TAG = "Mindful.FocusSessionService";
     public static final String ACTION_START_FOCUS_SERVICE = "com.mindful.android.FocusSessionService.START_SERVICE_FOCUS";
     private final ServiceBinder<FocusSessionService> mBinder = new ServiceBinder<>(FocusSessionService.this);
-
     private CountDownTimer mCountDownTimer;
     private Timer mStopWatchTimer;
+
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
@@ -185,7 +185,7 @@ public class FocusSessionService extends Service {
 
         mProgressNotificationBuilder
                 .setContentText(notificationInfo)
-                .setProgress(mElapsedSeconds + mFocusSession.durationSecs, totalLeftSeconds, false);
+                .setProgress(mFocusSession.durationSecs, totalLeftSeconds, false);
 
         return mProgressNotificationBuilder.build();
     }
