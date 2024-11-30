@@ -18,6 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/auth_service.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -35,6 +36,10 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  bool _haveAllEssentialPermissions = false;
+  bool _isOnboardingDone = false;
+  bool _isAccessProtected = false;
+
   @override
   void initState() {
     super.initState();
@@ -43,19 +48,24 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   void _goToNextScreen() async {
     final settings = await ref.read(mindfulSettingsProvider.notifier).init();
-
     final perms =
         await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
 
-    final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
+    _isOnboardingDone = settings.isOnboardingDone;
+    _isAccessProtected = settings.protectedAccess;
+    _haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
         perms.haveDisplayOverlayPermission &&
         perms.haveAlarmsPermission &&
         perms.haveNotificationPermission;
 
-    // await Future.delayed(250.ms);
+    setState(() {});
+    _isAccessProtected ? _authenticate() : _pushNextScreen();
+  }
+
+  void _pushNextScreen() {
     if (!mounted) return;
 
-    if (haveAllEssentialPermissions && settings.isOnboardingDone) {
+    if (_haveAllEssentialPermissions && _isOnboardingDone) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.homeScreen,
         (_) => false,
@@ -64,9 +74,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.onboardingScreen,
         (_) => false,
-        arguments: settings.isOnboardingDone,
+        arguments: _isOnboardingDone,
       );
     }
+  }
+
+  void _authenticate() async {
+    final isSuccess = await AuthService.instance.authenticate();
+    if (isSuccess) _pushNextScreen();
   }
 
   @override
@@ -126,7 +141,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               ),
 
               const Divider(color: Colors.transparent),
-              0.vBox,
+              _isAccessProtected
+                  ? FilledButton.icon(
+                      icon: const Icon(FluentIcons.fingerprint_20_regular),
+                      label: Text(context.locale.unlock_button_label),
+                      onPressed: _authenticate,
+                    )
+                  : 0.vBox,
 
               /// Make
               const StyledText("Made with ♥️ in 🇮🇳", fontSize: 14),

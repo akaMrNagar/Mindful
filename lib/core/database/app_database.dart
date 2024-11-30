@@ -11,6 +11,7 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
@@ -31,6 +32,7 @@ import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/utils.dart';
 
 part 'app_database.g.dart';
 
@@ -58,7 +60,7 @@ class AppDatabase extends _$AppDatabase {
   ///
   /// STEP 3 => Add migration steps to migration strategy
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
 
@@ -68,25 +70,28 @@ class AppDatabase extends _$AppDatabase {
   /// The migrator will run and it will throw error!
   MigrationStrategy get migration => MigrationStrategy(
         onUpgrade: (m, from, to) {
-          // debugPrint("Upgrading database from schema version $from to $to");
+          debugPrint("Upgrading database from schema version $from to $to");
 
           return m.runMigrationSteps(
             from: from,
             to: to,
             steps: migrationSteps(
-              // from1To2: (m, schema) async {
-                // /// Add protective access [Bool] column
-                // await m.addColumn(
-                //   schema.mindfulSettingsTable,
-                //   schema.mindfulSettingsTable.protectedAccess,
-                // );
+              from1To2: (m, schema) async => runSafe(
+                "Migration($from to $to)",
+                () async {
+                  /// Add protective access [Bool] column
+                  await m.addColumn(
+                    schema.mindfulSettingsTable,
+                    schema.mindfulSettingsTable.protectedAccess,
+                  );
 
-                // /// Add uninstall window time [TimeOfDayAdapter] column
-                // await m.addColumn(
-                //   schema.mindfulSettingsTable,
-                //   schema.mindfulSettingsTable.uninstallWindowTime,
-                // );
-              // },
+                  /// Add uninstall window time [TimeOfDayAdapter] column
+                  await m.addColumn(
+                    schema.mindfulSettingsTable,
+                    schema.mindfulSettingsTable.uninstallWindowTime,
+                  );
+                },
+              ),
             ),
           );
         },

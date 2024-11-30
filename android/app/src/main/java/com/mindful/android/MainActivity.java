@@ -55,12 +55,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
-import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
-public class MainActivity extends FlutterActivity implements MethodChannel.MethodCallHandler {
+public class MainActivity extends FlutterFragmentActivity implements MethodChannel.MethodCallHandler {
 
     private static final String TAG = "Mindful.MainActivity";
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;

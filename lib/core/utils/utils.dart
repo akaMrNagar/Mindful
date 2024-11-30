@@ -36,6 +36,7 @@ int _formatWeekDayToSunday(int weekDay) {
   };
 }
 
+/// Creates [BorderRadius] from the given [ItemPosition] for the group item
 BorderRadius getBorderRadiusFromPosition(ItemPosition position) =>
     switch (position) {
       ItemPosition.start => const BorderRadius.vertical(
@@ -49,3 +50,12 @@ BorderRadius getBorderRadiusFromPosition(ItemPosition position) =>
         ),
       ItemPosition.none => BorderRadius.circular(24),
     };
+
+/// Invoke the method in the [try/catch] block and print the error if it occurred
+void runSafe(String tag, VoidCallback method) {
+  try {
+    method();
+  } catch (e) {
+    debugPrint("Error Occurred [$tag] : ${e.toString()}");
+  }
+}

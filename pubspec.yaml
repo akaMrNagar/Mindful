@@ -38,6 +38,7 @@ dependencies:
   intl: ^0.19.0
   sliver_tools: ^0.2.12
   flutter_riverpod: ^2.5.1
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:

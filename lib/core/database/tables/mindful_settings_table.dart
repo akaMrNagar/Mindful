@@ -80,6 +80,15 @@ class MindfulSettingsTable extends Table {
   BoolColumn get isOnboardingDone =>
       boolean().withDefault(const Constant(false))();
 
+  /// Flag indicating whether to authenticate before opening Mindful or not
+  BoolColumn get protectedAccess =>
+      boolean().withDefault(const Constant(false))();
+
+  /// Daily uninstall window start time [TimeOfDay] stored as minutes
+  IntColumn get uninstallWindowTime => integer()
+      .map(const TimeOfDayAdapterConverter())
+      .withDefault(const Constant(0))();
+
   static final defaultMindfulSettingsModel = MindfulSettings(
     id: 0,
     defaultHomeTab: DefaultHomeTab.dashboard,
@@ -95,5 +104,7 @@ class MindfulSettingsTable extends Table {
     leftEmergencyPasses: 3,
     lastEmergencyUsed: DateTime(0),
     isOnboardingDone: false,
+    protectedAccess: false,
+    uninstallWindowTime: const TimeOfDayAdapter.zero(),
   );
 }

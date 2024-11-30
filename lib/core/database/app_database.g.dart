@@ -2403,6 +2403,27 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_onboarding_done" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _protectedAccessMeta =
+      const VerificationMeta('protectedAccess');
+  @override
+  late final GeneratedColumn<bool> protectedAccess = GeneratedColumn<bool>(
+      'protected_access', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("protected_access" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _uninstallWindowTimeMeta =
+      const VerificationMeta('uninstallWindowTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      uninstallWindowTime = GeneratedColumn<int>(
+              'uninstall_window_time', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<TimeOfDayAdapter>(
+              $MindfulSettingsTableTable.$converteruninstallWindowTime);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2418,7 +2439,9 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         excludedApps,
         leftEmergencyPasses,
         lastEmergencyUsed,
-        isOnboardingDone
+        isOnboardingDone,
+        protectedAccess,
+        uninstallWindowTime
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2489,6 +2512,14 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           isOnboardingDone.isAcceptableOrUnknown(
               data['is_onboarding_done']!, _isOnboardingDoneMeta));
     }
+    if (data.containsKey('protected_access')) {
+      context.handle(
+          _protectedAccessMeta,
+          protectedAccess.isAcceptableOrUnknown(
+              data['protected_access']!, _protectedAccessMeta));
+    }
+    context.handle(
+        _uninstallWindowTimeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2531,6 +2562,12 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           data['${effectivePrefix}last_emergency_used'])!,
       isOnboardingDone: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_onboarding_done'])!,
+      protectedAccess: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}protected_access'])!,
+      uninstallWindowTime: $MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}uninstall_window_time'])!),
     );
   }
 
@@ -2547,6 +2584,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
   static TypeConverter<List<String>, String> $converterexcludedApps =
       const ListStringConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
 
 class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
@@ -2591,6 +2630,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// Flag indicating if onboarding is completed or not
   final bool isOnboardingDone;
+
+  /// Flag indicating whether to authenticate before opening Mindful or not
+  final bool protectedAccess;
+
+  /// Daily uninstall window start time [TimeOfDay] stored as minutes
+  final TimeOfDayAdapter uninstallWindowTime;
   const MindfulSettings(
       {required this.id,
       required this.themeMode,
@@ -2605,7 +2650,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.excludedApps,
       required this.leftEmergencyPasses,
       required this.lastEmergencyUsed,
-      required this.isOnboardingDone});
+      required this.isOnboardingDone,
+      required this.protectedAccess,
+      required this.uninstallWindowTime});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2638,6 +2685,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses);
     map['last_emergency_used'] = Variable<DateTime>(lastEmergencyUsed);
     map['is_onboarding_done'] = Variable<bool>(isOnboardingDone);
+    map['protected_access'] = Variable<bool>(protectedAccess);
+    {
+      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime));
+    }
     return map;
   }
 
@@ -2657,6 +2710,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       leftEmergencyPasses: Value(leftEmergencyPasses),
       lastEmergencyUsed: Value(lastEmergencyUsed),
       isOnboardingDone: Value(isOnboardingDone),
+      protectedAccess: Value(protectedAccess),
+      uninstallWindowTime: Value(uninstallWindowTime),
     );
   }
 
@@ -2684,6 +2739,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       lastEmergencyUsed:
           serializer.fromJson<DateTime>(json['lastEmergencyUsed']),
       isOnboardingDone: serializer.fromJson<bool>(json['isOnboardingDone']),
+      protectedAccess: serializer.fromJson<bool>(json['protectedAccess']),
+      uninstallWindowTime: $MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
     );
   }
   @override
@@ -2709,6 +2768,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'leftEmergencyPasses': serializer.toJson<int>(leftEmergencyPasses),
       'lastEmergencyUsed': serializer.toJson<DateTime>(lastEmergencyUsed),
       'isOnboardingDone': serializer.toJson<bool>(isOnboardingDone),
+      'protectedAccess': serializer.toJson<bool>(protectedAccess),
+      'uninstallWindowTime': serializer.toJson<dynamic>(
+          $MindfulSettingsTableTable.$converteruninstallWindowTime
+              .toJson(uninstallWindowTime)),
     };
   }
 
@@ -2726,7 +2789,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           List<String>? excludedApps,
           int? leftEmergencyPasses,
           DateTime? lastEmergencyUsed,
-          bool? isOnboardingDone}) =>
+          bool? isOnboardingDone,
+          bool? protectedAccess,
+          TimeOfDayAdapter? uninstallWindowTime}) =>
       MindfulSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
@@ -2742,6 +2807,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
         lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
+        protectedAccess: protectedAccess ?? this.protectedAccess,
+        uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       );
   @override
   String toString() {
@@ -2759,7 +2826,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('excludedApps: $excludedApps, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone')
+          ..write('isOnboardingDone: $isOnboardingDone, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime')
           ..write(')'))
         .toString();
   }
@@ -2779,7 +2848,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       excludedApps,
       leftEmergencyPasses,
       lastEmergencyUsed,
-      isOnboardingDone);
+      isOnboardingDone,
+      protectedAccess,
+      uninstallWindowTime);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2797,7 +2868,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.excludedApps == this.excludedApps &&
           other.leftEmergencyPasses == this.leftEmergencyPasses &&
           other.lastEmergencyUsed == this.lastEmergencyUsed &&
-          other.isOnboardingDone == this.isOnboardingDone);
+          other.isOnboardingDone == this.isOnboardingDone &&
+          other.protectedAccess == this.protectedAccess &&
+          other.uninstallWindowTime == this.uninstallWindowTime);
 }
 
 class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
@@ -2815,6 +2888,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<int> leftEmergencyPasses;
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
+  final Value<bool> protectedAccess;
+  final Value<TimeOfDayAdapter> uninstallWindowTime;
   const MindfulSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
@@ -2830,6 +2905,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
   });
   MindfulSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2846,6 +2923,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
   });
   static Insertable<MindfulSettings> custom({
     Expression<int>? id,
@@ -2862,6 +2941,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<int>? leftEmergencyPasses,
     Expression<DateTime>? lastEmergencyUsed,
     Expression<bool>? isOnboardingDone,
+    Expression<bool>? protectedAccess,
+    Expression<int>? uninstallWindowTime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2880,6 +2961,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
         'left_emergency_passes': leftEmergencyPasses,
       if (lastEmergencyUsed != null) 'last_emergency_used': lastEmergencyUsed,
       if (isOnboardingDone != null) 'is_onboarding_done': isOnboardingDone,
+      if (protectedAccess != null) 'protected_access': protectedAccess,
+      if (uninstallWindowTime != null)
+        'uninstall_window_time': uninstallWindowTime,
     });
   }
 
@@ -2897,7 +2981,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<List<String>>? excludedApps,
       Value<int>? leftEmergencyPasses,
       Value<DateTime>? lastEmergencyUsed,
-      Value<bool>? isOnboardingDone}) {
+      Value<bool>? isOnboardingDone,
+      Value<bool>? protectedAccess,
+      Value<TimeOfDayAdapter>? uninstallWindowTime}) {
     return MindfulSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
@@ -2913,6 +2999,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
       lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
       isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
+      protectedAccess: protectedAccess ?? this.protectedAccess,
+      uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
     );
   }
 
@@ -2969,6 +3057,14 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (isOnboardingDone.present) {
       map['is_onboarding_done'] = Variable<bool>(isOnboardingDone.value);
     }
+    if (protectedAccess.present) {
+      map['protected_access'] = Variable<bool>(protectedAccess.value);
+    }
+    if (uninstallWindowTime.present) {
+      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime.value));
+    }
     return map;
   }
 
@@ -2988,7 +3084,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('excludedApps: $excludedApps, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone')
+          ..write('isOnboardingDone: $isOnboardingDone, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime')
           ..write(')'))
         .toString();
   }
@@ -5486,6 +5584,8 @@ typedef $$MindfulSettingsTableTableInsertCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
@@ -5503,6 +5603,8 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 
 class $$MindfulSettingsTableTableTableManager extends RootTableManager<
@@ -5540,6 +5642,8 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion(
             id: id,
@@ -5556,6 +5660,8 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
@@ -5572,6 +5678,8 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion.insert(
             id: id,
@@ -5588,6 +5696,8 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
           ),
         ));
 }
@@ -5685,6 +5795,18 @@ class $$MindfulSettingsTableTableFilterComposer
       column: $state.table.isOnboardingDone,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get protectedAccess => $state.composableBuilder(
+      column: $state.table.protectedAccess,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get uninstallWindowTime => $state.composableBuilder(
+          column: $state.table.uninstallWindowTime,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 }
 
 class $$MindfulSettingsTableTableOrderingComposer
@@ -5757,6 +5879,16 @@ class $$MindfulSettingsTableTableOrderingComposer
 
   ColumnOrderings<bool> get isOnboardingDone => $state.composableBuilder(
       column: $state.table.isOnboardingDone,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get protectedAccess => $state.composableBuilder(
+      column: $state.table.protectedAccess,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get uninstallWindowTime => $state.composableBuilder(
+      column: $state.table.uninstallWindowTime,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
