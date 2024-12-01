@@ -19,4 +19,5 @@ enum PermissionType {
   vpn,
   ignoreOptimization,
   exactAlarm,
+  admin,
 }

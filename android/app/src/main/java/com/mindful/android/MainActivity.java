@@ -242,6 +242,10 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 result.success(PermissionsHelper.getAndAskUsageAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
+            case "getAndAskAdminPermission": {
+                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
             case "getAndAskIgnoreBatteryOptimizationPermission": {
                 result.success(getAndAskIgnoreBatteryOptimizationPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
@@ -256,6 +260,11 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
             }
             case "getAndAskExactAlarmPermission": {
                 result.success(getAndAskExactAlarmPermission(Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "disableDeviceAdmin": {
+                NewActivitiesLaunchHelper.disableDeviceAdmin(this);
+                result.success(true);
                 break;
             }
 

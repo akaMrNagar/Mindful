@@ -19,17 +19,24 @@ import 'package:mindful/core/services/auth_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
+import 'package:mindful/ui/permissions/admin_permission_tile.dart';
 import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
-class TabAdvance extends ConsumerWidget {
+class TabAdvance extends ConsumerStatefulWidget {
   const TabAdvance({super.key});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TabAdvanceState();
+}
+
+class _TabAdvanceState extends ConsumerState<TabAdvance> {
   void _openAutoStartSettings(BuildContext context) async {
     final success = await MethodChannelService.instance.openAutoStartSettings();
 
@@ -40,9 +47,32 @@ class TabAdvance extends ConsumerWidget {
     }
   }
 
+  void _toggleProtectedAccess(bool isAccessProtected) async {
+    try {
+      if (!isAccessProtected) {
+        final canEnable = await AuthService.instance.authenticate();
+        if (!canEnable) {
+          /// Show alert for no lock
+          if (mounted) {
+            context.showSnackAlert(
+                context.locale.protected_access_no_lock_snack_alert);
+          }
+
+          return;
+        }
+      }
+
+      ref.read(mindfulSettingsProvider.notifier).switchProtectedAccess();
+    } catch (e) {
+      debugPrint("Failed to authenticate: ${e.toString()}");
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final mindfulSettings = ref.watch(mindfulSettingsProvider);
+    final isAdminEnabled =
+        ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
@@ -58,37 +88,26 @@ class TabAdvance extends ConsumerWidget {
           leadingIcon: FluentIcons.fingerprint_20_regular,
           titleText: context.locale.protected_access_tile_title,
           subtitleText: context.locale.protected_access_tile_subtitle,
-          onPressed: () async {
-            if (!mindfulSettings.protectedAccess) {
-              final canEnable = await AuthService.instance.authenticate();
-              if (!canEnable) return;
-            }
-
-            ref.read(mindfulSettingsProvider.notifier).switchProtectedAccess();
-          },
+          onPressed: () =>
+              _toggleProtectedAccess(mindfulSettings.protectedAccess),
         ).sliver,
 
         /// Tamper protection
-        DefaultListTile(
-          position: ItemPosition.mid,
-          switchValue: false,
-          leadingIcon: FluentIcons.shield_keyhole_20_regular,
-          titleText: context.locale.tamper_protection_tile_title,
-          subtitleText: context.locale.tamper_protection_tile_subtitle,
-          // onPressed: () => _openAutoStartSettings(context),
-        ).sliver,
+        const AdminPermissionTile().sliver,
 
         /// Uninstall window
         DefaultHero(
           tag: HeroTags.uninstallWindowTileTag,
           child: DefaultListTile(
             position: ItemPosition.end,
+            enabled: !isAdminEnabled,
             titleText: context.locale.uninstall_window_tile_title,
             subtitleText: context.locale.uninstall_window_tile_subtitle,
             trailing: StyledText(
               mindfulSettings.uninstallWindowTime.format(context),
               fontSize: 14,
               fontWeight: FontWeight.bold,
+              isSubtitle: isAdminEnabled,
             ),
             onPressed: () async {
               final pickedTime = await showCustomTimePickerDialog(

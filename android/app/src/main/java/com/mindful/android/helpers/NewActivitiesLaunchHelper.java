@@ -12,6 +12,7 @@
 
 package com.mindful.android.helpers;
 
+import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,6 +28,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 
 import com.mindful.android.R;
+import com.mindful.android.receivers.DeviceAdminReceiver;
 import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
 
@@ -119,6 +121,41 @@ public class NewActivitiesLaunchHelper {
     }
 
     // SECTION: For device setting sections or pages app ===========================================
+
+    /**
+     * Opens the device admin settings for the Mindful app.
+     *
+     * @param context       The context to use for launching the activity.
+     * @param componentName The component name of the Mindful device admin receiver.
+     */
+    public static void openMindfulDeviceAdminSection(@NonNull Context context, ComponentName componentName) {
+        try {
+            Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+            intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+            intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_description);
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "openDeviceAdminSettings: Unable to open device ADMIN settings", e);
+        }
+    }
+
+    /**
+     * Deactivate the admin privileges.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    public static void disableDeviceAdmin(@NonNull Context context) {
+        try {
+            ComponentName componentName = new ComponentName(context, DeviceAdminReceiver.class);
+            DevicePolicyManager devicePolicyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+            if (devicePolicyManager.isAdminActive(componentName)) {
+                devicePolicyManager.removeActiveAdmin(componentName);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "disableDeviceAdmin: Failed to deactivate admin", e);
+        }
+    }
 
     /**
      * Opens the Mindful usage access settings for permission.

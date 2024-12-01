@@ -16,7 +16,7 @@
     <!-- ____________________________________________________________________________________ -->
     <!-- ________________________________ PERMISSIONS _______________________________________ -->
     <!-- ____________________________________________________________________________________ -->
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
@@ -44,10 +44,10 @@
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:enableOnBackInvokedCallback="true"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:enableOnBackInvokedCallback="true"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
 
@@ -83,6 +83,20 @@
         <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ RECEIVERS _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
+        <receiver
+            android:name=".receivers.DeviceAdminReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_config" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name=".widgets.DeviceUsageWidget"
             android:enabled="true"

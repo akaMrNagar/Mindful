@@ -65,6 +65,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void _pushNextScreen() {
     if (!mounted) return;
 
+    /// watching these providers to only start necessary services but this will not trigger any updates
+    ref.watch(appsRestrictionsProvider.select((v) => v[null]));
+    ref.watch(restrictionGroupsProvider.select((v) => v[null]));
+
     if (_haveAllEssentialPermissions && _isOnboardingDone) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.homeScreen,
@@ -86,10 +90,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    /// watching these providers to only start necessary services but this will not trigger any updates
-    ref.watch(appsRestrictionsProvider.select((v) => v[null]));
-    ref.watch(restrictionGroupsProvider.select((v) => v[null]));
-
     return PopScope(
       canPop: false,
       child: AnnotatedRegion<SystemUiOverlayStyle>(

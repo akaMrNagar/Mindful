@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/permission_type.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -50,6 +51,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           await MethodChannelService.instance.getAndAskExactAlarmPermission(),
       haveIgnoreOptimizationPermission: await MethodChannelService.instance
           .getAndAskIgnoreBatteryOptimizationPermission(),
+      haveAdminPermission:
+          await MethodChannelService.instance.getAndAskAdminPermission(),
     );
 
     state = cache;
@@ -101,6 +104,10 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
       PermissionType.ignoreOptimization => state.copyWith(
           haveIgnoreOptimizationPermission: await MethodChannelService.instance
               .getAndAskIgnoreBatteryOptimizationPermission(),
+        ),
+      PermissionType.admin => state.copyWith(
+          haveAdminPermission:
+              await MethodChannelService.instance.getAndAskAdminPermission(),
         ),
     };
 
@@ -161,5 +168,21 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     await MethodChannelService.instance
         .getAndAskIgnoreBatteryOptimizationPermission(askPermissionToo: true);
     _askedPermission = PermissionType.ignoreOptimization;
+  }
+
+  /// Requests the Admin permission and updates the internal state.
+  void askAdminPermission() async {
+    await MethodChannelService.instance
+        .getAndAskAdminPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.admin;
+  }
+
+  void disableAdminPermission() async {
+    await MethodChannelService.instance.disableDeviceAdmin();
+    await Future.delayed(400.ms);
+    state = state.copyWith(
+      haveAdminPermission:
+          await MethodChannelService.instance.getAndAskAdminPermission(),
+    );
   }
 }
