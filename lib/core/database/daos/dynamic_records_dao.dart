@@ -97,12 +97,12 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   }) async =>
       into(restrictionGroupsTable).insertReturning(
         RestrictionGroupsTableCompanion.insert(
-          groupName: groupName,
-          timerSec: timerSec,
-          distractingApps: distractingApps,
-          activePeriodStart: activePeriodStart,
-          activePeriodEnd: activePeriodEnd,
-          periodDurationInMins: periodDurationInMins,
+          groupName: Value(groupName),
+          timerSec: Value(timerSec),
+          distractingApps: Value(distractingApps),
+          activePeriodStart: Value(activePeriodStart),
+          activePeriodEnd: Value(activePeriodEnd),
+          periodDurationInMins: Value(periodDurationInMins),
         ),
         mode: InsertMode.insertOrReplace,
       );
@@ -148,10 +148,10 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   }) async =>
       into(focusSessionsTable).insertReturning(
         FocusSessionsTableCompanion.insert(
-          type: type,
-          state: SessionState.active,
-          startDateTime: DateTime.now(),
-          durationSecs: durationSecs,
+          type: Value(type),
+          state: const Value(SessionState.active),
+          startDateTime: Value(DateTime.now()),
+          durationSecs: Value(durationSecs),
         ),
         mode: InsertMode.insertOrReplace,
       );

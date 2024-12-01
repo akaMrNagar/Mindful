@@ -21,36 +21,42 @@ class AppRestrictionTable extends Table {
   Set<Column<Object>>? get primaryKey => {appPackage};
 
   /// The timer set for the app in SECONDS
-  IntColumn get timerSec => integer()();
+  IntColumn get timerSec => integer().withDefault(const Constant(0))();
 
   /// The number of times user can launch this app
-  IntColumn get launchLimit => integer()();
+  IntColumn get launchLimit => integer().withDefault(const Constant(0))();
 
   /// [TimeOfDay] in minutes from where the active period will start.
   /// It is stored as total minutes.
-  IntColumn get activePeriodStart =>
-      integer().map(const TimeOfDayAdapterConverter())();
+  IntColumn get activePeriodStart => integer()
+      .map(const TimeOfDayAdapterConverter())
+      .withDefault(const Constant(0))();
 
   /// [TimeOfDay] in minutes when the active period will end
   /// It is stored as total minutes.
-  IntColumn get activePeriodEnd =>
-      integer().map(const TimeOfDayAdapterConverter())();
+  IntColumn get activePeriodEnd => integer()
+      .map(const TimeOfDayAdapterConverter())
+      .withDefault(const Constant(0))();
 
   /// Total duration of active period from start to end in MINUTES
-  IntColumn get periodDurationInMins => integer()();
+  IntColumn get periodDurationInMins =>
+      integer().withDefault(const Constant(0))();
 
   /// Flag denoting if this app can access internet or not
-  BoolColumn get canAccessInternet => boolean()();
+  BoolColumn get canAccessInternet =>
+      boolean().withDefault(const Constant(true))();
 
   /// ID of the [RestrictionGroup] this app is associated with or NULL
   IntColumn get associatedGroupId =>
       integer().nullable().withDefault(const Constant(null))();
 
   /// The interval between each usage alert in SECONDS
-  IntColumn get alertInterval => integer()();
+  IntColumn get alertInterval =>
+      integer().withDefault(const Constant(15 * 60))();
 
   ///  Whether to alert user by dialog if false user will be alerted by notification
-  BoolColumn get alertByDialog => boolean()();
+  BoolColumn get alertByDialog =>
+      boolean().withDefault(const Constant(false))();
 
   static const defaultAppRestrictionModel = AppRestriction(
     appPackage: "",

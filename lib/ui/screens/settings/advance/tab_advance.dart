@@ -8,9 +8,6 @@
  *
  */
 
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,22 +15,28 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/services/auth_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/device_info_provider.dart';
+import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
+import 'package:mindful/ui/permissions/admin_permission_tile.dart';
 import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
-import 'package:path_provider/path_provider.dart';
 
-class TabAdvance extends ConsumerWidget {
+class TabAdvance extends ConsumerStatefulWidget {
   const TabAdvance({super.key});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _TabAdvanceState();
+}
+
+class _TabAdvanceState extends ConsumerState<TabAdvance> {
   void _openAutoStartSettings(BuildContext context) async {
     final success = await MethodChannelService.instance.openAutoStartSettings();
 
@@ -44,113 +47,99 @@ class TabAdvance extends ConsumerWidget {
     }
   }
 
-  void _shareLogs(BuildContext context, WidgetRef ref) async {
+  void _toggleProtectedAccess(bool isAccessProtected) async {
     try {
-      final logs = await DriftDbService.instance.driftDb.dynamicRecordsDao
-          .fetchCrashLogs();
-      final deviceInfo = ref.read(deviceInfoProvider).value;
+      if (!isAccessProtected) {
+        final canEnable = await AuthService.instance.authenticate();
+        if (!canEnable) {
+          /// Show alert for no lock
+          if (mounted) {
+            context.showSnackAlert(
+                context.locale.protected_access_no_lock_snack_alert);
+          }
 
-      final crashLogMap = {
-        "Manufacturer": deviceInfo?.manufacturer,
-        "Model": deviceInfo?.model,
-        "Android Version": deviceInfo?.androidVersion,
-        "SDK Version": deviceInfo?.sdkVersion,
-        'Crash Logs': logs.map((e) => e.toJson()).toList()
-      };
-
-      final jsonString = jsonEncode(crashLogMap);
-
-      // Get the app's cache directory
-      final dir = await getApplicationCacheDirectory();
-
-      // Define the logs directory path
-      final logsDir = Directory('${dir.path}/logs');
-
-      // Check if the logs directory exists, if not, create it
-      if (!await logsDir.exists()) {
-        await logsDir.create(recursive: true);
+          return;
+        }
       }
 
-      // Define the file path for the logs file
-      final file = File('${logsDir.path}/mindful_crash_logs.json');
-
-      // Write the JSON string to the file
-      await file.writeAsString(jsonString);
-
-      /// Share file using native method
-      await MethodChannelService.instance.shareFile(file.path);
+      ref.read(mindfulSettingsProvider.notifier).switchProtectedAccess();
     } catch (e) {
-      if (context.mounted) {
-        context.showSnackAlert(
-          context.locale.crash_logs_share_failed_snack_alert,
-        );
-      }
-    }
-  }
-
-  void _clearLogs(BuildContext context) async {
-    final confirm = await showConfirmationDialog(
-      context: context,
-      heroTag: HeroTags.clearCrashLogsTileTag,
-      title: context.locale.crash_logs_clear_tile_title,
-      info: context.locale.crash_logs_clear_dialog_info,
-      icon: FluentIcons.delete_lines_20_filled,
-      positiveLabel: context.locale.crash_logs_clear_dialog_button_clear_anyway,
-    );
-
-    if (confirm) {
-      await DriftDbService.instance.driftDb.dynamicRecordsDao.clearCrashLogs();
+      debugPrint("Failed to authenticate: ${e.toString()}");
     }
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final mindfulSettings = ref.watch(mindfulSettingsProvider);
+    final isAdminEnabled =
+        ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
+
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
+        /// Parental controls
+        ContentSectionHeader(title: context.locale.parental_controls_heading)
+            .sliver,
+
+        /// Protected access
+        DefaultListTile(
+          position: ItemPosition.start,
+          switchValue: mindfulSettings.protectedAccess,
+          leadingIcon: FluentIcons.fingerprint_20_regular,
+          titleText: context.locale.protected_access_tile_title,
+          subtitleText: context.locale.protected_access_tile_subtitle,
+          onPressed: () =>
+              _toggleProtectedAccess(mindfulSettings.protectedAccess),
+        ).sliver,
+
+        /// Tamper protection
+        const AdminPermissionTile().sliver,
+
+        /// Uninstall window
+        DefaultHero(
+          tag: HeroTags.uninstallWindowTileTag,
+          child: DefaultListTile(
+            position: ItemPosition.end,
+            enabled: !isAdminEnabled,
+            titleText: context.locale.uninstall_window_tile_title,
+            subtitleText: context.locale.uninstall_window_tile_subtitle,
+            trailing: StyledText(
+              mindfulSettings.uninstallWindowTime.format(context),
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              isSubtitle: isAdminEnabled,
+            ),
+            onPressed: () async {
+              final pickedTime = await showCustomTimePickerDialog(
+                context: context,
+                heroTag: HeroTags.uninstallWindowTileTag,
+                initialTime: mindfulSettings.uninstallWindowTime,
+                info: context.locale.uninstall_window_tile_title,
+              );
+
+              if (pickedTime != null && context.mounted) {
+                ref
+                    .read(mindfulSettingsProvider.notifier)
+                    .changeUninstallWindowTime(pickedTime);
+              }
+            },
+          ),
+        ).sliver,
+
+        /// Service
         ContentSectionHeader(title: context.locale.service_heading).sliver,
 
-        /// Battery
-        StyledText(context.locale.permission_battery_optimization_info).sliver,
-        6.vSliverBox,
-
         /// Battery permission
-        const BatteryPermissionTile(),
-
-        20.vSliverBox,
-        StyledText(context.locale.whitelist_app_info).sliver,
+        StyledText(context.locale.service_stopping_warning).sliver,
         6.vSliverBox,
+        const BatteryPermissionTile(),
         DefaultListTile(
+          position: ItemPosition.end,
           leadingIcon: FluentIcons.leaf_three_20_regular,
           titleText: context.locale.whitelist_app_tile_title,
           subtitleText: context.locale.whitelist_app_tile_subtitle,
           trailing: const Icon(FluentIcons.chevron_right_20_regular),
           onPressed: () => _openAutoStartSettings(context),
-        ).sliver,
-
-        20.vSliverBox,
-        ContentSectionHeader(title: context.locale.crash_logs_heading).sliver,
-        StyledText(context.locale.crash_logs_info).sliver,
-
-        16.vSliverBox,
-        DefaultListTile(
-          position: ItemPosition.start,
-          titleText: context.locale.crash_logs_share_tile_title,
-          subtitleText: context.locale.crash_logs_share_tile_subtitle,
-          leadingIcon: FluentIcons.share_android_20_regular,
-          trailing: const Icon(FluentIcons.chevron_right_20_regular),
-          onPressed: () => _shareLogs(context, ref),
-        ).sliver,
-
-        DefaultHero(
-          tag: HeroTags.clearCrashLogsTileTag,
-          child: DefaultListTile(
-            position: ItemPosition.end,
-            titleText: context.locale.crash_logs_clear_tile_title,
-            subtitleText: context.locale.crash_logs_clear_tile_subtitle,
-            leadingIcon: FluentIcons.delete_lines_20_regular,
-            onPressed: () => _clearLogs(context),
-          ),
         ).sliver,
 
         const SliverTabsBottomPadding()

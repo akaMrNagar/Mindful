@@ -496,8 +496,8 @@ public class MindfulTrackerService extends Service {
             Intent intent = new Intent(this, OverlayDialogService.class);
             intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
             intent.putExtra(INTENT_EXTRA_DIALOG_INFO, reason.reasonMsg);
-            intent.putExtra(INTENT_EXTRA_MAX_PROGRESS, reason.totalLimit);
-            intent.putExtra(INTENT_EXTRA_PROGRESS, reason.usedLimit);
+            intent.putExtra(INTENT_EXTRA_MAX_PROGRESS, (int) reason.totalLimit);
+            intent.putExtra(INTENT_EXTRA_PROGRESS, (int) reason.usedLimit);
             startService(intent);
 
             Log.d(TAG, "showOverlayDialog: Starting overlay dialog service for package : " + packageName);

@@ -38,6 +38,7 @@ dependencies:
   intl: ^0.19.0
   sliver_tools: ^0.2.12
   flutter_riverpod: ^2.5.1
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:
@@ -48,7 +49,6 @@ dev_dependencies:
   build_runner: ^2.4.11
   flutter_lints: ^2.0.0
   drift_dev: ^2.18.0
-  isar_generator: ^3.1.0+1
 
 # The following section is specific to Flutter packages.
 flutter:

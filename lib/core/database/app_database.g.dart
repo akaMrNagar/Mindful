@@ -20,20 +20,26 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   @override
   late final GeneratedColumn<int> timerSec = GeneratedColumn<int>(
       'timer_sec', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _launchLimitMeta =
       const VerificationMeta('launchLimit');
   @override
   late final GeneratedColumn<int> launchLimit = GeneratedColumn<int>(
       'launch_limit', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _activePeriodStartMeta =
       const VerificationMeta('activePeriodStart');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodStart = GeneratedColumn<int>(
               'active_period_start', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $AppRestrictionTableTable.$converteractivePeriodStart);
   static const VerificationMeta _activePeriodEndMeta =
@@ -42,7 +48,9 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodEnd = GeneratedColumn<int>(
               'active_period_end', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $AppRestrictionTableTable.$converteractivePeriodEnd);
   static const VerificationMeta _periodDurationInMinsMeta =
@@ -50,16 +58,19 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   @override
   late final GeneratedColumn<int> periodDurationInMins = GeneratedColumn<int>(
       'period_duration_in_mins', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _canAccessInternetMeta =
       const VerificationMeta('canAccessInternet');
   @override
   late final GeneratedColumn<bool> canAccessInternet = GeneratedColumn<bool>(
       'can_access_internet', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("can_access_internet" IN (0, 1))'));
+          'CHECK ("can_access_internet" IN (0, 1))'),
+      defaultValue: const Constant(true));
   static const VerificationMeta _associatedGroupIdMeta =
       const VerificationMeta('associatedGroupId');
   @override
@@ -73,16 +84,19 @@ class $AppRestrictionTableTable extends AppRestrictionTable
   @override
   late final GeneratedColumn<int> alertInterval = GeneratedColumn<int>(
       'alert_interval', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(15 * 60));
   static const VerificationMeta _alertByDialogMeta =
       const VerificationMeta('alertByDialog');
   @override
   late final GeneratedColumn<bool> alertByDialog = GeneratedColumn<bool>(
       'alert_by_dialog', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("alert_by_dialog" IN (0, 1))'));
+          'CHECK ("alert_by_dialog" IN (0, 1))'),
+      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         appPackage,
@@ -117,16 +131,12 @@ class $AppRestrictionTableTable extends AppRestrictionTable
     if (data.containsKey('timer_sec')) {
       context.handle(_timerSecMeta,
           timerSec.isAcceptableOrUnknown(data['timer_sec']!, _timerSecMeta));
-    } else if (isInserting) {
-      context.missing(_timerSecMeta);
     }
     if (data.containsKey('launch_limit')) {
       context.handle(
           _launchLimitMeta,
           launchLimit.isAcceptableOrUnknown(
               data['launch_limit']!, _launchLimitMeta));
-    } else if (isInserting) {
-      context.missing(_launchLimitMeta);
     }
     context.handle(_activePeriodStartMeta, const VerificationResult.success());
     context.handle(_activePeriodEndMeta, const VerificationResult.success());
@@ -135,16 +145,12 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           _periodDurationInMinsMeta,
           periodDurationInMins.isAcceptableOrUnknown(
               data['period_duration_in_mins']!, _periodDurationInMinsMeta));
-    } else if (isInserting) {
-      context.missing(_periodDurationInMinsMeta);
     }
     if (data.containsKey('can_access_internet')) {
       context.handle(
           _canAccessInternetMeta,
           canAccessInternet.isAcceptableOrUnknown(
               data['can_access_internet']!, _canAccessInternetMeta));
-    } else if (isInserting) {
-      context.missing(_canAccessInternetMeta);
     }
     if (data.containsKey('associated_group_id')) {
       context.handle(
@@ -157,16 +163,12 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           _alertIntervalMeta,
           alertInterval.isAcceptableOrUnknown(
               data['alert_interval']!, _alertIntervalMeta));
-    } else if (isInserting) {
-      context.missing(_alertIntervalMeta);
     }
     if (data.containsKey('alert_by_dialog')) {
       context.handle(
           _alertByDialogMeta,
           alertByDialog.isAcceptableOrUnknown(
               data['alert_by_dialog']!, _alertByDialogMeta));
-    } else if (isInserting) {
-      context.missing(_alertByDialogMeta);
     }
     return context;
   }
@@ -436,25 +438,17 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   });
   AppRestrictionTableCompanion.insert({
     required String appPackage,
-    required int timerSec,
-    required int launchLimit,
-    required TimeOfDayAdapter activePeriodStart,
-    required TimeOfDayAdapter activePeriodEnd,
-    required int periodDurationInMins,
-    required bool canAccessInternet,
+    this.timerSec = const Value.absent(),
+    this.launchLimit = const Value.absent(),
+    this.activePeriodStart = const Value.absent(),
+    this.activePeriodEnd = const Value.absent(),
+    this.periodDurationInMins = const Value.absent(),
+    this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
-    required int alertInterval,
-    required bool alertByDialog,
+    this.alertInterval = const Value.absent(),
+    this.alertByDialog = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : appPackage = Value(appPackage),
-        timerSec = Value(timerSec),
-        launchLimit = Value(launchLimit),
-        activePeriodStart = Value(activePeriodStart),
-        activePeriodEnd = Value(activePeriodEnd),
-        periodDurationInMins = Value(periodDurationInMins),
-        canAccessInternet = Value(canAccessInternet),
-        alertInterval = Value(alertInterval),
-        alertByDialog = Value(alertByDialog);
+  }) : appPackage = Value(appPackage);
   static Insertable<AppRestriction> custom({
     Expression<String>? appPackage,
     Expression<int>? timerSec,
@@ -593,7 +587,9 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       scheduleStartTime = GeneratedColumn<int>(
               'schedule_start_time', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $BedtimeScheduleTableTable.$converterscheduleStartTime);
   static const VerificationMeta _scheduleEndTimeMeta =
@@ -602,7 +598,9 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       scheduleEndTime = GeneratedColumn<int>(
               'schedule_end_time', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $BedtimeScheduleTableTable.$converterscheduleEndTime);
   static const VerificationMeta _scheduleDurationInMinsMeta =
@@ -610,13 +608,18 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
   @override
   late final GeneratedColumn<int> scheduleDurationInMins = GeneratedColumn<int>(
       'schedule_duration_in_mins', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _scheduleDaysMeta =
       const VerificationMeta('scheduleDays');
   @override
   late final GeneratedColumnWithTypeConverter<List<bool>, String> scheduleDays =
       GeneratedColumn<String>('schedule_days', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(
+                  jsonEncode([false, true, true, true, true, true, false])))
           .withConverter<List<bool>>(
               $BedtimeScheduleTableTable.$converterscheduleDays);
   static const VerificationMeta _isScheduleOnMeta =
@@ -625,25 +628,29 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
   late final GeneratedColumn<bool> isScheduleOn = GeneratedColumn<bool>(
       'is_schedule_on', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_schedule_on" IN (0, 1))'));
+          'CHECK ("is_schedule_on" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _shouldStartDndMeta =
       const VerificationMeta('shouldStartDnd');
   @override
   late final GeneratedColumn<bool> shouldStartDnd = GeneratedColumn<bool>(
       'should_start_dnd', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("should_start_dnd" IN (0, 1))'));
+          'CHECK ("should_start_dnd" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _distractingAppsMeta =
       const VerificationMeta('distractingApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       distractingApps = GeneratedColumn<String>(
               'distracting_apps', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $BedtimeScheduleTableTable.$converterdistractingApps);
   @override
@@ -677,8 +684,6 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
           _scheduleDurationInMinsMeta,
           scheduleDurationInMins.isAcceptableOrUnknown(
               data['schedule_duration_in_mins']!, _scheduleDurationInMinsMeta));
-    } else if (isInserting) {
-      context.missing(_scheduleDurationInMinsMeta);
     }
     context.handle(_scheduleDaysMeta, const VerificationResult.success());
     if (data.containsKey('is_schedule_on')) {
@@ -686,16 +691,12 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
           _isScheduleOnMeta,
           isScheduleOn.isAcceptableOrUnknown(
               data['is_schedule_on']!, _isScheduleOnMeta));
-    } else if (isInserting) {
-      context.missing(_isScheduleOnMeta);
     }
     if (data.containsKey('should_start_dnd')) {
       context.handle(
           _shouldStartDndMeta,
           shouldStartDnd.isAcceptableOrUnknown(
               data['should_start_dnd']!, _shouldStartDndMeta));
-    } else if (isInserting) {
-      context.missing(_shouldStartDndMeta);
     }
     context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
@@ -946,20 +947,14 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
   });
   BedtimeScheduleTableCompanion.insert({
     this.id = const Value.absent(),
-    required TimeOfDayAdapter scheduleStartTime,
-    required TimeOfDayAdapter scheduleEndTime,
-    required int scheduleDurationInMins,
-    required List<bool> scheduleDays,
-    required bool isScheduleOn,
-    required bool shouldStartDnd,
-    required List<String> distractingApps,
-  })  : scheduleStartTime = Value(scheduleStartTime),
-        scheduleEndTime = Value(scheduleEndTime),
-        scheduleDurationInMins = Value(scheduleDurationInMins),
-        scheduleDays = Value(scheduleDays),
-        isScheduleOn = Value(isScheduleOn),
-        shouldStartDnd = Value(shouldStartDnd),
-        distractingApps = Value(distractingApps);
+    this.scheduleStartTime = const Value.absent(),
+    this.scheduleEndTime = const Value.absent(),
+    this.scheduleDurationInMins = const Value.absent(),
+    this.scheduleDays = const Value.absent(),
+    this.isScheduleOn = const Value.absent(),
+    this.shouldStartDnd = const Value.absent(),
+    this.distractingApps = const Value.absent(),
+  });
   static Insertable<BedtimeSchedule> custom({
     Expression<int>? id,
     Expression<int>? scheduleStartTime,
@@ -1080,24 +1075,32 @@ class $CrashLogsTableTable extends CrashLogsTable
   @override
   late final GeneratedColumn<String> appVersion = GeneratedColumn<String>(
       'app_version', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   static const VerificationMeta _timeStampMeta =
       const VerificationMeta('timeStamp');
   @override
   late final GeneratedColumn<DateTime> timeStamp = GeneratedColumn<DateTime>(
       'time_stamp', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: Constant(DateTime(0)));
   static const VerificationMeta _errorMeta = const VerificationMeta('error');
   @override
   late final GeneratedColumn<String> error = GeneratedColumn<String>(
       'error', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   static const VerificationMeta _stackTraceMeta =
       const VerificationMeta('stackTrace');
   @override
   late final GeneratedColumn<String> stackTrace = GeneratedColumn<String>(
       'stack_trace', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   @override
   List<GeneratedColumn> get $columns =>
       [id, appVersion, timeStamp, error, stackTrace];
@@ -1119,28 +1122,20 @@ class $CrashLogsTableTable extends CrashLogsTable
           _appVersionMeta,
           appVersion.isAcceptableOrUnknown(
               data['app_version']!, _appVersionMeta));
-    } else if (isInserting) {
-      context.missing(_appVersionMeta);
     }
     if (data.containsKey('time_stamp')) {
       context.handle(_timeStampMeta,
           timeStamp.isAcceptableOrUnknown(data['time_stamp']!, _timeStampMeta));
-    } else if (isInserting) {
-      context.missing(_timeStampMeta);
     }
     if (data.containsKey('error')) {
       context.handle(
           _errorMeta, error.isAcceptableOrUnknown(data['error']!, _errorMeta));
-    } else if (isInserting) {
-      context.missing(_errorMeta);
     }
     if (data.containsKey('stack_trace')) {
       context.handle(
           _stackTraceMeta,
           stackTrace.isAcceptableOrUnknown(
               data['stack_trace']!, _stackTraceMeta));
-    } else if (isInserting) {
-      context.missing(_stackTraceMeta);
     }
     return context;
   }
@@ -1288,14 +1283,11 @@ class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
   });
   CrashLogsTableCompanion.insert({
     this.id = const Value.absent(),
-    required String appVersion,
-    required DateTime timeStamp,
-    required String error,
-    required String stackTrace,
-  })  : appVersion = Value(appVersion),
-        timeStamp = Value(timeStamp),
-        error = Value(error),
-        stackTrace = Value(stackTrace);
+    this.appVersion = const Value.absent(),
+    this.timeStamp = const Value.absent(),
+    this.error = const Value.absent(),
+    this.stackTrace = const Value.absent(),
+  });
   static Insertable<CrashLogs> custom({
     Expression<int>? id,
     Expression<String>? appVersion,
@@ -1379,7 +1371,9 @@ class $FocusModeTableTable extends FocusModeTable
   @override
   late final GeneratedColumnWithTypeConverter<SessionType, int> sessionType =
       GeneratedColumn<int>('session_type', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<SessionType>(
               $FocusModeTableTable.$convertersessionType);
   static const VerificationMeta _longestStreakMeta =
@@ -1387,19 +1381,25 @@ class $FocusModeTableTable extends FocusModeTable
   @override
   late final GeneratedColumn<int> longestStreak = GeneratedColumn<int>(
       'longest_streak', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _currentStreakMeta =
       const VerificationMeta('currentStreak');
   @override
   late final GeneratedColumn<int> currentStreak = GeneratedColumn<int>(
       'current_streak', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _lastTimeStreakUpdatedMeta =
       const VerificationMeta('lastTimeStreakUpdated');
   @override
   late final GeneratedColumn<DateTime> lastTimeStreakUpdated =
       GeneratedColumn<DateTime>('last_time_streak_updated', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: false,
+          defaultValue: Constant(DateTime(0)));
   @override
   List<GeneratedColumn> get $columns =>
       [id, sessionType, longestStreak, currentStreak, lastTimeStreakUpdated];
@@ -1422,24 +1422,18 @@ class $FocusModeTableTable extends FocusModeTable
           _longestStreakMeta,
           longestStreak.isAcceptableOrUnknown(
               data['longest_streak']!, _longestStreakMeta));
-    } else if (isInserting) {
-      context.missing(_longestStreakMeta);
     }
     if (data.containsKey('current_streak')) {
       context.handle(
           _currentStreakMeta,
           currentStreak.isAcceptableOrUnknown(
               data['current_streak']!, _currentStreakMeta));
-    } else if (isInserting) {
-      context.missing(_currentStreakMeta);
     }
     if (data.containsKey('last_time_streak_updated')) {
       context.handle(
           _lastTimeStreakUpdatedMeta,
           lastTimeStreakUpdated.isAcceptableOrUnknown(
               data['last_time_streak_updated']!, _lastTimeStreakUpdatedMeta));
-    } else if (isInserting) {
-      context.missing(_lastTimeStreakUpdatedMeta);
     }
     return context;
   }
@@ -1601,14 +1595,11 @@ class FocusModeTableCompanion extends UpdateCompanion<FocusMode> {
   });
   FocusModeTableCompanion.insert({
     this.id = const Value.absent(),
-    required SessionType sessionType,
-    required int longestStreak,
-    required int currentStreak,
-    required DateTime lastTimeStreakUpdated,
-  })  : sessionType = Value(sessionType),
-        longestStreak = Value(longestStreak),
-        currentStreak = Value(currentStreak),
-        lastTimeStreakUpdated = Value(lastTimeStreakUpdated);
+    this.sessionType = const Value.absent(),
+    this.longestStreak = const Value.absent(),
+    this.currentStreak = const Value.absent(),
+    this.lastTimeStreakUpdated = const Value.absent(),
+  });
   static Insertable<FocusMode> custom({
     Expression<int>? id,
     Expression<int>? sessionType,
@@ -1697,23 +1688,28 @@ class $FocusProfileTableTable extends FocusProfileTable
   @override
   late final GeneratedColumn<int> sessionDuration = GeneratedColumn<int>(
       'session_duration', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _shouldStartDndMeta =
       const VerificationMeta('shouldStartDnd');
   @override
   late final GeneratedColumn<bool> shouldStartDnd = GeneratedColumn<bool>(
       'should_start_dnd', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("should_start_dnd" IN (0, 1))'));
+          'CHECK ("should_start_dnd" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _distractingAppsMeta =
       const VerificationMeta('distractingApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       distractingApps = GeneratedColumn<String>(
               'distracting_apps', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $FocusProfileTableTable.$converterdistractingApps);
   @override
@@ -1735,16 +1731,12 @@ class $FocusProfileTableTable extends FocusProfileTable
           _sessionDurationMeta,
           sessionDuration.isAcceptableOrUnknown(
               data['session_duration']!, _sessionDurationMeta));
-    } else if (isInserting) {
-      context.missing(_sessionDurationMeta);
     }
     if (data.containsKey('should_start_dnd')) {
       context.handle(
           _shouldStartDndMeta,
           shouldStartDnd.isAcceptableOrUnknown(
               data['should_start_dnd']!, _shouldStartDndMeta));
-    } else if (isInserting) {
-      context.missing(_shouldStartDndMeta);
     }
     context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
@@ -1895,12 +1887,10 @@ class FocusProfileTableCompanion extends UpdateCompanion<FocusProfile> {
   });
   FocusProfileTableCompanion.insert({
     this.sessionType = const Value.absent(),
-    required int sessionDuration,
-    required bool shouldStartDnd,
-    required List<String> distractingApps,
-  })  : sessionDuration = Value(sessionDuration),
-        shouldStartDnd = Value(shouldStartDnd),
-        distractingApps = Value(distractingApps);
+    this.sessionDuration = const Value.absent(),
+    this.shouldStartDnd = const Value.absent(),
+    this.distractingApps = const Value.absent(),
+  });
   static Insertable<FocusProfile> custom({
     Expression<int>? sessionType,
     Expression<int>? sessionDuration,
@@ -1981,13 +1971,17 @@ class $FocusSessionsTableTable extends FocusSessionsTable
   @override
   late final GeneratedColumnWithTypeConverter<SessionType, int> type =
       GeneratedColumn<int>('type', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<SessionType>($FocusSessionsTableTable.$convertertype);
   static const VerificationMeta _stateMeta = const VerificationMeta('state');
   @override
   late final GeneratedColumnWithTypeConverter<SessionState, int> state =
       GeneratedColumn<int>('state', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<SessionState>(
               $FocusSessionsTableTable.$converterstate);
   static const VerificationMeta _startDateTimeMeta =
@@ -1995,13 +1989,17 @@ class $FocusSessionsTableTable extends FocusSessionsTable
   @override
   late final GeneratedColumn<DateTime> startDateTime =
       GeneratedColumn<DateTime>('start_date_time', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: false,
+          defaultValue: Constant(DateTime(0)));
   static const VerificationMeta _durationSecsMeta =
       const VerificationMeta('durationSecs');
   @override
   late final GeneratedColumn<int> durationSecs = GeneratedColumn<int>(
       'duration_secs', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns =>
       [id, type, state, startDateTime, durationSecs];
@@ -2025,16 +2023,12 @@ class $FocusSessionsTableTable extends FocusSessionsTable
           _startDateTimeMeta,
           startDateTime.isAcceptableOrUnknown(
               data['start_date_time']!, _startDateTimeMeta));
-    } else if (isInserting) {
-      context.missing(_startDateTimeMeta);
     }
     if (data.containsKey('duration_secs')) {
       context.handle(
           _durationSecsMeta,
           durationSecs.isAcceptableOrUnknown(
               data['duration_secs']!, _durationSecsMeta));
-    } else if (isInserting) {
-      context.missing(_durationSecsMeta);
     }
     return context;
   }
@@ -2201,14 +2195,11 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
   });
   FocusSessionsTableCompanion.insert({
     this.id = const Value.absent(),
-    required SessionType type,
-    required SessionState state,
-    required DateTime startDateTime,
-    required int durationSecs,
-  })  : type = Value(type),
-        state = Value(state),
-        startDateTime = Value(startDateTime),
-        durationSecs = Value(durationSecs);
+    this.type = const Value.absent(),
+    this.state = const Value.absent(),
+    this.startDateTime = const Value.absent(),
+    this.durationSecs = const Value.absent(),
+  });
   static Insertable<FocusSession> custom({
     Expression<int>? id,
     Expression<int>? type,
@@ -2294,7 +2285,9 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   @override
   late final GeneratedColumnWithTypeConverter<AppThemeMode, int> themeMode =
       GeneratedColumn<int>('theme_mode', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(AppConstants.defaultThemeMode.index))
           .withConverter<AppThemeMode>(
               $MindfulSettingsTableTable.$converterthemeMode);
   static const VerificationMeta _accentColorMeta =
@@ -2302,26 +2295,34 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   @override
   late final GeneratedColumn<String> accentColor = GeneratedColumn<String>(
       'accent_color', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(AppConstants.defaultMaterialColor));
   static const VerificationMeta _usernameMeta =
       const VerificationMeta('username');
   @override
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
       'username', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(AppConstants.defaultUsername));
   static const VerificationMeta _localeCodeMeta =
       const VerificationMeta('localeCode');
   @override
   late final GeneratedColumn<String> localeCode = GeneratedColumn<String>(
       'locale_code', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(AppConstants.defaultLocale));
   static const VerificationMeta _dataResetTimeMeta =
       const VerificationMeta('dataResetTime');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       dataResetTime = GeneratedColumn<int>(
               'data_reset_time', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $MindfulSettingsTableTable.$converterdataResetTime);
   static const VerificationMeta _useBottomNavigationMeta =
@@ -2330,34 +2331,39 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   late final GeneratedColumn<bool> useBottomNavigation = GeneratedColumn<bool>(
       'use_bottom_navigation', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("use_bottom_navigation" IN (0, 1))'));
+          'CHECK ("use_bottom_navigation" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _useAmoledDarkMeta =
       const VerificationMeta('useAmoledDark');
   @override
   late final GeneratedColumn<bool> useAmoledDark = GeneratedColumn<bool>(
       'use_amoled_dark', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("use_amoled_dark" IN (0, 1))'));
+          'CHECK ("use_amoled_dark" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _useDynamicColorsMeta =
       const VerificationMeta('useDynamicColors');
   @override
   late final GeneratedColumn<bool> useDynamicColors = GeneratedColumn<bool>(
       'use_dynamic_colors', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("use_dynamic_colors" IN (0, 1))'));
+          'CHECK ("use_dynamic_colors" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _defaultHomeTabMeta =
       const VerificationMeta('defaultHomeTab');
   @override
   late final GeneratedColumnWithTypeConverter<DefaultHomeTab, int>
       defaultHomeTab = GeneratedColumn<int>(
               'default_home_tab', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: Constant(DefaultHomeTab.dashboard.index))
           .withConverter<DefaultHomeTab>(
               $MindfulSettingsTableTable.$converterdefaultHomeTab);
   static const VerificationMeta _excludedAppsMeta =
@@ -2366,7 +2372,9 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       excludedApps = GeneratedColumn<String>(
               'excluded_apps', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $MindfulSettingsTableTable.$converterexcludedApps);
   static const VerificationMeta _leftEmergencyPassesMeta =
@@ -2374,22 +2382,48 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
   @override
   late final GeneratedColumn<int> leftEmergencyPasses = GeneratedColumn<int>(
       'left_emergency_passes', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(3));
   static const VerificationMeta _lastEmergencyUsedMeta =
       const VerificationMeta('lastEmergencyUsed');
   @override
   late final GeneratedColumn<DateTime> lastEmergencyUsed =
       GeneratedColumn<DateTime>('last_emergency_used', aliasedName, false,
-          type: DriftSqlType.dateTime, requiredDuringInsert: true);
+          type: DriftSqlType.dateTime,
+          requiredDuringInsert: false,
+          defaultValue: Constant(DateTime(0)));
   static const VerificationMeta _isOnboardingDoneMeta =
       const VerificationMeta('isOnboardingDone');
   @override
   late final GeneratedColumn<bool> isOnboardingDone = GeneratedColumn<bool>(
       'is_onboarding_done', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_onboarding_done" IN (0, 1))'));
+          'CHECK ("is_onboarding_done" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _protectedAccessMeta =
+      const VerificationMeta('protectedAccess');
+  @override
+  late final GeneratedColumn<bool> protectedAccess = GeneratedColumn<bool>(
+      'protected_access', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("protected_access" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _uninstallWindowTimeMeta =
+      const VerificationMeta('uninstallWindowTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      uninstallWindowTime = GeneratedColumn<int>(
+              'uninstall_window_time', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<TimeOfDayAdapter>(
+              $MindfulSettingsTableTable.$converteruninstallWindowTime);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2405,7 +2439,9 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         excludedApps,
         leftEmergencyPasses,
         lastEmergencyUsed,
-        isOnboardingDone
+        isOnboardingDone,
+        protectedAccess,
+        uninstallWindowTime
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2426,22 +2462,16 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           _accentColorMeta,
           accentColor.isAcceptableOrUnknown(
               data['accent_color']!, _accentColorMeta));
-    } else if (isInserting) {
-      context.missing(_accentColorMeta);
     }
     if (data.containsKey('username')) {
       context.handle(_usernameMeta,
           username.isAcceptableOrUnknown(data['username']!, _usernameMeta));
-    } else if (isInserting) {
-      context.missing(_usernameMeta);
     }
     if (data.containsKey('locale_code')) {
       context.handle(
           _localeCodeMeta,
           localeCode.isAcceptableOrUnknown(
               data['locale_code']!, _localeCodeMeta));
-    } else if (isInserting) {
-      context.missing(_localeCodeMeta);
     }
     context.handle(_dataResetTimeMeta, const VerificationResult.success());
     if (data.containsKey('use_bottom_navigation')) {
@@ -2449,24 +2479,18 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           _useBottomNavigationMeta,
           useBottomNavigation.isAcceptableOrUnknown(
               data['use_bottom_navigation']!, _useBottomNavigationMeta));
-    } else if (isInserting) {
-      context.missing(_useBottomNavigationMeta);
     }
     if (data.containsKey('use_amoled_dark')) {
       context.handle(
           _useAmoledDarkMeta,
           useAmoledDark.isAcceptableOrUnknown(
               data['use_amoled_dark']!, _useAmoledDarkMeta));
-    } else if (isInserting) {
-      context.missing(_useAmoledDarkMeta);
     }
     if (data.containsKey('use_dynamic_colors')) {
       context.handle(
           _useDynamicColorsMeta,
           useDynamicColors.isAcceptableOrUnknown(
               data['use_dynamic_colors']!, _useDynamicColorsMeta));
-    } else if (isInserting) {
-      context.missing(_useDynamicColorsMeta);
     }
     context.handle(_defaultHomeTabMeta, const VerificationResult.success());
     context.handle(_excludedAppsMeta, const VerificationResult.success());
@@ -2475,25 +2499,27 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           _leftEmergencyPassesMeta,
           leftEmergencyPasses.isAcceptableOrUnknown(
               data['left_emergency_passes']!, _leftEmergencyPassesMeta));
-    } else if (isInserting) {
-      context.missing(_leftEmergencyPassesMeta);
     }
     if (data.containsKey('last_emergency_used')) {
       context.handle(
           _lastEmergencyUsedMeta,
           lastEmergencyUsed.isAcceptableOrUnknown(
               data['last_emergency_used']!, _lastEmergencyUsedMeta));
-    } else if (isInserting) {
-      context.missing(_lastEmergencyUsedMeta);
     }
     if (data.containsKey('is_onboarding_done')) {
       context.handle(
           _isOnboardingDoneMeta,
           isOnboardingDone.isAcceptableOrUnknown(
               data['is_onboarding_done']!, _isOnboardingDoneMeta));
-    } else if (isInserting) {
-      context.missing(_isOnboardingDoneMeta);
     }
+    if (data.containsKey('protected_access')) {
+      context.handle(
+          _protectedAccessMeta,
+          protectedAccess.isAcceptableOrUnknown(
+              data['protected_access']!, _protectedAccessMeta));
+    }
+    context.handle(
+        _uninstallWindowTimeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2536,6 +2562,12 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           data['${effectivePrefix}last_emergency_used'])!,
       isOnboardingDone: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_onboarding_done'])!,
+      protectedAccess: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}protected_access'])!,
+      uninstallWindowTime: $MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}uninstall_window_time'])!),
     );
   }
 
@@ -2552,6 +2584,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
   static TypeConverter<List<String>, String> $converterexcludedApps =
       const ListStringConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
 
 class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
@@ -2596,6 +2630,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// Flag indicating if onboarding is completed or not
   final bool isOnboardingDone;
+
+  /// Flag indicating whether to authenticate before opening Mindful or not
+  final bool protectedAccess;
+
+  /// Daily uninstall window start time [TimeOfDay] stored as minutes
+  final TimeOfDayAdapter uninstallWindowTime;
   const MindfulSettings(
       {required this.id,
       required this.themeMode,
@@ -2610,7 +2650,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.excludedApps,
       required this.leftEmergencyPasses,
       required this.lastEmergencyUsed,
-      required this.isOnboardingDone});
+      required this.isOnboardingDone,
+      required this.protectedAccess,
+      required this.uninstallWindowTime});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2643,6 +2685,12 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses);
     map['last_emergency_used'] = Variable<DateTime>(lastEmergencyUsed);
     map['is_onboarding_done'] = Variable<bool>(isOnboardingDone);
+    map['protected_access'] = Variable<bool>(protectedAccess);
+    {
+      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime));
+    }
     return map;
   }
 
@@ -2662,6 +2710,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       leftEmergencyPasses: Value(leftEmergencyPasses),
       lastEmergencyUsed: Value(lastEmergencyUsed),
       isOnboardingDone: Value(isOnboardingDone),
+      protectedAccess: Value(protectedAccess),
+      uninstallWindowTime: Value(uninstallWindowTime),
     );
   }
 
@@ -2689,6 +2739,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       lastEmergencyUsed:
           serializer.fromJson<DateTime>(json['lastEmergencyUsed']),
       isOnboardingDone: serializer.fromJson<bool>(json['isOnboardingDone']),
+      protectedAccess: serializer.fromJson<bool>(json['protectedAccess']),
+      uninstallWindowTime: $MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
     );
   }
   @override
@@ -2714,6 +2768,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'leftEmergencyPasses': serializer.toJson<int>(leftEmergencyPasses),
       'lastEmergencyUsed': serializer.toJson<DateTime>(lastEmergencyUsed),
       'isOnboardingDone': serializer.toJson<bool>(isOnboardingDone),
+      'protectedAccess': serializer.toJson<bool>(protectedAccess),
+      'uninstallWindowTime': serializer.toJson<dynamic>(
+          $MindfulSettingsTableTable.$converteruninstallWindowTime
+              .toJson(uninstallWindowTime)),
     };
   }
 
@@ -2731,7 +2789,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           List<String>? excludedApps,
           int? leftEmergencyPasses,
           DateTime? lastEmergencyUsed,
-          bool? isOnboardingDone}) =>
+          bool? isOnboardingDone,
+          bool? protectedAccess,
+          TimeOfDayAdapter? uninstallWindowTime}) =>
       MindfulSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
@@ -2747,6 +2807,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
         lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
+        protectedAccess: protectedAccess ?? this.protectedAccess,
+        uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       );
   @override
   String toString() {
@@ -2764,7 +2826,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('excludedApps: $excludedApps, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone')
+          ..write('isOnboardingDone: $isOnboardingDone, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime')
           ..write(')'))
         .toString();
   }
@@ -2784,7 +2848,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       excludedApps,
       leftEmergencyPasses,
       lastEmergencyUsed,
-      isOnboardingDone);
+      isOnboardingDone,
+      protectedAccess,
+      uninstallWindowTime);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2802,7 +2868,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.excludedApps == this.excludedApps &&
           other.leftEmergencyPasses == this.leftEmergencyPasses &&
           other.lastEmergencyUsed == this.lastEmergencyUsed &&
-          other.isOnboardingDone == this.isOnboardingDone);
+          other.isOnboardingDone == this.isOnboardingDone &&
+          other.protectedAccess == this.protectedAccess &&
+          other.uninstallWindowTime == this.uninstallWindowTime);
 }
 
 class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
@@ -2820,6 +2888,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<int> leftEmergencyPasses;
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
+  final Value<bool> protectedAccess;
+  final Value<TimeOfDayAdapter> uninstallWindowTime;
   const MindfulSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
@@ -2835,35 +2905,27 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
   });
   MindfulSettingsTableCompanion.insert({
     this.id = const Value.absent(),
-    required AppThemeMode themeMode,
-    required String accentColor,
-    required String username,
-    required String localeCode,
-    required TimeOfDayAdapter dataResetTime,
-    required bool useBottomNavigation,
-    required bool useAmoledDark,
-    required bool useDynamicColors,
-    required DefaultHomeTab defaultHomeTab,
-    required List<String> excludedApps,
-    required int leftEmergencyPasses,
-    required DateTime lastEmergencyUsed,
-    required bool isOnboardingDone,
-  })  : themeMode = Value(themeMode),
-        accentColor = Value(accentColor),
-        username = Value(username),
-        localeCode = Value(localeCode),
-        dataResetTime = Value(dataResetTime),
-        useBottomNavigation = Value(useBottomNavigation),
-        useAmoledDark = Value(useAmoledDark),
-        useDynamicColors = Value(useDynamicColors),
-        defaultHomeTab = Value(defaultHomeTab),
-        excludedApps = Value(excludedApps),
-        leftEmergencyPasses = Value(leftEmergencyPasses),
-        lastEmergencyUsed = Value(lastEmergencyUsed),
-        isOnboardingDone = Value(isOnboardingDone);
+    this.themeMode = const Value.absent(),
+    this.accentColor = const Value.absent(),
+    this.username = const Value.absent(),
+    this.localeCode = const Value.absent(),
+    this.dataResetTime = const Value.absent(),
+    this.useBottomNavigation = const Value.absent(),
+    this.useAmoledDark = const Value.absent(),
+    this.useDynamicColors = const Value.absent(),
+    this.defaultHomeTab = const Value.absent(),
+    this.excludedApps = const Value.absent(),
+    this.leftEmergencyPasses = const Value.absent(),
+    this.lastEmergencyUsed = const Value.absent(),
+    this.isOnboardingDone = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
+  });
   static Insertable<MindfulSettings> custom({
     Expression<int>? id,
     Expression<int>? themeMode,
@@ -2879,6 +2941,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<int>? leftEmergencyPasses,
     Expression<DateTime>? lastEmergencyUsed,
     Expression<bool>? isOnboardingDone,
+    Expression<bool>? protectedAccess,
+    Expression<int>? uninstallWindowTime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2897,6 +2961,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
         'left_emergency_passes': leftEmergencyPasses,
       if (lastEmergencyUsed != null) 'last_emergency_used': lastEmergencyUsed,
       if (isOnboardingDone != null) 'is_onboarding_done': isOnboardingDone,
+      if (protectedAccess != null) 'protected_access': protectedAccess,
+      if (uninstallWindowTime != null)
+        'uninstall_window_time': uninstallWindowTime,
     });
   }
 
@@ -2914,7 +2981,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<List<String>>? excludedApps,
       Value<int>? leftEmergencyPasses,
       Value<DateTime>? lastEmergencyUsed,
-      Value<bool>? isOnboardingDone}) {
+      Value<bool>? isOnboardingDone,
+      Value<bool>? protectedAccess,
+      Value<TimeOfDayAdapter>? uninstallWindowTime}) {
     return MindfulSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
@@ -2930,6 +2999,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
       lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
       isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
+      protectedAccess: protectedAccess ?? this.protectedAccess,
+      uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
     );
   }
 
@@ -2986,6 +3057,14 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (isOnboardingDone.present) {
       map['is_onboarding_done'] = Variable<bool>(isOnboardingDone.value);
     }
+    if (protectedAccess.present) {
+      map['protected_access'] = Variable<bool>(protectedAccess.value);
+    }
+    if (uninstallWindowTime.present) {
+      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime.value));
+    }
     return map;
   }
 
@@ -3005,7 +3084,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('excludedApps: $excludedApps, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone')
+          ..write('isOnboardingDone: $isOnboardingDone, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime')
           ..write(')'))
         .toString();
   }
@@ -3030,72 +3111,80 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   late final GeneratedColumn<bool> isInvincibleModeOn = GeneratedColumn<bool>(
       'is_invincible_mode_on', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_invincible_mode_on" IN (0, 1))'));
+          'CHECK ("is_invincible_mode_on" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _includeAppsTimerMeta =
       const VerificationMeta('includeAppsTimer');
   @override
   late final GeneratedColumn<bool> includeAppsTimer = GeneratedColumn<bool>(
       'include_apps_timer', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("include_apps_timer" IN (0, 1))'));
+          'CHECK ("include_apps_timer" IN (0, 1))'),
+      defaultValue: const Constant(true));
   static const VerificationMeta _includeAppsLaunchLimitMeta =
       const VerificationMeta('includeAppsLaunchLimit');
   @override
   late final GeneratedColumn<bool> includeAppsLaunchLimit =
       GeneratedColumn<bool>('include_apps_launch_limit', aliasedName, false,
           type: DriftSqlType.bool,
-          requiredDuringInsert: true,
+          requiredDuringInsert: false,
           defaultConstraints: GeneratedColumn.constraintIsAlways(
-              'CHECK ("include_apps_launch_limit" IN (0, 1))'));
+              'CHECK ("include_apps_launch_limit" IN (0, 1))'),
+          defaultValue: const Constant(false));
   static const VerificationMeta _includeAppsActivePeriodMeta =
       const VerificationMeta('includeAppsActivePeriod');
   @override
   late final GeneratedColumn<bool> includeAppsActivePeriod =
       GeneratedColumn<bool>('include_apps_active_period', aliasedName, false,
           type: DriftSqlType.bool,
-          requiredDuringInsert: true,
+          requiredDuringInsert: false,
           defaultConstraints: GeneratedColumn.constraintIsAlways(
-              'CHECK ("include_apps_active_period" IN (0, 1))'));
+              'CHECK ("include_apps_active_period" IN (0, 1))'),
+          defaultValue: const Constant(false));
   static const VerificationMeta _includeGroupsTimerMeta =
       const VerificationMeta('includeGroupsTimer');
   @override
   late final GeneratedColumn<bool> includeGroupsTimer = GeneratedColumn<bool>(
       'include_groups_timer', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("include_groups_timer" IN (0, 1))'));
+          'CHECK ("include_groups_timer" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _includeGroupsActivePeriodMeta =
       const VerificationMeta('includeGroupsActivePeriod');
   @override
   late final GeneratedColumn<bool> includeGroupsActivePeriod =
       GeneratedColumn<bool>('include_groups_active_period', aliasedName, false,
           type: DriftSqlType.bool,
-          requiredDuringInsert: true,
+          requiredDuringInsert: false,
           defaultConstraints: GeneratedColumn.constraintIsAlways(
-              'CHECK ("include_groups_active_period" IN (0, 1))'));
+              'CHECK ("include_groups_active_period" IN (0, 1))'),
+          defaultValue: const Constant(false));
   static const VerificationMeta _includeShortsTimerMeta =
       const VerificationMeta('includeShortsTimer');
   @override
   late final GeneratedColumn<bool> includeShortsTimer = GeneratedColumn<bool>(
       'include_shorts_timer', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("include_shorts_timer" IN (0, 1))'));
+          'CHECK ("include_shorts_timer" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _includeBedtimeScheduleMeta =
       const VerificationMeta('includeBedtimeSchedule');
   @override
   late final GeneratedColumn<bool> includeBedtimeSchedule =
       GeneratedColumn<bool>('include_bedtime_schedule', aliasedName, false,
           type: DriftSqlType.bool,
-          requiredDuringInsert: true,
+          requiredDuringInsert: false,
           defaultConstraints: GeneratedColumn.constraintIsAlways(
-              'CHECK ("include_bedtime_schedule" IN (0, 1))'));
+              'CHECK ("include_bedtime_schedule" IN (0, 1))'),
+          defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3126,24 +3215,18 @@ class $InvincibleModeTableTable extends InvincibleModeTable
           _isInvincibleModeOnMeta,
           isInvincibleModeOn.isAcceptableOrUnknown(
               data['is_invincible_mode_on']!, _isInvincibleModeOnMeta));
-    } else if (isInserting) {
-      context.missing(_isInvincibleModeOnMeta);
     }
     if (data.containsKey('include_apps_timer')) {
       context.handle(
           _includeAppsTimerMeta,
           includeAppsTimer.isAcceptableOrUnknown(
               data['include_apps_timer']!, _includeAppsTimerMeta));
-    } else if (isInserting) {
-      context.missing(_includeAppsTimerMeta);
     }
     if (data.containsKey('include_apps_launch_limit')) {
       context.handle(
           _includeAppsLaunchLimitMeta,
           includeAppsLaunchLimit.isAcceptableOrUnknown(
               data['include_apps_launch_limit']!, _includeAppsLaunchLimitMeta));
-    } else if (isInserting) {
-      context.missing(_includeAppsLaunchLimitMeta);
     }
     if (data.containsKey('include_apps_active_period')) {
       context.handle(
@@ -3151,16 +3234,12 @@ class $InvincibleModeTableTable extends InvincibleModeTable
           includeAppsActivePeriod.isAcceptableOrUnknown(
               data['include_apps_active_period']!,
               _includeAppsActivePeriodMeta));
-    } else if (isInserting) {
-      context.missing(_includeAppsActivePeriodMeta);
     }
     if (data.containsKey('include_groups_timer')) {
       context.handle(
           _includeGroupsTimerMeta,
           includeGroupsTimer.isAcceptableOrUnknown(
               data['include_groups_timer']!, _includeGroupsTimerMeta));
-    } else if (isInserting) {
-      context.missing(_includeGroupsTimerMeta);
     }
     if (data.containsKey('include_groups_active_period')) {
       context.handle(
@@ -3168,24 +3247,18 @@ class $InvincibleModeTableTable extends InvincibleModeTable
           includeGroupsActivePeriod.isAcceptableOrUnknown(
               data['include_groups_active_period']!,
               _includeGroupsActivePeriodMeta));
-    } else if (isInserting) {
-      context.missing(_includeGroupsActivePeriodMeta);
     }
     if (data.containsKey('include_shorts_timer')) {
       context.handle(
           _includeShortsTimerMeta,
           includeShortsTimer.isAcceptableOrUnknown(
               data['include_shorts_timer']!, _includeShortsTimerMeta));
-    } else if (isInserting) {
-      context.missing(_includeShortsTimerMeta);
     }
     if (data.containsKey('include_bedtime_schedule')) {
       context.handle(
           _includeBedtimeScheduleMeta,
           includeBedtimeSchedule.isAcceptableOrUnknown(
               data['include_bedtime_schedule']!, _includeBedtimeScheduleMeta));
-    } else if (isInserting) {
-      context.missing(_includeBedtimeScheduleMeta);
     }
     return context;
   }
@@ -3435,22 +3508,15 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   });
   InvincibleModeTableCompanion.insert({
     this.id = const Value.absent(),
-    required bool isInvincibleModeOn,
-    required bool includeAppsTimer,
-    required bool includeAppsLaunchLimit,
-    required bool includeAppsActivePeriod,
-    required bool includeGroupsTimer,
-    required bool includeGroupsActivePeriod,
-    required bool includeShortsTimer,
-    required bool includeBedtimeSchedule,
-  })  : isInvincibleModeOn = Value(isInvincibleModeOn),
-        includeAppsTimer = Value(includeAppsTimer),
-        includeAppsLaunchLimit = Value(includeAppsLaunchLimit),
-        includeAppsActivePeriod = Value(includeAppsActivePeriod),
-        includeGroupsTimer = Value(includeGroupsTimer),
-        includeGroupsActivePeriod = Value(includeGroupsActivePeriod),
-        includeShortsTimer = Value(includeShortsTimer),
-        includeBedtimeSchedule = Value(includeBedtimeSchedule);
+    this.isInvincibleModeOn = const Value.absent(),
+    this.includeAppsTimer = const Value.absent(),
+    this.includeAppsLaunchLimit = const Value.absent(),
+    this.includeAppsActivePeriod = const Value.absent(),
+    this.includeGroupsTimer = const Value.absent(),
+    this.includeGroupsActivePeriod = const Value.absent(),
+    this.includeShortsTimer = const Value.absent(),
+    this.includeBedtimeSchedule = const Value.absent(),
+  });
   static Insertable<InvincibleMode> custom({
     Expression<int>? id,
     Expression<bool>? isInvincibleModeOn,
@@ -3583,20 +3649,26 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
   @override
   late final GeneratedColumn<String> groupName = GeneratedColumn<String>(
       'group_name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("Social"));
   static const VerificationMeta _timerSecMeta =
       const VerificationMeta('timerSec');
   @override
   late final GeneratedColumn<int> timerSec = GeneratedColumn<int>(
       'timer_sec', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _activePeriodStartMeta =
       const VerificationMeta('activePeriodStart');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodStart = GeneratedColumn<int>(
               'active_period_start', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $RestrictionGroupsTableTable.$converteractivePeriodStart);
   static const VerificationMeta _activePeriodEndMeta =
@@ -3605,7 +3677,9 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodEnd = GeneratedColumn<int>(
               'active_period_end', aliasedName, false,
-              type: DriftSqlType.int, requiredDuringInsert: true)
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $RestrictionGroupsTableTable.$converteractivePeriodEnd);
   static const VerificationMeta _periodDurationInMinsMeta =
@@ -3613,14 +3687,18 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
   @override
   late final GeneratedColumn<int> periodDurationInMins = GeneratedColumn<int>(
       'period_duration_in_mins', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _distractingAppsMeta =
       const VerificationMeta('distractingApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       distractingApps = GeneratedColumn<String>(
               'distracting_apps', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $RestrictionGroupsTableTable.$converterdistractingApps);
   @override
@@ -3649,14 +3727,10 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
     if (data.containsKey('group_name')) {
       context.handle(_groupNameMeta,
           groupName.isAcceptableOrUnknown(data['group_name']!, _groupNameMeta));
-    } else if (isInserting) {
-      context.missing(_groupNameMeta);
     }
     if (data.containsKey('timer_sec')) {
       context.handle(_timerSecMeta,
           timerSec.isAcceptableOrUnknown(data['timer_sec']!, _timerSecMeta));
-    } else if (isInserting) {
-      context.missing(_timerSecMeta);
     }
     context.handle(_activePeriodStartMeta, const VerificationResult.success());
     context.handle(_activePeriodEndMeta, const VerificationResult.success());
@@ -3665,8 +3739,6 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
           _periodDurationInMinsMeta,
           periodDurationInMins.isAcceptableOrUnknown(
               data['period_duration_in_mins']!, _periodDurationInMinsMeta));
-    } else if (isInserting) {
-      context.missing(_periodDurationInMinsMeta);
     }
     context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
@@ -3884,18 +3956,13 @@ class RestrictionGroupsTableCompanion
   });
   RestrictionGroupsTableCompanion.insert({
     this.id = const Value.absent(),
-    required String groupName,
-    required int timerSec,
-    required TimeOfDayAdapter activePeriodStart,
-    required TimeOfDayAdapter activePeriodEnd,
-    required int periodDurationInMins,
-    required List<String> distractingApps,
-  })  : groupName = Value(groupName),
-        timerSec = Value(timerSec),
-        activePeriodStart = Value(activePeriodStart),
-        activePeriodEnd = Value(activePeriodEnd),
-        periodDurationInMins = Value(periodDurationInMins),
-        distractingApps = Value(distractingApps);
+    this.groupName = const Value.absent(),
+    this.timerSec = const Value.absent(),
+    this.activePeriodStart = const Value.absent(),
+    this.activePeriodEnd = const Value.absent(),
+    this.periodDurationInMins = const Value.absent(),
+    this.distractingApps = const Value.absent(),
+  });
   static Insertable<RestrictionGroup> custom({
     Expression<int>? id,
     Expression<String>? groupName,
@@ -4003,68 +4070,78 @@ class $WellbeingTableTable extends WellbeingTable
   @override
   late final GeneratedColumn<int> allowedShortsTimeSec = GeneratedColumn<int>(
       'allowed_shorts_time_sec', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(30 * 60));
   static const VerificationMeta _blockInstaReelsMeta =
       const VerificationMeta('blockInstaReels');
   @override
   late final GeneratedColumn<bool> blockInstaReels = GeneratedColumn<bool>(
       'block_insta_reels', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_insta_reels" IN (0, 1))'));
+          'CHECK ("block_insta_reels" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _blockYtShortsMeta =
       const VerificationMeta('blockYtShorts');
   @override
   late final GeneratedColumn<bool> blockYtShorts = GeneratedColumn<bool>(
       'block_yt_shorts', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_yt_shorts" IN (0, 1))'));
+          'CHECK ("block_yt_shorts" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _blockSnapSpotlightMeta =
       const VerificationMeta('blockSnapSpotlight');
   @override
   late final GeneratedColumn<bool> blockSnapSpotlight = GeneratedColumn<bool>(
       'block_snap_spotlight', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_snap_spotlight" IN (0, 1))'));
+          'CHECK ("block_snap_spotlight" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _blockFbReelsMeta =
       const VerificationMeta('blockFbReels');
   @override
   late final GeneratedColumn<bool> blockFbReels = GeneratedColumn<bool>(
       'block_fb_reels', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_fb_reels" IN (0, 1))'));
+          'CHECK ("block_fb_reels" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _blockRedditShortsMeta =
       const VerificationMeta('blockRedditShorts');
   @override
   late final GeneratedColumn<bool> blockRedditShorts = GeneratedColumn<bool>(
       'block_reddit_shorts', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_reddit_shorts" IN (0, 1))'));
+          'CHECK ("block_reddit_shorts" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _blockNsfwSitesMeta =
       const VerificationMeta('blockNsfwSites');
   @override
   late final GeneratedColumn<bool> blockNsfwSites = GeneratedColumn<bool>(
       'block_nsfw_sites', aliasedName, false,
       type: DriftSqlType.bool,
-      requiredDuringInsert: true,
+      requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_nsfw_sites" IN (0, 1))'));
+          'CHECK ("block_nsfw_sites" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _blockedWebsitesMeta =
       const VerificationMeta('blockedWebsites');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       blockedWebsites = GeneratedColumn<String>(
               'blocked_websites', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $WellbeingTableTable.$converterblockedWebsites);
   @override
@@ -4097,56 +4174,42 @@ class $WellbeingTableTable extends WellbeingTable
           _allowedShortsTimeSecMeta,
           allowedShortsTimeSec.isAcceptableOrUnknown(
               data['allowed_shorts_time_sec']!, _allowedShortsTimeSecMeta));
-    } else if (isInserting) {
-      context.missing(_allowedShortsTimeSecMeta);
     }
     if (data.containsKey('block_insta_reels')) {
       context.handle(
           _blockInstaReelsMeta,
           blockInstaReels.isAcceptableOrUnknown(
               data['block_insta_reels']!, _blockInstaReelsMeta));
-    } else if (isInserting) {
-      context.missing(_blockInstaReelsMeta);
     }
     if (data.containsKey('block_yt_shorts')) {
       context.handle(
           _blockYtShortsMeta,
           blockYtShorts.isAcceptableOrUnknown(
               data['block_yt_shorts']!, _blockYtShortsMeta));
-    } else if (isInserting) {
-      context.missing(_blockYtShortsMeta);
     }
     if (data.containsKey('block_snap_spotlight')) {
       context.handle(
           _blockSnapSpotlightMeta,
           blockSnapSpotlight.isAcceptableOrUnknown(
               data['block_snap_spotlight']!, _blockSnapSpotlightMeta));
-    } else if (isInserting) {
-      context.missing(_blockSnapSpotlightMeta);
     }
     if (data.containsKey('block_fb_reels')) {
       context.handle(
           _blockFbReelsMeta,
           blockFbReels.isAcceptableOrUnknown(
               data['block_fb_reels']!, _blockFbReelsMeta));
-    } else if (isInserting) {
-      context.missing(_blockFbReelsMeta);
     }
     if (data.containsKey('block_reddit_shorts')) {
       context.handle(
           _blockRedditShortsMeta,
           blockRedditShorts.isAcceptableOrUnknown(
               data['block_reddit_shorts']!, _blockRedditShortsMeta));
-    } else if (isInserting) {
-      context.missing(_blockRedditShortsMeta);
     }
     if (data.containsKey('block_nsfw_sites')) {
       context.handle(
           _blockNsfwSitesMeta,
           blockNsfwSites.isAcceptableOrUnknown(
               data['block_nsfw_sites']!, _blockNsfwSitesMeta));
-    } else if (isInserting) {
-      context.missing(_blockNsfwSitesMeta);
     }
     context.handle(_blockedWebsitesMeta, const VerificationResult.success());
     return context;
@@ -4379,22 +4442,15 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   });
   WellbeingTableCompanion.insert({
     this.id = const Value.absent(),
-    required int allowedShortsTimeSec,
-    required bool blockInstaReels,
-    required bool blockYtShorts,
-    required bool blockSnapSpotlight,
-    required bool blockFbReels,
-    required bool blockRedditShorts,
-    required bool blockNsfwSites,
-    required List<String> blockedWebsites,
-  })  : allowedShortsTimeSec = Value(allowedShortsTimeSec),
-        blockInstaReels = Value(blockInstaReels),
-        blockYtShorts = Value(blockYtShorts),
-        blockSnapSpotlight = Value(blockSnapSpotlight),
-        blockFbReels = Value(blockFbReels),
-        blockRedditShorts = Value(blockRedditShorts),
-        blockNsfwSites = Value(blockNsfwSites),
-        blockedWebsites = Value(blockedWebsites);
+    this.allowedShortsTimeSec = const Value.absent(),
+    this.blockInstaReels = const Value.absent(),
+    this.blockYtShorts = const Value.absent(),
+    this.blockSnapSpotlight = const Value.absent(),
+    this.blockFbReels = const Value.absent(),
+    this.blockRedditShorts = const Value.absent(),
+    this.blockNsfwSites = const Value.absent(),
+    this.blockedWebsites = const Value.absent(),
+  });
   static Insertable<Wellbeing> custom({
     Expression<int>? id,
     Expression<int>? allowedShortsTimeSec,
@@ -4542,15 +4598,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 typedef $$AppRestrictionTableTableInsertCompanionBuilder
     = AppRestrictionTableCompanion Function({
   required String appPackage,
-  required int timerSec,
-  required int launchLimit,
-  required TimeOfDayAdapter activePeriodStart,
-  required TimeOfDayAdapter activePeriodEnd,
-  required int periodDurationInMins,
-  required bool canAccessInternet,
+  Value<int> timerSec,
+  Value<int> launchLimit,
+  Value<TimeOfDayAdapter> activePeriodStart,
+  Value<TimeOfDayAdapter> activePeriodEnd,
+  Value<int> periodDurationInMins,
+  Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
-  required int alertInterval,
-  required bool alertByDialog,
+  Value<int> alertInterval,
+  Value<bool> alertByDialog,
   Value<int> rowid,
 });
 typedef $$AppRestrictionTableTableUpdateCompanionBuilder
@@ -4616,15 +4672,15 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             required String appPackage,
-            required int timerSec,
-            required int launchLimit,
-            required TimeOfDayAdapter activePeriodStart,
-            required TimeOfDayAdapter activePeriodEnd,
-            required int periodDurationInMins,
-            required bool canAccessInternet,
+            Value<int> timerSec = const Value.absent(),
+            Value<int> launchLimit = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
+            Value<int> periodDurationInMins = const Value.absent(),
+            Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
-            required int alertInterval,
-            required bool alertByDialog,
+            Value<int> alertInterval = const Value.absent(),
+            Value<bool> alertByDialog = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion.insert(
@@ -4771,13 +4827,13 @@ class $$AppRestrictionTableTableOrderingComposer
 typedef $$BedtimeScheduleTableTableInsertCompanionBuilder
     = BedtimeScheduleTableCompanion Function({
   Value<int> id,
-  required TimeOfDayAdapter scheduleStartTime,
-  required TimeOfDayAdapter scheduleEndTime,
-  required int scheduleDurationInMins,
-  required List<bool> scheduleDays,
-  required bool isScheduleOn,
-  required bool shouldStartDnd,
-  required List<String> distractingApps,
+  Value<TimeOfDayAdapter> scheduleStartTime,
+  Value<TimeOfDayAdapter> scheduleEndTime,
+  Value<int> scheduleDurationInMins,
+  Value<List<bool>> scheduleDays,
+  Value<bool> isScheduleOn,
+  Value<bool> shouldStartDnd,
+  Value<List<String>> distractingApps,
 });
 typedef $$BedtimeScheduleTableTableUpdateCompanionBuilder
     = BedtimeScheduleTableCompanion Function({
@@ -4833,13 +4889,13 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required TimeOfDayAdapter scheduleStartTime,
-            required TimeOfDayAdapter scheduleEndTime,
-            required int scheduleDurationInMins,
-            required List<bool> scheduleDays,
-            required bool isScheduleOn,
-            required bool shouldStartDnd,
-            required List<String> distractingApps,
+            Value<TimeOfDayAdapter> scheduleStartTime = const Value.absent(),
+            Value<TimeOfDayAdapter> scheduleEndTime = const Value.absent(),
+            Value<int> scheduleDurationInMins = const Value.absent(),
+            Value<List<bool>> scheduleDays = const Value.absent(),
+            Value<bool> isScheduleOn = const Value.absent(),
+            Value<bool> shouldStartDnd = const Value.absent(),
+            Value<List<String>> distractingApps = const Value.absent(),
           }) =>
               BedtimeScheduleTableCompanion.insert(
             id: id,
@@ -4966,10 +5022,10 @@ class $$BedtimeScheduleTableTableOrderingComposer
 typedef $$CrashLogsTableTableInsertCompanionBuilder = CrashLogsTableCompanion
     Function({
   Value<int> id,
-  required String appVersion,
-  required DateTime timeStamp,
-  required String error,
-  required String stackTrace,
+  Value<String> appVersion,
+  Value<DateTime> timeStamp,
+  Value<String> error,
+  Value<String> stackTrace,
 });
 typedef $$CrashLogsTableTableUpdateCompanionBuilder = CrashLogsTableCompanion
     Function({
@@ -5016,10 +5072,10 @@ class $$CrashLogsTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required String appVersion,
-            required DateTime timeStamp,
-            required String error,
-            required String stackTrace,
+            Value<String> appVersion = const Value.absent(),
+            Value<DateTime> timeStamp = const Value.absent(),
+            Value<String> error = const Value.absent(),
+            Value<String> stackTrace = const Value.absent(),
           }) =>
               CrashLogsTableCompanion.insert(
             id: id,
@@ -5104,10 +5160,10 @@ class $$CrashLogsTableTableOrderingComposer
 typedef $$FocusModeTableTableInsertCompanionBuilder = FocusModeTableCompanion
     Function({
   Value<int> id,
-  required SessionType sessionType,
-  required int longestStreak,
-  required int currentStreak,
-  required DateTime lastTimeStreakUpdated,
+  Value<SessionType> sessionType,
+  Value<int> longestStreak,
+  Value<int> currentStreak,
+  Value<DateTime> lastTimeStreakUpdated,
 });
 typedef $$FocusModeTableTableUpdateCompanionBuilder = FocusModeTableCompanion
     Function({
@@ -5154,10 +5210,10 @@ class $$FocusModeTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required SessionType sessionType,
-            required int longestStreak,
-            required int currentStreak,
-            required DateTime lastTimeStreakUpdated,
+            Value<SessionType> sessionType = const Value.absent(),
+            Value<int> longestStreak = const Value.absent(),
+            Value<int> currentStreak = const Value.absent(),
+            Value<DateTime> lastTimeStreakUpdated = const Value.absent(),
           }) =>
               FocusModeTableCompanion.insert(
             id: id,
@@ -5245,9 +5301,9 @@ class $$FocusModeTableTableOrderingComposer
 typedef $$FocusProfileTableTableInsertCompanionBuilder
     = FocusProfileTableCompanion Function({
   Value<SessionType> sessionType,
-  required int sessionDuration,
-  required bool shouldStartDnd,
-  required List<String> distractingApps,
+  Value<int> sessionDuration,
+  Value<bool> shouldStartDnd,
+  Value<List<String>> distractingApps,
 });
 typedef $$FocusProfileTableTableUpdateCompanionBuilder
     = FocusProfileTableCompanion Function({
@@ -5291,9 +5347,9 @@ class $$FocusProfileTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<SessionType> sessionType = const Value.absent(),
-            required int sessionDuration,
-            required bool shouldStartDnd,
-            required List<String> distractingApps,
+            Value<int> sessionDuration = const Value.absent(),
+            Value<bool> shouldStartDnd = const Value.absent(),
+            Value<List<String>> distractingApps = const Value.absent(),
           }) =>
               FocusProfileTableCompanion.insert(
             sessionType: sessionType,
@@ -5372,10 +5428,10 @@ class $$FocusProfileTableTableOrderingComposer
 typedef $$FocusSessionsTableTableInsertCompanionBuilder
     = FocusSessionsTableCompanion Function({
   Value<int> id,
-  required SessionType type,
-  required SessionState state,
-  required DateTime startDateTime,
-  required int durationSecs,
+  Value<SessionType> type,
+  Value<SessionState> state,
+  Value<DateTime> startDateTime,
+  Value<int> durationSecs,
 });
 typedef $$FocusSessionsTableTableUpdateCompanionBuilder
     = FocusSessionsTableCompanion Function({
@@ -5422,10 +5478,10 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required SessionType type,
-            required SessionState state,
-            required DateTime startDateTime,
-            required int durationSecs,
+            Value<SessionType> type = const Value.absent(),
+            Value<SessionState> state = const Value.absent(),
+            Value<DateTime> startDateTime = const Value.absent(),
+            Value<int> durationSecs = const Value.absent(),
           }) =>
               FocusSessionsTableCompanion.insert(
             id: id,
@@ -5515,19 +5571,21 @@ class $$FocusSessionsTableTableOrderingComposer
 typedef $$MindfulSettingsTableTableInsertCompanionBuilder
     = MindfulSettingsTableCompanion Function({
   Value<int> id,
-  required AppThemeMode themeMode,
-  required String accentColor,
-  required String username,
-  required String localeCode,
-  required TimeOfDayAdapter dataResetTime,
-  required bool useBottomNavigation,
-  required bool useAmoledDark,
-  required bool useDynamicColors,
-  required DefaultHomeTab defaultHomeTab,
-  required List<String> excludedApps,
-  required int leftEmergencyPasses,
-  required DateTime lastEmergencyUsed,
-  required bool isOnboardingDone,
+  Value<AppThemeMode> themeMode,
+  Value<String> accentColor,
+  Value<String> username,
+  Value<String> localeCode,
+  Value<TimeOfDayAdapter> dataResetTime,
+  Value<bool> useBottomNavigation,
+  Value<bool> useAmoledDark,
+  Value<bool> useDynamicColors,
+  Value<DefaultHomeTab> defaultHomeTab,
+  Value<List<String>> excludedApps,
+  Value<int> leftEmergencyPasses,
+  Value<DateTime> lastEmergencyUsed,
+  Value<bool> isOnboardingDone,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
@@ -5545,6 +5603,8 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 
 class $$MindfulSettingsTableTableTableManager extends RootTableManager<
@@ -5582,6 +5642,8 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion(
             id: id,
@@ -5598,22 +5660,26 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required AppThemeMode themeMode,
-            required String accentColor,
-            required String username,
-            required String localeCode,
-            required TimeOfDayAdapter dataResetTime,
-            required bool useBottomNavigation,
-            required bool useAmoledDark,
-            required bool useDynamicColors,
-            required DefaultHomeTab defaultHomeTab,
-            required List<String> excludedApps,
-            required int leftEmergencyPasses,
-            required DateTime lastEmergencyUsed,
-            required bool isOnboardingDone,
+            Value<AppThemeMode> themeMode = const Value.absent(),
+            Value<String> accentColor = const Value.absent(),
+            Value<String> username = const Value.absent(),
+            Value<String> localeCode = const Value.absent(),
+            Value<TimeOfDayAdapter> dataResetTime = const Value.absent(),
+            Value<bool> useBottomNavigation = const Value.absent(),
+            Value<bool> useAmoledDark = const Value.absent(),
+            Value<bool> useDynamicColors = const Value.absent(),
+            Value<DefaultHomeTab> defaultHomeTab = const Value.absent(),
+            Value<List<String>> excludedApps = const Value.absent(),
+            Value<int> leftEmergencyPasses = const Value.absent(),
+            Value<DateTime> lastEmergencyUsed = const Value.absent(),
+            Value<bool> isOnboardingDone = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion.insert(
             id: id,
@@ -5630,6 +5696,8 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
           ),
         ));
 }
@@ -5727,6 +5795,18 @@ class $$MindfulSettingsTableTableFilterComposer
       column: $state.table.isOnboardingDone,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get protectedAccess => $state.composableBuilder(
+      column: $state.table.protectedAccess,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get uninstallWindowTime => $state.composableBuilder(
+          column: $state.table.uninstallWindowTime,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 }
 
 class $$MindfulSettingsTableTableOrderingComposer
@@ -5801,19 +5881,29 @@ class $$MindfulSettingsTableTableOrderingComposer
       column: $state.table.isOnboardingDone,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get protectedAccess => $state.composableBuilder(
+      column: $state.table.protectedAccess,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get uninstallWindowTime => $state.composableBuilder(
+      column: $state.table.uninstallWindowTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
 typedef $$InvincibleModeTableTableInsertCompanionBuilder
     = InvincibleModeTableCompanion Function({
   Value<int> id,
-  required bool isInvincibleModeOn,
-  required bool includeAppsTimer,
-  required bool includeAppsLaunchLimit,
-  required bool includeAppsActivePeriod,
-  required bool includeGroupsTimer,
-  required bool includeGroupsActivePeriod,
-  required bool includeShortsTimer,
-  required bool includeBedtimeSchedule,
+  Value<bool> isInvincibleModeOn,
+  Value<bool> includeAppsTimer,
+  Value<bool> includeAppsLaunchLimit,
+  Value<bool> includeAppsActivePeriod,
+  Value<bool> includeGroupsTimer,
+  Value<bool> includeGroupsActivePeriod,
+  Value<bool> includeShortsTimer,
+  Value<bool> includeBedtimeSchedule,
 });
 typedef $$InvincibleModeTableTableUpdateCompanionBuilder
     = InvincibleModeTableCompanion Function({
@@ -5872,14 +5962,14 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required bool isInvincibleModeOn,
-            required bool includeAppsTimer,
-            required bool includeAppsLaunchLimit,
-            required bool includeAppsActivePeriod,
-            required bool includeGroupsTimer,
-            required bool includeGroupsActivePeriod,
-            required bool includeShortsTimer,
-            required bool includeBedtimeSchedule,
+            Value<bool> isInvincibleModeOn = const Value.absent(),
+            Value<bool> includeAppsTimer = const Value.absent(),
+            Value<bool> includeAppsLaunchLimit = const Value.absent(),
+            Value<bool> includeAppsActivePeriod = const Value.absent(),
+            Value<bool> includeGroupsTimer = const Value.absent(),
+            Value<bool> includeGroupsActivePeriod = const Value.absent(),
+            Value<bool> includeShortsTimer = const Value.absent(),
+            Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
               InvincibleModeTableCompanion.insert(
             id: id,
@@ -6010,12 +6100,12 @@ class $$InvincibleModeTableTableOrderingComposer
 typedef $$RestrictionGroupsTableTableInsertCompanionBuilder
     = RestrictionGroupsTableCompanion Function({
   Value<int> id,
-  required String groupName,
-  required int timerSec,
-  required TimeOfDayAdapter activePeriodStart,
-  required TimeOfDayAdapter activePeriodEnd,
-  required int periodDurationInMins,
-  required List<String> distractingApps,
+  Value<String> groupName,
+  Value<int> timerSec,
+  Value<TimeOfDayAdapter> activePeriodStart,
+  Value<TimeOfDayAdapter> activePeriodEnd,
+  Value<int> periodDurationInMins,
+  Value<List<String>> distractingApps,
 });
 typedef $$RestrictionGroupsTableTableUpdateCompanionBuilder
     = RestrictionGroupsTableCompanion Function({
@@ -6068,12 +6158,12 @@ class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required String groupName,
-            required int timerSec,
-            required TimeOfDayAdapter activePeriodStart,
-            required TimeOfDayAdapter activePeriodEnd,
-            required int periodDurationInMins,
-            required List<String> distractingApps,
+            Value<String> groupName = const Value.absent(),
+            Value<int> timerSec = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
+            Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
+            Value<int> periodDurationInMins = const Value.absent(),
+            Value<List<String>> distractingApps = const Value.absent(),
           }) =>
               RestrictionGroupsTableCompanion.insert(
             id: id,
@@ -6187,14 +6277,14 @@ class $$RestrictionGroupsTableTableOrderingComposer
 typedef $$WellbeingTableTableInsertCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
-  required int allowedShortsTimeSec,
-  required bool blockInstaReels,
-  required bool blockYtShorts,
-  required bool blockSnapSpotlight,
-  required bool blockFbReels,
-  required bool blockRedditShorts,
-  required bool blockNsfwSites,
-  required List<String> blockedWebsites,
+  Value<int> allowedShortsTimeSec,
+  Value<bool> blockInstaReels,
+  Value<bool> blockYtShorts,
+  Value<bool> blockSnapSpotlight,
+  Value<bool> blockFbReels,
+  Value<bool> blockRedditShorts,
+  Value<bool> blockNsfwSites,
+  Value<List<String>> blockedWebsites,
 });
 typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
     Function({
@@ -6253,14 +6343,14 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
-            required int allowedShortsTimeSec,
-            required bool blockInstaReels,
-            required bool blockYtShorts,
-            required bool blockSnapSpotlight,
-            required bool blockFbReels,
-            required bool blockRedditShorts,
-            required bool blockNsfwSites,
-            required List<String> blockedWebsites,
+            Value<int> allowedShortsTimeSec = const Value.absent(),
+            Value<bool> blockInstaReels = const Value.absent(),
+            Value<bool> blockYtShorts = const Value.absent(),
+            Value<bool> blockSnapSpotlight = const Value.absent(),
+            Value<bool> blockFbReels = const Value.absent(),
+            Value<bool> blockRedditShorts = const Value.absent(),
+            Value<bool> blockNsfwSites = const Value.absent(),
+            Value<List<String>> blockedWebsites = const Value.absent(),
           }) =>
               WellbeingTableCompanion.insert(
             id: id,

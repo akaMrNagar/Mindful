@@ -8,11 +8,15 @@
  *
  */
 
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
+import 'package:mindful/core/database/schemas/schema_versions.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
@@ -27,6 +31,8 @@ import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
+import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/utils.dart';
 
 part 'app_database.g.dart';
 
@@ -48,6 +54,46 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
 
+  /// STEP 1 => generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
+  ///
+  /// STEP 2 => generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
+  ///
+  /// STEP 3 => Add migration steps to migration strategy
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+
+  /// Always use try and catch for upgrades - why?
+  /// If a user imports a backup from a newer schema when they are on an older
+  /// App version, it will import correctly. However, when they do update the app
+  /// The migrator will run and it will throw error!
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (m, from, to) {
+          debugPrint("Upgrading database from schema version $from to $to");
+
+          return m.runMigrationSteps(
+            from: from,
+            to: to,
+            steps: migrationSteps(
+              from1To2: (m, schema) async => runSafe(
+                "Migration($from to $to)",
+                () async {
+                  /// Add protective access [Bool] column
+                  await m.addColumn(
+                    schema.mindfulSettingsTable,
+                    schema.mindfulSettingsTable.protectedAccess,
+                  );
+
+                  /// Add uninstall window time [TimeOfDayAdapter] column
+                  await m.addColumn(
+                    schema.mindfulSettingsTable,
+                    schema.mindfulSettingsTable.uninstallWindowTime,
+                  );
+                },
+              ),
+            ),
+          );
+        },
+      );
 }

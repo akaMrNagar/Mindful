@@ -21,16 +21,18 @@ class FocusModeTable extends Table {
   Set<Column<Object>>? get primaryKey => {id};
 
   /// Selected session type
-  IntColumn get sessionType => intEnum<SessionType>()();
+  IntColumn get sessionType =>
+      intEnum<SessionType>().withDefault(const Constant(0))();
 
   /// Longest streak (number of days) till now
-  IntColumn get longestStreak => integer()();
+  IntColumn get longestStreak => integer().withDefault(const Constant(0))();
 
   /// Current streak (number of days) till now
-  IntColumn get currentStreak => integer()();
+  IntColumn get currentStreak => integer().withDefault(const Constant(0))();
 
   /// The [DateTime] when the streak was updated last time
-  DateTimeColumn get lastTimeStreakUpdated => dateTime()();
+  DateTimeColumn get lastTimeStreakUpdated =>
+      dateTime().withDefault(Constant(DateTime(0)))();
 
   static final defaultFocusModeModel = FocusMode(
     id: 0,

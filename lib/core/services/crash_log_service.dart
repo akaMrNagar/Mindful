@@ -8,6 +8,7 @@
  *
  */
 
+import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
@@ -24,11 +25,11 @@ class CrashLogService {
   void recordCrashError(String error, String stackTrace) async {
     /// Create log
     final crashLog = CrashLogsTableCompanion.insert(
-      appVersion:
-          (await MethodChannelService.instance.getDeviceInfo()).mindfulVersion,
-      error: error,
-      stackTrace: stackTrace,
-      timeStamp: DateTime.now(),
+      appVersion: Value(
+          (await MethodChannelService.instance.getDeviceInfo()).mindfulVersion),
+      error: Value(error),
+      stackTrace: Value(stackTrace),
+      timeStamp: Value(DateTime.now()),
     );
 
     /// Insert log to database

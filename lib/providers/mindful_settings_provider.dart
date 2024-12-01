@@ -130,4 +130,12 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
 
   /// Mark onboarding as completed
   void markOnboardingDone() => state = state.copyWith(isOnboardingDone: true);
+
+  /// Switch protected access
+  void switchProtectedAccess() =>
+      state = state.copyWith(protectedAccess: !state.protectedAccess);
+
+  /// Changes the time of day when uninstall widow starts for 5 minutes.
+  void changeUninstallWindowTime(TimeOfDayAdapter time) =>
+      state = state.copyWith(uninstallWindowTime: time);
 }

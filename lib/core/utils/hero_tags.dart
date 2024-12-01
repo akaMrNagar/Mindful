@@ -68,18 +68,21 @@ class HeroTags {
 
   /// Tag used to identify the tile for data reset time in settings.
   static const dataResetTimeTileTag = "settings.general.dataResetTime";
-  
+
   /// Tag used to identify the tile for clearing crash log in settings.
-  static const clearCrashLogsTileTag = "settings.advance.clearCrashLogs";
+  static const uninstallWindowTileTag = "settings.advance.uninstallWindow";
+
+  /// Tag used to identify the tile for clearing crash log in settings.
+  static const clearCrashLogsTileTag = "settings.database.clearCrashLogs";
 
   /// Tag used to identify the remove button in a restriction group card based on the group ID.
   static String removeRestrictionGroupTag(int groupId) =>
       "restrictionGroupScreen.restrictionGroup.$groupId";
-  
+
   /// Tag used to identify the restriction group name tile based on the group ID.
   static String restrictionGroupNameTileTag(int groupId) =>
       "restrictionGroupScreen.restrictionGroupName.$groupId";
- 
+
   /// Tag used to identify the restriction group timer tile based on the group ID.
   static String restrictionGroupTimerTileTag(int groupId) =>
       "restrictionGroupScreen.restrictionGroupTimer.$groupId";

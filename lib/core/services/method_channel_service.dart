@@ -282,6 +282,20 @@ class MethodChannelService {
         askPermissionToo,
       );
 
+  /// Checks if the admin permission is granted and optionally asks for it.
+  ///
+  /// Returns `true` if the permission is granted Otherwise, returns `false`.
+  Future<bool> getAndAskAdminPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskAdminPermission',
+        askPermissionToo,
+      );
+
+  /// Disable device Admin if active.
+  Future<bool> disableDeviceAdmin() async =>
+      await _methodChannel.invokeMethod('disableDeviceAdmin');
+
   // !SECTION
   // SECTION: New Activity Launch Methods ======================================================================
 

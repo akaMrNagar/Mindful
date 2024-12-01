@@ -16,14 +16,15 @@ class CrashLogsTable extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   /// Current version of Mindful app
-  TextColumn get appVersion => text()();
+  TextColumn get appVersion => text().withDefault(const Constant(""))();
 
   /// [DateTime] when the error was thrown
-  DateTimeColumn get timeStamp => dateTime()();
+  DateTimeColumn get timeStamp =>
+      dateTime().withDefault(Constant(DateTime(0)))();
 
   /// The error string
-  TextColumn get error => text()();
+  TextColumn get error => text().withDefault(const Constant(""))();
 
   /// Stack trace when the error or exception was thrown
-  TextColumn get stackTrace => text()();
+  TextColumn get stackTrace => text().withDefault(const Constant(""))();
 }

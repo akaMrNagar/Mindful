@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/permissions_provider.dart';
@@ -29,6 +30,7 @@ class BatteryPermissionTile extends ConsumerWidget {
         permissionProvider.select((v) => v.haveIgnoreOptimizationPermission));
 
     return DefaultListTile(
+      position: ItemPosition.start,
       titleText: context.locale.permission_battery_optimization_tile_title,
       enabled: !havePermission,
       switchValue: havePermission,
