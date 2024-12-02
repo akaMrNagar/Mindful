@@ -8,6 +8,8 @@
  *
  */
 
+import 'dart:math';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +20,7 @@ import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
@@ -29,6 +32,7 @@ import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
 import 'package:mindful/ui/screens/home/wellbeing/add_websites_fab.dart';
 import 'package:mindful/ui/screens/home/wellbeing/tab_wellbeing.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -80,11 +84,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   void _showDonationDialog() async {
     await Future.delayed(5.seconds);
-    if (!mounted) return;
+
+    /// Add randomness (1 out of 10) to skip showing sometimes whenever possible
+    final prob = Random().nextInt(10);
+    debugPrint("Random 1 = $prob");
+    if (!mounted || prob != 1) return;
 
     final isConfirm = await showConfirmationDialog(
       context: context,
-      heroTag: "heroTag",
+      heroTag: HeroTags.donationDialogTag,
       title: context.locale.donation_card_title,
       info: context.locale.donation_card_info,
       icon: FluentIcons.handshake_20_regular,
@@ -105,10 +113,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       onPopInvoked: (didPop) => SystemNavigator.pop(),
       child: DefaultScaffold(
         initialTabIndex: homeTab.index,
-        leading: IconButton(
-          icon: const Icon(FluentIcons.settings_20_regular),
-          onPressed: () =>
-              Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
+        leading: DefaultHero(
+          tag: HeroTags.donationDialogTag,
+          child: IconButton(
+            icon: const Icon(FluentIcons.settings_20_regular),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
+          ),
         ),
         navbarItems: [
           NavbarItem(
