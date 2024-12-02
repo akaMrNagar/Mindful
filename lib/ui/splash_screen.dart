@@ -65,10 +65,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void _pushNextScreen() {
     if (!mounted) return;
 
-    /// watching these providers to only start necessary services but this will not trigger any updates
-    ref.watch(appsRestrictionsProvider.select((v) => v[null]));
-    ref.watch(restrictionGroupsProvider.select((v) => v[null]));
-
     if (_haveAllEssentialPermissions && _isOnboardingDone) {
       Navigator.of(context).pushNamedAndRemoveUntil(
         AppRoutes.homeScreen,
@@ -81,6 +77,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         arguments: _isOnboardingDone,
       );
     }
+
+    /// Load restrictions and start necessary services
+    ref.read(appsRestrictionsProvider.select((v) => v[null]));
+    ref.read(restrictionGroupsProvider.select((v) => v[null]));
   }
 
   void _authenticate() async {

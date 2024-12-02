@@ -73,10 +73,7 @@ class TabAbout extends ConsumerWidget {
           isSubtitle: true,
         ).centered.sliver,
 
-        12.vSliverBox,
-
-        ContentSectionHeader(title: context.locale.support_us_heading).sliver,
-        4.vSliverBox,
+        24.vSliverBox,
 
         /// Donation box
         SliverPrimaryActionContainer(
@@ -88,7 +85,7 @@ class TabAbout extends ConsumerWidget {
             icon: const Icon(FluentIcons.heart_20_filled),
             label: Text(context.locale.donation_card_button_donate),
             onPressed: () => MethodChannelService.instance
-                .launchUrl(AppConstants.buyMeCoffeeDonationUrl),
+                .launchUrl(AppConstants.githubFeedbackSectionUrl),
           ),
         ),
 

@@ -74,8 +74,8 @@ public class BedtimeSettings {
 
                 // Deserialize fields
                 this.isScheduleOn = jsonObject.optBoolean("isScheduleOn", false);
-                this.startTimeInMins = jsonObject.optInt("startTimeInMins", 0);
-                this.totalDurationInMins = jsonObject.optInt("totalDurationInMins", 0);
+                this.startTimeInMins = jsonObject.optInt("scheduleStartTime", 0);
+                this.totalDurationInMins = jsonObject.optInt("scheduleDurationInMins", 0);
                 this.shouldStartDnd = jsonObject.optBoolean("shouldStartDnd", false);
 
                 // Deserialize schedule days

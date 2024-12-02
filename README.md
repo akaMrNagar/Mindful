@@ -10,14 +10,16 @@
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
 
-[![](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
-[![](https://img.shields.io/badge/Supporters-👻-black)](docs/SUPPORTERS.md) 
-[![](https://img.shields.io/badge/Build_&_Contribute-🛠️-black)](docs/CONTRIBUTING.md)
-[![](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
-[![](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
-[![](https://img.shields.io/badge/FAQs-🙋-black)](https://bemindful.vercel.app/#faqs) 
+[![Featured](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
+[![Supporters](https://img.shields.io/badge/Supporters-👻-black)](docs/SUPPORTERS.md) 
+[![Contribute](https://img.shields.io/badge/Build_&_Contribute-🛠️-black)](docs/CONTRIBUTING.md)
+[![Privacy](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
+[![Verify](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
+[![Faqs](https://img.shields.io/badge/FAQs-🙋-black)](https://bemindful.vercel.app/#faqs) 
 
-[![](https://badges.crowdin.net/mindful/localized.svg)](https://bemindful.vercel.app/#faqs)
+[![GitHub](https://img.shields.io/github/downloads/akamrnagar/mindful/total?logo=github&cacheSeconds=3600)](https://github.com/akamrnagar/mindful/releases/latest)
+[![Google Play](https://img.shields.io/endpoint?color=40bb12&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.mindful.android%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.mindful.android)
+[![Localized](https://badges.crowdin.net/mindful/localized.svg)](https://crowdin.com/project/mindful)
 
 ---
 
@@ -56,9 +58,13 @@ Enjoy a distraction-free experience without any ads. Mindful works entirely offl
 
 Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
 
-<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="208" ></a>
+<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="184" ></a>
+&emsp;
+<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>
 
-<a href="https://buymeacoffee.com/akamrnagar"><img src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-394379?logo=Buy-Me-A-Coffee&logoColor=ffdd00" height="32"></a>
+<a href="https://buymeacoffee.com/akamrnagar"><img src="https://img.shields.io/badge/-Buy%20Me%20A%20Coffee-394379?logo=Buy-Me-A-Coffee&logoColor=ffdd00" height="32"></a>
+&emsp;
+<a href=""><img src="https://img.shields.io/badge/akamrnagar@upi-394379?logo=zalando&logoColor=f47820" height="32"></a>
 &emsp;
 <a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
 
