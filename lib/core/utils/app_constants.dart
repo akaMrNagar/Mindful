@@ -37,10 +37,11 @@ class AppConstants {
   static const githubSuggestionDirectUrl =
       "https://github.com/akaMrNagar/Mindful/issues/new?template=feature_request.md";
 
-  static const buyMeCoffeeDonationUrl = "https://buymeacoffee.com/akamrnagar";
+  static const gitHubDonationSectionUrl =
+      "https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate";
 
   static const githubFeedbackSectionUrl =
-      "https://github.com/akaMrNagar/Mindful/blob/main/README.md#feedback-and-support";
+      "https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#feedback-and-support";
 
   /// Returns localized list of days in a week in short
   ///  e.g., ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]

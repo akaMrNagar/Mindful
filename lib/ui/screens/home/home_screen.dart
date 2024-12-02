@@ -17,11 +17,13 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
@@ -41,6 +43,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _showDonationDialog();
 
     final targetPackage = MethodChannelService.instance.targetedAppPackage;
     if (targetPackage.isEmpty) return;
@@ -73,6 +76,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ),
       );
     }
+  }
+
+  void _showDonationDialog() async {
+    await Future.delayed(5.seconds);
+    if (!mounted) return;
+
+    final isConfirm = await showConfirmationDialog(
+      context: context,
+      heroTag: "heroTag",
+      title: context.locale.donation_card_title,
+      info: context.locale.donation_card_info,
+      icon: FluentIcons.handshake_20_regular,
+      positiveLabel: context.locale.donation_card_button_donate,
+    );
+
+    if (!isConfirm) return;
+    MethodChannelService.instance
+        .launchUrl(AppConstants.gitHubDonationSectionUrl);
   }
 
   @override
