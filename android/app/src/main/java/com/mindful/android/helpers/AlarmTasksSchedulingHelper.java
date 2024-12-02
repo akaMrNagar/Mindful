@@ -25,6 +25,7 @@ import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver;
 import com.mindful.android.receivers.alarm.MidnightResetReceiver;
 import com.mindful.android.services.MindfulTrackerService;
+import com.mindful.android.utils.Utils;
 
 import java.util.Calendar;
 
@@ -75,26 +76,23 @@ public class AlarmTasksSchedulingHelper {
      * @param context The application context.
      */
     public static void scheduleBedtimeStartTask(@NonNull Context context, @NonNull BedtimeSettings bedtimeSettings) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, bedtimeSettings.startTimeInMins / 60);
-        cal.set(Calendar.MINUTE, bedtimeSettings.startTimeInMins % 60);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+        Calendar startCal = Utils.todToTodayCal(bedtimeSettings.startTimeInMins);
 
         // Schedule for next day if end time of routine has been passed
-        Calendar endCal = (Calendar) cal.clone();
+        Calendar endCal = (Calendar) startCal.clone();
         endCal.add(Calendar.MINUTE, bedtimeSettings.totalDurationInMins);
-        if (endCal.before(Calendar.getInstance())) {
-            cal.add(Calendar.DATE, 1);
+
+        if (endCal.getTimeInMillis() < startCal.getTimeInMillis()) {
+            startCal.add(Calendar.DATE, 1);
         }
 
         scheduleOrUpdateAlarmTask(
                 context,
                 BedtimeRoutineReceiver.class,
                 BedtimeRoutineReceiver.ACTION_START_BEDTIME,
-                cal.getTimeInMillis()
+                startCal.getTimeInMillis()
         );
-        Log.d(TAG, "scheduleBedtimeStartTask: Bedtime START task scheduled successfully for " + cal.getTime());
+        Log.d(TAG, "scheduleBedtimeStartTask: Bedtime START task scheduled successfully for " + startCal.getTime());
     }
 
     /**
@@ -103,20 +101,16 @@ public class AlarmTasksSchedulingHelper {
      * @param context The application context.
      */
     public static void scheduleBedtimeStopTask(@NonNull Context context, @NonNull BedtimeSettings bedtimeSettings) {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, bedtimeSettings.startTimeInMins / 60);
-        cal.set(Calendar.MINUTE, bedtimeSettings.startTimeInMins % 60);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        cal.add(Calendar.MINUTE, bedtimeSettings.totalDurationInMins);
+        Calendar endCal = Utils.todToTodayCal(bedtimeSettings.startTimeInMins);
+        endCal.add(Calendar.MINUTE, bedtimeSettings.totalDurationInMins);
 
         scheduleOrUpdateAlarmTask(
                 context,
                 BedtimeRoutineReceiver.class,
                 BedtimeRoutineReceiver.ACTION_STOP_BEDTIME,
-                cal.getTimeInMillis()
+                endCal.getTimeInMillis()
         );
-        Log.d(TAG, "scheduleBedtimeStopTask: Bedtime STOP task scheduled successfully for " + cal.getTime());
+        Log.d(TAG, "scheduleBedtimeStopTask: Bedtime STOP task scheduled successfully for " + endCal.getTime());
     }
 
     /**
