@@ -9,7 +9,6 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/session_type.dart';
 
 @DataClassName("FocusMode")
@@ -34,11 +33,4 @@ class FocusModeTable extends Table {
   DateTimeColumn get lastTimeStreakUpdated =>
       dateTime().withDefault(Constant(DateTime(0)))();
 
-  static final defaultFocusModeModel = FocusMode(
-    id: 0,
-    sessionType: SessionType.study,
-    longestStreak: 0,
-    currentStreak: 0,
-    lastTimeStreakUpdated: DateTime(0),
-  );
 }

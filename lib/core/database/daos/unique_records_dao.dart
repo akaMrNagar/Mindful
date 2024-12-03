@@ -16,6 +16,7 @@ import 'package:mindful/core/database/tables/focus_mode_table.dart';
 import 'package:mindful/core/database/tables/invincible_mode_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/database/tables/wellbeing_table.dart';
+import 'package:mindful/core/utils/default_models.dart';
 
 part 'unique_records_dao.g.dart';
 
@@ -41,7 +42,7 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   /// from the database. If none exists, returns default instance.
   Future<MindfulSettings> loadMindfulSettings() async =>
       await select(mindfulSettingsTable).getSingleOrNull() ??
-      MindfulSettingsTable.defaultMindfulSettingsModel;
+      defaultMindfulSettingsModel;
 
   /// Saves a single [InvincibleMode] object to the database.
   Future<void> saveInvincibleModeSettings(
@@ -53,7 +54,7 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   /// from the database. If none exists, returns default instance.
   Future<InvincibleMode> loadInvincibleModeSettings() async =>
       await select(invincibleModeTable).getSingleOrNull() ??
-      InvincibleModeTable.defaultInvincibleModeModel;
+      defaultInvincibleModeModel;
 
   /// Saves a single [BedtimeSchedule] object to the database.
   Future<void> saveBedtimeSchedule(BedtimeSchedule bedtimeSchedule) async =>
@@ -64,7 +65,7 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   /// from the database. If none exists, returns default instance.
   Future<BedtimeSchedule> loadBedtimeSchedule() async =>
       await select(bedtimeScheduleTable).getSingleOrNull() ??
-      BedtimeScheduleTable.defaultBedtimeScheduleModel;
+      defaultBedtimeScheduleModel;
 
   /// Saves a single [FocusMode] object to the database.
   Future<void> saveFocusModeSettings(FocusMode focusMode) async =>
@@ -73,8 +74,7 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   /// Loads the first (and likely only) [FocusMode] object
   /// from the database. If none exists, returns default instance.
   Future<FocusMode> loadFocusModeSettings() async =>
-      await select(focusModeTable).getSingleOrNull() ??
-      FocusModeTable.defaultFocusModeModel;
+      await select(focusModeTable).getSingleOrNull() ?? defaultFocusModeModel;
 
   /// Saves a single [Wellbeing] object to the database.
   Future<void> saveWellBeingSettings(Wellbeing wellbeing) async =>
@@ -83,6 +83,5 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   /// Loads the first (and likely only) [Wellbeing] object
   /// from the database. If none exists, returns default instance.
   Future<Wellbeing> loadWellBeingSettings() async =>
-      await select(wellbeingTable).getSingleOrNull() ??
-      WellbeingTable.defaultWellbeingModel;
+      await select(wellbeingTable).getSingleOrNull() ?? defaultWellbeingModel;
 }

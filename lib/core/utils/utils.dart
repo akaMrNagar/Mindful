@@ -52,9 +52,9 @@ BorderRadius getBorderRadiusFromPosition(ItemPosition position) =>
     };
 
 /// Invoke the method in the [try/catch] block and print the error if it occurred
-void runSafe(String tag, VoidCallback method) {
+Future<void> runSafe(String tag, Future<void> Function() method) async {
   try {
-    method();
+    await method();
   } catch (e) {
     debugPrint("Error Occurred [$tag] : ${e.toString()}");
   }

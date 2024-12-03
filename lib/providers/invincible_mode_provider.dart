@@ -10,8 +10,8 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/tables/invincible_mode_table.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/utils/default_models.dart';
 
 /// A Riverpod state notifier provider that manages [InvincibleMode] settings.
 final invincibleModeProvider =
@@ -22,7 +22,7 @@ final invincibleModeProvider =
 /// This class manages the state of invincible mode settings.
 class InvincibleModeNotifier extends StateNotifier<InvincibleMode> {
   InvincibleModeNotifier()
-      : super(InvincibleModeTable.defaultInvincibleModeModel) {
+      : super(defaultInvincibleModeModel) {
     _init();
   }
 

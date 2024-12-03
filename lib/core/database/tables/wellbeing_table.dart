@@ -11,7 +11,6 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 
 @DataClassName("Wellbeing")
@@ -55,15 +54,4 @@ class WellbeingTable extends Table {
       .map(const ListStringConverter())
       .withDefault(Constant(jsonEncode([])))();
 
-  static const defaultWellbeingModel = Wellbeing(
-    id: 0,
-    allowedShortsTimeSec: 30 * 60,
-    blockInstaReels: false,
-    blockYtShorts: false,
-    blockSnapSpotlight: false,
-    blockFbReels: false,
-    blockRedditShorts: false,
-    blockNsfwSites: false,
-    blockedWebsites: [],
-  );
 }

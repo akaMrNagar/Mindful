@@ -11,9 +11,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/default_models.dart';
 
 /// A Riverpod state notifier provider that manages [BedtimeSchedule].
 final bedtimeScheduleProvider =
@@ -23,7 +23,7 @@ final bedtimeScheduleProvider =
 
 class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
   BedtimeScheduleNotifier()
-      : super(BedtimeScheduleTable.defaultBedtimeScheduleModel) {
+      : super(defaultBedtimeScheduleModel) {
     _init();
   }
 

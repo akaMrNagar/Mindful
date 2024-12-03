@@ -13,9 +13,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
-import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/default_models.dart';
 import 'package:mindful/providers/apps_provider.dart';
 
 /// A Riverpod state notifier provider that manages a map of Package and [AppRestriction].
@@ -51,7 +51,7 @@ class AppsRestrictionsNotifier
   /// Anyway updated the platform-specific service.
   Future<void> updateAppTimer(String appPackage, int timerSec) async {
     final restriction = state[appPackage]?.copyWith(timerSec: timerSec) ??
-        AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+        defaultAppRestrictionModel.copyWith(
           appPackage: appPackage,
           timerSec: timerSec,
         );
@@ -65,7 +65,7 @@ class AppsRestrictionsNotifier
   /// Anyway updated the platform-specific service.
   Future<void> updateAppLaunchLimit(String appPackage, int launchLimit) async {
     final restriction = state[appPackage]?.copyWith(launchLimit: launchLimit) ??
-        AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+        defaultAppRestrictionModel.copyWith(
           appPackage: appPackage,
           launchLimit: launchLimit,
         );
@@ -89,7 +89,7 @@ class AppsRestrictionsNotifier
           activePeriodEnd: endTime,
           periodDurationInMins: periodDuration,
         ) ??
-        AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+        defaultAppRestrictionModel.copyWith(
           appPackage: appPackage,
           activePeriodStart: startTime,
           activePeriodEnd: endTime,
@@ -106,7 +106,7 @@ class AppsRestrictionsNotifier
   void switchInternetAccess(String appPackage, bool canAccessInternet) async {
     final restriction =
         state[appPackage]?.copyWith(canAccessInternet: canAccessInternet) ??
-            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+            defaultAppRestrictionModel.copyWith(
               appPackage: appPackage,
               canAccessInternet: canAccessInternet,
             );
@@ -134,7 +134,7 @@ class AppsRestrictionsNotifier
     for (var appPackage in skippedApps) {
       final restriction =
           state[appPackage]?.copyWith(associatedGroupId: const Value(null)) ??
-              AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+              defaultAppRestrictionModel.copyWith(
                 appPackage: appPackage,
                 associatedGroupId: const Value(null),
               );
@@ -152,7 +152,7 @@ class AppsRestrictionsNotifier
       for (var appPackage in appPackages) {
         final restriction =
             state[appPackage]?.copyWith(associatedGroupId: Value(groupId)) ??
-                AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+                defaultAppRestrictionModel.copyWith(
                   appPackage: appPackage,
                   associatedGroupId: Value(groupId),
                 );
@@ -181,7 +181,7 @@ class AppsRestrictionsNotifier
   ) async {
     final restriction =
         state[appPackage]?.copyWith(alertInterval: intervalSec) ??
-            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+            defaultAppRestrictionModel.copyWith(
               appPackage: appPackage,
               alertInterval: intervalSec,
             );
@@ -196,7 +196,7 @@ class AppsRestrictionsNotifier
   void setAlertByDialog(String appPackage, bool alertByDialog) async {
     final restriction =
         state[appPackage]?.copyWith(alertByDialog: alertByDialog) ??
-            AppRestrictionTable.defaultAppRestrictionModel.copyWith(
+            defaultAppRestrictionModel.copyWith(
               appPackage: appPackage,
               alertByDialog: alertByDialog,
             );

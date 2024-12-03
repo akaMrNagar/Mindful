@@ -9,7 +9,6 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/app_database.dart';
 
 @DataClassName("InvincibleMode")
 class InvincibleModeTable extends Table {
@@ -56,16 +55,4 @@ class InvincibleModeTable extends Table {
   ///
   /// If included user cannot modify bedtime schedule during the active period
   BoolColumn get includeBedtimeSchedule => boolean().withDefault(const Constant(false))();
-
-  static const defaultInvincibleModeModel = InvincibleMode(
-    id: 0,
-    isInvincibleModeOn: false,
-    includeAppsTimer: true,
-    includeAppsLaunchLimit: false,
-    includeAppsActivePeriod: false,
-    includeGroupsTimer: false,
-    includeGroupsActivePeriod: false,
-    includeShortsTimer: false,
-    includeBedtimeSchedule: false,
-  );
 }
