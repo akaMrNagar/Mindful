@@ -56,11 +56,11 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
 
-  /// STEP 1 => generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
-  ///
-  /// STEP 2 => generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
-  ///
-  /// STEP 3 => Add migration steps to migration strategy
+  // STEP 1 => generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
+  //
+  // STEP 2 => generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
+  //
+  // STEP 3 => Add migration steps to migration strategy
   @override
   int get schemaVersion => 2;
 
@@ -194,10 +194,10 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  /// Always use [runSafe()] for upgrades - why?
-  /// If a user imports a backup from a newer schema when they are on an older
-  /// App version, it will import correctly. However, when they do update the app
-  /// The migrator will run and it will throw error!
+  // Always use [runSafe()] for upgrades - why?
+  // If a user imports a backup from a newer schema when they are on an older
+  // App version, it will import correctly. However, when they do update the app
+  // The migrator will run and it will throw error!
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: _onFirstTimeDbCreate,

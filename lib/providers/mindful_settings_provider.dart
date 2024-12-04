@@ -38,10 +38,18 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     state = await dao.loadMindfulSettings();
     MethodChannelService.instance.updateLocale(languageCode: state.localeCode);
 
+    if (MethodChannelService.instance.isSelfRestart) {
+      await MethodChannelService.instance
+          .updateExcludedApps(state.excludedApps);
+      await MethodChannelService.instance
+          .setDataResetTime(state.dataResetTime.toMinutes);
+    }
+
     if (addListenerToo) {
+      /// Run after a delay to avoid database deadlock
       /// Listen to provider and save changes to Isar database
       Future.delayed(
-        500.ms,
+        1.seconds,
         () => addListener(
           fireImmediately: false,
           (state) => dao.saveMindfulSettings(state),
@@ -109,8 +117,7 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
           : [...state.excludedApps.where((e) => e != appPackage)],
     );
 
-    await MethodChannelService.instance
-        .updateExcludedApps(excludedApps: state.excludedApps);
+    await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
   }
 
   /// Check if user can use emergency pause pass

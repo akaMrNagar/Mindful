@@ -11,7 +11,7 @@
 class HeroTags {
   /// Tag used to identify the beta warning container
   static const betaWarningTag = "mindful.appbar.betaWarning";
- 
+
   /// Tag used to identify the beta warning container
   static const donationDialogTag = "mindful.appbar.donation";
 
@@ -74,6 +74,9 @@ class HeroTags {
 
   /// Tag used to identify the tile for clearing crash log in settings.
   static const uninstallWindowTileTag = "settings.advance.uninstallWindow";
+
+  /// Tag used to identify the tile for importing database in settings.
+  static const importDatabaseTileTag = "settings.database.importDatabase";
 
   /// Tag used to identify the tile for clearing crash log in settings.
   static const clearCrashLogsTileTag = "settings.database.clearCrashLogs";

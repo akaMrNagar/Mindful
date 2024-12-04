@@ -22,8 +22,7 @@ final bedtimeScheduleProvider =
 );
 
 class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
-  BedtimeScheduleNotifier()
-      : super(defaultBedtimeScheduleModel) {
+  BedtimeScheduleNotifier() : super(defaultBedtimeScheduleModel) {
     _init();
   }
 
@@ -31,6 +30,10 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
   void _init() async {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await dao.loadBedtimeSchedule();
+
+    if (MethodChannelService.instance.isSelfRestart) {
+      await MethodChannelService.instance.updateBedtimeSchedule(state);
+    }
 
     /// Save changes to the database whenever the state updates.
     addListener(

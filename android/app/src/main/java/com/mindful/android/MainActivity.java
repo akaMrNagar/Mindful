@@ -12,6 +12,7 @@
 
 package com.mindful.android;
 
+import static com.mindful.android.helpers.NewActivitiesLaunchHelper.INTENT_EXTRA_IS_SELF_RESTART;
 import static com.mindful.android.services.EmergencyPauseService.ACTION_START_SERVICE_EMERGENCY;
 import static com.mindful.android.services.FocusSessionService.ACTION_START_FOCUS_SERVICE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
@@ -106,10 +107,14 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
         MethodChannel mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         mMethodChannel.setMethodCallHandler(this);
-
-        // Check if the app was launched from TLE dialog and update the targeted app
+        // Check if the was restarted itself during databased import
+        boolean isRestart = getIntent().getBooleanExtra(INTENT_EXTRA_IS_SELF_RESTART, false);
         String appPackage = getIntent().getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
-        if (appPackage != null && !appPackage.isEmpty()) {
+        if (isRestart) {
+            mMethodChannel.invokeMethod("updateIsRestartBool", true);
+        }
+        // Check if the app was launched from TLE dialog and update the targeted app
+        else if (appPackage != null && !appPackage.isEmpty()) {
             mMethodChannel.invokeMethod("updateTargetedApp", appPackage);
         }
     }
@@ -289,13 +294,13 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 break;
             }
             // SECTION: Utility methods ---------------------------------------------------------------------------
-            case "launchUrl": {
-                NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
+            case "restartApp": {
+                NewActivitiesLaunchHelper.restartMindful(this);
                 result.success(true);
                 break;
             }
-            case "shareFile": {
-                NewActivitiesLaunchHelper.shareFile(this, Utils.notNullStr(call.arguments()));
+            case "launchUrl": {
+                NewActivitiesLaunchHelper.launchUrl(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }

@@ -81,7 +81,7 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
             child: AlertDialog(
               scrollable: true,
               icon: const Icon(FluentIcons.rocket_20_filled),
-              title: const StyledText("Launch limit", fontSize: 16),
+              title: StyledText(context.locale.app_launch_limit_tile_title, fontSize: 16),
               insetPadding: EdgeInsets.zero,
               content: Container(
                 width: MediaQuery.of(context).size.width,

@@ -33,6 +33,10 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
     _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await _dao.loadWellBeingSettings();
 
+    if (MethodChannelService.instance.isSelfRestart) {
+      await MethodChannelService.instance.updateWellBeingSettings(state);
+    }
+
     /// Listen to provider and save changes to Isar database and platform service
     addListener(
       fireImmediately: false,
