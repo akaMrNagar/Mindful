@@ -11,7 +11,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -27,6 +26,7 @@ import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/flip_countdown_text.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
@@ -84,7 +84,6 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const timeStyle = TextStyle(fontSize: 48, fontWeight: FontWeight.w600);
     final elapsedSeconds =
         ref.watch(focusModeProvider.select((v) => v.elapsedTimeSec));
     final progress = _getProgress(elapsedSeconds);
@@ -95,10 +94,6 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
                 : widget.session.durationSecs - elapsedSeconds
             : elapsedSeconds)
         .seconds;
-
-    final hoursTick = totalDuration.inHours;
-    final minutesTick = totalDuration.inMinutes % 60;
-    final secondsTick = totalDuration.inSeconds % 60;
 
     final quoteIndex = (progress / 25).floor() - 1;
     final quotes = _getQuotes(context);
@@ -136,34 +131,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
               20.vSliverBox,
 
               /// Countdown timer
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  /// Hours
-                  if (hoursTick > 0)
-                    AnimatedFlipCounter(
-                      prefix: hoursTick < 10 ? "0" : null,
-                      value: hoursTick,
-                      suffix: ":",
-                      textStyle: timeStyle,
-                    ),
-
-                  /// Minutes
-                  AnimatedFlipCounter(
-                    prefix: minutesTick < 10 ? "0" : null,
-                    value: minutesTick,
-                    suffix: ":",
-                    textStyle: timeStyle,
-                  ),
-
-                  /// Seconds
-                  AnimatedFlipCounter(
-                    prefix: secondsTick < 10 ? "0" : null,
-                    value: secondsTick,
-                    textStyle: timeStyle,
-                  ),
-                ],
-              ).sliver,
+              FlipCountdownText(duration: totalDuration).sliver,
               40.vSliverBox,
 
               SliverAnimatedPaintExtent(

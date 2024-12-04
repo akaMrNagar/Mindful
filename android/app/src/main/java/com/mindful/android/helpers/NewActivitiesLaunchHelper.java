@@ -12,6 +12,9 @@
 
 package com.mindful.android.helpers;
 
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
@@ -25,14 +28,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 
+import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.receivers.DeviceAdminReceiver;
 import com.mindful.android.services.MindfulAccessibilityService;
 import com.mindful.android.utils.Utils;
-
-import java.io.File;
 
 /**
  * NewActivitiesLaunchHelper provides utility methods to launch various activities and settings screens on Android devices.
@@ -40,6 +41,8 @@ import java.io.File;
  * usage access settings, and application settings.
  */
 public class NewActivitiesLaunchHelper {
+    public static final String INTENT_EXTRA_IS_SELF_RESTART = "isSelfRestart";
+
 
     private static final String TAG = "Mindful.ActivityNewTaskHelper";
 
@@ -58,38 +61,22 @@ public class NewActivitiesLaunchHelper {
         }
     }
 
-    /**
-     * Share the file from the path with android share chooser.
-     *
-     * @param context  The context to use for launching the activity.
-     * @param filePath The URL to be opened.
-     */
-    public static void shareFile(@NonNull Context context, @NonNull String filePath) {
-        try {
-            File file = new File(filePath);
-
-            if (file.exists()) {
-                // Create URI using FileProvider
-                Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".share_provider", file);
-
-                // Create an intent to share the file
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/plain"); // Change MIME type based on file type
-                intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION); // Grant read permission
-
-                // Start the share intent
-                context.startActivity(Intent.createChooser(intent, "Share crash log file"));
-            } else {
-                Log.d(TAG, "launchUrl: File does not exist: " + filePath);
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "launchUrl: Unable to share file: " + filePath, e);
-        }
-
-    }
-
     // SECTION: For MINDFUL app ====================================================================
+
+    /**
+     * Gracefully close and restart the app.
+     *
+     * @param activity The activity to use.
+     */
+    public static void restartMindful(@NonNull Activity activity) {
+        Intent appIntent = new Intent(activity, MainActivity.class);
+        appIntent.putExtra(INTENT_EXTRA_IS_SELF_RESTART, true);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(activity, 0, appIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, System.currentTimeMillis(), appPendingIntent);
+        Toast.makeText(activity,"Mindful is restarting",Toast.LENGTH_LONG).show();
+        activity.finishAfterTransition();
+    }
 
     /**
      * Opens the accessibility settings for enabling the Mindful accessibility service.

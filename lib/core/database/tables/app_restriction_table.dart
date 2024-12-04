@@ -57,16 +57,4 @@ class AppRestrictionTable extends Table {
   ///  Whether to alert user by dialog if false user will be alerted by notification
   BoolColumn get alertByDialog =>
       boolean().withDefault(const Constant(false))();
-
-  static const defaultAppRestrictionModel = AppRestriction(
-    appPackage: "",
-    timerSec: 0,
-    launchLimit: 0,
-    activePeriodStart: TimeOfDayAdapter.zero(),
-    activePeriodEnd: TimeOfDayAdapter.zero(),
-    periodDurationInMins: 0,
-    canAccessInternet: true,
-    alertInterval: 15 * 60, // Every 15 minutes
-    alertByDialog: false,
-  );
 }

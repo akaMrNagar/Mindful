@@ -20,6 +20,7 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
+import 'package:mindful/core/utils/default_models.dart';
 
 part 'dynamic_records_dao.g.dart';
 
@@ -122,8 +123,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
       await (select(focusProfileTable)
             ..where((e) => e.sessionType.equalsValue(sessionType)))
           .getSingleOrNull() ??
-      FocusProfileTable.defaultFocusProfileModel
-          .copyWith(sessionType: sessionType);
+      defaultFocusProfileModel.copyWith(sessionType: sessionType);
 
   /// Inserts OR Updates a single [FocusSession] object in the database.
   Future<int> insertFocusProfileBySessionType(FocusProfile profile) async =>

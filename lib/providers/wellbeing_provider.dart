@@ -11,9 +11,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
-import 'package:mindful/core/database/tables/wellbeing_table.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/default_models.dart';
 
 /// A Riverpod state notifier provider that manages [Wellbeing] related settings.
 final wellBeingProvider = StateNotifierProvider<WellBeingNotifier, Wellbeing>(
@@ -24,7 +24,7 @@ final wellBeingProvider = StateNotifierProvider<WellBeingNotifier, Wellbeing>(
 class WellBeingNotifier extends StateNotifier<Wellbeing> {
   late UniqueRecordsDao _dao;
 
-  WellBeingNotifier() : super(WellbeingTable.defaultWellbeingModel) {
+  WellBeingNotifier() : super(defaultWellbeingModel) {
     _init();
   }
 
@@ -32,6 +32,10 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
   void _init() async {
     _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await _dao.loadWellBeingSettings();
+
+    if (MethodChannelService.instance.isSelfRestart) {
+      await MethodChannelService.instance.updateWellBeingSettings(state);
+    }
 
     /// Listen to provider and save changes to Isar database and platform service
     addListener(

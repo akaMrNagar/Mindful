@@ -12,7 +12,6 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
@@ -88,23 +87,4 @@ class MindfulSettingsTable extends Table {
   IntColumn get uninstallWindowTime => integer()
       .map(const TimeOfDayAdapterConverter())
       .withDefault(const Constant(0))();
-
-  static final defaultMindfulSettingsModel = MindfulSettings(
-    id: 0,
-    defaultHomeTab: DefaultHomeTab.dashboard,
-    themeMode: AppConstants.defaultThemeMode,
-    accentColor: AppConstants.defaultMaterialColor,
-    username: AppConstants.defaultUsername,
-    localeCode: AppConstants.defaultLocale,
-    dataResetTime: const TimeOfDayAdapter.zero(),
-    useBottomNavigation: false,
-    useAmoledDark: false,
-    useDynamicColors: false,
-    excludedApps: [],
-    leftEmergencyPasses: 3,
-    lastEmergencyUsed: DateTime(0),
-    isOnboardingDone: false,
-    protectedAccess: false,
-    uninstallWindowTime: const TimeOfDayAdapter.zero(),
-  );
 }

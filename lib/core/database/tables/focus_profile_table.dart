@@ -11,7 +11,6 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/enums/session_type.dart';
 
@@ -34,11 +33,4 @@ class FocusProfileTable extends Table {
   TextColumn get distractingApps => text()
       .map(const ListStringConverter())
       .withDefault(Constant(jsonEncode([])))();
-
-  static const defaultFocusProfileModel = FocusProfile(
-    sessionType: SessionType.study,
-    sessionDuration: 0,
-    shouldStartDnd: false,
-    distractingApps: [],
-  );
 }

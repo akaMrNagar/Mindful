@@ -8,16 +8,17 @@
  *
  */
 
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
-import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/default_models.dart';
 
 /// A Riverpod state notifier provider that manages [MindfulSettings].
 final mindfulSettingsProvider =
@@ -27,8 +28,7 @@ final mindfulSettingsProvider =
 
 /// This class manages the state of mindful settings.
 class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
-  MindfulSettingsNotifier()
-      : super(MindfulSettingsTable.defaultMindfulSettingsModel) {
+  MindfulSettingsNotifier() : super(defaultMindfulSettingsModel) {
     init(addListenerToo: true);
   }
 
@@ -38,11 +38,22 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     state = await dao.loadMindfulSettings();
     MethodChannelService.instance.updateLocale(languageCode: state.localeCode);
 
+    if (MethodChannelService.instance.isSelfRestart) {
+      await MethodChannelService.instance
+          .updateExcludedApps(state.excludedApps);
+      await MethodChannelService.instance
+          .setDataResetTime(state.dataResetTime.toMinutes);
+    }
+
     if (addListenerToo) {
+      /// Run after a delay to avoid database deadlock
       /// Listen to provider and save changes to Isar database
-      addListener(
-        fireImmediately: false,
-        (state) => dao.saveMindfulSettings(state),
+      Future.delayed(
+        1.seconds,
+        () => addListener(
+          fireImmediately: false,
+          (state) => dao.saveMindfulSettings(state),
+        ),
       );
     }
 
@@ -106,8 +117,7 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
           : [...state.excludedApps.where((e) => e != appPackage)],
     );
 
-    await MethodChannelService.instance
-        .updateExcludedApps(excludedApps: state.excludedApps);
+    await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
   }
 
   /// Check if user can use emergency pause pass

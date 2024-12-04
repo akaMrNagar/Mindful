@@ -17,13 +17,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
-import 'package:mindful/core/database/tables/focus_mode_table.dart';
-import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/default_models.dart';
 import 'package:mindful/models/focus_mode_model.dart';
 
 /// A Riverpod state notifier provider that manages [FocusModeModel].
@@ -40,8 +39,8 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
 
   FocusModeNotifier()
       : super(FocusModeModel(
-          focusMode: FocusModeTable.defaultFocusModeModel,
-          focusProfile: FocusProfileTable.defaultFocusProfileModel,
+          focusMode: defaultFocusModeModel,
+          focusProfile: defaultFocusProfileModel,
         )) {
     _init();
   }

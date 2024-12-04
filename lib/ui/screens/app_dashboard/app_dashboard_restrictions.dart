@@ -13,12 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
-import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/default_models.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
@@ -81,7 +81,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
             (v) => v[app.packageName],
           ),
         ) ??
-        AppRestrictionTable.defaultAppRestrictionModel;
+        defaultAppRestrictionModel;
 
     final restrictionGroupName = ref.watch(restrictionGroupsProvider
         .select((v) => v[restriction.associatedGroupId]?.groupName));

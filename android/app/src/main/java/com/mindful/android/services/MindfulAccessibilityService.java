@@ -157,7 +157,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         if (node == null || node.getClassName() == null) return;
 
         // Offload the main processing to a background thread
-        mExecutorService.submit(() -> processEventInBackground(packageName, node));
+        try {
+            mExecutorService.submit(() -> processEventInBackground(packageName, node));
+        } catch (Exception ignored) {
+        }
     }
 
     /**

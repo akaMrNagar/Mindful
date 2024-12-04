@@ -12,7 +12,6 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 
 @DataClassName("BedtimeSchedule")
@@ -61,14 +60,5 @@ class BedtimeScheduleTable extends Table {
       .map(const ListStringConverter())
       .withDefault(Constant(jsonEncode([])))();
 
-  static const defaultBedtimeScheduleModel = BedtimeSchedule(
-    id: 0,
-    scheduleStartTime: TimeOfDayAdapter.zero(),
-    scheduleEndTime: TimeOfDayAdapter.zero(),
-    scheduleDurationInMins: 0,
-    scheduleDays: [false, true, true, true, true, true, false],
-    isScheduleOn: false,
-    shouldStartDnd: false,
-    distractingApps: [],
-  );
+  
 }

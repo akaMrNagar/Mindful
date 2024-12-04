@@ -77,12 +77,13 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   }
 
   void _checkAndFinishOnboarding() async {
-    if (context.mounted) {
+    if (mounted) {
       _subscription?.close();
       ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
       Future.delayed(
         200.ms,
         () {
+          if (!mounted) return;
           ref.read(appsProvider.notifier).refreshDeviceApps();
           Navigator.of(context).pushNamedAndRemoveUntil(
             AppRoutes.homeScreen,
@@ -123,7 +124,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
         perms.haveNotificationPermission;
 
     return PopScope(
-      onPopInvoked: (didPop) => SystemNavigator.pop(),
+      onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,

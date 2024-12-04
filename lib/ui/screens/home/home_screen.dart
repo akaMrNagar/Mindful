@@ -83,11 +83,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showDonationDialog() async {
-    await Future.delayed(5.seconds);
+    await Future.delayed(10.seconds);
 
     /// Add randomness (1 out of 10) to skip showing sometimes whenever possible
     final prob = Random().nextInt(10);
-    debugPrint("Random 1 = $prob");
+    debugPrint("Show donation dialog? : ${prob == 1}");
     if (!mounted || prob != 1) return;
 
     final isConfirm = await showConfirmationDialog(
@@ -110,7 +110,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.watch((mindfulSettingsProvider.select((v) => v.defaultHomeTab)));
 
     return PopScope(
-      onPopInvoked: (didPop) => SystemNavigator.pop(),
+      onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: DefaultScaffold(
         initialTabIndex: homeTab.index,
         leading: DefaultHero(

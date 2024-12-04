@@ -38,12 +38,20 @@ class MethodChannelService {
   String get targetedAppPackage => _targetedAppPackage;
   String _targetedAppPackage = "";
 
+  /// Flag indicating if the app is restarted by itself (after importing database).
+  bool get isSelfRestart => _isSelfRestart;
+  bool _isSelfRestart = false;
+
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
     _methodChannel.setMethodCallHandler(
       (call) async {
-        if (call.method == 'updateTargetedApp') {
+        if (call.method == "updateIsRestartBool") {
+          _isSelfRestart = call.arguments;
+          debugPrint("The app is restarted by itself");
+        } else if (call.method == 'updateTargetedApp') {
           _targetedAppPackage = call.arguments;
+          debugPrint("The app is started by $_targetedAppPackage");
         }
       },
     );
@@ -56,7 +64,7 @@ class MethodChannelService {
       await _methodChannel.invokeMethod('updateLocale', languageCode);
 
   /// Update excluded apps for widget purpose
-  Future<bool> updateExcludedApps({required List<String> excludedApps}) async =>
+  Future<bool> updateExcludedApps(List<String> excludedApps) async =>
       await _methodChannel.invokeMethod(
         'updateExcludedApps',
         jsonEncode(excludedApps),
@@ -321,6 +329,10 @@ class MethodChannelService {
   // !SECTION
   // SECTION: Utility methods ======================================================================
 
+  /// Pop animates and close the app
+  Future<bool> restartApp() async =>
+      await _methodChannel.invokeMethod('restartApp');
+
   /// Parses the host name from a given URL string.
   ///
   /// This method sends the URL to the native side and retrieves the parsed host name.
@@ -332,10 +344,4 @@ class MethodChannelService {
   /// This method takes the URL string and sends it to the native side for launching in the browser.
   Future<bool> launchUrl(String siteUrl) async =>
       await _methodChannel.invokeMethod('launchUrl', siteUrl);
-
-  /// Share the file from the path using native share chooser.
-  ///
-  /// This method takes the File Path string and sends it to the native side.
-  Future<bool> shareFile(String filePath) async =>
-      await _methodChannel.invokeMethod('shareFile', filePath);
 }
