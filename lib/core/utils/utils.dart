@@ -17,7 +17,7 @@ import 'package:path_provider/path_provider.dart';
 DateTime get now => DateTime.now();
 
 /// Get the SQLITE database file path: /data/user/0/com.mindful.android/app_flutter/Mindful.sqlite
-Future<String> getSqliteDpPath() async => path.join(
+Future<String> getSqliteDbPath() async => path.join(
       (await getApplicationDocumentsDirectory()).path,
       'Mindful.sqlite',
     );

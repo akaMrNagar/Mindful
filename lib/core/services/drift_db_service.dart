@@ -40,7 +40,7 @@ class DriftDbService {
   /// Creates two separate executors for read and write operations
   Future<AppDatabase> _createIsolatedDb() async {
     final db = LazyDatabase(() async {
-      final dbFile = File(await getSqliteDpPath());
+      final dbFile = File(await getSqliteDbPath());
 
       /// Set cache directory
       final cacheBase = (await getTemporaryDirectory()).path;

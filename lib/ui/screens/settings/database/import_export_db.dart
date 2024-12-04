@@ -89,7 +89,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
       setState(() => _isImporting = true);
 
       /// Original DB file
-      final originalDbFile = File(await getSqliteDpPath());
+      final originalDbFile = File(await getSqliteDbPath());
       final result = await FilePicker.platform.pickFiles(
         allowCompression: false,
         type: FileType.any,
@@ -143,7 +143,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
       setState(() => _isExporting = true);
 
       /// Get the database path: /data/user/0/com.mindful.android/app_flutter/Mindful.sqlite
-      final dbFile = File(await getSqliteDpPath());
+      final dbFile = File(await getSqliteDbPath());
       if (!await dbFile.exists()) {
         throw Exception('Database file not found at ${dbFile.path}');
       }
