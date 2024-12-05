@@ -17,8 +17,10 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/device_info_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -39,8 +41,17 @@ class TabAbout extends ConsumerWidget {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
+        /// App version
         StyledText(
           appVersion,
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+          isSubtitle: true,
+          height: 1,
+        ).rightCentered.sliver,
+        2.vSliverBox,
+        StyledText(
+          "db-v${DriftDbService.instance.driftDb.schemaVersion}",
           fontWeight: FontWeight.bold,
           fontSize: 14,
           isSubtitle: true,
@@ -78,6 +89,7 @@ class TabAbout extends ConsumerWidget {
         /// Donation box
         SliverPrimaryActionContainer(
           isVisible: true,
+          radius: getBorderRadiusFromPosition(ItemPosition.start),
           icon: FluentIcons.handshake_20_regular,
           title: context.locale.donation_card_title,
           information: context.locale.donation_card_info,
@@ -88,6 +100,19 @@ class TabAbout extends ConsumerWidget {
                 .launchUrl(AppConstants.githubFeedbackSectionUrl),
           ),
         ),
+
+        2.vSliverBox,
+
+        /// Change log
+        DefaultListTile(
+          position: ItemPosition.end,
+          leadingIcon: FluentIcons.slide_text_20_regular,
+          titleText: context.locale.changelog_tile_title,
+          subtitleText: context.locale.redirected_to_github_subtitle,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => MethodChannelService.instance
+              .launchUrl(AppConstants.githubChangeLogUrl(appVersion)),
+        ).sliver,
 
         /// Contribute
         ContentSectionHeader(title: context.locale.contribute_heading).sliver,
@@ -107,7 +132,7 @@ class TabAbout extends ConsumerWidget {
           position: ItemPosition.mid,
           leadingIcon: FluentIcons.bug_20_regular,
           titleText: context.locale.report_issue_tile_title,
-          subtitleText: context.locale.report_issue_tile_subtitle,
+          subtitleText: context.locale.redirected_to_github_subtitle,
           onPressed: () => MethodChannelService.instance
               .launchUrl(AppConstants.githubIssueDirectUrl),
         ).sliver,
@@ -117,7 +142,7 @@ class TabAbout extends ConsumerWidget {
           position: ItemPosition.mid,
           leadingIcon: FluentIcons.lightbulb_filament_20_regular,
           titleText: context.locale.suggest_idea_tile_title,
-          subtitleText: context.locale.suggest_idea_tile_subtitle,
+          subtitleText: context.locale.redirected_to_github_subtitle,
           onPressed: () => MethodChannelService.instance
               .launchUrl(AppConstants.githubSuggestionDirectUrl),
         ).sliver,
