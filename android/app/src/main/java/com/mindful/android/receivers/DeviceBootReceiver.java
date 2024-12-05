@@ -98,7 +98,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
                 // Fetch and apply bedtime settings if enabled
                 BedtimeSettings bedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(mContext, null);
                 if (bedtimeSettings.isScheduleOn) {
-                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(mContext, bedtimeSettings);
+                    AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks(mContext, bedtimeSettings);
                 }
 
                 // Reschedule midnight reset task

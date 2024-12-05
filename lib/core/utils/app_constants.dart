@@ -31,6 +31,9 @@ class AppConstants {
   static const privacyPolicyUrl = "https://bemindful.vercel.app/privacy";
   static const faqsUrl = "https://bemindful.vercel.app/#faqs";
 
+  static String githubChangeLogUrl(String appVersion) =>
+      "https://github.com/akaMrNagar/Mindful/releases/tag/$appVersion";
+
   static const githubIssueDirectUrl =
       "https://github.com/akaMrNagar/Mindful/issues/new?template=bug_report.md";
 

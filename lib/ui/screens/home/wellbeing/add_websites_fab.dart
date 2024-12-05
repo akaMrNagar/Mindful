@@ -16,6 +16,7 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
+import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 
 class AddWebsitesFAB extends ConsumerWidget {
@@ -28,10 +29,10 @@ class AddWebsitesFAB extends ConsumerWidget {
     );
 
     return haveAccessibilityPermission
-        ? FloatingActionButton.extended(
+        ? DefaultFabButton(
             heroTag: HeroTags.addDistractingSiteFABTag,
-            label: Text(context.locale.add_website_fab_button),
-            icon: const Icon(FluentIcons.link_add_20_regular),
+            label: context.locale.add_website_fab_button,
+            icon: FluentIcons.link_add_20_regular,
             onPressed: () => _onPressedFab(context, ref),
           )
         : const SizedBox.shrink();

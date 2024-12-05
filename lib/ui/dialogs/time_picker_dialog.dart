@@ -11,6 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:mindful/ui/transitions/hero_page_route.dart';
 
@@ -39,7 +40,7 @@ Future<TimeOfDayAdapter?> showCustomTimePickerDialog({
   );
 }
 
-class _CustomTimePickerDialog extends StatefulWidget {
+class _CustomTimePickerDialog extends StatelessWidget {
   const _CustomTimePickerDialog({
     required this.initialTime,
     required this.heroTag,
@@ -51,14 +52,6 @@ class _CustomTimePickerDialog extends StatefulWidget {
   final String info;
 
   @override
-  State<_CustomTimePickerDialog> createState() =>
-      _CustomTimePickerDialogState();
-}
-
-class _CustomTimePickerDialogState extends State<_CustomTimePickerDialog> {
-  TimePickerEntryMode _entryMode = TimePickerEntryMode.dial;
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
@@ -66,29 +59,25 @@ class _CustomTimePickerDialogState extends State<_CustomTimePickerDialog> {
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: DefaultHero(
-            tag: widget.heroTag,
-            child: AlertDialog(
-              insetPadding: EdgeInsets.zero,
-              contentPadding: EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: _entryMode == TimePickerEntryMode.input ? 24 : 0,
-              ),
-              content: SizedBox(
-                width: MediaQuery.of(context).size.width,
+            tag: heroTag,
+            child: RoundedContainer(
+              circularRadius: 24,
+              padding: EdgeInsets.zero,
+              color: Theme.of(context).colorScheme.surface,
+              child: SingleChildScrollView(
                 child: FittedBox(
+                  fit: BoxFit.cover,
                   child: TimePickerTheme(
                     data: const TimePickerThemeData(
                       padding: EdgeInsets.zero,
                       backgroundColor: Colors.transparent,
                     ),
                     child: TimePickerDialog(
-                      helpText: widget.info,
-                      initialTime: widget.initialTime,
-                      initialEntryMode: _entryMode,
+                      helpText: info,
+                      initialTime: initialTime,
+                      initialEntryMode: TimePickerEntryMode.dialOnly,
                       cancelText: context.locale.dialog_button_cancel,
                       confirmText: context.locale.dialog_button_set,
-                      onEntryModeChanged: (mode) =>
-                          setState(() => _entryMode = mode),
                     ),
                   ),
                 ),

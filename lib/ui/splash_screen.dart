@@ -20,9 +20,12 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/auth_service.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
+import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -81,6 +84,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     /// Load restrictions and start necessary services
     ref.read(appsRestrictionsProvider.select((v) => v[null]));
     ref.read(restrictionGroupsProvider.select((v) => v[null]));
+    ref.read(bedtimeScheduleProvider.select((v) => v.id));
+    ref.read(focusModeProvider.select((v) => v.activeSession));
+    ref.read(wellBeingProvider.select((v) => v.id));
   }
 
   void _authenticate() async {

@@ -25,6 +25,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/flip_countdown_text.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -108,18 +109,14 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
               context.locale.active_session_tab_title,
           fab: _isCompleted
               ? const SizedBox.shrink()
-              : FloatingActionButton.extended(
+              : DefaultFabButton(
                   heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
-                  label: Text(
-                    _isFinite
-                        ? context.locale.active_session_giveup_dialog_title
-                        : context.locale.active_session_finish_dialog_title,
-                  ),
-                  icon: Icon(
-                    _isFinite
-                        ? FluentIcons.emoji_sad_20_filled
-                        : FluentIcons.emoji_surprise_20_filled,
-                  ),
+                  label: _isFinite
+                      ? context.locale.active_session_giveup_dialog_title
+                      : context.locale.active_session_finish_dialog_title,
+                  icon: _isFinite
+                      ? FluentIcons.emoji_sad_20_filled
+                      : FluentIcons.emoji_surprise_20_filled,
                   onPressed: _giveUpOrFinishActiveSession,
                 ),
           sliverBody: CustomScrollView(

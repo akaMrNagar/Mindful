@@ -27,6 +27,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
     this.margin = EdgeInsets.zero,
     this.positiveBtn,
     this.negativeBtn,
+    this.radius,
   });
 
   final bool isVisible;
@@ -36,6 +37,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
   final IconData icon;
   final Widget? positiveBtn;
   final Widget? negativeBtn;
+  final BorderRadius? radius;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
       child: SliverVisibility(
         visible: isVisible,
         sliver: RoundedContainer(
-          circularRadius: 24,
+          borderRadius: radius ?? BorderRadius.circular(24),
           color: Theme.of(context).colorScheme.secondaryContainer,
           padding: const EdgeInsets.all(16),
           margin: margin,

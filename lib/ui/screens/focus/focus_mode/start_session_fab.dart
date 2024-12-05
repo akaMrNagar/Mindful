@@ -16,16 +16,17 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/ui/common/default_fab_button.dart';
 
 class StartSessionFAB extends ConsumerWidget {
   const StartSessionFAB({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FloatingActionButton.extended(
+    return DefaultFabButton(
       heroTag: HeroTags.focusModeFABTag,
-      icon: const Icon(FluentIcons.target_arrow_20_filled),
-      label: Text(context.locale.focus_session_start_fab_button),
+      icon: FluentIcons.target_arrow_20_filled,
+      label: context.locale.focus_session_start_fab_button,
       onPressed: () => _startFocusSession(context, ref),
     );
   }
