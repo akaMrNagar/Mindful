@@ -16,6 +16,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
+import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/restriction_groups/create_update_group_screen.dart';
@@ -36,9 +37,9 @@ class RestrictionGroupsScreen extends ConsumerWidget {
           icon: FluentIcons.app_title_20_regular,
           filledIcon: FluentIcons.app_title_20_filled,
           title: context.locale.restriction_groups_tab_title,
-          fab: FloatingActionButton.extended(
-            label: Text(context.locale.create_group_fab_button),
-            icon: const Icon(FluentIcons.tab_add_20_filled),
+          fab: DefaultFabButton(
+            label: context.locale.create_group_fab_button,
+            icon: FluentIcons.tab_add_20_filled,
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) =>

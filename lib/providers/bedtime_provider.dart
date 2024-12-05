@@ -32,7 +32,13 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
     state = await dao.loadBedtimeSchedule();
 
     if (MethodChannelService.instance.isSelfRestart) {
-      await MethodChannelService.instance.updateBedtimeSchedule(state);
+      if (state.isScheduleOn &&
+          state.distractingApps.isNotEmpty &&
+          state.scheduleDurationInMins >= 30) {
+        await MethodChannelService.instance.updateBedtimeSchedule(state);
+      } else {
+        state = state.copyWith(isScheduleOn: false);
+      }
     }
 
     /// Save changes to the database whenever the state updates.

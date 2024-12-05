@@ -192,7 +192,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
             case "updateBedtimeSchedule": {
                 BedtimeSettings bedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(this, Utils.notNullStr(call.arguments()));
                 if (bedtimeSettings.isScheduleOn) {
-                    AlarmTasksSchedulingHelper.scheduleBedtimeStartTask(this, bedtimeSettings);
+                    AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks(this, bedtimeSettings);
                 } else {
                     AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
                 }

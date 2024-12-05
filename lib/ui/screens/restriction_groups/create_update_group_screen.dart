@@ -28,6 +28,7 @@ import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
+import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/sliver_distracting_apps_list.dart';
@@ -103,17 +104,13 @@ class _CreateUpdateRestrictionGroupState
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               /// Create OR Update FAB
-              FloatingActionButton.extended(
-                icon: Icon(
-                  widget.group == null
-                      ? FluentIcons.add_20_filled
-                      : FluentIcons.arrow_upload_20_filled,
-                ),
-                label: Text(
-                  widget.group == null
-                      ? context.locale.create_button
-                      : context.locale.update_button,
-                ),
+              DefaultFabButton(
+                icon: widget.group == null
+                    ? FluentIcons.add_20_filled
+                    : FluentIcons.arrow_upload_20_filled,
+                label: widget.group == null
+                    ? context.locale.create_button
+                    : context.locale.update_button,
                 onPressed: widget.group == null
                     ? _createNewGroup
                     : _updateCurrentGroup,
@@ -122,10 +119,10 @@ class _CreateUpdateRestrictionGroupState
 
               /// Delete FAB
               if (isUpdating)
-                FloatingActionButton.extended(
+                DefaultFabButton(
                   heroTag: HeroTags.removeRestrictionGroupTag(_group.id),
-                  icon: const Icon(FluentIcons.delete_20_filled),
-                  label: Text(context.locale.dialog_button_remove),
+                  icon: FluentIcons.delete_20_filled,
+                  label: context.locale.dialog_button_remove,
                   onPressed: _deleteCurrentGroup,
                 ),
             ],

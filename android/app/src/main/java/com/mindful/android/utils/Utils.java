@@ -175,7 +175,7 @@ public class Utils {
 
     /**
      * Formats the total screen usage time into a human-readable string.
-     * Example: 2:43:59
+     * Example: 02h 43m 09s
      *
      * @param totalSeconds The total screen usage time in seconds.
      * @return A string representing the formatted screen usage time.
@@ -201,6 +201,7 @@ public class Utils {
 
     /**
      * Create a calender instance from the Time Of Day total minutes.
+     * If totalMinutes is negative then the calender is adjusted to previous day
      *
      * @param totalMinutes The total minutes from Time Of Day dart object.
      * @return Calender representing the time of day for today.
@@ -209,8 +210,10 @@ public class Utils {
     @Contract(pure = true)
     public static Calendar todToTodayCal(int totalMinutes) {
         Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY, totalMinutes / 60);
-        cal.set(Calendar.MINUTE, totalMinutes % 60);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.add(Calendar.HOUR_OF_DAY, totalMinutes / 60);
+        cal.set(Calendar.MINUTE, 0);
+        cal.add(Calendar.MINUTE, totalMinutes % 60);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
@@ -244,7 +247,7 @@ public class Utils {
 
     /**
      * Formats the total screen usage time into a human-readable string.
-     * Example: 12h 45m
+     * Example: 12h 5m
      *
      * @param totalMinutes The total screen usage time in minutes.
      * @return A string representing the formatted screen usage time.

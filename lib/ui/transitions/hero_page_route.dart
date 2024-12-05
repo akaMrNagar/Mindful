@@ -31,7 +31,7 @@ class HeroPageRoute<T> extends PageRoute<T> {
   bool get barrierDismissible => true;
 
   @override
-  Duration get transitionDuration => AppConstants.defaultAnimDuration * 1.5;
+  Duration get transitionDuration => AppConstants.defaultAnimDuration * 2;
 
   @override
   bool get maintainState => true;

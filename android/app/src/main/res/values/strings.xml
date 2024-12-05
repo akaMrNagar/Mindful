@@ -69,8 +69,9 @@
     <string name="app_paused_dialog_button_close_app">Close app</string>
 
     <!-- bedtime = scheduled bedtime alert notification -->
-    <string name="bedtime_ended_notification_info">Rise and shine! Bedtime routine has ended, get ready to start the day energized and refreshed.</string>
+    <string name="bedtime_upcoming_notification_info">Bedtime starts in 30 minutes. Use this time to wrap up and get ready for a fresh start tomorrow</string>
     <string name="bedtime_started_notification_info">It\'s time to wind down. Bedtime routine has started, helping you relax and prepare for a restful night\'s sleep.</string>
+    <string name="bedtime_ended_notification_info">Rise and shine! Bedtime routine has ended, get ready to start the day energized and refreshed.</string>
 
     <!-- emergency pause service = when user uses emergency pass -->
     <string name="emergency_pause_notification_title">Emergency Pause</string>

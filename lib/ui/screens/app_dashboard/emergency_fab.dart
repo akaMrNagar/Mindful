@@ -15,6 +15,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 
 class EmergencyFAB extends ConsumerWidget {
@@ -60,10 +61,10 @@ class EmergencyFAB extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return FloatingActionButton.extended(
+    return DefaultFabButton(
       heroTag: HeroTags.emergencyTileTag,
-      label: Text(context.locale.emergency_fab_button),
-      icon: const Icon(FluentIcons.fire_20_filled),
+      icon: FluentIcons.fire_20_filled,
+      label: context.locale.emergency_fab_button,
       onPressed: () => _useEmergency(context, ref),
     );
   }
