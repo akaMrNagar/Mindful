@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -39,38 +40,26 @@ public class ShortsBlockingHelper {
     public static final String REDDIT_PACKAGE = "com.reddit.frontpage";
 
     // Possible URLs of different short-form content platforms
-    private static final List<String> instaReelUrls = new ArrayList<>(Arrays.asList("instagram.com/reels/", "m.instagram.com/reels/"));
-    private static final List<String> ytShortUrls = new ArrayList<>(Arrays.asList("youtube.com/shorts/", "m.youtube.com/shorts/"));
-    private static final List<String> snapSpotlightUrls = new ArrayList<>(Arrays.asList("snapchat.com/spotlight/", "m.snapchat.com/spotlight/", "web.snapchat.com/spotlight/"));
-    private static final List<String> fbReelUrls = new ArrayList<>(Arrays.asList("facebook.com/reel/", "m.facebook.com/reel/"));
+    private static final List<String> mInstaReelUrls = new ArrayList<>(Arrays.asList("instagram.com/reels/", "m.instagram.com/reels/"));
+    private static final List<String> mYtShortUrls = new ArrayList<>(Arrays.asList("youtube.com/shorts/", "m.youtube.com/shorts/"));
+    private static final List<String> mSnapSpotlightUrls = new ArrayList<>(Arrays.asList("snapchat.com/spotlight/", "m.snapchat.com/spotlight/", "web.snapchat.com/spotlight/"));
+    private static final List<String> mFbReelUrls = new ArrayList<>(Arrays.asList("facebook.com/reel/", "m.facebook.com/reel/"));
+
+    private static final HashSet<String> mFbNodeIds = new HashSet<>(Arrays.asList("Add a comment…", "कमेंट जोड़ें…"));
 
     /**
      * Checks if Instagram Reels is currently open based on accessibility node information.
      *
-     * @param parentNode The root AccessibilityNodeInfo of the view hierarchy.
+     * @param node The root AccessibilityNodeInfo of the view hierarchy.
      * @return True if Instagram Reels is open, false otherwise.
      */
-    public static boolean isInstaReelsOpen(@NonNull AccessibilityNodeInfo parentNode) {
-        CharSequence parentNodeId = parentNode.getViewIdResourceName();
-
+    public static boolean isInstaReelsOpen(@NonNull AccessibilityNodeInfo node) {
+        CharSequence nodeId = node.getViewIdResourceName();
         // Check root node
-        if (parentNodeId != null && (parentNodeId.equals("com.instagram.android:id/clips_viewer_view_pager") || parentNodeId.equals("com.instagram.android:id/scrubber"))) {
+        if (nodeId != null && nodeId.equals("com.instagram.android:id/clips_viewer_view_pager")) {
             return true;
         }
-
-        // Check child nodes
-        for (int i = 0; i < parentNode.getChildCount(); i++) {
-            AccessibilityNodeInfo childNode = parentNode.getChild(i);
-            if (childNode == null) continue;
-
-            CharSequence childNodeId = childNode.getViewIdResourceName();
-
-            if (childNodeId != null && childNodeId.equals("com.instagram.android:id/reels_touchable_background")) {
-                return true;
-            }
-        }
-
-        return false;
+        return doesNodeByIdExists(node, "com.instagram.android:id/clips_video_container");
     }
 
     /**
@@ -82,10 +71,13 @@ public class ShortsBlockingHelper {
      */
     public static boolean isYoutubeShortsOpen(@NonNull AccessibilityNodeInfo node, @NonNull String clientPackageName) {
         CharSequence nodeId = node.getViewIdResourceName();
-        return nodeId != null
+        if (nodeId != null
                 && (nodeId.equals(clientPackageName + ":id/reel_progress_bar")
                 || nodeId.equals(clientPackageName + ":id/reel_player_page_container")
-                || nodeId.equals(clientPackageName + ":id/reel_recycler"));
+                || nodeId.equals(clientPackageName + ":id/reel_recycler"))) {
+            return true;
+        }
+        return doesNodeByIdExists(node, clientPackageName + ":id/reel_player_underlay");
     }
 
     /**
@@ -95,14 +87,7 @@ public class ShortsBlockingHelper {
      * @return True if Snapchat Spotlight is open, false otherwise.
      */
     public static boolean isSnapchatSpotlightOpen(@NonNull AccessibilityNodeInfo node) {
-        // Find by 'spotlight_view_count' id
-        List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId("com.snapchat.android:id/spotlight_view_count");
-        if (nodes != null && !nodes.isEmpty()) {
-            CharSequence text = nodes.get(0).getText();
-            return text != null;
-        }
-
-        return false;
+        return doesNodeByIdExists(node, "com.snapchat.android:id/spotlight_view_count");
     }
 
     /**
@@ -112,10 +97,18 @@ public class ShortsBlockingHelper {
      * @return True if Facebook Reels is open, false otherwise.
      */
     public static boolean isFacebookReelsOpen(@NonNull AccessibilityNodeInfo node) {
-        CharSequence txt = node.getText();
         // TODO: Add more string translated from different languages for the node text
         //  as user may have set different language for facebook app
-        return txt != null && (txt.equals("Add a comment…") || txt.equals("कमेंट जोड़ें…"));
+
+        if (doesNodeHaveFbCommentText(node)) return true;
+
+        for (int i = 0; i < node.getChildCount(); i++) {
+            AccessibilityNodeInfo childNode = node.getChild(i);
+            if (childNode == null) continue;
+            if (doesNodeHaveFbCommentText(node)) return true;
+        }
+
+        return false;
     }
 
     /**
@@ -137,10 +130,10 @@ public class ShortsBlockingHelper {
      * @return True if a blocked short-form content website is open, false otherwise.
      */
     public static boolean isShortContentOpenOnBrowser(@NonNull WellBeingSettings settings, String url) {
-        return (settings.blockInstaReels && doesUrlContainsAnyElement(instaReelUrls, url))
-                || (settings.blockYtShorts && doesUrlContainsAnyElement(ytShortUrls, url))
-                || (settings.blockSnapSpotlight && doesUrlContainsAnyElement(snapSpotlightUrls, url))
-                || (settings.blockFbReels && doesUrlContainsAnyElement(fbReelUrls, url));
+        return (settings.blockInstaReels && doesUrlContainsAnyElement(mInstaReelUrls, url))
+                || (settings.blockYtShorts && doesUrlContainsAnyElement(mYtShortUrls, url))
+                || (settings.blockSnapSpotlight && doesUrlContainsAnyElement(mSnapSpotlightUrls, url))
+                || (settings.blockFbReels && doesUrlContainsAnyElement(mFbReelUrls, url));
     }
 
     /**
@@ -156,5 +149,29 @@ public class ShortsBlockingHelper {
             if (url.contains(element)) return true;
         }
         return false;
+    }
+
+    /**
+     * Checks whether an AccessibilityNodeInfo with the specified view ID exists as a descendant
+     * of the given node.
+     *
+     * @param node   The parent AccessibilityNodeInfo to search within. This parameter must not be null.
+     * @param viewId The ID of the view to look for.
+     * @return {@code true} if a node with the specified view ID exists, {@code false} otherwise.
+     */
+    private static boolean doesNodeByIdExists(@NonNull AccessibilityNodeInfo node, String viewId) {
+        List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId(viewId);
+        return nodes != null && !nodes.isEmpty();
+    }
+
+    /**
+     * Checks whether the text of the given AccessibilityNodeInfo matches with one of the facebook comment nodes text.
+     *
+     * @param node The AccessibilityNodeInfo whose text is to be checked.
+     * @return {@code true} if the node's text matches, {@code false} otherwise.
+     */
+    private static boolean doesNodeHaveFbCommentText(@NonNull AccessibilityNodeInfo node) {
+        CharSequence nodeText = node.getText();
+        return nodeText != null && mFbNodeIds.contains(nodeText.toString());
     }
 }
