@@ -19,6 +19,7 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/auth_service.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
@@ -61,8 +62,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         perms.haveAlarmsPermission &&
         perms.haveNotificationPermission;
 
-    setState(() {});
-    _isAccessProtected ? _authenticate() : _pushNextScreen();
+    if (mounted) setState(() {});
+
+    _isAccessProtected
+        ? _authenticate()
+        : Future.delayed(200.ms, _pushNextScreen);
   }
 
   void _pushNextScreen() {
@@ -82,6 +86,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
 
     /// Load restrictions and start necessary services
+    ref.read(appsProvider.select((v) => v.value?[null]));
     ref.read(appsRestrictionsProvider.select((v) => v[null]));
     ref.read(restrictionGroupsProvider.select((v) => v[null]));
     ref.read(bedtimeScheduleProvider.select((v) => v.id));

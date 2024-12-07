@@ -234,6 +234,7 @@ class AppsRestrictionsNotifier
               _installedApps.contains(e.appPackage) &&
               (e.timerSec > 0 ||
                   e.launchLimit > 0 ||
+                  e.periodDurationInMins > 0 ||
                   e.associatedGroupId != null),
         )
         .toList();

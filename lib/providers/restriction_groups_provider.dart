@@ -99,7 +99,7 @@ class RestrictionGroupsNotifier
     final filteredGroups = state.values
         .where(
           (e) =>
-              e.timerSec > 0 &&
+              (e.timerSec > 0 || e.periodDurationInMins > 0) &&
               e.distractingApps
                   .where((e) => _installedApps.contains(e))
                   .isNotEmpty,
