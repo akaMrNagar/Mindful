@@ -27,7 +27,7 @@
 | ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
 | <img src="docs/assets/screenshots/screenshot_5.png"> | <img src="docs/assets/screenshots/screenshot_6.png"> | <img src="docs/assets/screenshots/screenshot_7.png"> | <img src="docs/assets/screenshots/screenshot_8.png"> |
 
-## 💪 Features
+# 💪 Features
 
 ### 1. Focus Mode 
 Pause distracting apps and stay productive with session types like Study, Work, or Creative. Choose between countdown or stopwatch modes and track your progress over time.
@@ -52,7 +52,6 @@ Enjoy a distraction-free experience without any ads. Mindful works entirely offl
 > Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
 
 
----
 
 # Donate 
 
@@ -68,7 +67,6 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 &emsp;
 <a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
 
----
 
 # Feedback and Support
 
@@ -80,7 +78,6 @@ Your feedback is invaluable to us! If you have suggestions, encounter issues, or
 * **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
 
 
----
 # Contributors
 
     
