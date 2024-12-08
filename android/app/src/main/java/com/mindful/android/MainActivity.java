@@ -22,7 +22,6 @@ import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -93,10 +92,9 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
         if (!languageCode.isEmpty()) {
             Locale newLocale = new Locale(languageCode);
             Locale.setDefault(newLocale);
-            Resources resources = getResources();
-            Configuration config = resources.getConfiguration();
+            Configuration config = new Configuration();
             config.setLocale(newLocale);
-            resources.updateConfiguration(config, resources.getDisplayMetrics());
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
         }
     }
 
