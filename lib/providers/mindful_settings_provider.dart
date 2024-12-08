@@ -36,7 +36,8 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   Future<MindfulSettings> init({bool addListenerToo = false}) async {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await dao.loadMindfulSettings();
-    MethodChannelService.instance.updateLocale(languageCode: state.localeCode);
+    await MethodChannelService.instance
+        .updateLocale(languageCode: state.localeCode);
 
     if (MethodChannelService.instance.isSelfRestart) {
       await MethodChannelService.instance

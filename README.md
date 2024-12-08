@@ -60,11 +60,11 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 
 <a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="184" ></a>
 &emsp;
-<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>
+<a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>
 
 <a href="https://buymeacoffee.com/akamrnagar"><img src="https://img.shields.io/badge/-Buy%20Me%20A%20Coffee-394379?logo=Buy-Me-A-Coffee&logoColor=ffdd00" height="32"></a>
 &emsp;
-<a href=""><img src="https://img.shields.io/badge/akamrnagar@upi-394379?logo=zalando&logoColor=f47820" height="32"></a>
+<a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="https://img.shields.io/badge/akamrnagar@upi-394379?logo=zalando&logoColor=f47820" height="32"></a>
 &emsp;
 <a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
 
@@ -78,3 +78,12 @@ Your feedback is invaluable to us! If you have suggestions, encounter issues, or
 * **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&tem**plate=feature_request.md)**
 * **[GitHub (vulnerability)](https://github.com/akaMrNagar/Mindful/security/advisories/new)**
 * **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
+
+
+---
+# Contributors
+
+    
+### Translation
+
+ 1. Japanese by [*Riikun*]()
