@@ -184,6 +184,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
 
     await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
           isTheSessionSuccessful: !_isFinite,
+          isFiniteSession: _isFinite,
         );
 
     if (_isFinite) {
