@@ -88,7 +88,10 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
 
     /// check if it is already completed
     if (isFiniteSession && state.elapsedTimeSec >= session.durationSecs) {
-      giveUpOrFinishFocusSession(isTheSessionSuccessful: true);
+      giveUpOrFinishFocusSession(
+        isTheSessionSuccessful: true,
+        isFiniteSession: isFiniteSession,
+      );
       return;
     }
 
@@ -107,7 +110,10 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
 
         /// Check for completion if session is finite
         if (isFiniteSession && state.elapsedTimeSec >= session.durationSecs) {
-          giveUpOrFinishFocusSession(isTheSessionSuccessful: true);
+          giveUpOrFinishFocusSession(
+            isTheSessionSuccessful: true,
+            isFiniteSession: isFiniteSession,
+          );
         }
       },
     );
@@ -196,19 +202,27 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
   /// Updates the session in the database and stops the focus session service.
   Future<void> giveUpOrFinishFocusSession({
     required bool isTheSessionSuccessful,
+    required bool isFiniteSession,
   }) async {
     if (state.activeSession == null) return;
 
     /// Cancel active session timer
     _activeSessionTimer?.cancel();
 
+    /// The difference from the session start and now
+    final diffFromNow =
+        DateTime.now().difference(state.activeSession!.startDateTime).inSeconds;
+
+    /// Valid duration for finite session must be <= active session's duration
+    final validDuration = isFiniteSession
+        ? min(state.activeSession!.durationSecs, diffFromNow)
+        : diffFromNow;
+
     final updatedSession = state.activeSession!.copyWith(
       state: isTheSessionSuccessful
           ? SessionState.successful
           : SessionState.failed,
-      durationSecs: DateTime.now()
-          .difference(state.activeSession!.startDateTime)
-          .inSeconds,
+      durationSecs: validDuration,
     );
 
     /// Update session in database and stop service
