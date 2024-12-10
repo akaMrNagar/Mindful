@@ -18,6 +18,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.mindful.android.utils.Utils;
 
@@ -42,9 +45,9 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
      * @param serviceClass The class type of the service to connect to.
      * @param context      The context in which the service is being managed.
      */
-    public SafeServiceConnection(Class<T> serviceClass, Context context) {
+    public SafeServiceConnection(Class<T> serviceClass, @NonNull Context context) {
         mServiceClass = serviceClass;
-        mContext = context;
+        mContext = context.getApplicationContext();
     }
 
     @Override
@@ -87,7 +90,12 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
      */
     public void bindService() {
         if (!mIsBound && Utils.isServiceRunning(mContext, mServiceClass.getName())) {
-            mContext.bindService(new Intent(mContext, mServiceClass), this, Context.BIND_WAIVE_PRIORITY);
+            try {
+                mContext.bindService(new Intent(mContext, mServiceClass), this, Context.BIND_WAIVE_PRIORITY);
+            } catch (Exception e) {
+                Log.e("Mindful.SafeServiceConnection", "bindService: Failed to bind " + mServiceClass.getName(), e);
+
+            }
         }
     }
 
@@ -95,10 +103,17 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
      * Unbinds the service if it is currently bound.
      */
     public void unBindService() {
-        if (mIsBound) {
-            mContext.unbindService(this);
-            mIsBound = false;
-            mService = null;
+        synchronized (this) {
+            if (mIsBound) {
+                try {
+                    mContext.unbindService(this);
+                } catch (Exception e) {
+                    Log.e("Mindful.SafeServiceConnection", "unBindService: Failed to unbind " + mServiceClass.getName(), e);
+                } finally {
+                    mIsBound = false;
+                    mService = null;
+                }
+            }
         }
     }
 

@@ -493,7 +493,7 @@ public class MindfulTrackerService extends Service {
      */
     private void showOverlayDialog(String packageName, PurgedReason reason) {
         if (!Utils.isServiceRunning(this, OverlayDialogService.class.getName())) {
-            Intent intent = new Intent(this, OverlayDialogService.class);
+            Intent intent = new Intent(getApplicationContext(), OverlayDialogService.class);
             intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
             intent.putExtra(INTENT_EXTRA_DIALOG_INFO, reason.reasonMsg);
             intent.putExtra(INTENT_EXTRA_MAX_PROGRESS, (int) reason.totalLimit);

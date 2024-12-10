@@ -50,7 +50,7 @@ public class AlarmTasksSchedulingHelper {
      */
     public static void scheduleMidnightResetTask(@NonNull Context context, boolean checkBeforeScheduling) {
         if (checkBeforeScheduling) {
-            Intent intent = new Intent(context, MidnightResetReceiver.class).setAction(MidnightResetReceiver.ACTION_START_MIDNIGHT_RESET);
+            Intent intent = new Intent(context.getApplicationContext(), MidnightResetReceiver.class).setAction(MidnightResetReceiver.ACTION_START_MIDNIGHT_RESET);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
 
             if (pendingIntent != null) {
@@ -110,9 +110,9 @@ public class AlarmTasksSchedulingHelper {
      * @param context The application context.
      */
     public static void cancelBedtimeRoutineTasks(@NonNull Context context) {
-        Intent alertIntent = new Intent(context, BedtimeRoutineReceiver.class).setAction(ACTION_ALERT_BEDTIME);
-        Intent startIntent = new Intent(context, BedtimeRoutineReceiver.class).setAction(ACTION_START_BEDTIME);
-        Intent stopIntent = new Intent(context, BedtimeRoutineReceiver.class).setAction(BedtimeRoutineReceiver.ACTION_STOP_BEDTIME);
+        Intent alertIntent = new Intent(context.getApplicationContext(), BedtimeRoutineReceiver.class).setAction(ACTION_ALERT_BEDTIME);
+        Intent startIntent = new Intent(context.getApplicationContext(), BedtimeRoutineReceiver.class).setAction(ACTION_START_BEDTIME);
+        Intent stopIntent = new Intent(context.getApplicationContext(), BedtimeRoutineReceiver.class).setAction(BedtimeRoutineReceiver.ACTION_STOP_BEDTIME);
         PendingIntent alertPendingIntent = PendingIntent.getBroadcast(context, 0, alertIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         PendingIntent startPendingIntent = PendingIntent.getBroadcast(context, 0, startIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -128,7 +128,7 @@ public class AlarmTasksSchedulingHelper {
 
         // Let service know
         if (Utils.isServiceRunning(context, MindfulTrackerService.class.getName())) {
-            Intent serviceIntent = new Intent(context, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
+            Intent serviceIntent = new Intent(context.getApplicationContext(), MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
             context.startService(serviceIntent);
         }
 
@@ -145,7 +145,7 @@ public class AlarmTasksSchedulingHelper {
      */
     private static void scheduleOrUpdateAlarmTask(@NonNull Context context, Class<?> receiverClass, String intentAction, long epochTimeMs) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, receiverClass).setAction(intentAction);
+        Intent intent = new Intent(context.getApplicationContext(), receiverClass).setAction(intentAction);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

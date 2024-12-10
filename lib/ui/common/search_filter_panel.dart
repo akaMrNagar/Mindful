@@ -36,7 +36,7 @@ class _SearchFilterPanelState extends State<SearchFilterPanel> {
 
   void _onQueryChanged(String text) {
     _debouncer?.cancel();
-    _debouncer = Timer(300.ms, () => _onQuerySubmitted(text));
+    _debouncer = Timer(250.ms, () => _onQuerySubmitted(text));
   }
 
   void _onQuerySubmitted(String text) => widget.onFilterChanged(

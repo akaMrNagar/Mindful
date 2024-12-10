@@ -220,7 +220,7 @@ public class OverlayDialogService extends Service {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Intent permissionIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
         permissionIntent.setData(Uri.parse("package:" + getPackageName()));
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, permissionIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, permissionIntent, PendingIntent.FLAG_IMMUTABLE);
         String msg = getString(R.string.overlay_permission_denied_notification_info);
         notificationManager.notify(AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID, new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
@@ -243,7 +243,7 @@ public class OverlayDialogService extends Service {
         if (buttonType == DialogButtonType.CloseApp) {
             goToHome();
         } else if (buttonType == DialogButtonType.Emergency) {
-            Intent appIntent = new Intent(getBaseContext(), MainActivity.class);
+            Intent appIntent = new Intent(getApplicationContext(), MainActivity.class);
             appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appIntent.setData(Uri.parse(appIntent.toUri(Intent.URI_INTENT_SCHEME)));
             appIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mPackageName);

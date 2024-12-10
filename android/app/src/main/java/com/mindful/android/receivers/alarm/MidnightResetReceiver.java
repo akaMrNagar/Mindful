@@ -50,13 +50,13 @@ public class MidnightResetReceiver extends BroadcastReceiver {
     private void onMidnightReset(@NonNull Context context) {
         // Let tracking service know about midnight reset
         if (Utils.isServiceRunning(context, MindfulTrackerService.class.getName())) {
-            Intent serviceIntent = new Intent(context, MindfulTrackerService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
+            Intent serviceIntent = new Intent(context.getApplicationContext(), MindfulTrackerService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
             context.startService(serviceIntent);
         }
 
         // Let accessibility service know about midnight reset
         if (Utils.isServiceRunning(context, MindfulAccessibilityService.class.getName())) {
-            Intent serviceIntent = new Intent(context, MindfulAccessibilityService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
+            Intent serviceIntent = new Intent(context.getApplicationContext(), MindfulAccessibilityService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
             context.startService(serviceIntent);
         } else {
             // Else at least reset short content screen time
