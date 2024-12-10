@@ -105,6 +105,12 @@ public class SharedPrefsHelper {
     }
 
 
+    /**
+     * Fetches the hashset of excluded apps if jsonExcludedApps is null else store it's json.
+     *
+     * @param context          The application context.
+     * @param jsonExcludedApps The JSON string of excluded apps.
+     */
     @NonNull
     public static HashSet<String> getSetExcludedApps(@NonNull Context context, @Nullable String jsonExcludedApps) {
         checkAndInitializePrefs(context);
@@ -116,7 +122,12 @@ public class SharedPrefsHelper {
         }
     }
 
-
+    /**
+     * Fetches the short content's screen time if screenTime is null else store it's json.
+     *
+     * @param context    The application context.
+     * @param screenTime The short content's screen time.
+     */
     public static long getSetShortsScreenTimeMs(@NonNull Context context, @Nullable Long screenTime) {
         checkAndInitializePrefs(context);
         if (screenTime == null) {
@@ -127,7 +138,12 @@ public class SharedPrefsHelper {
         }
     }
 
-
+    /**
+     * Fetches the hashmap of app restrictions if jsonAppRestrictions is null else store it's json.
+     *
+     * @param context             The application context.
+     * @param jsonAppRestrictions The JSON string of hashmap of app restrictions.
+     */
     @NonNull
     public static HashMap<String, AppRestrictions> getSetAppRestrictions(@NonNull Context context, @Nullable String jsonAppRestrictions) {
         checkAndInitializePrefs(context);
@@ -139,6 +155,12 @@ public class SharedPrefsHelper {
         }
     }
 
+    /**
+     * Fetches the hashmap of restriction groups if jsonRestrictionGroups is null else store it's json.
+     *
+     * @param context               The application context.
+     * @param jsonRestrictionGroups The JSON string of hashmap of restriction groups.
+     */
     @NonNull
     public static HashMap<Integer, RestrictionGroup> getSetRestrictionGroups(@NonNull Context context, @Nullable String jsonRestrictionGroups) {
         checkAndInitializePrefs(context);

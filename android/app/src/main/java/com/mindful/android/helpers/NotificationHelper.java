@@ -17,7 +17,9 @@ import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
@@ -26,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 
+import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 
 import java.util.Arrays;
@@ -146,11 +149,16 @@ public class NotificationHelper {
      * @return A Notification object representing the foreground service notification.
      */
     @NonNull
-    public static Notification buildFgServiceNotification(Context context, String content) {
+    public static Notification buildFgServiceNotification(@NonNull Context context, String content) {
+        Intent appIntent = new Intent(context.getApplicationContext(), MainActivity.class);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent appPendingIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+
         return new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setAutoCancel(true)
                 .setContentTitle(context.getString(R.string.service_running_notification_title))
+                .setContentIntent(appPendingIntent)
                 .setContentText(content)
                 .build();
     }

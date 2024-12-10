@@ -201,7 +201,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())
                         && Utils.isServiceRunning(this, MindfulTrackerService.class.getName())
                 ) {
-                    startService(new Intent(this, EmergencyPauseService.class).setAction(ACTION_START_SERVICE_EMERGENCY));
+                    startService(new Intent(getApplicationContext(), EmergencyPauseService.class).setAction(ACTION_START_SERVICE_EMERGENCY));
                     result.success(true);
                 } else {
                     result.success(false);

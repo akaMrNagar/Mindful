@@ -53,9 +53,9 @@ public class EmergencyPauseService extends Service {
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
 
-        Intent appIntent = new Intent(getBaseContext(), MainActivity.class);
+        Intent appIntent = new Intent(this.getApplicationContext(), MainActivity.class);
         appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        appPendingIntent = PendingIntent.getActivity(this, 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        appPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         mProgressNotificationBuilder = new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setOngoing(true)
@@ -80,7 +80,11 @@ public class EmergencyPauseService extends Service {
     private void startEmergencyTimer() {
         mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
         mTrackerServiceConn.bindService();
-        startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
+
+        try {
+            startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
+        } catch (Exception ignored) {
+        }
 
         mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
             @Override

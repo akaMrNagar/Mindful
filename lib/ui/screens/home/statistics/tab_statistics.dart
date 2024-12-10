@@ -13,16 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/enums/sorting_type.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/models/filter_model.dart';
 import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/providers/packages_by_network_usage_provider.dart';
-import 'package:mindful/providers/packages_by_screen_usage_provider.dart';
+import 'package:mindful/providers/packages_by_filter_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
@@ -45,22 +46,19 @@ class TabStatistics extends ConsumerStatefulWidget {
 }
 
 class _TabStatisticsState extends ConsumerState<TabStatistics> {
-  UsageType _usageType = UsageType.screenUsage;
-  int _selectedDayOfWeek = todayOfWeek;
-  bool _includeAllApps = false;
+  FilterModel _filter =
+      FilterModel(selectedDayOfWeek: todayOfWeek, includeAll: false);
 
   @override
   Widget build(BuildContext context) {
     /// Aggregated usage for whole week on the basis of full day
     final aggregatedUsage = ref.watch(aggregatedUsageStatsProvider);
 
-    /// Arguments for family provider
-    final args = (selectedDoW: _selectedDayOfWeek, includeAll: _includeAllApps);
-
     /// Filtered and sorted apps based on usage type and day of this week
-    final filteredApps = _usageType == UsageType.screenUsage
-        ? ref.watch(packagesByScreenUsageProvider(args))
-        : ref.watch(packagesByNetworkUsageProvider(args));
+    final filteredApps = ref.watch(packagesByFilterProvider(_filter));
+
+    UsageType usageType =
+        UsageType.values[_filter.sorting.index % UsageType.values.length];
 
     return DefaultRefreshIndicator(
       onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
@@ -71,14 +69,17 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           SliverSkeletonizer.zone(
             enabled: !filteredApps.hasValue,
             child: SliverUsageCards(
-              usageType: _usageType,
+              usageType: usageType,
               screenUsageInfo:
-                  aggregatedUsage.screenTimeThisWeek[_selectedDayOfWeek],
+                  aggregatedUsage.screenTimeThisWeek[_filter.selectedDayOfWeek],
               wifiUsageInfo:
-                  aggregatedUsage.wifiUsageThisWeek[_selectedDayOfWeek],
-              mobileUsageInfo:
-                  aggregatedUsage.mobileUsageThisWeek[_selectedDayOfWeek],
-              onUsageTypeChanged: (type) => setState(() => _usageType = type),
+                  aggregatedUsage.wifiUsageThisWeek[_filter.selectedDayOfWeek],
+              mobileUsageInfo: aggregatedUsage
+                  .mobileUsageThisWeek[_filter.selectedDayOfWeek],
+              onUsageTypeChanged: (type) => setState(
+                () => _filter =
+                    _filter.copyWith(sorting: SortingType.values[type.index]),
+              ),
             ),
           ),
 
@@ -86,13 +87,13 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           /// Usage bar chart and selected day changer
           SliverUsageChartPanel(
-            selectedDoW: _selectedDayOfWeek,
-            usageType: _usageType,
-            barChartData: _usageType == UsageType.screenUsage
+            selectedDoW: _filter.selectedDayOfWeek,
+            usageType: usageType,
+            barChartData: usageType == UsageType.screenUsage
                 ? aggregatedUsage.screenTimeThisWeek
                 : aggregatedUsage.networkUsageThisWeek,
-            onDayOfWeekChanged: (dow) =>
-                setState(() => _selectedDayOfWeek = dow),
+            onDayOfWeekChanged: (dow) => setState(
+                () => _filter = _filter.copyWith(selectedDayOfWeek: dow)),
           ),
 
           8.vSliverBox,
@@ -127,8 +128,8 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           /// Most used apps list
           SliverAnimatedSwitcher(
             duration: AppConstants.defaultAnimDuration,
-            switchInCurve:  AppConstants.defaultCurve,
-            switchOutCurve:  AppConstants.defaultCurve.flipped,
+            switchInCurve: AppConstants.defaultCurve,
+            switchOutCurve: AppConstants.defaultCurve.flipped,
             child: filteredApps.hasValue
                 ? AnimatedAppsList(
                     itemExtent: 74,
@@ -137,8 +138,8 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                         ApplicationTile(
                       app: app,
                       position: itemPosition,
-                      selectedUsageType: _usageType,
-                      selectedDoW: _selectedDayOfWeek,
+                      selectedUsageType: usageType,
+                      selectedDoW: _filter.selectedDayOfWeek,
                     ),
                   )
                 : const SliverShimmerList(includeSubtitle: true),
@@ -147,13 +148,15 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           20.vSliverBox,
 
           /// Show all apps button
-          if (!_includeAllApps && filteredApps.hasValue)
+          if (!_filter.includeAll && filteredApps.hasValue)
             DefaultListTile(
               isPrimary: true,
               leading: const Icon(FluentIcons.select_all_off_20_regular),
               titleText: context.locale.show_all_apps_tile_title,
               trailing: const Icon(FluentIcons.chevron_down_20_filled),
-              onPressed: () => setState(() => _includeAllApps = true),
+              onPressed: () => setState(
+                () => _filter = _filter.copyWith(includeAll: true),
+              ),
             ).sliver,
 
           const SliverTabsBottomPadding(),

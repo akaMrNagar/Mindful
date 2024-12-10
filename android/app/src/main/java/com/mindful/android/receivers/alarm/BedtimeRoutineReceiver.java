@@ -77,7 +77,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
     private void startBedtimeRoutine() {
         if (!mCanStartRoutineToday) return;
 
-        Intent serviceIntent = new Intent(mContext, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_START_BEDTIME_MODE);
+        Intent serviceIntent = new Intent(mContext.getApplicationContext(), MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_START_BEDTIME_MODE);
         serviceIntent.putExtra(MindfulTrackerService.INTENT_EXTRA_DISTRACTING_APPS, new ArrayList<String>(mBedtimeSettings.distractingApps));
         mContext.startService(serviceIntent);
 
@@ -88,7 +88,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
 
     private void stopBedtimeRoutine() {
         if (Utils.isServiceRunning(mContext, MindfulTrackerService.class.getName())) {
-            Intent serviceIntent = new Intent(mContext, MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
+            Intent serviceIntent = new Intent(mContext.getApplicationContext(), MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
             mContext.startService(serviceIntent);
         }
 

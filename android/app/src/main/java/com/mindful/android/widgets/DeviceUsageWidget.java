@@ -136,14 +136,14 @@ public class DeviceUsageWidget extends AppWidgetProvider {
         }).start();
     }
 
-    private void setUpClickListener(Context context, @NonNull RemoteViews views) {
-        Intent refreshIntent = new Intent(context, DeviceUsageWidget.class);
+    private void setUpClickListener(@NonNull Context context, @NonNull RemoteViews views) {
+        Intent refreshIntent = new Intent(context.getApplicationContext(), DeviceUsageWidget.class);
         refreshIntent.setAction(WIDGET_ACTION_REFRESH);
         PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        Intent launchIntent = new Intent(context, MainActivity.class);
+        Intent launchIntent = new Intent(context.getApplicationContext(), MainActivity.class);
         launchIntent.setAction(WIDGET_ACTION_LAUNCH_APP);
-        PendingIntent launchPendingIntent = PendingIntent.getActivity(context, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent launchPendingIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         views.setOnClickPendingIntent(R.id.widgetRefreshButton, refreshPendingIntent);
         views.setOnClickPendingIntent(R.id.widgetRoot, launchPendingIntent);

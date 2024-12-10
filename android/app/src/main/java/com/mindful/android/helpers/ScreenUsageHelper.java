@@ -73,12 +73,11 @@ public class ScreenUsageHelper {
                     screenTime += (currentEvent.getTimeStamp() - lastResumedEvent.getTimeStamp());
                     lastResumedEvents.remove(eventKey);
                 } else if (isFirstEvent) {
-                    // Log.d("TAG", "fetchUsageForInterval: app " + packageName);
                     // Fallback logic in case no matching ACTIVITY_RESUMED was found. May be this app was opened before START time
                     screenTime += (currentEvent.getTimeStamp() - start);
+                    isFirstEvent = false;
                 }
                 oneDayUsageMap.put(packageName, screenTime);
-                isFirstEvent = false;
             }
         }
 
@@ -86,7 +85,7 @@ public class ScreenUsageHelper {
         oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
         return oneDayUsageMap;
     }
-    
+
     /**
      * Fetches the screen usage time of a specific application for the current day until now using usage events.
      *
