@@ -72,7 +72,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
         super.onCreate(savedInstanceState);
 
         // Register notification channels
-        NotificationHelper.registerNotificationGroupAndChannels(this);
+        NotificationHelper.registerNotificationChannels(this);
 
         // Schedule midnight 12 task if already not scheduled
         AlarmTasksSchedulingHelper.scheduleMidnightResetTask(this, true);

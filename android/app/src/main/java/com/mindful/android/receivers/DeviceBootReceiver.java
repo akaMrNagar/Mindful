@@ -26,6 +26,7 @@ import androidx.work.WorkerParameters;
 
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
+import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.AppRestrictions;
 import com.mindful.android.models.BedtimeSettings;
@@ -78,6 +79,9 @@ public class DeviceBootReceiver extends BroadcastReceiver {
         @Override
         public Result doWork() {
             try {
+                // Register channels before starting foreground services
+                NotificationHelper.registerNotificationChannels(mContext.getApplicationContext());
+
                 HashMap<String, AppRestrictions> appRestrictions = SharedPrefsHelper.getSetAppRestrictions(mContext, null);
                 HashMap<Integer, RestrictionGroup> restrictionGroups = SharedPrefsHelper.getSetRestrictionGroups(mContext, null);
 
@@ -88,12 +92,16 @@ public class DeviceBootReceiver extends BroadcastReceiver {
                 });
 
                 // Start tracker service to update app and group restrictions
-                mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
-                mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
+                if (!appRestrictions.isEmpty() || !restrictionGroups.isEmpty()) {
+                    mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
+                    mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
+                }
 
                 // Start VPN service to apply internet restrictions on specified apps
-                mVpnServiceConn.setOnConnectedCallback(service -> service.updateBlockedApps(internetBlockedApps));
-                mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
+                if (!internetBlockedApps.isEmpty() && MindfulVpnService.prepare(mContext.getApplicationContext()) == null) {
+                    mVpnServiceConn.setOnConnectedCallback(service -> service.updateBlockedApps(internetBlockedApps));
+                    mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
+                }
 
                 // Fetch and apply bedtime settings if enabled
                 BedtimeSettings bedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(mContext, null);
