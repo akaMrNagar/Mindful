@@ -53,7 +53,7 @@ public class NotificationHelper {
      *
      * @param context The application context used to access system services.
      */
-    public static void registerNotificationGroupAndChannels(Context context) {
+    public static void registerNotificationChannels(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channels
             NotificationChannel criticalChannel = new NotificationChannel(NOTIFICATION_CRITICAL_CHANNEL_ID, "Critical Alerts", NotificationManager.IMPORTANCE_HIGH);
