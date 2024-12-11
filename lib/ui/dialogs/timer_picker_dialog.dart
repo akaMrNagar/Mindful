@@ -84,7 +84,6 @@ Future<int?> showFocusTimerPicker({
         initialTimeInSec: initialTime,
         info: context.locale.focus_session_duration_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
-        showResetButton: false,
       ),
     ),
   );

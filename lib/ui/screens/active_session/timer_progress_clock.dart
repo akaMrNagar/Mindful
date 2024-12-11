@@ -59,7 +59,7 @@ class _TimerClockPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     double radius = min(size.width / 2, size.height / 2) - 2;
     Offset center = Offset(size.width / 2, size.height / 2);
-    double progressAngle = 2 * pi * (progress / 100) - pi / 2;
+    double progressAngle = (2 * pi * (progress / 100)) - pi / 2;
 
     // Draw the notches around the timer
     Paint smallNotchPaint = Paint()

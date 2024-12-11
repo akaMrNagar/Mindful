@@ -31,11 +31,13 @@ final focusModeProvider =
   (ref) => FocusModeNotifier(),
 );
 
-class FocusModeNotifier extends StateNotifier<FocusModeModel> {
+class FocusModeNotifier extends StateNotifier<FocusModeModel>
+    with WidgetsBindingObserver {
   late DynamicRecordsDao _dynamicDao;
   late UniqueRecordsDao _uniqueDao;
   Timer? _activeSessionTimer;
   VoidCallback? _sessionSuccessCallback;
+  bool _isAppPaused = false;
 
   FocusModeNotifier()
       : super(FocusModeModel(
@@ -62,13 +64,10 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
       focusMode: focusMode,
       focusProfile: focusProfile,
       activeSession: activeSession,
-      elapsedTimeSec: activeSession == null
-          ? 0
-          : DateTime.now().difference(activeSession.startDateTime).inSeconds,
     );
 
     /// Run after a delay to avoid database deadlock
-    Future.delayed(1.seconds, () {
+    await Future.delayed(1.seconds, () {
       /// restart session service if needed
       if (state.activeSession != null) {
         _startSessionServiceAndTimer(activeSession!);
@@ -77,6 +76,8 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
       /// Reset streak if needed
       _incrementOrResetStreaks(shouldIncrement: false);
     });
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   /// Starts a session timer and service for managing focus sessions.
@@ -106,7 +107,10 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
       1.seconds,
       (timer) async {
         /// Update elapsed time
-        state = state.copyWith(elapsedTimeSec: state.elapsedTimeSec + 1);
+        state = state.copyWith(
+          elapsedTimeSec:
+              DateTime.now().difference(session.startDateTime).inSeconds,
+        );
 
         /// Check for completion if session is finite
         if (isFiniteSession && state.elapsedTimeSec >= session.durationSecs) {
@@ -281,5 +285,23 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel> {
   void dispose() {
     super.dispose();
     _activeSessionTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+  }
+
+  /// Synchronize timer when the app resumes from background.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState appState) async {
+    /// Mark app as invisible or paused
+    if (appState == AppLifecycleState.paused) {
+      _isAppPaused = true;
+    }
+
+    /// Synchronize timer if resumed after pause or not
+    if (appState == AppLifecycleState.resumed &&
+        _isAppPaused &&
+        state.activeSession != null) {
+      _isAppPaused = false;
+      _startSessionServiceAndTimer(state.activeSession!);
+    }
   }
 }

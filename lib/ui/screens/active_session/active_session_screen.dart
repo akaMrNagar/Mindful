@@ -45,6 +45,7 @@ class ActiveSessionScreen extends ConsumerStatefulWidget {
 }
 
 class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
+  final int _secondsInHour = 3600;
   bool _isCompleted = false;
   late bool _isFinite;
 
@@ -79,7 +80,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
           ? 100
           : 100 - ((elapsedSec / widget.session.durationSecs) * 100);
     } else {
-      return (elapsedSec / 12.hours.inSeconds) * 100;
+      return ((elapsedSec % _secondsInHour) / _secondsInHour) * 100;
     }
   }
 

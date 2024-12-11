@@ -37,7 +37,7 @@ class DndSwitchTile extends ConsumerWidget {
         ref.watch(permissionProvider.select((v) => v.haveDndPermission));
 
     return DefaultListTile(
-      enabled: !havePermission || enabled,
+      enabled: enabled,
       switchValue: switchValue,
       position: position,
       titleText: context.locale.permission_dnd_tile_title,

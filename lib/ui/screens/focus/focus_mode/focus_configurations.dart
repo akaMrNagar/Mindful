@@ -58,6 +58,9 @@ class FocusConfigurations extends ConsumerWidget {
     final sessionDuration = ref
         .watch(focusModeProvider.select((v) => v.focusProfile.sessionDuration));
 
+    final isSessionActive =
+        ref.watch(focusModeProvider.select((v) => v.activeSession != null));
+
     return MultiSliver(
       children: [
         ContentSectionHeader(
@@ -67,6 +70,7 @@ class FocusConfigurations extends ConsumerWidget {
         /// Session tag
         DefaultDropdownTile<SessionType>(
           position: ItemPosition.start,
+          enabled: !isSessionActive,
           titleText: context.locale.focus_session_tile_title,
           dialogIcon: FluentIcons.door_tag_20_filled,
           value: sessionType,
@@ -82,6 +86,7 @@ class FocusConfigurations extends ConsumerWidget {
           tag: HeroTags.focusModeTimerTileTag,
           child: DefaultListTile(
             position: ItemPosition.mid,
+            enabled: !isSessionActive,
             titleText: context.locale.focus_session_duration_tile_title,
             subtitle: StyledText(
               sessionDuration > 0
@@ -100,6 +105,7 @@ class FocusConfigurations extends ConsumerWidget {
 
         /// Should start dnd
         DndSwitchTile(
+          enabled: !isSessionActive,
           switchValue: shouldStartDnd,
           position: ItemPosition.mid,
           onPressed: () => ref
