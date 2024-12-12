@@ -66,7 +66,7 @@ public class Utils {
     /**
      * Resolve the device information and  returns it
      *
-     * @return Map<String, String> containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
+     * @return Map containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
      */
     @NonNull
     public static Map<String, String> getDeviceInfoMap(@NonNull Context context) {
@@ -224,11 +224,11 @@ public class Utils {
     /**
      * Calculated the difference between time now and future tod minutes.
      *
-     * @param totalMinutes The total minutes from Time Of Day dart object.
+     * @param futureTotalMinutes The total minutes from Time Of Day dart object.
      * @return The different in MS. If the difference is negative then return 0
      */
-    public static long todDifferenceFromNow(int totalMinutes) {
-        long diff = System.currentTimeMillis() - todToTodayCal(totalMinutes).getTimeInMillis();
+    public static long todDifferenceFromNow(int futureTotalMinutes) {
+        long diff = todToTodayCal(futureTotalMinutes).getTimeInMillis() - System.currentTimeMillis();
         return diff > 0 ? diff : 0;
     }
 

@@ -9,7 +9,14 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/providers/restriction_groups_provider.dart';
+import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -66,4 +73,15 @@ Future<void> runSafe(String tag, Future<void> Function() method) async {
   } catch (e) {
     debugPrint("Error Occurred [$tag] : ${e.toString()}");
   }
+}
+
+/// Initializes all the necessary providers and restarts services if needed
+void initializeNecessaryProviders(WidgetRef ref) {
+  ref.read(appsProvider);
+  ref.read(appsRestrictionsProvider);
+  ref.read(restrictionGroupsProvider);
+  ref.read(focusModeProvider);
+  ref.read(bedtimeScheduleProvider);
+  ref.read(wellBeingProvider);
+  debugPrint("Necessary providers initialized.");
 }

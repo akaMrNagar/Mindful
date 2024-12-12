@@ -20,7 +20,7 @@ import androidx.annotation.Nullable;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * ScreenUsageHelper provides utility methods for gathering and calculating screen usage statistics
@@ -43,7 +43,7 @@ public class ScreenUsageHelper {
     public static HashMap<String, Long> fetchUsageForInterval(@NonNull UsageStatsManager usageStatsManager, long start, long end, @Nullable String targetedPackage) {
         HashMap<String, Long> oneDayUsageMap = new HashMap<>();
         UsageEvents usageEvents = usageStatsManager.queryEvents(start, end);
-        Map<String, UsageEvents.Event> lastResumedEvents = new HashMap<>();
+        LinkedHashMap<String, UsageEvents.Event> lastResumedEvents = new LinkedHashMap<>(2);
         boolean isFirstEvent = true;
 
 
@@ -84,27 +84,6 @@ public class ScreenUsageHelper {
         // Convert milliseconds to seconds
         oneDayUsageMap.replaceAll((k, v) -> (v / 1000));
         return oneDayUsageMap;
-    }
-
-    /**
-     * Fetches the screen usage time of a specific application for the current day until now using usage events.
-     *
-     * @param usageStatsManager The UsageStatsManager used to query screen usage data.
-     * @param packageName       The package name of the application whose usage time is to be fetched.
-     * @return The total screen usage time of the specified application in seconds.
-     */
-    public static int fetchAppUsageTodayTillNow(@NonNull UsageStatsManager usageStatsManager, String packageName) {
-        Calendar midNightCal = Calendar.getInstance();
-        midNightCal.set(Calendar.HOUR_OF_DAY, 0);
-        midNightCal.set(Calendar.MINUTE, 0);
-        midNightCal.set(Calendar.SECOND, 0);
-
-        long start = midNightCal.getTimeInMillis();
-        long end = System.currentTimeMillis();
-        long screenTime = fetchUsageForInterval(usageStatsManager, start, end, packageName).getOrDefault(packageName, 0L);
-
-        // Log.d("Time", "fetchAppUsageFromEvents: package: " + packageName + " screen time seconds : " + screenTime);
-        return (int) screenTime;
     }
 
     /**

@@ -136,19 +136,15 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 break;
             }
             case "getDeviceApps": {
-                DeviceAppsHelper.getDeviceApps(this, result);
+                DeviceAppsHelper.getDeviceApps(
+                        this,
+                        result,
+                        mTrackerServiceConn.isConnected() ? mTrackerServiceConn.getService().getAppsLaunchCount() : new HashMap<>(0)
+                );
                 break;
             }
             case "getShortsScreenTimeMs": {
                 result.success(SharedPrefsHelper.getSetShortsScreenTimeMs(this, null));
-                break;
-            }
-            case "getAppLaunchCounts": {
-                result.success(
-                        mTrackerServiceConn.isConnected() ?
-                                mTrackerServiceConn.getService().getAppsLaunchCount() :
-                                new HashMap<String, Integer>(0)
-                );
                 break;
             }
             case "setDataResetTime": {

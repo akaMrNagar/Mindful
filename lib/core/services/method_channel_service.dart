@@ -90,9 +90,6 @@ class MethodChannelService {
     return time ~/ 1000;
   }
 
-  /// Gets the map of app package and the number launches for today.
-  Future<Map<String, int>> getAppLaunchCounts() async =>
-      await _methodChannel.invokeMapMethod('getAppLaunchCounts') ?? {};
 
   /// Retrieves a list of all launchable apps installed on the user's device along with their usage statistics.
   ///

@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -57,7 +56,11 @@ public class DeviceAppsHelper {
      * @param context       The context to use for fetching app information.
      * @param channelResult The result channel to which the app data will be sent.
      */
-    public static void getDeviceApps(Context context, MethodChannel.Result channelResult) {
+    public static void getDeviceApps(
+            Context context,
+            MethodChannel.Result channelResult,
+            HashMap<String, Integer> appsLaunchCountMap
+    ) {
         SuccessCallback<List<Map<String, Object>>> callback = new SuccessCallback<List<Map<String, Object>>>() {
             @Override
             public void onSuccess(List<Map<String, Object>> result) {
@@ -68,7 +71,7 @@ public class DeviceAppsHelper {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<AndroidApp> apps = fetchAppsAndUsage(context);
+                List<AndroidApp> apps = fetchAppsAndUsage(context, appsLaunchCountMap);
                 List<Map<String, Object>> resultMap = new ArrayList<>(apps.size());
 
                 for (AndroidApp app : apps) {
@@ -81,7 +84,7 @@ public class DeviceAppsHelper {
     }
 
     @NonNull
-    private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context) {
+    private static List<AndroidApp> fetchAppsAndUsage(@NonNull Context context, @NonNull HashMap<String, Integer> appsLaunchCountMap) {
         PackageManager packageManager = context.getPackageManager();
 
         // Fetch set of important apps like Dialer, Launcher etc.
@@ -95,12 +98,6 @@ public class DeviceAppsHelper {
         for (PackageInfo app : fetchedApps) {
             // Only include apps which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
-
-                int category = -1;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    category = app.applicationInfo.category;
-                }
-
                 // Check if the app is important or default to system like dialer and launcher
                 boolean isSysDefault = impSystemApps.contains(app.packageName);
                 deviceApps.add(
@@ -109,7 +106,7 @@ public class DeviceAppsHelper {
                                 app.packageName, // package name
                                 Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app.applicationInfo)), // icon
                                 isSysDefault, // is default app used by system like dialer or launcher
-                                category, // category
+                                appsLaunchCountMap.getOrDefault(app.packageName, 0), // launch count for today
                                 app.applicationInfo.uid // app uid
                         )
                 );
