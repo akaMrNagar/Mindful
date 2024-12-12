@@ -29,7 +29,7 @@ public class AndroidApp {
     public String packageName;
     public int appUid;
     public String appIcon;
-    public int category;
+    public int launchCount;
     public boolean isImpSysApp;
 
     // Usage info
@@ -45,15 +45,15 @@ public class AndroidApp {
      * @param packageName The package name of the application.
      * @param appIcon     The icon of the application.
      * @param isImpSysApp Indicates if the application is an important system app.
-     * @param category    The category of the application.
+     * @param launchCount The launch count of the application.
      * @param appUid      The UID of the application.
      */
-    public AndroidApp(String appName, String packageName, String appIcon, boolean isImpSysApp, int category, int appUid) {
+    public AndroidApp(String appName, String packageName, String appIcon, boolean isImpSysApp, int launchCount, int appUid) {
         this.appName = appName;
         this.packageName = packageName;
         this.appIcon = appIcon;
         this.isImpSysApp = isImpSysApp;
-        this.category = category;
+        this.launchCount = launchCount;
         this.appUid = appUid;
         // Initialize usage arrays with 7 days worth of data, defaulting to 0
         this.screenTimeThisWeek = new ArrayList<>(Collections.nCopies(7, 0L));
@@ -85,7 +85,7 @@ public class AndroidApp {
         appMap.put("packageName", packageName);
         appMap.put("appIcon", appIcon);
         appMap.put("isImpSysApp", isImpSysApp);
-        appMap.put("category", category);
+        appMap.put("launchCount", launchCount);
         appMap.put("screenTimeThisWeek", screenTimeThisWeek);
         appMap.put("mobileUsageThisWeek", mobileUsageThisWeek);
         appMap.put("wifiUsageThisWeek", wifiUsageThisWeek);
@@ -106,7 +106,7 @@ public class AndroidApp {
                 ", packageName='" + packageName + '\'' +
                 ", appUid=" + appUid +
                 ", isImpSysApp=" + isImpSysApp +
-                ", category=" + category +
+                ", launchCount=" + launchCount +
                 ", screenTimeThisWeek=" + screenTimeThisWeek +
                 ", mobileUsageThisWeek=" + mobileUsageThisWeek +
                 ", wifiUsageThisWeek=" + wifiUsageThisWeek +

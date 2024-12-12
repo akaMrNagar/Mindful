@@ -10,7 +10,6 @@
 
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:mindful/core/enums/application_category.dart';
 
 /// Represents an Android application with detailed information and usage statistics.
 @immutable
@@ -24,9 +23,6 @@ class AndroidApp {
   /// Indicates whether the app belongs to the system's default category (e.g., Home Launcher, Dialer) or
   /// includes manually added apps like Tethering and Removed Apps.
   final bool isImpSysApp;
-
-  /// The application category as defined within its manifest file used by the Android system.
-  final AppCategory category;
 
   /// A list containing the total screen time usage for the app in SECONDS for each day of the current week (7 entries).
   final List<int> screenTimeThisWeek;
@@ -52,7 +48,6 @@ class AndroidApp {
     required this.icon,
     required this.launchCount,
     required this.isImpSysApp,
-    required this.category,
     required this.screenTimeThisWeek,
     required this.mobileUsageThisWeek,
     required this.wifiUsageThisWeek,
@@ -62,12 +57,11 @@ class AndroidApp {
   /// Creates an `AndroidApp` instance from a JSON-like map representation.
   factory AndroidApp.fromMap(Map<dynamic, dynamic> map) {
     return AndroidApp(
-      launchCount: 0,
       name: map['appName'] as String,
       packageName: map['packageName'] as String,
       icon: base64Decode(map['appIcon'] as String),
       isImpSysApp: map['isImpSysApp'] as bool,
-      category: _parseCategory(map['category'] as int),
+      launchCount: map['launchCount'] as int,
       screenTimeThisWeek:
           List<int>.from(map['screenTimeThisWeek'], growable: false),
       mobileUsageThisWeek:
@@ -79,51 +73,32 @@ class AndroidApp {
     );
   }
 
-  /// Parses an integer representing an app category index into an `AppCategory` enum value.
-  static AppCategory _parseCategory(int index) {
-    return switch (index) {
-      -1 => AppCategory.undefined,
-      0 => AppCategory.game,
-      1 => AppCategory.audio,
-      2 => AppCategory.video,
-      3 => AppCategory.image,
-      4 => AppCategory.social,
-      5 => AppCategory.news,
-      6 => AppCategory.maps,
-      7 => AppCategory.productivity,
-      8 => AppCategory.accessibility,
-      _ => AppCategory.undefined,
-    };
-  }
-
   AndroidApp copyWith({
     String? name,
     String? packageName,
     bool? isImpSysApp,
-    Uint8List? icon,
-    AppCategory? category,
     List<int>? screenTimeThisWeek,
     List<int>? mobileUsageThisWeek,
     List<int>? wifiUsageThisWeek,
     List<int>? networkUsageThisWeek,
+    Uint8List? icon,
     int? launchCount,
   }) {
     return AndroidApp(
       name: name ?? this.name,
       packageName: packageName ?? this.packageName,
       isImpSysApp: isImpSysApp ?? this.isImpSysApp,
-      icon: icon ?? this.icon,
-      category: category ?? this.category,
       screenTimeThisWeek: screenTimeThisWeek ?? this.screenTimeThisWeek,
       mobileUsageThisWeek: mobileUsageThisWeek ?? this.mobileUsageThisWeek,
       wifiUsageThisWeek: wifiUsageThisWeek ?? this.wifiUsageThisWeek,
       networkUsageThisWeek: networkUsageThisWeek ?? this.networkUsageThisWeek,
+      icon: icon ?? this.icon,
       launchCount: launchCount ?? this.launchCount,
     );
   }
 
   @override
   String toString() {
-    return 'AndroidApp(name: $name, packageName: $packageName, isImpSysApp: $isImpSysApp, category: $category, screenTimeThisWeek: $screenTimeThisWeek, mobileUsageThisWeek: $mobileUsageThisWeek, wifiUsageThisWeek: $wifiUsageThisWeek, networkUsageThisWeek: $networkUsageThisWeek, icon: $icon, launchCount: $launchCount)';
+    return 'AndroidApp(name: $name, packageName: $packageName, isImpSysApp: $isImpSysApp, screenTimeThisWeek: $screenTimeThisWeek, mobileUsageThisWeek: $mobileUsageThisWeek, wifiUsageThisWeek: $wifiUsageThisWeek, networkUsageThisWeek: $networkUsageThisWeek, icon: $icon, launchCount: $launchCount)';
   }
 }

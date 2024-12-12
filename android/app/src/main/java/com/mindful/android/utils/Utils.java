@@ -66,7 +66,7 @@ public class Utils {
     /**
      * Resolve the device information and  returns it
      *
-     * @return Map<String, String> containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
+     * @return Map containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
      */
     @NonNull
     public static Map<String, String> getDeviceInfoMap(@NonNull Context context) {

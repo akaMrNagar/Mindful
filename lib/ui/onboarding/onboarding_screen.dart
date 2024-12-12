@@ -17,8 +17,8 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/permissions_model.dart';
-import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
@@ -59,7 +59,8 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
             perms.haveNotificationPermission;
 
         if (!haveAllEssentialPermissions) return;
-        _checkAndFinishOnboarding();
+        _finishOnboarding();
+        _subscription?.close();
       },
     );
 
@@ -76,15 +77,16 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     _subscription?.close();
   }
 
-  void _checkAndFinishOnboarding() async {
+  void _finishOnboarding() async {
     if (mounted) {
-      _subscription?.close();
+      /// Initialize necessary providers and services
+      initializeNecessaryProviders(ref);
       ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
+
       Future.delayed(
-        200.ms,
+        150.ms,
         () {
           if (!mounted) return;
-          ref.read(appsProvider.notifier).refreshDeviceApps();
           Navigator.of(context).pushNamedAndRemoveUntil(
             AppRoutes.homeScreen,
             (_) => false,
@@ -206,7 +208,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                             /// Finish setup
                             ? FilledButton(
                                 onPressed: haveAllEssentialPermissions
-                                    ? () => _checkAndFinishOnboarding()
+                                    ? () => _finishOnboarding()
                                     : null,
                                 child: Text(
                                   context
