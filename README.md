@@ -22,25 +22,12 @@
 
 ---
 
-## ⚠️ Mindful  is going CLOSED source.
-#### _From 14/12/2024 (v1.2.4+124)_
-
-It is with a heavy heart that I share this news: Mindful, which has been open source until now, will be transitioning to a closed-source.
-
-This hasn’t been an easy decision. When I first made Mindful open source, it was because I believed in sharing and building together as a community. But over time, I noticed something unusual while I wasn’t receiving contributions (which is okay, not everyone has the time), the repository was being cloned frequently. At first, I thought, "Maybe someone’s working on something to share" But months passed without any pull requests. This made me realize that my work might be getting exploited by  unethical people or entities.
-
-To protect the integrity of what I’ve created and ensure it isn’t exploited unfairly, I’ve decided to take this step. But please know this doesn’t mean I’m giving up on Mindful in fact, I’m more determined than ever to make it better for all of you.
-
-Here’s what you can always count on from Mindful:
-
-* Your privacy will always come first. As I’ve promised from the start, Mindful will never collect any data and will always work offline. That’s non-negotiable.
-
-* I’m still here for you. You can use this repository to report bugs, suggest enhancements, or share ideas. I’ll be keeping a close eye on issues and will continue releasing updates and improvements here.
+> ### ⚠️ Mindful  is going CLOSED source.
+> _From 14/12/2024 (v1.2.4+124)_
+>
+> [Know more](https://github.com/akaMrNagar/Mindful/discussions/1) 
 
 
-This is a bittersweet moment for me, but I’m hopeful about what’s ahead. Mindful wouldn’t be where it is today without your support, and I’m deeply grateful for that. 
-
-Thank you for understanding, and as always, feel free to reach out. I would love to hear your thoughts.
 
 ---
 
