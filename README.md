@@ -22,8 +22,8 @@
 
 ---
 
-> ## ⚠️ Mindful  is going CLOSED source.
-> #### _From 14/12/2024 (v1.2.4+124)_
+## ⚠️ Mindful  is going CLOSED source.
+#### _From 14/12/2024 (v1.2.4+124)_
 
 It is with a heavy heart that I share this news: Mindful, which has been open source until now, will be transitioning to a closed-source.
 
@@ -40,9 +40,7 @@ To protect the integrity of what I’ve created and ensure it isn’t exploited 
 
 This is a bittersweet moment for me, but I’m hopeful about what’s ahead. Mindful wouldn’t be where it is today without your support, and I’m deeply grateful for that. 
 
-Thank you for understanding, and as always, feel free to reach out. I would love to hear your thoughts.<br> With gratitude and determination, <br>
-Pawan Nagar
-
+Thank you for understanding, and as always, feel free to reach out. I would love to hear your thoughts.
 
 ---
 
