@@ -31,11 +31,11 @@ This hasn’t been an easy decision. When I first made Mindful open source, it w
 
 To protect the integrity of what I’ve created and ensure it isn’t exploited unfairly, I’ve decided to take this step. But please know this doesn’t mean I’m giving up on Mindful in fact, I’m more determined than ever to make it better for all of you.
 
-### Here’s what you can always count on from Mindful:
+Here’s what you can always count on from Mindful:
 
-* #### Your privacy will always come first. As I’ve promised from the start, Mindful will never collect any data and will always work offline. That’s non-negotiable.
+* Your privacy will always come first. As I’ve promised from the start, Mindful will never collect any data and will always work offline. That’s non-negotiable.
 
-* #### I’m still here for you. You can use this repository to report bugs, suggest enhancements, or share ideas. I’ll be keeping a close eye on issues and will continue releasing updates and improvements here.
+* I’m still here for you. You can use this repository to report bugs, suggest enhancements, or share ideas. I’ll be keeping a close eye on issues and will continue releasing updates and improvements here.
 
 
 This is a bittersweet moment for me, but I’m hopeful about what’s ahead. Mindful wouldn’t be where it is today without your support, and I’m deeply grateful for that. 
