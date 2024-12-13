@@ -1,0 +1,109 @@
+
+<div align="center">
+    <a href="https://bemindful.vercel.app/"><img alt="Icon" src="docs/assets/mindful.png" width="144px" /></a>
+    <h1> <b>Mindful</b></h1>
+    <a href="https://play.google.com/store/apps/details?id=com.mindful.android"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="96" /></a>
+    <a href="https://github.com/akamrnagar/mindful/releases/latest"><img src="docs/assets/github_badge.png" height="96" /></a>
+</div>
+
+
+**Mindful** is an ad-free and privacy friendly app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
+
+
+[![Featured](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
+[![Supporters](https://img.shields.io/badge/Supporters-👻-black)](docs/SUPPORTERS.md) 
+[![Privacy](https://img.shields.io/badge/Privacy_Policy-📃-black)](docs/PRIVACY.md) 
+[![Verify](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
+[![Faqs](https://img.shields.io/badge/FAQs-🙋-black)](docs/FAQS.md) 
+
+[![GitHub](https://img.shields.io/github/downloads/akamrnagar/mindful/total?logo=github&cacheSeconds=3600)](https://github.com/akamrnagar/mindful/releases/latest)
+[![Google Play](https://img.shields.io/endpoint?color=40bb12&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.mindful.android%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.mindful.android)
+[![Localized](https://badges.crowdin.net/mindful/localized.svg)](https://crowdin.com/project/mindful)
+
+---
+
+> ## ⚠️ Mindful  is going CLOSED source.
+> #### _From 14/12/2024 (v1.2.4+124)_
+
+It is with a heavy heart that I share this news: Mindful, which has been open source until now, will be transitioning to a closed-source.
+
+This hasn’t been an easy decision. When I first made Mindful open source, it was because I believed in sharing and building together as a community. But over time, I noticed something unusual while I wasn’t receiving contributions (which is okay, not everyone has the time), the repository was being cloned frequently. At first, I thought, "Maybe someone’s working on something to share" But months passed without any pull requests. This made me realize that my work might be getting exploited by  unethical people or entities.
+
+To protect the integrity of what I’ve created and ensure it isn’t exploited unfairly, I’ve decided to take this step. But please know this doesn’t mean I’m giving up on Mindful in fact, I’m more determined than ever to make it better for all of you.
+
+### Here’s what you can always count on from Mindful:
+
+* #### Your privacy will always come first. As I’ve promised from the start, Mindful will never collect any data and will always work offline. That’s non-negotiable.
+
+* #### I’m still here for you. You can use this repository to report bugs, suggest enhancements, or share ideas. I’ll be keeping a close eye on issues and will continue releasing updates and improvements here.
+
+
+This is a bittersweet moment for me, but I’m hopeful about what’s ahead. Mindful wouldn’t be where it is today without your support, and I’m deeply grateful for that. 
+
+Thank you for understanding, and as always, feel free to reach out. I would love to hear your thoughts.<br> With gratitude and determination, <br>
+Pawan Nagar
+
+
+---
+
+| <img src="docs/assets/screenshots/screenshot_1.png"> | <img src="docs/assets/screenshots/screenshot_2.png"> | <img src="docs/assets/screenshots/screenshot_3.png"> | <img src="docs/assets/screenshots/screenshot_4.png"> |
+| ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------- |
+| <img src="docs/assets/screenshots/screenshot_5.png"> | <img src="docs/assets/screenshots/screenshot_6.png"> | <img src="docs/assets/screenshots/screenshot_7.png"> | <img src="docs/assets/screenshots/screenshot_8.png"> |
+
+# 💪 Features
+
+### 1. Focus Mode 
+Pause distracting apps and stay productive with session types like Study, Work, or Creative. Choose between countdown or stopwatch modes and track your progress over time.
+
+### 2. Screen Time Management
+Set daily limits on apps, including addictive short-form content like Reels and YouTube Shorts. Group apps together and add shared limits for better control. Struggling with serious addiction? Turn on Invincible Mode for extra discipline.
+
+### 3. Detailed Statistics
+Track your weekly app usage with insights on time spent and data consumed for each app, helping you stay aware and in control.
+
+### 4. Internet Blocker
+Block internet access for distracting apps in a single tap. Filter out adult content and create a safe browsing environment. You can also block unwanted apps to stay focused.
+
+### 5. Bedtime Mode
+Unwind effectively by pausing distracting apps and enabling Do Not Disturb during bedtime. Start your mornings fresh as apps automatically unblock and notifications resume.
+
+### 6. Completely Ad-Free & Privacy-Focused
+Enjoy a distraction-free experience without any ads. Mindful works entirely offline, keeping your data secure on your device.
+
+
+> ### ⚠️ Note: *INTERNET* permission
+> Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
+
+
+
+# Donate 
+
+Mindful took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support my efforts and ensure continued development. Your generosity will help me keep improving and maintaining Mindful for everyone.
+
+<a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="184" ></a>
+&emsp;
+<a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>
+
+<a href="https://buymeacoffee.com/akamrnagar"><img src="https://img.shields.io/badge/-Buy%20Me%20A%20Coffee-394379?logo=Buy-Me-A-Coffee&logoColor=ffdd00" height="32"></a>
+&emsp;
+<a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="https://img.shields.io/badge/akamrnagar@upi-394379?logo=zalando&logoColor=f47820" height="32"></a>
+&emsp;
+<a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
+
+
+# Feedback and Support
+
+Your feedback is invaluable to me! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out through the following channels : 
+
+* **[GitHub (bug)](https://github.com/akaMrNagar/Mindful/issues/new?&template=bug_report.md)**
+* **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&tem**plate=feature_request.md)**
+* **[GitHub (vulnerability)](https://github.com/akaMrNagar/Mindful/security/advisories/new)**
+* **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
+
+
+# Contributors
+
+    
+### Translation
+
+ 1. Japanese by [*Riikun*](https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate)
