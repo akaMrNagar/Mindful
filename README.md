@@ -7,19 +7,27 @@
 </div>
 
 
-**Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
+**Mindful** is an ad-free and privacy friendly app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
 
 [![Featured](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
 [![Supporters](https://img.shields.io/badge/Supporters-👻-black)](docs/SUPPORTERS.md) 
-[![Contribute](https://img.shields.io/badge/Build_&_Contribute-🛠️-black)](docs/CONTRIBUTING.md)
 [![Privacy](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
 [![Verify](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
-[![Faqs](https://img.shields.io/badge/FAQs-🙋-black)](https://bemindful.vercel.app/#faqs) 
+[![Faqs](https://img.shields.io/badge/FAQs-🙋-black)](docs/FAQS.md) 
 
 [![GitHub](https://img.shields.io/github/downloads/akamrnagar/mindful/total?logo=github&cacheSeconds=3600)](https://github.com/akamrnagar/mindful/releases/latest)
 [![Google Play](https://img.shields.io/endpoint?color=40bb12&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.mindful.android%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.mindful.android)
 [![Localized](https://badges.crowdin.net/mindful/localized.svg)](https://crowdin.com/project/mindful)
+
+---
+
+> ### ⚠️ Mindful  is going CLOSED source.
+> _From 14/12/2024 (v1.2.4+124)_
+>
+> [Know more](https://github.com/akaMrNagar/Mindful/discussions/1) 
+
+
 
 ---
 
@@ -55,7 +63,7 @@ Enjoy a distraction-free experience without any ads. Mindful works entirely offl
 
 # Donate 
 
-Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
+Mindful took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support my efforts and ensure continued development. Your generosity will help me keep improving and maintaining Mindful for everyone.
 
 <a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="184" ></a>
 &emsp;
@@ -70,7 +78,7 @@ Mindful is a Free and Open Source Software (FOSS) that took months of dedicated,
 
 # Feedback and Support
 
-Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us through the following channels : 
+Your feedback is invaluable to me! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out through the following channels : 
 
 * **[GitHub (bug)](https://github.com/akaMrNagar/Mindful/issues/new?&template=bug_report.md)**
 * **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&tem**plate=feature_request.md)**
