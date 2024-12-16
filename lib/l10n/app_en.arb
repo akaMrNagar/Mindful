@@ -276,7 +276,7 @@
     "focus_session_tile_title": "Focus session",
     "focus_session_duration_tile_title": "Session duration",
     "focus_session_duration_tile_subtitle": "Infinite (unless you stop)",
-    "focus_session_duration_dialog_info": "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.",
+    "focus_session_duration_dialog_info": "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free. \n\n Tip: Click on 'Reset' to set infinite duration",
     "focus_session_start_fab_button": "Start Session",
     "focus_session_minimum_apps_snack_alert": "Select at least one distracting app to start focus session",
     "focus_session_already_active_snack_alert": "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
