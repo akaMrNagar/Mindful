@@ -24,27 +24,28 @@ class PermissionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Expanded(
-          child: OnboardingPage(
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          OnboardingPage(
             bottomPadding: 0,
             title: context.locale.onboarding_page_permissions_title,
             imgArtPath: "assets/illustrations/onboarding_4.png",
             description: context.locale.onboarding_page_permissions_info,
           ),
-        ),
 
-        12.vBox,
+          12.vBox,
 
-        /// Permission tiles
-        const NotificationPermissionTile(),
-        const AlarmPermissionTile(),
-        const UsageAccessPermissionTile(),
-        const DisplayOverlayPermissionTile(),
+          /// Permission tiles
+          const NotificationPermissionTile(),
+          const AlarmPermissionTile(),
+          const UsageAccessPermissionTile(),
+          const DisplayOverlayPermissionTile(),
 
-        108.vBox,
-      ],
+          108.vBox,
+        ],
+      ),
     );
   }
 }

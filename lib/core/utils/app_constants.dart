@@ -26,7 +26,6 @@ class AppConstants {
   static const tetheringAppPackage = "com.android.tethering";
 
   /// Urls
-  static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
   static const supportEmailUrl = "mailto:help.lasthopedevs@gmail.com";
   static const privacyPolicyUrl = "https://bemindful.vercel.app/privacy";
   static const faqsUrl = "https://bemindful.vercel.app/#faqs";

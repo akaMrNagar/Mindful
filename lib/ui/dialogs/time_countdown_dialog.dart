@@ -33,7 +33,7 @@ Future<void> showCountDownDialog({
 }) async {
   return await Navigator.of(context).push<void>(
     HeroPageRoute(
-      barrierDismissible: false,
+      isBarrierDismissible: false,
       builder: (context) => _LaunchLimitDialog(
         heroTag: heroTag,
         timerDuration: timerDuration,

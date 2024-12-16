@@ -10,7 +10,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class OnboardingPage extends StatelessWidget {
@@ -29,45 +28,47 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        0.vBox,
+    return Padding(
+      padding: EdgeInsets.only(bottom: bottomPadding),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          0.vBox,
 
-        /// Illustration
-        Expanded(
-          child: Image.asset(
-            imgArtPath,
-            fit: BoxFit.scaleDown,
-          ).centered,
-        ),
-
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Title
-            StyledText(
-              title,
-              fontSize: 32,
-              fontWeight: FontWeight.w600,
-              textAlign: TextAlign.center,
-              color: Theme.of(context).colorScheme.primary,
+          /// Illustration
+          AspectRatio(
+            aspectRatio: 1,
+            child: Image.asset(
+              imgArtPath,
+              fit: BoxFit.contain,
             ),
-            4.vBox,
+          ),
 
-            /// Description
-            StyledText(
-              description,
-              fontSize: 16,
-              color: Theme.of(context).hintColor,
-              textAlign: TextAlign.left,
-            ),
-          ],
-        ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              /// Title
+              StyledText(
+                title,
+                fontSize: 32,
+                fontWeight: FontWeight.w600,
+                textAlign: TextAlign.center,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              4.vBox,
 
-        bottomPadding.vBox,
-      ],
+              /// Description
+              StyledText(
+                description,
+                fontSize: 16,
+                color: Theme.of(context).hintColor,
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

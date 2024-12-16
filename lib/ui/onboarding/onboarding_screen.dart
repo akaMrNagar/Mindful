@@ -133,6 +133,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
           elevation: 0,
           scrolledUnderElevation: 0,
           toolbarHeight: 0,
+          backgroundColor: Colors.transparent,
         ),
         body: Stack(
           children: [

@@ -117,19 +117,9 @@ class TabAbout extends ConsumerWidget {
         /// Contribute
         ContentSectionHeader(title: context.locale.contribute_heading).sliver,
 
-        /// Source code
-        DefaultListTile(
-          position: ItemPosition.start,
-          leadingIcon: FluentIcons.code_20_regular,
-          titleText: context.locale.github_tile_title,
-          subtitleText: context.locale.github_tile_subtitle,
-          onPressed: () =>
-              MethodChannelService.instance.launchUrl(AppConstants.githubUrl),
-        ).sliver,
-
         /// Issue
         DefaultListTile(
-          position: ItemPosition.mid,
+          position: ItemPosition.start,
           leadingIcon: FluentIcons.bug_20_regular,
           titleText: context.locale.report_issue_tile_title,
           subtitleText: context.locale.redirected_to_github_subtitle,

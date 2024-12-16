@@ -12,7 +12,7 @@
 <resources>
     <string name="app_name" comment="app_name app values">Mindful</string>
     <string name="accessibility_description">Mindful アプリは、ユーザー補助を使用して、ウェブサイトやアプリのショート動画をブロックします。ブロックリストに登録されたURLやコンテンツへのアクセスを制限することで、集中力を維持するのに役立ちます。 \n\n⚠️注意：Mindful はプライバシーを最優先に考えています。100%安全でオフラインで動作します。個人データの収集や保存は一切行いません。 </string>
-    <string name="admin_description">Mindful は、ユーザーのデータを収集、保存、または送信することはありません。無料でオープンソースのソフトウェア（FOSS）なので、ソースコードを自由に確認・変更できます。管理者権限は、アプリの正常な動作に必要なシステム操作にのみ使用され、プライバシーは完全に保護されます。</string>
+    <string name="admin_description">Mindfulはユーザーデータを収集、保存、送信しません。管理者権限は、重要なシステム操作にのみ必要であり、プライバシーを侵害することなくアプリが正しく機能することを保証します。</string>
     <string name="toast_enable_notification">通知を許可する</string>
     <string name="toast_blocked_content">コンテンツをブロックしました。前の画面に戻ります。</string>
     <string name="toast_redirecting">検索結果を絞り込む</string>
