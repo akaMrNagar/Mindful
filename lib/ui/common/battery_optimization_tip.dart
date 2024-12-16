@@ -19,7 +19,7 @@ class BatteryOptimizationTip extends ConsumerWidget {
     final prob = Random().nextInt(10);
 
     return SliverPrimaryActionContainer(
-      isVisible: !havePermission || prob == 1,
+      isVisible: !havePermission && prob == 1,
       icon: FluentIcons.lightbulb_filament_20_regular,
       margin: const EdgeInsets.only(bottom: 4),
       title: context.locale.tip_container_title,
