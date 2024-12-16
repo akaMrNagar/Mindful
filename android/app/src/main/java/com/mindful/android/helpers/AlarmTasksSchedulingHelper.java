@@ -79,7 +79,7 @@ public class AlarmTasksSchedulingHelper {
         long nowInMs = System.currentTimeMillis();
         long alertTimeMs = Utils.todToTodayCal(bedtimeSettings.startTimeInMins - 30).getTimeInMillis();
         long startTimeMs = Utils.todToTodayCal(bedtimeSettings.startTimeInMins).getTimeInMillis();
-        long endTimeMs = (startTimeMs + (bedtimeSettings.totalDurationInMins * 60000L));
+        long endTimeMs = Utils.todToTodayCal(bedtimeSettings.startTimeInMins + bedtimeSettings.totalDurationInMins).getTimeInMillis();
 
         // Bedtime is already ended then reschedule for the next day
         if (endTimeMs < nowInMs) {

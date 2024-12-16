@@ -250,8 +250,8 @@ public class MindfulTrackerService extends Service {
         /// Return if no restriction applied
         AppRestrictions appRestrictions = mAppsRestrictions.get(packageName);
         if (appRestrictions == null) return;
+
         PurgedReason timerReason = null;
-        boolean isActivePeriodTimer = false;
         long timerDelayMS = Long.MAX_VALUE;
 
         /// Check for app launch limit
@@ -265,26 +265,26 @@ public class MindfulTrackerService extends Service {
 
         /// Check for app's active period
         if (appRestrictions.periodDurationInMins > 0) {
-            PurgedReason reason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_active_period_over));
+            int periodEndTimeMinutes = appRestrictions.activePeriodStart + appRestrictions.periodDurationInMins;
 
             /// Outside active period
-            if (Utils.isTimeOutsideTODs(appRestrictions.activePeriodStart, appRestrictions.activePeriodEnd)) {
+            if (Utils.isTimeOutsideTODs(appRestrictions.activePeriodStart, periodEndTimeMinutes)) {
                 Log.d(TAG, "onNewAppLaunched: App's active period is over");
+                PurgedReason reason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_active_period_over));
                 showOverlayDialog(packageName, reason);
                 return;
             }
 
-            /// Between active period so update recall delay
-            long willOverInMs = Utils.todDifferenceFromNow(appRestrictions.activePeriodEnd);
+            /// Launched between active period so set timer for period ending
+            long willOverInMs = Utils.todDifferenceFromNow(periodEndTimeMinutes);
             if (willOverInMs < timerDelayMS) {
-                timerReason = reason;
-                isActivePeriodTimer = true;
+                timerReason = null;
                 timerDelayMS = willOverInMs;
             }
         }
 
         /// Fetch usage for all apps
-        HashMap<String, Long> allAppsScreenUsage = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager);
+        HashMap<String, Long> allAppsScreenUsage = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager, packageName);
 
         /// Check for app timer
         if (appRestrictions.timerSec > 0) {
@@ -303,7 +303,6 @@ public class MindfulTrackerService extends Service {
             long leftAppLimitMs = (appRestrictions.timerSec - appScreenTimeSec) * 1000;
             if (leftAppLimitMs < timerDelayMS) {
                 timerReason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_app_timer_left), appRestrictions.timerSec, appScreenTimeSec);
-                isActivePeriodTimer = false;
                 timerDelayMS = leftAppLimitMs;
             }
         }
@@ -315,19 +314,20 @@ public class MindfulTrackerService extends Service {
 
             /// Check for group's active period
             if (associatedGroup.periodDurationInMins > 0) {
-                PurgedReason reason = new PurgedReason(getString(R.string.group_paused_dialog_info_for_active_period_over, associatedGroup.groupName));
+                int periodEndTimeMinutes = associatedGroup.activePeriodStart + associatedGroup.periodDurationInMins;
+
                 /// Outside active period
-                if (Utils.isTimeOutsideTODs(associatedGroup.activePeriodStart, associatedGroup.activePeriodEnd)) {
+                if (Utils.isTimeOutsideTODs(associatedGroup.activePeriodStart, periodEndTimeMinutes)) {
                     Log.d(TAG, "onNewAppLaunched: App's associated group's active period is over");
+                    PurgedReason reason = new PurgedReason(getString(R.string.group_paused_dialog_info_for_active_period_over, associatedGroup.groupName));
                     showOverlayDialog(packageName, reason);
                     return;
                 }
 
-                /// Between active period so update recall delay
-                long willOverInMs = Utils.todDifferenceFromNow(associatedGroup.activePeriodEnd);
+                /// Launched between active period so set timer for period ending
+                long willOverInMs = Utils.todDifferenceFromNow(periodEndTimeMinutes);
                 if (willOverInMs < timerDelayMS) {
-                    timerReason = reason;
-                    isActivePeriodTimer = true;
+                    timerReason = null;
                     timerDelayMS = willOverInMs;
                 }
             }
@@ -335,9 +335,7 @@ public class MindfulTrackerService extends Service {
 
             /// Check for associated group's timer
             if (associatedGroup.timerSec > 0) {
-                long groupScreenTimeSec = associatedGroup.distractingApps.stream()
-                        .mapToLong(app -> ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager).getOrDefault(app, 0L))
-                        .sum();
+                long groupScreenTimeSec = associatedGroup.distractingApps.stream().mapToLong(app -> allAppsScreenUsage.getOrDefault(app, 0L)).sum();
 
                 /// Group timer ran out
                 if (groupScreenTimeSec >= associatedGroup.timerSec) {
@@ -352,7 +350,6 @@ public class MindfulTrackerService extends Service {
                 long leftGroupLimitMs = (associatedGroup.timerSec - groupScreenTimeSec) * 1000;
                 if (leftGroupLimitMs < timerDelayMS) {
                     timerReason = new PurgedReason(getString(R.string.app_paused_dialog_info_for_group_timer_left, associatedGroup.groupName), associatedGroup.timerSec, groupScreenTimeSec);
-                    isActivePeriodTimer = false;
                     timerDelayMS = leftGroupLimitMs;
                 }
             }
@@ -368,7 +365,6 @@ public class MindfulTrackerService extends Service {
                 timerReason,
                 appRestrictions.alertInterval,
                 appRestrictions.alertByDialog,
-                isActivePeriodTimer,
                 timerDelayMS
         );
     }
@@ -400,19 +396,17 @@ public class MindfulTrackerService extends Service {
      * Schedules a countdown timer to alert the user of remaining time for a specific app.
      * Provides notifications or overlay dialogs based on specified alert intervals and thresholds.
      *
-     * @param packageName       The package name of the app.
-     * @param reason            The reason for which to schedule timer.
-     * @param alertIntervalSec  The interval at which alerts should occur in SECONDS.
-     * @param alertByDialog     True if alerts should be shown as overlay dialogs, otherwise as notifications.
-     * @param isForActivePeriod Does the timer scheduling is for app's or group's active period or not.
-     * @param millisInFuture    The time in Ms in future till the countdown timer will run.
+     * @param packageName      The package name of the app.
+     * @param unfinishedReason The unfinishedReason for which to schedule timer.
+     * @param alertIntervalSec The interval at which alerts should occur in SECONDS.
+     * @param alertByDialog    True if alerts should be shown as overlay dialogs, otherwise as notifications.
+     * @param millisInFuture   The time in Ms in future till the countdown timer will run.
      */
     private void scheduleUsageAlertCountDownTimer(
             String packageName,
-            PurgedReason reason,
+            @Nullable PurgedReason unfinishedReason,
             int alertIntervalSec,
             boolean alertByDialog,
-            boolean isForActivePeriod,
             long millisInFuture
     ) {
         cancelTimers();
@@ -431,8 +425,8 @@ public class MindfulTrackerService extends Service {
 
                         // Trigger alert if remaining time in minutes matches any alert time
                         if (alertMinuteTicks.contains(minutesRemaining)) {
-                            if (alertByDialog && !isForActivePeriod) {
-                                showOverlayDialog(packageName, reason);
+                            if (unfinishedReason != null && alertByDialog) {
+                                showOverlayDialog(packageName, unfinishedReason);
                             } else {
                                 pushUsageAlertNotification(packageName, minutesRemaining);
                             }
@@ -443,10 +437,8 @@ public class MindfulTrackerService extends Service {
 
                     @Override
                     public void onFinish() {
-                        onNewAppLaunched(packageName);
-                        if (!isForActivePeriod) mPurgedApps.put(packageName, reason);
-                        showOverlayDialog(packageName, reason);
                         Log.d(TAG, "scheduleUsageAlertCountDownTimer: Countdown finished for package: " + packageName);
+                        onNewAppLaunched(packageName);
                     }
                 };
                 Log.d(TAG, "scheduleUsageAlertCountDownTimer: Timer scheduled for " + packageName + " ending at: " +
