@@ -68,12 +68,18 @@ class SliverUsageCards extends StatelessWidget {
             ),
             segments: [
               ButtonSegment(
-                icon: const Icon(FluentIcons.phone_screen_time_20_regular),
+                icon: Icon(
+                  FluentIcons.phone_screen_time_20_regular,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 label: Text(context.locale.screen_segment_label),
                 value: UsageType.screenUsage,
               ),
               ButtonSegment(
-                icon: const Icon(FluentIcons.earth_20_regular),
+                icon: Icon(
+                  FluentIcons.earth_20_regular,
+                  color: Theme.of(context).iconTheme.color,
+                ),
                 label: Text(context.locale.data_segment_label),
                 value: UsageType.networkUsage,
               ),

@@ -225,7 +225,7 @@ public class Utils {
      * Calculated the difference between time now and future tod minutes.
      *
      * @param futureTotalMinutes The total minutes from Time Of Day dart object.
-     * @return The different in MS. If the difference is negative then return 0
+     * @return The difference in MS. If the difference is negative then return 0
      */
     public static long todDifferenceFromNow(int futureTotalMinutes) {
         long diff = todToTodayCal(futureTotalMinutes).getTimeInMillis() - System.currentTimeMillis();

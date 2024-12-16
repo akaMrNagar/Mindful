@@ -14,24 +14,26 @@ import 'package:mindful/core/utils/app_constants.dart';
 class HeroPageRoute<T> extends PageRoute<T> {
   HeroPageRoute({
     required WidgetBuilder builder,
-    bool fullscreenDialog = false,
-    bool barrierDismissible = true,
+    this.isFullscreenDialog = false,
+    this.isBarrierDismissible = true,
   })  : _builder = builder,
         super(
-          fullscreenDialog: fullscreenDialog,
-          barrierDismissible: barrierDismissible,
+          fullscreenDialog: isFullscreenDialog,
+          barrierDismissible: isBarrierDismissible,
         );
 
   final WidgetBuilder _builder;
+  final bool isBarrierDismissible;
+  final bool isFullscreenDialog;
 
   @override
   bool get opaque => false;
 
   @override
-  bool get barrierDismissible => true;
+  bool get barrierDismissible => isBarrierDismissible;
 
   @override
-  Duration get transitionDuration => AppConstants.defaultAnimDuration * 2;
+  Duration get transitionDuration => AppConstants.defaultAnimDuration * 1.5;
 
   @override
   bool get maintainState => true;

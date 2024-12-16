@@ -25,6 +25,7 @@ import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/packages_by_filter_provider.dart';
 import 'package:mindful/ui/common/animated_apps_list.dart';
+import 'package:mindful/ui/common/battery_optimization_tip.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -124,6 +125,8 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           ContentSectionHeader(title: context.locale.most_used_apps_heading)
               .sliver,
+
+          const BatteryOptimizationTip(),
 
           /// Most used apps list
           SliverAnimatedSwitcher(

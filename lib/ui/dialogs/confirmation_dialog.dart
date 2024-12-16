@@ -24,10 +24,12 @@ Future<bool> showConfirmationDialog({
   required String info,
   required IconData icon,
   required String positiveLabel,
+  bool isBarrierDismissible = true,
   String? negativeLabel,
 }) async {
   return await Navigator.of(context).push<bool>(
         HeroPageRoute(
+          isBarrierDismissible: isBarrierDismissible,
           builder: (context) => _ConfirmationDialog(
             heroTag: heroTag,
             title: title,
