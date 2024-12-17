@@ -51,6 +51,7 @@ public class MindfulVpnService extends android.net.VpnService {
     private Set<String> mBlockedApps = new HashSet<>(0);
     private ParcelFileDescriptor mVpnInterface = null;
     private boolean mShouldRestartVpn = false;
+    private boolean mIsServiceRunning = false;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -58,7 +59,7 @@ public class MindfulVpnService extends android.net.VpnService {
 
         if (ACTION_START_SERVICE_VPN.equals(action)) {
             // No need to handle as the caller will also call updateBlockedApps() as soon as the binder is active
-            startServiceAndConnectVpn(true);
+            startService();
             return START_STICKY;
         }
 
@@ -66,36 +67,9 @@ public class MindfulVpnService extends android.net.VpnService {
         return START_NOT_STICKY;
     }
 
-    /**
-     * Restarts the VPN service by disconnecting and then reconnecting the VPN.
-     */
-    private void restartVpnService() {
-        disconnectVpn();
-        startServiceAndConnectVpn(false);
-        Log.d(TAG, "restartVpnService: VPN restarted successfully");
-    }
 
-    /**
-     * Establishes a VPN connection based on blocked apps.
-     * If there are no blocked apps, the service will stop itself.
-     *
-     * @param isFirstTimeConnect Flag denoting if the vpn is starting for the first time
-     */
-    private void startServiceAndConnectVpn(boolean isFirstTimeConnect) {
-        // Check if no blocked apps then STOP service
-        // Necessary if the service starts from Boot Receiver
-        if (mBlockedApps.isEmpty() && !isFirstTimeConnect) {
-            Log.w(TAG, "startServiceAndConnectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
-            stopAndDisposeService();
-            return;
-        }
-
-        final Thread newThread = new Thread(getVpnThread(), TAG);
-        setVpnThread(newThread);
-        newThread.start();
-
-        /// Return if this is VPN restart
-        if (!isFirstTimeConnect) return;
+    private void startService() {
+        if (mIsServiceRunning) return;
 
         try {
             startForeground(
@@ -105,12 +79,40 @@ public class MindfulVpnService extends android.net.VpnService {
                             getString(R.string.internet_blocker_running_notification_info)
                     )
             );
+            mIsServiceRunning = true;
             Log.d(TAG, "startServiceAndConnectVpn: Foreground service started successfully");
 
         } catch (Exception e) {
             Log.e(TAG, "startServiceAndConnectVpn: Failed to start foreground service", e);
             stopAndDisposeService();
         }
+    }
+
+    /**
+     * Restarts the VPN service by disconnecting and then reconnecting the VPN.
+     */
+    private void restartVpnService() {
+        disconnectVpn();
+        connectVpn();
+        Log.d(TAG, "restartVpnService: VPN restarted successfully");
+    }
+
+    /**
+     * Establishes a VPN connection based on blocked apps.
+     * If there are no blocked apps, the service will stop itself.
+     */
+    private void connectVpn() {
+        // Check if no blocked apps then STOP service
+        // Necessary if the service starts from Boot Receiver
+        if (mBlockedApps.isEmpty()) {
+            Log.w(TAG, "startServiceAndConnectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
+            stopAndDisposeService();
+            return;
+        }
+
+        final Thread newThread = new Thread(getVpnThread(), TAG);
+        setVpnThread(newThread);
+        newThread.start();
     }
 
     /**
