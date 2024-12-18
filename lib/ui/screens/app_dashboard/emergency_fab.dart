@@ -24,8 +24,9 @@ class EmergencyFAB extends ConsumerWidget {
   });
 
   void _useEmergency(BuildContext context, WidgetRef ref) async {
-    int leftPasses =
-        ref.read(mindfulSettingsProvider.select((v) => v.leftEmergencyPasses));
+    int leftPasses = ref
+        .read(mindfulSettingsProvider.notifier)
+        .getUpdatedEmergencyPassCount();
 
     if (leftPasses <= 0) {
       context.showSnackAlert(context.locale.emergency_no_pass_left_snack_alert);
