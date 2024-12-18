@@ -70,12 +70,13 @@ public class ScreenUsageHelper {
                     Long usageTime = usageMap.getOrDefault(packageName, 0L);
                     UsageEvents.Event lastResumedEvent = lastResumedEvents.get(eventKey);
 
+                    // Normal case: App was resumed within the interval
                     if (lastResumedEvent != null) {
-                        // Normal case: App was resumed within the interval
                         usageTime += (timestamp - lastResumedEvent.getTimeStamp());
                         lastResumedEvents.remove(eventKey);
-                    } else if (isFirstEvent) {
-                        // Edge case: App was opened before start but stopped after start
+                    }
+                    // Edge case: App was opened before start but stopped after start
+                    else if (isFirstEvent) {
                         usageTime += (timestamp - start);
                         isFirstEvent = false;
                     }

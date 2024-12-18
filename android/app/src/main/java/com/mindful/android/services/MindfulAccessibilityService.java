@@ -70,14 +70,16 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     /**
      * The minimum interval between saving short content's screen time in shared preferences
      */
-    private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 10 * 1000;
+    private static final long SHARED_PREF_INVOKE_INTERVAL_MS = 30 * 1000;
 
-    /**
-     * The interval which is used for approximating if user may have closed short content.
-     * <p>
-     * If the difference between last time shorts check and current time exceeds this then the short content is considered to be closed
-     */
-    private static final long SHORT_CONTENT_ACTIVITY_APPROX = 30 * 1000;
+    // Max allowed duration for each short content platform (based on the highest short length or duration)
+    // If the interval between two short content block event is <= DURATION then it is considered that user is watching short content
+    private static final long MAX_ALLOWED_DUR_INSTA = 90 * 1000;
+    private static final long MAX_ALLOWED_DUR_YT = 3 * 60 * 1000;
+    private static final long MAX_ALLOWED_DUR_SNAP = 60 * 1000;
+    private static final long MAX_ALLOWED_DUR_FB = 90 * 1000;
+    private static final long MAX_ALLOWED_DUR_REDDIT = 60 * 1000;
+    private static final long MAX_ALLOWED_DUR_BROWSER = 30 * 1000;
 
 
     /**
@@ -174,31 +176,36 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             // Copy settings for this thread
             WellBeingSettings settings = mWellBeingSettings.makeCopy();
 
-            boolean shouldBlock = false;
             switch (packageName) {
                 case INSTAGRAM_PACKAGE:
-                    shouldBlock = settings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node);
+                    if (settings.blockInstaReels && ShortsBlockingHelper.isInstaReelsOpen(node)) {
+                        checkTimerAndBlockShortContent(MAX_ALLOWED_DUR_INSTA);
+                    }
                     break;
                 case SNAPCHAT_PACKAGE:
-                    shouldBlock = settings.blockSnapSpotlight && ShortsBlockingHelper.isSnapchatSpotlightOpen(node);
+                    if (settings.blockSnapSpotlight && ShortsBlockingHelper.isSnapchatSpotlightOpen(node)) {
+                        checkTimerAndBlockShortContent(MAX_ALLOWED_DUR_SNAP);
+                    }
                     break;
                 case FACEBOOK_PACKAGE:
-                    shouldBlock = settings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node);
+                    if (settings.blockFbReels && ShortsBlockingHelper.isFacebookReelsOpen(node)) {
+                        checkTimerAndBlockShortContent(MAX_ALLOWED_DUR_FB);
+                    }
                     break;
                 case REDDIT_PACKAGE:
-                    shouldBlock = settings.blockRedditShorts && ShortsBlockingHelper.isRedditShortsOpen(node);
+                    if (settings.blockRedditShorts && ShortsBlockingHelper.isRedditShortsOpen(node)) {
+                        checkTimerAndBlockShortContent(MAX_ALLOWED_DUR_REDDIT);
+                    }
                     break;
                 default:
                     if (settings.blockYtShorts && packageName.contains(YOUTUBE_CLIENT_PACKAGE_PREFIX)) {
-                        shouldBlock = ShortsBlockingHelper.isYoutubeShortsOpen(node, packageName);
+                        if (ShortsBlockingHelper.isYoutubeShortsOpen(node, packageName)) {
+                            checkTimerAndBlockShortContent(MAX_ALLOWED_DUR_YT);
+                        }
                     } else {
                         blockDistractionOnBrowsers(node, packageName);
                     }
                     break;
-            }
-
-            if (shouldBlock) {
-                checkTimerAndBlockShortContent();
             }
         } catch (Exception ignored) {
         }
@@ -246,7 +253,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         // Block short form content
         if (ShortsBlockingHelper.isShortContentOpenOnBrowser(mWellBeingSettings, url)) {
             Log.d(TAG, "blockDistractionOnBrowsers: Blocked short content " + url + " opened in " + packageName);
-            checkTimerAndBlockShortContent();
+            checkTimerAndBlockShortContent(MAX_ALLOWED_DUR_BROWSER);
             return;
         }
 
@@ -351,7 +358,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     /**
      * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
      */
-    private void checkTimerAndBlockShortContent() {
+    private void checkTimerAndBlockShortContent(long maxAllowedDuration) {
         if (mWellBeingSettings.allowedShortContentTimeMs < 0 || mTotalShortsScreenTimeMs > (mWellBeingSettings.allowedShortContentTimeMs + SHARED_PREF_INVOKE_INTERVAL_MS)) {
             goBackWithToast();
             return;
@@ -361,8 +368,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         long currentTime = System.currentTimeMillis();
         long elapsedTime = mLastTimeShortsCheck != 0 ? currentTime - mLastTimeShortsCheck : 0;
 
-        // Update only if elapsedTime is less than SHORT_CONTENT_ACTIVITY_APPROX otherwise user may have closed short content,
-        mTotalShortsScreenTimeMs += (elapsedTime < SHORT_CONTENT_ACTIVITY_APPROX ? elapsedTime : 0);
+
+        // Update only if elapsedTime is less than MAX_ALLOWED_DURATION otherwise user may have closed short content,
+        mTotalShortsScreenTimeMs += (elapsedTime <= maxAllowedDuration ? elapsedTime : 0);
         mLastTimeShortsCheck = currentTime;
 
         // Check if the minimum interval has passed before calling shared preferences
