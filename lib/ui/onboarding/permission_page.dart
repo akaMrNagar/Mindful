@@ -9,21 +9,28 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/providers/device_info_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/permissions/alarm_permission_tile.dart';
+import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 import 'package:mindful/ui/permissions/display_overlay_permission_tile.dart';
 import 'package:mindful/ui/permissions/notification_permission_tile.dart';
 import 'package:mindful/ui/permissions/usage_access_permission_tile.dart';
 
-class PermissionsPage extends StatelessWidget {
+class PermissionsPage extends ConsumerWidget {
   const PermissionsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // 24 is min sdk
+    final sdkVersion =
+        ref.watch(deviceInfoProvider.select((v) => v.value?.sdkVersion)) ?? 24;
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -39,7 +46,11 @@ class PermissionsPage extends StatelessWidget {
 
           /// Permission tiles
           const NotificationPermissionTile(),
-          const AlarmPermissionTile(),
+          const BatteryPermissionTile(),
+
+          // Only SDK version Android(S [31]) and above have this permission
+          if (sdkVersion >= 31) const AlarmPermissionTile(),
+
           const UsageAccessPermissionTile(),
           const DisplayOverlayPermissionTile(),
 

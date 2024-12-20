@@ -69,8 +69,8 @@ public class Utils {
      * @return Map containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
      */
     @NonNull
-    public static Map<String, String> getDeviceInfoMap(@NonNull Context context) {
-        HashMap<String, String> infoMap = new HashMap<>();
+    public static Map<String, Object> getDeviceInfoMap(@NonNull Context context) {
+        HashMap<String, Object> infoMap = new HashMap<>();
         String appVersion = "Unknown";
 
         try {
@@ -89,7 +89,7 @@ public class Utils {
         infoMap.put("manufacturer", Build.MANUFACTURER);
         infoMap.put("model", Build.MODEL);
         infoMap.put("androidVersion", Build.VERSION.RELEASE);
-        infoMap.put("sdkVersion", String.valueOf(Build.VERSION.SDK_INT));
+        infoMap.put("sdkVersion", Build.VERSION.SDK_INT);
         infoMap.put("mindfulVersion", appVersion);
 
 

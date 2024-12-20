@@ -39,7 +39,7 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 
 class _OnboardingState extends ConsumerState<OnboardingScreen> {
   late PageController _controller;
-  final _animCurve = AppConstants.defaultCurve;
+  final _animCurve = Curves.easeInOut;
   final _animDuration = AppConstants.defaultAnimDuration;
   int _currentPage = 0;
   ProviderSubscription? _subscription;
@@ -128,13 +128,13 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          toolbarHeight: 0,
-          backgroundColor: Colors.transparent,
-        ),
+        // appBar: AppBar(
+        //   automaticallyImplyLeading: false,
+        //   elevation: 0,
+        //   scrolledUnderElevation: 0,
+        //   toolbarHeight: 0,
+        //   backgroundColor: Colors.transparent,
+        // ),
         body: Stack(
           children: [
             /// Onboarding Page
@@ -150,94 +150,99 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
             ),
 
             /// Overlay controls
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  /// Skip button
-                  TextButton(
-                    onPressed: () => _controller.animateToPage(
-                      pages.length - 1,
-                      duration: _animDuration,
-                      curve: _animCurve,
-                    ),
-                    child: Text(context.locale.onboarding_skip_btn_label),
-                  ).animate(target: isLastPage ? 0 : 1).scale(duration: 100.ms),
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    /// Skip button
+                    TextButton(
+                      onPressed: () => _controller.animateToPage(
+                        pages.length - 1,
+                        duration: _animDuration,
+                        curve: _animCurve,
+                      ),
+                      child: Text(context.locale.onboarding_skip_btn_label),
+                    )
+                        .animate(target: isLastPage ? 0 : 1)
+                        .scale(duration: 100.ms),
 
-                  /// Bottom controls
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 32),
-                    child: Row(
-                      children: [
-                        /// Page Dots
-                        SmoothPageIndicator(
-                          controller: _controller,
-                          count: pages.length,
-                          effect: ExpandingDotsEffect(
-                            dotWidth: 10,
-                            dotHeight: 10,
-                            spacing: 6,
-                            expansionFactor: 2.5,
-                            dotColor: Theme.of(context)
-                                .colorScheme
-                                .secondaryContainer,
-                            activeDotColor:
-                                Theme.of(context).colorScheme.primary,
+                    /// Bottom controls
+                    Container(
+                      color: Theme.of(context).colorScheme.surface,
+                      padding: const EdgeInsets.only(bottom: 32, top: 4),
+                      child: Row(
+                        children: [
+                          /// Page Dots
+                          SmoothPageIndicator(
+                            controller: _controller,
+                            count: pages.length,
+                            effect: ExpandingDotsEffect(
+                              dotWidth: 10,
+                              dotHeight: 10,
+                              spacing: 6,
+                              expansionFactor: 2.5,
+                              dotColor: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
+                              activeDotColor:
+                                  Theme.of(context).colorScheme.primary,
+                            ),
                           ),
-                        ),
-                        const Spacer(),
+                          const Spacer(),
 
-                        /// Go to previous page
-                        IconButton.filledTonal(
-                          onPressed: () => _controller.previousPage(
-                            curve: _animCurve,
-                            duration: _animDuration,
-                          ),
-                          padding: const EdgeInsets.all(10),
-                          icon: const Icon(FluentIcons.caret_left_20_filled),
-                        )
-                            .animate(
-                              target: _currentPage > 0 && !isLastPage ? 1 : 0,
-                            )
-                            .scale(duration: 150.ms),
-                        4.hBox,
-
-                        isLastPage
-
-                            /// Finish setup
-                            ? FilledButton(
-                                onPressed: haveAllEssentialPermissions
-                                    ? () => _finishOnboarding()
-                                    : null,
-                                child: Text(
-                                  context
-                                      .locale.onboarding_finish_setup_btn_label,
-                                ),
-                              ).animate(target: isLastPage ? 1 : 0).scale(
-                                  duration: 250.ms,
-                                  alignment: Alignment.centerRight,
-                                )
-
-                            /// Go to next page
-                            : IconButton.filled(
-                                padding: const EdgeInsets.all(10),
-                                onPressed: () => _controller.nextPage(
-                                  curve: _animCurve,
-                                  duration: _animDuration,
-                                ),
-                                icon: const Icon(
-                                    FluentIcons.caret_right_20_filled),
+                          /// Go to previous page
+                          IconButton.filledTonal(
+                            onPressed: () => _controller.previousPage(
+                              curve: _animCurve,
+                              duration: _animDuration,
+                            ),
+                            padding: const EdgeInsets.all(10),
+                            icon: const Icon(FluentIcons.caret_left_20_filled),
+                          )
+                              .animate(
+                                target: _currentPage > 0 && !isLastPage ? 1 : 0,
                               )
-                                .animate(target: isLastPage ? 0 : 1)
-                                .scale(duration: 150.ms),
+                              .scale(duration: 150.ms),
+                          4.hBox,
 
-                        /// Finish setup
-                      ],
+                          isLastPage
+
+                              /// Finish setup
+                              ? FilledButton(
+                                  onPressed: haveAllEssentialPermissions
+                                      ? () => _finishOnboarding()
+                                      : null,
+                                  child: Text(
+                                    context.locale
+                                        .onboarding_finish_setup_btn_label,
+                                  ),
+                                ).animate(target: isLastPage ? 1 : 0).scale(
+                                    duration: 250.ms,
+                                    alignment: Alignment.centerRight,
+                                  )
+
+                              /// Go to next page
+                              : IconButton.filled(
+                                  padding: const EdgeInsets.all(10),
+                                  onPressed: () => _controller.nextPage(
+                                    curve: _animCurve,
+                                    duration: _animDuration,
+                                  ),
+                                  icon: const Icon(
+                                      FluentIcons.caret_right_20_filled),
+                                )
+                                  .animate(target: isLastPage ? 0 : 1)
+                                  .scale(duration: 150.ms),
+
+                          /// Finish setup
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           ],

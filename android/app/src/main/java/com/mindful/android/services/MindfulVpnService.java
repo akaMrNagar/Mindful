@@ -50,7 +50,6 @@ public class MindfulVpnService extends android.net.VpnService {
     private final AtomicReference<Thread> mAtomicVpnThread = new AtomicReference<>();
     private Set<String> mBlockedApps = new HashSet<>(0);
     private ParcelFileDescriptor mVpnInterface = null;
-    private boolean mShouldRestartVpn = false;
     private boolean mIsServiceRunning = false;
 
     @Override
@@ -89,9 +88,9 @@ public class MindfulVpnService extends android.net.VpnService {
     }
 
     /**
-     * Restarts the VPN service by disconnecting and then reconnecting the VPN.
+     * Restarts the VPN connection by disconnecting and then reconnecting the VPN.
      */
-    private void restartVpnService() {
+    private void reconnectVpn() {
         disconnectVpn();
         connectVpn();
         Log.d(TAG, "restartVpnService: VPN restarted successfully");
@@ -212,17 +211,7 @@ public class MindfulVpnService extends android.net.VpnService {
         mBlockedApps = blockedApps;
         Log.d(TAG, "updateBlockedApps: Internet blocked apps updated successfully");
         if (mBlockedApps.isEmpty()) stopAndDisposeService();
-        else mShouldRestartVpn = true;
-    }
-
-    /**
-     * Restarts the VPN service if it should be restarted.
-     */
-    public void onApplicationStop() {
-        if (mShouldRestartVpn) {
-            restartVpnService();
-            mShouldRestartVpn = false;
-        }
+        else reconnectVpn();
     }
 
     @Override

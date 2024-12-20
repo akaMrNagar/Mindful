@@ -43,6 +43,7 @@
     "permission_battery_optimization_tile_title": "Ignore Battery Optimization",
     "permission_battery_optimization_status_enabled": "Already unrestricted",
     "permission_battery_optimization_status_disabled": "Disable background restriction",
+    "permission_battery_optimization_allow_info": "Allowing 'Ignore Battery Optimization' will automatically grant the 'Alarms & Reminders' permission on some devices.",
     "permission_vpn_title": "Create VPN",
     "permission_vpn_info": "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
     "permission_admin_title": "Admin",

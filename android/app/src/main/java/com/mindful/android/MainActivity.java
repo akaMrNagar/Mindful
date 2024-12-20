@@ -17,18 +17,12 @@ import static com.mindful.android.services.EmergencyPauseService.ACTION_START_SE
 import static com.mindful.android.services.FocusSessionService.ACTION_START_FOCUS_SERVICE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
-import android.annotation.SuppressLint;
-import android.app.AlarmManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.provider.Settings;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -66,6 +60,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
     private SafeServiceConnection<FocusSessionService> mFocusServiceConn;
+    private ActivityResultLauncher<Intent> mVpnPermissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +71,14 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
         // Schedule midnight 12 task if already not scheduled
         AlarmTasksSchedulingHelper.scheduleMidnightResetTask(this, true);
+
+        // register permission launcher for result
+        mVpnPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    // Ignored
+                }
+        );
 
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
@@ -246,19 +249,19 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 break;
             }
             case "getAndAskIgnoreBatteryOptimizationPermission": {
-                result.success(getAndAskIgnoreBatteryOptimizationPermission(Boolean.TRUE.equals(call.arguments())));
+                result.success(PermissionsHelper.getAndAskIgnoreBatteryOptimizationPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskDisplayOverlayPermission": {
+                result.success(PermissionsHelper.getAndAskDisplayOverlayPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskExactAlarmPermission": {
+                result.success(PermissionsHelper.getAndAskExactAlarmPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskVpnPermission": {
                 result.success(getAndAskVpnPermission(Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskDisplayOverlayPermission": {
-                result.success(getAndAskDisplayOverlayPermission(Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskExactAlarmPermission": {
-                result.success(getAndAskExactAlarmPermission(Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "disableDeviceAdmin": {
@@ -340,75 +343,10 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
      */
     private boolean getAndAskVpnPermission(boolean askPermissionToo) {
         Intent intent = MindfulVpnService.prepare(this);
-        if (askPermissionToo && intent != null) {
-            startActivityForResult(intent, 0);
+        if (askPermissionToo && intent != null && mVpnPermissionLauncher != null) {
+            mVpnPermissionLauncher.launch(intent);
         }
         return intent == null;
-    }
-
-    /**
-     * Checks if the Display Over Other Apps permission is granted and optionally asks for it if not granted.
-     *
-     * @param askPermissionToo Whether to prompt the user to enable Display Over Other Apps permission if not granted.
-     * @return True if Display Over Other Apps permission is granted, false otherwise.
-     */
-    private boolean getAndAskDisplayOverlayPermission(boolean askPermissionToo) {
-        if (Settings.canDrawOverlays(this)) return true;
-
-        if (askPermissionToo) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-            intent.setData(android.net.Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, 0);
-            Toast.makeText(this, "Please allow Mindful to display overlay", Toast.LENGTH_LONG).show();
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the Set Exact Alarm permission is granted and optionally asks for it if not granted.
-     *
-     * @param askPermissionToo Whether to prompt the user to enable Set Exact Alarm permission if not granted.
-     * @return True if Set Exact Alarm permission is granted, false otherwise.
-     */
-    public boolean getAndAskExactAlarmPermission(boolean askPermissionToo) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if (alarmManager.canScheduleExactAlarms()) return true;
-
-        if (askPermissionToo) {
-            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-            intent.setData(android.net.Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, 0);
-        }
-        return false;
-    }
-
-    /**
-     * Checks if the Ignore Battery Optimization permission is granted and optionally asks for it if not granted.
-     *
-     * @param askPermissionToo Whether to prompt the user to enable Ignore Battery Optimization permission if not granted.
-     * @return True if Ignore Battery Optimization permission is granted, false otherwise.
-     */
-    public boolean getAndAskIgnoreBatteryOptimizationPermission(boolean askPermissionToo) {
-        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        if (powerManager.isIgnoringBatteryOptimizations(getPackageName())) return true;
-
-        if (askPermissionToo) {
-            @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, 0);
-        }
-        return false;
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        // Notify VPN service that it can restart if needed
-        if (mVpnServiceConn.isConnected()) {
-            mVpnServiceConn.getService().onApplicationStop();
-        }
     }
 
     @Override

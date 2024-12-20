@@ -132,7 +132,7 @@ class _TabAdvanceState extends ConsumerState<TabAdvance> {
         /// Battery permission
         StyledText(context.locale.service_stopping_warning).sliver,
         6.vSliverBox,
-        const BatteryPermissionTile(),
+        const SliverBatteryPermissionSwitchTile(),
         DefaultListTile(
           position: ItemPosition.end,
           leadingIcon: FluentIcons.leaf_three_20_regular,

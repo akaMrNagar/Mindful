@@ -71,7 +71,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
   void _onTabButtonPressed(int tabIndex) {
     _controller.animateTo(
       tabIndex,
-      curve: AppConstants.defaultCurve,
+      curve: Curves.easeInOut,
     );
     widget.onTabChanged?.call(tabIndex);
     setState(() {});
@@ -190,7 +190,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
     return Navigator.of(context).canPop()
         ? IconButton(
             icon: Semantics(
-              hint: "Double tab to go back",
+              hint: "Press to go back",
               child: const Icon(FluentIcons.chevron_left_20_filled),
             ),
             onPressed: () => Navigator.maybePop(context),

@@ -39,25 +39,43 @@ class DriftDbService {
 
   /// Creates two separate executors for read and write operations
   Future<AppDatabase> _createIsolatedDb() async {
-    final db = LazyDatabase(() async {
-      final dbFile = File(await getSqliteDbPath());
+    final db = LazyDatabase(
+      () async {
+        final dbFile = File(await getSqliteDbPath());
 
-      /// Set cache directory
-      final cacheBase = (await getTemporaryDirectory()).path;
-      sqlite3.tempDirectory = cacheBase;
+        /// Set cache directory
+        final cacheBase = (await getTemporaryDirectory()).path;
+        sqlite3.tempDirectory = cacheBase;
 
-      QueryExecutor foregroundExecutor = NativeDatabase(
-        dbFile,
-        logStatements: kDebugMode,
-      );
+        QueryExecutor foregroundReadExecutor = NativeDatabase(
+          dbFile,
+          logStatements: kDebugMode,
+          setup: _setup,
+        );
 
-      QueryExecutor backgroundExecutor = NativeDatabase.createInBackground(
-        dbFile,
-        logStatements: kDebugMode,
-      );
-      return MultiExecutor(read: foregroundExecutor, write: backgroundExecutor);
-    });
+        QueryExecutor backgroundWriteExecutor =
+            NativeDatabase.createInBackground(
+          dbFile,
+          logStatements: kDebugMode,
+          setup: _setup,
+        );
+        return MultiExecutor(
+          read: foregroundReadExecutor,
+          write: backgroundWriteExecutor,
+        );
+      },
+    );
 
     return AppDatabase(db);
+  }
+
+  /// Setup before opening db
+  static void _setup(Database db) {
+    /// Retry until 3 seconds then throw db lock error
+    db.execute('PRAGMA busy_timeout = 3000;');
+
+    /// Enable WAL mode to allow multiple reader/writers (1000 pages = 4MB)
+    // db.execute('PRAGMA journal_mode = WAL;');
+    // db.execute('PRAGMA wal_autocheckpoint = 1000;');
   }
 }
