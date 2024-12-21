@@ -13,6 +13,7 @@
 package com.mindful.android.utils;
 
 import android.app.ActivityManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -27,6 +28,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.mindful.android.MainActivity;
 
 import org.jetbrains.annotations.Contract;
 
@@ -44,6 +47,12 @@ import java.util.Map;
  */
 public class Utils {
     private static final String TAG = "Mindful.Utils";
+
+    public static PendingIntent getPendingIntentForMindful(@NonNull Context context) {
+        Intent appIntent = new Intent(context.getApplicationContext(), MainActivity.class);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(context.getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+    }
 
     /**
      * Checks if a service with the given class name is currently running.

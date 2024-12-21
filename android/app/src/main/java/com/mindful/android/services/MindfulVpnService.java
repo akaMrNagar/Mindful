@@ -121,9 +121,9 @@ public class MindfulVpnService extends android.net.VpnService {
         try {
             if (mVpnInterface != null) {
                 mVpnInterface.close();
+                setVpnThread(null);
+                Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
             }
-            setVpnThread(null);
-            Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
         } catch (IOException e) {
             Log.e(TAG, "disconnectVpn: Unable to close VPN connection", e);
         }

@@ -34,7 +34,6 @@ import com.mindful.android.helpers.NotificationHelper;
 import com.mindful.android.utils.Utils;
 
 public class EmergencyPauseService extends Service {
-    public static final int DEFAULT_EMERGENCY_PASSES_COUNT = 3;
     private static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
     private static final String TAG = "Mindful.EmergencyPauseService";
     public static final String ACTION_START_SERVICE_EMERGENCY = "com.mindful.android.EmergencyPauseService.START_SERVICE_EMERGENCY";
@@ -44,7 +43,6 @@ public class EmergencyPauseService extends Service {
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
-    private PendingIntent appPendingIntent;
 
 
     @Override
@@ -52,15 +50,11 @@ public class EmergencyPauseService extends Service {
         super.onCreate();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
-
-        Intent appIntent = new Intent(this.getApplicationContext(), MainActivity.class);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        appPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         mProgressNotificationBuilder = new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-                .setContentIntent(appPendingIntent)
+                .setContentIntent(Utils.getPendingIntentForMindful(this))
                 .setContentTitle(getString(R.string.emergency_pause_notification_title));
     }
 
@@ -132,8 +126,9 @@ public class EmergencyPauseService extends Service {
         mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
+                        .setAutoCancel(true)
                         .setOngoing(false)
-                        .setContentIntent(appPendingIntent)
+                        .setContentIntent(Utils.getPendingIntentForMindful(this))
                         .setContentTitle(getString(R.string.emergency_pause_notification_title))
                         .setContentText(msg)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))

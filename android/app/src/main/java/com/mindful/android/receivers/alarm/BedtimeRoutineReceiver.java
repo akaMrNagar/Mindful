@@ -105,6 +105,7 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
                         .setOnlyAlertOnce(true)
+                        .setContentIntent(Utils.getPendingIntentForMindful(mContext))
                         .setContentTitle(mContext.getString(R.string.app_name))
                         .setContentText(alert)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(alert))

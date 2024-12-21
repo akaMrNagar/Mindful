@@ -30,6 +30,7 @@ import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
+import com.mindful.android.utils.Utils;
 
 import java.util.Arrays;
 
@@ -150,15 +151,11 @@ public class NotificationHelper {
      */
     @NonNull
     public static Notification buildFgServiceNotification(@NonNull Context context, String content) {
-        Intent appIntent = new Intent(context.getApplicationContext(), MainActivity.class);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent appPendingIntent = PendingIntent.getActivity(context.getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-
         return new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setAutoCancel(true)
                 .setContentTitle(context.getString(R.string.service_running_notification_title))
-                .setContentIntent(appPendingIntent)
+                .setContentIntent(Utils.getPendingIntentForMindful(context))
                 .setContentText(content)
                 .build();
     }

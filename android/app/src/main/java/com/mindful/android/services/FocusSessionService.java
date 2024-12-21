@@ -49,7 +49,6 @@ public class FocusSessionService extends Service {
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private FocusSession mFocusSession = null;
-    private PendingIntent appPendingIntent;
     private int mElapsedSeconds = 0;
 
     @Override
@@ -58,14 +57,11 @@ public class FocusSessionService extends Service {
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
 
-        Intent appIntent = new Intent(getApplicationContext(), MainActivity.class);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        appPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         mProgressNotificationBuilder = new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-                .setContentIntent(appPendingIntent)
+                .setContentIntent(Utils.getPendingIntentForMindful(this))
                 .setContentTitle(getString(R.string.focus_session_notification_title));
     }
 
@@ -204,7 +200,8 @@ public class FocusSessionService extends Service {
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
                         .setOngoing(false)
-                        .setContentIntent(appPendingIntent)
+                        .setAutoCancel(true)
+                        .setContentIntent(Utils.getPendingIntentForMindful(this))
                         .setContentTitle(getString(R.string.focus_session_notification_title))
                         .setContentText(msg)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
