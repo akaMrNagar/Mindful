@@ -12,6 +12,7 @@
 
 package com.mindful.android.services;
 
+import static com.mindful.android.generics.SafeServiceConnection.ACTION_BIND_TO_MINDFUL;
 import static com.mindful.android.helpers.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID;
 import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_MAX_PROGRESS;
@@ -550,7 +551,8 @@ public class MindfulTrackerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        String action = Utils.getActionFromIntent(intent);
+        return action.equals(ACTION_BIND_TO_MINDFUL) ? mBinder : null;
     }
 
     @Override

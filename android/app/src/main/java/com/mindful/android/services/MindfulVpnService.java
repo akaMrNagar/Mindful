@@ -13,6 +13,8 @@
 package com.mindful.android.services;
 
 
+import static com.mindful.android.generics.SafeServiceConnection.ACTION_BIND_TO_MINDFUL;
+
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
@@ -223,6 +225,7 @@ public class MindfulVpnService extends android.net.VpnService {
 
     @Override
     public IBinder onBind(Intent intent) {
-        return mBinder;
+        String action = Utils.getActionFromIntent(intent);
+        return action.equals(ACTION_BIND_TO_MINDFUL) ? mBinder : null;
     }
 }

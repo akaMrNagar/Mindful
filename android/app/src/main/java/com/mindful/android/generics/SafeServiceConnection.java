@@ -17,6 +17,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -31,6 +32,9 @@ import com.mindful.android.utils.Utils;
  * @param <T> The type of Service this class is designed to connect to.
  */
 public class SafeServiceConnection<T extends Service> implements ServiceConnection {
+
+    public static final String ACTION_BIND_TO_MINDFUL = "Mindful.Intent.Action.bindToMindful";
+
 
     private final Class<T> mServiceClass;
     private final Context mContext;
@@ -50,15 +54,19 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
         mContext = context.getApplicationContext();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        mService = ((ServiceBinder<T>) service).getService();
+    public void onServiceConnected(ComponentName name, IBinder binder) {
+        try {
+            mService = ((ServiceBinder<T>) binder).getService();
 
-        if (mService != null) {
-            mIsBound = true;
-            if (mConnectionSuccessCallback != null) {
-                mConnectionSuccessCallback.onSuccess(mService);
+            if (mService != null) {
+                mIsBound = true;
+                if (mConnectionSuccessCallback != null) {
+                    mConnectionSuccessCallback.onSuccess(mService);
+                }
             }
+        } catch (Exception ignored) {
         }
     }
 
@@ -91,7 +99,9 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
     public void bindService() {
         if (!mIsBound && Utils.isServiceRunning(mContext, mServiceClass.getName())) {
             try {
-                mContext.bindService(new Intent(mContext, mServiceClass), this, Context.BIND_WAIVE_PRIORITY);
+                Intent bindIntent = new Intent(mContext, mServiceClass);
+                bindIntent.setAction(ACTION_BIND_TO_MINDFUL);
+                mContext.bindService(bindIntent, this, Context.BIND_WAIVE_PRIORITY);
             } catch (Exception e) {
                 Log.e("Mindful.SafeServiceConnection", "bindService: Failed to bind " + mServiceClass.getName(), e);
 

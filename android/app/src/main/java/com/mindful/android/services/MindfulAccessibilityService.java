@@ -160,6 +160,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
         // Offload the main processing to a background thread
         try {
+            if (mExecutorService.isShutdown()) return;
             mExecutorService.submit(() -> processEventInBackground(packageName, node));
         } catch (Exception ignored) {
         }
