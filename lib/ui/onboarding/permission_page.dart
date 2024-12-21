@@ -48,7 +48,7 @@ class PermissionsPage extends ConsumerWidget {
           const NotificationPermissionTile(),
           const BatteryPermissionTile(),
 
-          // Only SDK version Android(S [31]) and above have this permission
+          // Only SDK version Android(S [31]) and above need this permission
           if (sdkVersion >= 31) const AlarmPermissionTile(),
 
           const UsageAccessPermissionTile(),

@@ -23,7 +23,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
 
         <!-- icon -->
         <ImageView
@@ -66,8 +67,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:indeterminate="false"
+        android:minHeight="24dp"
         android:max="100"
-        android:minHeight="32dp"
         android:progress="20"
         android:progressDrawable="@drawable/progress_bar"
         android:visibility="gone" />
