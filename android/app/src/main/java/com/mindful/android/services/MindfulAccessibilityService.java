@@ -492,7 +492,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
             if (Intent.ACTION_PACKAGE_ADDED.equals(action) || Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
                 Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action + " for package: " + getPackageName(intent));
-                refreshServiceInfo();
+                mExecutorService.submit(MindfulAccessibilityService.this::refreshServiceInfo);
             }
         }
 

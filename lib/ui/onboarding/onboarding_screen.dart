@@ -38,11 +38,29 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingState extends ConsumerState<OnboardingScreen> {
-  late PageController _controller;
-  final _animCurve = Curves.easeInOut;
-  final _animDuration = AppConstants.defaultAnimDuration;
   int _currentPage = 0;
   ProviderSubscription? _subscription;
+  final PageController _controller = PageController();
+  final _animCurve = Curves.easeInOut;
+  final _animDuration = AppConstants.defaultAnimDuration;
+  late final List<Widget> _pages = [
+    OnboardingPage(
+      title: context.locale.onboarding_page_one_title,
+      imgArtPath: "assets/illustrations/onboarding_1.png",
+      description: context.locale.onboarding_page_one_info,
+    ),
+    OnboardingPage(
+      title: context.locale.onboarding_page_two_title,
+      imgArtPath: "assets/illustrations/onboarding_2.png",
+      description: context.locale.onboarding_page_two_info,
+    ),
+    OnboardingPage(
+      title: context.locale.onboarding_page_three_title,
+      imgArtPath: "assets/illustrations/onboarding_3.png",
+      description: context.locale.onboarding_page_three_info,
+    ),
+    const PermissionsPage(),
+  ];
 
   @override
   void initState() {
@@ -66,9 +84,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
     /// Go to permissions page if already done onboarding
     /// but user removed some essential permissions
-    _controller = PageController(
-      initialPage: widget.isOnboardingDone ? _onboardingPages().length - 1 : 0,
-    );
+    Future.delayed(250.ms, _skipToLastPage);
   }
 
   @override
@@ -96,29 +112,19 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     }
   }
 
-  List<Widget> _onboardingPages() => [
-        OnboardingPage(
-          title: context.locale.onboarding_page_one_title,
-          imgArtPath: "assets/illustrations/onboarding_1.png",
-          description: context.locale.onboarding_page_one_info,
-        ),
-        OnboardingPage(
-          title: context.locale.onboarding_page_two_title,
-          imgArtPath: "assets/illustrations/onboarding_2.png",
-          description: context.locale.onboarding_page_two_info,
-        ),
-        OnboardingPage(
-          title: context.locale.onboarding_page_three_title,
-          imgArtPath: "assets/illustrations/onboarding_3.png",
-          description: context.locale.onboarding_page_three_info,
-        ),
-        const PermissionsPage(),
-      ];
+  void _skipToLastPage() {
+    if (mounted) {
+      _controller.animateToPage(
+        _pages.length - 1,
+        duration: _animDuration,
+        curve: _animCurve,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final pages = _onboardingPages();
-    final isLastPage = _currentPage == pages.length - 1;
+    final isLastPage = _currentPage == _pages.length - 1;
     final perms = ref.watch(permissionProvider);
     final haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
         perms.haveDisplayOverlayPermission &&
@@ -141,11 +147,11 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
             PageView.builder(
               controller: _controller,
               physics: const BouncingScrollPhysics(),
-              itemCount: pages.length,
+              itemCount: _pages.length,
               onPageChanged: (i) => setState(() => _currentPage = i),
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: pages[index],
+                child: _pages[index],
               ),
             ),
 
@@ -159,11 +165,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                   children: [
                     /// Skip button
                     TextButton(
-                      onPressed: () => _controller.animateToPage(
-                        pages.length - 1,
-                        duration: _animDuration,
-                        curve: _animCurve,
-                      ),
+                      onPressed: _skipToLastPage,
                       child: Text(context.locale.onboarding_skip_btn_label),
                     )
                         .animate(target: isLastPage ? 0 : 1)
@@ -178,7 +180,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
                           /// Page Dots
                           SmoothPageIndicator(
                             controller: _controller,
-                            count: pages.length,
+                            count: _pages.length,
                             effect: ExpandingDotsEffect(
                               dotWidth: 10,
                               dotHeight: 10,

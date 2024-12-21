@@ -72,32 +72,35 @@ public class EmergencyPauseService extends Service {
     }
 
     private void startEmergencyTimer() {
-        mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
-        mTrackerServiceConn.bindService();
-
         try {
+            mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
+            mTrackerServiceConn.bindService();
             startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
-        } catch (Exception ignored) {
-        }
 
-        mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000)));
-            }
-
-            @Override
-            public void onFinish() {
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().pauseResumeTracking(false);
+            mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000)));
                 }
-                Log.d(TAG, "startEmergencyTimer: Emergency pause is over. App blocker is resumed successfully");
-                stopSelf();
-                showSuccessNotification();
-            }
-        }.start();
 
-        Log.d(TAG, "startEmergencyTimer: Emergency pause service started successfully");
+                @Override
+                public void onFinish() {
+                    if (mTrackerServiceConn.isConnected()) {
+                        mTrackerServiceConn.getService().pauseResumeTracking(false);
+                    }
+                    Log.d(TAG, "startEmergencyTimer: Emergency pause is over. App blocker is resumed successfully");
+                    stopSelf();
+                    showSuccessNotification();
+                }
+            };
+
+            mCountDownTimer.start();
+
+            Log.d(TAG, "startEmergencyTimer: Emergency pause service started successfully");
+        } catch (Exception e) {
+            Log.d(TAG, "startEmergencyTimer: Failed to start emergency pause service: ", e);
+            stopSelf();
+        }
     }
 
     /**

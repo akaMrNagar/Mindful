@@ -80,7 +80,9 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         }
 
         Log.d(TAG, "onDeviceUnlocked: Repeated task scheduled for tracking new app launches.");
-        broadcastLastAppLaunchEvent();
+
+        /// Broadcast event from background thread
+        new Thread(this::broadcastLastAppLaunchEvent).start();
     }
 
     /**
