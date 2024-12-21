@@ -23,49 +23,45 @@ import 'package:mindful/ui/transitions/hero_page_route.dart';
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///
 /// Returns time in seconds and take initial time in seconds
-Future<int> showAppTimerPicker({
+Future<int?> showAppTimerPicker({
   required AndroidApp app,
   required BuildContext context,
   required Object heroTag,
   required int initialTime,
-}) async {
-  return await Navigator.of(context).push<int>(
-        HeroPageRoute(
-          builder: (context) => _DurationPickerDialog(
-            heroTag: heroTag,
-            icon: ApplicationIcon(app: app),
-            title: app.name,
-            info: context.locale.app_timer_picker_dialog_info,
-            positiveButtonLabel: context.locale.dialog_button_set,
-            initialTimeInSec: initialTime,
-          ),
+}) async =>
+    await Navigator.of(context).push<int>(
+      HeroPageRoute(
+        builder: (context) => _DurationPickerDialog(
+          heroTag: heroTag,
+          icon: ApplicationIcon(app: app),
+          title: app.name,
+          info: context.locale.app_timer_picker_dialog_info,
+          positiveButtonLabel: context.locale.dialog_button_set,
+          initialTimeInSec: initialTime,
         ),
-      ) ??
-      initialTime;
-}
+      ),
+    );
 
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///
 /// Returns time in seconds and take initial time in seconds
-Future<int> showShortsTimerPicker({
+Future<int?> showShortsTimerPicker({
   required BuildContext context,
   required Object heroTag,
   required int initialTime,
-}) async {
-  return await Navigator.of(context).push<int>(
-        HeroPageRoute(
-          builder: (context) => _DurationPickerDialog(
-            title: context.locale.short_content_heading,
-            info: context.locale.short_content_timer_picker_dialog_info,
-            icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
-            heroTag: heroTag,
-            initialTimeInSec: initialTime,
-            positiveButtonLabel: context.locale.dialog_button_set,
-          ),
+}) async =>
+    await Navigator.of(context).push<int>(
+      HeroPageRoute(
+        builder: (context) => _DurationPickerDialog(
+          title: context.locale.short_content_heading,
+          info: context.locale.short_content_timer_picker_dialog_info,
+          icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
+          heroTag: heroTag,
+          initialTimeInSec: initialTime,
+          positiveButtonLabel: context.locale.dialog_button_set,
         ),
-      ) ??
-      initialTime;
-}
+      ),
+    );
 
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///

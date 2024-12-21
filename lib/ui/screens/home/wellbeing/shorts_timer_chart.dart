@@ -36,14 +36,14 @@ class ShortsTimerChart extends ConsumerWidget {
   final int remainingTimeSec;
 
   void _editAllowedTime(BuildContext context, WidgetRef ref) async {
-    final newTime = await showShortsTimerPicker(
+    final newTimer = await showShortsTimerPicker(
       context: context,
       heroTag: HeroTags.shortContentTimerPickerTag,
       initialTime: allowedTimeSec,
     );
 
-    if (newTime == allowedTimeSec) return;
-    ref.read(wellBeingProvider.notifier).setAllowedShortContentTime(newTime);
+    if (newTimer == null || newTimer == allowedTimeSec) return;
+    ref.read(wellBeingProvider.notifier).setAllowedShortContentTime(newTimer);
   }
 
   @override

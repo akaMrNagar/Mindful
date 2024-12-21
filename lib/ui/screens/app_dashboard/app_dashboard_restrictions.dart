@@ -52,7 +52,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
     required WidgetRef ref,
     required int launchCount,
     required int launchLimit,
-  }) {
+  }) async {
     final isAppLimitRestricted = ref.read(invincibleModeProvider
         .select((v) => v.isInvincibleModeOn && v.includeAppsLaunchLimit));
 
@@ -62,16 +62,16 @@ class AppDashboardRestrictions extends ConsumerWidget {
       return;
     }
 
-    showAppLaunchLimitDialog(
+    final newLimit = await showAppLaunchLimitDialog(
       context: context,
       heroTag: HeroTags.appLaunchLimitTileTag(app.packageName),
       initialCount: launchLimit,
-    ).then(
-      (v) => ref.read(appsRestrictionsProvider.notifier).updateAppLaunchLimit(
-            app.packageName,
-            v ?? launchLimit,
-          ),
     );
+
+    ref.read(appsRestrictionsProvider.notifier).updateAppLaunchLimit(
+          app.packageName,
+          newLimit ?? launchLimit,
+        );
   }
 
   @override
