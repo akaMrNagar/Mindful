@@ -80,6 +80,7 @@ Future<int?> showFocusTimerPicker({
         initialTimeInSec: initialTime,
         info: context.locale.focus_session_duration_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
+        actionButtonLabel: context.locale.dialog_button_infinite,
       ),
     ),
   );
@@ -125,7 +126,7 @@ Future<int?> showAppAlertIntervalPicker({
         initialTimeInSec: initialTime,
         info: context.locale.app_alert_interval_picker_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
-        showResetButton: false,
+        showActionButton: false,
         minuteInterval: 5,
       ),
     ),
@@ -140,8 +141,9 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.heroTag,
     required this.info,
     required this.positiveButtonLabel,
-    this.showResetButton = true,
+    this.showActionButton = true,
     this.minuteInterval = 1,
+    this.actionButtonLabel,
   });
 
   final Widget icon;
@@ -149,7 +151,8 @@ class _DurationPickerDialog extends StatefulWidget {
   final Object heroTag;
   final int initialTimeInSec;
   final String positiveButtonLabel;
-  final bool showResetButton;
+  final bool showActionButton;
+  final String? actionButtonLabel;
   final int minuteInterval;
   final String info;
 
@@ -196,11 +199,14 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                         ),
                       ),
                       18.vBox,
-                      if (widget.showResetButton)
+                      if (widget.showActionButton)
                         FittedBox(
                           child: FilledButton.icon(
                             icon: const Icon(FluentIcons.arrow_reset_20_filled),
-                            label: Text(context.locale.dialog_button_reset),
+                            label: Text(
+                              widget.actionButtonLabel ??
+                                  context.locale.dialog_button_reset,
+                            ),
                             onPressed: () => Navigator.maybePop(
                               context,
                               0,

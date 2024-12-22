@@ -12,6 +12,7 @@
 
 package com.mindful.android.services;
 
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
 import static com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID;
 
 import android.app.Notification;
@@ -31,13 +32,12 @@ import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
+import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.Utils;
 
 public class EmergencyPauseService extends Service {
     private static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
     private static final String TAG = "Mindful.EmergencyPauseService";
-    public static final String ACTION_START_SERVICE_EMERGENCY = "com.mindful.android.EmergencyPauseService.START_SERVICE_EMERGENCY";
-
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
@@ -62,7 +62,7 @@ public class EmergencyPauseService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = Utils.getActionFromIntent(intent);
 
-        if (ACTION_START_SERVICE_EMERGENCY.equals(action)) {
+        if (ACTION_START_MINDFUL_SERVICE.equals(action)) {
             startEmergencyTimer();
             return START_STICKY;
         }
@@ -73,9 +73,9 @@ public class EmergencyPauseService extends Service {
 
     private void startEmergencyTimer() {
         try {
+            startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
             mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
             mTrackerServiceConn.bindService();
-            startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
 
             mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
                 @Override
@@ -95,10 +95,10 @@ public class EmergencyPauseService extends Service {
             };
 
             mCountDownTimer.start();
-
-            Log.d(TAG, "startEmergencyTimer: Emergency pause service started successfully");
+            Log.d(TAG, "startEmergencyTimer: EMERGENCY service started successfully");
         } catch (Exception e) {
-            Log.d(TAG, "startEmergencyTimer: Failed to start emergency pause service: ", e);
+            Log.d(TAG, "startEmergencyTimer: Failed to start EMERGENCY service: ", e);
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e);
             stopSelf();
         }
     }
@@ -150,7 +150,7 @@ public class EmergencyPauseService extends Service {
             mCountDownTimer.cancel();
         }
         stopForeground(STOP_FOREGROUND_REMOVE);
-        Log.d(TAG, "onDestroy: Emergency pause service destroyed");
+        Log.d(TAG, "onDestroy: EMERGENCY service destroyed successfully");
     }
 
     @Override

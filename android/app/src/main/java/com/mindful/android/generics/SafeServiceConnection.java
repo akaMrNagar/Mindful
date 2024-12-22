@@ -12,12 +12,14 @@
 
 package com.mindful.android.generics;
 
+import static com.mindful.android.generics.ServiceBinder.ACTION_BIND_TO_MINDFUL;
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
+
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -32,10 +34,6 @@ import com.mindful.android.utils.Utils;
  * @param <T> The type of Service this class is designed to connect to.
  */
 public class SafeServiceConnection<T extends Service> implements ServiceConnection {
-
-    public static final String ACTION_BIND_TO_MINDFUL = "Mindful.Intent.Action.bindToMindful";
-
-
     private final Class<T> mServiceClass;
     private final Context mContext;
     private T mService = null;
@@ -130,9 +128,9 @@ public class SafeServiceConnection<T extends Service> implements ServiceConnecti
     /**
      * Starts and binds the service if it is not already running.
      */
-    public void startAndBind(String action) {
+    public void startAndBind() {
         if (!Utils.isServiceRunning(mContext, mServiceClass.getName())) {
-            mContext.startService(new Intent(mContext, mServiceClass).setAction(action));
+            mContext.startService(new Intent(mContext, mServiceClass).setAction(ACTION_START_MINDFUL_SERVICE));
         }
         bindService();
     }

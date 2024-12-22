@@ -12,9 +12,8 @@
 
 package com.mindful.android;
 
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
 import static com.mindful.android.helpers.NewActivitiesLaunchHelper.INTENT_EXTRA_IS_SELF_RESTART;
-import static com.mindful.android.services.EmergencyPauseService.ACTION_START_SERVICE_EMERGENCY;
-import static com.mindful.android.services.FocusSessionService.ACTION_START_FOCUS_SERVICE;
 import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.content.Intent;
@@ -65,6 +64,9 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Store uncaught exceptions
+        Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> SharedPrefsHelper.insertCrashLogToPrefs(this, exception));
 
         // Register notification channels
         NotificationHelper.registerNotificationChannels(this);
@@ -155,7 +157,15 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 result.success(true);
                 break;
             }
-
+            case "getNativeCrashLogs": {
+                result.success(SharedPrefsHelper.getCrashLogsArrayString(this));
+                break;
+            }
+            case "clearNativeCrashLogs": {
+                SharedPrefsHelper.clearCrashLogs(this);
+                result.success(true);
+                break;
+            }
             // SECTION: Foreground service and Worker methods ---------------------------------------------------------------------------
             case "updateAppRestrictions": {
                 HashMap<String, AppRestrictions> appRestrictions = SharedPrefsHelper.getSetAppRestrictions(this, Utils.notNullStr(call.arguments()));
@@ -175,7 +185,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                     mVpnServiceConn.getService().updateBlockedApps(blockedApps);
                 } else if (!blockedApps.isEmpty() && getAndAskVpnPermission(false)) {
                     mVpnServiceConn.setOnConnectedCallback(service -> service.updateBlockedApps(blockedApps));
-                    mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
+                    mVpnServiceConn.startAndBind();
                 }
                 result.success(true);
                 break;
@@ -192,6 +202,9 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                     AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks(this, bedtimeSettings);
                 } else {
                     AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks(this);
+                    if (bedtimeSettings.shouldStartDnd) {
+                        NotificationHelper.toggleDnd(this, false);
+                    }
                 }
                 result.success(true);
                 break;
@@ -200,7 +213,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 if (!Utils.isServiceRunning(this, EmergencyPauseService.class.getName())
                         && Utils.isServiceRunning(this, MindfulTrackerService.class.getName())
                 ) {
-                    startService(new Intent(getApplicationContext(), EmergencyPauseService.class).setAction(ACTION_START_SERVICE_EMERGENCY));
+                    startService(new Intent(getApplicationContext(), EmergencyPauseService.class).setAction(ACTION_START_MINDFUL_SERVICE));
                     result.success(true);
                 } else {
                     result.success(false);
@@ -213,7 +226,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                     mFocusServiceConn.getService().updateFocusSession(focusSession);
                 } else {
                     mFocusServiceConn.setOnConnectedCallback(service -> service.startFocusSession(focusSession));
-                    mFocusServiceConn.startAndBind(ACTION_START_FOCUS_SERVICE);
+                    mFocusServiceConn.startAndBind();
                 }
                 result.success(true);
                 break;
@@ -272,12 +285,12 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
             // SECTION: New Activity Launch methods ------------------------------------------------------
             case "openAppWithPackage": {
-                NewActivitiesLaunchHelper.openAppWithPackage(this, call.arguments());
+                NewActivitiesLaunchHelper.openAppWithPackage(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }
             case "openAppSettingsForPackage": {
-                NewActivitiesLaunchHelper.openSettingsForPackage(this, call.arguments());
+                NewActivitiesLaunchHelper.openSettingsForPackage(this, Utils.notNullStr(call.arguments()));
                 result.success(true);
                 break;
             }
@@ -331,7 +344,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 || (restrictionGroups != null && !restrictionGroups.isEmpty())
         ) {
             mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
-            mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
+            mTrackerServiceConn.startAndBind();
         }
     }
 

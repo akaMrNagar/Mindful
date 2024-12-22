@@ -73,6 +73,28 @@ public class Utils {
     }
 
     /**
+     * Get the current app version.
+     *
+     * @param context The context from which the method is called
+     * @return The app version as a string
+     */
+    @NonNull
+    public static String getAppVersion(@NonNull Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            String packageName = context.getPackageName();
+            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
+
+            return packageName.contains(".debug")
+                    ? "v" + packageInfo.versionName + "-debug+" + packageInfo.versionCode
+                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
+
+        } catch (Exception e) {
+            return "unknown";
+        }
+    }
+
+    /**
      * Resolve the device information and  returns it
      *
      * @return Map containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
@@ -80,28 +102,11 @@ public class Utils {
     @NonNull
     public static Map<String, Object> getDeviceInfoMap(@NonNull Context context) {
         HashMap<String, Object> infoMap = new HashMap<>();
-        String appVersion = "Unknown";
-
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            String packageName = context.getPackageName();
-            PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
-
-            appVersion = packageName.contains(".debug")
-                    ? "v" + packageInfo.versionName + "-debug+" + packageInfo.versionCode
-                    : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "getDeviceInfoMap: Error in fetching app version", e);
-        }
-
-
         infoMap.put("manufacturer", Build.MANUFACTURER);
         infoMap.put("model", Build.MODEL);
         infoMap.put("androidVersion", Build.VERSION.RELEASE);
         infoMap.put("sdkVersion", Build.VERSION.SDK_INT);
-        infoMap.put("mindfulVersion", appVersion);
-
-
+        infoMap.put("mindfulVersion", getAppVersion(context));
         return infoMap;
     }
 

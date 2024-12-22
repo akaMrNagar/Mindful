@@ -69,6 +69,22 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
         mode: InsertMode.insertOrReplace,
       );
 
+  /// Insert  multiple [CrashLogs] objects to the database.
+  Future<void> insertCrashLogs(List<CrashLogsTableCompanion> logs) async =>
+      batch(
+        (batch) => batch.insertAll(
+          crashLogsTable,
+          logs,
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
+
+  /// Insert a [CrashLogs] object to the database.
+  Future<void> removeCrashLogOlderThanDate(DateTime date) async =>
+      await (delete(crashLogsTable)
+            ..where((e) => e.timeStamp.isSmallerThanValue(date)))
+          .go();
+
   /// Loads list of all [CrashLogs] objects from the database,
   Future<List<CrashLogs>> fetchCrashLogs() async =>
       select(crashLogsTable).get();

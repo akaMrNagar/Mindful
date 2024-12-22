@@ -9,11 +9,12 @@
 
 package com.mindful.android.services;
 
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
+
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -33,7 +34,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +42,7 @@ import androidx.core.app.NotificationCompat;
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.helpers.NotificationHelper;
+import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -88,12 +89,15 @@ public class OverlayDialogService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
+        String action = Utils.getActionFromIntent(intent);
+
+        if (action.equals(ACTION_START_MINDFUL_SERVICE)) {
             new Handler(Looper.getMainLooper()).post(() -> {
                 try {
                     showAlertDialog(intent);
                 } catch (Exception e) {
-                    Log.e(TAG, "onStartCommand: Error starting overlay dialog service for app: " + mPackageName, e);
+                    Log.e(TAG, "onStartCommand: Failed to start OVERLAY service for app: " + mPackageName, e);
+                    SharedPrefsHelper.insertCrashLogToPrefs(this, e);
                     stopSelf();
                 }
             });
@@ -196,7 +200,7 @@ public class OverlayDialogService extends Service {
         }
 
         mAlertDialog.show();
-        Log.d(TAG, "showAlertDialog: Overlay dialog service started successfully");
+        Log.d(TAG, "showAlertDialog: OVERLAY service started successfully");
 
         /// Schedule auto dialog close timer
         if (mAutoCloseTimer == null) {
@@ -277,7 +281,7 @@ public class OverlayDialogService extends Service {
             mAutoCloseTimer.cancel();
             mAutoCloseTimer = null;
         }
-        Log.d(TAG, "onDestroy: Overlay dialog service destroyed successfully");
+        Log.d(TAG, "onDestroy: OVERLAY service destroyed successfully");
     }
 
     @Nullable

@@ -72,13 +72,13 @@ public class DeviceAppsHelper {
             @Override
             public void run() {
                 List<AndroidApp> apps = fetchAppsAndUsage(context, appsLaunchCountMap);
-                List<Map<String, Object>> resultMap = new ArrayList<>(apps.size());
+                List<Map<String, Object>> resultMapList = new ArrayList<>(apps.size());
 
                 for (AndroidApp app : apps) {
-                    resultMap.add(app.toMap());
+                    resultMapList.add(app.toMap());
                 }
 
-                callback.onSuccess(resultMap);
+                callback.onSuccess(resultMapList);
             }
         }).start();
     }

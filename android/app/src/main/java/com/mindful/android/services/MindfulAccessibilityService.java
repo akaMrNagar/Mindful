@@ -18,7 +18,7 @@ import static com.mindful.android.helpers.ShortsBlockingHelper.REDDIT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.SNAPCHAT_PACKAGE;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_CLIENT_PACKAGE_PREFIX;
 import static com.mindful.android.helpers.ShortsBlockingHelper.YOUTUBE_PACKAGE;
-import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_SERVICE_RESET;
+import static com.mindful.android.receivers.alarm.MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
@@ -113,7 +113,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = Utils.getActionFromIntent(intent);
 
-        if (ACTION_MIDNIGHT_SERVICE_RESET.equals(action)) {
+        if (ACTION_MIDNIGHT_ACCESSIBILITY_RESET.equals(action)) {
             mTotalShortsScreenTimeMs = 0;
             SharedPrefsHelper.getSetShortsScreenTimeMs(this, 0L);
             Log.d(TAG, "onStartCommand: Midnight reset completed");
@@ -126,7 +126,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
         super.onServiceConnected();
 
         // Register shared prefs listener and load data
-        SharedPrefsHelper.registerUnregisterListener(this, true, this);
+        SharedPrefsHelper.registerUnregisterListenerToUniquePrefs(this, true, this);
         mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null);
         mTotalShortsScreenTimeMs = SharedPrefsHelper.getSetShortsScreenTimeMs(this, null);
 
@@ -208,7 +208,9 @@ public class MindfulAccessibilityService extends AccessibilityService implements
                     }
                     break;
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            Log.e(TAG, "processEventInBackground: Failed to process accessibility event in background", e);
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e);
         }
     }
 
@@ -477,7 +479,7 @@ public class MindfulAccessibilityService extends AccessibilityService implements
             unregisterReceiver(mAppInstallUninstallReceiver);
             mAppInstallUninstallReceiver = null;
         }
-        SharedPrefsHelper.registerUnregisterListener(this, false, this);
+        SharedPrefsHelper.registerUnregisterListenerToUniquePrefs(this, false, this);
         Log.d(TAG, "onDestroy: Accessibility service destroyed");
     }
 

@@ -13,7 +13,8 @@
 package com.mindful.android.services;
 
 
-import static com.mindful.android.generics.SafeServiceConnection.ACTION_BIND_TO_MINDFUL;
+import static com.mindful.android.generics.ServiceBinder.ACTION_BIND_TO_MINDFUL;
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -26,6 +27,7 @@ import androidx.annotation.NonNull;
 import com.mindful.android.R;
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.NotificationHelper;
+import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -45,9 +47,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class MindfulVpnService extends android.net.VpnService {
     private static final String TAG = "Mindful.VpnService";
-    public static final String ACTION_START_SERVICE_VPN = "com.mindful.android.MindfulVpnService.START_SERVICE_VPN";
     private final ServiceBinder<MindfulVpnService> mBinder = new ServiceBinder<>(MindfulVpnService.this);
-
 
     private final AtomicReference<Thread> mAtomicVpnThread = new AtomicReference<>();
     private Set<String> mBlockedApps = new HashSet<>(0);
@@ -58,9 +58,8 @@ public class MindfulVpnService extends android.net.VpnService {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = Utils.getActionFromIntent(intent);
 
-        if (ACTION_START_SERVICE_VPN.equals(action)) {
-            // No need to handle as the caller will also call updateBlockedApps() as soon as the binder is active
-            startService();
+        if (ACTION_START_MINDFUL_SERVICE.equals(action)) {
+            startFgService();
             return START_STICKY;
         }
 
@@ -69,9 +68,8 @@ public class MindfulVpnService extends android.net.VpnService {
     }
 
 
-    private void startService() {
+    private void startFgService() {
         if (mIsServiceRunning) return;
-
         try {
             startForeground(
                     AppConstants.VPN_SERVICE_NOTIFICATION_ID,
@@ -81,10 +79,10 @@ public class MindfulVpnService extends android.net.VpnService {
                     )
             );
             mIsServiceRunning = true;
-            Log.d(TAG, "startServiceAndConnectVpn: Foreground service started successfully");
-
+            Log.d(TAG, "startFgService: VPN service started successfully");
         } catch (Exception e) {
-            Log.e(TAG, "startServiceAndConnectVpn: Failed to start foreground service", e);
+            Log.e(TAG, "startFgService: Failed to start VPN service", e);
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e);
             stopAndDisposeService();
         }
     }
@@ -95,7 +93,7 @@ public class MindfulVpnService extends android.net.VpnService {
     private void reconnectVpn() {
         disconnectVpn();
         connectVpn();
-        Log.d(TAG, "restartVpnService: VPN restarted successfully");
+        Log.d(TAG, "reconnectVpn: VPN reconnected successfully");
     }
 
     /**
@@ -106,7 +104,7 @@ public class MindfulVpnService extends android.net.VpnService {
         // Check if no blocked apps then STOP service
         // Necessary if the service starts from Boot Receiver
         if (mBlockedApps.isEmpty()) {
-            Log.w(TAG, "startServiceAndConnectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
+            Log.w(TAG, "connectVpn: Tried to Connect Vpn without any blocked apps, Exiting");
             stopAndDisposeService();
             return;
         }
@@ -124,10 +122,10 @@ public class MindfulVpnService extends android.net.VpnService {
             if (mVpnInterface != null) {
                 mVpnInterface.close();
                 setVpnThread(null);
-                Log.d(TAG, "disconnectVpn: VPN connection is closed successfully");
+                Log.d(TAG, "disconnectVpn: VPN disconnected successfully");
             }
         } catch (IOException e) {
-            Log.e(TAG, "disconnectVpn: Unable to close VPN connection", e);
+            Log.e(TAG, "disconnectVpn: Failed to disconnect VPN", e);
         }
     }
 
@@ -136,7 +134,6 @@ public class MindfulVpnService extends android.net.VpnService {
      */
     private void stopAndDisposeService() {
         disconnectVpn();
-        stopForeground(STOP_FOREGROUND_REMOVE);
         stopSelf();
     }
 
@@ -182,12 +179,15 @@ public class MindfulVpnService extends android.net.VpnService {
 
                 } catch (SocketException e) {
                     Log.e(TAG, "getVpnThread: Cannot use socket for VPN", e);
+                    SharedPrefsHelper.insertCrashLogToPrefs(MindfulVpnService.this, e);
                     stopAndDisposeService();
                 } catch (IOException | IllegalArgumentException e) {
                     Log.e(TAG, "getVpnThread: VPN connection failed, exiting", e);
+                    SharedPrefsHelper.insertCrashLogToPrefs(MindfulVpnService.this, e);
                     stopAndDisposeService();
                 } catch (Exception e) {
                     Log.e(TAG, "getVpnThread: Something went wrong", e);
+                    SharedPrefsHelper.insertCrashLogToPrefs(MindfulVpnService.this, e);
                     stopAndDisposeService();
                 }
             }
@@ -220,6 +220,7 @@ public class MindfulVpnService extends android.net.VpnService {
     public void onDestroy() {
         super.onDestroy();
         disconnectVpn();
+        stopForeground(STOP_FOREGROUND_REMOVE);
         Log.d(TAG, "onDestroy: VPN service destroyed successfully");
     }
 

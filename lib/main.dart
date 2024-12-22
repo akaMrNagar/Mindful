@@ -26,6 +26,8 @@ Future<void> main() async {
   await DriftDbService.instance.init();
 
   /// Initialize local crashlytics
+  await CrashLogService.instance.init();
+
   FlutterError.onError = (errorDetails) {
     CrashLogService.instance.recordCrashError(
       errorDetails.exception.toString(),

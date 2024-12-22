@@ -21,10 +21,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver;
 import com.mindful.android.receivers.alarm.MidnightResetReceiver;
@@ -123,15 +125,13 @@ public class AlarmTasksSchedulingHelper {
         alarmManager.cancel(startPendingIntent);
         alarmManager.cancel(stopPendingIntent);
 
-        // Turn off Dnd
-        NotificationHelper.toggleDnd(context, false);
-
         // Let service know
         if (Utils.isServiceRunning(context, MindfulTrackerService.class.getName())) {
-            Intent serviceIntent = new Intent(context.getApplicationContext(), MindfulTrackerService.class).setAction(MindfulTrackerService.ACTION_STOP_BEDTIME_MODE);
-            context.startService(serviceIntent);
+            SafeServiceConnection<MindfulTrackerService> conn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
+            conn.setOnConnectedCallback(s -> s.startStopBedtimeMode(null));
+            conn.bindService();
+            conn.unBindService();
         }
-
         Log.d(TAG, "cancelBedtimeRoutineTasks: Bedtime routine tasks cancelled successfully");
     }
 

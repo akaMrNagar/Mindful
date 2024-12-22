@@ -97,32 +97,29 @@ public class DeviceUsageWidget extends AppWidgetProvider {
      */
     private void updateWidgetAsync(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager, @NonNull int[] appWidgetIds, boolean isAutomatic) {
         // Async callback to run when usages are fetched successfully
-        SuccessCallback<AggregatedUsage> callback = new SuccessCallback<AggregatedUsage>() {
-            @Override
-            public void onSuccess(@NonNull AggregatedUsage result) {
-                // Ensure UI updates run on the main thread
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.device_usage_widget_layout);
-                    views.setTextViewText(R.id.widgetScreenUsage, Utils.minutesToTimeStr(result.totalScreenUsageMins));
-                    views.setTextViewText(R.id.widgetMobileUsage, Utils.formatDataMBs(result.totalMobileUsageMBs));
-                    views.setTextViewText(R.id.widgetWifiUsage, Utils.formatDataMBs(result.totalWifiUsageMBs));
+        SuccessCallback<AggregatedUsage> callback = result -> {
+            // Ensure UI updates run on the main thread
+            new Handler(Looper.getMainLooper()).post(() -> {
+                RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.device_usage_widget_layout);
+                views.setTextViewText(R.id.widgetScreenUsage, Utils.minutesToTimeStr(result.totalScreenUsageMins));
+                views.setTextViewText(R.id.widgetMobileUsage, Utils.formatDataMBs(result.totalMobileUsageMBs));
+                views.setTextViewText(R.id.widgetWifiUsage, Utils.formatDataMBs(result.totalWifiUsageMBs));
 
-                    // Called by system. It may be first time so we need to attach onClick listeners
+                // Called by system. It may be first time so we need to attach onClick listeners
+                if (isAutomatic) {
+                    setUpClickListener(context, views);
+                }
+
+                for (int appWidgetId : appWidgetIds) {
                     if (isAutomatic) {
-                        setUpClickListener(context, views);
+                        appWidgetManager.updateAppWidget(appWidgetId, views);
+                    } else {
+                        appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
                     }
+                }
 
-                    for (int appWidgetId : appWidgetIds) {
-                        if (isAutomatic) {
-                            appWidgetManager.updateAppWidget(appWidgetId, views);
-                        } else {
-                            appWidgetManager.partiallyUpdateAppWidget(appWidgetId, views);
-                        }
-                    }
-
-                    Log.d(TAG, "updateWidgetAsync: Usage widget updated successfully");
-                });
-            }
+                Log.d(TAG, "updateWidgetAsync: Usage widget updated successfully");
+            });
         };
 
 

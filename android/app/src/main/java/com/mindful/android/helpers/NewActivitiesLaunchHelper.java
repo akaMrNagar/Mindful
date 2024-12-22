@@ -28,7 +28,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.mindful.android.MainActivity;
@@ -295,8 +294,8 @@ public class NewActivitiesLaunchHelper {
      * @param context    The context to use for launching the activity.
      * @param appPackage The package name of the app to be launched.
      */
-    public static void openAppWithPackage(@NonNull Context context, @Nullable String appPackage) {
-        if (appPackage == null || appPackage.isEmpty()) {
+    public static void openAppWithPackage(@NonNull Context context, @NonNull String appPackage) {
+        if (appPackage.isEmpty()) {
             return;
         }
 
@@ -317,8 +316,8 @@ public class NewActivitiesLaunchHelper {
      * @param context    The context to use for launching the activity.
      * @param appPackage The package name of the app whose settings are to be opened.
      */
-    public static void openSettingsForPackage(@NonNull Context context, @Nullable String appPackage) {
-        if (appPackage == null || appPackage.isEmpty()) {
+    public static void openSettingsForPackage(@NonNull Context context, @NonNull String appPackage) {
+        if (appPackage.isEmpty()) {
             return;
         }
 
