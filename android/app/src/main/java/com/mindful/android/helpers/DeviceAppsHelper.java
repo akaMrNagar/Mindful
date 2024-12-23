@@ -129,8 +129,8 @@ public class DeviceAppsHelper {
         // Users may have different timings for their data renewal or reset so keeping it in mind
         Calendar dataUsageCal = SharedPrefsHelper.getSetDataResetTimeMins(context, null);
 
-        int todayOfWeek = screenUsageCal.get(Calendar.DAY_OF_WEEK);
-        long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        final int todayOfWeek = screenUsageCal.get(Calendar.DAY_OF_WEEK);
+        final long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
         // Loop from first day of week till today of current week
         for (int i = 1; i <= todayOfWeek; i++) {
@@ -138,9 +138,10 @@ public class DeviceAppsHelper {
             dataUsageCal.set(Calendar.DAY_OF_WEEK, i);
 
             long screenUsageStart = screenUsageCal.getTimeInMillis();
+            long screenUsageEnd = (i == todayOfWeek) ? System.currentTimeMillis() : screenUsageStart + ms24Hours;
             long dataUsageStart = dataUsageCal.getTimeInMillis();
 
-            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageStart + ms24Hours, null);
+            HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageEnd);
             HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
             HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
 

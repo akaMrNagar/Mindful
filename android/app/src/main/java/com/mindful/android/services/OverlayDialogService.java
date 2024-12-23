@@ -208,8 +208,8 @@ public class OverlayDialogService extends Service {
             mAutoCloseTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (mAlertDialog != null) mAlertDialog.dismiss();
                     goToHome();
+                    if (mAlertDialog != null) mAlertDialog.dismiss();
                     stopSelf();
                 }
             }, 60 * 1000);

@@ -279,7 +279,7 @@ public class MindfulTrackerService extends Service {
         }
 
         /// Fetch usage for all apps
-        HashMap<String, Long> allAppsScreenUsage = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager, packageName);
+        HashMap<String, Long> allAppsScreenUsage = ScreenUsageHelper.fetchAppUsageTodayTillNow(mUsageStatsManager);
 
         /// Check for app timer
         if (appRestrictions.timerSec > 0) {
