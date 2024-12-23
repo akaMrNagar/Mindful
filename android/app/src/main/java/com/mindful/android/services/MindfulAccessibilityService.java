@@ -467,7 +467,6 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
     @Override
     public void onInterrupt() {
-        mExecutorService.shutdown();
     }
 
     @Override
@@ -494,7 +493,10 @@ public class MindfulAccessibilityService extends AccessibilityService implements
 
             if (Intent.ACTION_PACKAGE_ADDED.equals(action) || Intent.ACTION_PACKAGE_REMOVED.equals(action)) {
                 Log.d(TAG, "onReceive: App install/uninstall event received with action : " + action + " for package: " + getPackageName(intent));
-                mExecutorService.submit(MindfulAccessibilityService.this::refreshServiceInfo);
+                try {
+                    mExecutorService.submit(MindfulAccessibilityService.this::refreshServiceInfo);
+                } catch (Exception ignored) {
+                }
             }
         }
 
