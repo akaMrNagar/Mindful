@@ -12,6 +12,7 @@
 
 package com.mindful.android.generics;
 
+import android.app.Service;
 import android.os.Binder;
 
 /**
@@ -20,8 +21,9 @@ import android.os.Binder;
  *
  * @param <T> The type of the service being bound.
  */
-public class ServiceBinder<T> extends Binder {
-//    public static final String ACTION_START_SERVICE = "com.mindful.android.service.START";
+public class ServiceBinder<T extends Service> extends Binder {
+    public static final String ACTION_START_MINDFUL_SERVICE = "com.mindful.android.ServiceBinder.ACTION_START_MINDFUL_SERVICE";
+    public static final String ACTION_BIND_TO_MINDFUL = "com.mindful.android.ServiceBinder.ACTION_BIND_TO_MINDFUL";
 
 
     private final T mService;

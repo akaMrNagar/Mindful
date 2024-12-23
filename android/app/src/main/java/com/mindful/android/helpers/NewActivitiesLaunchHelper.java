@@ -12,6 +12,7 @@
 
 package com.mindful.android.helpers;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -27,7 +28,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
@@ -74,7 +75,7 @@ public class NewActivitiesLaunchHelper {
         PendingIntent appPendingIntent = PendingIntent.getActivity(activity, 0, appIntent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, System.currentTimeMillis(), appPendingIntent);
-        Toast.makeText(activity,"Mindful is restarting",Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, "Mindful is restarting", Toast.LENGTH_LONG).show();
         activity.finishAfterTransition();
     }
 
@@ -156,6 +157,55 @@ public class NewActivitiesLaunchHelper {
         } catch (ActivityNotFoundException e) {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             context.startActivity(intent);
+        }
+    }
+
+    /**
+     * Opens the display overlay settings for permission.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    public static void openMindfulDisplayOverlaySection(@NonNull Context context) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+            intent.setData(android.net.Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+            Toast.makeText(context, "Please allow Mindful to display overlay", Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Log.e(TAG, "openMindfulDisplayOverlaySection: Unable to open device DISPLAY OVERLAY settings", e);
+
+        }
+    }
+
+    /**
+     * Opens the exact alarm and reminders settings for permission.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    public static void openMindfulExactAlarmSection(@NonNull Context context) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            intent.setData(android.net.Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "openMindfulExactAlarmSection: Unable to open device EXACT ALARM settings", e);
+
+        }
+    }
+
+    /**
+     * Opens the ignore battery optimization settings for permission.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    public static void openMindfulIgnoreBatteryOptimizationSection(@NonNull Context context) {
+        try {
+            @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, "openMindfulIgnoreBatteryOptimizationSection: Unable to open device IGNORE BATTERY OPTIMIZATION settings", e);
         }
     }
 
@@ -244,8 +294,8 @@ public class NewActivitiesLaunchHelper {
      * @param context    The context to use for launching the activity.
      * @param appPackage The package name of the app to be launched.
      */
-    public static void openAppWithPackage(@NonNull Context context, @Nullable String appPackage) {
-        if (appPackage == null || appPackage.isEmpty()) {
+    public static void openAppWithPackage(@NonNull Context context, @NonNull String appPackage) {
+        if (appPackage.isEmpty()) {
             return;
         }
 
@@ -266,8 +316,8 @@ public class NewActivitiesLaunchHelper {
      * @param context    The context to use for launching the activity.
      * @param appPackage The package name of the app whose settings are to be opened.
      */
-    public static void openSettingsForPackage(@NonNull Context context, @Nullable String appPackage) {
-        if (appPackage == null || appPackage.isEmpty()) {
+    public static void openSettingsForPackage(@NonNull Context context, @NonNull String appPackage) {
+        if (appPackage.isEmpty()) {
             return;
         }
 

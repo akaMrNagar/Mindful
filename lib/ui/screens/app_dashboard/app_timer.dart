@@ -105,7 +105,7 @@ class AppTimer extends ConsumerWidget {
       initialTime: prevTimer,
     );
 
-    if (newTimer == prevTimer) return;
+    if (newTimer == null || newTimer == prevTimer) return;
     ref
         .read(appsRestrictionsProvider.notifier)
         .updateAppTimer(app.packageName, newTimer);

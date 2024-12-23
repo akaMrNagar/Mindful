@@ -11,6 +11,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -90,6 +91,42 @@ class MethodChannelService {
     return time ~/ 1000;
   }
 
+  /// Gets all stored the native crash logs and clears them afterward.
+  Future<List<CrashLogsTableCompanion>> getNativeCrashLogs() async {
+    List<CrashLogsTableCompanion> crashLogs = [];
+
+    try {
+      String jsonString =
+          await _methodChannel.invokeMethod('getNativeCrashLogs');
+
+      List<dynamic> logMapsList = jsonDecode(jsonString);
+
+      for (var item in logMapsList) {
+        if (item is Map) {
+          final logMap = Map<String, dynamic>.from(item);
+          final log = CrashLogsTableCompanion(
+            appVersion: Value(logMap['appVersion'] as String),
+            timeStamp: Value(DateTime.fromMillisecondsSinceEpoch(
+                logMap['timeStamp'] as int)),
+            error: Value(logMap['error'] as String),
+            stackTrace: Value(logMap['stackTrace'] as String),
+          );
+
+          crashLogs.add(log);
+        }
+      }
+    }
+    // ignore: empty_catches
+    catch (e) {
+      debugPrint("MethodChannelService.getNativeCrashLogs() Error: $e");
+    }
+
+    return crashLogs;
+  }
+
+  /// Clears all the crash logs on the native side.
+  Future<bool> clearNativeCrashLogs() async =>
+      await _methodChannel.invokeMethod('clearNativeCrashLogs');
 
   /// Retrieves a list of all launchable apps installed on the user's device along with their usage statistics.
   ///
@@ -103,11 +140,7 @@ class MethodChannelService {
           await _methodChannel.invokeListMethod<Map>('getDeviceApps') ?? [];
 
       for (Map entry in result) {
-        try {
-          appsList.add(AndroidApp.fromMap(entry));
-        } catch (e, trace) {
-          debugPrint('MethodChannelService.getDeviceApps() : $e $trace');
-        }
+        appsList.add(AndroidApp.fromMap(entry));
       }
     } catch (e) {
       debugPrint("MethodChannelService.getDeviceApps() Error: $e");

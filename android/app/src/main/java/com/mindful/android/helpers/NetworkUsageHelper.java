@@ -15,7 +15,6 @@ package com.mindful.android.helpers;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.net.ConnectivityManager;
-import android.os.RemoteException;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -57,7 +56,7 @@ public class NetworkUsageHelper {
 
             networkStatsWifi.close();
 
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             Log.e(TAG, "fetchWifiUsageForInterval: Error in fetching Wi-Fi usage for device apps", e);
         }
 
@@ -93,7 +92,7 @@ public class NetworkUsageHelper {
 
             networkStatsMobile.close();
 
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             Log.e(TAG, "fetchMobileUsageForInterval: Error in fetching mobile usage for device apps", e);
         }
 

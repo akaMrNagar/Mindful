@@ -5,7 +5,7 @@ class DeviceInfoModel {
   final String manufacturer;
   final String model;
   final String androidVersion;
-  final String sdkVersion;
+  final int sdkVersion;
   final String mindfulVersion;
 
   const DeviceInfoModel({
@@ -21,7 +21,7 @@ class DeviceInfoModel {
       manufacturer: map['manufacturer'] ?? '',
       model: map['model'] ?? '',
       androidVersion: map['androidVersion'] ?? '',
-      sdkVersion: map['sdkVersion'] ?? '',
+      sdkVersion: map['sdkVersion'] ?? 24,
       mindfulVersion: map['mindfulVersion'] ?? '',
     );
   }

@@ -102,19 +102,17 @@ class _SelectedTime extends StatelessWidget {
         color: color,
         padding: const EdgeInsets.all(16),
         onPressed: enabled
-            ? () {
+            ? () async {
                 if (!(isModifiable?.call() ?? true)) return;
 
-                showCustomTimePickerDialog(
+                final pickedTime = await showCustomTimePickerDialog(
                   context: context,
                   initialTime: initialTime,
                   heroTag: heroTag,
                   info: label,
-                ).then(
-                  (value) {
-                    onChange(value ?? initialTime);
-                  },
                 );
+
+                onChange(pickedTime ?? initialTime);
               }
             : null,
         child: Column(

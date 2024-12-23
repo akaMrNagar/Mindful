@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import androidx.work.Worker;
@@ -54,7 +55,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
             Log.d(TAG, "onReceive: Device reboot broadcast received, initializing necessary services and tasks.");
 
             // Queue a one-time work request to execute BootWorker tasks
-            WorkManager.getInstance(context).enqueue(new OneTimeWorkRequest.Builder(BootWorker.class).build());
+            WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, new OneTimeWorkRequest.Builder(BootWorker.class).build());
         }
     }
 
@@ -82,10 +83,13 @@ public class DeviceBootReceiver extends BroadcastReceiver {
                 // Register channels before starting foreground services
                 NotificationHelper.registerNotificationChannels(mContext.getApplicationContext());
 
+                // Migrate shared prefs
+                SharedPrefsHelper.migrateFromOldPrefs(mContext);
+
                 HashMap<String, AppRestrictions> appRestrictions = SharedPrefsHelper.getSetAppRestrictions(mContext, null);
                 HashMap<Integer, RestrictionGroup> restrictionGroups = SharedPrefsHelper.getSetRestrictionGroups(mContext, null);
 
-                // Collect internet-blocked apps
+                // Filter internet-blocked apps
                 HashSet<String> internetBlockedApps = new HashSet<>();
                 appRestrictions.forEach((packageName, restrictions) -> {
                     if (!restrictions.canAccessInternet) internetBlockedApps.add(packageName);
@@ -94,13 +98,13 @@ public class DeviceBootReceiver extends BroadcastReceiver {
                 // Start tracker service to update app and group restrictions
                 if (!appRestrictions.isEmpty() || !restrictionGroups.isEmpty()) {
                     mTrackerServiceConn.setOnConnectedCallback(service -> service.updateRestrictionData(appRestrictions, restrictionGroups));
-                    mTrackerServiceConn.startAndBind(MindfulTrackerService.ACTION_START_RESTRICTION_MODE);
+                    mTrackerServiceConn.startAndBind();
                 }
 
                 // Start VPN service to apply internet restrictions on specified apps
                 if (!internetBlockedApps.isEmpty() && MindfulVpnService.prepare(mContext.getApplicationContext()) == null) {
                     mVpnServiceConn.setOnConnectedCallback(service -> service.updateBlockedApps(internetBlockedApps));
-                    mVpnServiceConn.startAndBind(MindfulVpnService.ACTION_START_SERVICE_VPN);
+                    mVpnServiceConn.startAndBind();
                 }
 
                 // Fetch and apply bedtime settings if enabled
@@ -116,6 +120,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
             } catch (Exception e) {
                 Log.e(TAG, "Error during BootWorker execution", e);
+                SharedPrefsHelper.insertCrashLogToPrefs(mContext, e);
                 return Result.failure();
             } finally {
                 // Ensure service connections are unbound after execution

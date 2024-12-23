@@ -80,8 +80,8 @@ void initializeNecessaryProviders(WidgetRef ref) {
   ref.read(appsProvider);
   ref.read(appsRestrictionsProvider);
   ref.read(restrictionGroupsProvider);
-  ref.read(focusModeProvider);
   ref.read(bedtimeScheduleProvider);
   ref.read(wellBeingProvider);
+  ref.read(focusModeProvider);
   debugPrint("Necessary providers initialized.");
 }

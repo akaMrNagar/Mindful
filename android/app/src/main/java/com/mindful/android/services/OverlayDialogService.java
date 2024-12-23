@@ -9,6 +9,8 @@
 
 package com.mindful.android.services;
 
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
+
 import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -33,12 +35,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.helpers.NotificationHelper;
+import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
@@ -70,9 +74,6 @@ public class OverlayDialogService extends Service {
 
     // Instance variables
     private String mPackageName = "";
-    private String mDialogInfo = "";
-    private int mMaxProgress = -1;
-    private int mProgress = -1;
     private AlertDialog mAlertDialog;
     private Timer mAutoCloseTimer;
 
@@ -88,32 +89,19 @@ public class OverlayDialogService extends Service {
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) {
-            stopSelf();
-            return START_NOT_STICKY;
-        }
+        String action = Utils.getActionFromIntent(intent);
 
-        // Extracting intent data
-        mPackageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
-        mDialogInfo = intent.getStringExtra(INTENT_EXTRA_DIALOG_INFO);
-        mMaxProgress = intent.getIntExtra(INTENT_EXTRA_MAX_PROGRESS, 0);
-        mProgress = intent.getIntExtra(INTENT_EXTRA_PROGRESS, 0);
-
-        // Validate permissions and display the overlay
-        if (mPackageName != null && Settings.canDrawOverlays(this)) {
-            try {
-                Log.d(TAG, "onStartCommand: Showing dialog for package: " + mPackageName + " msg: " + mDialogInfo + " used: " + mProgress + " total: " + mMaxProgress);
-                showAlertDialog();
-                Log.d(TAG, "onStartCommand: Overlay dialog service started successfully");
-                return START_STICKY;
-            } catch (Exception e) {
-                Log.e(TAG, "onStartCommand: Error starting overlay dialog service for app: " + mPackageName, e);
-            }
-        }
-
-        if (!Settings.canDrawOverlays(this)) {
-            notifyOverlayPermission();
-            Log.d(TAG, "onStartCommand: Display over other apps permission not allowed");
+        if (action.equals(ACTION_START_MINDFUL_SERVICE)) {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                try {
+                    showAlertDialog(intent);
+                } catch (Exception e) {
+                    Log.e(TAG, "onStartCommand: Failed to start OVERLAY service for app: " + mPackageName, e);
+                    SharedPrefsHelper.insertCrashLogToPrefs(this, e);
+                    stopSelf();
+                }
+            });
+            return START_STICKY;
         }
 
         stopSelf();
@@ -126,10 +114,24 @@ public class OverlayDialogService extends Service {
      *
      * @throws PackageManager.NameNotFoundException if the app with the specified package name is not found.
      */
-    private void showAlertDialog() throws PackageManager.NameNotFoundException {
+    private void showAlertDialog(@NonNull Intent intent) throws Exception {
+        mPackageName = intent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
+        String mDialogInfo = intent.getStringExtra(INTENT_EXTRA_DIALOG_INFO);
+        int mMaxProgress = intent.getIntExtra(INTENT_EXTRA_MAX_PROGRESS, 0);
+        int mProgress = intent.getIntExtra(INTENT_EXTRA_PROGRESS, 0);
+        Log.d(TAG, "showAlertDialog: Showing dialog for package: " + mPackageName + " msg: " + mDialogInfo + " used: " + mProgress + " total: " + mMaxProgress);
+
+
+        // Notify, stop and return if don't have overlay permission
+        if (!Settings.canDrawOverlays(this)) {
+            askOverlayPermissionByNotification();
+            Log.d(TAG, "showAlertDialog: Display overlay permission denied, stopping service");
+            stopSelf();
+            return;
+        }
+
         PackageManager packageManager = getPackageManager();
         ApplicationInfo info = packageManager.getApplicationInfo(mPackageName, PackageManager.GET_META_DATA);
-
         String appName = info.loadLabel(packageManager).toString();
         Drawable appIcon = packageManager.getApplicationIcon(info);
 
@@ -198,6 +200,7 @@ public class OverlayDialogService extends Service {
         }
 
         mAlertDialog.show();
+        Log.d(TAG, "showAlertDialog: OVERLAY service started successfully");
 
         /// Schedule auto dialog close timer
         if (mAutoCloseTimer == null) {
@@ -205,8 +208,8 @@ public class OverlayDialogService extends Service {
             mAutoCloseTimer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (mAlertDialog != null) mAlertDialog.dismiss();
                     goToHome();
+                    if (mAlertDialog != null) mAlertDialog.dismiss();
                     stopSelf();
                 }
             }, 60 * 1000);
@@ -216,20 +219,24 @@ public class OverlayDialogService extends Service {
     /**
      * Displays a notification that prompts the user to enable overlay permission.
      */
-    private void notifyOverlayPermission() {
+    private void askOverlayPermissionByNotification() {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Intent permissionIntent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
         permissionIntent.setData(Uri.parse("package:" + getPackageName()));
         PendingIntent pendingIntent = PendingIntent.getActivity(this.getApplicationContext(), 0, permissionIntent, PendingIntent.FLAG_IMMUTABLE);
         String msg = getString(R.string.overlay_permission_denied_notification_info);
-        notificationManager.notify(AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID, new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setAutoCancel(true)
-                .setContentTitle(getString(R.string.overlay_permission_denied_notification_title))
-                .setContentText(msg)
-                .setContentIntent(pendingIntent)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
-                .build());
+
+        notificationManager.notify(
+                AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
+                new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setAutoCancel(true)
+                        .setContentTitle(getString(R.string.overlay_permission_denied_notification_title))
+                        .setContentText(msg)
+                        .setContentIntent(pendingIntent)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                        .build()
+        );
     }
 
     /**
@@ -258,12 +265,10 @@ public class OverlayDialogService extends Service {
      */
     private void goToHome() {
         try {
-            new Handler(Looper.getMainLooper()).post(() -> {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            });
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } catch (Exception ignored) {
         }
     }
@@ -276,7 +281,7 @@ public class OverlayDialogService extends Service {
             mAutoCloseTimer.cancel();
             mAutoCloseTimer = null;
         }
-        Log.d(TAG, "onDestroy: Overlay dialog service destroyed successfully");
+        Log.d(TAG, "onDestroy: OVERLAY service destroyed successfully");
     }
 
     @Nullable

@@ -12,11 +12,15 @@
 
 package com.mindful.android.helpers;
 
+import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
 import android.app.usage.UsageStatsManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Build;
+import android.os.PowerManager;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 
@@ -103,6 +107,58 @@ public class PermissionsHelper {
 
         if (askPermissionToo) {
             NewActivitiesLaunchHelper.openDeviceDoNotDisturbAccessSection(context);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the Display Over Other Apps permission is granted and optionally asks for it if not granted.
+     *
+     * @param context          The application context used to check permissions and start activities.
+     * @param askPermissionToo Whether to prompt the user to enable Display Over Other Apps permission if not granted.
+     * @return True if Display Over Other Apps permission is granted, false otherwise.
+     */
+    public static boolean getAndAskDisplayOverlayPermission(@NonNull Context context, boolean askPermissionToo) {
+        if (Settings.canDrawOverlays(context)) return true;
+
+        if (askPermissionToo) {
+            NewActivitiesLaunchHelper.openMindfulDisplayOverlaySection(context);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the Set Exact Alarm permission is granted and optionally asks for it if not granted.
+     *
+     * @param context          The application context used to check permissions and start activities.
+     * @param askPermissionToo Whether to prompt the user to enable Set Exact Alarm permission if not granted.
+     * @return True if Set Exact Alarm permission is granted, false otherwise.
+     */
+    public static boolean getAndAskExactAlarmPermission(@NonNull Context context, boolean askPermissionToo) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return true;
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager.canScheduleExactAlarms()) return true;
+
+        if (askPermissionToo) {
+            NewActivitiesLaunchHelper.openMindfulExactAlarmSection(context);
+        }
+        return false;
+    }
+
+    /**
+     * Checks if the Ignore Battery Optimization permission is granted and optionally asks for it if not granted.
+     *
+     * @param context          The application context used to check permissions and start activities.
+     * @param askPermissionToo Whether to prompt the user to enable Ignore Battery Optimization permission if not granted.
+     * @return True if Ignore Battery Optimization permission is granted, false otherwise.
+     */
+    public static boolean getAndAskIgnoreBatteryOptimizationPermission(@NonNull Context context, boolean askPermissionToo) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (powerManager.isIgnoringBatteryOptimizations(context.getPackageName())) return true;
+
+        if (askPermissionToo) {
+            NewActivitiesLaunchHelper.openMindfulIgnoreBatteryOptimizationSection(context);
         }
         return false;
     }

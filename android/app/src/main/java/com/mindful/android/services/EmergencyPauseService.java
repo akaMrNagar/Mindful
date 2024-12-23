@@ -12,6 +12,7 @@
 
 package com.mindful.android.services;
 
+import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
 import static com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID;
 
 import android.app.Notification;
@@ -31,20 +32,17 @@ import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.NotificationHelper;
+import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.utils.Utils;
 
 public class EmergencyPauseService extends Service {
-    public static final int DEFAULT_EMERGENCY_PASSES_COUNT = 3;
     private static final int DEFAULT_EMERGENCY_PASS_PERIOD_MS = 5 * 60 * 1000;
     private static final String TAG = "Mindful.EmergencyPauseService";
-    public static final String ACTION_START_SERVICE_EMERGENCY = "com.mindful.android.EmergencyPauseService.START_SERVICE_EMERGENCY";
-
 
     private CountDownTimer mCountDownTimer;
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
-    private PendingIntent appPendingIntent;
 
 
     @Override
@@ -52,15 +50,11 @@ public class EmergencyPauseService extends Service {
         super.onCreate();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
-
-        Intent appIntent = new Intent(this.getApplicationContext(), MainActivity.class);
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        appPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         mProgressNotificationBuilder = new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
-                .setContentIntent(appPendingIntent)
+                .setContentIntent(Utils.getPendingIntentForMindful(this))
                 .setContentTitle(getString(R.string.emergency_pause_notification_title));
     }
 
@@ -68,7 +62,7 @@ public class EmergencyPauseService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = Utils.getActionFromIntent(intent);
 
-        if (ACTION_START_SERVICE_EMERGENCY.equals(action)) {
+        if (ACTION_START_MINDFUL_SERVICE.equals(action)) {
             startEmergencyTimer();
             return START_STICKY;
         }
@@ -78,32 +72,35 @@ public class EmergencyPauseService extends Service {
     }
 
     private void startEmergencyTimer() {
-        mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
-        mTrackerServiceConn.bindService();
-
         try {
             startForeground(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification(DEFAULT_EMERGENCY_PASS_PERIOD_MS / 1000));
-        } catch (Exception ignored) {
-        }
+            mTrackerServiceConn.setOnConnectedCallback(service -> service.pauseResumeTracking(true));
+            mTrackerServiceConn.bindService();
 
-        mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000)));
-            }
-
-            @Override
-            public void onFinish() {
-                if (mTrackerServiceConn.isConnected()) {
-                    mTrackerServiceConn.getService().pauseResumeTracking(false);
+            mCountDownTimer = new CountDownTimer(DEFAULT_EMERGENCY_PASS_PERIOD_MS, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000)));
                 }
-                Log.d(TAG, "startEmergencyTimer: Emergency pause is over. App blocker is resumed successfully");
-                stopSelf();
-                showSuccessNotification();
-            }
-        }.start();
 
-        Log.d(TAG, "startEmergencyTimer: Emergency pause service started successfully");
+                @Override
+                public void onFinish() {
+                    if (mTrackerServiceConn.isConnected()) {
+                        mTrackerServiceConn.getService().pauseResumeTracking(false);
+                    }
+                    Log.d(TAG, "startEmergencyTimer: Emergency pause is over. App blocker is resumed successfully");
+                    stopSelf();
+                    showSuccessNotification();
+                }
+            };
+
+            mCountDownTimer.start();
+            Log.d(TAG, "startEmergencyTimer: EMERGENCY service started successfully");
+        } catch (Exception e) {
+            Log.d(TAG, "startEmergencyTimer: Failed to start EMERGENCY service: ", e);
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e);
+            stopSelf();
+        }
     }
 
     /**
@@ -132,8 +129,9 @@ public class EmergencyPauseService extends Service {
         mNotificationManager.notify(EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID,
                 new NotificationCompat.Builder(this, NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID)
                         .setSmallIcon(R.drawable.ic_notification)
+                        .setAutoCancel(true)
                         .setOngoing(false)
-                        .setContentIntent(appPendingIntent)
+                        .setContentIntent(Utils.getPendingIntentForMindful(this))
                         .setContentTitle(getString(R.string.emergency_pause_notification_title))
                         .setContentText(msg)
                         .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
@@ -152,7 +150,7 @@ public class EmergencyPauseService extends Service {
             mCountDownTimer.cancel();
         }
         stopForeground(STOP_FOREGROUND_REMOVE);
-        Log.d(TAG, "onDestroy: Emergency pause service destroyed");
+        Log.d(TAG, "onDestroy: EMERGENCY service destroyed successfully");
     }
 
     @Override

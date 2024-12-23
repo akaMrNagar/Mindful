@@ -18,7 +18,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
+import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.services.MindfulAccessibilityService;
@@ -29,38 +35,56 @@ public class MidnightResetReceiver extends BroadcastReceiver {
 
     private static final String TAG = "Mindful.MidnightResetReceiver";
     public static final String ACTION_START_MIDNIGHT_RESET = "com.mindful.android.StartMidnightReset";
-    public static final String ACTION_MIDNIGHT_SERVICE_RESET = "com.mindful.android.MidnightResetReceiver.MIDNIGHT_SERVICE_RESET";
+    public static final String ACTION_MIDNIGHT_ACCESSIBILITY_RESET = "com.mindful.android.MidnightResetReceiver.MIDNIGHT_ACCESSIBILITY_RESET";
 
 
     @Override
-    public void onReceive(Context context, @NonNull Intent intent) {
-        if (ACTION_START_MIDNIGHT_RESET.equals(intent.getAction())) {
-            try {
-                onMidnightReset(context);
-                Log.d(TAG, "onReceive: Midnight reset task completed successfully");
-            } catch (Exception ignored) {
-            }
-
-            // Schedule task for next day
-            AlarmTasksSchedulingHelper.scheduleMidnightResetTask(context, false);
+    public void onReceive(Context context, Intent intent) {
+        if (ACTION_START_MIDNIGHT_RESET.equals(Utils.getActionFromIntent(intent))) {
+            WorkManager.getInstance(context).enqueueUniqueWork(TAG, ExistingWorkPolicy.KEEP, new OneTimeWorkRequest.Builder(MidnightResetWorker.class).build());
         }
     }
 
+    public static class MidnightResetWorker extends Worker {
+        private final Context mContext;
+        private final SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
 
-    private void onMidnightReset(@NonNull Context context) {
-        // Let tracking service know about midnight reset
-        if (Utils.isServiceRunning(context, MindfulTrackerService.class.getName())) {
-            Intent serviceIntent = new Intent(context.getApplicationContext(), MindfulTrackerService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
-            context.startService(serviceIntent);
+        public MidnightResetWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+            super(context, params);
+            this.mContext = context;
+            this.mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, context);
         }
 
-        // Let accessibility service know about midnight reset
-        if (Utils.isServiceRunning(context, MindfulAccessibilityService.class.getName())) {
-            Intent serviceIntent = new Intent(context.getApplicationContext(), MindfulAccessibilityService.class).setAction(ACTION_MIDNIGHT_SERVICE_RESET);
-            context.startService(serviceIntent);
-        } else {
-            // Else at least reset short content screen time
-            SharedPrefsHelper.getSetShortsScreenTimeMs(context, 0L);
+
+        @NonNull
+        @Override
+        public Result doWork() {
+            try {
+                // Let tracking service know about midnight reset
+                mTrackerServiceConn.setOnConnectedCallback(MindfulTrackerService::midnightServiceReset);
+                mTrackerServiceConn.bindService();
+
+                // Let accessibility service know about midnight reset
+                if (Utils.isServiceRunning(mContext, MindfulAccessibilityService.class.getName())) {
+                    Intent serviceIntent = new Intent(mContext.getApplicationContext(), MindfulAccessibilityService.class).setAction(ACTION_MIDNIGHT_ACCESSIBILITY_RESET);
+                    mContext.startService(serviceIntent);
+                } else {
+                    // Else at least reset short content screen time
+                    SharedPrefsHelper.getSetShortsScreenTimeMs(mContext, 0L);
+                }
+
+                Log.d(TAG, "doWork: Midnight reset work completed successfully");
+
+                // Unbind service and schedule task for the next day
+                mTrackerServiceConn.unBindService();
+                AlarmTasksSchedulingHelper.scheduleMidnightResetTask(mContext, false);
+
+                return Result.success();
+            } catch (Exception e) {
+                Log.e(TAG, "doWork: Error during work execution", e);
+                SharedPrefsHelper.insertCrashLogToPrefs(mContext, e);
+                return Result.failure();
+            }
         }
     }
 }

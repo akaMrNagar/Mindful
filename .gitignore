@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+untranslated_strings.json
 
 # Symbolication related
 app.*.symbols

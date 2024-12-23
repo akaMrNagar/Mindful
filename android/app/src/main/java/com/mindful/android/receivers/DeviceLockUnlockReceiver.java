@@ -80,7 +80,9 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
         }
 
         Log.d(TAG, "onDeviceUnlocked: Repeated task scheduled for tracking new app launches.");
-        broadcastLastAppLaunchEvent();
+
+        /// Broadcast event from background thread
+        new Thread(this::broadcastLastAppLaunchEvent).start();
     }
 
     /**
@@ -99,8 +101,6 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
      * Periodically checks for new app launches and broadcasts an event if a new app is detected.
      */
     private void onAppLaunchTrackingTimerRun() {
-        if (mIsTrackingPaused) return;
-
         long now = System.currentTimeMillis();
         UsageEvents usageEvents = mUsageStatsManager.queryEvents(now - (TIMER_RATE * 2), now);
         UsageEvents.Event currentEvent = new UsageEvents.Event();
@@ -128,7 +128,7 @@ public class DeviceLockUnlockReceiver extends BroadcastReceiver {
      * Broadcasts an event indicating the last launched app package name.
      */
     public void broadcastLastAppLaunchEvent() {
-        if (mLastLaunchedAppPackage.isEmpty()) return;
+        if (mIsTrackingPaused || mLastLaunchedAppPackage.isEmpty()) return;
         mOnAppLaunchCallback.onSuccess(mLastLaunchedAppPackage);
     }
 

@@ -13,6 +13,7 @@
 package com.mindful.android.utils;
 
 import android.app.ActivityManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -27,6 +28,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.mindful.android.MainActivity;
 
 import org.jetbrains.annotations.Contract;
 
@@ -44,6 +47,12 @@ import java.util.Map;
  */
 public class Utils {
     private static final String TAG = "Mindful.Utils";
+
+    public static PendingIntent getPendingIntentForMindful(@NonNull Context context) {
+        Intent appIntent = new Intent(context.getApplicationContext(), MainActivity.class);
+        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return PendingIntent.getActivity(context.getApplicationContext(), 0, appIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+    }
 
     /**
      * Checks if a service with the given class name is currently running.
@@ -64,35 +73,40 @@ public class Utils {
     }
 
     /**
-     * Resolve the device information and  returns it
+     * Get the current app version.
      *
-     * @return Map containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
+     * @param context The context from which the method is called
+     * @return The app version as a string
      */
     @NonNull
-    public static Map<String, String> getDeviceInfoMap(@NonNull Context context) {
-        HashMap<String, String> infoMap = new HashMap<>();
-        String appVersion = "Unknown";
-
+    public static String getAppVersion(@NonNull Context context) {
         try {
             PackageManager packageManager = context.getPackageManager();
             String packageName = context.getPackageName();
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, 0);
 
-            appVersion = packageName.contains(".debug")
+            return packageName.contains(".debug")
                     ? "v" + packageInfo.versionName + "-debug+" + packageInfo.versionCode
                     : "v" + packageInfo.versionName + "+" + packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            Log.e(TAG, "getDeviceInfoMap: Error in fetching app version", e);
+
+        } catch (Exception e) {
+            return "unknown";
         }
+    }
 
-
+    /**
+     * Resolve the device information and  returns it
+     *
+     * @return Map containing Manufacturer, Model, Android Version, SDK Version and Mindful version.
+     */
+    @NonNull
+    public static Map<String, Object> getDeviceInfoMap(@NonNull Context context) {
+        HashMap<String, Object> infoMap = new HashMap<>();
         infoMap.put("manufacturer", Build.MANUFACTURER);
         infoMap.put("model", Build.MODEL);
         infoMap.put("androidVersion", Build.VERSION.RELEASE);
-        infoMap.put("sdkVersion", String.valueOf(Build.VERSION.SDK_INT));
-        infoMap.put("mindfulVersion", appVersion);
-
-
+        infoMap.put("sdkVersion", Build.VERSION.SDK_INT);
+        infoMap.put("mindfulVersion", getAppVersion(context));
         return infoMap;
     }
 

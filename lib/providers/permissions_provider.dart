@@ -104,6 +104,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
       PermissionType.ignoreOptimization => state.copyWith(
           haveIgnoreOptimizationPermission: await MethodChannelService.instance
               .getAndAskIgnoreBatteryOptimizationPermission(),
+          haveAlarmsPermission: await MethodChannelService.instance
+              .getAndAskExactAlarmPermission(),
         ),
       PermissionType.admin => state.copyWith(
           haveAdminPermission:

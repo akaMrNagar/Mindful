@@ -121,8 +121,9 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
   }
 
-  /// Check if user can use emergency pause pass
-  bool canUseEmergencyPause() {
+  /// Update the emergency pass count if last used timestamp is before today midnight
+  /// and returns it
+  int getUpdatedEmergencyPassCount() {
     final todayMidnight = DateTime.now().dateOnly;
 
     /// Reset emergency passes if the last timestamp is from yesterday
@@ -130,7 +131,7 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
       state = state.copyWith(leftEmergencyPasses: 3);
     }
 
-    return state.leftEmergencyPasses > 0;
+    return state.leftEmergencyPasses;
   }
 
   /// Use emergency pause pass and pause the tracking service

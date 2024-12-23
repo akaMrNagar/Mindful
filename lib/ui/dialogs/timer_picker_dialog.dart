@@ -23,49 +23,45 @@ import 'package:mindful/ui/transitions/hero_page_route.dart';
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///
 /// Returns time in seconds and take initial time in seconds
-Future<int> showAppTimerPicker({
+Future<int?> showAppTimerPicker({
   required AndroidApp app,
   required BuildContext context,
   required Object heroTag,
   required int initialTime,
-}) async {
-  return await Navigator.of(context).push<int>(
-        HeroPageRoute(
-          builder: (context) => _DurationPickerDialog(
-            heroTag: heroTag,
-            icon: ApplicationIcon(app: app),
-            title: app.name,
-            info: context.locale.app_timer_picker_dialog_info,
-            positiveButtonLabel: context.locale.dialog_button_set,
-            initialTimeInSec: initialTime,
-          ),
+}) async =>
+    await Navigator.of(context).push<int>(
+      HeroPageRoute(
+        builder: (context) => _DurationPickerDialog(
+          heroTag: heroTag,
+          icon: ApplicationIcon(app: app),
+          title: app.name,
+          info: context.locale.app_timer_picker_dialog_info,
+          positiveButtonLabel: context.locale.dialog_button_set,
+          initialTimeInSec: initialTime,
         ),
-      ) ??
-      initialTime;
-}
+      ),
+    );
 
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///
 /// Returns time in seconds and take initial time in seconds
-Future<int> showShortsTimerPicker({
+Future<int?> showShortsTimerPicker({
   required BuildContext context,
   required Object heroTag,
   required int initialTime,
-}) async {
-  return await Navigator.of(context).push<int>(
-        HeroPageRoute(
-          builder: (context) => _DurationPickerDialog(
-            title: context.locale.short_content_heading,
-            info: context.locale.short_content_timer_picker_dialog_info,
-            icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
-            heroTag: heroTag,
-            initialTimeInSec: initialTime,
-            positiveButtonLabel: context.locale.dialog_button_set,
-          ),
+}) async =>
+    await Navigator.of(context).push<int>(
+      HeroPageRoute(
+        builder: (context) => _DurationPickerDialog(
+          title: context.locale.short_content_heading,
+          info: context.locale.short_content_timer_picker_dialog_info,
+          icon: const Icon(FluentIcons.video_clip_multiple_20_filled),
+          heroTag: heroTag,
+          initialTimeInSec: initialTime,
+          positiveButtonLabel: context.locale.dialog_button_set,
         ),
-      ) ??
-      initialTime;
-}
+      ),
+    );
 
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///
@@ -84,6 +80,7 @@ Future<int?> showFocusTimerPicker({
         initialTimeInSec: initialTime,
         info: context.locale.focus_session_duration_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
+        actionButtonLabel: context.locale.dialog_button_infinite,
       ),
     ),
   );
@@ -129,7 +126,7 @@ Future<int?> showAppAlertIntervalPicker({
         initialTimeInSec: initialTime,
         info: context.locale.app_alert_interval_picker_dialog_info,
         positiveButtonLabel: context.locale.dialog_button_set,
-        showResetButton: false,
+        showActionButton: false,
         minuteInterval: 5,
       ),
     ),
@@ -144,8 +141,9 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.heroTag,
     required this.info,
     required this.positiveButtonLabel,
-    this.showResetButton = true,
+    this.showActionButton = true,
     this.minuteInterval = 1,
+    this.actionButtonLabel,
   });
 
   final Widget icon;
@@ -153,7 +151,8 @@ class _DurationPickerDialog extends StatefulWidget {
   final Object heroTag;
   final int initialTimeInSec;
   final String positiveButtonLabel;
-  final bool showResetButton;
+  final bool showActionButton;
+  final String? actionButtonLabel;
   final int minuteInterval;
   final String info;
 
@@ -200,11 +199,14 @@ class _DurationPickerDialogState extends State<_DurationPickerDialog> {
                         ),
                       ),
                       18.vBox,
-                      if (widget.showResetButton)
+                      if (widget.showActionButton)
                         FittedBox(
                           child: FilledButton.icon(
                             icon: const Icon(FluentIcons.arrow_reset_20_filled),
-                            label: Text(context.locale.dialog_button_reset),
+                            label: Text(
+                              widget.actionButtonLabel ??
+                                  context.locale.dialog_button_reset,
+                            ),
                             onPressed: () => Navigator.maybePop(
                               context,
                               0,
