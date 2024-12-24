@@ -74,16 +74,15 @@ public class MidnightResetReceiver extends BroadcastReceiver {
                 }
 
                 Log.d(TAG, "doWork: Midnight reset work completed successfully");
-
-                // Unbind service and schedule task for the next day
-                mTrackerServiceConn.unBindService();
-                AlarmTasksSchedulingHelper.scheduleMidnightResetTask(mContext, false);
-
                 return Result.success();
             } catch (Exception e) {
                 Log.e(TAG, "doWork: Error during work execution", e);
                 SharedPrefsHelper.insertCrashLogToPrefs(mContext, e);
                 return Result.failure();
+            } finally {
+                // Unbind service and schedule task for the next day
+                AlarmTasksSchedulingHelper.scheduleMidnightResetTask(mContext, false);
+                mTrackerServiceConn.unBindService();
             }
         }
     }

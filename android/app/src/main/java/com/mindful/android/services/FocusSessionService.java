@@ -42,13 +42,13 @@ import java.util.TimerTask;
 public class FocusSessionService extends Service {
     private static final String TAG = "Mindful.FocusSessionService";
     private final ServiceBinder<FocusSessionService> mBinder = new ServiceBinder<>(FocusSessionService.this);
-    private CountDownTimer mCountDownTimer;
-    private Timer mStopWatchTimer;
 
     private NotificationManager mNotificationManager;
     private NotificationCompat.Builder mProgressNotificationBuilder;
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private FocusSession mFocusSession = null;
+    private CountDownTimer mCountDownTimer = null;
+    private boolean mIsFiniteSession = true;
     private int mElapsedSeconds = 0;
 
     @Override
@@ -85,6 +85,7 @@ public class FocusSessionService extends Service {
     public void startFocusSession(@NonNull FocusSession focusSession) {
         try {
             mFocusSession = focusSession;
+            mIsFiniteSession = focusSession.durationSecs > 0;
             if (mFocusSession.distractingApps.isEmpty()) {
                 stopSelf();
                 return;
@@ -102,13 +103,7 @@ public class FocusSessionService extends Service {
             // Toggle DND according to the session configurations
             if (mFocusSession.toggleDnd) NotificationHelper.toggleDnd(this, true);
 
-            // Check and start timer on the basis of duration
-            if (mFocusSession.durationSecs > 0) {
-                startCountDownTimer();
-            } else {
-                startStopWatchTimer();
-            }
-
+            startTimer();
             Log.d(TAG, "startFocusSession: FOCUS service started successfully");
         } catch (Exception e) {
             Log.d(TAG, "startFocusSession: Failed to start FOCUS service", e);
@@ -125,6 +120,28 @@ public class FocusSessionService extends Service {
         }
     }
 
+    private void startTimer() {
+        final long timerDurationMs =
+                mIsFiniteSession
+                        ? (mFocusSession.durationSecs - mElapsedSeconds) * 1000L
+                        : (7 * 24 * 60 * 60 * 1000);
+
+        mCountDownTimer = new CountDownTimer(timerDurationMs, 1000L) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                mElapsedSeconds++;
+                int notificationTimeSeconds = mIsFiniteSession ? mFocusSession.durationSecs - mElapsedSeconds : mElapsedSeconds;
+                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(notificationTimeSeconds));
+            }
+
+            @Override
+            public void onFinish() {
+                giveUpOrStopFocusSession(true);
+            }
+        };
+        mCountDownTimer.start();
+    }
+
     public void giveUpOrStopFocusSession(boolean isTheSessionSuccessful) {
         if (mFocusSession != null && mFocusSession.toggleDnd) {
             NotificationHelper.toggleDnd(this, false);
@@ -137,54 +154,26 @@ public class FocusSessionService extends Service {
     }
 
 
-    private void startStopWatchTimer() {
-        Log.d(TAG, "startStopWatchTimer: Starting");
-        mStopWatchTimer = new Timer();
-        mStopWatchTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                mElapsedSeconds++;
-                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification(mElapsedSeconds));
-            }
-        }, 0L, 1000L);
-    }
-
-
-    private void startCountDownTimer() {
-        Log.d(TAG, "startCountDownTimer: Starting");
-        long timerDuration = (mFocusSession.durationSecs - mElapsedSeconds) * 1000L;
-        mCountDownTimer = new CountDownTimer(timerDuration, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                mNotificationManager.notify(FOCUS_SESSION_SERVICE_NOTIFICATION_ID, createNotification((int) (millisUntilFinished / 1000L)));
-            }
-
-            @Override
-            public void onFinish() {
-                giveUpOrStopFocusSession(true);
-            }
-        }.start();
-    }
-
-
     /**
      * Creates a notification to show the countdown progress.
      *
-     * @param totalLeftSeconds The remaining time in seconds.
+     * @param elapsedOrLeftSeconds The remaining time in seconds.
      * @return The notification object.
      */
     @NonNull
-    private Notification createNotification(int totalLeftSeconds) {
+    private Notification createNotification(int elapsedOrLeftSeconds) {
         String notificationInfo = getString(
-                mFocusSession.durationSecs > 0
+                mIsFiniteSession
                         ? R.string.focus_session_notification_info
                         : R.string.focus_session_infinite_notification_info,
-                Utils.secondsToTimeStr(totalLeftSeconds)
+                Utils.secondsToTimeStr(elapsedOrLeftSeconds)
         );
 
-        mProgressNotificationBuilder
-                .setContentText(notificationInfo)
-                .setProgress(mFocusSession.durationSecs, totalLeftSeconds, false);
+        mProgressNotificationBuilder.setContentText(notificationInfo);
+        if (mIsFiniteSession) {
+            mProgressNotificationBuilder
+                    .setProgress(mFocusSession.durationSecs, elapsedOrLeftSeconds, false);
+        }
 
         return mProgressNotificationBuilder.build();
     }
@@ -220,12 +209,6 @@ public class FocusSessionService extends Service {
             mCountDownTimer.cancel();
             mCountDownTimer = null;
         }
-
-        if (mStopWatchTimer != null) {
-            mStopWatchTimer.cancel();
-            mStopWatchTimer = null;
-        }
-
         stopForeground(STOP_FOREGROUND_REMOVE);
         Log.d(TAG, "onDestroy: FOCUS service destroyed successfully");
     }
