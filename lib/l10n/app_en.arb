@@ -562,5 +562,6 @@
     "write_email_tile_title": "Write to us via email",
     "write_email_tile_subtitle": "You will be redirected to Email app.",
     "privacy_policy_heading": "Privacy policy",
-    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",    "more_details_button": "More details"
+    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",
+    "more_details_button": "More details"
 }
