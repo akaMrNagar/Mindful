@@ -117,22 +117,15 @@ class TabAbout extends ConsumerWidget {
         /// Contribute
         ContentSectionHeader(title: context.locale.contribute_heading).sliver,
 
-        SliverPrimaryActionContainer(
-          isVisible: true,
-          radius: getBorderRadiusFromPosition(ItemPosition.start),
-          icon: FluentIcons.communication_20_filled,
-          title: "Announcement",
-          information:
-              "Mindful is transitioning to a closed-source to prevent potential misuse. Rest assured, your privacy remains our top priority, and Mindful will always be non-profit and 100% privacy focused.\n\nClick on 'Why?' to know more.",
-          positiveBtn: FilledButton(
-            child: const Text("Why?"),
-            onPressed: () => MethodChannelService.instance.launchUrl(
-              'https://github.com/akaMrNagar/Mindful/discussions/1',
-            ),
-          ),
-        ),
-
-        2.vSliverBox,
+        /// Source code
+        DefaultListTile(
+          position: ItemPosition.start,
+          leadingIcon: FluentIcons.code_20_regular,
+          titleText: context.locale.github_tile_title,
+          subtitleText: context.locale.github_tile_subtitle,
+          onPressed: () =>
+              MethodChannelService.instance.launchUrl(AppConstants.githubUrl),
+        ).sliver,
 
         /// Issue
         DefaultListTile(

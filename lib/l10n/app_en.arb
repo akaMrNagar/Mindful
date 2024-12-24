@@ -119,7 +119,7 @@
     "active_period_info": "Set a time period during which access will be allowed. Outside of this time frame, access will be restricted.",
     "minimum_distracting_apps_snack_alert": "Select at least one distracting app.",
     "donation_card_title": "Support us",
-    "donation_card_info": "Mindful is privacy focused and ad-free, developed with months of dedication. If it has helped you, your donation would mean the world to us. Every contribution helps us continue improving and maintaining it for everyone.",
+    "donation_card_info": "Mindful is  free and open-source, developed with months of dedication. If it has helped you, your donation would mean the world to us. Every contribution helps us continue improving and maintaining it for everyone.",
     "operation_failed_snack_alert": "Operation failed, something went wrong!",
     "donation_card_button_donate": "Donate",
     "app_restart_dialog_title": "Need restart",
@@ -134,7 +134,7 @@
     "onboarding_page_two_title": "Block Distractions.",
     "onboarding_page_two_info": "Set usage limits, automatically pause apps, and create healthier digital habits. Use Bedtime Mode to unwind and enjoy a distraction-free night.",
     "onboarding_page_three_title": "Privacy First.",
-    "onboarding_page_three_info": "Mindful is 100% secure, ad-free, and operates offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
+    "onboarding_page_three_info": "Mindful is 100% open-source and operates entirely offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
     "onboarding_page_permissions_title": "Essential Permissions.",
     "onboarding_page_permissions_info": "Mindful requires following essential permissions to track and manage your screen time, helping reduce distractions and improve focus.",
     "@----------------------------- HOME SCREEN - DASHBOARD TAB -----------------------------": {},
@@ -555,11 +555,12 @@
     "changelog_tile_title": "Changelog",
     "redirected_to_github_subtitle": "You will be redirected to GitHub.",
     "contribute_heading": "Contribute",
+    "github_tile_title": "GitHub",
+    "github_tile_subtitle": "View the source code.",
     "report_issue_tile_title": "Report an issue",
     "suggest_idea_tile_title": "Suggest an idea",
     "write_email_tile_title": "Write to us via email",
     "write_email_tile_subtitle": "You will be redirected to Email app.",
     "privacy_policy_heading": "Privacy policy",
-    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a privacy focused application, Mindful guarantees complete transparency and user control over their data.",
-    "more_details_button": "More details"
+    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",    "more_details_button": "More details"
 }
