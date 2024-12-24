@@ -38,6 +38,7 @@ import com.mindful.android.models.FocusSession;
 import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.services.EmergencyPauseService;
 import com.mindful.android.services.FocusSessionService;
+import com.mindful.android.services.MindfulNotificationListenerService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AppConstants;
@@ -58,8 +59,10 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
     private static final String TAG = "Mindful.MainActivity";
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
+    private SafeServiceConnection<MindfulNotificationListenerService> mNotificationServiceConn;
     private SafeServiceConnection<FocusSessionService> mFocusServiceConn;
     private ActivityResultLauncher<Intent> mVpnPermissionLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +87,14 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
+        mNotificationServiceConn = new SafeServiceConnection<>(MindfulNotificationListenerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
         mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
 
         /// Bind to Services if they are already running
         mTrackerServiceConn.bindService();
         mVpnServiceConn.bindService();
+        mNotificationServiceConn.bindService();
         mFocusServiceConn.bindService();
     }
 
@@ -239,7 +244,17 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 result.success(true);
                 break;
             }
-
+            case "updateDistractingNotificationApps": {
+                HashSet<String> distractingApps = JsonDeserializer.jsonStrToStringHashSet(Utils.notNullStr(call.arguments()));
+                if (mNotificationServiceConn.isConnected()) {
+                    mNotificationServiceConn.getService().updateDistractingApps(distractingApps);
+                } else if (!distractingApps.isEmpty()) {
+                    mNotificationServiceConn.setOnConnectedCallback(service -> service.updateDistractingApps(distractingApps));
+                    mNotificationServiceConn.bindService();
+                }
+                result.success(true);
+                break;
+            }
             // SECTION: Permissions handler methods ------------------------------------------------------
             case "getAndAskNotificationPermission": {
                 result.success(NotificationHelper.getAndAskNotificationPermission(this, this, Boolean.TRUE.equals(call.arguments())));
@@ -258,6 +273,8 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 break;
             }
             case "getAndAskAdminPermission": {
+//                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
+//                startActivity(intent);
                 result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
@@ -368,6 +385,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
         // Unbind services
         mTrackerServiceConn.unBindService();
+        mNotificationServiceConn.unBindService();
         mVpnServiceConn.unBindService();
         mFocusServiceConn.unBindService();
     }

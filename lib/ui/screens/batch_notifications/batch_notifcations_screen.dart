@@ -16,9 +16,10 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/screens/batch_notifications/sliver_batched_apps_list.dart';
 
-class NotificationGroupsScreen extends ConsumerWidget {
-  const NotificationGroupsScreen({super.key});
+class BatchNotificationsScreen extends ConsumerWidget {
+  const BatchNotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,35 +28,17 @@ class NotificationGroupsScreen extends ConsumerWidget {
         NavbarItem(
           icon: FluentIcons.app_title_20_regular,
           filledIcon: FluentIcons.app_title_20_filled,
-          title: context.locale.notification_groups_tab_title,
+          title: context.locale.batch_notifications_tab_title,
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
               /// Information about notification groups
-              StyledText(context.locale.notification_groups_tab_info).sliver,
+              StyledText(context.locale.batch_notifications_tab_info).sliver,
 
               16.vSliverBox,
 
-              SliverFillRemaining(
-                child: StyledText(
-                  "Coming soon!",
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Theme.of(context).colorScheme.primary,
-                ).centered,
-              ),
-
-              // SliverList.builder(
-              //   itemCount: groups.length,
-              //   itemBuilder: (context, index) => RestrictionGroupCard(
-              //     group: groups[index],
-              //     position: index == 0
-              //         ? ItemPosition.start
-              //         : index == groups.length - 1
-              //             ? ItemPosition.end
-              //             : ItemPosition.mid,
-              //   ),
-              // ),
+              /// Batched apps list
+              const SliverBatchedAppsList(),
             ],
           ),
         )

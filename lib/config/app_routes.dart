@@ -17,7 +17,7 @@ import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/screens/focus/focus_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
-import 'package:mindful/ui/screens/notification_groups/notification_groups_screen.dart';
+import 'package:mindful/ui/screens/batch_notifications/batch_notifcations_screen.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_groups_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
@@ -53,7 +53,7 @@ class AppRoutes {
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
     restrictionGroupsScreen: (context) => const RestrictionGroupsScreen(),
-    notificationGroupsScreen: (context) => const NotificationGroupsScreen(),
+    notificationGroupsScreen: (context) => const BatchNotificationsScreen(),
 
     /// Resolve isOnboardingDone bool from arguments
     onboardingScreen: (context) => OnboardingScreen(

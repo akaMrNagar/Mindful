@@ -185,6 +185,17 @@ class MethodChannelService {
         jsonEncode(blockedApps),
       );
 
+  /// Safe method to update distracting apps in Notification Listener service.
+  ///
+  /// This method push the updated list to the service if it is already running
+  /// otherwise try to bind to service if list is not empty
+  Future<void> updateDistractingNotificationApps(
+          List<String> distractingApps) async =>
+      _methodChannel.invokeMethod(
+        'updateDistractingNotificationApps',
+        jsonEncode(distractingApps),
+      );
+
   /// Updates the well-being settings for the foreground service.
   ///
   /// This method takes a [Wellbeing] object and sends it to the native side

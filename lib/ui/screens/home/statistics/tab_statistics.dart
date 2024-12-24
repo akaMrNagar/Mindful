@@ -111,12 +111,12 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 .pushNamed(AppRoutes.restrictionGroupsScreen),
           ).sliver,
 
-          /// Notification groups
+          /// Notification batching
           DefaultListTile(
             position: ItemPosition.end,
             leadingIcon: FluentIcons.alert_snooze_20_regular,
-            titleText: context.locale.notification_groups_tab_title,
-            subtitleText: context.locale.notification_groups_tile_subtitle,
+            titleText: context.locale.batch_notifications_tab_title,
+            subtitleText: context.locale.batch_notifications_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             onPressed: () => Navigator.of(context)
