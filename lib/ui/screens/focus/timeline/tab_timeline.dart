@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
@@ -26,11 +27,24 @@ import 'package:mindful/ui/screens/focus/timeline/session_tile.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class TabTimeline extends ConsumerWidget {
+class TabTimeline extends ConsumerStatefulWidget {
   const TabTimeline({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _TabTimelineState();
+}
+
+class _TabTimelineState extends ConsumerState<TabTimeline> {
+  @override
+  void initState() {
+    super.initState();
+    ref
+        .read(focusTimelineProvider.notifier)
+        .onDayChanged(DateTime.now().dateOnly);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final timeline = ref.watch(focusTimelineProvider);
 
     return Skeletonizer.zone(

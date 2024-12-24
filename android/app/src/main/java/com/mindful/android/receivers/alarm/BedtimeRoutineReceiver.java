@@ -19,6 +19,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -40,6 +41,7 @@ import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.utils.Utils;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class BedtimeRoutineReceiver extends BroadcastReceiver {
     private static final String TAG = "Mindful.BedtimeRoutineReceiver";
@@ -104,17 +106,18 @@ public class BedtimeRoutineReceiver extends BroadcastReceiver {
                     case ACTION_STOP_BEDTIME:
                         stopBedtimeRoutine();
                         // Reschedule bedtime tasks for next day
-                        new Handler().postDelayed(() -> AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks(mContext, mBedtimeSettings), 250L);
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks(mContext, mBedtimeSettings), 1000L);
                         break;
                 }
 
-                // Unbind service
-                mTrackerServiceConn.unBindService();
                 return Result.success();
             } catch (Exception e) {
                 Log.e(TAG, "doWork: Error during work execution", e);
                 SharedPrefsHelper.insertCrashLogToPrefs(mContext, e);
                 return Result.failure();
+            } finally {
+                // Unbind service
+                mTrackerServiceConn.unBindService();
             }
         }
 
