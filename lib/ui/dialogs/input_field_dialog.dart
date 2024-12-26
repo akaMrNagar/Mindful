@@ -95,6 +95,32 @@ Future<String?> showGroupNameInputDialog({
   );
 }
 
+/// Animates the hero widget to a alert dialog with input field to notification schedule name
+///
+/// Returns the entered text
+Future<String?> showNotificationScheduleNameDialog({
+  required BuildContext context,
+  required Object heroTag,
+}) async {
+  return await Navigator.of(context).push<String>(
+    HeroPageRoute(
+      builder: (context) => _InputFieldDialog(
+        heroTag: heroTag,
+        keyboardType: TextInputType.text,
+        dialogIcon: FluentIcons.alert_snooze_20_filled,
+        fieldIcon: FluentIcons.alert_snooze_20_regular,
+        title: "Schedule name",
+        fieldLabel: "Schedule name",
+        hintText: "Morning, Noon, Work, etc",
+        helperText:
+            "Enter a name for the notification schedule to help identify it easily.",
+        negativeBtnLabel: context.locale.dialog_button_cancel,
+        positiveBtnLabel: context.locale.create_button,
+      ),
+    ),
+  );
+}
+
 class _InputFieldDialog extends StatefulWidget {
   const _InputFieldDialog({
     required this.heroTag,
@@ -129,13 +155,28 @@ class _InputFieldDialog extends StatefulWidget {
 
 class _InputFieldDialogState extends State<_InputFieldDialog> {
   late TextEditingController _controller;
+  late FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
     _controller = TextEditingController(
       text: widget.initialText,
     );
+
+    Future.delayed(AppConstants.defaultAnimDuration * 2, () {
+      if (mounted) {
+        _focusNode.requestFocus();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _focusNode.dispose();
+    _controller.dispose();
   }
 
   @override
@@ -157,6 +198,8 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
                 child: SingleChildScrollView(
                   child: TextField(
                     controller: _controller,
+                    focusNode: _focusNode,
+                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
                     onSubmitted: (txt) => Navigator.maybePop(context, txt),
                     keyboardType: widget.keyboardType,
                     decoration: InputDecoration(

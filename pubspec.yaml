@@ -17,10 +17,10 @@ dependencies:
   # UI
   fluentui_system_icons: ^1.1.210
   fl_chart: ^0.63.0
-  flutter_heatmap_calendar: ^1.0.5
   animated_flip_counter: ^0.3.4
   flutter_confetti: ^0.3.0
   smooth_page_indicator: ^1.2.0+3
+  flutter_slidable: ^3.1.2
   dynamic_color: ^1.7.0
 
   # Animation
