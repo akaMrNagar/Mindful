@@ -25,7 +25,9 @@ import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
 import 'package:mindful/core/database/tables/invincible_mode_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
+import 'package:mindful/core/database/tables/notification_schedule_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
+import 'package:mindful/core/database/tables/shared_unique_data_table.dart';
 import 'package:mindful/core/database/tables/wellbeing_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
@@ -50,6 +52,8 @@ part 'app_database.g.dart';
     InvincibleModeTable,
     RestrictionGroupsTable,
     WellbeingTable,
+    SharedUniqueDataTable,
+    NotificationScheduleTable,
   ],
   daos: [UniqueRecordsDao, DynamicRecordsDao],
 )
@@ -62,7 +66,7 @@ class AppDatabase extends _$AppDatabase {
   //
   // STEP 3 => Add migration steps to migration strategy
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   /// Will be called when the Drift Database is created for the first time
   ///
@@ -222,6 +226,47 @@ class AppDatabase extends _$AppDatabase {
                     schema.mindfulSettingsTable,
                     schema.mindfulSettingsTable.uninstallWindowTime,
                   );
+                },
+              ),
+              from2To3: (m, schema) async => runSafe(
+                "Migration($from to $to)",
+                () async {
+                  /// Create notification schedule table
+                  await m.createTable(notificationScheduleTable);
+
+                  /// Create shared unique data table
+                  await m.createTable(sharedUniqueDataTable);
+
+                  /// Fetch excluded apps from [MindfulSettingsTable]
+                  final settings = await m.database
+                      .select(mindfulSettingsTable)
+                      .getSingleOrNull();
+
+                  /// Insert excluded apps to [SharedUniqueDataTable]
+                  if (settings != null) {
+                    /// Get record
+                    final record = await m.database
+                        .customSelect(
+                          'SELECT excluded_apps FROM mindful_settings_table',
+                        )
+                        .getSingleOrNull();
+
+                    /// Decode to list
+                    List<String> excludedApps = List.from(
+                      jsonDecode(record?.data['excluded_apps'] ?? '[]'),
+                    );
+
+                    /// Insert to table
+                    await m.database.into(sharedUniqueDataTable).insert(
+                          SharedUniqueDataTableCompanion(
+                            excludedApps: Value(excludedApps),
+                          ),
+                          mode: InsertMode.insertOrReplace,
+                        );
+                  }
+
+                  /// Drop excluded apps column from [MindfulSettingsTable]
+                  await m.alterTable(TableMigration(mindfulSettingsTable));
                 },
               ),
             ),

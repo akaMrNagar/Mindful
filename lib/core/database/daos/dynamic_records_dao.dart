@@ -15,6 +15,7 @@ import 'package:mindful/core/database/tables/app_restriction_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
+import 'package:mindful/core/database/tables/notification_schedule_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
@@ -31,11 +32,16 @@ part 'dynamic_records_dao.g.dart';
     FocusSessionsTable,
     FocusProfileTable,
     RestrictionGroupsTable,
+    NotificationScheduleTable,
   ],
 )
 class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     with _$DynamicRecordsDaoMixin {
   DynamicRecordsDao(AppDatabase db) : super(db);
+
+  // ==================================================================================================================
+  // ===================================== APP RESTRICTIONS =======================================================
+  // ==================================================================================================================
 
   /// Loads List of all [AppRestriction] objects from the database,
   Future<List<AppRestriction>> fetchAppsRestrictions() async =>
@@ -62,35 +68,9 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
         ),
       );
 
-  /// Insert a [CrashLogs] object to the database.
-  Future<void> insertCrashLog(CrashLogsTableCompanion log) async =>
-      into(crashLogsTable).insert(
-        log,
-        mode: InsertMode.insertOrReplace,
-      );
-
-  /// Insert  multiple [CrashLogs] objects to the database.
-  Future<void> insertCrashLogs(List<CrashLogsTableCompanion> logs) async =>
-      batch(
-        (batch) => batch.insertAll(
-          crashLogsTable,
-          logs,
-          mode: InsertMode.insertOrReplace,
-        ),
-      );
-
-  /// Insert a [CrashLogs] object to the database.
-  Future<void> removeCrashLogOlderThanDate(DateTime date) async =>
-      await (delete(crashLogsTable)
-            ..where((e) => e.timeStamp.isSmallerThanValue(date)))
-          .go();
-
-  /// Loads list of all [CrashLogs] objects from the database,
-  Future<List<CrashLogs>> fetchCrashLogs() async =>
-      select(crashLogsTable).get();
-
-  /// Clear all [CrashLogs] objects from the database,
-  Future<int> clearCrashLogs() async => delete(crashLogsTable).go();
+  // ==================================================================================================================
+  // ===================================== RESTRICTION GROUPS =========================================================
+  // ==================================================================================================================
 
   /// Loads single [RestrictionGroup] object by the ID from the database,
   Future<RestrictionGroup?> fetchRestrictionGroupById({
@@ -132,6 +112,71 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   Future<int> removeRestrictionGroupById(RestrictionGroup group) async =>
       delete(restrictionGroupsTable).delete(group);
 
+  // ==================================================================================================================
+  // ===================================== CRASH LOGS =================================================================
+  // ==================================================================================================================
+
+  /// Insert a [CrashLogs] object to the database.
+  Future<void> insertCrashLog(CrashLogsTableCompanion log) async =>
+      into(crashLogsTable).insert(
+        log,
+        mode: InsertMode.insertOrReplace,
+      );
+
+  /// Insert  multiple [CrashLogs] objects to the database.
+  Future<void> insertCrashLogs(List<CrashLogsTableCompanion> logs) async =>
+      batch(
+        (batch) => batch.insertAll(
+          crashLogsTable,
+          logs,
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
+
+  /// Insert a [CrashLog] object to the database.
+  Future<void> removeCrashLogOlderThanDate(DateTime date) async =>
+      await (delete(crashLogsTable)
+            ..where((e) => e.timeStamp.isSmallerThanValue(date)))
+          .go();
+
+  /// Loads list of all [CrashLog] objects from the database,
+  Future<List<CrashLog>> fetchCrashLogs() async => select(crashLogsTable).get();
+
+  /// Clear all [CrashLogs] objects from the database,
+  Future<int> clearCrashLogs() async => delete(crashLogsTable).go();
+
+  // ==================================================================================================================
+  // ===================================== NOTIFICATION SCHEDULES =======================================================
+  // ==================================================================================================================
+
+  /// Loads List of all [NotificationSchedule] objects from the database,
+  Future<List<NotificationSchedule>> fetchNotificationSchedules() async =>
+      select(notificationScheduleTable).get();
+
+  /// Insert or Update a [NotificationSchedule] object to/in the database.
+  Future<NotificationSchedule> insertNotificationSchedule(
+    NotificationScheduleTableCompanion schedule,
+  ) async =>
+      into(notificationScheduleTable).insertReturning(
+        schedule,
+        mode: InsertMode.insertOrReplace,
+      );
+
+  /// Update a [NotificationSchedule] object in the database.
+  Future<void> updateNotificationSchedule(
+    NotificationSchedule schedule,
+  ) async =>
+      update(notificationScheduleTable).replace(schedule);
+
+  /// Removes a [NotificationSchedule] object from the database.
+  Future<void> removeNotificationSchedule(
+          NotificationSchedule schedule) async =>
+      delete(notificationScheduleTable).delete(schedule);
+
+  // ==================================================================================================================
+  // ===================================== FOCUS PROFILES =============================================================
+  // ==================================================================================================================
+
   /// Fetch the [FocusProfile] from database by id, if not found then return default
   Future<FocusProfile> fetchFocusProfileBySessionType(
     SessionType sessionType,
@@ -144,6 +189,10 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   /// Inserts OR Updates a single [FocusSession] object in the database.
   Future<int> insertFocusProfileBySessionType(FocusProfile profile) async =>
       into(focusProfileTable).insert(profile, mode: InsertMode.insertOrReplace);
+
+  // ==================================================================================================================
+  // ===================================== FOCUS SESSIONS =============================================================
+  // ==================================================================================================================
 
   /// Fetch the [FocusSession] from database by id, if not found then return null
   Future<FocusSession?> fetchFocusSessionById(int id) async =>
@@ -254,4 +303,34 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
     return durationPerDay;
   }
+
+  // Future<void> addDuplicateSessions() async {
+  //   final firstDay = DateTime(2024, 12, 1);
+  //   List<FocusSessionsTableCompanion> sessions = [];
+
+  //   for (var i = 1; i <= 31; i++) {
+  //     int count = Random().nextInt(10);
+
+  //     for (var j = 0; j < count; j++) {
+  //       sessions.add(
+  //         FocusSessionsTableCompanion(
+  //           type: Value(
+  //             SessionType.values[Random().nextInt(SessionType.values.length)],
+  //           ),
+  //           state: const Value(SessionState.successful),
+  //           durationSecs: Value(Random().nextInt(3600)),
+  //           startDateTime: Value(firstDay.add(Duration(days: i, hours: j * 2))),
+  //         ),
+  //       );
+  //     }
+  //   }
+
+  //   await batch(
+  //     (batch) => batch.insertAll(
+  //       focusSessionsTable,
+  //       sessions,
+  //       mode: InsertMode.insertOrReplace,
+  //     ),
+  //   );
+  // }
 }

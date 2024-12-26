@@ -41,8 +41,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
 
     if (MethodChannelService.instance.isSelfRestart) {
       await MethodChannelService.instance
-          .updateExcludedApps(state.excludedApps);
-      await MethodChannelService.instance
           .setDataResetTime(state.dataResetTime.toMinutes);
     }
 
@@ -108,17 +106,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     state = state.copyWith(dataResetTime: time);
     await MethodChannelService.instance
         .setDataResetTime(state.dataResetTime.toMinutes);
-  }
-
-  /// Include or Exclude an app from total usage statistics
-  void includeExcludeApp(String appPackage, bool shouldInclude) async {
-    state = state.copyWith(
-      excludedApps: shouldInclude
-          ? [...state.excludedApps, appPackage]
-          : [...state.excludedApps.where((e) => e != appPackage)],
-    );
-
-    await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
   }
 
   /// Update the emergency pass count if last used timestamp is before today midnight

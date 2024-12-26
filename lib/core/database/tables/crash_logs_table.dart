@@ -10,7 +10,7 @@
 
 import 'package:drift/drift.dart';
 
-@DataClassName("CrashLogs")
+@DataClassName("CrashLog")
 class CrashLogsTable extends Table {
   /// Unique ID for crash logs
   IntColumn get id => integer().autoIncrement()();

@@ -8,11 +8,9 @@
  *
  */
 
-import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/utils/app_constants.dart';
@@ -61,11 +59,6 @@ class MindfulSettingsTable extends Table {
   /// Default initial home tab
   IntColumn get defaultHomeTab => intEnum<DefaultHomeTab>()
       .withDefault(Constant(DefaultHomeTab.dashboard.index))();
-
-  /// List of app's packages which are excluded from the aggregated usage statistics.
-  TextColumn get excludedApps => text()
-      .map(const ListStringConverter())
-      .withDefault(Constant(jsonEncode([])))();
 
   /// Number of emergency break passes left for today
   IntColumn get leftEmergencyPasses =>
