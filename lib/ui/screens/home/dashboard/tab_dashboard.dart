@@ -26,6 +26,7 @@ import 'package:mindful/providers/focus_stats_provider.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/progress_percentage_indicator.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -109,16 +110,17 @@ class TabDashboard extends ConsumerWidget {
                     Expanded(
                       child: UsageGlanceCard(
                         isPrimary: true,
-                        borderRadius: BorderRadius.circular(6)
-                            .copyWith(topLeft: const Radius.circular(24)),
-                        title: context.locale.screen_time_label,
+                        position: ItemPosition.topLeft,
                         icon: FluentIcons.phone_screen_time_20_regular,
-                        progressPercentage: focusStats
-                            .todaysScreenTime.inSeconds
-                            .toDiffPercentage(
-                          focusStats.yesterdaysScreenTime.inSeconds,
-                        ),
+                        title: context.locale.screen_time_label,
                         info: focusStats.todaysScreenTime.toTimeShort(context),
+                        badge: ProgressPercentageIndicator(
+                          progressPercentage: focusStats
+                              .todaysScreenTime.inSeconds
+                              .toDiffPercentage(
+                            focusStats.yesterdaysScreenTime.inSeconds,
+                          ),
+                        ),
                         onTap: () => context.showSnackAlert(
                           context.locale.screen_time_snack_alert(
                             focusStats.todaysScreenTime.toTimeFull(context),
@@ -133,16 +135,17 @@ class TabDashboard extends ConsumerWidget {
                     Expanded(
                       child: UsageGlanceCard(
                         isPrimary: true,
-                        borderRadius: BorderRadius.circular(6)
-                            .copyWith(topRight: const Radius.circular(24)),
-                        invertProgress: true,
+                        position: ItemPosition.topRight,
                         icon: FluentIcons.person_clock_20_regular,
                         title: context.locale.focused_time_label,
                         info: focusStats.todaysFocusedTime.toTimeShort(context),
-                        progressPercentage: focusStats
-                            .todaysFocusedTime.inMinutes
-                            .toDiffPercentage(
-                          focusStats.yesterdaysFocusedTime.inMinutes,
+                        badge: ProgressPercentageIndicator(
+                          invertProgress: true,
+                          progressPercentage: focusStats
+                              .todaysFocusedTime.inMinutes
+                              .toDiffPercentage(
+                            focusStats.yesterdaysFocusedTime.inMinutes,
+                          ),
                         ),
                         onTap: () => context.showSnackAlert(
                           context.locale.focused_time_snack_alert(
@@ -162,7 +165,6 @@ class TabDashboard extends ConsumerWidget {
                   icon: FluentIcons.sound_source_20_regular,
                   title: context.locale.lifetime_focused_time_label,
                   info: focusStats.lifetimeFocusedTime.toTimeFull(context),
-                  invertProgress: true,
                   onTap: () => context.showSnackAlert(
                     context.locale.lifetime_focused_time_snack_alert(
                       focusStats.lifetimeFocusedTime.toTimeFull(context),
@@ -200,7 +202,6 @@ class TabDashboard extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: UsageGlanceCard(
-                        borderRadius: BorderRadius.circular(6),
                         title: context.locale.successful_sessions_label,
                         icon: FluentIcons.thumb_like_20_regular,
                         info: focusStats.successfulSessions.toString(),
@@ -209,7 +210,6 @@ class TabDashboard extends ConsumerWidget {
                     tilesGap.hBox,
                     Expanded(
                       child: UsageGlanceCard(
-                        borderRadius: BorderRadius.circular(6),
                         title: context.locale.failed_sessions_label,
                         icon: FluentIcons.thumb_dislike_20_regular,
                         info: focusStats.failedSessions.toString(),
@@ -233,7 +233,7 @@ class TabDashboard extends ConsumerWidget {
 
                 /// Go to focus timeline tab
                 DefaultListTile(
-                  position: ItemPosition.end,
+                  position: ItemPosition.bottom,
                   color: Theme.of(context).colorScheme.surfaceContainerHigh,
                   leadingIcon: FluentIcons.history_20_regular,
                   titleText: context.locale.focus_timeline_tile_title,

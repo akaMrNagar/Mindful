@@ -99,7 +99,7 @@ class TabBedtime extends ConsumerWidget {
 
         /// Bedtime schedule status toggler
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           isPrimary: true,
           switchValue: isScheduleOn,
           leadingIcon: FluentIcons.sleep_20_regular,

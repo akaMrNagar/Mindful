@@ -98,67 +98,60 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          systemNavigationBarColor: Theme.of(context).colorScheme.surface,
-          systemNavigationBarIconBrightness:
-              Theme.of(context).colorScheme.brightness,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: 0,
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Theme.of(context).colorScheme.surface,
         ),
-        child: Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            toolbarHeight: 0,
-            scrolledUnderElevation: 0,
-            automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).colorScheme.surface,
-          ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              /// Breathing logo
-              BreathingWidget(
-                dimension: min(420, MediaQuery.of(context).size.width * 0.8),
-                child: RoundedContainer(
-                  circularRadius: 420,
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  padding: const EdgeInsets.all(12),
-                  child: const Icon(FluentIcons.weather_sunny_low_20_filled,
-                      size: 64),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            /// Breathing logo
+            BreathingWidget(
+              dimension: min(420, MediaQuery.of(context).size.width * 0.8),
+              child: RoundedContainer(
+                circularRadius: 420,
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                padding: const EdgeInsets.all(12),
+                child: const Icon(FluentIcons.weather_sunny_low_20_filled,
+                    size: 64),
+              ),
+            ),
+
+            Column(
+              children: [
+                /// Title
+                const StyledText(
+                  "Mindful",
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                  height: 1,
                 ),
-              ),
 
-              Column(
-                children: [
-                  /// Title
-                  const StyledText(
-                    "Mindful",
-                    fontSize: 48,
-                    fontWeight: FontWeight.bold,
-                    height: 1,
-                  ),
+                /// Tag line
+                StyledText(
+                  context.locale.mindful_tagline,
+                  fontSize: 16,
+                  isSubtitle: true,
+                ),
+              ],
+            ),
 
-                  /// Tag line
-                  StyledText(
-                    context.locale.mindful_tagline,
-                    fontSize: 16,
-                    isSubtitle: true,
-                  ),
-                ],
-              ),
+            const Divider(color: Colors.transparent),
+            _isAccessProtected
+                ? FilledButton.icon(
+                    icon: const Icon(FluentIcons.fingerprint_20_regular),
+                    label: Text(context.locale.unlock_button_label),
+                    onPressed: _authenticate,
+                  )
+                : 0.vBox,
 
-              const Divider(color: Colors.transparent),
-              _isAccessProtected
-                  ? FilledButton.icon(
-                      icon: const Icon(FluentIcons.fingerprint_20_regular),
-                      label: Text(context.locale.unlock_button_label),
-                      onPressed: _authenticate,
-                    )
-                  : 0.vBox,
-
-              /// Make
-              const StyledText("Made with ♥️ in 🇮🇳", fontSize: 14),
-            ].animate(effects: DefaultEffects.transitionIn),
-          ),
+            /// Make
+            const StyledText("Made with ♥️ in 🇮🇳", fontSize: 14),
+          ].animate(effects: DefaultEffects.transitionIn),
         ),
       ),
     );

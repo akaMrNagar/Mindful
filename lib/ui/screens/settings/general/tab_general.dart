@@ -47,7 +47,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// Theme mode
         DefaultDropdownTile<AppThemeMode>(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           value: mindfulSettings.themeMode,
           dialogIcon: FluentIcons.dark_theme_20_filled,
           titleText: context.locale.theme_mode_tile_title,
@@ -103,7 +103,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// Amoled dark
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           switchValue: mindfulSettings.useDynamicColors,
           titleText: context.locale.dynamic_colors_tile_title,
           subtitleText: context.locale.dynamic_colors_tile_subtitle,
@@ -117,7 +117,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// App Language
         DefaultDropdownTile<String>(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           titleText: context.locale.app_language_tile_title,
           dialogIcon: FluentIcons.color_20_filled,
           value: mindfulSettings.localeCode,
@@ -172,7 +172,7 @@ class TabGeneral extends ConsumerWidget {
         DefaultHero(
           tag: HeroTags.dataResetTimeTileTag,
           child: DefaultListTile(
-            position: ItemPosition.end,
+            position: ItemPosition.bottom,
             titleText: context.locale.data_reset_time_tile_title,
             subtitleText: context.locale.data_reset_time_tile_subtitle,
             trailing: StyledText(

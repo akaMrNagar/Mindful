@@ -10,9 +10,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/wellbeing_provider.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
@@ -30,13 +30,7 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
             itemExtent: 64,
             itemCount: blockedWebsites.length,
             itemBuilder: (context, index) => WebsiteTile(
-              position: blockedWebsites.length <= 1
-                  ? ItemPosition.none
-                  : index == 0
-                      ? ItemPosition.start
-                      : index == blockedWebsites.length - 1
-                          ? ItemPosition.end
-                          : ItemPosition.mid,
+              position: getItemPositionInList(index, blockedWebsites.length),
               websitehost: blockedWebsites[index],
             ),
           )

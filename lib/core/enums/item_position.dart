@@ -11,7 +11,13 @@
 /// Position of the item in a list or section
 enum ItemPosition {
   none,
-  start,
+  topLeft,
+  top,
+  topRight,
+  left,
   mid,
-  end,
+  right,
+  bottomLeft,
+  bottom,
+  bottomRight,
 }

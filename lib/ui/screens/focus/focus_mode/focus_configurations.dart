@@ -69,7 +69,7 @@ class FocusConfigurations extends ConsumerWidget {
 
         /// Session tag
         DefaultDropdownTile<SessionType>(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           enabled: !isSessionActive,
           titleText: context.locale.focus_session_tile_title,
           dialogIcon: FluentIcons.door_tag_20_filled,
@@ -115,7 +115,7 @@ class FocusConfigurations extends ConsumerWidget {
 
         /// Manage Dnd settings
         const DeviceDndTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
         ).sliver,
       ],
     );

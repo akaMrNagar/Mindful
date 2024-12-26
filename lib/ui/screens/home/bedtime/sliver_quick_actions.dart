@@ -52,7 +52,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
 
         /// Should start dnd
         DndSwitchTile(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           enabled: !isScheduleOn,
           switchValue: shouldStartDnd,
           onPressed: () => ref
@@ -67,7 +67,7 @@ class _BedtimeActionsState extends ConsumerState<SliverQuickActions> {
 
         /// Manage distracting apps
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           leading: const Icon(FluentIcons.weather_moon_20_regular),
           titleText: context.locale.distracting_apps_tile_title,
           subtitleText: context.locale.distracting_apps_tile_subtitle,

@@ -63,7 +63,7 @@ class InvincibleModeSettings extends ConsumerWidget {
         DefaultHero(
           tag: HeroTags.invincibleModeTileTag,
           child: DefaultListTile(
-            position: ItemPosition.start,
+            position: ItemPosition.top,
             isPrimary: true,
             switchValue: invincibleMode.isInvincibleModeOn,
             leadingIcon: FluentIcons.animal_cat_20_regular,
@@ -193,7 +193,7 @@ class InvincibleModeSettings extends ConsumerWidget {
 
         /// Bedtime schedule
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           enabled: !invincibleMode.isInvincibleModeOn ||
               !invincibleMode.includeBedtimeSchedule,
           isSelected: invincibleMode.includeBedtimeSchedule,

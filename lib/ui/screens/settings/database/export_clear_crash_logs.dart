@@ -50,7 +50,7 @@ class _ExportClearCrashLogsState extends ConsumerState<ExportClearCrashLogs> {
 
         /// Export
         DefaultListTile(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           titleText: context.locale.crash_logs_export_tile_title,
           subtitleText: context.locale.crash_logs_export_tile_subtitle,
           leadingIcon: FluentIcons.arrow_upload_20_regular,
@@ -67,7 +67,7 @@ class _ExportClearCrashLogsState extends ConsumerState<ExportClearCrashLogs> {
         DefaultHero(
           tag: HeroTags.clearCrashLogsTileTag,
           child: DefaultListTile(
-            position: ItemPosition.end,
+            position: ItemPosition.bottom,
             titleText: context.locale.crash_logs_clear_tile_title,
             subtitleText: context.locale.crash_logs_clear_tile_subtitle,
             leadingIcon: FluentIcons.delete_lines_20_regular,

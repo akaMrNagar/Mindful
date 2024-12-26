@@ -83,7 +83,7 @@ class _TabAdvanceState extends ConsumerState<TabAdvance> {
 
         /// Protected access
         DefaultListTile(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           switchValue: mindfulSettings.protectedAccess,
           leadingIcon: FluentIcons.fingerprint_20_regular,
           titleText: context.locale.protected_access_tile_title,
@@ -99,7 +99,7 @@ class _TabAdvanceState extends ConsumerState<TabAdvance> {
         DefaultHero(
           tag: HeroTags.uninstallWindowTileTag,
           child: DefaultListTile(
-            position: ItemPosition.end,
+            position: ItemPosition.bottom,
             enabled: !isAdminEnabled,
             titleText: context.locale.uninstall_window_tile_title,
             subtitleText: context.locale.uninstall_window_tile_subtitle,
@@ -134,7 +134,7 @@ class _TabAdvanceState extends ConsumerState<TabAdvance> {
         6.vSliverBox,
         const SliverBatteryPermissionSwitchTile(),
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           leadingIcon: FluentIcons.leaf_three_20_regular,
           titleText: context.locale.whitelist_app_tile_title,
           subtitleText: context.locale.whitelist_app_tile_subtitle,

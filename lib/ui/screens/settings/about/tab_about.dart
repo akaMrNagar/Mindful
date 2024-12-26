@@ -89,7 +89,7 @@ class TabAbout extends ConsumerWidget {
         /// Donation box
         SliverPrimaryActionContainer(
           isVisible: true,
-          radius: getBorderRadiusFromPosition(ItemPosition.start),
+          radius: getBorderRadiusFromPosition(ItemPosition.top),
           icon: FluentIcons.handshake_20_regular,
           title: context.locale.donation_card_title,
           information: context.locale.donation_card_info,
@@ -105,7 +105,7 @@ class TabAbout extends ConsumerWidget {
 
         /// Change log
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           leadingIcon: FluentIcons.slide_text_20_regular,
           titleText: context.locale.changelog_tile_title,
           subtitleText: context.locale.redirected_to_github_subtitle,
@@ -119,7 +119,7 @@ class TabAbout extends ConsumerWidget {
 
         /// Source code
         DefaultListTile(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           leadingIcon: FluentIcons.code_20_regular,
           titleText: context.locale.github_tile_title,
           subtitleText: context.locale.github_tile_subtitle,
@@ -149,7 +149,7 @@ class TabAbout extends ConsumerWidget {
 
         /// Email
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           leadingIcon: FluentIcons.mail_20_regular,
           titleText: context.locale.write_email_tile_title,
           subtitleText: context.locale.write_email_tile_subtitle,

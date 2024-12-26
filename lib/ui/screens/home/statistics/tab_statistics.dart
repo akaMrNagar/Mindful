@@ -101,7 +101,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           /// Restriction groups
           DefaultListTile(
-            position: ItemPosition.start,
+            position: ItemPosition.top,
             leadingIcon: FluentIcons.app_title_20_regular,
             titleText: context.locale.restriction_groups_tab_title,
             subtitleText: context.locale.restriction_groups_tile_subtitle,
@@ -113,14 +113,14 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           /// Notification batching
           DefaultListTile(
-            position: ItemPosition.end,
+            position: ItemPosition.bottom,
             leadingIcon: FluentIcons.alert_snooze_20_regular,
             titleText: context.locale.batch_notifications_tab_title,
             subtitleText: context.locale.batch_notifications_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             onPressed: () => Navigator.of(context)
-                .pushNamed(AppRoutes.notificationGroupsScreen),
+                .pushNamed(AppRoutes.batchNotificationsScreen),
           ).sliver,
 
           ContentSectionHeader(title: context.locale.most_used_apps_heading)

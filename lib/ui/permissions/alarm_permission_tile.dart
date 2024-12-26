@@ -50,8 +50,8 @@ class AlarmPermissionTile extends ConsumerWidget {
         deviceSwitchTileLabel:
             context.locale.permission_alarms_device_tile_label,
         onTapGrantPermission: () {
-          ref.read(permissionProvider.notifier).askExactAlarmPermission();
           Navigator.of(sheetContext).maybePop();
+          ref.read(permissionProvider.notifier).askExactAlarmPermission();
         },
       ),
     );

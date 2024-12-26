@@ -58,8 +58,8 @@ class AccessibilityPermissionCard extends ConsumerWidget {
         deviceSwitchTileLabel:
             context.locale.permission_accessibility_device_tile_label,
         onTapGrantPermission: () {
-          ref.read(permissionProvider.notifier).askAccessibilityPermission();
           Navigator.of(sheetContext).maybePop();
+          ref.read(permissionProvider.notifier).askAccessibilityPermission();
         },
       ),
     );
