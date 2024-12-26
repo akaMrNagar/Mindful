@@ -10,6 +10,7 @@
 
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
@@ -37,9 +38,19 @@ class MindfulApp extends ConsumerWidget {
     final useDynamicColors =
         ref.watch(mindfulSettingsProvider.select((v) => v.useDynamicColors));
 
+    /// Apply transparent color to system ui background
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        systemNavigationBarContrastEnforced: true,
+        systemNavigationBarDividerColor: Colors.transparent,
+        systemNavigationBarColor: Colors.transparent,
+      ),
+    );
+
     return DynamicColorBuilder(
       builder: (light, dark) => MaterialApp(
         debugShowCheckedModeBanner: false,
+        themeAnimationCurve: Curves.ease,
         darkTheme: AppTheme.darkTheme(
           isAmoled: useAmoledDark,
           seedColor: useDynamicColors
