@@ -14,8 +14,8 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
 import 'package:mindful/ui/common/sliver_distracting_apps_list.dart';
 
-class BedtimeDistractingAppsList extends ConsumerWidget {
-  const BedtimeDistractingAppsList({
+class SliverBedtimeDistractingAppsList extends ConsumerWidget {
+  const SliverBedtimeDistractingAppsList({
     super.key,
   });
 
