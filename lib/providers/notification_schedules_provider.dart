@@ -35,35 +35,42 @@ class NotificationSchedulesNotifier
     final schedules = await _dao.fetchNotificationSchedules();
     state = Map.fromEntries(schedules.map((e) => MapEntry(e.id, e)));
 
+    /// Check if no schedules then initialize with defaults
+    if (schedules.isEmpty) await _createInitialSchedules();
+
     if (MethodChannelService.instance.isSelfRestart) {
       // await MethodChannelService.instance
       //     .setDataResetTime(state.dataResetTime.toMinutes);
     }
   }
 
-  void createNewSchedule(String scheduleName) async {
+  Future<void> createNewSchedule(
+    String scheduleName, [
+    TimeOfDayAdapter? time,
+    bool? isActive,
+  ]) async {
     final newSchedule = await _dao.insertNotificationSchedule(
       NotificationScheduleTableCompanion(
         label: Value(scheduleName),
-        time: Value(TimeOfDayAdapter.now()),
-        isActive: const Value(true),
+        time: Value(time ?? TimeOfDayAdapter.now()),
+        isActive: Value(isActive ?? true),
       ),
     );
 
     _insertUpdateSortSetState(newSchedule);
   }
 
-  void updateScheduleById(NotificationSchedule updatedSchedule) async {
+  Future<void> updateScheduleById(NotificationSchedule updatedSchedule) async {
     await _dao.updateNotificationSchedule(updatedSchedule);
     _insertUpdateSortSetState(updatedSchedule);
   }
 
-  void removeScheduleById(NotificationSchedule schedule) async {
+  Future<void> removeScheduleById(NotificationSchedule schedule) async {
     await _dao.removeNotificationSchedule(schedule);
     state = {...state}..remove(schedule.id);
   }
 
-  void _insertUpdateSortSetState(NotificationSchedule schedule) async {
+  Future<void> _insertUpdateSortSetState(NotificationSchedule schedule) async {
     /// Insert or Update map
     final updatedMap = {...state}..update(
         schedule.id,
@@ -78,5 +85,22 @@ class NotificationSchedulesNotifier
           (a, b) => a.value.time.toMinutes.compareTo(b.value.time.toMinutes),
         ),
     );
+  }
+
+  Future<void> _createInitialSchedules() async {
+    final defaultSchedules = {
+      'Morning': 480,
+      'Afternoon': 720,
+      'Evening': 1020,
+      'Night': 1320,
+    };
+
+    for (final item in defaultSchedules.entries) {
+      await createNewSchedule(
+        item.key,
+        TimeOfDayAdapter.fromMinutes(item.value),
+        false,
+      );
+    }
   }
 }

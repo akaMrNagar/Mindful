@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/providers/shared_unique_data_provider.dart';
 import 'package:mindful/ui/common/sliver_distracting_apps_list.dart';
 
 class SliverBatchedAppsList extends ConsumerWidget {
@@ -17,10 +18,14 @@ class SliverBatchedAppsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final batchedApps = ref.watch(
+        sharedUniqueDataProvider.select((v) => v.notificationBatchedApps));
+
     return SliverDistractingAppsList(
-      distractingApps: [],
-      
-      onSelectionChanged: (package, isSelected) {},
+      distractingApps: batchedApps,
+      onSelectionChanged: (package, isSelected) => ref
+          .read(sharedUniqueDataProvider.notifier)
+          .batchUnBatchApp(package, isSelected),
     );
   }
 }

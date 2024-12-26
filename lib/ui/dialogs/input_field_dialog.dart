@@ -109,11 +109,10 @@ Future<String?> showNotificationScheduleNameDialog({
         keyboardType: TextInputType.text,
         dialogIcon: FluentIcons.alert_snooze_20_filled,
         fieldIcon: FluentIcons.alert_snooze_20_regular,
-        title: "Schedule name",
-        fieldLabel: "Schedule name",
+        title: context.locale.new_schedule_fab_button,
+        fieldLabel: context.locale.new_schedule_dialog_field_label,
         hintText: "Morning, Noon, Work, etc",
-        helperText:
-            "Enter a name for the notification schedule to help identify it easily.",
+        helperText: context.locale.new_schedule_dialog_info,
         negativeBtnLabel: context.locale.dialog_button_cancel,
         positiveBtnLabel: context.locale.create_button,
       ),
@@ -200,7 +199,8 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
                     controller: _controller,
                     focusNode: _focusNode,
                     onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                    onSubmitted: (txt) => Navigator.maybePop(context, txt),
+                    onSubmitted: (txt) =>
+                        Navigator.maybePop(context, txt.trim()),
                     keyboardType: widget.keyboardType,
                     decoration: InputDecoration(
                       label: Text(widget.fieldLabel),
@@ -222,7 +222,7 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
                 ),
                 TextButton(
                   onPressed: () =>
-                      Navigator.maybePop(context, _controller.text),
+                      Navigator.maybePop(context, _controller.text.trim()),
                   child: Text(widget.positiveBtnLabel),
                 ),
               ],
