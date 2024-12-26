@@ -24,11 +24,11 @@ import 'package:mindful/models/filter_model.dart';
 import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/packages_by_filter_provider.dart';
-import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/battery_optimization_tip.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -134,16 +134,22 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             switchInCurve: AppConstants.defaultCurve,
             switchOutCurve: AppConstants.defaultCurve.flipped,
             child: filteredApps.hasValue
-                ? AnimatedAppsList(
-                    itemExtent: 74,
-                    appPackages: filteredApps.value ?? [],
-                    itemBuilder: (context, app, itemPosition) =>
-                        ApplicationTile(
-                      app: app,
-                      position: itemPosition,
-                      selectedUsageType: usageType,
-                      selectedDoW: _filter.selectedDayOfWeek,
-                    ),
+                ? SliverImplicitlyAnimatedList<String>(
+                    items: filteredApps.value ?? [],
+                    keyBuilder: (item) => item,
+                    itemBuilder: (context, package, itemPosition) {
+                      /// Fetch app using the package
+                      final app = ref.read(appsProvider).value?[package];
+
+                      return app != null
+                          ? ApplicationTile(
+                              app: app,
+                              position: itemPosition,
+                              selectedUsageType: usageType,
+                              selectedDoW: _filter.selectedDayOfWeek,
+                            )
+                          : 0.vBox;
+                    },
                   )
                 : const SliverShimmerList(includeSubtitle: true),
           ),

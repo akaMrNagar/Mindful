@@ -15,12 +15,17 @@ final defaultMindfulSettingsModel = MindfulSettings(
   useBottomNavigation: false,
   useAmoledDark: false,
   useDynamicColors: false,
-  excludedApps: [],
   leftEmergencyPasses: 3,
   lastEmergencyUsed: DateTime(0),
   isOnboardingDone: false,
   protectedAccess: false,
   uninstallWindowTime: const TimeOfDayAdapter.zero(),
+);
+
+const defaultSharedUniqueDataModel = SharedUniqueData(
+  id: 0,
+  excludedApps: [],
+  notificationBatchedApps: [],
 );
 
 const defaultInvincibleModeModel = InvincibleMode(

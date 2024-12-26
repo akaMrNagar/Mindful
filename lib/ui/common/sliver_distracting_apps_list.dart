@@ -17,12 +17,13 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/filter_model.dart';
+import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/packages_by_filter_provider.dart';
-import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/search_filter_panel.dart';
+import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -88,43 +89,55 @@ class _SliverDistractingAppsListState
           switchInCurve: AppConstants.defaultCurve,
           switchOutCurve: AppConstants.defaultCurve.flipped,
           child: allApps.hasValue
-              ? AnimatedAppsList(
-                  itemExtent: 56,
-                  separatorTitle: context.locale.select_more_apps_heading,
-                  appPackages: [
+              ? SliverImplicitlyAnimatedList<String>(
+                  items: [
                     ...selectedApps,
 
                     /// Will act as a separator
-                    if (widget.distractingApps.isNotEmpty) ...[""],
+                    if (widget.distractingApps.isNotEmpty) ...["separator"],
 
                     ...unselectedApps,
                   ],
-                  // ].where((e) => e.contains("utu")).toList(), // For searching
-                  itemBuilder: (context, app, _) {
-                    final isSelected =
-                        widget.distractingApps.contains(app.packageName);
-                    return DefaultListTile(
-                      isSelected: app.isImpSysApp ? null : isSelected,
-                      color: Theme.of(context).colorScheme.surfaceContainerLow,
-                      position: _resolvePosition(
-                        app.packageName,
-                        selectedApps,
-                        unselectedApps,
-                      ),
-                      leading: ApplicationIcon(app: app, size: 16),
-                      titleText: app.name,
-                      onPressed: () {
-                        /// If app is important system app
-                        if (app.isImpSysApp) {
-                          context.showSnackAlert(
-                            context.locale.imp_distracting_apps_snack_alert,
-                          );
-                          return;
-                        }
+                  keyBuilder: (item) => item,
+                  itemBuilder: (context, packageName, _) {
+                    /// Fetch app using the package
+                    final app = ref.read(appsProvider).value?[packageName];
 
-                        widget.onSelectionChanged(app.packageName, !isSelected);
-                      },
-                    );
+                    final isSelected =
+                        widget.distractingApps.contains(packageName);
+
+                    return packageName == "separator"
+                        ? ContentSectionHeader(
+                            title: context.locale.select_more_apps_heading,
+                          )
+                        : app != null
+                            ? DefaultListTile(
+                                isSelected: app.isImpSysApp ? null : isSelected,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerLow,
+                                position: _resolvePosition(
+                                  packageName,
+                                  selectedApps,
+                                  unselectedApps,
+                                ),
+                                leading: ApplicationIcon(app: app, size: 16),
+                                titleText: app.name,
+                                onPressed: () {
+                                  /// If app is important system app
+                                  if (app.isImpSysApp) {
+                                    context.showSnackAlert(
+                                      context.locale
+                                          .imp_distracting_apps_snack_alert,
+                                    );
+                                    return;
+                                  }
+
+                                  widget.onSelectionChanged(
+                                      packageName, !isSelected);
+                                },
+                              )
+                            : 0.vBox;
                   },
                 )
               : const SliverShimmerList(),
@@ -143,9 +156,9 @@ class _SliverDistractingAppsListState
           ? ItemPosition.none
           : (selected.isNotEmpty && selected.first == package) ||
                   (unselected.isNotEmpty && unselected.first == package)
-              ? ItemPosition.start
+              ? ItemPosition.top
               : (selected.isNotEmpty && selected.last == package) ||
                       (unselected.isNotEmpty && unselected.last == package)
-                  ? ItemPosition.end
+                  ? ItemPosition.bottom
                   : ItemPosition.mid;
 }
