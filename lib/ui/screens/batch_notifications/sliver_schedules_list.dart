@@ -23,7 +23,12 @@ import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/time_card.dart';
 
 class SliverSchedulesList extends ConsumerWidget {
-  const SliverSchedulesList({super.key});
+  const SliverSchedulesList({
+    super.key,
+    required this.haveNotificationAccessPermission,
+  });
+
+  final bool haveNotificationAccessPermission;
 
   void _updateSchedule(WidgetRef ref, NotificationSchedule updatedSchedule) =>
       ref
@@ -46,6 +51,7 @@ class SliverSchedulesList extends ConsumerWidget {
       itemBuilder: (context, item, position) => _ScheduleCard(
         schedule: item,
         position: position,
+        enabled: haveNotificationAccessPermission,
         onUpdate: (newSchedule) => _updateSchedule(ref, newSchedule),
         onRemove: (schedule) => _removeSchedule(ref, schedule),
       ),
@@ -58,6 +64,7 @@ class _ScheduleCard extends StatelessWidget {
     required this.schedule,
     required this.onUpdate,
     required this.onRemove,
+    required this.enabled,
     this.position = ItemPosition.none,
   });
 
@@ -65,6 +72,7 @@ class _ScheduleCard extends StatelessWidget {
   final ValueChanged<NotificationSchedule> onUpdate;
   final ValueChanged<NotificationSchedule> onRemove;
   final ItemPosition position;
+  final bool enabled;
 
   IconData _resolveIconFromTime(int hourOfDay) => hourOfDay.isBetween(6, 12)
       ? FluentIcons.weather_sunny_high_20_filled // morning (6-12) am
@@ -104,7 +112,7 @@ class _ScheduleCard extends StatelessWidget {
                       heroTag: HeroTags.notificationScheduleTimerTileTag(
                         schedule.id,
                       ),
-                      enabled: schedule.isActive,
+                      enabled: schedule.isActive && enabled,
                       icon: _resolveIconFromTime(schedule.time.hour),
                       iconColor: accent,
                       initialTime: schedule.time,
@@ -115,8 +123,10 @@ class _ScheduleCard extends StatelessWidget {
                     /// Switch
                     Switch(
                       value: schedule.isActive,
-                      onChanged: (isActive) =>
-                          onUpdate(schedule.copyWith(isActive: isActive)),
+                      onChanged: enabled
+                          ? (isActive) =>
+                              onUpdate(schedule.copyWith(isActive: isActive))
+                          : null,
                     ),
                   ],
                 ),

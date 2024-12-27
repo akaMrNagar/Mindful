@@ -253,13 +253,13 @@ class MethodChannelService {
   // !SECTION
   // SECTION: Permissions Handler Methods ======================================================================
 
-  /// Checks if the notification permission is granted and optionally asks for it.
+  /// Checks if the admin permission is granted and optionally asks for it.
   ///
-  /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
-  Future<bool> getAndAskNotificationPermission(
+  /// Returns `true` if the permission is granted Otherwise, returns `false`.
+  Future<bool> getAndAskAdminPermission(
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
-        'getAndAskNotificationPermission',
+        'getAndAskAdminPermission',
         askPermissionToo,
       );
 
@@ -270,24 +270,6 @@ class MethodChannelService {
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
         'getAndAskAccessibilityPermission',
-        askPermissionToo,
-      );
-
-  /// Checks if the VPN permission is granted and optionally asks for it.
-  ///
-  /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
-  Future<bool> getAndAskVpnPermission({bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskVpnPermission',
-        askPermissionToo,
-      );
-
-  /// Checks if the Do Not Disturb (DND) permission is granted and optionally asks for it.
-  ///
-  /// Returns `true` if the permission is granted Otherwise, returns `false`.
-  Future<bool> getAndAskDndPermission({bool askPermissionToo = false}) async =>
-      await _methodChannel.invokeMethod(
-        'getAndAskDndPermission',
         askPermissionToo,
       );
 
@@ -321,6 +303,15 @@ class MethodChannelService {
         askPermissionToo,
       );
 
+  /// Checks if the VPN permission is granted and optionally asks for it.
+  ///
+  /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
+  Future<bool> getAndAskVpnPermission({bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskVpnPermission',
+        askPermissionToo,
+      );
+
   /// Checks if the ignore battery optimization permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
@@ -331,13 +322,32 @@ class MethodChannelService {
         askPermissionToo,
       );
 
-  /// Checks if the admin permission is granted and optionally asks for it.
+  /// Checks if the notification permission is granted and optionally asks for it.
   ///
-  /// Returns `true` if the permission is granted Otherwise, returns `false`.
-  Future<bool> getAndAskAdminPermission(
+  /// This method returns `true` if the permission is granted Otherwise, it returns `false`.
+  Future<bool> getAndAskNotificationPermission(
           {bool askPermissionToo = false}) async =>
       await _methodChannel.invokeMethod(
-        'getAndAskAdminPermission',
+        'getAndAskNotificationPermission',
+        askPermissionToo,
+      );
+
+  /// Checks if the Do Not Disturb (DND) permission is granted and optionally asks for it.
+  ///
+  /// Returns `true` if the permission is granted Otherwise, returns `false`.
+  Future<bool> getAndAskDndPermission({bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskDndPermission',
+        askPermissionToo,
+      );
+
+  /// Checks if the Notification Access permission is granted and optionally asks for it.
+  ///
+  /// Returns `true` if the permission is granted Otherwise, returns `false`.
+  Future<bool> getAndAskNotificationAccessPermission(
+          {bool askPermissionToo = false}) async =>
+      await _methodChannel.invokeMethod(
+        'getAndAskNotificationAccessPermission',
         askPermissionToo,
       );
 

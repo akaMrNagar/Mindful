@@ -256,26 +256,16 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 break;
             }
             // SECTION: Permissions handler methods ------------------------------------------------------
-            case "getAndAskNotificationPermission": {
-                result.success(NotificationHelper.getAndAskNotificationPermission(this, this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
             case "getAndAskAccessibilityPermission": {
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskDndPermission": {
-                result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
+            case "getAndAskAdminPermission": {
+                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskUsageAccessPermission": {
                 result.success(PermissionsHelper.getAndAskUsageAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskAdminPermission": {
-//                Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS);
-//                startActivity(intent);
-                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskIgnoreBatteryOptimizationPermission": {
@@ -288,6 +278,18 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
             }
             case "getAndAskExactAlarmPermission": {
                 result.success(PermissionsHelper.getAndAskExactAlarmPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskNotificationPermission": {
+                result.success(PermissionsHelper.getAndAskNotificationPermission(this, this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskDndPermission": {
+                result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskNotificationAccessPermission": {
+                result.success(PermissionsHelper.getAndAskNotificationAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskVpnPermission": {

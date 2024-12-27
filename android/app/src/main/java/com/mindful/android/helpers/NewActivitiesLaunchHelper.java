@@ -43,8 +43,6 @@ import com.mindful.android.utils.Utils;
  */
 public class NewActivitiesLaunchHelper {
     public static final String INTENT_EXTRA_IS_SELF_RESTART = "isSelfRestart";
-
-
     private static final String TAG = "Mindful.ActivityNewTaskHelper";
 
     /**
@@ -89,25 +87,6 @@ public class NewActivitiesLaunchHelper {
             context.startActivity(new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS));
         }
     }
-
-    /**
-     * Opens the notification settings for the Mindful app.
-     *
-     * @param context The context to use for launching the activity.
-     */
-    public static void openMindfulNotificationSection(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-        } else {
-            openSettingsForPackage(context, context.getPackageName());
-        }
-        Toast.makeText(context, R.string.toast_enable_notification, Toast.LENGTH_LONG).show();
-    }
-
-    // SECTION: For device setting sections or pages app ===========================================
 
     /**
      * Opens the device admin settings for the Mindful app.
@@ -210,17 +189,38 @@ public class NewActivitiesLaunchHelper {
     }
 
     /**
-     * Opens the do not disturb access settings.
+     * Opens the mindful's notification settings for permission.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    public static void openMindfulNotificationSection(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } else {
+            openSettingsForPackage(context, context.getPackageName());
+        }
+        Toast.makeText(context, R.string.toast_enable_notification, Toast.LENGTH_LONG).show();
+    }
+
+
+    /**
+     * Opens the do not disturb access section for permission.
      *
      * @param context The context to use for launching the activity.
      */
     public static void openDeviceDoNotDisturbAccessSection(@NonNull Context context) {
-        Intent intent = new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS);
-        context.startActivity(intent);
+        try {
+            context.startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS));
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "openDeviceDoNotDisturbAccessSection: Unable to open DO NOT DISTURB ACCESS settings", e);
+        }
     }
 
     /**
-     * Opens the do not disturb settings.
+     * Opens the do not disturb device settings.
      *
      * @param context The context to use for launching the activity.
      */
@@ -229,6 +229,19 @@ public class NewActivitiesLaunchHelper {
             context.startActivity(new Intent("android.settings.ZEN_MODE_SETTINGS"));
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "openDeviceDndSettings: Unable to open device DND settings", e);
+        }
+    }
+
+    /**
+     * Opens the do Notification Access settings for permission.
+     *
+     * @param context The context to use for launching the activity.
+     */
+    public static void openNotificationAccessSection(@NonNull Context context) {
+        try {
+            context.startActivity(new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS));
+        } catch (ActivityNotFoundException e) {
+            Log.e(TAG, "openNotificationAccessSection: Unable to open NOTIFICATION ACCESS settings", e);
         }
     }
 

@@ -114,7 +114,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           /// Notification batching
           DefaultListTile(
             position: ItemPosition.bottom,
-            leadingIcon: FluentIcons.alert_urgent_20_regular,
+            leadingIcon: FluentIcons.channel_alert_20_regular,
             titleText: context.locale.batch_notifications_tab_title,
             subtitleText: context.locale.batch_notifications_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),

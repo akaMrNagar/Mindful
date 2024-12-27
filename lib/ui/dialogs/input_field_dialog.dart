@@ -164,7 +164,7 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
       text: widget.initialText,
     );
 
-    Future.delayed(AppConstants.defaultAnimDuration * 2, () {
+    Future.delayed(AppConstants.defaultAnimDuration * 1.75, () {
       if (mounted) {
         _focusNode.requestFocus();
       }

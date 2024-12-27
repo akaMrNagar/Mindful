@@ -53,6 +53,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
           .getAndAskIgnoreBatteryOptimizationPermission(),
       haveAdminPermission:
           await MethodChannelService.instance.getAndAskAdminPermission(),
+      haveNotificationAccessPermission: await MethodChannelService.instance
+          .getAndAskNotificationAccessPermission(),
     );
 
     state = cache;
@@ -110,6 +112,10 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
       PermissionType.admin => state.copyWith(
           haveAdminPermission:
               await MethodChannelService.instance.getAndAskAdminPermission(),
+        ),
+      PermissionType.notificationAccess => state.copyWith(
+          haveNotificationAccessPermission: await MethodChannelService.instance
+              .getAndAskNotificationAccessPermission(),
         ),
     };
 
@@ -179,6 +185,7 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
     _askedPermission = PermissionType.admin;
   }
 
+  /// Request the device to disable admin if already enabled
   void disableAdminPermission() async {
     await MethodChannelService.instance.disableDeviceAdmin();
     await Future.delayed(400.ms);
@@ -186,5 +193,12 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
       haveAdminPermission:
           await MethodChannelService.instance.getAndAskAdminPermission(),
     );
+  }
+
+  /// Requests the Admin permission and updates the internal state.
+  void askNotificationAccessPermission() async {
+    await MethodChannelService.instance
+        .getAndAskNotificationAccessPermission(askPermissionToo: true);
+    _askedPermission = PermissionType.notificationAccess;
   }
 }
