@@ -29,4 +29,9 @@ extension ExtNum on num {
   /// Generates a random number between the range [NUMBER/2 - NUMBER]
   num get randomHalf =>
       ((this ~/ 2) + Random().nextInt((toInt() - (toInt() ~/ 2) + 1)));
+
+  /// Returns TRUE if the number is between the given range [a] and [b], otherwise FALSE
+  ///
+  /// Only if number is less than [b] ie,[b] is upper range so number must not be equal
+  bool isBetween(num a, num b) => a <= this && this < b;
 }

@@ -22,8 +22,8 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/screens/home/bedtime/schedule_card.dart';
-import 'package:mindful/ui/screens/home/bedtime/sliver_quick_actions.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_schedule_card.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_quick_actions.dart';
 
 class TabBedtime extends ConsumerWidget {
   const TabBedtime({super.key});
@@ -93,7 +93,7 @@ class TabBedtime extends ConsumerWidget {
 
         /// Card with start and end time for schedule
         /// also schedule days
-        const ScheduleCard().sliver,
+        const BedtimeScheduleCard().sliver,
 
         2.vSliverBox,
 
@@ -111,7 +111,7 @@ class TabBedtime extends ConsumerWidget {
         8.vSliverBox,
 
         /// Actions related to bedtime
-        const SliverQuickActions(),
+        const BedtimeQuickActions(),
 
         const SliverTabsBottomPadding()
       ],

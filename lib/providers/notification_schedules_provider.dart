@@ -91,8 +91,8 @@ class NotificationSchedulesNotifier
     final defaultSchedules = {
       'Morning': 480,
       'Afternoon': 720,
-      'Evening': 1020,
-      'Night': 1320,
+      'Evening': 960,
+      'Night': 1260,
     };
 
     for (final item in defaultSchedules.entries) {

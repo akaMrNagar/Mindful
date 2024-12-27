@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -65,8 +66,23 @@ class _ScheduleCard extends StatelessWidget {
   final ValueChanged<NotificationSchedule> onRemove;
   final ItemPosition position;
 
+  IconData _resolveIconFromTime(int hourOfDay) => hourOfDay.isBetween(6, 12)
+      ? FluentIcons.weather_sunny_high_20_filled // morning (6-12) am
+      : hourOfDay.isBetween(12, 16)
+          ? FluentIcons.weather_sunny_20_filled // noon (12-4) pm
+          : hourOfDay.isBetween(16, 21)
+              ? FluentIcons.weather_moon_20_filled // evening (4-9) pm
+              : FluentIcons.sleep_20_filled; // night
+
   @override
   Widget build(BuildContext context) {
+    /// Generate accent on the basis of time
+    final accent = Color.lerp(
+      Theme.of(context).colorScheme.error,
+      Theme.of(context).colorScheme.primary,
+      schedule.time.hour / 24,
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
       child: ClipRRect(
@@ -89,8 +105,8 @@ class _ScheduleCard extends StatelessWidget {
                         schedule.id,
                       ),
                       enabled: schedule.isActive,
-                      icon: FluentIcons.sleep_20_filled,
-                      iconColor: Theme.of(context).colorScheme.primary,
+                      icon: _resolveIconFromTime(schedule.time.hour),
+                      iconColor: accent,
                       initialTime: schedule.time,
                       onChange: (newTime) =>
                           onUpdate(schedule.copyWith(time: newTime)),

@@ -18,10 +18,14 @@ class SliverShimmerList extends StatelessWidget {
   /// Placeholder shimmer list while the data is loading
   const SliverShimmerList({
     super.key,
+    this.includeLeading = true,
     this.includeSubtitle = false,
+    this.includeTrailing = false,
   });
 
+  final bool includeLeading;
   final bool includeSubtitle;
+  final bool includeTrailing;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +37,8 @@ class SliverShimmerList extends StatelessWidget {
         itemCount: itemCount,
         itemBuilder: (_, i) => DefaultListTile(
           position: getItemPositionInList(i, itemCount),
-          leading: const Bone.iconButton(),
+          leading: includeLeading ? const Bone.iconButton() : null,
+          trailing: includeTrailing ? const Bone.icon() : null,
           title: Bone.text(
             width: 120.randomHalf.toDouble(),
             fontSize: 16,

@@ -20,11 +20,11 @@ import 'package:mindful/ui/common/device_dnd_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/dialogs/modal_bottom_sheet.dart';
 import 'package:mindful/ui/permissions/dnd_switch_tile.dart';
-import 'package:mindful/ui/screens/home/bedtime/sliver_bedtime_distracting_apps_list.dart';
+import 'package:mindful/ui/screens/home/bedtime/bedtime_distracting_apps_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-class SliverQuickActions extends ConsumerWidget {
-  const SliverQuickActions({
+class BedtimeQuickActions extends ConsumerWidget {
+  const BedtimeQuickActions({
     super.key,
   });
 
@@ -66,7 +66,7 @@ class SliverQuickActions extends ConsumerWidget {
           trailing: const Icon(FluentIcons.chevron_right_20_filled),
           onPressed: () => showDefaultBottomSheet(
             context: context,
-            sliverBody: const SliverBedtimeDistractingAppsList(),
+            sliverBody: const BedtimeDistractingAppsList(),
           ),
         ),
       ],

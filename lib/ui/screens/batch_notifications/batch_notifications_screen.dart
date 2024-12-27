@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -21,7 +22,7 @@ import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:mindful/ui/dialogs/modal_bottom_sheet.dart';
-import 'package:mindful/ui/screens/batch_notifications/new_schedule_fab.dart';
+import 'package:mindful/ui/screens/batch_notifications/new_notification_schedule_fab.dart';
 import 'package:mindful/ui/screens/batch_notifications/sliver_batched_apps_list.dart';
 import 'package:mindful/ui/screens/batch_notifications/sliver_schedules_list.dart';
 
@@ -35,7 +36,7 @@ class BatchNotificationsScreen extends ConsumerWidget {
 
     /// Glance card badge
     final badgeIcon = Icon(
-      FluentIcons.arrow_right_20_filled,
+      FluentIcons.arrow_up_right_20_filled,
       color: Theme.of(context).hintColor,
       size: 12,
     );
@@ -43,10 +44,10 @@ class BatchNotificationsScreen extends ConsumerWidget {
     return DefaultScaffold(
       navbarItems: [
         NavbarItem(
-          icon: FluentIcons.app_title_20_regular,
-          filledIcon: FluentIcons.app_title_20_filled,
+          icon: FluentIcons.alert_urgent_20_regular,
+          filledIcon: FluentIcons.alert_urgent_20_filled,
           title: context.locale.batch_notifications_tab_title,
-          fab: const NewScheduleFab(),
+          fab: const NewNotificationScheduleFab(),
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
@@ -59,11 +60,13 @@ class BatchNotificationsScreen extends ConsumerWidget {
                   Expanded(
                     child: UsageGlanceCard(
                       isPrimary: true,
+                      badge: badgeIcon,
                       position: ItemPosition.left,
                       icon: FluentIcons.alert_badge_20_regular,
-                      title: context.locale.upcoming_notifications_tile_title,
+                      title: context.locale.upcoming_notifications_tab_title,
                       info: "35",
-                      badge: badgeIcon,
+                      onTap: () => Navigator.of(context)
+                          .pushNamed(AppRoutes.upcomingNotificationsScreen),
                     ),
                   ),
                   4.hBox,

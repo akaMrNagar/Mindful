@@ -17,8 +17,8 @@ import 'package:mindful/providers/notification_schedules_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 
-class NewScheduleFab extends ConsumerWidget {
-  const NewScheduleFab({super.key});
+class NewNotificationScheduleFab extends ConsumerWidget {
+  const NewNotificationScheduleFab({super.key});
 
   void _onPressed(BuildContext context, WidgetRef ref) async {
     final scheduleName = await showNotificationScheduleNameDialog(
