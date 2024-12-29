@@ -38,10 +38,11 @@ class NotificationSchedulesNotifier
     /// Check if no schedules then initialize with defaults
     if (schedules.isEmpty) await _createInitialSchedules();
 
-    if (MethodChannelService.instance.isSelfRestart) {
-      // await MethodChannelService.instance
-      //     .setDataResetTime(state.dataResetTime.toMinutes);
+    if (MethodChannelService.instance.intentData.isSelfRestart) {
+      await _updateNativeSchedules();
     }
+
+    /// Add listener
   }
 
   Future<void> createNewSchedule(
@@ -57,26 +58,34 @@ class NotificationSchedulesNotifier
       ),
     );
 
-    _insertUpdateSortSetState(newSchedule);
+    _insertUpdateSortSetState(newSchedule, false);
   }
 
   Future<void> updateScheduleById(NotificationSchedule updatedSchedule) async {
     await _dao.updateNotificationSchedule(updatedSchedule);
-    _insertUpdateSortSetState(updatedSchedule);
+    _insertUpdateSortSetState(updatedSchedule, false);
   }
 
   Future<void> removeScheduleById(NotificationSchedule schedule) async {
     await _dao.removeNotificationSchedule(schedule);
-    state = {...state}..remove(schedule.id);
+    _insertUpdateSortSetState(schedule, true);
   }
 
-  Future<void> _insertUpdateSortSetState(NotificationSchedule schedule) async {
+  Future<void> _insertUpdateSortSetState(
+      NotificationSchedule schedule, bool shouldRemove) async {
     /// Insert or Update map
-    final updatedMap = {...state}..update(
+    var updatedMap = {...state};
+
+    /// Remove or update the schedule based on the passed flag
+    if (shouldRemove) {
+      updatedMap.remove(schedule.id);
+    } else {
+      updatedMap.update(
         schedule.id,
         (value) => schedule,
         ifAbsent: () => schedule,
       );
+    }
 
     /// Update state with sorted entries
     state = Map.fromEntries(
@@ -85,6 +94,9 @@ class NotificationSchedulesNotifier
           (a, b) => a.value.time.toMinutes.compareTo(b.value.time.toMinutes),
         ),
     );
+
+    /// Update native side
+    _updateNativeSchedules();
   }
 
   Future<void> _createInitialSchedules() async {
@@ -103,4 +115,12 @@ class NotificationSchedulesNotifier
       );
     }
   }
+
+  Future<void> _updateNativeSchedules() async =>
+      MethodChannelService.instance.updateNotificationBatchSchedules(
+        state.values
+            .where((e) => e.isActive)
+            .map((e) => e.time.toMinutes)
+            .toList(),
+      );
 }

@@ -14,10 +14,11 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/models/device_info_model.dart';
+import 'package:mindful/models/intent_data.dart';
+import 'package:mindful/models/notification_model.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
 ///
@@ -34,25 +35,21 @@ class MethodChannelService {
     'com.mindful.android.methodchannel',
   );
 
-  /// Package name of the app whose Time Limit Exceeded dialog's emergency button is clicked.
-  /// This is forwarded by the overlay dialog service to show the emergency button on the dashboard.
-  String get targetedAppPackage => _targetedAppPackage;
-  String _targetedAppPackage = "";
-
   /// Flag indicating if the app is restarted by itself (after importing database).
-  bool get isSelfRestart => _isSelfRestart;
-  bool _isSelfRestart = false;
+  IntentData get intentData => _intentData;
+  IntentData _intentData = const IntentData();
 
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
     _methodChannel.setMethodCallHandler(
       (call) async {
-        if (call.method == "updateIsRestartBool") {
-          _isSelfRestart = call.arguments;
-          debugPrint("The app is restarted by itself");
-        } else if (call.method == 'updateTargetedApp') {
-          _targetedAppPackage = call.arguments;
-          debugPrint("The app is started by $_targetedAppPackage");
+        print(
+          "Received method call: ${call.method} with arg: ${call.arguments}",
+        );
+        if (call.method == "updateIntentData") {
+          debugPrint("updateIntentData(): Intent data updated");
+          _intentData = IntentData.fromMap(call.arguments as Map);
+          debugPrint("updateIntentData(): parsed successfully");
         }
       },
     );
@@ -91,7 +88,7 @@ class MethodChannelService {
     return time ~/ 1000;
   }
 
-  /// Gets all stored the native crash logs and clears them afterward.
+  /// Gets all the stored native crash logs and clears them afterward.
   Future<List<CrashLogsTableCompanion>> getNativeCrashLogs() async {
     List<CrashLogsTableCompanion> crashLogs = [];
 
@@ -115,9 +112,7 @@ class MethodChannelService {
           crashLogs.add(log);
         }
       }
-    }
-    // ignore: empty_catches
-    catch (e) {
+    } catch (e) {
       debugPrint("MethodChannelService.getNativeCrashLogs() Error: $e");
     }
 
@@ -146,6 +141,28 @@ class MethodChannelService {
       debugPrint("MethodChannelService.getDeviceApps() Error: $e");
     }
     return appsList;
+  }
+
+  /// Retrieves a list of all upcoming notifications and creates list of [NotificationModel] and returns it.
+  Future<List<NotificationModel>> getUpComingNotifications() async {
+    List<NotificationModel> notifications = [];
+
+    try {
+      String jsonString =
+          await _methodChannel.invokeMethod('getUpComingNotifications');
+
+      List<dynamic> notificationMapsList = jsonDecode(jsonString);
+      for (var item in notificationMapsList) {
+        if (item is Map) {
+          notifications
+              .add(NotificationModel.fromMap(Map<String, dynamic>.from(item)));
+        }
+      }
+    } catch (e) {
+      debugPrint("MethodChannelService.getUpComingNotifications() Error: $e");
+    }
+
+    return notifications;
   }
 
   // !SECTION
@@ -196,20 +213,27 @@ class MethodChannelService {
         jsonEncode(distractingApps),
       );
 
+  /// Updates the notification batching schedule.
+  ///
+  /// This method takes a list of [TimeOfDay] as MINUTES
+  Future<bool> updateNotificationBatchSchedules(List<int> todMinutes) async =>
+      await _methodChannel.invokeMethod(
+        'updateNotificationBatchSchedules',
+        jsonEncode(todMinutes),
+      );
+
   /// Updates the well-being settings for the foreground service.
   ///
   /// This method takes a [Wellbeing] object and sends it to the native side
-  /// to update the foreground service's well-being settings.
   Future<void> updateWellBeingSettings(Wellbeing wellBeingSettings) async =>
       _methodChannel.invokeMethod(
         'updateWellBeingSettings',
         jsonEncode(wellBeingSettings),
       );
 
-  /// Updates the bedtime schedule for the foreground service.
+  /// Updates the bedtime schedule.
   ///
   /// This method takes a [BedtimeSchedule] object and sends it to the native side
-  /// to update the foreground service's bedtime schedule.
   Future<bool> updateBedtimeSchedule(BedtimeSchedule bedtimeSettings) async =>
       await _methodChannel.invokeMethod(
         'updateBedtimeSchedule',

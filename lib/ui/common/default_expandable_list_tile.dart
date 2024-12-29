@@ -58,13 +58,17 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
 
   @override
   Widget build(BuildContext context) {
-    final tilePosition = _isExpanded && widget.position == ItemPosition.bottom
-        ? ItemPosition.mid
-        : widget.position;
+    final expandedPosition = widget.position == ItemPosition.none
+        ? ItemPosition.top
+        : widget.position == ItemPosition.bottom
+            ? ItemPosition.mid
+            : widget.position;
 
-    final contentPosition = widget.position == ItemPosition.bottom
+    final contentPosition = widget.position == ItemPosition.none
         ? ItemPosition.bottom
-        : ItemPosition.mid;
+        : widget.position == ItemPosition.bottom
+            ? ItemPosition.bottom
+            : ItemPosition.mid;
 
     return Column(
       children: [
@@ -78,7 +82,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
           subtitleText: widget.subtitleText,
           color: widget.color,
           accent: widget.accent,
-          position: tilePosition,
+          position: _isExpanded ? expandedPosition : widget.position,
           enabled: widget.enabled,
           isPrimary: widget.isPrimary,
           onPressed: () => setState(() => _isExpanded = !_isExpanded),

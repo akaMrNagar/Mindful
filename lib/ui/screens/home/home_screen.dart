@@ -19,6 +19,7 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/core/utils/utils.dart';
@@ -49,8 +50,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     _showDonationDialog();
 
-    final targetPackage = MethodChannelService.instance.targetedAppPackage;
-    if (targetPackage.isEmpty) return;
+    final targetPackage =
+        MethodChannelService.instance.intentData.targetedPackage;
+
+    /// Return if no target package try routing instead
+    if (targetPackage.isEmpty) {
+      RoutingService.instance.init(context);
+      return;
+    }
 
     /// Check if target package in method channel service is not empty,
     /// that means user launched the app from overlay dialog

@@ -30,7 +30,7 @@ class SharedDataNotifier extends StateNotifier<SharedUniqueData> {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await dao.loadSharedData();
 
-    if (MethodChannelService.instance.isSelfRestart) {
+    if (MethodChannelService.instance.intentData.isSelfRestart) {
       await MethodChannelService.instance
           .updateExcludedApps(state.excludedApps);
     }
@@ -65,6 +65,7 @@ class SharedDataNotifier extends StateNotifier<SharedUniqueData> {
           : [...state.notificationBatchedApps.where((e) => e != appPackage)],
     );
 
-    // await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
+    await MethodChannelService.instance
+        .updateDistractingNotificationApps(state.notificationBatchedApps);
   }
 }
