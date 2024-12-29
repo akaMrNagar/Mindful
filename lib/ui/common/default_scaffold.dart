@@ -155,6 +155,7 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
                               [
                             SliverFlexibleAppBar(
                               title: e.appBarTitle ?? e.title,
+                              useBottomNavigation: useBottomNavigation,
                               materialBarLeading:
                                   widget.leading ?? _backButton(context),
                             ),

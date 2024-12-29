@@ -58,7 +58,7 @@ class DefaultListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return RoundedContainer(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      margin: const EdgeInsets.symmetric(vertical: 2),
+      margin: const EdgeInsets.only(top: 4),
       borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       color:
           isPrimary ? Theme.of(context).colorScheme.secondaryContainer : color,

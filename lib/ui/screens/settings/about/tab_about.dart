@@ -101,8 +101,6 @@ class TabAbout extends ConsumerWidget {
           ),
         ),
 
-        2.vSliverBox,
-
         /// Change log
         DefaultListTile(
           position: ItemPosition.bottom,

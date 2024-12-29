@@ -95,8 +95,6 @@ class TabBedtime extends ConsumerWidget {
         /// also schedule days
         const BedtimeScheduleCard().sliver,
 
-        2.vSliverBox,
-
         /// Bedtime schedule status toggler
         DefaultListTile(
           position: ItemPosition.bottom,

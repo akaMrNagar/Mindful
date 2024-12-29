@@ -14,7 +14,6 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
 
 /// Global expandable list tile used throughout the app
 ///
@@ -22,7 +21,6 @@ import 'package:mindful/ui/common/rounded_container.dart';
 class DefaultExpandableListTile extends StatefulWidget {
   const DefaultExpandableListTile({
     super.key,
-    required this.contentPosition,
     required this.content,
     this.leading,
     this.title,
@@ -31,9 +29,7 @@ class DefaultExpandableListTile extends StatefulWidget {
     this.titleText,
     this.subtitleText,
     this.color,
-    this.contentBgColor,
     this.accent,
-    this.contentBottomMargin = 2,
     this.position = ItemPosition.none,
     this.enabled = true,
     this.isPrimary = false,
@@ -49,9 +45,6 @@ class DefaultExpandableListTile extends StatefulWidget {
   final Color? accent;
   final ItemPosition position;
   final Widget content;
-  final Color? contentBgColor;
-  final double contentBottomMargin;
-  final ItemPosition contentPosition;
   final bool enabled;
   final bool isPrimary;
 
@@ -65,6 +58,14 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
 
   @override
   Widget build(BuildContext context) {
+    final tilePosition = _isExpanded && widget.position == ItemPosition.bottom
+        ? ItemPosition.mid
+        : widget.position;
+
+    final contentPosition = widget.position == ItemPosition.bottom
+        ? ItemPosition.bottom
+        : ItemPosition.mid;
+
     return Column(
       children: [
         /// Tile
@@ -77,7 +78,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
           subtitleText: widget.subtitleText,
           color: widget.color,
           accent: widget.accent,
-          position: widget.position,
+          position: tilePosition,
           enabled: widget.enabled,
           isPrimary: widget.isPrimary,
           onPressed: () => setState(() => _isExpanded = !_isExpanded),
@@ -92,13 +93,8 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
         ),
 
         /// Animated Expanded Content
-        RoundedContainer(
-          borderRadius: getBorderRadiusFromPosition(widget.contentPosition),
-          alignment: Alignment.topCenter,
-          margin: EdgeInsets.only(
-            bottom: _isExpanded ? widget.contentBottomMargin : 0,
-          ),
-          color: widget.contentBgColor,
+        ClipRRect(
+          borderRadius: getBorderRadiusFromPosition(contentPosition),
           child: FractionallySizedBox(
             widthFactor: 1,
             child: AnimatedSize(

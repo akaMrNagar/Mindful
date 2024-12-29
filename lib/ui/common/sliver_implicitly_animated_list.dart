@@ -20,12 +20,14 @@ class SliverImplicitlyAnimatedList<T> extends StatefulWidget {
     required this.items,
     required this.keyBuilder,
     required this.itemBuilder,
+    this.itemExtent,
     this.animationDelay = Duration.zero,
     this.animationDurationMultiplier = 1,
   });
 
   final Duration animationDelay;
   final double animationDurationMultiplier;
+  final double? itemExtent;
   final List<T> items;
   final String Function(T item) keyBuilder;
   final Widget Function(
@@ -64,34 +66,42 @@ class _SliverImplicitlyAnimatedListState<T>
       (_) => _postFrameCallback(),
     );
 
-    return SliverList.builder(
-      itemCount: widget.items.length,
-      itemBuilder: (context, index) {
-        String key = widget.keyBuilder(widget.items[index]);
+    return widget.itemExtent != null
+        ? SliverFixedExtentList.builder(
+            itemExtent: widget.itemExtent!,
+            itemCount: widget.items.length,
+            itemBuilder: _itemBuilder,
+          )
+        : SliverList.builder(
+            itemCount: widget.items.length,
+            itemBuilder: _itemBuilder,
+          );
+  }
 
-        /// Get offset from previous indices
-        final yOffset =
-            _prevIndices.containsKey(key) ? _prevIndices[key]! - index : 0;
+  Widget _itemBuilder(context, index) {
+    String key = widget.keyBuilder(widget.items[index]);
 
-        return Animate(
-          key: Key(key),
-          delay: widget.animationDelay,
-          effects: [
-            SlideEffect(
-              duration: AppConstants.defaultAnimDuration *
-                  widget.animationDurationMultiplier,
-              curve: AppConstants.defaultCurve,
-              begin: Offset(0, yOffset.toDouble()),
-              end: const Offset(0, 0),
-            ),
-          ],
-          child: widget.itemBuilder(
-            context,
-            widget.items[index],
-            getItemPositionInList(index, widget.items.length),
-          ),
-        );
-      },
+    /// Get offset from previous indices
+    final yOffset =
+        _prevIndices.containsKey(key) ? _prevIndices[key]! - index : 0;
+
+    return Animate(
+      key: Key(key),
+      delay: widget.animationDelay,
+      effects: [
+        SlideEffect(
+          duration: AppConstants.defaultAnimDuration *
+              widget.animationDurationMultiplier,
+          curve: AppConstants.defaultCurve,
+          begin: Offset(0, yOffset.toDouble()),
+          end: const Offset(0, 0),
+        ),
+      ],
+      child: widget.itemBuilder(
+        context,
+        widget.items[index],
+        getItemPositionInList(index, widget.items.length),
+      ),
     );
   }
 }

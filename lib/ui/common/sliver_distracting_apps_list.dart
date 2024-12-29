@@ -90,6 +90,7 @@ class _SliverDistractingAppsListState
           switchOutCurve: AppConstants.defaultCurve.flipped,
           child: allApps.hasValue
               ? SliverImplicitlyAnimatedList<String>(
+                  itemExtent: 56,
                   items: [
                     ...selectedApps,
 

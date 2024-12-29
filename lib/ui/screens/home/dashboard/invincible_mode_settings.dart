@@ -82,9 +82,6 @@ class InvincibleModeSettings extends ConsumerWidget {
           subtitleText:
               context.locale.invincible_mode_app_restrictions_tile_subtitle,
           position: ItemPosition.mid,
-          contentPosition: ItemPosition.mid,
-          contentBgColor: Colors.transparent,
-          contentBottomMargin: 0,
           content: Column(
             children: [
               /// Apps timer
@@ -139,9 +136,6 @@ class InvincibleModeSettings extends ConsumerWidget {
           subtitleText:
               context.locale.invincible_mode_group_restrictions_tile_subtitle,
           position: ItemPosition.mid,
-          contentPosition: ItemPosition.mid,
-          contentBgColor: Colors.transparent,
-          contentBottomMargin: 0,
           content: Column(
             children: [
               /// Groups timer

@@ -136,7 +136,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
         DefaultExpandableListTile(
           enabled: !app.isImpSysApp,
           position: ItemPosition.mid,
-          contentPosition: ItemPosition.mid,
           leadingIcon: FluentIcons.drink_coffee_20_regular,
           titleText: context.locale.app_active_period_tile_title,
           subtitleText: restriction.periodDurationInMins > 0

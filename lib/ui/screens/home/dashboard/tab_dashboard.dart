@@ -217,7 +217,6 @@ class TabDashboard extends ConsumerWidget {
                     ),
                   ],
                 ),
-                2.vBox,
 
                 /// Go to focus tab
                 DefaultListTile(
