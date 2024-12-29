@@ -12,6 +12,8 @@
 
 package com.mindful.android.helpers;
 
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_SELF_RESTART;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -42,7 +44,6 @@ import com.mindful.android.utils.Utils;
  * usage access settings, and application settings.
  */
 public class NewActivitiesLaunchHelper {
-    public static final String INTENT_EXTRA_IS_SELF_RESTART = "isSelfRestart";
     private static final String TAG = "Mindful.ActivityNewTaskHelper";
 
     /**

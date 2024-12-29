@@ -12,6 +12,8 @@
 
 package com.mindful.android.widgets;
 
+import static com.mindful.android.utils.AppConstants.ONE_DAY_IN_MS;
+
 import android.app.PendingIntent;
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
@@ -168,14 +170,13 @@ public class DeviceUsageWidget extends AppWidgetProvider {
 
         long screenUsageStart = screenUsageCal.getTimeInMillis();
         long dataUsageStart = dataUsageCal.getTimeInMillis();
-        final long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
         UsageStatsManager usageStatsManager = (UsageStatsManager) context.getApplicationContext().getSystemService(Context.USAGE_STATS_SERVICE);
         NetworkStatsManager networkStatsManager = (NetworkStatsManager) context.getApplicationContext().getSystemService(Context.NETWORK_STATS_SERVICE);
 
         HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, System.currentTimeMillis());
-        HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
-        HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
+        HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ONE_DAY_IN_MS);
+        HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ONE_DAY_IN_MS);
 
 
         // Fetch package info of installed apps on device

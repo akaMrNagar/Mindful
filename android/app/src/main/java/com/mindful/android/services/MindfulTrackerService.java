@@ -15,10 +15,10 @@ package com.mindful.android.services;
 import static com.mindful.android.generics.ServiceBinder.ACTION_BIND_TO_MINDFUL;
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
 import static com.mindful.android.helpers.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_MAX_PROGRESS;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_DIALOG_INFO;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PROGRESS;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_DIALOG_INFO;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_MAX_PROGRESS;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PROGRESS;
 
 import android.app.NotificationManager;
 import android.app.Service;
@@ -56,6 +56,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A service that tracks app usage, manages timers for app usage limits, and handles bedtime lockdowns.
@@ -68,7 +69,7 @@ public class MindfulTrackerService extends Service {
     private final String TAG = "Mindful.MindfulTrackerService";
     private final ServiceBinder<MindfulTrackerService> mBinder = new ServiceBinder<>(MindfulTrackerService.this);
 
-    private CountDownTimer mOngoingAppTimer;
+    private final AtomicReference<CountDownTimer> mAtomicOngoingAppTimer = new AtomicReference<>(null);
     private UsageStatsManager mUsageStatsManager;
     private DeviceLockUnlockReceiver mLockUnlockReceiver;
 
@@ -413,7 +414,7 @@ public class MindfulTrackerService extends Service {
             @Override
             public void run() {
                 // Ticks every minute
-                mOngoingAppTimer = new CountDownTimer(millisInFuture, 60 * 1000) {
+                CountDownTimer newTimer = new CountDownTimer(millisInFuture, 60 * 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         int minutesRemaining = (int) (millisUntilFinished / 60000);
@@ -438,7 +439,8 @@ public class MindfulTrackerService extends Service {
                 };
                 Log.d(TAG, "scheduleUsageAlertCountDownTimer: Timer scheduled for " + packageName + " ending at: " +
                         new Date(millisInFuture + System.currentTimeMillis()));
-                mOngoingAppTimer.start();
+                newTimer.start();
+                mAtomicOngoingAppTimer.set(newTimer);
             }
         });
     }
@@ -537,9 +539,9 @@ public class MindfulTrackerService extends Service {
      * Cancels any currently running timers for app usage, stopping ongoing countdowns.
      */
     private void cancelTimers() {
-        if (mOngoingAppTimer != null) {
-            mOngoingAppTimer.cancel();
-            mOngoingAppTimer = null;
+        if (mAtomicOngoingAppTimer.get() != null) {
+            mAtomicOngoingAppTimer.get().cancel();
+            mAtomicOngoingAppTimer.set(null);
             Log.d(TAG, "cancelTimers: Ongoing app timer is cancelled");
         }
     }

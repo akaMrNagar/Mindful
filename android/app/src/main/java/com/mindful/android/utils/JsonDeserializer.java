@@ -75,7 +75,29 @@ public class JsonDeserializer {
                 set.add(jsonArray.getString(i));
             }
         } catch (JSONException e) {
-            Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to locked apps hashset ", e);
+            Log.e(TAG, "jsonStrToLockedAppsSet: Error deserializing JSON to STRING hashset ", e);
+        }
+        return set;
+    }
+
+    /**
+     * Deserializes a JSON string into a HashSet of Integers.
+     *
+     * @param jsonString The JSON string to deserialize.
+     * @return A HashSet containing the deserialized data.
+     */
+    @NonNull
+    public static HashSet<Integer> jsonStrToIntegerHashSet(@NonNull String jsonString) {
+        HashSet<Integer> set = new HashSet<>();
+        if (jsonString.isEmpty()) return set;
+
+        try {
+            JSONArray jsonArray = new JSONArray(jsonString);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                set.add(jsonArray.getInt(i));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "jsonStrToIntegerHashSet: Error deserializing JSON to INTEGER hashset ", e);
         }
         return set;
     }

@@ -10,6 +10,10 @@
 package com.mindful.android.services;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_DIALOG_INFO;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_MAX_PROGRESS;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PROGRESS;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
@@ -67,10 +71,6 @@ public class OverlayDialogService extends Service {
 
     // Class constants
     private static final String TAG = "Mindful.OverlayDialogService";
-    public static final String INTENT_EXTRA_PACKAGE_NAME = "launchedAppPackageName";
-    public static final String INTENT_EXTRA_DIALOG_INFO = "dialogInformation";
-    public static final String INTENT_EXTRA_MAX_PROGRESS = "maxProgress";
-    public static final String INTENT_EXTRA_PROGRESS = "progress";
 
     // Instance variables
     private String mPackageName = "";

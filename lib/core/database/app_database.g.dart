@@ -4563,7 +4563,7 @@ class $SharedUniqueDataTableTable extends SharedUniqueDataTable
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => const {};
+  Set<GeneratedColumn> get $primaryKey => {id};
   @override
   SharedUniqueData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -4686,45 +4686,38 @@ class SharedUniqueDataTableCompanion extends UpdateCompanion<SharedUniqueData> {
   final Value<int> id;
   final Value<List<String>> excludedApps;
   final Value<List<String>> notificationBatchedApps;
-  final Value<int> rowid;
   const SharedUniqueDataTableCompanion({
     this.id = const Value.absent(),
     this.excludedApps = const Value.absent(),
     this.notificationBatchedApps = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   SharedUniqueDataTableCompanion.insert({
     this.id = const Value.absent(),
     this.excludedApps = const Value.absent(),
     this.notificationBatchedApps = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   static Insertable<SharedUniqueData> custom({
     Expression<int>? id,
     Expression<String>? excludedApps,
     Expression<String>? notificationBatchedApps,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (excludedApps != null) 'excluded_apps': excludedApps,
       if (notificationBatchedApps != null)
         'notification_batched_apps': notificationBatchedApps,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
   SharedUniqueDataTableCompanion copyWith(
       {Value<int>? id,
       Value<List<String>>? excludedApps,
-      Value<List<String>>? notificationBatchedApps,
-      Value<int>? rowid}) {
+      Value<List<String>>? notificationBatchedApps}) {
     return SharedUniqueDataTableCompanion(
       id: id ?? this.id,
       excludedApps: excludedApps ?? this.excludedApps,
       notificationBatchedApps:
           notificationBatchedApps ?? this.notificationBatchedApps,
-      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -4744,9 +4737,6 @@ class SharedUniqueDataTableCompanion extends UpdateCompanion<SharedUniqueData> {
           $SharedUniqueDataTableTable.$converternotificationBatchedApps
               .toSql(notificationBatchedApps.value));
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
@@ -4755,8 +4745,7 @@ class SharedUniqueDataTableCompanion extends UpdateCompanion<SharedUniqueData> {
     return (StringBuffer('SharedUniqueDataTableCompanion(')
           ..write('id: $id, ')
           ..write('excludedApps: $excludedApps, ')
-          ..write('notificationBatchedApps: $notificationBatchedApps, ')
-          ..write('rowid: $rowid')
+          ..write('notificationBatchedApps: $notificationBatchedApps')
           ..write(')'))
         .toString();
   }
@@ -6947,14 +6936,12 @@ typedef $$SharedUniqueDataTableTableInsertCompanionBuilder
   Value<int> id,
   Value<List<String>> excludedApps,
   Value<List<String>> notificationBatchedApps,
-  Value<int> rowid,
 });
 typedef $$SharedUniqueDataTableTableUpdateCompanionBuilder
     = SharedUniqueDataTableCompanion Function({
   Value<int> id,
   Value<List<String>> excludedApps,
   Value<List<String>> notificationBatchedApps,
-  Value<int> rowid,
 });
 
 class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
@@ -6981,25 +6968,21 @@ class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<List<String>> excludedApps = const Value.absent(),
             Value<List<String>> notificationBatchedApps = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
           }) =>
               SharedUniqueDataTableCompanion(
             id: id,
             excludedApps: excludedApps,
             notificationBatchedApps: notificationBatchedApps,
-            rowid: rowid,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
             Value<List<String>> excludedApps = const Value.absent(),
             Value<List<String>> notificationBatchedApps = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
           }) =>
               SharedUniqueDataTableCompanion.insert(
             id: id,
             excludedApps: excludedApps,
             notificationBatchedApps: notificationBatchedApps,
-            rowid: rowid,
           ),
         ));
 }

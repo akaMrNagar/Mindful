@@ -14,7 +14,8 @@
     <!-- app values -->
     <string name="app_name" translatable="false">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block websites and short-form content on apps. It checks URLs and content against your blocklist and prevents access to help you stay focused. \n\n⚠️Note: Your privacy is our priority. Mindful is 100% secure and works offline. We do not collect or store any personal data. </string>
-    <string name="admin_description">Mindful does not collect, store, or transmit any user data. As Free and Open Source Software (FOSS), you can review and modify the source code. Administrative privileges are required solely for essential system operations, ensuring the app functions correctly without compromising your privacy.</string>    <string name="toast_enable_notification">Please enable notification</string>
+    <string name="admin_description">Mindful does not collect, store, or transmit any user data. As Free and Open Source Software (FOSS), you can review and modify the source code. Administrative privileges are required solely for essential system operations, ensuring the app functions correctly without compromising your privacy.</string>
+    <string name="toast_enable_notification">Please enable notification</string>
     <string name="toast_blocked_content">Content blocked! going back</string>
     <string name="toast_redirecting">Filtering search results</string>
     <string name="service_running_notification_title">Mindful is running</string>
@@ -98,4 +99,9 @@
 
     <!-- internet blocker service = service for blocking specific app's internet -->
     <string name="internet_blocker_running_notification_info">Mindful is now managing internet access to help you stay focused.</string>
+
+    <!--  Placeholder will be the number of batched notifications -->
+    <string name="notification_schedule_notification_info" formatted="true">
+        You have %d notifications while you were away. They will be cleared automatically after 24 hours.
+    </string>
 </resources>

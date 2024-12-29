@@ -13,6 +13,8 @@
 package com.mindful.android.helpers;
 
 
+import static com.mindful.android.utils.AppConstants.ONE_DAY_IN_MS;
+
 import android.app.usage.NetworkStats;
 import android.app.usage.NetworkStatsManager;
 import android.app.usage.UsageStatsManager;
@@ -130,7 +132,6 @@ public class DeviceAppsHelper {
         Calendar dataUsageCal = SharedPrefsHelper.getSetDataResetTimeMins(context, null);
 
         final int todayOfWeek = screenUsageCal.get(Calendar.DAY_OF_WEEK);
-        final long ms24Hours = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
         // Loop from first day of week till today of current week
         for (int i = 1; i <= todayOfWeek; i++) {
@@ -138,12 +139,12 @@ public class DeviceAppsHelper {
             dataUsageCal.set(Calendar.DAY_OF_WEEK, i);
 
             long screenUsageStart = screenUsageCal.getTimeInMillis();
-            long screenUsageEnd = (i == todayOfWeek) ? System.currentTimeMillis() : screenUsageStart + ms24Hours;
+            long screenUsageEnd = (i == todayOfWeek) ? System.currentTimeMillis() : screenUsageStart + ONE_DAY_IN_MS;
             long dataUsageStart = dataUsageCal.getTimeInMillis();
 
             HashMap<String, Long> screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(usageStatsManager, screenUsageStart, screenUsageEnd);
-            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
-            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ms24Hours);
+            HashMap<Integer, Long> mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ONE_DAY_IN_MS);
+            HashMap<Integer, Long> wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(networkStatsManager, dataUsageStart, dataUsageStart + ONE_DAY_IN_MS);
 
             for (AndroidApp app : deviceApps) {
                 app.screenTimeThisWeek.set((i - 1), screenUsageOneDay.getOrDefault(app.packageName, 0L));

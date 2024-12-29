@@ -151,7 +151,9 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Loads List of all [NotificationSchedule] objects from the database,
   Future<List<NotificationSchedule>> fetchNotificationSchedules() async =>
-      select(notificationScheduleTable).get();
+      (select(notificationScheduleTable)
+            ..orderBy([(e) => OrderingTerm(expression: e.time)]))
+          .get();
 
   /// Insert or Update a [NotificationSchedule] object to/in the database.
   Future<NotificationSchedule> insertNotificationSchedule(
