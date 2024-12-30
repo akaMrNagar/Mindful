@@ -91,8 +91,8 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
                 // Filter internet-blocked apps
                 HashSet<String> internetBlockedApps = new HashSet<>();
-                appRestrictions.forEach((packageName, restrictions) -> {
-                    if (!restrictions.canAccessInternet) internetBlockedApps.add(packageName);
+                appRestrictions.forEach((packageName, restriction) -> {
+                    if (!restriction.canAccessInternet) internetBlockedApps.add(packageName);
                 });
 
                 // Start tracker service to update app and group restrictions

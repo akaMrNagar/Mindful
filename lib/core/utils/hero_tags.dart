@@ -92,4 +92,12 @@ class HeroTags {
   /// Tag used to identify the restriction group timer tile based on the group ID.
   static String restrictionGroupTimerTileTag(int groupId) =>
       "restrictionGroupScreen.restrictionGroupTimer.$groupId";
+
+  /// Tag used to identify the create notification schedule FAB .
+  static const newNotificationScheduleFABTag =
+      "batchNotificationScreen.newNotificationScheduleFAB";
+
+  /// Tag used to identify the notification schedule timer tile based on the schedule ID.
+  static String notificationScheduleTimerTileTag(int scheduleId) =>
+      "batchNotificationScreen.notificationScheduleTimer.$scheduleId";
 }

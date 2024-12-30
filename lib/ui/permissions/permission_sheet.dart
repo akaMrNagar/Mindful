@@ -49,14 +49,12 @@ class PermissionSheet extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              6.vBox,
-              // Handle
               RoundedContainer(
-                height: 6,
+                height: 8,
                 width: 48,
-                color: Theme.of(context).disabledColor,
+                margin: const EdgeInsets.only(top: 12, bottom: 20),
+                color: Theme.of(context).hintColor,
               ).centered,
-              24.vBox,
 
               Icon(
                 icon,

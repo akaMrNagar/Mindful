@@ -31,7 +31,7 @@ class SliverBatteryPermissionSwitchTile extends ConsumerWidget {
         permissionProvider.select((v) => v.haveIgnoreOptimizationPermission));
 
     return DefaultListTile(
-      position: ItemPosition.start,
+      position: ItemPosition.top,
       titleText: context.locale.permission_battery_optimization_tile_title,
       enabled: !havePermission,
       switchValue: havePermission,

@@ -79,8 +79,8 @@ class AppInternetSwitcher extends ConsumerWidget {
         title: context.locale.permission_vpn_title,
         description: context.locale.permission_vpn_info,
         onTapGrantPermission: () {
-          ref.read(permissionProvider.notifier).askVpnPermission();
           Navigator.of(sheetContext).maybePop();
+          ref.read(permissionProvider.notifier).askVpnPermission();
         },
       ),
     );

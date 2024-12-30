@@ -9,8 +9,8 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -18,10 +18,14 @@ class SliverShimmerList extends StatelessWidget {
   /// Placeholder shimmer list while the data is loading
   const SliverShimmerList({
     super.key,
+    this.includeLeading = true,
     this.includeSubtitle = false,
+    this.includeTrailing = false,
   });
 
+  final bool includeLeading;
   final bool includeSubtitle;
+  final bool includeTrailing;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +36,9 @@ class SliverShimmerList extends StatelessWidget {
       child: SliverList.builder(
         itemCount: itemCount,
         itemBuilder: (_, i) => DefaultListTile(
-          position: i == 0
-              ? ItemPosition.start
-              : i == (itemCount - 1)
-                  ? ItemPosition.end
-                  : ItemPosition.mid,
-          leading: const Bone.iconButton(),
+          position: getItemPositionInList(i, itemCount),
+          leading: includeLeading ? const Bone.iconButton() : null,
+          trailing: includeTrailing ? const Bone.icon() : null,
           title: Bone.text(
             width: 120.randomHalf.toDouble(),
             fontSize: 16,

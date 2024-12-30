@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -140,11 +141,7 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
                       (index) => DefaultListTile(
                         color:
                             Theme.of(context).colorScheme.surfaceContainerLow,
-                        position: index == 0
-                            ? ItemPosition.start
-                            : index == items.length - 1
-                                ? ItemPosition.end
-                                : ItemPosition.mid,
+                        position: getItemPositionInList(index, items.length),
                         leading: IgnorePointer(
                           child: Radio(
                             value: items[index].value == selected?.value,
@@ -158,8 +155,8 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
                         title: StyledText(items[index].label, fontSize: 14),
                         trailing: trailingBuilder?.call(items[index].value),
                         onPressed: () {
-                          onSelected(items[index].value);
                           Navigator.of(context).maybePop();
+                          onSelected(items[index].value);
                         },
                       ),
                     ),

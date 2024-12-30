@@ -36,6 +36,9 @@ class PermissionsModel {
   /// Indicates whether the Admin permission is granted.
   final bool haveAdminPermission;
 
+  /// Indicates whether the Notification Access permission is granted.
+  final bool haveNotificationAccessPermission;
+
   const PermissionsModel({
     this.haveNotificationPermission = true,
     this.haveUsageAccessPermission = true,
@@ -46,6 +49,7 @@ class PermissionsModel {
     this.haveAlarmsPermission = true,
     this.haveIgnoreOptimizationPermission = true,
     this.haveAdminPermission = true,
+    this.haveNotificationAccessPermission = true,
   });
 
   /// Creates a copy of the `PermissionsModel` with potentially modified permissions.
@@ -59,22 +63,19 @@ class PermissionsModel {
     bool? haveAlarmsPermission,
     bool? haveIgnoreOptimizationPermission,
     bool? haveAdminPermission,
+    bool? haveNotificationAccessPermission,
   }) {
     return PermissionsModel(
-      haveNotificationPermission:
-          haveNotificationPermission ?? this.haveNotificationPermission,
-      haveUsageAccessPermission:
-          haveUsageAccessPermission ?? this.haveUsageAccessPermission,
+      haveNotificationPermission: haveNotificationPermission ?? this.haveNotificationPermission,
+      haveUsageAccessPermission: haveUsageAccessPermission ?? this.haveUsageAccessPermission,
       haveDndPermission: haveDndPermission ?? this.haveDndPermission,
-      haveDisplayOverlayPermission:
-          haveDisplayOverlayPermission ?? this.haveDisplayOverlayPermission,
+      haveDisplayOverlayPermission: haveDisplayOverlayPermission ?? this.haveDisplayOverlayPermission,
       haveVpnPermission: haveVpnPermission ?? this.haveVpnPermission,
-      haveAccessibilityPermission:
-          haveAccessibilityPermission ?? this.haveAccessibilityPermission,
+      haveAccessibilityPermission: haveAccessibilityPermission ?? this.haveAccessibilityPermission,
       haveAlarmsPermission: haveAlarmsPermission ?? this.haveAlarmsPermission,
-      haveIgnoreOptimizationPermission: haveIgnoreOptimizationPermission ??
-          this.haveIgnoreOptimizationPermission,
+      haveIgnoreOptimizationPermission: haveIgnoreOptimizationPermission ?? this.haveIgnoreOptimizationPermission,
       haveAdminPermission: haveAdminPermission ?? this.haveAdminPermission,
+      haveNotificationAccessPermission: haveNotificationAccessPermission ?? this.haveNotificationAccessPermission,
     );
   }
 }

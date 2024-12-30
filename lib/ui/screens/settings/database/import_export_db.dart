@@ -51,7 +51,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
         DefaultHero(
           tag: HeroTags.importDatabaseTileTag,
           child: DefaultListTile(
-            position: ItemPosition.start,
+            position: ItemPosition.top,
             titleText: context.locale.import_db_tile_title,
             subtitleText: context.locale.import_db_tile_subtitle,
             leadingIcon: FluentIcons.arrow_download_20_regular,
@@ -68,7 +68,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
 
         /// Export
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           titleText: context.locale.export_db_tile_title,
           subtitleText: context.locale.export_db_tile_subtitle,
           leadingIcon: FluentIcons.arrow_upload_20_regular,

@@ -74,46 +74,21 @@ public class NotificationHelper {
     }
 
     /**
-     * Checks if notification permissions are granted and optionally asks for it if not granted.
+     * Builds and returns a notification for a foreground service with the specified content.
      *
-     * @param context          The application context used to check notification permissions.
-     * @param activity         The activity used to request notification permissions if needed.
-     * @param askPermissionToo Whether to request notification permission if not already granted.
-     * @return True if notification permissions are granted, false otherwise.
+     * @param context The application context used to access system services.
+     * @param content The content text of the notification.
+     * @return A Notification object representing the foreground service notification.
      */
-    public static boolean getAndAskNotificationPermission(@NonNull Context context, @NonNull Activity activity, boolean askPermissionToo) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
-            if (status == PackageManager.PERMISSION_GRANTED) {
-                return true;
-            }
-        } else {
-            NotificationManager notificationManager =
-                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            if (notificationManager.areNotificationsEnabled()) {
-                return true;
-            }
-        }
-
-        if (askPermissionToo) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                NewActivitiesLaunchHelper.openMindfulNotificationSection(context);
-            } else {
-                int count = SharedPrefsHelper.getSetNotificationAskCount(context, null);
-                if (count < 2) {
-                    ActivityCompat.requestPermissions(
-                            activity,
-                            new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                            0
-                    );
-                } else {
-                    NewActivitiesLaunchHelper.openMindfulNotificationSection(context);
-                }
-
-                SharedPrefsHelper.getSetNotificationAskCount(context, count + 1);
-            }
-        }
-        return false;
+    @NonNull
+    public static Notification buildFgServiceNotification(@NonNull Context context, String content) {
+        return new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setAutoCancel(true)
+                .setContentTitle(context.getString(R.string.service_running_notification_title))
+                .setContentIntent(Utils.getPendingIntentForMindful(context))
+                .setContentText(content)
+                .build();
     }
 
     /**
@@ -137,23 +112,5 @@ public class NotificationHelper {
         } else {
             Log.d(TAG, "toggleDnd: Do not have permission to modify DND mode");
         }
-    }
-
-    /**
-     * Builds and returns a notification for a foreground service with the specified content.
-     *
-     * @param context The application context used to access system services.
-     * @param content The content text of the notification.
-     * @return A Notification object representing the foreground service notification.
-     */
-    @NonNull
-    public static Notification buildFgServiceNotification(@NonNull Context context, String content) {
-        return new NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification)
-                .setAutoCancel(true)
-                .setContentTitle(context.getString(R.string.service_running_notification_title))
-                .setContentIntent(Utils.getPendingIntentForMindful(context))
-                .setContentText(content)
-                .build();
     }
 }

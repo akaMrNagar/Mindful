@@ -96,7 +96,7 @@ public class ScreenUsageHelper {
                 .max(Comparator.comparingLong(UsageEvents.Event::getTimeStamp))
                 .ifPresent(event -> {
                     String packageName = event.getPackageName();
-                    long usageTime = usageMap.getOrDefault(packageName, 0L);
+                    Long usageTime = usageMap.getOrDefault(packageName, 0L);
                     usageTime += (end - event.getTimeStamp());
                     usageMap.put(packageName, usageTime);
                 });

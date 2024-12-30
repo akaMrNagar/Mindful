@@ -89,7 +89,7 @@ class SliverUsageCards extends StatelessWidget {
 
         /// Usage info cards
         SizedBox(
-          height: 78,
+          height: 80,
           child: usageType == UsageType.screenUsage
 
               /// Screen usage card

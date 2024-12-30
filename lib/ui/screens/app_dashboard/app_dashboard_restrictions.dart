@@ -136,7 +136,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
         DefaultExpandableListTile(
           enabled: !app.isImpSysApp,
           position: ItemPosition.mid,
-          contentPosition: ItemPosition.mid,
           leadingIcon: FluentIcons.drink_coffee_20_regular,
           titleText: context.locale.app_active_period_tile_title,
           subtitleText: restriction.periodDurationInMins > 0
@@ -172,7 +171,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
         /// Associated restriction group
         DefaultListTile(
           enabled: !app.isImpSysApp,
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           titleText: context.locale.restriction_groups_tab_title,
           subtitleText:
               restrictionGroupName ?? context.locale.app_limit_status_not_set,
@@ -193,7 +192,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
           tag: HeroTags.appAlertIntervalTileTag(app.packageName),
           child: DefaultListTile(
             enabled: !app.isImpSysApp,
-            position: ItemPosition.start,
+            position: ItemPosition.top,
             titleText: context.locale.app_alert_interval_tile_title,
             subtitleText: context.locale.app_alert_interval_tile_subtitle(
               restriction.alertInterval.seconds.toTimeFull(context),
@@ -217,7 +216,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
         /// Alert type
         DefaultDropdownTile<bool>(
           enabled: !app.isImpSysApp,
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           value: restriction.alertByDialog,
           leadingIcon: FluentIcons.channel_alert_20_regular,
           dialogIcon: FluentIcons.channel_alert_20_filled,

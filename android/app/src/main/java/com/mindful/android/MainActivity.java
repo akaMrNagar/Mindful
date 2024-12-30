@@ -13,8 +13,9 @@
 package com.mindful.android;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
-import static com.mindful.android.helpers.NewActivitiesLaunchHelper.INTENT_EXTRA_IS_SELF_RESTART;
-import static com.mindful.android.services.OverlayDialogService.INTENT_EXTRA_PACKAGE_NAME;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_INITIAL_ROUTE;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_IS_SELF_RESTART;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -38,6 +39,7 @@ import com.mindful.android.models.FocusSession;
 import com.mindful.android.models.RestrictionGroup;
 import com.mindful.android.services.EmergencyPauseService;
 import com.mindful.android.services.FocusSessionService;
+import com.mindful.android.services.MindfulNotificationListenerService;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.services.MindfulVpnService;
 import com.mindful.android.utils.AppConstants;
@@ -47,6 +49,7 @@ import com.mindful.android.utils.Utils;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 
 import io.flutter.embedding.android.FlutterFragmentActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -58,8 +61,10 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
     private static final String TAG = "Mindful.MainActivity";
     private SafeServiceConnection<MindfulTrackerService> mTrackerServiceConn;
     private SafeServiceConnection<MindfulVpnService> mVpnServiceConn;
+    private SafeServiceConnection<MindfulNotificationListenerService> mNotificationServiceConn;
     private SafeServiceConnection<FocusSessionService> mFocusServiceConn;
     private ActivityResultLauncher<Intent> mVpnPermissionLauncher;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,12 +89,14 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
         // Initialize service connections
         mTrackerServiceConn = new SafeServiceConnection<>(MindfulTrackerService.class, this);
+        mNotificationServiceConn = new SafeServiceConnection<>(MindfulNotificationListenerService.class, this);
         mVpnServiceConn = new SafeServiceConnection<>(MindfulVpnService.class, this);
         mFocusServiceConn = new SafeServiceConnection<>(FocusSessionService.class, this);
 
         /// Bind to Services if they are already running
         mTrackerServiceConn.bindService();
         mVpnServiceConn.bindService();
+        mNotificationServiceConn.bindService();
         mFocusServiceConn.bindService();
     }
 
@@ -107,19 +114,18 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
-
         MethodChannel mMethodChannel = new MethodChannel(flutterEngine.getDartExecutor().getBinaryMessenger(), AppConstants.FLUTTER_METHOD_CHANNEL);
         mMethodChannel.setMethodCallHandler(this);
-        // Check if the was restarted itself during databased import
-        boolean isRestart = getIntent().getBooleanExtra(INTENT_EXTRA_IS_SELF_RESTART, false);
-        String appPackage = getIntent().getStringExtra(INTENT_EXTRA_PACKAGE_NAME);
-        if (isRestart) {
-            mMethodChannel.invokeMethod("updateIsRestartBool", true);
-        }
-        // Check if the app was launched from TLE dialog and update the targeted app
-        else if (appPackage != null && !appPackage.isEmpty()) {
-            mMethodChannel.invokeMethod("updateTargetedApp", appPackage);
-        }
+
+        // Get and set intent data
+        Intent currentIntent = getIntent();
+        Map<String, Object> intentData = new HashMap<>();
+        intentData.put("route", currentIntent.getStringExtra(INTENT_EXTRA_INITIAL_ROUTE));
+        intentData.put("targetedPackage", currentIntent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME));
+        intentData.put("isSelfRestart", currentIntent.getBooleanExtra(INTENT_EXTRA_IS_SELF_RESTART, false));
+
+        // Update intent data on flutter side
+        mMethodChannel.invokeMethod("updateIntentData", intentData);
     }
 
     @Override
@@ -136,6 +142,11 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 result.success(true);
                 break;
             }
+            case "setDataResetTime": {
+                SharedPrefsHelper.getSetDataResetTimeMins(this, call.arguments() == null ? 0 : call.arguments());
+                result.success(true);
+                break;
+            }
             case "getDeviceInfoMap": {
                 result.success(Utils.getDeviceInfoMap(this));
                 break;
@@ -148,13 +159,12 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 );
                 break;
             }
-            case "getShortsScreenTimeMs": {
-                result.success(SharedPrefsHelper.getSetShortsScreenTimeMs(this, null));
+            case "getUpComingNotifications": {
+                result.success(SharedPrefsHelper.getUpComingNotificationsArrayString(this));
                 break;
             }
-            case "setDataResetTime": {
-                SharedPrefsHelper.getSetDataResetTimeMins(this, call.arguments() == null ? 0 : call.arguments());
-                result.success(true);
+            case "getShortsScreenTimeMs": {
+                result.success(SharedPrefsHelper.getSetShortsScreenTimeMs(this, null));
                 break;
             }
             case "getNativeCrashLogs": {
@@ -239,26 +249,38 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 result.success(true);
                 break;
             }
-
-            // SECTION: Permissions handler methods ------------------------------------------------------
-            case "getAndAskNotificationPermission": {
-                result.success(NotificationHelper.getAndAskNotificationPermission(this, this, Boolean.TRUE.equals(call.arguments())));
+            case "updateDistractingNotificationApps": {
+                HashSet<String> distractingApps = SharedPrefsHelper.getSetNotificationBatchedApps(this, Utils.notNullStr(call.arguments()));
+                if (mNotificationServiceConn.isConnected()) {
+                    mNotificationServiceConn.getService().updateDistractingApps(distractingApps);
+                } else if (!distractingApps.isEmpty()) {
+                    mNotificationServiceConn.setOnConnectedCallback(service -> service.updateDistractingApps(distractingApps));
+                    mNotificationServiceConn.bindService();
+                }
+                result.success(true);
                 break;
             }
+            case "updateNotificationBatchSchedules": {
+                HashSet<Integer> todMinutes = SharedPrefsHelper.getSetNotificationBatchSchedules(this, Utils.notNullStr(call.arguments()));
+                if (!todMinutes.isEmpty()) {
+                    AlarmTasksSchedulingHelper.scheduleNotificationBatchTask(this, todMinutes);
+                } else {
+                    AlarmTasksSchedulingHelper.cancelNotificationBatchTask(this);
+                }
+                result.success(true);
+                break;
+            }
+            // SECTION: Permissions handler methods ------------------------------------------------------
             case "getAndAskAccessibilityPermission": {
                 result.success(PermissionsHelper.getAndAskAccessibilityPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
-            case "getAndAskDndPermission": {
-                result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
+            case "getAndAskAdminPermission": {
+                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskUsageAccessPermission": {
                 result.success(PermissionsHelper.getAndAskUsageAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
-                break;
-            }
-            case "getAndAskAdminPermission": {
-                result.success(PermissionsHelper.getAndAskAdminPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskIgnoreBatteryOptimizationPermission": {
@@ -271,6 +293,18 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
             }
             case "getAndAskExactAlarmPermission": {
                 result.success(PermissionsHelper.getAndAskExactAlarmPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskNotificationPermission": {
+                result.success(PermissionsHelper.getAndAskNotificationPermission(this, this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskDndPermission": {
+                result.success(PermissionsHelper.getAndAskDndPermission(this, Boolean.TRUE.equals(call.arguments())));
+                break;
+            }
+            case "getAndAskNotificationAccessPermission": {
+                result.success(PermissionsHelper.getAndAskNotificationAccessPermission(this, Boolean.TRUE.equals(call.arguments())));
                 break;
             }
             case "getAndAskVpnPermission": {
@@ -368,6 +402,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
 
         // Unbind services
         mTrackerServiceConn.unBindService();
+        mNotificationServiceConn.unBindService();
         mVpnServiceConn.unBindService();
         mFocusServiceConn.unBindService();
     }

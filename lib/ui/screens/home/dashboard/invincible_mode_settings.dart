@@ -63,7 +63,7 @@ class InvincibleModeSettings extends ConsumerWidget {
         DefaultHero(
           tag: HeroTags.invincibleModeTileTag,
           child: DefaultListTile(
-            position: ItemPosition.start,
+            position: ItemPosition.top,
             isPrimary: true,
             switchValue: invincibleMode.isInvincibleModeOn,
             leadingIcon: FluentIcons.animal_cat_20_regular,
@@ -82,9 +82,6 @@ class InvincibleModeSettings extends ConsumerWidget {
           subtitleText:
               context.locale.invincible_mode_app_restrictions_tile_subtitle,
           position: ItemPosition.mid,
-          contentPosition: ItemPosition.mid,
-          contentBgColor: Colors.transparent,
-          contentBottomMargin: 0,
           content: Column(
             children: [
               /// Apps timer
@@ -139,9 +136,6 @@ class InvincibleModeSettings extends ConsumerWidget {
           subtitleText:
               context.locale.invincible_mode_group_restrictions_tile_subtitle,
           position: ItemPosition.mid,
-          contentPosition: ItemPosition.mid,
-          contentBgColor: Colors.transparent,
-          contentBottomMargin: 0,
           content: Column(
             children: [
               /// Groups timer
@@ -193,7 +187,7 @@ class InvincibleModeSettings extends ConsumerWidget {
 
         /// Bedtime schedule
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           enabled: !invincibleMode.isInvincibleModeOn ||
               !invincibleMode.includeBedtimeSchedule,
           isSelected: invincibleMode.includeBedtimeSchedule,

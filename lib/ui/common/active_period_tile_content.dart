@@ -11,9 +11,12 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/time_period_start_end_cards.dart';
 
@@ -36,8 +39,10 @@ class ActivePeriodTileContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return RoundedContainer(
+      margin: const EdgeInsets.only(top: 2),
       padding: const EdgeInsets.all(12),
+      borderRadius: getBorderRadiusFromPosition(ItemPosition.mid),
       child: Column(
         children: [
           /// Info

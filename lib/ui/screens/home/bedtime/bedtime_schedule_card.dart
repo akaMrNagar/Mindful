@@ -22,8 +22,8 @@ import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/time_period_start_end_cards.dart';
 
-class ScheduleCard extends ConsumerWidget {
-  const ScheduleCard({super.key});
+class BedtimeScheduleCard extends ConsumerWidget {
+  const BedtimeScheduleCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +44,7 @@ class ScheduleCard extends ConsumerWidget {
 
     return RoundedContainer(
       height: 224,
-      borderRadius: getBorderRadiusFromPosition(ItemPosition.start),
+      borderRadius: getBorderRadiusFromPosition(ItemPosition.top),
       padding: const EdgeInsets.all(12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

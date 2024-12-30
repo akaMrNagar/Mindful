@@ -11,10 +11,10 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
@@ -61,13 +61,7 @@ class RestrictionGroupsScreen extends ConsumerWidget {
                       itemCount: groups.length,
                       itemBuilder: (context, index) => RestrictionGroupCard(
                         group: groups[index],
-                        position: groups.length == 1
-                            ? ItemPosition.none
-                            : index == 0
-                                ? ItemPosition.start
-                                : index == groups.length - 1
-                                    ? ItemPosition.end
-                                    : ItemPosition.mid,
+                        position: getItemPositionInList(index, groups.length),
                       ),
                     ),
             ],

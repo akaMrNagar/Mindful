@@ -38,7 +38,7 @@ class SampleRestrictionGroup extends ConsumerWidget {
         child: Column(
           children: [
             RestrictionGroupCard(
-              position: ItemPosition.start,
+              position: ItemPosition.top,
               group: RestrictionGroup(
                 id: -100,
                 groupName: "Group one",
@@ -50,7 +50,7 @@ class SampleRestrictionGroup extends ConsumerWidget {
               ),
             ),
             RestrictionGroupCard(
-              position: ItemPosition.end,
+              position: ItemPosition.bottom,
               group: RestrictionGroup(
                 id: -200,
                 timerSec: 1800,

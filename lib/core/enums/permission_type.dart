@@ -20,4 +20,5 @@ enum PermissionType {
   ignoreOptimization,
   exactAlarm,
   admin,
+  notificationAccess,
 }

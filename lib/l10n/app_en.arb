@@ -49,6 +49,10 @@
     "permission_admin_title": "Admin",
     "permission_admin_info": "Administrative privileges are needed only for essential operations to ensure the app works properly and remains tamper-proof.",
     "permission_admin_snack_alert": "Tamper protection can only be disabled during the selected time window.",
+    "permission_notification_access_title": "Notification Access",
+    "permission_notification_access_info": "Please grant notification access permission. This will allow Mindful to organize your notifications and deliver them on your schedule.",
+    "permission_notification_access_required": "Mindful requires notification access to batch and schedule notifications.",
+    "permission_notification_access_device_tile_label": "Allow notification access",
     "@----------------------------- DATE AND TIME -----------------------------": {},
     "day_today": "Today",
     "day_yesterday": "Yesterday",
@@ -119,7 +123,7 @@
     "active_period_info": "Set a time period during which access will be allowed. Outside of this time frame, access will be restricted.",
     "minimum_distracting_apps_snack_alert": "Select at least one distracting app.",
     "donation_card_title": "Support us",
-    "donation_card_info": "Mindful is  free and open-source, developed with months of dedication. If it has helped you, your donation would mean the world to us. Every contribution helps us continue improving and maintaining it for everyone.",
+    "donation_card_info": "Mindful is free and open-source, developed with months of dedication. If it has helped you, your donation would mean the world to us. Every contribution helps us continue improving and maintaining it for everyone.",
     "operation_failed_snack_alert": "Operation failed, something went wrong!",
     "donation_card_button_donate": "Donate",
     "app_restart_dialog_title": "Need restart",
@@ -207,7 +211,7 @@
     "mobile_label": "Mobile",
     "wifi_label": "Wifi",
     "restriction_groups_tile_subtitle": "Limit screen time for group of apps.",
-    "notification_groups_tile_subtitle": "Schedule alerts for group of apps.",
+    "batch_notifications_tile_subtitle": "Batch and schedule app notifications.",
     "most_used_apps_heading": "Most used apps",
     "show_all_apps_tile_title": "Show all apps",
     "@----------------------------- HOME SCREEN - WELLBEING TAB -----------------------------": {},
@@ -388,9 +392,26 @@
         }
     },
     "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
-    "@----------------------------- NOTIFICATION GROUPS SCREEN -----------------------------": {},
-    "notification_groups_tab_title": "Notification groups",
-    "notification_groups_tab_info": "Group notifications from selected apps and set a schedule, like every X hours or at a specific time. Stay updated without constant interruptions.",
+    "@----------------------------- BATCH NOTIFICATIONS SCREEN -----------------------------": {},
+    "batch_notifications_tab_title": "Batch notifications",
+    "batch_notifications_tab_info": "Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.",
+    "batched_apps_tile_title": "Batched apps",
+    "schedules_heading": "Schedules",
+    "new_schedule_fab_button": "New Schedule",
+    "new_schedule_dialog_info": "Enter a name for the notification schedule to help identify it easily.",
+    "new_schedule_dialog_field_label": "Schedule name",
+    "@----------------------------- UPCOMING NOTIFICATIONS SCREEN -----------------------------": {},
+    "upcoming_notifications_tab_title": "Notifications",
+    "upcoming_notifications_empty_list_hint": "No notifications have been batched today.",
+    "nNotifications": "{count, plural, =0{0 notification} =1{1 notification} other{{count} notifications}}",
+    "@nNotifications": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
     "emergency_fab_button": "Emergency",
     "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",

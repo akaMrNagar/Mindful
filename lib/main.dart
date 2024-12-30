@@ -10,6 +10,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/crash_log_service.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
@@ -46,6 +47,12 @@ Future<void> main() async {
     );
     return true;
   };
+
+  /// Scale app from edge-edge behind system ui
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+    overlays: [SystemUiOverlay.top],
+  );
 
   /// run main app
   runApp(

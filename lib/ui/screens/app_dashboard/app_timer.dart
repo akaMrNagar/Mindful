@@ -58,7 +58,7 @@ class AppTimer extends ConsumerWidget {
         : DefaultHero(
             tag: HeroTags.appTimerTileTag(app.packageName),
             child: DefaultListTile(
-              position: ItemPosition.start,
+              position: ItemPosition.top,
               titleText: context.locale.app_timer_tile_title,
               enabled: !app.isImpSysApp,
               subtitleText: appTimer > 0

@@ -135,8 +135,7 @@ class _CreateUpdateRestrictionGroupState
                   /// Time spent
                   Expanded(
                     child: UsageGlanceCard(
-                      borderRadius: BorderRadius.circular(6)
-                          .copyWith(topLeft: const Radius.circular(24)),
+                      position: ItemPosition.topLeft,
                       isPrimary: true,
                       icon: FluentIcons.phone_20_regular,
                       title: context.locale.restriction_group_time_spent_label,
@@ -148,8 +147,7 @@ class _CreateUpdateRestrictionGroupState
                   /// Time left
                   Expanded(
                     child: UsageGlanceCard(
-                      borderRadius: BorderRadius.circular(6)
-                          .copyWith(topRight: const Radius.circular(24)),
+                      position: ItemPosition.topRight,
                       isPrimary: true,
                       icon: FluentIcons.phone_screen_time_20_regular,
                       title: context.locale.restriction_group_time_left_label,
@@ -186,7 +184,6 @@ class _CreateUpdateRestrictionGroupState
               /// Group active period
               DefaultExpandableListTile(
                 position: ItemPosition.mid,
-                contentPosition: ItemPosition.mid,
                 leadingIcon: FluentIcons.drink_coffee_20_regular,
                 titleText: context.locale.app_active_period_tile_title,
                 accent: widget.canUpdateActivePeriod
@@ -226,7 +223,7 @@ class _CreateUpdateRestrictionGroupState
               DefaultHero(
                 tag: HeroTags.restrictionGroupTimerTileTag(_group.id),
                 child: DefaultListTile(
-                  position: ItemPosition.end,
+                  position: ItemPosition.bottom,
                   leadingIcon: FluentIcons.timer_20_regular,
                   titleText: context.locale.restriction_group_timer_tile_title,
                   accent: widget.canUpdateTimer

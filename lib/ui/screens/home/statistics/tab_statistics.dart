@@ -24,11 +24,11 @@ import 'package:mindful/models/filter_model.dart';
 import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/packages_by_filter_provider.dart';
-import 'package:mindful/ui/common/animated_apps_list.dart';
 import 'package:mindful/ui/common/battery_optimization_tip.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -101,7 +101,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           /// Restriction groups
           DefaultListTile(
-            position: ItemPosition.start,
+            position: ItemPosition.top,
             leadingIcon: FluentIcons.app_title_20_regular,
             titleText: context.locale.restriction_groups_tab_title,
             subtitleText: context.locale.restriction_groups_tile_subtitle,
@@ -111,16 +111,16 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 .pushNamed(AppRoutes.restrictionGroupsScreen),
           ).sliver,
 
-          /// Notification groups
+          /// Notification batching
           DefaultListTile(
-            position: ItemPosition.end,
-            leadingIcon: FluentIcons.alert_snooze_20_regular,
-            titleText: context.locale.notification_groups_tab_title,
-            subtitleText: context.locale.notification_groups_tile_subtitle,
+            position: ItemPosition.bottom,
+            leadingIcon: FluentIcons.channel_alert_20_regular,
+            titleText: context.locale.batch_notifications_tab_title,
+            subtitleText: context.locale.batch_notifications_tile_subtitle,
             trailing: const Icon(FluentIcons.chevron_right_20_regular),
             color: Theme.of(context).colorScheme.surfaceContainerHigh,
             onPressed: () => Navigator.of(context)
-                .pushNamed(AppRoutes.notificationGroupsScreen),
+                .pushNamed(AppRoutes.batchNotificationsScreen),
           ).sliver,
 
           ContentSectionHeader(title: context.locale.most_used_apps_heading)
@@ -134,16 +134,22 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             switchInCurve: AppConstants.defaultCurve,
             switchOutCurve: AppConstants.defaultCurve.flipped,
             child: filteredApps.hasValue
-                ? AnimatedAppsList(
-                    itemExtent: 74,
-                    appPackages: filteredApps.value ?? [],
-                    itemBuilder: (context, app, itemPosition) =>
-                        ApplicationTile(
-                      app: app,
-                      position: itemPosition,
-                      selectedUsageType: usageType,
-                      selectedDoW: _filter.selectedDayOfWeek,
-                    ),
+                ? SliverImplicitlyAnimatedList<String>(
+                    items: filteredApps.value ?? [],
+                    keyBuilder: (item) => item,
+                    itemBuilder: (context, package, itemPosition) {
+                      /// Fetch app using the package
+                      final app = ref.read(appsProvider).value?[package];
+
+                      return app != null
+                          ? ApplicationTile(
+                              app: app,
+                              position: itemPosition,
+                              selectedUsageType: usageType,
+                              selectedDoW: _filter.selectedDayOfWeek,
+                            )
+                          : 0.vBox;
+                    },
                   )
                 : const SliverShimmerList(includeSubtitle: true),
           ),

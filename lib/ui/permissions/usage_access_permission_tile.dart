@@ -50,8 +50,8 @@ class UsageAccessPermissionTile extends ConsumerWidget {
         deviceSwitchTileLabel:
             context.locale.permission_usage_device_tile_label,
         onTapGrantPermission: () {
-          ref.read(permissionProvider.notifier).askUsageAccessPermission();
           Navigator.of(sheetContext).maybePop();
+          ref.read(permissionProvider.notifier).askUsageAccessPermission();
         },
       ),
     );

@@ -26,7 +26,7 @@ class NotificationPermissionTile extends ConsumerWidget {
         .watch(permissionProvider.select((v) => v.haveNotificationPermission));
 
     return DefaultListTile(
-      position: ItemPosition.start,
+      position: ItemPosition.top,
       titleText: context.locale.permission_notification_title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
       subtitleText: havePermission

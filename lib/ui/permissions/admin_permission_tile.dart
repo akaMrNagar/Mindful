@@ -49,8 +49,8 @@ class AdminPermissionTile extends ConsumerWidget {
           title: context.locale.permission_admin_title,
           description: context.locale.permission_admin_info,
           onTapGrantPermission: () {
-            ref.read(permissionProvider.notifier).askAdminPermission();
             Navigator.of(sheetContext).maybePop();
+            ref.read(permissionProvider.notifier).askAdminPermission();
           },
         ),
       );

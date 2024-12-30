@@ -28,7 +28,7 @@ class DisplayOverlayPermissionTile extends ConsumerWidget {
         permissionProvider.select((v) => v.haveDisplayOverlayPermission));
 
     return DefaultListTile(
-      position: ItemPosition.end,
+      position: ItemPosition.bottom,
       titleText: context.locale.permission_overlay_title,
       accent: havePermission ? null : Theme.of(context).colorScheme.error,
       subtitleText: havePermission
@@ -50,8 +50,8 @@ class DisplayOverlayPermissionTile extends ConsumerWidget {
         deviceSwitchTileLabel:
             context.locale.permission_overlay_device_tile_label,
         onTapGrantPermission: () {
-          ref.read(permissionProvider.notifier).askDisplayOverlayPermission();
           Navigator.of(sheetContext).maybePop();
+          ref.read(permissionProvider.notifier).askDisplayOverlayPermission();
         },
       ),
     );

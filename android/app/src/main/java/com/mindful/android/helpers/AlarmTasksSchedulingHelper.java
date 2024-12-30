@@ -15,13 +15,14 @@ package com.mindful.android.helpers;
 import static com.mindful.android.receivers.alarm.BedtimeRoutineReceiver.ACTION_ALERT_BEDTIME;
 import static com.mindful.android.receivers.alarm.BedtimeRoutineReceiver.ACTION_START_BEDTIME;
 import static com.mindful.android.receivers.alarm.BedtimeRoutineReceiver.ACTION_STOP_BEDTIME;
+import static com.mindful.android.receivers.alarm.NotificationBatchReceiver.ACTION_PUSH_BATCH;
+import static com.mindful.android.utils.AppConstants.ONE_DAY_IN_MS;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -30,18 +31,23 @@ import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.models.BedtimeSettings;
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver;
 import com.mindful.android.receivers.alarm.MidnightResetReceiver;
+import com.mindful.android.receivers.alarm.NotificationBatchReceiver;
 import com.mindful.android.services.MindfulTrackerService;
 import com.mindful.android.utils.Utils;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Helper class for scheduling alarm tasks related to bedtime routines and midnight resets.
  */
 public class AlarmTasksSchedulingHelper {
     private static final String TAG = "Mindful.AlarmTasksSchedulingHelper";
-    private static final long oneDayInMs = 24 * 60 * 60 * 1000;
 
     /**
      * Schedules the midnight reset task if it is not already scheduled.
@@ -67,7 +73,7 @@ public class AlarmTasksSchedulingHelper {
         cal.set(Calendar.SECOND, 3); // For safe side
         cal.add(Calendar.DATE, 1);
 
-        scheduleOrUpdateAlarmTask(context, MidnightResetReceiver.class, MidnightResetReceiver.ACTION_START_MIDNIGHT_RESET, cal.getTimeInMillis());
+        scheduleOrUpdateExactAlarmTask(context, MidnightResetReceiver.class, MidnightResetReceiver.ACTION_START_MIDNIGHT_RESET, cal.getTimeInMillis());
         Log.d(TAG, "scheduleMidnightTask: Midnight reset task scheduled successfully for " + cal.getTime());
     }
 
@@ -85,19 +91,19 @@ public class AlarmTasksSchedulingHelper {
 
         // Bedtime is already ended then reschedule for the next day
         if (endTimeMs < nowInMs) {
-            alertTimeMs += oneDayInMs;
-            startTimeMs += oneDayInMs;
-            endTimeMs += oneDayInMs;
+            alertTimeMs += ONE_DAY_IN_MS;
+            startTimeMs += ONE_DAY_IN_MS;
+            endTimeMs += ONE_DAY_IN_MS;
         }
 
         // If alert time is in future
         if (alertTimeMs > nowInMs) {
-            scheduleOrUpdateAlarmTask(context, BedtimeRoutineReceiver.class, ACTION_ALERT_BEDTIME, alertTimeMs);
+            scheduleOrUpdateExactAlarmTask(context, BedtimeRoutineReceiver.class, ACTION_ALERT_BEDTIME, alertTimeMs);
         }
 
         // Bedtime start and stop tasks
-        scheduleOrUpdateAlarmTask(context, BedtimeRoutineReceiver.class, ACTION_START_BEDTIME, startTimeMs);
-        scheduleOrUpdateAlarmTask(context, BedtimeRoutineReceiver.class, ACTION_STOP_BEDTIME, endTimeMs);
+        scheduleOrUpdateExactAlarmTask(context, BedtimeRoutineReceiver.class, ACTION_START_BEDTIME, startTimeMs);
+        scheduleOrUpdateExactAlarmTask(context, BedtimeRoutineReceiver.class, ACTION_STOP_BEDTIME, endTimeMs);
         Log.d(TAG, "scheduleBedtimeStartTask: Bedtime routine tasks scheduled successfully for - "
                 + "\nalert: " + (alertTimeMs > nowInMs ? "" : "(skipping) ") + new Date(alertTimeMs)
                 + "\nstart: " + new Date(startTimeMs)
@@ -112,18 +118,8 @@ public class AlarmTasksSchedulingHelper {
      * @param context The application context.
      */
     public static void cancelBedtimeRoutineTasks(@NonNull Context context) {
-        Intent alertIntent = new Intent(context.getApplicationContext(), BedtimeRoutineReceiver.class).setAction(ACTION_ALERT_BEDTIME);
-        Intent startIntent = new Intent(context.getApplicationContext(), BedtimeRoutineReceiver.class).setAction(ACTION_START_BEDTIME);
-        Intent stopIntent = new Intent(context.getApplicationContext(), BedtimeRoutineReceiver.class).setAction(BedtimeRoutineReceiver.ACTION_STOP_BEDTIME);
-        PendingIntent alertPendingIntent = PendingIntent.getBroadcast(context, 0, alertIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        PendingIntent startPendingIntent = PendingIntent.getBroadcast(context, 0, startIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
         // Cancel the alarms
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(alertPendingIntent);
-        alarmManager.cancel(startPendingIntent);
-        alarmManager.cancel(stopPendingIntent);
+        cancelExactAlarmTasks(context, BedtimeRoutineReceiver.class, Arrays.asList(ACTION_ALERT_BEDTIME, ACTION_START_BEDTIME, ACTION_STOP_BEDTIME));
 
         // Let service know
         if (Utils.isServiceRunning(context, MindfulTrackerService.class.getName())) {
@@ -136,6 +132,47 @@ public class AlarmTasksSchedulingHelper {
     }
 
     /**
+     * Schedules next future possible notification batch.
+     *
+     * @param context      The application context.
+     * @param scheduleTods The hashset of integers representing TODs in minutes.
+     */
+    public static void scheduleNotificationBatchTask(@NonNull Context context, @NonNull HashSet<Integer> scheduleTods) {
+        List<Integer> sortedTods = scheduleTods.stream().sorted().collect(Collectors.toList());
+        if (sortedTods.isEmpty()) return;
+
+        long now = System.currentTimeMillis();
+        Long nextAlarmTime = null;
+
+        // Find the first future TOD
+        for (int tod : sortedTods) {
+            long currentTime = Utils.todToTodayCal(tod).getTimeInMillis();
+            if (currentTime > now) {
+                nextAlarmTime = currentTime;
+                break;
+            }
+        }
+
+        // If no future TOD, schedule for the first TOD of the next day
+        if (nextAlarmTime == null) {
+            nextAlarmTime = Utils.todToTodayCal(sortedTods.get(0)).getTimeInMillis() + ONE_DAY_IN_MS;
+        }
+
+        scheduleOrUpdateExactAlarmTask(context, NotificationBatchReceiver.class, ACTION_PUSH_BATCH, nextAlarmTime);
+        Log.d(TAG, "scheduleNotificationBatchTask: Notification batch task scheduled successfully for " + new Date(nextAlarmTime));
+    }
+
+    /**
+     * Cancels notification batch schedule task.
+     *
+     * @param context The application context.
+     */
+    public static void cancelNotificationBatchTask(@NonNull Context context) {
+        cancelExactAlarmTasks(context, NotificationBatchReceiver.NotificationBatchWorker.class, Collections.singletonList(ACTION_PUSH_BATCH));
+        Log.d(TAG, "cancelNotificationBatchTask: Notification batch tasks cancelled successfully");
+    }
+
+    /**
      * Schedules or updates an alarm task with the specified parameters.
      *
      * @param context       The application context.
@@ -143,7 +180,7 @@ public class AlarmTasksSchedulingHelper {
      * @param intentAction  The action to be set on the intent.
      * @param epochTimeMs   The time at which the alarm should go off, in milliseconds since epoch.
      */
-    private static void scheduleOrUpdateAlarmTask(@NonNull Context context, Class<?> receiverClass, String intentAction, long epochTimeMs) {
+    private static void scheduleOrUpdateExactAlarmTask(@NonNull Context context, Class<?> receiverClass, String intentAction, long epochTimeMs) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context.getApplicationContext(), receiverClass).setAction(intentAction);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -156,4 +193,23 @@ public class AlarmTasksSchedulingHelper {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, epochTimeMs, pendingIntent);
         }
     }
+
+    /**
+     * Cancels all the exact alarm task related to the service class and the list of actions.
+     *
+     * @param context       The application context.
+     * @param receiverClass The receiver class for the alarm.
+     * @param intentActions The list of actions to be set on the intents.
+     */
+    private static void cancelExactAlarmTasks(@NonNull Context context, Class<?> receiverClass, @NonNull List<String> intentActions) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
+        for (String action : intentActions) {
+            Intent intent = new Intent(context.getApplicationContext(), receiverClass).setAction(action);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            alarmManager.cancel(pendingIntent);
+        }
+    }
+
+
 }

@@ -12,4 +12,6 @@ mixin _$UniqueRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
       attachedDatabase.bedtimeScheduleTable;
   $FocusModeTableTable get focusModeTable => attachedDatabase.focusModeTable;
   $WellbeingTableTable get wellbeingTable => attachedDatabase.wellbeingTable;
+  $SharedUniqueDataTableTable get sharedUniqueDataTable =>
+      attachedDatabase.sharedUniqueDataTable;
 }

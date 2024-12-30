@@ -17,7 +17,6 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
 import 'package:mindful/providers/device_info_provider.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -28,11 +27,13 @@ class SliverFlexibleAppBar extends ConsumerWidget {
   const SliverFlexibleAppBar({
     super.key,
     required this.title,
+    required this.useBottomNavigation,
     this.materialBarLeading,
   });
 
   final String title;
   final Widget? materialBarLeading;
+  final bool useBottomNavigation;
 
   void _showBetaDialog(BuildContext context, String version) async {
     final reportIssue = await showConfirmationDialog(
@@ -55,8 +56,6 @@ class SliverFlexibleAppBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appVersion =
         ref.watch(deviceInfoProvider).value?.mindfulVersion ?? "Loading..";
-    final useBottomNavigation =
-        ref.watch(mindfulSettingsProvider.select((v) => v.useBottomNavigation));
 
     final showDevTag =
         appVersion.contains('debug') || appVersion.contains('beta');

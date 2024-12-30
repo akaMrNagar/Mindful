@@ -59,7 +59,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
       children: [
         /// Block instagram reels
         DefaultListTile(
-          position: ItemPosition.start,
+          position: ItemPosition.top,
           leading: Opacity(
             opacity: canModifyInsta ? 1 : 0.5,
             child: Image.asset(
@@ -128,7 +128,7 @@ class SliverShortsQuickActions extends ConsumerWidget {
 
         /// Block reddit shorts
         DefaultListTile(
-          position: ItemPosition.end,
+          position: ItemPosition.bottom,
           leading: Opacity(
             opacity: canModifyReddit ? 1 : 0.5,
             child: Image.asset(

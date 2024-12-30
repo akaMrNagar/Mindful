@@ -10,7 +10,6 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -82,106 +81,99 @@ class _DefaultScaffoldState extends ConsumerState<DefaultScaffold>
     final useBottomNavigation =
         ref.watch(mindfulSettingsProvider.select((v) => v.useBottomNavigation));
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        systemNavigationBarColor:
-            useBottomNavigation && widget.navbarItems.length >= 2
-                ? Theme.of(context).colorScheme.surfaceContainer
-                : Theme.of(context).colorScheme.surface,
-        systemNavigationBarIconBrightness:
-            Theme.of(context).colorScheme.brightness,
-      ),
-      child: Scaffold(
-        floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
-        floatingActionButton: widget.navbarItems[_controller.index].fab ??
-            const SizedBox.shrink(),
+    return Scaffold(
+      extendBody: true,
+      extendBodyBehindAppBar: true,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      floatingActionButton:
+          widget.navbarItems[_controller.index].fab ?? const SizedBox.shrink(),
 
-        /// Only visible when using bottom navigation and screen have more than 1 tab
-        bottomNavigationBar:
-            useBottomNavigation && widget.navbarItems.length >= 2
-                ? NavigationBar(
-                    selectedIndex: _controller.index,
-                    onDestinationSelected: _onTabButtonPressed,
-                    destinations: widget.navbarItems
-                        .map((e) => NavigationDestination(
-                              icon: Icon(e.icon),
-                              selectedIcon: Icon(e.filledIcon),
-                              label: e.title,
-                            ))
-                        .toList())
-                : null,
-        body: Row(
-          children: [
-            /// Vertical nav bar
-            if (!useBottomNavigation)
-              Expanded(
-                flex: 1,
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      40.vBox,
+      /// Only visible when using bottom navigation and screen have more than 1 tab
+      bottomNavigationBar: useBottomNavigation && widget.navbarItems.length >= 2
+          ? NavigationBar(
+              selectedIndex: _controller.index,
+              onDestinationSelected: _onTabButtonPressed,
+              destinations: widget.navbarItems
+                  .map((e) => NavigationDestination(
+                        icon: Icon(e.icon),
+                        selectedIcon: Icon(e.filledIcon),
+                        label: e.title,
+                      ))
+                  .toList(),
+            )
+          : null,
+      body: Row(
+        children: [
+          /// Vertical nav bar
+          if (!useBottomNavigation)
+            Expanded(
+              flex: 1,
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    40.vBox,
 
-                      /// Automatically imply back button if leading is null
-                      widget.leading ?? _backButton(context),
+                    /// Automatically imply back button if leading is null
+                    widget.leading ?? _backButton(context),
 
-                      40.vBox,
+                    40.vBox,
 
-                      /// Tab buttons
-                      Expanded(
-                        child: ListView.builder(
-                          itemCount: widget.navbarItems.length,
-                          scrollDirection: Axis.vertical,
-                          physics: const ClampingScrollPhysics(),
-                          itemBuilder: (context, index) => _TabBarButton(
-                            title: widget.navbarItems[index].title,
-                            icon: widget.navbarItems[index].filledIcon,
-                            isSelected: _controller.index == index,
-                            onTap: () => _onTabButtonPressed(index),
-                          ),
+                    /// Tab buttons
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: widget.navbarItems.length,
+                        scrollDirection: Axis.vertical,
+                        physics: const ClampingScrollPhysics(),
+                        itemBuilder: (context, index) => _TabBarButton(
+                          title: widget.navbarItems[index].title,
+                          icon: widget.navbarItems[index].filledIcon,
+                          isSelected: _controller.index == index,
+                          onTap: () => _onTabButtonPressed(index),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-            /// Tab bar view with tab body
-            Expanded(
-              flex: 6,
-              child: RotatedBox(
-                quarterTurns: useBottomNavigation ? 0 : 1,
-                child: TabBarView(
-                  controller: _controller,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: widget.navbarItems
-                      .map(
-                        (e) => RotatedBox(
-                          quarterTurns: useBottomNavigation ? 0 : -1,
-                          child: NestedScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            headerSliverBuilder:
-                                (context, innerBoxIsScrolled) => [
-                              SliverFlexibleAppBar(
-                                title: e.appBarTitle ?? e.title,
-                                materialBarLeading:
-                                    widget.leading ?? _backButton(context),
-                              ),
-                            ],
-                            body: Padding(
-                              padding: useBottomNavigation
-                                  ? const EdgeInsets.symmetric(horizontal: 12)
-                                  : const EdgeInsets.only(left: 2, right: 8),
-                              child: e.sliverBody,
-                            ),
-                          ),
-                        ),
-                      )
-                      .toList(),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+
+          /// Tab bar view with tab body
+          Expanded(
+            flex: 6,
+            child: RotatedBox(
+              quarterTurns: useBottomNavigation ? 0 : 1,
+              child: TabBarView(
+                controller: _controller,
+                physics: const NeverScrollableScrollPhysics(),
+                children: widget.navbarItems
+                    .map(
+                      (e) => RotatedBox(
+                        quarterTurns: useBottomNavigation ? 0 : -1,
+                        child: NestedScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          headerSliverBuilder: (context, innerBoxIsScrolled) =>
+                              [
+                            SliverFlexibleAppBar(
+                              title: e.appBarTitle ?? e.title,
+                              useBottomNavigation: useBottomNavigation,
+                              materialBarLeading:
+                                  widget.leading ?? _backButton(context),
+                            ),
+                          ],
+                          body: Padding(
+                            padding: useBottomNavigation
+                                ? const EdgeInsets.symmetric(horizontal: 12)
+                                : const EdgeInsets.only(left: 2, right: 8),
+                            child: e.sliverBody,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

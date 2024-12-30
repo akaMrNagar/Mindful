@@ -17,9 +17,10 @@ import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/screens/focus/focus_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
-import 'package:mindful/ui/screens/notification_groups/notification_groups_screen.dart';
+import 'package:mindful/ui/screens/batch_notifications/batch_notifications_screen.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_groups_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
+import 'package:mindful/ui/screens/upcoming_notifications/upcoming_notifications_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
 
 /// Arguments used in the family provider to sort and filter apps package based on these args.
@@ -44,7 +45,9 @@ class AppRoutes {
   static const String appDashboardScreen = '/appDashboardScreen';
   static const String settingsScreen = '/mindfulSettingsScreen';
   static const String restrictionGroupsScreen = '/restrictionGroupsScreen';
-  static const String notificationGroupsScreen = '/notificationGroupsScreen';
+  static const String batchNotificationsScreen = '/batchNotificationsScreen';
+  static const String upcomingNotificationsScreen =
+      '/upcomingNotificationsScreen';
   static const String focusScreen = '/focusScreen';
   static const String activeSessionScreen = '/activeSessionScreen';
 
@@ -53,7 +56,9 @@ class AppRoutes {
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
     restrictionGroupsScreen: (context) => const RestrictionGroupsScreen(),
-    notificationGroupsScreen: (context) => const NotificationGroupsScreen(),
+    batchNotificationsScreen: (context) => const BatchNotificationsScreen(),
+    upcomingNotificationsScreen: (context) =>
+        const UpcomingNotificationsScreen(),
 
     /// Resolve isOnboardingDone bool from arguments
     onboardingScreen: (context) => OnboardingScreen(

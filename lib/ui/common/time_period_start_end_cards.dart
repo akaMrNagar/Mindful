@@ -13,10 +13,7 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
-import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:mindful/ui/common/time_card.dart';
 
 class TimePeriodStartEndCards extends StatelessWidget {
   const TimePeriodStartEndCards({
@@ -45,13 +42,13 @@ class TimePeriodStartEndCards extends StatelessWidget {
       children: [
         /// Schedule start time
         Expanded(
-          child: _SelectedTime(
+          child: TimeCard(
             enabled: enabled,
             isModifiable: isModifiable,
             label: context.locale.schedule_start_label,
             heroTag: HeroTags.scheduleStartTimePickerTag,
             initialTime: startTime,
-            color: bgColor,
+            bgColor: bgColor,
             onChange: onStartTimeChanged,
           ),
         ),
@@ -60,95 +57,17 @@ class TimePeriodStartEndCards extends StatelessWidget {
 
         /// Schedule end time
         Expanded(
-          child: _SelectedTime(
+          child: TimeCard(
             enabled: enabled,
             isModifiable: isModifiable,
             label: context.locale.schedule_end_label,
             heroTag: HeroTags.scheduleEndTimePickerTag,
             initialTime: endTime,
-            color: bgColor,
+            bgColor: bgColor,
             onChange: onEndTimeChanged,
           ),
         ),
       ],
-    );
-  }
-}
-
-class _SelectedTime extends StatelessWidget {
-  const _SelectedTime({
-    required this.label,
-    required this.heroTag,
-    required this.enabled,
-    required this.onChange,
-    required this.initialTime,
-    this.color,
-    this.isModifiable,
-  });
-
-  final String label;
-  final Object heroTag;
-  final bool enabled;
-  final TimeOfDayAdapter initialTime;
-  final Function(TimeOfDayAdapter time) onChange;
-  final bool Function()? isModifiable;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultHero(
-      tag: heroTag,
-      child: RoundedContainer(
-        color: color,
-        padding: const EdgeInsets.all(16),
-        onPressed: enabled
-            ? () async {
-                if (!(isModifiable?.call() ?? true)) return;
-
-                final pickedTime = await showCustomTimePickerDialog(
-                  context: context,
-                  initialTime: initialTime,
-                  heroTag: heroTag,
-                  info: label,
-                );
-
-                onChange(pickedTime ?? initialTime);
-              }
-            : null,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            /// Labels "START" and "END"
-            StyledText(
-              label,
-              isSubtitle: !enabled,
-            ),
-            4.vBox,
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                /// Time in hour and minutes
-                StyledText(
-                  initialTime.format(context).split(' ').first,
-                  height: 1,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  isSubtitle: !enabled,
-                ),
-                4.hBox,
-
-                /// Time period AM/PM
-                StyledText(
-                  initialTime.format(context).split(' ').last,
-                  height: 2,
-                  isSubtitle: !enabled,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

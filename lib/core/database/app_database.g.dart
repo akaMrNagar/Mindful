@@ -1056,7 +1056,7 @@ class BedtimeScheduleTableCompanion extends UpdateCompanion<BedtimeSchedule> {
 }
 
 class $CrashLogsTableTable extends CrashLogsTable
-    with TableInfo<$CrashLogsTableTable, CrashLogs> {
+    with TableInfo<$CrashLogsTableTable, CrashLog> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -1110,7 +1110,7 @@ class $CrashLogsTableTable extends CrashLogsTable
   String get actualTableName => $name;
   static const String $name = 'crash_logs_table';
   @override
-  VerificationContext validateIntegrity(Insertable<CrashLogs> instance,
+  VerificationContext validateIntegrity(Insertable<CrashLog> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -1143,9 +1143,9 @@ class $CrashLogsTableTable extends CrashLogsTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  CrashLogs map(Map<String, dynamic> data, {String? tablePrefix}) {
+  CrashLog map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return CrashLogs(
+    return CrashLog(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       appVersion: attachedDatabase.typeMapping
@@ -1165,7 +1165,7 @@ class $CrashLogsTableTable extends CrashLogsTable
   }
 }
 
-class CrashLogs extends DataClass implements Insertable<CrashLogs> {
+class CrashLog extends DataClass implements Insertable<CrashLog> {
   /// Unique ID for crash logs
   final int id;
 
@@ -1180,7 +1180,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
 
   /// Stack trace when the error or exception was thrown
   final String stackTrace;
-  const CrashLogs(
+  const CrashLog(
       {required this.id,
       required this.appVersion,
       required this.timeStamp,
@@ -1207,10 +1207,10 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     );
   }
 
-  factory CrashLogs.fromJson(Map<String, dynamic> json,
+  factory CrashLog.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return CrashLogs(
+    return CrashLog(
       id: serializer.fromJson<int>(json['id']),
       appVersion: serializer.fromJson<String>(json['appVersion']),
       timeStamp: serializer.fromJson<DateTime>(json['timeStamp']),
@@ -1230,13 +1230,13 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
     };
   }
 
-  CrashLogs copyWith(
+  CrashLog copyWith(
           {int? id,
           String? appVersion,
           DateTime? timeStamp,
           String? error,
           String? stackTrace}) =>
-      CrashLogs(
+      CrashLog(
         id: id ?? this.id,
         appVersion: appVersion ?? this.appVersion,
         timeStamp: timeStamp ?? this.timeStamp,
@@ -1245,7 +1245,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
       );
   @override
   String toString() {
-    return (StringBuffer('CrashLogs(')
+    return (StringBuffer('CrashLog(')
           ..write('id: $id, ')
           ..write('appVersion: $appVersion, ')
           ..write('timeStamp: $timeStamp, ')
@@ -1260,7 +1260,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is CrashLogs &&
+      (other is CrashLog &&
           other.id == this.id &&
           other.appVersion == this.appVersion &&
           other.timeStamp == this.timeStamp &&
@@ -1268,7 +1268,7 @@ class CrashLogs extends DataClass implements Insertable<CrashLogs> {
           other.stackTrace == this.stackTrace);
 }
 
-class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
+class CrashLogsTableCompanion extends UpdateCompanion<CrashLog> {
   final Value<int> id;
   final Value<String> appVersion;
   final Value<DateTime> timeStamp;
@@ -1288,7 +1288,7 @@ class CrashLogsTableCompanion extends UpdateCompanion<CrashLogs> {
     this.error = const Value.absent(),
     this.stackTrace = const Value.absent(),
   });
-  static Insertable<CrashLogs> custom({
+  static Insertable<CrashLog> custom({
     Expression<int>? id,
     Expression<String>? appVersion,
     Expression<DateTime>? timeStamp,
@@ -2366,17 +2366,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
               defaultValue: Constant(DefaultHomeTab.dashboard.index))
           .withConverter<DefaultHomeTab>(
               $MindfulSettingsTableTable.$converterdefaultHomeTab);
-  static const VerificationMeta _excludedAppsMeta =
-      const VerificationMeta('excludedApps');
-  @override
-  late final GeneratedColumnWithTypeConverter<List<String>, String>
-      excludedApps = GeneratedColumn<String>(
-              'excluded_apps', aliasedName, false,
-              type: DriftSqlType.string,
-              requiredDuringInsert: false,
-              defaultValue: Constant(jsonEncode([])))
-          .withConverter<List<String>>(
-              $MindfulSettingsTableTable.$converterexcludedApps);
   static const VerificationMeta _leftEmergencyPassesMeta =
       const VerificationMeta('leftEmergencyPasses');
   @override
@@ -2436,7 +2425,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         useAmoledDark,
         useDynamicColors,
         defaultHomeTab,
-        excludedApps,
         leftEmergencyPasses,
         lastEmergencyUsed,
         isOnboardingDone,
@@ -2493,7 +2481,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
               data['use_dynamic_colors']!, _useDynamicColorsMeta));
     }
     context.handle(_defaultHomeTabMeta, const VerificationResult.success());
-    context.handle(_excludedAppsMeta, const VerificationResult.success());
     if (data.containsKey('left_emergency_passes')) {
       context.handle(
           _leftEmergencyPassesMeta,
@@ -2552,9 +2539,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
           .fromSql(attachedDatabase.typeMapping.read(
               DriftSqlType.int, data['${effectivePrefix}default_home_tab'])!),
-      excludedApps: $MindfulSettingsTableTable.$converterexcludedApps.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.string, data['${effectivePrefix}excluded_apps'])!),
       leftEmergencyPasses: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}left_emergency_passes'])!,
       lastEmergencyUsed: attachedDatabase.typeMapping.read(
@@ -2582,8 +2566,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       $converterdataResetTime = const TimeOfDayAdapterConverter();
   static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
-  static TypeConverter<List<String>, String> $converterexcludedApps =
-      const ListStringConverter();
   static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
       $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
@@ -2619,9 +2601,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   /// Default initial home tab
   final DefaultHomeTab defaultHomeTab;
 
-  /// List of app's packages which are excluded from the aggregated usage statistics.
-  final List<String> excludedApps;
-
   /// Number of emergency break passes left for today
   final int leftEmergencyPasses;
 
@@ -2647,7 +2626,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.useAmoledDark,
       required this.useDynamicColors,
       required this.defaultHomeTab,
-      required this.excludedApps,
       required this.leftEmergencyPasses,
       required this.lastEmergencyUsed,
       required this.isOnboardingDone,
@@ -2677,11 +2655,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           .$converterdefaultHomeTab
           .toSql(defaultHomeTab));
     }
-    {
-      map['excluded_apps'] = Variable<String>($MindfulSettingsTableTable
-          .$converterexcludedApps
-          .toSql(excludedApps));
-    }
     map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses);
     map['last_emergency_used'] = Variable<DateTime>(lastEmergencyUsed);
     map['is_onboarding_done'] = Variable<bool>(isOnboardingDone);
@@ -2706,7 +2679,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       useAmoledDark: Value(useAmoledDark),
       useDynamicColors: Value(useDynamicColors),
       defaultHomeTab: Value(defaultHomeTab),
-      excludedApps: Value(excludedApps),
       leftEmergencyPasses: Value(leftEmergencyPasses),
       lastEmergencyUsed: Value(lastEmergencyUsed),
       isOnboardingDone: Value(isOnboardingDone),
@@ -2733,7 +2705,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       useDynamicColors: serializer.fromJson<bool>(json['useDynamicColors']),
       defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
           .fromJson(serializer.fromJson<int>(json['defaultHomeTab'])),
-      excludedApps: serializer.fromJson<List<String>>(json['excludedApps']),
       leftEmergencyPasses:
           serializer.fromJson<int>(json['leftEmergencyPasses']),
       lastEmergencyUsed:
@@ -2764,7 +2735,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'defaultHomeTab': serializer.toJson<int>($MindfulSettingsTableTable
           .$converterdefaultHomeTab
           .toJson(defaultHomeTab)),
-      'excludedApps': serializer.toJson<List<String>>(excludedApps),
       'leftEmergencyPasses': serializer.toJson<int>(leftEmergencyPasses),
       'lastEmergencyUsed': serializer.toJson<DateTime>(lastEmergencyUsed),
       'isOnboardingDone': serializer.toJson<bool>(isOnboardingDone),
@@ -2786,7 +2756,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           bool? useAmoledDark,
           bool? useDynamicColors,
           DefaultHomeTab? defaultHomeTab,
-          List<String>? excludedApps,
           int? leftEmergencyPasses,
           DateTime? lastEmergencyUsed,
           bool? isOnboardingDone,
@@ -2803,7 +2772,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         useAmoledDark: useAmoledDark ?? this.useAmoledDark,
         useDynamicColors: useDynamicColors ?? this.useDynamicColors,
         defaultHomeTab: defaultHomeTab ?? this.defaultHomeTab,
-        excludedApps: excludedApps ?? this.excludedApps,
         leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
         lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
@@ -2823,7 +2791,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
           ..write('defaultHomeTab: $defaultHomeTab, ')
-          ..write('excludedApps: $excludedApps, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
           ..write('isOnboardingDone: $isOnboardingDone, ')
@@ -2845,7 +2812,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       useAmoledDark,
       useDynamicColors,
       defaultHomeTab,
-      excludedApps,
       leftEmergencyPasses,
       lastEmergencyUsed,
       isOnboardingDone,
@@ -2865,7 +2831,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.useAmoledDark == this.useAmoledDark &&
           other.useDynamicColors == this.useDynamicColors &&
           other.defaultHomeTab == this.defaultHomeTab &&
-          other.excludedApps == this.excludedApps &&
           other.leftEmergencyPasses == this.leftEmergencyPasses &&
           other.lastEmergencyUsed == this.lastEmergencyUsed &&
           other.isOnboardingDone == this.isOnboardingDone &&
@@ -2884,7 +2849,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<bool> useAmoledDark;
   final Value<bool> useDynamicColors;
   final Value<DefaultHomeTab> defaultHomeTab;
-  final Value<List<String>> excludedApps;
   final Value<int> leftEmergencyPasses;
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
@@ -2901,7 +2865,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
     this.defaultHomeTab = const Value.absent(),
-    this.excludedApps = const Value.absent(),
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
@@ -2919,7 +2882,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
     this.defaultHomeTab = const Value.absent(),
-    this.excludedApps = const Value.absent(),
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
@@ -2937,7 +2899,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<bool>? useAmoledDark,
     Expression<bool>? useDynamicColors,
     Expression<int>? defaultHomeTab,
-    Expression<String>? excludedApps,
     Expression<int>? leftEmergencyPasses,
     Expression<DateTime>? lastEmergencyUsed,
     Expression<bool>? isOnboardingDone,
@@ -2956,7 +2917,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       if (useAmoledDark != null) 'use_amoled_dark': useAmoledDark,
       if (useDynamicColors != null) 'use_dynamic_colors': useDynamicColors,
       if (defaultHomeTab != null) 'default_home_tab': defaultHomeTab,
-      if (excludedApps != null) 'excluded_apps': excludedApps,
       if (leftEmergencyPasses != null)
         'left_emergency_passes': leftEmergencyPasses,
       if (lastEmergencyUsed != null) 'last_emergency_used': lastEmergencyUsed,
@@ -2978,7 +2938,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<bool>? useAmoledDark,
       Value<bool>? useDynamicColors,
       Value<DefaultHomeTab>? defaultHomeTab,
-      Value<List<String>>? excludedApps,
       Value<int>? leftEmergencyPasses,
       Value<DateTime>? lastEmergencyUsed,
       Value<bool>? isOnboardingDone,
@@ -2995,7 +2954,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       useAmoledDark: useAmoledDark ?? this.useAmoledDark,
       useDynamicColors: useDynamicColors ?? this.useDynamicColors,
       defaultHomeTab: defaultHomeTab ?? this.defaultHomeTab,
-      excludedApps: excludedApps ?? this.excludedApps,
       leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
       lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
       isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
@@ -3043,11 +3001,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           .$converterdefaultHomeTab
           .toSql(defaultHomeTab.value));
     }
-    if (excludedApps.present) {
-      map['excluded_apps'] = Variable<String>($MindfulSettingsTableTable
-          .$converterexcludedApps
-          .toSql(excludedApps.value));
-    }
     if (leftEmergencyPasses.present) {
       map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses.value);
     }
@@ -3081,7 +3034,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
           ..write('defaultHomeTab: $defaultHomeTab, ')
-          ..write('excludedApps: $excludedApps, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
           ..write('isOnboardingDone: $isOnboardingDone, ')
@@ -4553,6 +4505,519 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   }
 }
 
+class $SharedUniqueDataTableTable extends SharedUniqueDataTable
+    with TableInfo<$SharedUniqueDataTableTable, SharedUniqueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SharedUniqueDataTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _excludedAppsMeta =
+      const VerificationMeta('excludedApps');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      excludedApps = GeneratedColumn<String>(
+              'excluded_apps', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
+          .withConverter<List<String>>(
+              $SharedUniqueDataTableTable.$converterexcludedApps);
+  static const VerificationMeta _notificationBatchedAppsMeta =
+      const VerificationMeta('notificationBatchedApps');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      notificationBatchedApps = GeneratedColumn<String>(
+              'notification_batched_apps', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
+          .withConverter<List<String>>(
+              $SharedUniqueDataTableTable.$converternotificationBatchedApps);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, excludedApps, notificationBatchedApps];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'shared_unique_data_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<SharedUniqueData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    context.handle(_excludedAppsMeta, const VerificationResult.success());
+    context.handle(
+        _notificationBatchedAppsMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SharedUniqueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SharedUniqueData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      excludedApps: $SharedUniqueDataTableTable.$converterexcludedApps.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}excluded_apps'])!),
+      notificationBatchedApps: $SharedUniqueDataTableTable
+          .$converternotificationBatchedApps
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}notification_batched_apps'])!),
+    );
+  }
+
+  @override
+  $SharedUniqueDataTableTable createAlias(String alias) {
+    return $SharedUniqueDataTableTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<List<String>, String> $converterexcludedApps =
+      const ListStringConverter();
+  static TypeConverter<List<String>, String> $converternotificationBatchedApps =
+      const ListStringConverter();
+}
+
+class SharedUniqueData extends DataClass
+    implements Insertable<SharedUniqueData> {
+  /// Unique ID for Shared Data
+  final int id;
+
+  /// List of app's packages which are excluded from the aggregated usage statistics.
+  final List<String> excludedApps;
+
+  /// List of app's packages whose notifications are batched.
+  final List<String> notificationBatchedApps;
+  const SharedUniqueData(
+      {required this.id,
+      required this.excludedApps,
+      required this.notificationBatchedApps});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['excluded_apps'] = Variable<String>($SharedUniqueDataTableTable
+          .$converterexcludedApps
+          .toSql(excludedApps));
+    }
+    {
+      map['notification_batched_apps'] = Variable<String>(
+          $SharedUniqueDataTableTable.$converternotificationBatchedApps
+              .toSql(notificationBatchedApps));
+    }
+    return map;
+  }
+
+  SharedUniqueDataTableCompanion toCompanion(bool nullToAbsent) {
+    return SharedUniqueDataTableCompanion(
+      id: Value(id),
+      excludedApps: Value(excludedApps),
+      notificationBatchedApps: Value(notificationBatchedApps),
+    );
+  }
+
+  factory SharedUniqueData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SharedUniqueData(
+      id: serializer.fromJson<int>(json['id']),
+      excludedApps: serializer.fromJson<List<String>>(json['excludedApps']),
+      notificationBatchedApps:
+          serializer.fromJson<List<String>>(json['notificationBatchedApps']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'excludedApps': serializer.toJson<List<String>>(excludedApps),
+      'notificationBatchedApps':
+          serializer.toJson<List<String>>(notificationBatchedApps),
+    };
+  }
+
+  SharedUniqueData copyWith(
+          {int? id,
+          List<String>? excludedApps,
+          List<String>? notificationBatchedApps}) =>
+      SharedUniqueData(
+        id: id ?? this.id,
+        excludedApps: excludedApps ?? this.excludedApps,
+        notificationBatchedApps:
+            notificationBatchedApps ?? this.notificationBatchedApps,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('SharedUniqueData(')
+          ..write('id: $id, ')
+          ..write('excludedApps: $excludedApps, ')
+          ..write('notificationBatchedApps: $notificationBatchedApps')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, excludedApps, notificationBatchedApps);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SharedUniqueData &&
+          other.id == this.id &&
+          other.excludedApps == this.excludedApps &&
+          other.notificationBatchedApps == this.notificationBatchedApps);
+}
+
+class SharedUniqueDataTableCompanion extends UpdateCompanion<SharedUniqueData> {
+  final Value<int> id;
+  final Value<List<String>> excludedApps;
+  final Value<List<String>> notificationBatchedApps;
+  const SharedUniqueDataTableCompanion({
+    this.id = const Value.absent(),
+    this.excludedApps = const Value.absent(),
+    this.notificationBatchedApps = const Value.absent(),
+  });
+  SharedUniqueDataTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.excludedApps = const Value.absent(),
+    this.notificationBatchedApps = const Value.absent(),
+  });
+  static Insertable<SharedUniqueData> custom({
+    Expression<int>? id,
+    Expression<String>? excludedApps,
+    Expression<String>? notificationBatchedApps,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (excludedApps != null) 'excluded_apps': excludedApps,
+      if (notificationBatchedApps != null)
+        'notification_batched_apps': notificationBatchedApps,
+    });
+  }
+
+  SharedUniqueDataTableCompanion copyWith(
+      {Value<int>? id,
+      Value<List<String>>? excludedApps,
+      Value<List<String>>? notificationBatchedApps}) {
+    return SharedUniqueDataTableCompanion(
+      id: id ?? this.id,
+      excludedApps: excludedApps ?? this.excludedApps,
+      notificationBatchedApps:
+          notificationBatchedApps ?? this.notificationBatchedApps,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (excludedApps.present) {
+      map['excluded_apps'] = Variable<String>($SharedUniqueDataTableTable
+          .$converterexcludedApps
+          .toSql(excludedApps.value));
+    }
+    if (notificationBatchedApps.present) {
+      map['notification_batched_apps'] = Variable<String>(
+          $SharedUniqueDataTableTable.$converternotificationBatchedApps
+              .toSql(notificationBatchedApps.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SharedUniqueDataTableCompanion(')
+          ..write('id: $id, ')
+          ..write('excludedApps: $excludedApps, ')
+          ..write('notificationBatchedApps: $notificationBatchedApps')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NotificationScheduleTableTable extends NotificationScheduleTable
+    with TableInfo<$NotificationScheduleTableTable, NotificationSchedule> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NotificationScheduleTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _isActiveMeta =
+      const VerificationMeta('isActive');
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+      'is_active', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_active" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _labelMeta = const VerificationMeta('label');
+  @override
+  late final GeneratedColumn<String> label = GeneratedColumn<String>(
+      'label', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
+  static const VerificationMeta _timeMeta = const VerificationMeta('time');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int> time =
+      GeneratedColumn<int>('time', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<TimeOfDayAdapter>(
+              $NotificationScheduleTableTable.$convertertime);
+  @override
+  List<GeneratedColumn> get $columns => [id, isActive, label, time];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'notification_schedule_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<NotificationSchedule> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(_isActiveMeta,
+          isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta));
+    }
+    if (data.containsKey('label')) {
+      context.handle(
+          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
+    }
+    context.handle(_timeMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NotificationSchedule map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NotificationSchedule(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      isActive: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_active'])!,
+      label: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}label'])!,
+      time: $NotificationScheduleTableTable.$convertertime.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.int, data['${effectivePrefix}time'])!),
+    );
+  }
+
+  @override
+  $NotificationScheduleTableTable createAlias(String alias) {
+    return $NotificationScheduleTableTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic> $convertertime =
+      const TimeOfDayAdapterConverter();
+}
+
+class NotificationSchedule extends DataClass
+    implements Insertable<NotificationSchedule> {
+  /// Unique ID for schedule
+  final int id;
+
+  /// Boolean denoting the status of this notification schedule
+  final bool isActive;
+
+  /// Name or Label for the schedule
+  final String label;
+
+  /// [TimeOfDay] in minutes of the schedule.
+  /// It is stored as total minutes.
+  final TimeOfDayAdapter time;
+  const NotificationSchedule(
+      {required this.id,
+      required this.isActive,
+      required this.label,
+      required this.time});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['is_active'] = Variable<bool>(isActive);
+    map['label'] = Variable<String>(label);
+    {
+      map['time'] = Variable<int>(
+          $NotificationScheduleTableTable.$convertertime.toSql(time));
+    }
+    return map;
+  }
+
+  NotificationScheduleTableCompanion toCompanion(bool nullToAbsent) {
+    return NotificationScheduleTableCompanion(
+      id: Value(id),
+      isActive: Value(isActive),
+      label: Value(label),
+      time: Value(time),
+    );
+  }
+
+  factory NotificationSchedule.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NotificationSchedule(
+      id: serializer.fromJson<int>(json['id']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      label: serializer.fromJson<String>(json['label']),
+      time: $NotificationScheduleTableTable.$convertertime
+          .fromJson(serializer.fromJson<dynamic>(json['time'])),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'isActive': serializer.toJson<bool>(isActive),
+      'label': serializer.toJson<String>(label),
+      'time': serializer.toJson<dynamic>(
+          $NotificationScheduleTableTable.$convertertime.toJson(time)),
+    };
+  }
+
+  NotificationSchedule copyWith(
+          {int? id, bool? isActive, String? label, TimeOfDayAdapter? time}) =>
+      NotificationSchedule(
+        id: id ?? this.id,
+        isActive: isActive ?? this.isActive,
+        label: label ?? this.label,
+        time: time ?? this.time,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('NotificationSchedule(')
+          ..write('id: $id, ')
+          ..write('isActive: $isActive, ')
+          ..write('label: $label, ')
+          ..write('time: $time')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, isActive, label, time);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NotificationSchedule &&
+          other.id == this.id &&
+          other.isActive == this.isActive &&
+          other.label == this.label &&
+          other.time == this.time);
+}
+
+class NotificationScheduleTableCompanion
+    extends UpdateCompanion<NotificationSchedule> {
+  final Value<int> id;
+  final Value<bool> isActive;
+  final Value<String> label;
+  final Value<TimeOfDayAdapter> time;
+  const NotificationScheduleTableCompanion({
+    this.id = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.label = const Value.absent(),
+    this.time = const Value.absent(),
+  });
+  NotificationScheduleTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.label = const Value.absent(),
+    this.time = const Value.absent(),
+  });
+  static Insertable<NotificationSchedule> custom({
+    Expression<int>? id,
+    Expression<bool>? isActive,
+    Expression<String>? label,
+    Expression<int>? time,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (isActive != null) 'is_active': isActive,
+      if (label != null) 'label': label,
+      if (time != null) 'time': time,
+    });
+  }
+
+  NotificationScheduleTableCompanion copyWith(
+      {Value<int>? id,
+      Value<bool>? isActive,
+      Value<String>? label,
+      Value<TimeOfDayAdapter>? time}) {
+    return NotificationScheduleTableCompanion(
+      id: id ?? this.id,
+      isActive: isActive ?? this.isActive,
+      label: label ?? this.label,
+      time: time ?? this.time,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (label.present) {
+      map['label'] = Variable<String>(label.value);
+    }
+    if (time.present) {
+      map['time'] = Variable<int>(
+          $NotificationScheduleTableTable.$convertertime.toSql(time.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NotificationScheduleTableCompanion(')
+          ..write('id: $id, ')
+          ..write('isActive: $isActive, ')
+          ..write('label: $label, ')
+          ..write('time: $time')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
@@ -4573,6 +5038,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RestrictionGroupsTableTable restrictionGroupsTable =
       $RestrictionGroupsTableTable(this);
   late final $WellbeingTableTable wellbeingTable = $WellbeingTableTable(this);
+  late final $SharedUniqueDataTableTable sharedUniqueDataTable =
+      $SharedUniqueDataTableTable(this);
+  late final $NotificationScheduleTableTable notificationScheduleTable =
+      $NotificationScheduleTableTable(this);
   late final UniqueRecordsDao uniqueRecordsDao =
       UniqueRecordsDao(this as AppDatabase);
   late final DynamicRecordsDao dynamicRecordsDao =
@@ -4591,7 +5060,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         mindfulSettingsTable,
         invincibleModeTable,
         restrictionGroupsTable,
-        wellbeingTable
+        wellbeingTable,
+        sharedUniqueDataTable,
+        notificationScheduleTable
       ];
 }
 
@@ -5039,7 +5510,7 @@ typedef $$CrashLogsTableTableUpdateCompanionBuilder = CrashLogsTableCompanion
 class $$CrashLogsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $CrashLogsTableTable,
-    CrashLogs,
+    CrashLog,
     $$CrashLogsTableTableFilterComposer,
     $$CrashLogsTableTableOrderingComposer,
     $$CrashLogsTableTableProcessedTableManager,
@@ -5090,7 +5561,7 @@ class $$CrashLogsTableTableTableManager extends RootTableManager<
 class $$CrashLogsTableTableProcessedTableManager extends ProcessedTableManager<
     _$AppDatabase,
     $CrashLogsTableTable,
-    CrashLogs,
+    CrashLog,
     $$CrashLogsTableTableFilterComposer,
     $$CrashLogsTableTableOrderingComposer,
     $$CrashLogsTableTableProcessedTableManager,
@@ -5580,7 +6051,6 @@ typedef $$MindfulSettingsTableTableInsertCompanionBuilder
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
   Value<DefaultHomeTab> defaultHomeTab,
-  Value<List<String>> excludedApps,
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
@@ -5599,7 +6069,6 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
   Value<DefaultHomeTab> defaultHomeTab,
-  Value<List<String>> excludedApps,
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
@@ -5638,7 +6107,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
             Value<DefaultHomeTab> defaultHomeTab = const Value.absent(),
-            Value<List<String>> excludedApps = const Value.absent(),
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
@@ -5656,7 +6124,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
             defaultHomeTab: defaultHomeTab,
-            excludedApps: excludedApps,
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
@@ -5674,7 +6141,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
             Value<DefaultHomeTab> defaultHomeTab = const Value.absent(),
-            Value<List<String>> excludedApps = const Value.absent(),
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
@@ -5692,7 +6158,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
             defaultHomeTab: defaultHomeTab,
-            excludedApps: excludedApps,
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
@@ -5770,13 +6235,6 @@ class $$MindfulSettingsTableTableFilterComposer
   ColumnWithTypeConverterFilters<DefaultHomeTab, DefaultHomeTab, int>
       get defaultHomeTab => $state.composableBuilder(
           column: $state.table.defaultHomeTab,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get excludedApps => $state.composableBuilder(
-          column: $state.table.excludedApps,
           builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
               column,
               joinBuilders: joinBuilders));
@@ -5859,11 +6317,6 @@ class $$MindfulSettingsTableTableOrderingComposer
 
   ColumnOrderings<int> get defaultHomeTab => $state.composableBuilder(
       column: $state.table.defaultHomeTab,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get excludedApps => $state.composableBuilder(
-      column: $state.table.excludedApps,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -6478,6 +6931,243 @@ class $$WellbeingTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$SharedUniqueDataTableTableInsertCompanionBuilder
+    = SharedUniqueDataTableCompanion Function({
+  Value<int> id,
+  Value<List<String>> excludedApps,
+  Value<List<String>> notificationBatchedApps,
+});
+typedef $$SharedUniqueDataTableTableUpdateCompanionBuilder
+    = SharedUniqueDataTableCompanion Function({
+  Value<int> id,
+  Value<List<String>> excludedApps,
+  Value<List<String>> notificationBatchedApps,
+});
+
+class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SharedUniqueDataTableTable,
+    SharedUniqueData,
+    $$SharedUniqueDataTableTableFilterComposer,
+    $$SharedUniqueDataTableTableOrderingComposer,
+    $$SharedUniqueDataTableTableProcessedTableManager,
+    $$SharedUniqueDataTableTableInsertCompanionBuilder,
+    $$SharedUniqueDataTableTableUpdateCompanionBuilder> {
+  $$SharedUniqueDataTableTableTableManager(
+      _$AppDatabase db, $SharedUniqueDataTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$SharedUniqueDataTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$SharedUniqueDataTableTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$SharedUniqueDataTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<List<String>> excludedApps = const Value.absent(),
+            Value<List<String>> notificationBatchedApps = const Value.absent(),
+          }) =>
+              SharedUniqueDataTableCompanion(
+            id: id,
+            excludedApps: excludedApps,
+            notificationBatchedApps: notificationBatchedApps,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<List<String>> excludedApps = const Value.absent(),
+            Value<List<String>> notificationBatchedApps = const Value.absent(),
+          }) =>
+              SharedUniqueDataTableCompanion.insert(
+            id: id,
+            excludedApps: excludedApps,
+            notificationBatchedApps: notificationBatchedApps,
+          ),
+        ));
+}
+
+class $$SharedUniqueDataTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $SharedUniqueDataTableTable,
+        SharedUniqueData,
+        $$SharedUniqueDataTableTableFilterComposer,
+        $$SharedUniqueDataTableTableOrderingComposer,
+        $$SharedUniqueDataTableTableProcessedTableManager,
+        $$SharedUniqueDataTableTableInsertCompanionBuilder,
+        $$SharedUniqueDataTableTableUpdateCompanionBuilder> {
+  $$SharedUniqueDataTableTableProcessedTableManager(super.$state);
+}
+
+class $$SharedUniqueDataTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $SharedUniqueDataTableTable> {
+  $$SharedUniqueDataTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get excludedApps => $state.composableBuilder(
+          column: $state.table.excludedApps,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get notificationBatchedApps => $state.composableBuilder(
+          column: $state.table.notificationBatchedApps,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$SharedUniqueDataTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $SharedUniqueDataTableTable> {
+  $$SharedUniqueDataTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get excludedApps => $state.composableBuilder(
+      column: $state.table.excludedApps,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get notificationBatchedApps =>
+      $state.composableBuilder(
+          column: $state.table.notificationBatchedApps,
+          builder: (column, joinBuilders) =>
+              ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+typedef $$NotificationScheduleTableTableInsertCompanionBuilder
+    = NotificationScheduleTableCompanion Function({
+  Value<int> id,
+  Value<bool> isActive,
+  Value<String> label,
+  Value<TimeOfDayAdapter> time,
+});
+typedef $$NotificationScheduleTableTableUpdateCompanionBuilder
+    = NotificationScheduleTableCompanion Function({
+  Value<int> id,
+  Value<bool> isActive,
+  Value<String> label,
+  Value<TimeOfDayAdapter> time,
+});
+
+class $$NotificationScheduleTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $NotificationScheduleTableTable,
+    NotificationSchedule,
+    $$NotificationScheduleTableTableFilterComposer,
+    $$NotificationScheduleTableTableOrderingComposer,
+    $$NotificationScheduleTableTableProcessedTableManager,
+    $$NotificationScheduleTableTableInsertCompanionBuilder,
+    $$NotificationScheduleTableTableUpdateCompanionBuilder> {
+  $$NotificationScheduleTableTableTableManager(
+      _$AppDatabase db, $NotificationScheduleTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer: $$NotificationScheduleTableTableFilterComposer(
+              ComposerState(db, table)),
+          orderingComposer: $$NotificationScheduleTableTableOrderingComposer(
+              ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$NotificationScheduleTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<String> label = const Value.absent(),
+            Value<TimeOfDayAdapter> time = const Value.absent(),
+          }) =>
+              NotificationScheduleTableCompanion(
+            id: id,
+            isActive: isActive,
+            label: label,
+            time: time,
+          ),
+          getInsertCompanionBuilder: ({
+            Value<int> id = const Value.absent(),
+            Value<bool> isActive = const Value.absent(),
+            Value<String> label = const Value.absent(),
+            Value<TimeOfDayAdapter> time = const Value.absent(),
+          }) =>
+              NotificationScheduleTableCompanion.insert(
+            id: id,
+            isActive: isActive,
+            label: label,
+            time: time,
+          ),
+        ));
+}
+
+class $$NotificationScheduleTableTableProcessedTableManager
+    extends ProcessedTableManager<
+        _$AppDatabase,
+        $NotificationScheduleTableTable,
+        NotificationSchedule,
+        $$NotificationScheduleTableTableFilterComposer,
+        $$NotificationScheduleTableTableOrderingComposer,
+        $$NotificationScheduleTableTableProcessedTableManager,
+        $$NotificationScheduleTableTableInsertCompanionBuilder,
+        $$NotificationScheduleTableTableUpdateCompanionBuilder> {
+  $$NotificationScheduleTableTableProcessedTableManager(super.$state);
+}
+
+class $$NotificationScheduleTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $NotificationScheduleTableTable> {
+  $$NotificationScheduleTableTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get label => $state.composableBuilder(
+      column: $state.table.label,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get time => $state.composableBuilder(
+          column: $state.table.time,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$NotificationScheduleTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $NotificationScheduleTableTable> {
+  $$NotificationScheduleTableTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<bool> get isActive => $state.composableBuilder(
+      column: $state.table.isActive,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get label => $state.composableBuilder(
+      column: $state.table.label,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get time => $state.composableBuilder(
+      column: $state.table.time,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
@@ -6502,4 +7192,9 @@ class _$AppDatabaseManager {
           _db, _db.restrictionGroupsTable);
   $$WellbeingTableTableTableManager get wellbeingTable =>
       $$WellbeingTableTableTableManager(_db, _db.wellbeingTable);
+  $$SharedUniqueDataTableTableTableManager get sharedUniqueDataTable =>
+      $$SharedUniqueDataTableTableTableManager(_db, _db.sharedUniqueDataTable);
+  $$NotificationScheduleTableTableTableManager get notificationScheduleTable =>
+      $$NotificationScheduleTableTableTableManager(
+          _db, _db.notificationScheduleTable);
 }

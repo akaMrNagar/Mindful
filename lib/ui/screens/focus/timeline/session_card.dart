@@ -24,8 +24,8 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class SessionTile extends StatelessWidget {
-  const SessionTile({
+class SessionCard extends StatelessWidget {
+  const SessionCard({
     super.key,
     required this.session,
     this.position,

@@ -21,7 +21,7 @@ import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/android_app.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/shared_unique_data_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/screens/app_dashboard/emergency_fab.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -62,7 +62,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
   }
 
   void _includeExcludeApp(bool isExcluded) {
-    ref.read(mindfulSettingsProvider.notifier).includeExcludeApp(
+    ref.read(sharedUniqueDataProvider.notifier).includeExcludeApp(
           widget.app.packageName,
           !isExcluded,
         );
@@ -86,7 +86,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     final isPurged =
         appTimer > 0 && appTimer <= widget.app.screenTimeThisWeek[todayOfWeek];
 
-    final isExcludedFromStats = ref.watch(mindfulSettingsProvider
+    final isExcludedFromStats = ref.watch(sharedUniqueDataProvider
         .select((v) => v.excludedApps.contains(widget.app.packageName)));
 
     final isNetworkOnlyApp =
@@ -166,7 +166,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
               /// Launch app button
               DefaultListTile(
-                position: ItemPosition.start,
+                position: ItemPosition.top,
                 titleText: context.locale.launch_app_tile_title,
                 subtitleText:
                     context.locale.launch_app_tile_subtitle(widget.app.name),
@@ -188,7 +188,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
               /// Exclude from usage chart
               DefaultListTile(
                 enabled: !isNetworkOnlyApp,
-                position: ItemPosition.end,
+                position: ItemPosition.bottom,
                 leadingIcon: isExcludedFromStats
                     ? FluentIcons.phone_dismiss_20_regular
                     : FluentIcons.phone_20_regular,
