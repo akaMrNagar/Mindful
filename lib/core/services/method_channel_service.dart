@@ -43,13 +43,9 @@ class MethodChannelService {
   Future<void> init() async {
     _methodChannel.setMethodCallHandler(
       (call) async {
-        print(
-          "Received method call: ${call.method} with arg: ${call.arguments}",
-        );
         if (call.method == "updateIntentData") {
-          debugPrint("updateIntentData(): Intent data updated");
           _intentData = IntentData.fromMap(call.arguments as Map);
-          debugPrint("updateIntentData(): parsed successfully");
+          debugPrint("updateIntentData(): Intent data updated");
         }
       },
     );

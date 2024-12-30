@@ -74,8 +74,8 @@ class _ScheduleCard extends StatelessWidget {
   final ItemPosition position;
   final bool enabled;
 
-  IconData _resolveIconFromTime(int hourOfDay) => hourOfDay.isBetween(6, 12)
-      ? FluentIcons.weather_sunny_high_20_filled // morning (6-12) am
+  IconData _resolveIconFromTime(int hourOfDay) => hourOfDay.isBetween(5, 12)
+      ? FluentIcons.weather_sunny_high_20_filled // morning (5-12) am
       : hourOfDay.isBetween(12, 16)
           ? FluentIcons.weather_sunny_20_filled // noon (12-4) pm
           : hourOfDay.isBetween(16, 21)
@@ -112,12 +112,14 @@ class _ScheduleCard extends StatelessWidget {
                       heroTag: HeroTags.notificationScheduleTimerTileTag(
                         schedule.id,
                       ),
-                      enabled: schedule.isActive && enabled,
+                      enabled: enabled,
                       icon: _resolveIconFromTime(schedule.time.hour),
                       iconColor: accent,
                       initialTime: schedule.time,
-                      onChange: (newTime) =>
-                          onUpdate(schedule.copyWith(time: newTime)),
+                      onChange: (newTime) {
+                        if (newTime == schedule.time) return;
+                        onUpdate(schedule.copyWith(time: newTime));
+                      },
                     ),
 
                     /// Switch

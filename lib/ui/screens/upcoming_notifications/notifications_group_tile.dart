@@ -8,12 +8,14 @@
  *
  */
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/models/notification_model.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
@@ -21,35 +23,46 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class NotificationsGroupTile extends ConsumerWidget {
-  const NotificationsGroupTile({super.key});
+  const NotificationsGroupTile({
+    super.key,
+    required this.packageName,
+    required this.notifications,
+    required this.position,
+  });
+
+  final String packageName;
+  final List<NotificationModel> notifications;
+  final ItemPosition position;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final packageName = "com.instagram.android";
     final app = ref.watch(appsProvider.select((v) => v.value?[packageName]));
 
-    return DefaultExpandableListTile(
-      titleText: "Instagram",
-      subtitle: StyledText(
-        "8 notifications",
-        fontSize: 14,
-        color: Theme.of(context).hintColor,
-      ),
-      leading: app != null ? ApplicationIcon(app: app) : null,
-      leadingIcon: app == null ? FluentIcons.delete_20_regular : null,
-      position: ItemPosition.top,
-      contentPosition: ItemPosition.mid,
-      content: ListView.builder(
-        shrinkWrap: true,
-        itemCount: 3,
-        padding: const EdgeInsets.symmetric(),
-        itemBuilder: (context, index) => _Notification(
-          title: "Some title",
-          content: "Notification content",
-          timeStamp: DateTime.now(),
-        ),
-      ),
-    );
+    return app == null
+        ? 0.vBox
+        : DefaultExpandableListTile(
+            titleText: app.name,
+            subtitle: StyledText(
+              context.locale.nNotifications(notifications.length),
+              fontSize: 14,
+              color: Theme.of(context).hintColor,
+            ),
+            leading: ApplicationIcon(app: app),
+            position: position,
+            content: ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: notifications.length,
+              padding: const EdgeInsets.symmetric(),
+              itemBuilder: (context, index) => _Notification(
+                title: notifications[index].titleText,
+                content: notifications[index].contentText,
+                timeStamp: notifications[index].timeStamp,
+                onPressed: () => MethodChannelService.instance
+                    .openAppWithPackage(packageName),
+              ),
+            ),
+          );
   }
 }
 
@@ -58,17 +71,19 @@ class _Notification extends StatelessWidget {
     required this.title,
     required this.content,
     required this.timeStamp,
+    required this.onPressed,
   });
 
   final String title;
   final String content;
   final DateTime timeStamp;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
     return DefaultListTile(
-      color: Theme.of(context).colorScheme.surfaceContainerHigh,
       position: ItemPosition.mid,
+      onPressed: onPressed,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

@@ -118,6 +118,10 @@
             android:name=".receivers.alarm.MidnightResetReceiver"
             android:enabled="true"
             android:exported="false" />
+        <receiver
+            android:name=".receivers.alarm.NotificationBatchReceiver"
+            android:enabled="true"
+            android:exported="false" />
         <!-- _________________________________________________________________________________ -->
         <!-- ________________________________ SERVICES _______________________________________ -->
         <!-- _________________________________________________________________________________ -->

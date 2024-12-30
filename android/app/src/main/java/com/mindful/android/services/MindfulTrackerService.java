@@ -405,44 +405,50 @@ public class MindfulTrackerService extends Service {
             boolean alertByDialog,
             long millisInFuture
     ) {
-        cancelTimers();
-        final Set<Integer> alertMinuteTicks = getAlertTickFromDuration(millisInFuture, alertIntervalSec);
+        try {
+            cancelTimers();
+            HashSet<Integer> alertMinuteTicks = getAlertTickFromDuration(millisInFuture, alertIntervalSec);
 
-        // This method is called on a background thread so we have to schedule the timer from the main thread.
-        // We can't schedule timer(background task) from another background thread. It will throw exception
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                // Ticks every minute
-                CountDownTimer newTimer = new CountDownTimer(millisInFuture, 60 * 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int minutesRemaining = (int) (millisUntilFinished / 60000);
+            // This method is called on a background thread so we have to schedule the timer from the main thread.
+            // We can't schedule timer(background task) from another background thread. It will throw exception
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    // Ticks every minute
+                    CountDownTimer newTimer = new CountDownTimer(millisInFuture, 60 * 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            int minutesRemaining = (int) (millisUntilFinished / 60000);
 
-                        // Trigger alert if remaining time in minutes matches any alert time
-                        if (alertMinuteTicks.contains(minutesRemaining)) {
-                            if (unfinishedReason != null && alertByDialog) {
-                                showOverlayDialog(packageName, unfinishedReason);
-                            } else {
-                                pushUsageAlertNotification(packageName, minutesRemaining);
+                            // Trigger alert if remaining time in minutes matches any alert time
+                            if (alertMinuteTicks.contains(minutesRemaining)) {
+                                if (unfinishedReason != null && alertByDialog) {
+                                    showOverlayDialog(packageName, unfinishedReason);
+                                } else {
+                                    pushUsageAlertNotification(packageName, minutesRemaining);
+                                }
+                                // Remove the triggered alert to avoid re-triggering in subsequent ticks
+                                alertMinuteTicks.remove(minutesRemaining);
                             }
-                            // Remove the triggered alert to avoid re-triggering in subsequent ticks
-                            alertMinuteTicks.remove(minutesRemaining);
                         }
-                    }
 
-                    @Override
-                    public void onFinish() {
-                        Log.d(TAG, "scheduleUsageAlertCountDownTimer: Countdown finished for package: " + packageName);
-                        onNewAppLaunched(packageName);
-                    }
-                };
-                Log.d(TAG, "scheduleUsageAlertCountDownTimer: Timer scheduled for " + packageName + " ending at: " +
-                        new Date(millisInFuture + System.currentTimeMillis()));
-                newTimer.start();
-                mAtomicOngoingAppTimer.set(newTimer);
-            }
-        });
+                        @Override
+                        public void onFinish() {
+                            Log.d(TAG, "scheduleUsageAlertCountDownTimer: Countdown finished for package: " + packageName);
+                            onNewAppLaunched(packageName);
+                        }
+                    };
+                    Log.d(TAG, "scheduleUsageAlertCountDownTimer: Timer scheduled for " + packageName + " ending at: " +
+                            new Date(millisInFuture + System.currentTimeMillis()));
+                    newTimer.start();
+                    mAtomicOngoingAppTimer.set(newTimer);
+                }
+            });
+
+        } catch (Exception e) {
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e);
+            Log.e(TAG, "scheduleUsageAlertCountDownTimer: Failed to schedule timer for app: " + packageName, e);
+        }
     }
 
 
@@ -509,11 +515,11 @@ public class MindfulTrackerService extends Service {
      * @return Set of alert ticks for minutes
      */
     @NonNull
-    private Set<Integer> getAlertTickFromDuration(long timerDurationMS, int intervalSec) {
+    private HashSet<Integer> getAlertTickFromDuration(long timerDurationMS, int intervalSec) {
         int timerSeconds = (int) (timerDurationMS / 1000);
-        final Set<Integer> alertTicks = new LinkedHashSet<>();
-        if (timerSeconds > 300) alertTicks.add(5); // 5-minute alert
+        final HashSet<Integer> alertTicks = new LinkedHashSet<>();
         if (timerSeconds > 60) alertTicks.add(1);    // 1-minute alert
+        if (timerSeconds > 300) alertTicks.add(5); // 5-minute alert
 
         // Add additional alerts based on the interval, in minutes, ensuring no duplicates
         for (int i = intervalSec; i < timerSeconds; i += intervalSec) {

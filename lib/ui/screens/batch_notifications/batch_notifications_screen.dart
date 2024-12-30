@@ -18,7 +18,9 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/shared_unique_data_provider.dart';
+import 'package:mindful/providers/upcoming_notifications_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
@@ -39,6 +41,10 @@ class BatchNotificationsScreen extends ConsumerWidget {
     final batchedAppsCount = ref.watch(sharedUniqueDataProvider
         .select((v) => v.notificationBatchedApps.length));
 
+    final upcomingNotificationsCount = ref.watch(upcomingNotificationsProvider
+            .select((v) => v.value?.values.fold(0, (v, e) => v + e.length))) ??
+        0;
+
     /// Glance card badge
     final badgeIcon = Icon(
       FluentIcons.arrow_up_right_20_filled,
@@ -53,64 +59,69 @@ class BatchNotificationsScreen extends ConsumerWidget {
           filledIcon: FluentIcons.channel_alert_20_filled,
           title: context.locale.batch_notifications_tab_title,
           fab: havePermission ? const NewNotificationScheduleFab() : null,
-          sliverBody: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              /// Information about notification groups
-              StyledText(context.locale.batch_notifications_tab_info).sliver,
+          sliverBody: DefaultRefreshIndicator(
+            onRefresh: ref
+                .read(upcomingNotificationsProvider.notifier)
+                .refreshNotifications,
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                /// Information about notification groups
+                StyledText(context.locale.batch_notifications_tab_info).sliver,
 
-              16.vSliverBox,
+                16.vSliverBox,
 
-              /// Upcoming notifications and Batched apps
-              Row(
-                children: [
-                  /// Upcoming notifications
-                  Expanded(
-                    child: UsageGlanceCard(
-                      isPrimary: true,
-                      badge: badgeIcon,
-                      position: havePermission
-                          ? ItemPosition.left
-                          : ItemPosition.topLeft,
-                      icon: FluentIcons.alert_badge_20_regular,
-                      title: context.locale.upcoming_notifications_tab_title,
-                      info: "35",
-                      onTap: () => Navigator.of(context)
-                          .pushNamed(AppRoutes.upcomingNotificationsScreen),
-                    ),
-                  ),
-                  4.hBox,
-
-                  /// Batched apps
-                  Expanded(
-                    child: UsageGlanceCard(
-                      isPrimary: true,
-                      badge: badgeIcon,
-                      position: havePermission
-                          ? ItemPosition.right
-                          : ItemPosition.topRight,
-                      icon: FluentIcons.app_recent_20_regular,
-                      title: context.locale.batched_apps_tile_title,
-                      info: batchedAppsCount.toString(),
-                      onTap: () => showDefaultBottomSheet(
-                        context: context,
-                        sliverBody: const SliverBatchedAppsList(),
+                /// Upcoming notifications and Batched apps
+                Row(
+                  children: [
+                    /// Upcoming notifications
+                    Expanded(
+                      child: UsageGlanceCard(
+                        isPrimary: true,
+                        badge: badgeIcon,
+                        position: havePermission
+                            ? ItemPosition.left
+                            : ItemPosition.topLeft,
+                        icon: FluentIcons.alert_badge_20_regular,
+                        title: context.locale.upcoming_notifications_tab_title,
+                        info: upcomingNotificationsCount.toString(),
+                        onTap: () => Navigator.of(context)
+                            .pushNamed(AppRoutes.upcomingNotificationsScreen),
                       ),
                     ),
-                  ),
-                ],
-              ).sliver,
+                    4.hBox,
 
-              /// Permission card
-              const NotificationAccessPermissionCard(),
+                    /// Batched apps
+                    Expanded(
+                      child: UsageGlanceCard(
+                        isPrimary: true,
+                        badge: badgeIcon,
+                        position: havePermission
+                            ? ItemPosition.right
+                            : ItemPosition.topRight,
+                        icon: FluentIcons.app_recent_20_regular,
+                        title: context.locale.batched_apps_tile_title,
+                        info: batchedAppsCount.toString(),
+                        onTap: () => showDefaultBottomSheet(
+                          context: context,
+                          sliverBody: const SliverBatchedAppsList(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ).sliver,
 
-              /// Daily Schedules
-              ContentSectionHeader(title: context.locale.schedules_heading)
-                  .sliver,
-              SliverSchedulesList(
-                haveNotificationAccessPermission: havePermission,
-              ),
-            ],
+                /// Permission card
+                const NotificationAccessPermissionCard(),
+
+                /// Daily Schedules
+                ContentSectionHeader(title: context.locale.schedules_heading)
+                    .sliver,
+                SliverSchedulesList(
+                  haveNotificationAccessPermission: havePermission,
+                ),
+              ],
+            ),
           ),
         )
       ],
