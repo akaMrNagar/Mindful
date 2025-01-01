@@ -28,7 +28,6 @@ class DefaultSlideToRemove extends StatelessWidget {
       key: key,
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
-        dismissible: DismissiblePane(onDismissed: onDismiss),
         children: [
           SlidableAction(
             autoClose: true,
