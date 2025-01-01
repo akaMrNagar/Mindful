@@ -21,24 +21,21 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.mindful.android.generics.ServiceBinder;
 import com.mindful.android.helpers.SharedPrefsHelper;
 import com.mindful.android.models.UpcomingNotification;
 import com.mindful.android.utils.Utils;
 
-import org.jetbrains.annotations.Contract;
-
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Set;
 
 
 public class MindfulNotificationListenerService extends NotificationListenerService {
     private final String TAG = "Mindful.MindfulNotificationService";
     private final ServiceBinder<MindfulNotificationListenerService> mBinder = new ServiceBinder<>(MindfulNotificationListenerService.this);
+    private final Set<String> mSocialMediaPackages = Set.of("com.whatsapp", "com.instagram.android", "com.snapchat.android");
+
     private HashSet<String> mDistractingApps = new HashSet<>(0);
     private boolean mIsListenerActive = false;
 
@@ -46,14 +43,19 @@ public class MindfulNotificationListenerService extends NotificationListenerServ
     public void onListenerConnected() {
         super.onListenerConnected();
         mDistractingApps = SharedPrefsHelper.getSetNotificationBatchedApps(this, null);
+
+        //
+        SharedPrefsHelper.insertCrashLogToPrefs(this, new Throwable("MindfulNotificationListenerService is CONNECTED by system"));
         mIsListenerActive = true;
     }
 
     @Override
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
-        mIsListenerActive = false;
 
+        //
+        SharedPrefsHelper.insertCrashLogToPrefs(this, new Throwable("MindfulNotificationListenerService is DIS-CONNECTED by system"));
+        mIsListenerActive = false;
     }
 
     @Override
@@ -62,33 +64,34 @@ public class MindfulNotificationListenerService extends NotificationListenerServ
         if (!mIsListenerActive) return;
         String packageName = sbn.getPackageName();
         try {
-
             // Return if the posting app is not marked as distracting
             if (!mDistractingApps.contains(packageName) || !sbn.isClearable()) return;
+
 
             // Dismiss notification
             cancelNotification(sbn.getKey());
             Log.d(TAG, "onNotificationPosted: Notification dismissed");
 
-            // Check if we need to store it or not
-            if (shouldStoreNotification(packageName, sbn.getTag())) {
-                UpcomingNotification notification = new UpcomingNotification(sbn);
-                SharedPrefsHelper.insertNotificationToPrefs(this, notification);
-                Log.d(TAG, "onNotificationPosted: Notification stored from package: " + packageName);
+            // Return if it is from social media but does not have tag
+            if (sbn.getTag() == null && mSocialMediaPackages.contains(packageName)) return;
+
+            // Check if we can store it or not
+            UpcomingNotification notification = new UpcomingNotification(sbn);
+            if (notification.titleText.isEmpty() || notification.contentText.isEmpty()) {
+                Log.d(TAG, "onNotificationPosted: Notification is not valid, so skipping it from storing.");
+                SharedPrefsHelper.insertCrashLogToPrefs(
+                        this,
+                        new Exception("Invalid notification from " + packageName + " with title: " + notification.titleText + " and content: " + notification.contentText)
+                );
+                return;
             }
 
+            SharedPrefsHelper.insertNotificationToPrefs(this, notification);
+            Log.d(TAG, "onNotificationPosted: Notification stored from package: " + packageName);
         } catch (Exception e) {
             SharedPrefsHelper.insertCrashLogToPrefs(this, e);
             Log.e(TAG, "onNotificationPosted: Something went wrong for package: " + packageName, e);
         }
-    }
-
-
-    @Contract(pure = true)
-    private boolean shouldStoreNotification(@NonNull String packageName, @Nullable String tag) {
-        // For whatsapp
-        if (packageName.equals("com.whatsapp") && tag == null) return false;
-        return true;
     }
 
 
@@ -97,10 +100,15 @@ public class MindfulNotificationListenerService extends NotificationListenerServ
         Log.d(TAG, "updateDistractingApps: Distracting apps updated successfully");
     }
 
-
     @Override
     public IBinder onBind(Intent intent) {
         String action = Utils.getActionFromIntent(intent);
         return action.equals(ACTION_BIND_TO_MINDFUL) ? mBinder : super.onBind(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        SharedPrefsHelper.insertCrashLogToPrefs(this, new Throwable("MindfulNotificationListenerService is DESTROYED"));
     }
 }

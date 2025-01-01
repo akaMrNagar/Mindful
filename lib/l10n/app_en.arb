@@ -403,6 +403,9 @@
     "@----------------------------- UPCOMING NOTIFICATIONS SCREEN -----------------------------": {},
     "upcoming_notifications_tab_title": "Notifications",
     "upcoming_notifications_empty_list_hint": "No notifications have been batched today.",
+    "button_segment_grouped_label": "Grouped",
+    "button_segment_ungrouped_label": "Un-Grouped",
+    "last_24_hours_heading": "Last 24 hours",
     "nNotifications": "{count, plural, =0{0 notification} =1{1 notification} other{{count} notifications}}",
     "@nNotifications": {
         "placeholders": {

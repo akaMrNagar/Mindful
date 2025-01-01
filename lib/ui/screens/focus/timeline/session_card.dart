@@ -20,6 +20,7 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/status_label.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -110,23 +111,9 @@ class SessionCard extends StatelessWidget {
 
                 /// State Label
                 Skeleton.leaf(
-                  child: RoundedContainer(
-                    circularRadius: 8,
-                    width: 108,
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                    color: stateColor.withOpacity(0.15),
-                    child: Row(
-                      children: [
-                        RoundedContainer(
-                          height: 10,
-                          width: 10,
-                          color: stateColor,
-                        ),
-                        8.hBox,
-                        StyledText(stateLabel, color: stateColor),
-                      ],
-                    ),
+                  child: StatusLabel(
+                    label: stateLabel,
+                    accent: stateColor,
                   ),
                 ),
               ],

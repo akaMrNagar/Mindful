@@ -13,43 +13,75 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/notification_model.dart';
 
 /// Holds map of Package and its list of notifications
-final upcomingNotificationsProvider = StateNotifierProvider<DeviceAppsList,
-    AsyncValue<Map<String, List<NotificationModel>>>>(
-  (ref) => DeviceAppsList(),
+final upcomingNotificationsProvider = StateNotifierProvider.family<
+    NotificationsNotifier,
+    AsyncValue<Map<String, List<NotificationModel>>>,
+    bool>(
+  (ref, shouldGroup) => NotificationsNotifier(shouldGroup),
 );
 
-class DeviceAppsList
+class NotificationsNotifier
     extends StateNotifier<AsyncValue<Map<String, List<NotificationModel>>>> {
-  DeviceAppsList() : super(const AsyncLoading()) {
+  NotificationsNotifier(this.groupConversations) : super(const AsyncLoading()) {
     refreshNotifications();
   }
 
-  /// Fetches and updates the state with the latest list of pending notifications.
-  ///
-  Future<bool> refreshNotifications() async {
-    Map<String, List<NotificationModel>> mapByPackages = {};
+  final bool groupConversations;
 
+  /// Fetches and updates the state with the latest list of pending notifications.
+  Future<bool> refreshNotifications() async {
     final notifications =
         await MethodChannelService.instance.getUpComingNotifications();
 
+    final Map<String, List<NotificationModel>> mapByPackages = {};
+
+    /// Group by package
     for (var notification in notifications) {
-      /// Get the list of notifications for the package if null then create one
-      List<NotificationModel> packageNotifications =
-          mapByPackages[notification.packageName] ?? [];
-
-      /// Add current notification to the package notifications
-      packageNotifications.add(notification);
-
-      /// update the map
-      mapByPackages.update(
-        notification.packageName,
-        (value) => packageNotifications,
-        ifAbsent: () => packageNotifications,
-      );
+      mapByPackages
+          .putIfAbsent(notification.packageName, () => [])
+          .add(notification);
     }
 
+    /// sort notifications for each package.
+    mapByPackages.forEach((packageName, packageNotifications) {
+      mapByPackages[packageName] =
+          _groupAndSortNotifications(packageNotifications);
+    });
+
+    /// Sort packages by the most recent notification timestamp.
+    final sortedEntries = mapByPackages.entries.toList()
+      ..sort(
+          (a, b) => b.value.first.timeStamp.compareTo(a.value.first.timeStamp));
+
     /// update state
-    state = AsyncData(mapByPackages);
+    state = AsyncData(Map.fromEntries(sortedEntries));
     return true;
+  }
+
+  /// Groups and sorts notifications within a package.
+  List<NotificationModel> _groupAndSortNotifications(
+    List<NotificationModel> notifications,
+  ) {
+    /// Merge notifications if they belongs to same conversation
+    if (groupConversations) {
+      final Map<String, NotificationModel> grouped = {};
+
+      for (var notification in notifications) {
+        grouped.update(
+          notification.titleText,
+          (existing) => existing.copyWith(
+            timeStamp: notification.timeStamp,
+            contentText: '${existing.contentText}\n${notification.contentText}',
+          ),
+          ifAbsent: () => notification,
+        );
+      }
+
+      notifications = grouped.values.toList();
+    }
+
+    /// Sort by timestamp (newest first).
+    notifications.sort((a, b) => b.timeStamp.compareTo(a.timeStamp));
+    return notifications;
   }
 }

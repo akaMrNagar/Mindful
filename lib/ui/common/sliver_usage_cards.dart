@@ -17,7 +17,9 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/default_segmented_button.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -44,48 +46,22 @@ class SliverUsageCards extends StatelessWidget {
     return SliverList.list(
       children: [
         /// Usage type selector
-
-        Align(
-          alignment: Alignment.centerLeft,
-          child: SegmentedButton<UsageType>(
-            showSelectedIcon: false,
-            selected: {usageType},
-            onSelectionChanged: (set) => onUsageTypeChanged(set.first),
-            style: const ButtonStyle().copyWith(
-              visualDensity: VisualDensity.standard,
-              foregroundColor: WidgetStatePropertyAll(
-                Theme.of(context).iconTheme.color,
-              ),
-              padding: const WidgetStatePropertyAll(EdgeInsets.all(12)),
-              side: WidgetStatePropertyAll(
-                BorderSide(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                ),
-              ),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
+        DefaultSegmentedButton<UsageType>(
+          selected: usageType,
+          onChanged: (value) => onUsageTypeChanged(value),
+          segments: [
+            SegmentItem(
+              icon: FluentIcons.phone_screen_time_20_regular,
+              label: context.locale.screen_segment_label,
+              value: UsageType.screenUsage,
             ),
-            segments: [
-              ButtonSegment(
-                icon: Icon(
-                  FluentIcons.phone_screen_time_20_regular,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                label: Text(context.locale.screen_segment_label),
-                value: UsageType.screenUsage,
-              ),
-              ButtonSegment(
-                icon: Icon(
-                  FluentIcons.earth_20_regular,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                label: Text(context.locale.data_segment_label),
-                value: UsageType.networkUsage,
-              ),
-            ],
-          ),
-        ),
+            SegmentItem(
+              icon: FluentIcons.earth_20_regular,
+              label: context.locale.data_segment_label,
+              value: UsageType.networkUsage,
+            ),
+          ],
+        ).leftCentered,
 
         /// Usage info cards
         SizedBox(

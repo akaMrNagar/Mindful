@@ -99,10 +99,11 @@ class MethodChannelService {
           final logMap = Map<String, dynamic>.from(item);
           final log = CrashLogsTableCompanion(
             appVersion: Value(logMap['appVersion'] as String),
-            timeStamp: Value(DateTime.fromMillisecondsSinceEpoch(
-                logMap['timeStamp'] as int)),
-            error: Value(logMap['error'] as String),
-            stackTrace: Value(logMap['stackTrace'] as String),
+            timeStamp: Value(
+              DateTime.fromMillisecondsSinceEpoch(logMap['timeStamp'] as int),
+            ),
+            error: Value((logMap['error'] as String).trim()),
+            stackTrace: Value((logMap['stackTrace'] as String).trim()),
           );
 
           crashLogs.add(log);
@@ -148,6 +149,7 @@ class MethodChannelService {
           await _methodChannel.invokeMethod('getUpComingNotifications');
 
       List<dynamic> notificationMapsList = jsonDecode(jsonString);
+      
       for (var item in notificationMapsList) {
         if (item is Map) {
           notifications

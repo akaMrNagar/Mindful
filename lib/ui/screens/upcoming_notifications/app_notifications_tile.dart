@@ -20,10 +20,11 @@ import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/status_label.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-class NotificationsGroupTile extends ConsumerWidget {
-  const NotificationsGroupTile({
+class AppsNotificationsTile extends ConsumerWidget {
+  const AppsNotificationsTile({
     super.key,
     required this.packageName,
     required this.notifications,
@@ -37,23 +38,22 @@ class NotificationsGroupTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final app = ref.watch(appsProvider.select((v) => v.value?[packageName]));
-
     return app == null
         ? 0.vBox
         : DefaultExpandableListTile(
             titleText: app.name,
+            position: position,
             subtitle: StyledText(
               context.locale.nNotifications(notifications.length),
               fontSize: 14,
               color: Theme.of(context).hintColor,
             ),
             leading: ApplicationIcon(app: app),
-            position: position,
             content: ListView.builder(
               shrinkWrap: true,
               primary: false,
+              padding: const EdgeInsets.all(0),
               itemCount: notifications.length,
-              padding: const EdgeInsets.symmetric(),
               itemBuilder: (context, index) => _Notification(
                 title: notifications[index].titleText,
                 content: notifications[index].contentText,
@@ -81,27 +81,50 @@ class _Notification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isOlder = timeStamp.isBefore(DateTime.now().dateOnly);
+
     return DefaultListTile(
       position: ItemPosition.mid,
       onPressed: onPressed,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          /// Title
           Expanded(
             child: StyledText(
               title,
               fontSize: 16,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ),
           4.hBox,
-          StyledText(timeStamp.timeString(context).toLowerCase()),
+
+          /// Timestamp
+          StyledText(
+            timeStamp.timeString(context).toLowerCase(),
+          ),
         ],
       ),
-      subtitle: StyledText(
-        content,
-        fontSize: 14,
-        color: Theme.of(context).hintColor,
+      subtitle: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          8.vBox,
+
+          /// Conversation
+          StyledText(
+            content,
+            fontSize: 14,
+            color: Theme.of(context).hintColor,
+          ),
+
+          /// Older label
+          if (isOlder)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: StatusLabel(label: context.locale.day_yesterday),
+            ),
+        ],
       ),
     );
   }
