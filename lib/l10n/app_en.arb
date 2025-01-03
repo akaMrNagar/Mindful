@@ -403,6 +403,9 @@
     "@----------------------------- UPCOMING NOTIFICATIONS SCREEN -----------------------------": {},
     "upcoming_notifications_tab_title": "Notifications",
     "upcoming_notifications_empty_list_hint": "No notifications have been batched today.",
+    "button_segment_grouped_label": "Grouped",
+    "button_segment_ungrouped_label": "Un-Grouped",
+    "last_24_hours_heading": "Last 24 hours",
     "nNotifications": "{count, plural, =0{0 notification} =1{1 notification} other{{count} notifications}}",
     "@nNotifications": {
         "placeholders": {
@@ -567,6 +570,8 @@
     "crash_logs_info": "If you encounter any issue, you can report it on GitHub along with the log file. The file will include details such as your device's manufacturer, model, Android version, SDK version, and crash logs. This information will help us identify and resolve the problem more effectively.",
     "crash_logs_export_tile_title": "Export crash logs",
     "crash_logs_export_tile_subtitle": "Export crash logs to a json file.",
+    "crash_logs_view_tile_title": "View logs",
+    "crash_logs_view_tile_subtitle": "Explore stored crash logs.",
     "crash_logs_clear_tile_title": "Clear logs",
     "crash_logs_clear_tile_subtitle": "Delete all crash logs from database.",
     "crash_logs_clear_dialog_info": "Are you sure you wish to clear all crash logs from the database?",

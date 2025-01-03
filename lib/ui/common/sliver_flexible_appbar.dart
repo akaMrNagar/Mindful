@@ -78,7 +78,8 @@ class SliverFlexibleAppBar extends ConsumerWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    if (useBottomNavigation) materialBarLeading ?? 0.vBox,
+                    6.hBox,
+                    if (useBottomNavigation) materialBarLeading ?? 0.hBox,
                     Expanded(
                       child: StyledText(
                         title,

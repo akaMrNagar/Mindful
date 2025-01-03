@@ -13,7 +13,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/filter_model.dart';
@@ -33,11 +32,13 @@ class SliverDistractingAppsList extends ConsumerStatefulWidget {
     required this.distractingApps,
     required this.onSelectionChanged,
     this.hiddenApps = const [],
+    this.isInsideModalSheet = true,
   });
 
   final List<String> distractingApps;
   final List<String> hiddenApps;
   final Function(String package, bool isSelected) onSelectionChanged;
+  final bool isInsideModalSheet;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -69,19 +70,29 @@ class _SliverDistractingAppsListState
 
     return MultiSliver(
       children: [
+        /// Search and filter panel
+        widget.isInsideModalSheet
+            ? PinnedHeaderSliver(
+                child: Container(
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: SearchFilterPanel(
+                    filter: _filter,
+                    onFilterChanged: _onFilterChanged,
+                  ),
+                ),
+              )
+            : SearchFilterPanel(
+                filter: _filter,
+                onFilterChanged: _onFilterChanged,
+              ),
+
+        /// Header
         ContentSectionHeader(
           title: widget.distractingApps.isEmpty
               ? context.locale.select_distracting_apps_heading
               : context.locale.your_distracting_apps_heading,
-        ).sliver,
-
-        /// Search and filter panel
-        SearchFilterPanel(
-          filter: _filter,
-          onFilterChanged: _onFilterChanged,
-        ).sliver,
-
-        18.vSliverBox,
+        ),
 
         /// Apps list
         SliverAnimatedSwitcher(

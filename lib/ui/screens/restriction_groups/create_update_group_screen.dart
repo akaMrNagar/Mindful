@@ -256,7 +256,9 @@ class _CreateUpdateRestrictionGroupState
               ).sliver,
 
               /// Distracting apps
+              36.vSliverBox,
               SliverDistractingAppsList(
+                isInsideModalSheet: false,
                 distractingApps: _group.distractingApps,
                 hiddenApps: alreadyGroupedApps,
                 onSelectionChanged: (package, isSelected) {

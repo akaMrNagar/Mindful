@@ -140,7 +140,9 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
           .go();
 
   /// Loads list of all [CrashLog] objects from the database,
-  Future<List<CrashLog>> fetchCrashLogs() async => select(crashLogsTable).get();
+  Future<List<CrashLog>> fetchCrashLogs() async => ((select(crashLogsTable))
+        ..orderBy([(e) => OrderingTerm.desc(e.timeStamp)]))
+      .get();
 
   /// Clear all [CrashLogs] objects from the database,
   Future<int> clearCrashLogs() async => delete(crashLogsTable).go();
@@ -254,7 +256,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
             ..where(
               (e) => e.startDateTime.isBetweenValues(start, end),
             )
-            ..orderBy([(tbl) => OrderingTerm.desc(tbl.startDateTime)]))
+            ..orderBy([(e) => OrderingTerm.desc(e.startDateTime)]))
           .get();
 
   /// Loads the total duration in seconds for all the [FocusSession] in the database for the provided interval

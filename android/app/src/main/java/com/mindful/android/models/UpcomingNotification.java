@@ -19,13 +19,17 @@ public class UpcomingNotification {
     public final String contentText;
     public final long timeStamp;
 
-    // Constructor that initializes the object using StatusBarNotification
+    /**
+     * Constructor that initializes the object using StatusBarNotification
+     *
+     * @param sbn Status Bar Notification object
+     */
     public UpcomingNotification(@NonNull StatusBarNotification sbn) {
         Bundle extras = sbn.getNotification().extras;
         this.packageName = sbn.getPackageName();
-        this.titleText = extras.getString(Notification.EXTRA_TITLE, "Null").trim();
-        this.contentText = extras.getString(Notification.EXTRA_TEXT, "Null").trim();
         this.timeStamp = sbn.getPostTime();
+        this.titleText = extras.getCharSequence(Notification.EXTRA_TITLE, "").toString().trim();
+        this.contentText = extras.getCharSequence(Notification.EXTRA_TEXT, "").toString().trim();
     }
 
     /**

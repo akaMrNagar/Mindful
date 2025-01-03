@@ -24,7 +24,6 @@ import com.mindful.android.MainActivity;
 import com.mindful.android.R;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
 import com.mindful.android.helpers.SharedPrefsHelper;
-import com.mindful.android.utils.AppConstants;
 import com.mindful.android.utils.Utils;
 
 import org.json.JSONArray;
@@ -56,7 +55,7 @@ public class NotificationBatchReceiver extends BroadcastReceiver {
         public Result doWork() {
             try {
                 // Return if no available notifications
-                String jsonStr = SharedPrefsHelper.getUpComingNotificationsArrayString(mContext);
+                String jsonStr = SharedPrefsHelper.getSerializedNotificationsJson(mContext);
                 int notificationsCount = new JSONArray(jsonStr).length();
                 if (notificationsCount == 0) return Result.success();
 

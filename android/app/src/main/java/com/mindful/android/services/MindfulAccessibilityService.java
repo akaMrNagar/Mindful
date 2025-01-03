@@ -87,14 +87,15 @@ public class MindfulAccessibilityService extends AccessibilityService implements
      * These are used to retrieve/extract url from the browsers.
      */
     private final HashSet<String> mUrlBarNodeIds = new HashSet<>(Set.of(
-            ":id/url_bar",
-            ":id/mozac_browser_toolbar_url_view",
+            ":id/url_bar", // Chrome
+            ":id/mozac_browser_toolbar_url_view", // Firefox
             ":id/url",
             ":id/search",
             ":id/url_field",
             ":id/location_bar_edit_text",
             ":id/addressbarEdit",
-            ":id/bro_omnibar_address_title_text"
+            ":id/bro_omnibar_address_title_text",
+            ":id/cbn_tv_title" // Quetta Browser
     ));
 
     // Fixed thread pool for parallel event processing

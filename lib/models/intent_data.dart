@@ -12,27 +12,30 @@ import 'package:flutter/material.dart';
 
 @immutable
 class IntentData {
-  /// Flag indicating if the app is restarted by itself (after importing database).
-  final bool isSelfRestart;
-
-  /// Route name passed through Intent when starting the app
+  /// Route name passed through Intent when starting the app.
+  ///
+  /// User will be forwarded to this route's screen
   final String route;
 
-  /// Package name of the app whose Time Limit Exceeded dialog's emergency button is clicked.
-  /// This is forwarded by the overlay dialog service to show the emergency button on the dashboard.
-  final String targetedPackage;
+  /// Flag indicating if the app is restarted by itself (after importing database).
+  final bool extraIsSelfStart;
+
+  /// Package name of the app whose overlay dialog's emergency button is clicked.
+  ///
+  /// This is forwarded by the overlay dialog service to open app dashboard.
+  final String extraPackageName;
 
   const IntentData({
-    this.isSelfRestart = false,
-    this.route = '',
-    this.targetedPackage = '',
+    this.route = "",
+    this.extraIsSelfStart = false,
+    this.extraPackageName = "",
   });
 
   factory IntentData.fromMap(Map<dynamic, dynamic> map) {
     return IntentData(
-      isSelfRestart: map['isSelfRestart'] ?? false,
       route: map['route'] ?? '',
-      targetedPackage: map['targetedPackage'] ?? '',
+      extraIsSelfStart: map['extraIsSelfStart'] ?? false,
+      extraPackageName: map['extraPackageName'] ?? '',
     );
   }
 }

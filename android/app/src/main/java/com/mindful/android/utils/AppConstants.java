@@ -16,8 +16,8 @@ public class AppConstants {
     public static final String FLUTTER_METHOD_CHANNEL = "com.mindful.android.methodchannel";
 
     // Extra intent data
-    public static final String INTENT_EXTRA_IS_SELF_RESTART = "com.mindful.android.isSelfRestart";
     public static final String INTENT_EXTRA_INITIAL_ROUTE = "com.mindful.android.initialRoute";
+    public static final String INTENT_EXTRA_IS_SELF_RESTART = "com.mindful.android.isSelfRestart";
     public static final String INTENT_EXTRA_PACKAGE_NAME = "com.mindful.android.launchedAppPackageName";
     public static final String INTENT_EXTRA_DIALOG_INFO = "com.mindful.android.dialogInformation";
     public static final String INTENT_EXTRA_MAX_PROGRESS = "com.mindful.android.maxProgress";

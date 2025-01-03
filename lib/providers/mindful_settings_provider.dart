@@ -39,7 +39,7 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     await MethodChannelService.instance
         .updateLocale(languageCode: state.localeCode);
 
-    if (MethodChannelService.instance.intentData.isSelfRestart) {
+    if (MethodChannelService.instance.intentData.extraIsSelfStart) {
       await MethodChannelService.instance
           .setDataResetTime(state.dataResetTime.toMinutes);
     }

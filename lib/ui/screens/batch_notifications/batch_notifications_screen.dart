@@ -41,7 +41,7 @@ class BatchNotificationsScreen extends ConsumerWidget {
     final batchedAppsCount = ref.watch(sharedUniqueDataProvider
         .select((v) => v.notificationBatchedApps.length));
 
-    final upcomingNotificationsCount = ref.watch(upcomingNotificationsProvider
+    final upcomingNotificationsCount = ref.watch(upcomingNotificationsProvider(false)
             .select((v) => v.value?.values.fold(0, (v, e) => v + e.length))) ??
         0;
 
@@ -61,7 +61,7 @@ class BatchNotificationsScreen extends ConsumerWidget {
           fab: havePermission ? const NewNotificationScheduleFab() : null,
           sliverBody: DefaultRefreshIndicator(
             onRefresh: ref
-                .read(upcomingNotificationsProvider.notifier)
+                .read(upcomingNotificationsProvider(false).notifier)
                 .refreshNotifications,
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),

@@ -45,34 +45,36 @@ android {
     }
 
 
+    signingConfigs {
+        release {
+            if (System.getenv("KEYSTORE_FILE") != null) {
+                storeFile file(System.getenv("KEYSTORE_FILE"))
+                storePassword System.getenv("STORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             ndk {
                 debugSymbolLevel 'full'
             }
-            if (System.getenv("KEYSTORE_FILE") != null) {
-                signingConfigs {
-                    register("release") {
-                        storeFile file(System.getenv("KEYSTORE_FILE"))
-                        storePassword System.getenv("STORE_PASSWORD")
-                        keyAlias System.getenv("KEY_ALIAS")
-                        keyPassword System.getenv("KEY_PASSWORD")
-                    }
-                }
-                signingConfig = signingConfigs.release
-            } else {
-                signingConfig = signingConfigs.debug
-            }
+            resValue "string", "app_name", "Mindful"
+            signingConfig = signingConfigs.release
         }
 
         debug {
             applicationIdSuffix ".debug"
-            signingConfig signingConfigs.debug
+            resValue "string", "app_name", "Mindful Debug"
+            signingConfig = signingConfigs.release ?: signingConfigs.debug
         }
 
         profile {
             applicationIdSuffix ".profile"
-            signingConfig signingConfigs.debug
+            resValue "string", "app_name", "Mindful Profile"
+            signingConfig = signingConfigs.release ?: signingConfigs.debug
         }
     }
     buildFeatures {

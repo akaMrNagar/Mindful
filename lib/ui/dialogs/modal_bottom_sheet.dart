@@ -10,47 +10,54 @@
 
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 
 /// Opens modal bottom sheet with the passed sliver body
 Future<void> showDefaultBottomSheet({
   required BuildContext context,
   required Widget sliverBody,
-  double heightFactor = 0.85,
   EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 12),
+  Widget? header,
+  String? headerTitle,
 }) async =>
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (sheetContext) => BottomSheet(
-        enableDrag: false,
-        onClosing: () {},
-        builder: (context) => FractionallySizedBox(
-          heightFactor: heightFactor,
-          child: Padding(
-            padding: padding,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                /// Handle
-                RoundedContainer(
-                  height: 8,
-                  width: 48,
-                  margin: const EdgeInsets.only(top: 12, bottom: 20),
-                  color: Theme.of(context).hintColor,
-                ),
+      useSafeArea: true,
+      showDragHandle: true,
+      sheetAnimationStyle: AnimationStyle(
+        duration: AppConstants.defaultAnimDuration,
+        curve: AppConstants.defaultCurve,
+        reverseDuration: AppConstants.defaultAnimDuration,
+        reverseCurve: AppConstants.defaultCurve.flipped,
+      ),
+      builder: (sheetContext) => DraggableScrollableSheet(
+        expand: false,
+        builder: (context, scrollController) => Padding(
+          padding: padding,
+          child: Column(
+            children: [
+              /// Header2
+              headerTitle != null
+                  ? ContentSectionHeader(
+                      title: headerTitle,
+                      padding: const EdgeInsets.only(bottom: 12),
+                    )
+                  : header ?? 0.vBox,
 
-                /// Body
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      sliverBody,
-                      96.vSliverBox,
-                    ],
-                  ),
-                )
-              ],
-            ),
+              /// Body
+              Expanded(
+                child: CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    sliverBody,
+                    const SliverTabsBottomPadding(),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

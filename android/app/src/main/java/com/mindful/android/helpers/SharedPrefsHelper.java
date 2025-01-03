@@ -31,9 +31,12 @@ import com.mindful.android.utils.Utils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -353,6 +356,23 @@ public class SharedPrefsHelper {
     }
 
     /**
+     * Fetches the hashset of notification batched apps if jsonBatchedApps is null else store it's json.
+     *
+     * @param context         The application context.
+     * @param jsonBatchedApps The JSON string of notification batched apps.
+     */
+    @NonNull
+    public static HashSet<String> getSetNotificationBatchedApps(@NonNull Context context, @Nullable String jsonBatchedApps) {
+        checkAndInitializeNotificationBatchPrefs(context);
+        if (jsonBatchedApps == null) {
+            return JsonDeserializer.jsonStrToStringHashSet(mNotificationBatchPrefs.getString(PREF_KEY_BATCHED_APPS, ""));
+        } else {
+            mNotificationBatchPrefs.edit().putString(PREF_KEY_BATCHED_APPS, jsonBatchedApps).apply();
+            return JsonDeserializer.jsonStrToStringHashSet(jsonBatchedApps);
+        }
+    }
+
+    /**
      * Creates and Inserts a new notification into SharedPreferences based on the passed object.
      *
      * @param context      The application context used to retrieve app version and store the log.
@@ -361,7 +381,7 @@ public class SharedPrefsHelper {
     public static void insertNotificationToPrefs(@NonNull Context context, @NonNull UpcomingNotification notification) {
         checkAndInitializeNotificationBatchPrefs(context);
 
-        // Create new notification object
+        // Create new json object
         JSONObject currentNotification = new JSONObject(notification.toMap());
 
         // Get existing notifications
@@ -379,7 +399,6 @@ public class SharedPrefsHelper {
                     notificationsArray.remove(i);
                 }
             }
-
         } catch (Exception e1) {
             notificationsArray = new JSONArray();
         }
@@ -397,26 +416,9 @@ public class SharedPrefsHelper {
      * @return A JSON string representing the stored notifications array.
      */
     @NonNull
-    public static String getUpComingNotificationsArrayString(@NonNull Context context) {
+    public static String getSerializedNotificationsJson(@NonNull Context context) {
         checkAndInitializeNotificationBatchPrefs(context);
         return mNotificationBatchPrefs.getString(PREF_KEY_UPCOMING_NOTIFICATIONS, "[]");
-    }
-
-    /**
-     * Fetches the hashset of notification batched apps if jsonBatchedApps is null else store it's json.
-     *
-     * @param context         The application context.
-     * @param jsonBatchedApps The JSON string of notification batched apps.
-     */
-    @NonNull
-    public static HashSet<String> getSetNotificationBatchedApps(@NonNull Context context, @Nullable String jsonBatchedApps) {
-        checkAndInitializeNotificationBatchPrefs(context);
-        if (jsonBatchedApps == null) {
-            return JsonDeserializer.jsonStrToStringHashSet(mNotificationBatchPrefs.getString(PREF_KEY_BATCHED_APPS, ""));
-        } else {
-            mNotificationBatchPrefs.edit().putString(PREF_KEY_BATCHED_APPS, jsonBatchedApps).apply();
-            return JsonDeserializer.jsonStrToStringHashSet(jsonBatchedApps);
-        }
     }
 
 }

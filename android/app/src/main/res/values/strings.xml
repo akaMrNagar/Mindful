@@ -12,7 +12,6 @@
 
 <resources>
     <!-- app values -->
-    <string name="app_name" translatable="false">Mindful</string>
     <string name="accessibility_description">The Mindful app uses accessibility services to block
         websites and short-form content on apps. It checks URLs and content against your blocklist
         and prevents access to help you stay focused. \n\n⚠️Note: Your privacy is our priority.

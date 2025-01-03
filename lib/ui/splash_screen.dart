@@ -63,15 +63,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       initializeNecessaryProviders(ref);
     }
 
-    _isAccessProtected
-        ? _authenticate()
-        : Future.delayed(
-            _haveAllEssentialPermissions && _isOnboardingDone ? 750.ms : 0.ms,
-            _pushNextScreen,
-          );
+    _isAccessProtected ? _authenticate() : _pushNextScreen(true);
   }
 
-  void _pushNextScreen() {
+  void _pushNextScreen(bool shouldDelay) async {
+    await Future.delayed(
+      shouldDelay && _haveAllEssentialPermissions && _isOnboardingDone
+          ? 1250.ms
+          : 0.ms,
+    );
+
     if (!mounted) return;
 
     if (_haveAllEssentialPermissions && _isOnboardingDone) {
@@ -90,7 +91,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   void _authenticate() async {
     final isSuccess = await AuthService.instance.authenticate();
-    if (isSuccess) _pushNextScreen();
+    if (isSuccess) _pushNextScreen(false);
   }
 
   @override
