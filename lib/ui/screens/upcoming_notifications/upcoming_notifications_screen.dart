@@ -78,12 +78,18 @@ class _UpcomingStateNotificationsScreen
                 ).sliver,
 
                 /// Notifications
-                notificationMap.hasValue
-                    ? notificationsByApp.isEmpty
+                notificationMap.isLoading
 
-                        /// No notifications
+                    /// Loading notifications
+                    ? const SliverShimmerList(
+                        includeSubtitle: true,
+                        includeTrailing: true,
+                      )
+
+                    /// No notifications
+                    : notificationsByApp.isEmpty
                         ? SizedBox(
-                            height: 256,
+                            height: MediaQuery.of(context).size.height * 0.5,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -111,13 +117,7 @@ class _UpcomingStateNotificationsScreen
                               notifications: entry.value,
                               position: position,
                             ),
-                          )
-
-                    /// Loading notifications
-                    : const SliverShimmerList(
-                        includeSubtitle: true,
-                        includeTrailing: true,
-                      ),
+                          ),
 
                 /// padding
                 const SliverTabsBottomPadding(),

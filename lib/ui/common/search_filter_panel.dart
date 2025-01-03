@@ -45,14 +45,15 @@ class _SearchFilterPanelState extends State<SearchFilterPanel> {
 
   @override
   void dispose() {
-    _debouncer?.cancel();
     super.dispose();
+    _debouncer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
+        /// Search bar
         Expanded(
           child: DefaultListTile(
             color: Theme.of(context).colorScheme.secondaryContainer,
@@ -63,9 +64,12 @@ class _SearchFilterPanelState extends State<SearchFilterPanel> {
               ),
               onChanged: _onQueryChanged,
               onSubmitted: _onQuerySubmitted,
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
             ),
           ),
         ),
+
+        /// Sort by screen time, network usage, alphabetically
         RoundedContainer(
           color: Theme.of(context).colorScheme.secondaryContainer,
           padding: const EdgeInsets.all(14),
@@ -86,6 +90,8 @@ class _SearchFilterPanelState extends State<SearchFilterPanel> {
             ),
           ),
         ),
+
+        /// Ascending - Descending
         RoundedContainer(
           color: Theme.of(context).colorScheme.secondaryContainer,
           padding: const EdgeInsets.all(14),

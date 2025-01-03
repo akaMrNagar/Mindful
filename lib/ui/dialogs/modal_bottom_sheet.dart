@@ -10,6 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 
@@ -26,14 +27,19 @@ Future<void> showDefaultBottomSheet({
       isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
+      sheetAnimationStyle: AnimationStyle(
+        duration: AppConstants.defaultAnimDuration,
+        curve: AppConstants.defaultCurve,
+        reverseDuration: AppConstants.defaultAnimDuration,
+        reverseCurve: AppConstants.defaultCurve.flipped,
+      ),
       builder: (sheetContext) => DraggableScrollableSheet(
         expand: false,
-        maxChildSize: 0.99, // Maximum height factor (1.0)
         builder: (context, scrollController) => Padding(
           padding: padding,
           child: Column(
             children: [
-              /// Header
+              /// Header2
               headerTitle != null
                   ? ContentSectionHeader(
                       title: headerTitle,
