@@ -51,7 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _showDonationDialog();
 
     final targetPackage =
-        MethodChannelService.instance.intentData.targetedPackage;
+        MethodChannelService.instance.intentData.extraPackageName;
 
     /// Return if no target package try routing instead
     if (targetPackage.isEmpty) {

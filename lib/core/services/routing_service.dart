@@ -23,17 +23,27 @@ class RoutingService {
 
   /// Initialize routing with the context
   Future<void> init(BuildContext context) async {
-    final intentData = MethodChannelService.instance.intentData;
+    /// Validate the targeting route
+    final targetRoute = MethodChannelService.instance.intentData.route;
+    if (!AppRoutes.routes.containsKey(targetRoute)) return;
 
-    /// Check and push user to upcoming notifications screen
-    if (intentData.route == AppRoutes.upcomingNotificationsScreen) {
+    /// Push the user to targeted route
+    if (targetRoute == AppRoutes.upcomingNotificationsScreen) {
       _openDelayedRoute(context, AppRoutes.upcomingNotificationsScreen);
     }
   }
 
-  void _openDelayedRoute(BuildContext context, String validRouteName) async {
-    await Future.delayed(1500.ms);
+  void _openDelayedRoute(
+    BuildContext context,
+    String validRouteName, {
+    Object? arguments,
+  }) async {
+    await Future.delayed(500.ms);
     if (!context.mounted) return;
-    Navigator.of(context).pushNamed(validRouteName);
+
+    Navigator.of(context).pushNamed(
+      validRouteName,
+      arguments: arguments,
+    );
   }
 }

@@ -33,7 +33,7 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
     _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await _dao.loadWellBeingSettings();
 
-    if (MethodChannelService.instance.intentData.isSelfRestart) {
+    if (MethodChannelService.instance.intentData.extraIsSelfStart) {
       await MethodChannelService.instance.updateWellBeingSettings(state);
     }
 

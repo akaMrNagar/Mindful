@@ -113,7 +113,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   }
 
   void _skipToLastPage() {
-    if (mounted) {
+    if (mounted && widget.isOnboardingDone) {
       _controller.animateToPage(
         _pages.length - 1,
         duration: _animDuration,

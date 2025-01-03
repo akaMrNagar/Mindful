@@ -28,35 +28,32 @@ class ApplicationIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (app.packageName == AppConstants.removedAppPackage) {
-      return _createIcon(FluentIcons.delete_24_regular, context);
-    } else if (app.packageName == AppConstants.tetheringAppPackage) {
-      return _createIcon(FluentIcons.communication_24_regular, context);
-    } else {
-      return CircleAvatar(
-        backgroundColor: Colors.transparent,
-        radius: size,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(size),
-          child: Image.memory(
-            app.icon,
-            color: isGrayedOut ? Colors.white : null,
-            colorBlendMode: isGrayedOut ? BlendMode.saturation : null,
-          ),
-        ),
-      );
-    }
+    final useCustomIcon = app.packageName == AppConstants.removedAppPackage ||
+        app.packageName == AppConstants.tetheringAppPackage;
+
+    return CircleAvatar(
+      backgroundColor:
+          useCustomIcon ? Theme.of(context).focusColor : Colors.transparent,
+      radius: size,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(size),
+        child: useCustomIcon
+            ? _resolveIcon()
+            : Image.memory(
+                app.icon,
+                color: isGrayedOut ? Colors.white : null,
+                colorBlendMode: isGrayedOut ? BlendMode.saturation : null,
+              ),
+      ),
+    );
   }
 
-  Widget _createIcon(IconData iconData, BuildContext context) {
-    return CircleAvatar(
-      radius: size,
-      backgroundColor: Theme.of(context).focusColor,
-      child: Icon(
-        iconData,
-        size: size,
-        color: Theme.of(context).iconTheme.color,
-      ),
+  Widget _resolveIcon() {
+    return Icon(
+      app.packageName == AppConstants.tetheringAppPackage
+          ? FluentIcons.communication_20_filled
+          : FluentIcons.delete_20_filled,
+      size: size,
     );
   }
 }

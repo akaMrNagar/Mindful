@@ -121,8 +121,8 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
         Intent currentIntent = getIntent();
         Map<String, Object> intentData = new HashMap<>();
         intentData.put("route", currentIntent.getStringExtra(INTENT_EXTRA_INITIAL_ROUTE));
-        intentData.put("targetedPackage", currentIntent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME));
-        intentData.put("isSelfRestart", currentIntent.getBooleanExtra(INTENT_EXTRA_IS_SELF_RESTART, false));
+        intentData.put("extraPackageName", currentIntent.getStringExtra(INTENT_EXTRA_PACKAGE_NAME));
+        intentData.put("extraIsSelfStart", currentIntent.getBooleanExtra(INTENT_EXTRA_IS_SELF_RESTART, false));
 
         // Update intent data on flutter side
         mMethodChannel.invokeMethod("updateIntentData", intentData);
@@ -160,7 +160,7 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 break;
             }
             case "getUpComingNotifications": {
-                result.success(SharedPrefsHelper.getUpComingNotificationsArrayString(this));
+                result.success(SharedPrefsHelper.getSerializedNotificationsJson(this));
                 break;
             }
             case "getShortsScreenTimeMs": {

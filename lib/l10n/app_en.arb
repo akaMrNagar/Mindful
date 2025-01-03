@@ -570,6 +570,8 @@
     "crash_logs_info": "If you encounter any issue, you can report it on GitHub along with the log file. The file will include details such as your device's manufacturer, model, Android version, SDK version, and crash logs. This information will help us identify and resolve the problem more effectively.",
     "crash_logs_export_tile_title": "Export crash logs",
     "crash_logs_export_tile_subtitle": "Export crash logs to a json file.",
+    "crash_logs_view_tile_title": "View logs",
+    "crash_logs_view_tile_subtitle": "Explore stored crash logs.",
     "crash_logs_clear_tile_title": "Clear logs",
     "crash_logs_clear_tile_subtitle": "Delete all crash logs from database.",
     "crash_logs_clear_dialog_info": "Are you sure you wish to clear all crash logs from the database?",
