@@ -84,7 +84,9 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
     /// Go to permissions page if already done onboarding
     /// but user removed some essential permissions
-    Future.delayed(250.ms, _skipToLastPage);
+    if (widget.isOnboardingDone) {
+      Future.delayed(250.ms, _skipToLastPage);
+    }
   }
 
   @override
@@ -113,7 +115,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
   }
 
   void _skipToLastPage() {
-    if (mounted && widget.isOnboardingDone) {
+    if (mounted) {
       _controller.animateToPage(
         _pages.length - 1,
         duration: _animDuration,

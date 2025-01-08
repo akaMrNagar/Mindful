@@ -14,6 +14,10 @@ import 'package:intl/intl.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 
 extension ExtDateTime on DateTime {
+  /// Returns the number of milliseconds since the "Unix epoch" 1970-01-01T00:00:00Z (UTC).
+  /// This value is independent of the time zone.
+  int get msEpoch => millisecondsSinceEpoch;
+
   /// Returns the object with date only while resetting all time related field to 0
   DateTime get dateOnly => copyWith(
         hour: 0,
@@ -23,11 +27,17 @@ extension ExtDateTime on DateTime {
         microsecond: 0,
       );
 
-  /// Returns date-only for the starting of the month
+  /// Returns date-only for the start of the month
   DateTime get startOfMonth => DateTime(year, month, 1);
 
   /// Returns date-only for the end of the month
   DateTime get endOfMonth => DateTime(year, month + 1, 1).subtract(1.days);
+
+  /// Returns date-only for the start of the week
+  DateTime get startOfWeek => dateOnly.subtract((weekday - 1).days);
+
+  /// Returns date-only for the end of the week
+  DateTime get endOfWeek => dateOnly.add((7 - weekday).days);
 
   /// Returns the total number of day in the [DateTime]'s month
   int get daysInMonth => endOfMonth.difference(startOfMonth).inDays + 1;

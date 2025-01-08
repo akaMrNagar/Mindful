@@ -65,7 +65,6 @@ final packagesByFilterProvider =
                 (a, b) => a.name.compareTo(b.name),
               );
               break;
-            default:
           }
 
           /// Reverse if needed

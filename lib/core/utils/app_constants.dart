@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 
@@ -50,10 +51,12 @@ class AppConstants {
   ///  e.g., ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
   static List<String> daysShort(BuildContext context) {
     List<String> shortDays = [];
+
+    final firstMonday = DateTime(0, 1, 2);
     for (int i = 1; i <= 7; i++) {
       String shortDay =
           DateFormat.E(Localizations.localeOf(context).languageCode)
-              .format(DateTime(0, 1, 1 + i));
+              .format(firstMonday.add(i.days));
       shortDays.add(shortDay);
     }
 
