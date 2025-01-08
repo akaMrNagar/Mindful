@@ -42,11 +42,11 @@ class DefaultBarChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unselectedGrad = [
-      Theme.of(context).colorScheme.secondaryContainer.withOpacity(0.5),
+      Theme.of(context).colorScheme.surfaceContainer,
       Theme.of(context).colorScheme.secondaryContainer,
     ];
     final selectedGrad = [
-      Theme.of(context).colorScheme.primary.withOpacity(0.7),
+      Theme.of(context).colorScheme.secondaryContainer,
       Theme.of(context).colorScheme.primary,
     ];
 
