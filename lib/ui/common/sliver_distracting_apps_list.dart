@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/filter_model.dart';
-import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/new/apps_info_provider.dart';
 import 'package:mindful/providers/packages_by_filter_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -113,7 +113,7 @@ class _SliverDistractingAppsListState
                   keyBuilder: (item) => item,
                   itemBuilder: (context, packageName, _) {
                     /// Fetch app using the package
-                    final app = ref.read(appsProvider).value?[packageName];
+                    final appInfo = ref.read(appsInfoProvider).value?[packageName];
 
                     final isSelected =
                         widget.distractingApps.contains(packageName);
@@ -122,9 +122,9 @@ class _SliverDistractingAppsListState
                         ? ContentSectionHeader(
                             title: context.locale.select_more_apps_heading,
                           )
-                        : app != null
+                        : appInfo != null
                             ? DefaultListTile(
-                                isSelected: app.isImpSysApp ? null : isSelected,
+                                isSelected: appInfo.isImpSysApp ? null : isSelected,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .surfaceContainerLow,
@@ -133,11 +133,12 @@ class _SliverDistractingAppsListState
                                   selectedApps,
                                   unselectedApps,
                                 ),
-                                leading: ApplicationIcon(app: app, size: 16),
-                                titleText: app.name,
+                                leading:
+                                    ApplicationIcon(appInfo: appInfo, size: 16),
+                                titleText: appInfo.name,
                                 onPressed: () {
                                   /// If app is important system app
-                                  if (app.isImpSysApp) {
+                                  if (appInfo.isImpSysApp) {
                                     context.showSnackAlert(
                                       context.locale
                                           .imp_distracting_apps_snack_alert,

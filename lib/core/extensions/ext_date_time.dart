@@ -39,6 +39,10 @@ extension ExtDateTime on DateTime {
   /// Returns date-only for the end of the week
   DateTime get endOfWeek => dateOnly.add((7 - weekday).days);
 
+  /// Returns date-only for the end of the week
+  DateTimeRange get weekRange =>
+      DateTimeRange(start: startOfWeek, end: endOfWeek);
+
   /// Returns the total number of day in the [DateTime]'s month
   int get daysInMonth => endOfMonth.difference(startOfMonth).inDays + 1;
 

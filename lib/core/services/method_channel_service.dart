@@ -15,7 +15,9 @@ import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/app_info.dart';
 import 'package:mindful/models/device_info_model.dart';
 import 'package:mindful/models/intent_data.dart';
 import 'package:mindful/models/notification_model.dart';
@@ -45,7 +47,7 @@ class MethodChannelService {
       (call) async {
         if (call.method == "updateIntentData") {
           _intentData = IntentData.fromMap(call.arguments as Map);
-          debugPrint("updateIntentData(): Intent data updated");
+          debugPrint("updateIntentData(): Intent data updated : $_intentData");
         }
       },
     );
@@ -140,6 +142,43 @@ class MethodChannelService {
     return appsList;
   }
 
+  /// Retrieves a list of all launchable apps installed on the user's device.
+  Future<List<AppInfo>> fetchDeviceAppsInfo() async {
+    try {
+      List<Map> result =
+          await _methodChannel.invokeListMethod<Map>('getDeviceAppsInfo') ?? [];
+      return result.map((e) => AppInfo.fromMap(e)).toList();
+    } catch (e) {
+      debugPrint("MethodChannelService.fetchDeviceAppsInfo() Error: $e");
+    }
+    return [];
+  }
+
+  /// Loads Map of [String] package name and the respective [UsageModel] for the given interval
+  ///
+  /// The result map contains one [UsageModel] per app
+  Future<Map<String, UsageModel>> fetchAppsUsageForInterval({
+    required DateTime start,
+    required DateTime end,
+  }) async {
+    Map<String, UsageModel> usagesMap = {};
+    try {
+      List<Map> results =
+          await _methodChannel.invokeListMethod<Map>('getAppsUsageForInterval', {
+                "startDateTime": start.millisecondsSinceEpoch,
+                "endDateTime": end.millisecondsSinceEpoch,
+              }) ??
+              [];
+
+      for (var map in results) {
+        usagesMap[map["packageName"] as String] = UsageModel.fromMap(map);
+      }
+    } catch (e) {
+      debugPrint("MethodChannelService.fetchAppsUsageForInterval() Error: $e");
+    }
+    return usagesMap;
+  }
+
   /// Retrieves a list of all upcoming notifications and creates list of [NotificationModel] and returns it.
   Future<List<NotificationModel>> getUpComingNotifications() async {
     List<NotificationModel> notifications = [];
@@ -149,7 +188,7 @@ class MethodChannelService {
           await _methodChannel.invokeMethod('getUpComingNotifications');
 
       List<dynamic> notificationMapsList = jsonDecode(jsonString);
-      
+
       for (var item in notificationMapsList) {
         if (item is Map) {
           notifications

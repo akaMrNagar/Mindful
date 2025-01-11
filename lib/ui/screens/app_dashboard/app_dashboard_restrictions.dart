@@ -20,9 +20,10 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/default_models.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/app_info.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
+import 'package:mindful/providers/new/apps_launch_count_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
@@ -32,20 +33,23 @@ import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/app_launch_limit_dialog.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_internet_switcher.dart';
-import 'package:mindful/ui/screens/app_dashboard/app_timer.dart';
+import 'package:mindful/ui/screens/app_dashboard/app_internet_tile.dart';
+import 'package:mindful/ui/screens/app_dashboard/app_timer_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 /// Displays available restriction actions for the app in [AppDashboard]
-
 class AppDashboardRestrictions extends ConsumerWidget {
   const AppDashboardRestrictions({
     super.key,
-    required this.app,
+    required this.appInfo,
+    required this.appTimer,
+    required this.isPurged,
   });
 
-  final AndroidApp app;
+  final AppInfo appInfo;
+  final int appTimer;
+  final bool isPurged;
 
   void _onLaunchCountPressed({
     required BuildContext context,
@@ -64,21 +68,24 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
     final newLimit = await showAppLaunchLimitDialog(
       context: context,
-      heroTag: HeroTags.appLaunchLimitTileTag(app.packageName),
+      heroTag: HeroTags.appLaunchLimitTileTag(appInfo.packageName),
       initialCount: launchLimit,
     );
 
     ref.read(appsRestrictionsProvider.notifier).updateAppLaunchLimit(
-          app.packageName,
+          appInfo.packageName,
           newLimit ?? launchLimit,
         );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final todaysLaunchCount = ref.watch(appsLaunchCountProvider
+        .select((v) => v.value?[appInfo.packageName] ?? 0));
+
     final restriction = ref.watch(
           appsRestrictionsProvider.select(
-            (v) => v[app.packageName],
+            (v) => v[appInfo.packageName],
           ),
         ) ??
         defaultAppRestrictionModel;
@@ -99,17 +106,21 @@ class AppDashboardRestrictions extends ConsumerWidget {
         ContentSectionHeader(title: context.locale.restrictions_heading).sliver,
 
         /// App Timer tile
-        AppTimer(app: app).sliver,
+        AppTimerTile(
+          appInfo: appInfo,
+          appTimer: appTimer,
+          isPurged: isPurged,
+        ).sliver,
 
         /// App launch limit
         DefaultHero(
-          tag: HeroTags.appLaunchLimitTileTag(app.packageName),
+          tag: HeroTags.appLaunchLimitTileTag(appInfo.packageName),
           child: DefaultListTile(
-            enabled: !app.isImpSysApp,
+            enabled: !appInfo.isImpSysApp,
             position: ItemPosition.mid,
             titleText: context.locale.app_launch_limit_tile_title,
-            subtitleText:
-                context.locale.app_launch_limit_tile_subtitle(app.launchCount),
+            subtitleText: context.locale
+                .app_launch_limit_tile_subtitle(todaysLaunchCount),
             leadingIcon: FluentIcons.rocket_20_regular,
             trailing: restriction.launchLimit > 0
                 ? Padding(
@@ -126,7 +137,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
             onPressed: () => _onLaunchCountPressed(
               context: context,
               ref: ref,
-              launchCount: app.launchCount,
+              launchCount: todaysLaunchCount,
               launchLimit: restriction.launchLimit,
             ),
           ),
@@ -134,7 +145,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
         /// Active period
         DefaultExpandableListTile(
-          enabled: !app.isImpSysApp,
+          enabled: !appInfo.isImpSysApp,
           position: ItemPosition.mid,
           leadingIcon: FluentIcons.drink_coffee_20_regular,
           titleText: context.locale.app_active_period_tile_title,
@@ -158,7 +169,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
             },
             onTimeChanged: (start, end) =>
                 ref.read(appsRestrictionsProvider.notifier).updateActivePeriod(
-                      app.packageName,
+                      appInfo.packageName,
                       start,
                       end,
                     ),
@@ -166,11 +177,11 @@ class AppDashboardRestrictions extends ConsumerWidget {
         ).sliver,
 
         /// Internet access
-        AppInternetSwitcher(app: app).sliver,
+        AppInternetTile(appInfo: appInfo).sliver,
 
         /// Associated restriction group
         DefaultListTile(
-          enabled: !app.isImpSysApp,
+          enabled: !appInfo.isImpSysApp,
           position: ItemPosition.bottom,
           titleText: context.locale.restriction_groups_tab_title,
           subtitleText:
@@ -178,7 +189,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
           leadingIcon: FluentIcons.app_title_20_regular,
           trailing: Icon(
             FluentIcons.chevron_right_20_regular,
-            color: app.isImpSysApp ? Theme.of(context).disabledColor : null,
+            color: appInfo.isImpSysApp ? Theme.of(context).disabledColor : null,
           ),
           onPressed: () => Navigator.of(context)
               .pushNamed(AppRoutes.restrictionGroupsScreen),
@@ -189,9 +200,9 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
         /// Alert interval
         DefaultHero(
-          tag: HeroTags.appAlertIntervalTileTag(app.packageName),
+          tag: HeroTags.appAlertIntervalTileTag(appInfo.packageName),
           child: DefaultListTile(
-            enabled: !app.isImpSysApp,
+            enabled: !appInfo.isImpSysApp,
             position: ItemPosition.top,
             titleText: context.locale.app_alert_interval_tile_title,
             subtitleText: context.locale.app_alert_interval_tile_subtitle(
@@ -200,13 +211,13 @@ class AppDashboardRestrictions extends ConsumerWidget {
             leadingIcon: FluentIcons.alert_urgent_20_regular,
             onPressed: () async => showAppAlertIntervalPicker(
               context: context,
-              heroTag: HeroTags.appAlertIntervalTileTag(app.packageName),
+              heroTag: HeroTags.appAlertIntervalTileTag(appInfo.packageName),
               initialTime: restriction.alertInterval,
             ).then(
               (v) => ref
                   .read(appsRestrictionsProvider.notifier)
                   .updateAlertInterval(
-                    app.packageName,
+                    appInfo.packageName,
                     v ?? restriction.alertInterval,
                   ),
             ),
@@ -215,7 +226,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
         /// Alert type
         DefaultDropdownTile<bool>(
-          enabled: !app.isImpSysApp,
+          enabled: !appInfo.isImpSysApp,
           position: ItemPosition.bottom,
           value: restriction.alertByDialog,
           leadingIcon: FluentIcons.channel_alert_20_regular,
@@ -223,7 +234,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
           titleText: context.locale.app_alert_type_tile_title,
           onSelected: (v) => ref
               .read(appsRestrictionsProvider.notifier)
-              .setAlertByDialog(app.packageName, v),
+              .setAlertByDialog(appInfo.packageName, v),
           items: [
             DefaultDropdownItem(
               label: context.locale.app_alert_type_notification,

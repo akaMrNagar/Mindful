@@ -14,6 +14,10 @@ package com.mindful.android.utils;
 
 public class AppConstants {
     public static final String FLUTTER_METHOD_CHANNEL = "com.mindful.android.methodchannel";
+    public static final String REMOVED_APP_NAME = "Removed Apps";
+    public static final String REMOVED_PACKAGE = "com.android.removed";
+    public static final String TETHERING_APP_NAME = "Tethering & Hotspot";
+    public static final String TETHERING_PACKAGE = "com.android.tethering";
 
     // Extra intent data
     public static final String INTENT_EXTRA_INITIAL_ROUTE = "com.mindful.android.initialRoute";

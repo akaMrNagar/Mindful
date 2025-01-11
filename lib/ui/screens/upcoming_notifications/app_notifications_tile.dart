@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/notification_model.dart';
-import 'package:mindful/providers/apps_provider.dart';
+import 'package:mindful/providers/new/apps_info_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -37,18 +37,19 @@ class AppsNotificationsTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final app = ref.watch(appsProvider.select((v) => v.value?[packageName]));
-    return app == null
+    final appInfo =
+        ref.watch(appsInfoProvider.select((v) => v.value?[packageName]));
+    return appInfo == null
         ? 0.vBox
         : DefaultExpandableListTile(
-            titleText: app.name,
+            titleText: appInfo.name,
             position: position,
             subtitle: StyledText(
               context.locale.nNotifications(notifications.length),
               fontSize: 14,
               color: Theme.of(context).hintColor,
             ),
-            leading: ApplicationIcon(app: app),
+            leading: ApplicationIcon(appInfo: appInfo),
             content: ListView.builder(
               shrinkWrap: true,
               primary: false,

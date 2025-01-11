@@ -21,6 +21,7 @@ import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class SliverFlexibleAppBar extends ConsumerWidget {
   /// Pre-configured default app bar used globally
@@ -81,13 +82,15 @@ class SliverFlexibleAppBar extends ConsumerWidget {
                     6.hBox,
                     if (useBottomNavigation) materialBarLeading ?? 0.hBox,
                     Expanded(
-                      child: StyledText(
-                        title,
-                        maxLines: 1,
-                        fontSize: 32,
-                        fontWeight: FontWeight.w600,
-                        textAlign: TextAlign.right,
-                        overflow: TextOverflow.ellipsis,
+                      child: Skeleton.leaf(
+                        child: StyledText(
+                          title,
+                          maxLines: 1,
+                          fontSize: 32,
+                          fontWeight: FontWeight.w600,
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
                   ],

@@ -5018,6 +5018,318 @@ class NotificationScheduleTableCompanion
   }
 }
 
+class $AppUsageTableTable extends AppUsageTable
+    with TableInfo<$AppUsageTableTable, AppUsage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppUsageTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _packageNameMeta =
+      const VerificationMeta('packageName');
+  @override
+  late final GeneratedColumn<String> packageName = GeneratedColumn<String>(
+      'package_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+      'date', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: Constant(DateTime(0)));
+  static const VerificationMeta _screenTimeMeta =
+      const VerificationMeta('screenTime');
+  @override
+  late final GeneratedColumn<int> screenTime = GeneratedColumn<int>(
+      'screen_time', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _mobileDataMeta =
+      const VerificationMeta('mobileData');
+  @override
+  late final GeneratedColumn<int> mobileData = GeneratedColumn<int>(
+      'mobile_data', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _wifiDataMeta =
+      const VerificationMeta('wifiData');
+  @override
+  late final GeneratedColumn<int> wifiData = GeneratedColumn<int>(
+      'wifi_data', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [packageName, date, screenTime, mobileData, wifiData];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_usage_table';
+  @override
+  VerificationContext validateIntegrity(Insertable<AppUsage> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('package_name')) {
+      context.handle(
+          _packageNameMeta,
+          packageName.isAcceptableOrUnknown(
+              data['package_name']!, _packageNameMeta));
+    } else if (isInserting) {
+      context.missing(_packageNameMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+          _dateMeta, date.isAcceptableOrUnknown(data['date']!, _dateMeta));
+    }
+    if (data.containsKey('screen_time')) {
+      context.handle(
+          _screenTimeMeta,
+          screenTime.isAcceptableOrUnknown(
+              data['screen_time']!, _screenTimeMeta));
+    }
+    if (data.containsKey('mobile_data')) {
+      context.handle(
+          _mobileDataMeta,
+          mobileData.isAcceptableOrUnknown(
+              data['mobile_data']!, _mobileDataMeta));
+    }
+    if (data.containsKey('wifi_data')) {
+      context.handle(_wifiDataMeta,
+          wifiData.isAcceptableOrUnknown(data['wifi_data']!, _wifiDataMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {packageName, date};
+  @override
+  AppUsage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppUsage(
+      packageName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}package_name'])!,
+      date: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}date'])!,
+      screenTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}screen_time'])!,
+      mobileData: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}mobile_data'])!,
+      wifiData: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}wifi_data'])!,
+    );
+  }
+
+  @override
+  $AppUsageTableTable createAlias(String alias) {
+    return $AppUsageTableTable(attachedDatabase, alias);
+  }
+}
+
+class AppUsage extends DataClass implements Insertable<AppUsage> {
+  /// Package name of the related app
+  final String packageName;
+
+  /// The day [DateTime] but date only of the record
+  final DateTime date;
+
+  /// Package screen time of the related app
+  final int screenTime;
+
+  /// Package mobile data usage of the related app
+  final int mobileData;
+
+  /// Package wifi data usage of the related app
+  final int wifiData;
+  const AppUsage(
+      {required this.packageName,
+      required this.date,
+      required this.screenTime,
+      required this.mobileData,
+      required this.wifiData});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['package_name'] = Variable<String>(packageName);
+    map['date'] = Variable<DateTime>(date);
+    map['screen_time'] = Variable<int>(screenTime);
+    map['mobile_data'] = Variable<int>(mobileData);
+    map['wifi_data'] = Variable<int>(wifiData);
+    return map;
+  }
+
+  AppUsageTableCompanion toCompanion(bool nullToAbsent) {
+    return AppUsageTableCompanion(
+      packageName: Value(packageName),
+      date: Value(date),
+      screenTime: Value(screenTime),
+      mobileData: Value(mobileData),
+      wifiData: Value(wifiData),
+    );
+  }
+
+  factory AppUsage.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppUsage(
+      packageName: serializer.fromJson<String>(json['packageName']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      screenTime: serializer.fromJson<int>(json['screenTime']),
+      mobileData: serializer.fromJson<int>(json['mobileData']),
+      wifiData: serializer.fromJson<int>(json['wifiData']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'packageName': serializer.toJson<String>(packageName),
+      'date': serializer.toJson<DateTime>(date),
+      'screenTime': serializer.toJson<int>(screenTime),
+      'mobileData': serializer.toJson<int>(mobileData),
+      'wifiData': serializer.toJson<int>(wifiData),
+    };
+  }
+
+  AppUsage copyWith(
+          {String? packageName,
+          DateTime? date,
+          int? screenTime,
+          int? mobileData,
+          int? wifiData}) =>
+      AppUsage(
+        packageName: packageName ?? this.packageName,
+        date: date ?? this.date,
+        screenTime: screenTime ?? this.screenTime,
+        mobileData: mobileData ?? this.mobileData,
+        wifiData: wifiData ?? this.wifiData,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('AppUsage(')
+          ..write('packageName: $packageName, ')
+          ..write('date: $date, ')
+          ..write('screenTime: $screenTime, ')
+          ..write('mobileData: $mobileData, ')
+          ..write('wifiData: $wifiData')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(packageName, date, screenTime, mobileData, wifiData);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppUsage &&
+          other.packageName == this.packageName &&
+          other.date == this.date &&
+          other.screenTime == this.screenTime &&
+          other.mobileData == this.mobileData &&
+          other.wifiData == this.wifiData);
+}
+
+class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
+  final Value<String> packageName;
+  final Value<DateTime> date;
+  final Value<int> screenTime;
+  final Value<int> mobileData;
+  final Value<int> wifiData;
+  final Value<int> rowid;
+  const AppUsageTableCompanion({
+    this.packageName = const Value.absent(),
+    this.date = const Value.absent(),
+    this.screenTime = const Value.absent(),
+    this.mobileData = const Value.absent(),
+    this.wifiData = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppUsageTableCompanion.insert({
+    required String packageName,
+    this.date = const Value.absent(),
+    this.screenTime = const Value.absent(),
+    this.mobileData = const Value.absent(),
+    this.wifiData = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : packageName = Value(packageName);
+  static Insertable<AppUsage> custom({
+    Expression<String>? packageName,
+    Expression<DateTime>? date,
+    Expression<int>? screenTime,
+    Expression<int>? mobileData,
+    Expression<int>? wifiData,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (packageName != null) 'package_name': packageName,
+      if (date != null) 'date': date,
+      if (screenTime != null) 'screen_time': screenTime,
+      if (mobileData != null) 'mobile_data': mobileData,
+      if (wifiData != null) 'wifi_data': wifiData,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppUsageTableCompanion copyWith(
+      {Value<String>? packageName,
+      Value<DateTime>? date,
+      Value<int>? screenTime,
+      Value<int>? mobileData,
+      Value<int>? wifiData,
+      Value<int>? rowid}) {
+    return AppUsageTableCompanion(
+      packageName: packageName ?? this.packageName,
+      date: date ?? this.date,
+      screenTime: screenTime ?? this.screenTime,
+      mobileData: mobileData ?? this.mobileData,
+      wifiData: wifiData ?? this.wifiData,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (packageName.present) {
+      map['package_name'] = Variable<String>(packageName.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (screenTime.present) {
+      map['screen_time'] = Variable<int>(screenTime.value);
+    }
+    if (mobileData.present) {
+      map['mobile_data'] = Variable<int>(mobileData.value);
+    }
+    if (wifiData.present) {
+      map['wifi_data'] = Variable<int>(wifiData.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppUsageTableCompanion(')
+          ..write('packageName: $packageName, ')
+          ..write('date: $date, ')
+          ..write('screenTime: $screenTime, ')
+          ..write('mobileData: $mobileData, ')
+          ..write('wifiData: $wifiData, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
@@ -5042,6 +5354,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $SharedUniqueDataTableTable(this);
   late final $NotificationScheduleTableTable notificationScheduleTable =
       $NotificationScheduleTableTable(this);
+  late final $AppUsageTableTable appUsageTable = $AppUsageTableTable(this);
   late final UniqueRecordsDao uniqueRecordsDao =
       UniqueRecordsDao(this as AppDatabase);
   late final DynamicRecordsDao dynamicRecordsDao =
@@ -5062,7 +5375,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         restrictionGroupsTable,
         wellbeingTable,
         sharedUniqueDataTable,
-        notificationScheduleTable
+        notificationScheduleTable,
+        appUsageTable
       ];
 }
 
@@ -7168,6 +7482,149 @@ class $$NotificationScheduleTableTableOrderingComposer
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
 
+typedef $$AppUsageTableTableInsertCompanionBuilder = AppUsageTableCompanion
+    Function({
+  required String packageName,
+  Value<DateTime> date,
+  Value<int> screenTime,
+  Value<int> mobileData,
+  Value<int> wifiData,
+  Value<int> rowid,
+});
+typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion
+    Function({
+  Value<String> packageName,
+  Value<DateTime> date,
+  Value<int> screenTime,
+  Value<int> mobileData,
+  Value<int> wifiData,
+  Value<int> rowid,
+});
+
+class $$AppUsageTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppUsageTableTable,
+    AppUsage,
+    $$AppUsageTableTableFilterComposer,
+    $$AppUsageTableTableOrderingComposer,
+    $$AppUsageTableTableProcessedTableManager,
+    $$AppUsageTableTableInsertCompanionBuilder,
+    $$AppUsageTableTableUpdateCompanionBuilder> {
+  $$AppUsageTableTableTableManager(_$AppDatabase db, $AppUsageTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$AppUsageTableTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$AppUsageTableTableOrderingComposer(ComposerState(db, table)),
+          getChildManagerBuilder: (p) =>
+              $$AppUsageTableTableProcessedTableManager(p),
+          getUpdateCompanionBuilder: ({
+            Value<String> packageName = const Value.absent(),
+            Value<DateTime> date = const Value.absent(),
+            Value<int> screenTime = const Value.absent(),
+            Value<int> mobileData = const Value.absent(),
+            Value<int> wifiData = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTableCompanion(
+            packageName: packageName,
+            date: date,
+            screenTime: screenTime,
+            mobileData: mobileData,
+            wifiData: wifiData,
+            rowid: rowid,
+          ),
+          getInsertCompanionBuilder: ({
+            required String packageName,
+            Value<DateTime> date = const Value.absent(),
+            Value<int> screenTime = const Value.absent(),
+            Value<int> mobileData = const Value.absent(),
+            Value<int> wifiData = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppUsageTableCompanion.insert(
+            packageName: packageName,
+            date: date,
+            screenTime: screenTime,
+            mobileData: mobileData,
+            wifiData: wifiData,
+            rowid: rowid,
+          ),
+        ));
+}
+
+class $$AppUsageTableTableProcessedTableManager extends ProcessedTableManager<
+    _$AppDatabase,
+    $AppUsageTableTable,
+    AppUsage,
+    $$AppUsageTableTableFilterComposer,
+    $$AppUsageTableTableOrderingComposer,
+    $$AppUsageTableTableProcessedTableManager,
+    $$AppUsageTableTableInsertCompanionBuilder,
+    $$AppUsageTableTableUpdateCompanionBuilder> {
+  $$AppUsageTableTableProcessedTableManager(super.$state);
+}
+
+class $$AppUsageTableTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $AppUsageTableTable> {
+  $$AppUsageTableTableFilterComposer(super.$state);
+  ColumnFilters<String> get packageName => $state.composableBuilder(
+      column: $state.table.packageName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get screenTime => $state.composableBuilder(
+      column: $state.table.screenTime,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get mobileData => $state.composableBuilder(
+      column: $state.table.mobileData,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get wifiData => $state.composableBuilder(
+      column: $state.table.wifiData,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$AppUsageTableTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $AppUsageTableTable> {
+  $$AppUsageTableTableOrderingComposer(super.$state);
+  ColumnOrderings<String> get packageName => $state.composableBuilder(
+      column: $state.table.packageName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get date => $state.composableBuilder(
+      column: $state.table.date,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get screenTime => $state.composableBuilder(
+      column: $state.table.screenTime,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get mobileData => $state.composableBuilder(
+      column: $state.table.mobileData,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get wifiData => $state.composableBuilder(
+      column: $state.table.wifiData,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
 class _$AppDatabaseManager {
   final _$AppDatabase _db;
   _$AppDatabaseManager(this._db);
@@ -7197,4 +7654,6 @@ class _$AppDatabaseManager {
   $$NotificationScheduleTableTableTableManager get notificationScheduleTable =>
       $$NotificationScheduleTableTableTableManager(
           _db, _db.notificationScheduleTable);
+  $$AppUsageTableTableTableManager get appUsageTable =>
+      $$AppUsageTableTableTableManager(_db, _db.appUsageTable);
 }

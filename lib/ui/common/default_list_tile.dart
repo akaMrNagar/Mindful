@@ -34,6 +34,7 @@ class DefaultListTile extends StatelessWidget {
     this.switchValue,
     this.isSelected,
     this.position,
+    this.margin,
     this.enabled = true,
     this.isPrimary = false,
   });
@@ -53,12 +54,13 @@ class DefaultListTile extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool enabled;
   final bool isPrimary;
+  final EdgeInsets? margin;
 
   @override
   Widget build(BuildContext context) {
     return RoundedContainer(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      margin: const EdgeInsets.only(top: 4),
+      margin: margin ?? const EdgeInsets.only(top: 4),
       borderRadius: getBorderRadiusFromPosition(position ?? ItemPosition.none),
       color:
           isPrimary ? Theme.of(context).colorScheme.secondaryContainer : color,

@@ -21,27 +21,36 @@ class RoutingService {
   /// Singleton instance of the [RoutingService].
   static final RoutingService instance = RoutingService._();
 
+  /// Global key used for navigation
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   /// Initialize routing with the context
-  Future<void> init(BuildContext context) async {
+  Future<void> init() async {
     /// Validate the targeting route
-    final targetRoute = MethodChannelService.instance.intentData.route;
-    if (!AppRoutes.routes.containsKey(targetRoute)) return;
+    final intent = MethodChannelService.instance.intentData;
+    if (!AppRoutes.routes.containsKey(intent.route)) return;
 
     /// Push the user to targeted route
-    if (targetRoute == AppRoutes.upcomingNotificationsScreen) {
-      _openDelayedRoute(context, AppRoutes.upcomingNotificationsScreen);
+    if (intent.route == AppRoutes.upcomingNotificationsScreen) {
+      _pushDelayedRoute(AppRoutes.upcomingNotificationsScreen);
+    } else if (intent.extraPackageName.isNotEmpty &&
+        intent.route == AppRoutes.appDashboardScreen) {
+      _pushDelayedRoute(
+        AppRoutes.appDashboardScreen,
+        arguments: AppDashboardParams(packageName: intent.extraPackageName),
+      );
     }
   }
 
-  void _openDelayedRoute(
-    BuildContext context,
+  void _pushDelayedRoute(
     String validRouteName, {
     Object? arguments,
   }) async {
     await Future.delayed(500.ms);
-    if (!context.mounted) return;
+    if (!(navigatorKey.currentState?.mounted ?? false)) return;
 
-    Navigator.of(context).pushNamed(
+    navigatorKey.currentState?.pushNamed(
       validRouteName,
       arguments: arguments,
     );

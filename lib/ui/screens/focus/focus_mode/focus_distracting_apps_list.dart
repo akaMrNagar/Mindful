@@ -46,6 +46,7 @@ class FocusDistractingAppsList extends ConsumerWidget {
 
     return SliverDistractingAppsList(
       distractingApps: distractingApps,
+      isInsideModalSheet: false,
       onSelectionChanged: (package, isSelected) => _onDistractingAppsChanged(
         context,
         ref,

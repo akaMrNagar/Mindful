@@ -9,8 +9,11 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
+import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/bedtime_provider.dart';
@@ -22,6 +25,12 @@ import 'package:path_provider/path_provider.dart';
 
 /// DateTime.now()
 DateTime get now => DateTime.now();
+
+/// Get the date for today (Midnight 12).
+/// The returned date will not have any time set.
+///
+/// Ex- 2025-01-01 00:00:00:000
+DateTime get dateToday => DateTime.now().dateOnly;
 
 /// Get the SQLITE database file path: /data/user/0/com.mindful.android/app_flutter/Mindful.sqlite
 Future<String> getSqliteDbPath() async => path.join(
@@ -123,4 +132,14 @@ void initializeNecessaryProviders(WidgetRef ref) {
   ref.read(wellBeingProvider);
   ref.read(focusModeProvider);
   debugPrint("Necessary providers initialized.");
+}
+
+/// Generates a Map<DateTime, int> for the 7 days of the week starting
+/// from the given date's start of the week, initializing all values to 0.
+Map<DateTime, UsageModel> generateEmptyWeekUsage(DateTime dt) {
+  final startOfWeek = dt.startOfWeek;
+
+  return Map.fromEntries(
+    List.generate(7, (i) => MapEntry(startOfWeek.add(i.days), const UsageModel())),
+  );
 }

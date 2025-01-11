@@ -38,4 +38,8 @@ class IntentData {
       extraPackageName: map['extraPackageName'] ?? '',
     );
   }
+
+  @override
+  String toString() =>
+      'IntentData(route: $route, extraIsSelfStart: $extraIsSelfStart, extraPackageName: $extraPackageName)';
 }

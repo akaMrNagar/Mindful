@@ -52,11 +52,14 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
         /// Month selector
         Row(
           children: [
+            /// Previous
             IconButton(
               icon: const Icon(FluentIcons.chevron_left_20_filled),
               onPressed: () => _changeMonth(-1),
             ),
             const Spacer(),
+
+            /// Current
             StyledText(
               DateFormat.yMMMM(Localizations.localeOf(context).languageCode)
                   .format(_selectedDate),
@@ -76,6 +79,8 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
                 icon: const Icon(FluentIcons.arrow_counterclockwise_20_regular),
               ),
             const Spacer(),
+
+            /// Next
             IconButton(
               icon: const Icon(FluentIcons.chevron_right_20_filled),
               onPressed: () => _changeMonth(1),
