@@ -14,10 +14,9 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/models/filter_model.dart';
+import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/providers/new/apps_info_provider.dart';
-import 'package:mindful/providers/packages_by_filter_provider.dart';
+import 'package:mindful/providers/new/filtered_packages_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -47,16 +46,16 @@ class SliverDistractingAppsList extends ConsumerStatefulWidget {
 
 class _SliverDistractingAppsListState
     extends ConsumerState<SliverDistractingAppsList> {
-  FilterModel _filter = FilterModel(selectedDayOfWeek: todayOfWeek);
+  UsageFilterModel _filter = UsageFilterModel.constant();
 
-  _onFilterChanged(FilterModel filter) {
+  _onFilterChanged(UsageFilterModel filter) {
     if (!mounted) return;
     setState(() => _filter = filter);
   }
 
   @override
   Widget build(BuildContext context) {
-    final allApps = ref.watch(packagesByFilterProvider(_filter));
+    final allApps = ref.watch(filteredPackagesProvider(_filter));
 
     /// Selected apps which are installed
     final selectedApps =
@@ -113,7 +112,8 @@ class _SliverDistractingAppsListState
                   keyBuilder: (item) => item,
                   itemBuilder: (context, packageName, _) {
                     /// Fetch app using the package
-                    final appInfo = ref.read(appsInfoProvider).value?[packageName];
+                    final appInfo =
+                        ref.read(appsInfoProvider).value?[packageName];
 
                     final isSelected =
                         widget.distractingApps.contains(packageName);
@@ -124,7 +124,8 @@ class _SliverDistractingAppsListState
                           )
                         : appInfo != null
                             ? DefaultListTile(
-                                isSelected: appInfo.isImpSysApp ? null : isSelected,
+                                isSelected:
+                                    appInfo.isImpSysApp ? null : isSelected,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .surfaceContainerLow,

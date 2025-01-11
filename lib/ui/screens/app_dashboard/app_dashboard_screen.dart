@@ -21,7 +21,7 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/utils.dart';
 import 'package:mindful/models/app_info.dart';
-import 'package:mindful/models/usage_filter.dart';
+import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/new/apps_info_provider.dart';
@@ -57,7 +57,7 @@ class AppDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
-  late UsageFilter _filter = UsageFilter(
+  late UsageFilterModel _filter = UsageFilterModel(
     selectedDay: widget.selectedDay ?? dateToday,
     selectedWeek: (widget.selectedDay ?? dateToday).weekRange,
     usageType: widget.initialUsageType ?? UsageType.screenUsage,

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 
 import 'package:mindful/core/database/app_database.dart';
 
-
 @immutable
 class UsageModel {
   /// Screen time in SECONDS
@@ -43,6 +42,7 @@ class UsageModel {
     );
   }
 
+  /// Custom override to combine two usage models by adding usages
   UsageModel operator +(UsageModel other) {
     return UsageModel(
       screenTime: screenTime + other.screenTime,

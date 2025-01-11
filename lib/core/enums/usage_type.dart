@@ -12,4 +12,5 @@
 enum UsageType {
   screenUsage,
   networkUsage,
+  alphabetic,
 }

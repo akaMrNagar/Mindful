@@ -16,10 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/models/android_app.dart';
 import 'package:mindful/models/app_info.dart';
 import 'package:mindful/models/device_info_model.dart';
-import 'package:mindful/models/intent_data.dart';
+import 'package:mindful/models/intent_data_model.dart';
 import 'package:mindful/models/notification_model.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
@@ -38,15 +37,15 @@ class MethodChannelService {
   );
 
   /// Flag indicating if the app is restarted by itself (after importing database).
-  IntentData get intentData => _intentData;
-  IntentData _intentData = const IntentData();
+  IntentDataModel get intentData => _intentData;
+  IntentDataModel _intentData = const IntentDataModel();
 
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
     _methodChannel.setMethodCallHandler(
       (call) async {
         if (call.method == "updateIntentData") {
-          _intentData = IntentData.fromMap(call.arguments as Map);
+          _intentData = IntentDataModel.fromMap(call.arguments as Map);
           debugPrint("updateIntentData(): Intent data updated : $_intentData");
         }
       },
@@ -122,26 +121,6 @@ class MethodChannelService {
   Future<bool> clearNativeCrashLogs() async =>
       await _methodChannel.invokeMethod('clearNativeCrashLogs');
 
-  /// Retrieves a list of all launchable apps installed on the user's device along with their usage statistics.
-  ///
-  /// This method calls the native side to get information about all installed apps and their usage data
-  /// for the current week, including screen time, Wi-Fi usage, and mobile data usage per day. The returned
-  /// list contains `AndroidApp` objects with the app details and usage statistics.
-  Future<List<AndroidApp>> getDeviceApps() async {
-    List<AndroidApp> appsList = [];
-    try {
-      List<Map> result =
-          await _methodChannel.invokeListMethod<Map>('getDeviceApps') ?? [];
-
-      for (Map entry in result) {
-        appsList.add(AndroidApp.fromMap(entry));
-      }
-    } catch (e) {
-      debugPrint("MethodChannelService.getDeviceApps() Error: $e");
-    }
-    return appsList;
-  }
-
   /// Retrieves a list of all launchable apps installed on the user's device.
   Future<List<AppInfo>> fetchDeviceAppsInfo() async {
     try {
@@ -163,12 +142,12 @@ class MethodChannelService {
   }) async {
     Map<String, UsageModel> usagesMap = {};
     try {
-      List<Map> results =
-          await _methodChannel.invokeListMethod<Map>('getAppsUsageForInterval', {
-                "startDateTime": start.millisecondsSinceEpoch,
-                "endDateTime": end.millisecondsSinceEpoch,
-              }) ??
-              [];
+      List<Map> results = await _methodChannel
+              .invokeListMethod<Map>('getAppsUsageForInterval', {
+            "startDateTime": start.millisecondsSinceEpoch,
+            "endDateTime": end.millisecondsSinceEpoch,
+          }) ??
+          [];
 
       for (var map in results) {
         usagesMap[map["packageName"] as String] = UsageModel.fromMap(map);

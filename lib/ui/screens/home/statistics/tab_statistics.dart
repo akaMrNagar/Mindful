@@ -18,7 +18,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/models/usage_filter.dart';
+import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/providers/new/weekly_device_usage_provider.dart';
 import 'package:mindful/providers/new/apps_info_provider.dart';
@@ -47,7 +47,7 @@ class TabStatistics extends ConsumerStatefulWidget {
 }
 
 class _TabStatisticsState extends ConsumerState<TabStatistics> {
-  UsageFilter _filter = UsageFilter.constant(includeAll: false);
+  UsageFilterModel _filter = UsageFilterModel.constant(includeAll: false);
   bool _isLoading = false;
 
   @override

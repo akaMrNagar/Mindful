@@ -49,6 +49,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   // ==================================================================================================================
 
   /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
+  /// Used to load and aggregated 7 days usage of all apps
   ///
   /// The result map contains one [UsageModel] for each day of week
   Future<Map<DateTime, UsageModel>> fetchWeeklyDeviceUsage({
@@ -75,7 +76,25 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     return usageMap;
   }
 
+  /// Loads Map of [String] package name and the respective [UsageModel] for the given date
+  /// Used to load 1 day usage of all apps
+  ///
+  /// The result map contains one [UsageModel] per app for the selected day
+  Future<Map<String, UsageModel>> fetchDatedAppsUsage({
+    required DateTime selectedDay,
+  }) async {
+    // Query the database for selected day
+    final result = await (select(appUsageTable)
+          ..where((e) => e.date.isValue(selectedDay)))
+        .get();
+
+    /// Map results
+    return Map.fromEntries(
+        result.map((e) => MapEntry(e.packageName, UsageModel.fromAppUsage(e))));
+  }
+
   /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
+  /// Used to load and aggregated 7 days usage of [packageName]
   ///
   /// The result map contains one [UsageModel] for each day of week for the given app
   Future<Map<DateTime, UsageModel>> fetchWeeklyAppUsage({
@@ -106,24 +125,9 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     return usageMap;
   }
 
-  /// Loads Map of [String] package name and the respective [UsageModel] for the given date
-  ///
-  /// The result map contains one [UsageModel] per app
-  Future<Map<String, UsageModel>> fetchDatedAppsUsage({
-    required DateTime selectedDay,
-  }) async {
-    // Query the database for selected day
-    final result = await (select(appUsageTable)
-          ..where((e) => e.date.isValue(selectedDay)))
-        .get();
-
-    /// Map results
-    return Map.fromEntries(
-        result.map((e) => MapEntry(e.packageName, UsageModel.fromAppUsage(e))));
-  }
-
   /// Insert or Update list of multiple [AppUsageTableCompanion] objects to/in the database.
-  Future<void> insertBatchAppUsages(List<AppUsageTableCompanion> usages) async =>
+  Future<void> insertBatchAppUsages(
+          List<AppUsageTableCompanion> usages) async =>
       batch(
         (batch) => batch.insertAll(
           appUsageTable,

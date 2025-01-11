@@ -10,14 +10,13 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/models/filter_model.dart';
-import 'package:mindful/models/usage_filter.dart';
+import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/providers/new/apps_info_provider.dart';
 import 'package:mindful/providers/new/dated_apps_usage_provider.dart';
 
-/// A provider that filters and sorts app packages based on [FilterModel]
+/// A provider that filters and sorts app packages based on [UsageFilterModel]
 final filteredPackagesProvider =
-    Provider.family<AsyncValue<List<String>>, UsageFilter>((ref, filter) {
+    Provider.family<AsyncValue<List<String>>, UsageFilterModel>((ref, filter) {
   /// Watch app's usage for selected day
   final appsUsage =
       ref.watch(appsUsageProvider(filter.selectedDay)).value ?? {};
@@ -29,13 +28,6 @@ final filteredPackagesProvider =
         data: (appsMap) {
           /// Create list of apps from the map with searching
           var apps = appsMap.values.toList();
-          final usages = appsUsage.map(
-            (k, v) => MapEntry(
-                k,
-                filter.usageType == UsageType.screenUsage
-                    ? v.screenTime
-                    : v.totalData),
-          );
 
           /// Filter by query
           if (filter.query.isNotEmpty) {
@@ -46,7 +38,19 @@ final filteredPackagesProvider =
 
           /// Filter out apps with no usage for the selected day
           if (!filter.includeAll) {
-            apps.removeWhere((e) => ((appsUsage[e.packageName] ?? 0) == 0));
+            switch (filter.usageType) {
+              case UsageType.screenUsage:
+                apps.removeWhere(
+                  (e) => ((appsUsage[e.packageName]?.screenTime ?? 0) == 0),
+                );
+                break;
+              case UsageType.networkUsage:
+                apps.removeWhere(
+                  (e) => ((appsUsage[e.packageName]?.totalData ?? 0) == 0),
+                );
+                break;
+              default:
+            }
           }
 
           /// Repopulate list if empty after filtering (avoid empty result)
@@ -54,15 +58,22 @@ final filteredPackagesProvider =
 
           /// If alphabetically is true the sort alphabetically,
           /// otherwise Sort apps based on usage  (descending)
-          if (filter.alphabetically) {
-            apps.sort(
-              (a, b) => a.name.compareTo(b.name),
-            );
-          } else {
-            apps.sort(
-              (a, b) => (usages[b.packageName] ?? 0)
-                  .compareTo(usages[a.packageName] ?? 0),
-            );
+          switch (filter.usageType) {
+            case UsageType.alphabetic:
+              apps.sort((a, b) => a.name.compareTo(b.name));
+              break;
+            case UsageType.screenUsage:
+              apps.sort(
+                (a, b) => (appsUsage[b.packageName]?.screenTime ?? 0)
+                    .compareTo(appsUsage[a.packageName]?.screenTime ?? 0),
+              );
+              break;
+            case UsageType.networkUsage:
+              apps.sort(
+                (a, b) => (appsUsage[b.packageName]?.totalData ?? 0)
+                    .compareTo(appsUsage[a.packageName]?.totalData ?? 0),
+              );
+              break;
           }
 
           /// Reverse if needed

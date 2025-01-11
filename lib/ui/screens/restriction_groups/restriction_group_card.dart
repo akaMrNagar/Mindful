@@ -37,11 +37,12 @@ class RestrictionGroupCard extends ConsumerWidget {
         [];
 
     final timeSpent = ref
-            .watch(todaysAppsUsageProvider)
-            .value
-            ?.values
-            .fold(0, (time, e) => time + e.screenTime) ??
+            .watch(todaysAppsUsageProvider.select(
+              (v) => v.value?.entries.where((e) => groupedApps.contains(e.key)),
+            ))
+            ?.fold(0, (time, entry) => time + entry.value.screenTime) ??
         0;
+
     final timeLeft = max(0, (group.timerSec - timeSpent));
 
     double progress =

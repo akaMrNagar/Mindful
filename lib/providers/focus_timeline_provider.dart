@@ -80,7 +80,7 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
         productiveDaysMap.values.fold(0, (a, b) => a + b);
 
     state = state.copyWith(
-      daysTypeMap: productiveDaysMap,
+      monthlyFocusTimeMap: productiveDaysMap,
       totalProductiveDays: productiveDaysMap.length,
       totalProductiveTime: totalProductiveTime.seconds,
     );

@@ -130,7 +130,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
             /// Calender
             ContentSectionHeader(title: context.locale.calender_heading).sliver,
             SliverHeatMapCalendar(
-              heatmapData: timeline.daysTypeMap,
+              heatmapData: timeline.monthlyFocusTimeMap,
               onDayChanged:
                   ref.read(focusTimelineProvider.notifier).onDayChanged,
               onMonthChanged:
