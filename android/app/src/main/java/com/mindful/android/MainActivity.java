@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 
 import com.mindful.android.generics.SafeServiceConnection;
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper;
+import com.mindful.android.helpers.AppsUsageHelper;
 import com.mindful.android.helpers.DeviceAppsHelper;
 import com.mindful.android.helpers.NewActivitiesLaunchHelper;
 import com.mindful.android.helpers.NotificationHelper;
@@ -151,12 +152,21 @@ public class MainActivity extends FlutterFragmentActivity implements MethodChann
                 result.success(Utils.getDeviceInfoMap(this));
                 break;
             }
-            case "getDeviceApps": {
-                DeviceAppsHelper.getDeviceApps(
-                        this,
-                        result,
-                        mTrackerServiceConn.isConnected() ? mTrackerServiceConn.getService().getAppsLaunchCount() : new HashMap<>(0)
-                );
+            case "getDeviceAppsInfo": {
+                DeviceAppsHelper.INSTANCE.getDeviceAppInfos(this, data -> {
+                    result.success(data);
+                    return kotlin.Unit.INSTANCE;
+                });
+                break;
+            }
+            case "getAppsUsageForInterval": {
+                AppsUsageHelper.INSTANCE.getAppsUsageForInterval(this,
+                        call.argument("startDateTime"),
+                        call.argument("endDateTime"),
+                        data -> {
+                            result.success(data);
+                            return kotlin.Unit.INSTANCE;
+                        });
                 break;
             }
             case "getUpComingNotifications": {

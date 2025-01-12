@@ -11,7 +11,7 @@
 import 'package:flutter/material.dart';
 
 @immutable
-class IntentData {
+class IntentDataModel {
   /// Route name passed through Intent when starting the app.
   ///
   /// User will be forwarded to this route's screen
@@ -25,17 +25,21 @@ class IntentData {
   /// This is forwarded by the overlay dialog service to open app dashboard.
   final String extraPackageName;
 
-  const IntentData({
+  const IntentDataModel({
     this.route = "",
     this.extraIsSelfStart = false,
     this.extraPackageName = "",
   });
 
-  factory IntentData.fromMap(Map<dynamic, dynamic> map) {
-    return IntentData(
+  factory IntentDataModel.fromMap(Map<dynamic, dynamic> map) {
+    return IntentDataModel(
       route: map['route'] ?? '',
       extraIsSelfStart: map['extraIsSelfStart'] ?? false,
       extraPackageName: map['extraPackageName'] ?? '',
     );
   }
+
+  @override
+  String toString() =>
+      'IntentData(route: $route, extraIsSelfStart: $extraIsSelfStart, extraPackageName: $extraPackageName)';
 }

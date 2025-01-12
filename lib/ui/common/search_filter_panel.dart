@@ -12,8 +12,8 @@ import 'dart:async';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/enums/sorting_type.dart';
-import 'package:mindful/models/filter_model.dart';
+import 'package:mindful/core/enums/usage_type.dart';
+import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 
@@ -24,8 +24,8 @@ class SearchFilterPanel extends StatefulWidget {
     required this.onFilterChanged,
   });
 
-  final FilterModel filter;
-  final ValueChanged<FilterModel> onFilterChanged;
+  final UsageFilterModel filter;
+  final ValueChanged<UsageFilterModel> onFilterChanged;
 
   @override
   State<SearchFilterPanel> createState() => _SearchFilterPanelState();
@@ -80,13 +80,13 @@ class _SearchFilterPanelState extends State<SearchFilterPanel> {
               FluentIcons.phone_screen_time_20_regular,
               FluentIcons.earth_20_regular,
               FluentIcons.text_case_lowercase_20_regular,
-            ][widget.filter.sorting.index],
+            ][widget.filter.usageType.index],
             size: 20,
           ),
           onPressed: () => widget.onFilterChanged(
             widget.filter.copyWith(
-              sorting: SortingType.values[(widget.filter.sorting.index + 1) %
-                  SortingType.values.length],
+              usageType: UsageType.values[(widget.filter.usageType.index + 1) %
+                  UsageType.values.length],
             ),
           ),
         ),

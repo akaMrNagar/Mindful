@@ -9,8 +9,9 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
+import 'package:mindful/providers/new/apps_info_provider.dart';
+import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -30,13 +31,18 @@ class RestrictionGroupCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groupedApps = ref
-            .watch(appsProvider.select((v) => v.value?.values
+            .watch(appsInfoProvider.select((v) => v.value?.values
                 .where((e) => group.distractingApps.contains(e.packageName))))
             ?.toList() ??
         [];
 
-    final timeSpent = groupedApps.fold(
-        0, (time, e) => time + (e.screenTimeThisWeek[todayOfWeek]));
+    final timeSpent = ref
+            .watch(todaysAppsUsageProvider.select(
+              (v) => v.value?.entries.where((e) => groupedApps.contains(e.key)),
+            ))
+            ?.fold(0, (time, entry) => time + entry.value.screenTime) ??
+        0;
+
     final timeLeft = max(0, (group.timerSec - timeSpent));
 
     double progress =
@@ -132,7 +138,7 @@ class RestrictionGroupCard extends ConsumerWidget {
                   return Padding(
                     padding: const EdgeInsets.only(right: 4),
                     child: ApplicationIcon(
-                      app: app,
+                      appInfo: app,
                       size: 14,
                     ),
                   );

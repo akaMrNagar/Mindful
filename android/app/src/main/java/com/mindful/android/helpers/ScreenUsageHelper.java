@@ -103,6 +103,7 @@ public class ScreenUsageHelper {
 
         // Convert milliseconds to seconds
         usageMap.replaceAll((key, value) -> value / 1000);
+        usageMap.entrySet().removeIf(entry -> entry.getValue() == 0);
         return usageMap;
     }
 

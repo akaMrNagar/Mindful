@@ -36,7 +36,7 @@ class SharedDataNotifier extends StateNotifier<SharedUniqueData> {
     }
 
     /// Run after a delay to avoid database deadlock
-    /// Listen to provider and save changes to Isar database
+    /// Listen to provider and save changes to database
     Future.delayed(
       1.seconds,
       () => addListener(

@@ -35,6 +35,7 @@ class TabFocus extends StatelessWidget {
 
         const FocusConfigurations(),
 
+        32.vSliverBox,
         const FocusDistractingAppsList(),
 
         const SliverTabsBottomPadding(),

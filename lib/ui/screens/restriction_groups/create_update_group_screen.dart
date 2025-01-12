@@ -22,9 +22,8 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
+import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
@@ -73,17 +72,16 @@ class _CreateUpdateRestrictionGroupState
     _group = widget.group ?? _group;
   }
 
-  int? _calculateTimeSpent() => ref
-      .read(appsProvider.select(
-        (v) => v.value?.values
-            .where((app) => _group.distractingApps.contains(app.packageName)),
-      ))
-      ?.fold(0, (n, app) => (n ?? 0) + app.screenTimeThisWeek[todayOfWeek]);
-
   @override
   Widget build(BuildContext context) {
     final isUpdating = widget.group != null;
-    final timeSpent = _calculateTimeSpent() ?? 0;
+    final timeSpent = ref
+            .watch(todaysAppsUsageProvider.select(
+              (v) => v.value?.entries
+                  .where((e) => _group.distractingApps.contains(e.key)),
+            ))
+            ?.fold(0, (time, entry) => time + entry.value.screenTime) ??
+        0;
     final timeLeft = max(0, (_group.timerSec - timeSpent));
 
     final alreadyGroupedApps = ref

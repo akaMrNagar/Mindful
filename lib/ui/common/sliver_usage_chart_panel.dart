@@ -10,10 +10,12 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/ui/common/default_bar_chart.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -23,17 +25,33 @@ class SliverUsageChartPanel extends StatelessWidget {
   const SliverUsageChartPanel({
     super.key,
     this.chartHeight = 256,
-    required this.selectedDoW,
+    required this.selectedDay,
     required this.usageType,
     required this.barChartData,
     required this.onDayOfWeekChanged,
+    required this.onWeekChanged,
   });
 
   final double chartHeight;
-  final int selectedDoW;
+  final DateTime selectedDay;
   final UsageType usageType;
-  final List<int> barChartData;
-  final ValueChanged<int> onDayOfWeekChanged;
+  final Map<DateTime, UsageModel> barChartData;
+  final ValueChanged<DateTime> onDayOfWeekChanged;
+  final ValueChanged<DateTime> onWeekChanged;
+
+  void _changeDay(int direction) {
+    final newDate = selectedDay.add(direction.days);
+
+    /// Check if the week is changed
+    /// if old and new date is (1 & 7)[prev week]  OR (7 & 1) [new week]
+    if ((selectedDay.weekday == 1 && newDate.weekday == 7) ||
+        (selectedDay.weekday == 7 && newDate.weekday == 1)) {
+      onWeekChanged(newDate);
+    }
+
+    /// Invoke on day changed anyway
+    onDayOfWeekChanged(newDate);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +61,8 @@ class SliverUsageChartPanel extends StatelessWidget {
         DefaultBarChart(
           height: chartHeight,
           usageType: usageType,
-          selectedBar: selectedDoW,
-          onBarTap: onDayOfWeekChanged,
+          selectedDay: selectedDay,
+          onDayBarTap: onDayOfWeekChanged,
           data: barChartData,
         ),
 
@@ -55,23 +73,42 @@ class SliverUsageChartPanel extends StatelessWidget {
           height: 48,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              /// Previous day
               IconButton(
                 icon: const Icon(FluentIcons.chevron_left_20_filled),
-                onPressed: selectedDoW > 0
-                    ? () => onDayOfWeekChanged((selectedDoW - 1) % 7)
-                    : null,
+                onPressed: () => _changeDay(-1),
               ),
+
+              const Spacer(),
+
+              /// Current day
               StyledText(
-                selectedDoW.dateFromDoW(context),
+                selectedDay.dateString(context),
                 color: Theme.of(context).hintColor,
                 fontSize: 14,
               ),
+
+              /// Reset button
+              if (selectedDay.isBefore(dateToday.startOfWeek))
+                IconButton(
+                  iconSize: 18,
+                  icon: const Icon(
+                    FluentIcons.arrow_counterclockwise_20_regular,
+                  ),
+                  onPressed: () {
+                    onDayOfWeekChanged(dateToday);
+                    onWeekChanged(dateToday);
+                  },
+                ),
+
+              const Spacer(),
+
+              /// Next day
               IconButton(
                 icon: const Icon(FluentIcons.chevron_right_20_filled),
-                onPressed: selectedDoW < todayOfWeek
-                    ? () => onDayOfWeekChanged((selectedDoW + 1) % 7)
+                onPressed: selectedDay.isBefore(dateToday)
+                    ? () => _changeDay(1)
                     : null,
               ),
             ],

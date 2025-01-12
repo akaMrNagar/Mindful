@@ -23,8 +23,6 @@ class RoundedContainer extends StatelessWidget {
     this.borderRadius,
     this.child,
     this.onPressed,
-    this.elevation = 0,
-    this.applyBorder = false,
     this.circularRadius = 18,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
@@ -35,8 +33,6 @@ class RoundedContainer extends StatelessWidget {
   final double? width;
   final Color? color;
   final Color? borderColor;
-  final bool applyBorder;
-  final double elevation;
   final double circularRadius;
   final BorderRadius? borderRadius;
   final EdgeInsets margin;
@@ -49,15 +45,6 @@ class RoundedContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final bgColor = color ?? Theme.of(context).colorScheme.surfaceContainer;
     final radius = borderRadius ?? BorderRadius.circular(circularRadius);
-
-    final borderSide = applyBorder
-        ? BorderSide(
-            color:
-                borderColor ?? Theme.of(context).colorScheme.secondaryContainer,
-            strokeAlign: BorderSide.strokeAlignInside,
-          )
-        : BorderSide.none;
-
     return onPressed == null
 
         /// Static container
@@ -70,7 +57,6 @@ class RoundedContainer extends StatelessWidget {
             decoration: BoxDecoration(
               color: bgColor,
               borderRadius: radius,
-              border: Border.fromBorderSide(borderSide),
             ),
             child: child,
           )
@@ -82,10 +68,9 @@ class RoundedContainer extends StatelessWidget {
             margin: margin,
             child: Material(
               color: bgColor,
-              elevation: elevation,
+              elevation: 0,
               shape: RoundedRectangleBorder(
                 borderRadius: radius,
-                side: borderSide,
               ),
               child: InkWell(
                 onTap: onPressed,
@@ -93,11 +78,7 @@ class RoundedContainer extends StatelessWidget {
                 splashColor: Theme.of(context).colorScheme.secondaryContainer,
                 borderRadius: radius,
                 child: Padding(
-                  /// Added 1px to padding only because the border is 1px and
-                  /// it is stroked inside
-                  padding: applyBorder
-                      ? padding.add(const EdgeInsets.all(1))
-                      : padding,
+                  padding: padding,
                   child: Align(
                     alignment: alignment,
                     child: child,

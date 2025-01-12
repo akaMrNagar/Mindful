@@ -78,7 +78,7 @@ class _SliverImplicitlyAnimatedListState<T>
           );
   }
 
-  Widget _itemBuilder(context, index) {
+  Widget _itemBuilder(BuildContext context, int index) {
     String key = widget.keyBuilder(widget.items[index]);
 
     /// Get offset from previous indices

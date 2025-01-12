@@ -62,6 +62,7 @@ public class NetworkUsageHelper {
 
         // Convert bytes to KBs
         wifiUsageMap.replaceAll((k, v) -> (v / 1024));
+        wifiUsageMap.entrySet().removeIf((entry) -> entry.getValue() == 0);
         return wifiUsageMap;
     }
 
@@ -98,6 +99,7 @@ public class NetworkUsageHelper {
 
         // Convert bytes to KBs
         mobileUsageMap.replaceAll((k, v) -> (v / 1024));
+        mobileUsageMap.entrySet().removeIf((entry) -> entry.getValue() == 0);
         return mobileUsageMap;
     }
 }

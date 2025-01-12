@@ -16,6 +16,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 
 class MindfulApp extends ConsumerWidget {
@@ -73,6 +74,7 @@ class MindfulApp extends ConsumerWidget {
         ],
         supportedLocales: AppLocalizations.supportedLocales,
         locale: Locale(localeCode),
+        navigatorKey: RoutingService.navigatorKey,
       ),
     );
   }

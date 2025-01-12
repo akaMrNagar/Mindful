@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/app_info.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -24,7 +24,7 @@ import 'package:mindful/ui/transitions/hero_page_route.dart';
 ///
 /// Returns time in seconds and take initial time in seconds
 Future<int?> showAppTimerPicker({
-  required AndroidApp app,
+  required AppInfo appInfo,
   required BuildContext context,
   required Object heroTag,
   required int initialTime,
@@ -33,8 +33,8 @@ Future<int?> showAppTimerPicker({
       HeroPageRoute(
         builder: (context) => _DurationPickerDialog(
           heroTag: heroTag,
-          icon: ApplicationIcon(app: app),
-          title: app.name,
+          icon: ApplicationIcon(appInfo: appInfo),
+          title: appInfo.name,
           info: context.locale.app_timer_picker_dialog_info,
           positiveButtonLabel: context.locale.dialog_button_set,
           initialTimeInSec: initialTime,

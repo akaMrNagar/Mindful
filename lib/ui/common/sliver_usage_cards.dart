@@ -18,6 +18,8 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_segmented_button.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -28,17 +30,13 @@ class SliverUsageCards extends StatelessWidget {
   /// and cards for displaying relevant selected usage like screen time, mobile and wifi usage
   const SliverUsageCards({
     super.key,
+    required this.usage,
     required this.usageType,
-    required this.screenUsageInfo,
-    required this.wifiUsageInfo,
-    required this.mobileUsageInfo,
     required this.onUsageTypeChanged,
   });
 
+  final UsageModel usage;
   final UsageType usageType;
-  final int screenUsageInfo;
-  final int wifiUsageInfo;
-  final int mobileUsageInfo;
   final ValueChanged<UsageType> onUsageTypeChanged;
 
   @override
@@ -52,11 +50,13 @@ class SliverUsageCards extends StatelessWidget {
           segments: [
             SegmentItem(
               icon: FluentIcons.phone_screen_time_20_regular,
+              filledIcon: FluentIcons.phone_screen_time_20_filled,
               label: context.locale.screen_segment_label,
               value: UsageType.screenUsage,
             ),
             SegmentItem(
               icon: FluentIcons.earth_20_regular,
+              filledIcon: FluentIcons.earth_20_filled,
               label: context.locale.data_segment_label,
               value: UsageType.networkUsage,
             ),
@@ -64,41 +64,38 @@ class SliverUsageCards extends StatelessWidget {
         ).leftCentered,
 
         /// Usage info cards
-        SizedBox(
-          height: 80,
-          child: usageType == UsageType.screenUsage
+        usageType == UsageType.screenUsage
 
-              /// Screen usage card
-              ? _buildUsageCard(
-                  context,
-                  icon: FluentIcons.phone_20_regular,
-                  title: context.locale.screen_time_label,
-                  subtitle: screenUsageInfo.seconds.toTimeFull(context),
-                )
+            /// Screen usage card
+            ? _buildUsageCard(
+                context,
+                icon: FluentIcons.phone_20_regular,
+                title: context.locale.screen_time_label,
+                subtitle: usage.screenTime.seconds.toTimeFull(context),
+              )
 
-              /// Mobile and Wifi usage card
-              : Row(
-                  children: [
-                    Expanded(
-                      child: _buildUsageCard(
-                        context,
-                        icon: FluentIcons.cellular_data_1_20_filled,
-                        title: context.locale.mobile_label,
-                        subtitle: mobileUsageInfo.toData(),
-                      ),
+            /// Mobile and Wifi usage card
+            : Row(
+                children: [
+                  Expanded(
+                    child: _buildUsageCard(
+                      context,
+                      icon: FluentIcons.cellular_data_1_20_filled,
+                      title: context.locale.mobile_label,
+                      subtitle: usage.mobileData.toData(),
                     ),
-                    8.hBox,
-                    Expanded(
-                      child: _buildUsageCard(
-                        context,
-                        icon: FluentIcons.wifi_1_20_filled,
-                        title: context.locale.wifi_label,
-                        subtitle: wifiUsageInfo.toData(),
-                      ),
+                  ),
+                  4.hBox,
+                  Expanded(
+                    child: _buildUsageCard(
+                      context,
+                      icon: FluentIcons.wifi_1_20_filled,
+                      title: context.locale.wifi_label,
+                      subtitle: usage.wifiData.toData(),
                     ),
-                  ],
-                ),
-        ),
+                  ),
+                ],
+              ),
       ],
     );
   }
@@ -111,6 +108,7 @@ class SliverUsageCards extends StatelessWidget {
   }) {
     return DefaultListTile(
       isPrimary: true,
+      margin: const EdgeInsets.only(top: 2),
       leading: Icon(icon),
       title: StyledText(
         title,
@@ -127,6 +125,11 @@ class SliverUsageCards extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ).animate().scale(
+          begin: const Offset(0.97, 0.97),
+          end: const Offset(1, 1),
+          curve: AppConstants.defaultCurve,
+          duration: AppConstants.defaultAnimDuration * 1.5,
+        );
   }
 }

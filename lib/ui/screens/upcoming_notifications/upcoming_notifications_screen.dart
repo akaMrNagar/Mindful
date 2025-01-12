@@ -78,7 +78,7 @@ class _UpcomingStateNotificationsScreen
                 ).sliver,
 
                 /// Notifications
-                notificationMap.isLoading
+                !notificationMap.hasValue
 
                     /// Loading notifications
                     ? const SliverShimmerList(

@@ -16,8 +16,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/app_info.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -25,42 +24,35 @@ import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
-class AppTimer extends ConsumerWidget {
-  const AppTimer({
-    required this.app,
+class AppTimerTile extends ConsumerWidget {
+  const AppTimerTile({
+    required this.appInfo,
+    required this.appTimer,
+    required this.isPurged,
     this.isIconButton = false,
     super.key,
   });
 
-  final AndroidApp app;
+  final AppInfo appInfo;
+  final int appTimer;
+  final bool isPurged;
   final bool isIconButton;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTimer = ref.watch(appsRestrictionsProvider
-            .select((v) => v[app.packageName]?.timerSec)) ??
-        0;
-
-    final isPurged =
-        appTimer > 0 && appTimer < app.screenTimeThisWeek[todayOfWeek];
-
     return isIconButton
         ? IconButton(
             icon: appTimer > 0
                 ? TimeTextShort(timeDuration: appTimer.seconds)
                 : const Icon(FluentIcons.timer_20_regular),
-            onPressed: () => _pickAppTimer(
-              context,
-              ref,
-              appTimer,
-            ),
+            onPressed: () => _pickAppTimer(context, ref),
           )
         : DefaultHero(
-            tag: HeroTags.appTimerTileTag(app.packageName),
+            tag: HeroTags.appTimerTileTag(appInfo.packageName),
             child: DefaultListTile(
               position: ItemPosition.top,
               titleText: context.locale.app_timer_tile_title,
-              enabled: !app.isImpSysApp,
+              enabled: !appInfo.isImpSysApp,
               subtitleText: appTimer > 0
                   ? appTimer.seconds.toTimeFull(context)
                   : context.locale.app_limit_status_not_set,
@@ -68,11 +60,7 @@ class AppTimer extends ConsumerWidget {
               accent: isPurged ? Theme.of(context).colorScheme.error : null,
               trailing:
                   isPurged ? Text(context.locale.timer_status_paused) : null,
-              onPressed: () => _pickAppTimer(
-                context,
-                ref,
-                appTimer,
-              ),
+              onPressed: () => _pickAppTimer(context, ref),
             ),
           );
   }
@@ -80,16 +68,13 @@ class AppTimer extends ConsumerWidget {
   void _pickAppTimer(
     BuildContext context,
     WidgetRef ref,
-    int prevTimer,
   ) async {
     final isInvincibleModeRestricted = ref.read(
       invincibleModeProvider
           .select((v) => v.isInvincibleModeOn && v.includeAppsTimer),
     );
 
-    if (isInvincibleModeRestricted &&
-        prevTimer > 0 &&
-        app.screenTimeThisWeek[todayOfWeek] >= prevTimer) {
+    if (isInvincibleModeRestricted && isPurged) {
       context.showSnackAlert(
         context.locale.invincible_mode_snack_alert,
       );
@@ -97,17 +82,17 @@ class AppTimer extends ConsumerWidget {
     }
 
     final newTimer = await showAppTimerPicker(
-      app: app,
+      appInfo: appInfo,
       heroTag: isIconButton
-          ? HeroTags.applicationTileTag(app.packageName)
-          : HeroTags.appTimerTileTag(app.packageName),
+          ? HeroTags.applicationTileTag(appInfo.packageName)
+          : HeroTags.appTimerTileTag(appInfo.packageName),
       context: context,
-      initialTime: prevTimer,
+      initialTime: appTimer,
     );
 
-    if (newTimer == null || newTimer == prevTimer) return;
+    if (newTimer == null || newTimer == appTimer) return;
     ref
         .read(appsRestrictionsProvider.notifier)
-        .updateAppTimer(app.packageName, newTimer);
+        .updateAppTimer(appInfo.packageName, newTimer);
   }
 }

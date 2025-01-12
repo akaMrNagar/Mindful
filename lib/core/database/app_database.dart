@@ -18,6 +18,7 @@ import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
 import 'package:mindful/core/database/schemas/schema_versions.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
+import 'package:mindful/core/database/tables/app_usage_table.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_mode_table.dart';
@@ -54,6 +55,7 @@ part 'app_database.g.dart';
     WellbeingTable,
     SharedUniqueDataTable,
     NotificationScheduleTable,
+    AppUsageTable,
   ],
   daos: [UniqueRecordsDao, DynamicRecordsDao],
 )

@@ -13,20 +13,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/models/android_app.dart';
+import 'package:mindful/models/app_info.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
 
-class AppInternetSwitcher extends ConsumerWidget {
-  const AppInternetSwitcher({
-    required this.app,
+class AppInternetTile extends ConsumerWidget {
+  const AppInternetTile({
+    required this.appInfo,
     this.isIconButton = false,
     super.key,
   });
 
-  final AndroidApp app;
+  final AppInfo appInfo;
   final bool isIconButton;
 
   @override
@@ -34,8 +34,8 @@ class AppInternetSwitcher extends ConsumerWidget {
     final havePermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
-    final haveInternetAccess = ref.watch(appsRestrictionsProvider
-            .select((value) => value[app.packageName]?.canAccessInternet)) ??
+    final haveInternetAccess = ref.watch(appsRestrictionsProvider.select(
+            (value) => value[appInfo.packageName]?.canAccessInternet)) ??
         true;
 
     onPressed() => havePermission
@@ -57,7 +57,7 @@ class AppInternetSwitcher extends ConsumerWidget {
         : DefaultListTile(
             position: ItemPosition.mid,
             switchValue: haveInternetAccess,
-            enabled: !app.isImpSysApp,
+            enabled: !appInfo.isImpSysApp,
             titleText: context.locale.internet_access_tile_title,
             subtitleText: context.locale.internet_access_tile_subtitle,
             leadingIcon: haveInternetAccess
@@ -92,14 +92,14 @@ class AppInternetSwitcher extends ConsumerWidget {
     bool haveInternetAccess,
   ) {
     ref.read(appsRestrictionsProvider.notifier).switchInternetAccess(
-          app.packageName,
+          appInfo.packageName,
           haveInternetAccess,
         );
 
     context.showSnackAlert(
       haveInternetAccess
-          ? context.locale.internet_access_unblocked_snack_alert(app.name)
-          : context.locale.internet_access_blocked_snack_alert(app.name),
+          ? context.locale.internet_access_unblocked_snack_alert(appInfo.name)
+          : context.locale.internet_access_blocked_snack_alert(appInfo.name),
       icon: haveInternetAccess
           ? FluentIcons.globe_20_filled
           : FluentIcons.globe_prohibited_20_filled,

@@ -9,9 +9,11 @@
  */
 
 import 'package:drift/drift.dart';
+import 'package:flutter/material.dart';
 
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
+import 'package:mindful/core/database/tables/app_usage_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
@@ -22,6 +24,8 @@ import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/utils/default_models.dart';
+import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/models/usage_model.dart';
 
 part 'dynamic_records_dao.g.dart';
 
@@ -33,11 +37,104 @@ part 'dynamic_records_dao.g.dart';
     FocusProfileTable,
     RestrictionGroupsTable,
     NotificationScheduleTable,
+    AppUsageTable,
   ],
 )
 class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     with _$DynamicRecordsDaoMixin {
   DynamicRecordsDao(AppDatabase db) : super(db);
+
+  // ==================================================================================================================
+  // ===================================== APP USAGE =======================================================
+  // ==================================================================================================================
+
+  /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
+  /// Used to load and aggregated 7 days usage of all apps
+  ///
+  /// The result map contains one [UsageModel] for each day of week
+  Future<Map<DateTime, UsageModel>> fetchWeeklyDeviceUsage({
+    required DateTimeRange weekRange,
+  }) async {
+    // Initialize the Map with 7 days of the week
+    final usageMap = generateEmptyWeekUsage(weekRange.start);
+
+    // Query the database
+    final results = await (select(appUsageTable)
+          ..where(
+              (e) => e.date.isBetweenValues(weekRange.start, weekRange.end)))
+        .get();
+
+    // Map the results
+    for (var appUsage in results) {
+      usageMap.update(
+        appUsage.date,
+        (v) => v + UsageModel.fromAppUsage(appUsage),
+        ifAbsent: () => const UsageModel(),
+      );
+    }
+
+    return usageMap;
+  }
+
+  /// Loads Map of [String] package name and the respective [UsageModel] for the given date
+  /// Used to load 1 day usage of all apps
+  ///
+  /// The result map contains one [UsageModel] per app for the selected day
+  Future<Map<String, UsageModel>> fetchDatedAppsUsage({
+    required DateTime selectedDay,
+  }) async {
+    // Query the database for selected day
+    final result = await (select(appUsageTable)
+          ..where((e) => e.date.isValue(selectedDay)))
+        .get();
+
+    /// Map results
+    return Map.fromEntries(
+        result.map((e) => MapEntry(e.packageName, UsageModel.fromAppUsage(e))));
+  }
+
+  /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
+  /// Used to load and aggregated 7 days usage of [packageName]
+  ///
+  /// The result map contains one [UsageModel] for each day of week for the given app
+  Future<Map<DateTime, UsageModel>> fetchWeeklyAppUsage({
+    required String packageName,
+    required DateTimeRange weekRange,
+  }) async {
+    // Initialize the Map with 7 days of the week
+    final usageMap = generateEmptyWeekUsage(weekRange.start);
+
+    // Query the database
+    final results = await (select(appUsageTable)
+          ..where(
+            (e) =>
+                e.date.isBetweenValues(weekRange.start, weekRange.end) &
+                e.packageName.equals(packageName),
+          ))
+        .get();
+
+    // Map the results
+    for (var appUsage in results) {
+      usageMap.update(
+        appUsage.date,
+        (v) => v + UsageModel.fromAppUsage(appUsage),
+        ifAbsent: () => const UsageModel(),
+      );
+    }
+
+    return usageMap;
+  }
+
+  /// Insert or Update list of multiple [AppUsageTableCompanion] objects to/in the database.
+  Future<void> insertBatchAppUsages(
+          List<AppUsageTableCompanion> usages) async =>
+      batch(
+        (batch) => batch.insertAll(
+          appUsageTable,
+          usages,
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
 
   // ==================================================================================================================
   // ===================================== APP RESTRICTIONS =======================================================
@@ -230,34 +327,43 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
       update(focusSessionsTable).replace(session);
 
   /// Loads the number of [FocusSession] object who's state corresponds to the passed [SessionState]
-  Future<int> fetchSessionsCountWithState(SessionState state) async =>
-      (select(focusSessionsTable)..where((e) => e.state.equals(state.index)))
-          .map((f) => f.id)
-          .get()
-          .then((e) => e.length);
+  Future<int> fetchSessionsCountWithState(SessionState state) async {
+    final query = selectOnly(focusSessionsTable)
+      ..where(focusSessionsTable.state.equalsValue(state))
+      ..addColumns([focusSessionsTable.id.count()]);
+
+    return await query
+        .map((row) => row.read(focusSessionsTable.id.count()) ?? 0)
+        .getSingle();
+  }
 
   /// Loads the total duration in seconds for all the [FocusSession] in the database
   ///
   /// i.e., The lifetime duration in seconds of all the sessions user have taken
   /// with state no equal to [SessionState.active]
-  Future<int> fetchLifetimeSessionsDuration() async =>
-      (select(focusSessionsTable)
-            ..where((e) => e.state.isNotValue(SessionState.active.index)))
-          .map((f) => f.durationSecs)
-          .get()
-          .then((v) => v.fold<int>(0, (x, y) => x + y));
+  Future<int> fetchLifetimeSessionsDuration() async {
+    final totalDurationQuery = selectOnly(focusSessionsTable)
+      ..where(focusSessionsTable.state.isNotValue(SessionState.active.index))
+      ..addColumns([focusSessionsTable.durationSecs.sum()]);
+
+    final totalDuration = await totalDurationQuery
+        .map((row) => row.read(focusSessionsTable.durationSecs.sum()) ?? 0)
+        .getSingle();
+
+    return totalDuration;
+  }
 
   /// Loads all [FocusSession] objects from the database within the interval.
   Future<List<FocusSession>> fetchAllSessionsForInterval({
     required DateTime start,
     required DateTime end,
-  }) async =>
-      (select(focusSessionsTable)
-            ..where(
-              (e) => e.startDateTime.isBetweenValues(start, end),
-            )
-            ..orderBy([(e) => OrderingTerm.desc(e.startDateTime)]))
-          .get();
+  }) async {
+    final query = select(focusSessionsTable)
+      ..where((tbl) => tbl.startDateTime.isBetweenValues(start, end))
+      ..orderBy([(e) => OrderingTerm.desc(e.startDateTime)]);
+
+    return query.get();
+  }
 
   /// Loads the total duration in seconds for all the [FocusSession] in the database for the provided interval
   ///
@@ -266,46 +372,48 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   Future<int> fetchSessionsDurationForInterval(
     DateTime start,
     DateTime end,
-  ) async =>
-      (select(focusSessionsTable)
-            ..where(
-              (e) =>
-                  e.state.isNotValue(SessionState.active.index) &
-                  e.startDateTime.isBetweenValues(start, end),
-            ))
-          .map((f) => f.durationSecs)
-          .get()
-          .then((v) => v.fold<int>(0, (x, y) => x + y));
+  ) async {
+    final totalDurationQuery = selectOnly(focusSessionsTable)
+      ..where(focusSessionsTable.state.isNotValue(SessionState.active.index) &
+          focusSessionsTable.startDateTime.isBetweenValues(start, end))
+      ..addColumns([focusSessionsTable.durationSecs.sum()]);
+
+    final result = await totalDurationQuery
+        .map((row) => row.read(focusSessionsTable.durationSecs.sum()) ?? 0)
+        .getSingle();
+
+    return result;
+  }
 
   Future<Map<DateTime, int>> fetchSessionsDurationMapForInterval(
     DateTime start,
     DateTime end,
   ) async {
-    final dates = await (select(focusSessionsTable)
+    // Fetch only necessary columns
+    final results = await (selectOnly(focusSessionsTable)
           ..where(
-            (e) =>
-                e.state.isNotValue(SessionState.active.index) &
-                e.startDateTime.isBetweenValues(start, end),
-          ))
-        .map((f) => MapEntry(f.startDateTime, f.durationSecs))
+              focusSessionsTable.state.isNotValue(SessionState.active.index) &
+                  focusSessionsTable.startDateTime.isBetweenValues(start, end))
+          ..addColumns([
+            focusSessionsTable.startDateTime,
+            focusSessionsTable.durationSecs,
+          ]))
         .get();
 
-    /// combine them
-    final Map<DateTime, int> durationPerDay = {};
+    // Use fold to build the map
+    final durationMap = results.fold<Map<DateTime, int>>({}, (map, row) {
+      final startDateTime = row.read(focusSessionsTable.startDateTime);
+      final durationSecs = row.read(focusSessionsTable.durationSecs);
 
-    for (var entry in dates) {
-      final day = entry.key.dateOnly;
-      final duration = entry.value;
-
-      // If the day already exists, add the current duration to the total
-      if (durationPerDay.containsKey(day)) {
-        durationPerDay[day] = durationPerDay[day]! + duration;
-      } else {
-        durationPerDay[day] = duration;
+      if (startDateTime != null && durationSecs != null) {
+        final day = startDateTime.dateOnly;
+        map[day] = (map[day] ?? 0) + durationSecs;
       }
-    }
 
-    return durationPerDay;
+      return map;
+    });
+
+    return durationMap;
   }
 
   // Future<void> addDuplicateSessions() async {

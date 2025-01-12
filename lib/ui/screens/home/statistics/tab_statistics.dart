@@ -13,17 +13,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/enums/sorting_type.dart';
-import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/models/filter_model.dart';
-import 'package:mindful/providers/aggregated_usage_stats_provider.dart';
-import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/providers/packages_by_filter_provider.dart';
+import 'package:mindful/models/usage_filter_model.dart';
+import 'package:mindful/models/usage_model.dart';
+import 'package:mindful/providers/new/weekly_device_usage_provider.dart';
+import 'package:mindful/providers/new/apps_info_provider.dart';
+import 'package:mindful/providers/new/filtered_packages_provider.dart';
+import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/battery_optimization_tip.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
@@ -47,39 +47,38 @@ class TabStatistics extends ConsumerStatefulWidget {
 }
 
 class _TabStatisticsState extends ConsumerState<TabStatistics> {
-  FilterModel _filter =
-      FilterModel(selectedDayOfWeek: todayOfWeek, includeAll: false);
+  UsageFilterModel _filter = UsageFilterModel.constant(includeAll: false);
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
     /// Aggregated usage for whole week on the basis of full day
-    final aggregatedUsage = ref.watch(aggregatedUsageStatsProvider);
+    final weeklyUsages =
+        ref.watch(weeklyDeviceUsageProvider(_filter.selectedWeek));
 
     /// Filtered and sorted apps based on usage type and day of this week
-    final filteredApps = ref.watch(packagesByFilterProvider(_filter));
-
-    UsageType usageType =
-        UsageType.values[_filter.sorting.index % UsageType.values.length];
+    final filteredApps = ref.watch(filteredPackagesProvider(_filter));
 
     return DefaultRefreshIndicator(
-      onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
+      onRefresh: () async {
+        setState(() => _isLoading = true);
+        await ref.read(appsInfoProvider.notifier).refreshAppsInfo();
+        await ref.read(todaysAppsUsageProvider.notifier).refreshTodaysUsage();
+
+        if (!mounted) return;
+        setState(() => _isLoading = false);
+      },
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           /// Usage type selector and usage info card
           SliverSkeletonizer.zone(
-            enabled: !filteredApps.hasValue,
+            enabled: filteredApps.isLoading || _isLoading,
             child: SliverUsageCards(
-              usageType: usageType,
-              screenUsageInfo:
-                  aggregatedUsage.screenTimeThisWeek[_filter.selectedDayOfWeek],
-              wifiUsageInfo:
-                  aggregatedUsage.wifiUsageThisWeek[_filter.selectedDayOfWeek],
-              mobileUsageInfo: aggregatedUsage
-                  .mobileUsageThisWeek[_filter.selectedDayOfWeek],
+              usageType: _filter.usageType,
+              usage: weeklyUsages[_filter.selectedDay] ?? const UsageModel(),
               onUsageTypeChanged: (type) => setState(
-                () => _filter =
-                    _filter.copyWith(sorting: SortingType.values[type.index]),
+                () => _filter = _filter.copyWith(usageType: type),
               ),
             ),
           ),
@@ -88,13 +87,13 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
 
           /// Usage bar chart and selected day changer
           SliverUsageChartPanel(
-            selectedDoW: _filter.selectedDayOfWeek,
-            usageType: usageType,
-            barChartData: usageType == UsageType.screenUsage
-                ? aggregatedUsage.screenTimeThisWeek
-                : aggregatedUsage.networkUsageThisWeek,
-            onDayOfWeekChanged: (dow) => setState(
-                () => _filter = _filter.copyWith(selectedDayOfWeek: dow)),
+            selectedDay: _filter.selectedDay,
+            usageType: _filter.usageType,
+            barChartData: weeklyUsages,
+            onDayOfWeekChanged: (day) =>
+                setState(() => _filter = _filter.copyWith(selectedDay: day)),
+            onWeekChanged: (day) => setState(
+                () => _filter = _filter.copyWith(selectedWeek: day.weekRange)),
           ),
 
           8.vSliverBox,
@@ -133,23 +132,18 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             duration: AppConstants.defaultAnimDuration,
             switchInCurve: AppConstants.defaultCurve,
             switchOutCurve: AppConstants.defaultCurve.flipped,
-            child: filteredApps.hasValue
+            child: filteredApps.hasValue && !_isLoading
                 ? SliverImplicitlyAnimatedList<String>(
                     items: filteredApps.value ?? [],
+                    animationDurationMultiplier: 1.5,
                     keyBuilder: (item) => item,
-                    itemBuilder: (context, package, itemPosition) {
-                      /// Fetch app using the package
-                      final app = ref.read(appsProvider).value?[package];
-
-                      return app != null
-                          ? ApplicationTile(
-                              app: app,
-                              position: itemPosition,
-                              selectedUsageType: usageType,
-                              selectedDoW: _filter.selectedDayOfWeek,
-                            )
-                          : 0.vBox;
-                    },
+                    itemBuilder: (context, package, itemPosition) =>
+                        ApplicationTile(
+                      packageName: package,
+                      usageType: _filter.usageType,
+                      selectedDay: _filter.selectedDay,
+                      position: itemPosition,
+                    ),
                   )
                 : const SliverShimmerList(includeSubtitle: true),
           ),

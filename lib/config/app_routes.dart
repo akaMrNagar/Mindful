@@ -11,7 +11,6 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/usage_type.dart';
-import 'package:mindful/models/android_app.dart';
 import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
@@ -23,20 +22,19 @@ import 'package:mindful/ui/screens/settings/settings_screen.dart';
 import 'package:mindful/ui/screens/upcoming_notifications/upcoming_notifications_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
 
-/// Arguments used in the family provider to sort and filter apps package based on these args.
-/// Mainly used by [packagesByScreenUsageProvider] and [packagesByNetworkUsageProvider].
-/// Args contains bool [includeAll] and int [selectedDayOfWeek]
-typedef FilterArgs = ({
-  bool includeAll,
-  int selectedDoW,
-});
+/// Parameters passed to [AppDashboardScreen] when using push named
+@immutable
+class AppDashboardParams {
+  final String packageName;
+  final UsageType? initialUsageType;
+  final DateTime? selectedDay;
 
-/// Arguments used in app routes to fetch necessary data from push named routes
-typedef AppDashboardScreenArgs = ({
-  AndroidApp app,
-  UsageType selectedUsageType,
-  int selectedDoW,
-});
+  const AppDashboardParams({
+    required this.packageName,
+    this.initialUsageType,
+    this.selectedDay,
+  });
+}
 
 class AppRoutes {
   static const String splashScreen = '/';
@@ -80,12 +78,12 @@ class AppRoutes {
     /// Resolve [AppDashboardScreenArgs] from arguments
     appDashboardScreen: (context) {
       final args =
-          ModalRoute.of(context)?.settings.arguments as AppDashboardScreenArgs;
+          ModalRoute.of(context)?.settings.arguments as AppDashboardParams;
 
       return AppDashboardScreen(
-        app: args.app,
-        initialUsageType: args.selectedUsageType,
-        selectedDoW: args.selectedDoW,
+        packageName: args.packageName,
+        initialUsageType: args.initialUsageType,
+        selectedDay: args.selectedDay,
       );
     }
   };

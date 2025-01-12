@@ -32,14 +32,13 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
 
   void _changeMonth(int direction) {
     setState(() {
-      _selectedDate = DateTime(
-        _selectedDate.year,
-        _selectedDate.month + direction,
-      );
+      _selectedDate = _selectedDate
+          .copyWith(month: _selectedDate.month + direction)
+          .dateOnly;
     });
 
-    widget.onMonthChanged(_selectedDate.dateOnly);
-    widget.onDayChanged(_selectedDate.dateOnly);
+    widget.onDayChanged(_selectedDate);
+    widget.onMonthChanged(_selectedDate);
   }
 
   @override
@@ -52,11 +51,14 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
         /// Month selector
         Row(
           children: [
+            /// Previous
             IconButton(
               icon: const Icon(FluentIcons.chevron_left_20_filled),
               onPressed: () => _changeMonth(-1),
             ),
             const Spacer(),
+
+            /// Current
             StyledText(
               DateFormat.yMMMM(Localizations.localeOf(context).languageCode)
                   .format(_selectedDate),
@@ -76,6 +78,8 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
                 icon: const Icon(FluentIcons.arrow_counterclockwise_20_regular),
               ),
             const Spacer(),
+
+            /// Next
             IconButton(
               icon: const Icon(FluentIcons.chevron_right_20_filled),
               onPressed: () => _changeMonth(1),

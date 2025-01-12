@@ -14,14 +14,14 @@ import 'package:mindful/core/database/app_database.dart';
 
 @immutable
 class FocusTimelineModel {
-  final Map<DateTime, int> daysTypeMap;
+  final Map<DateTime, int> monthlyFocusTimeMap;
   final int totalProductiveDays;
   final Duration totalProductiveTime;
   final Duration selectedDaysFocusedTime;
   final AsyncValue<List<FocusSession>> selectedDaysSessions;
 
   const FocusTimelineModel({
-    this.daysTypeMap = const {},
+    this.monthlyFocusTimeMap = const {},
     this.totalProductiveDays = 0,
     this.totalProductiveTime = Duration.zero,
     this.selectedDaysFocusedTime = Duration.zero,
@@ -29,14 +29,14 @@ class FocusTimelineModel {
   });
 
   FocusTimelineModel copyWith({
-    Map<DateTime, int>? daysTypeMap,
+    Map<DateTime, int>? monthlyFocusTimeMap,
     int? totalProductiveDays,
     Duration? totalProductiveTime,
     Duration? selectedDaysFocusedTime,
     AsyncValue<List<FocusSession>>? selectedDaysSessions,
   }) {
     return FocusTimelineModel(
-      daysTypeMap: daysTypeMap ?? this.daysTypeMap,
+      monthlyFocusTimeMap: monthlyFocusTimeMap ?? this.monthlyFocusTimeMap,
       totalProductiveDays: totalProductiveDays ?? this.totalProductiveDays,
       totalProductiveTime: totalProductiveTime ?? this.totalProductiveTime,
       selectedDaysFocusedTime: selectedDaysFocusedTime ?? this.selectedDaysFocusedTime,

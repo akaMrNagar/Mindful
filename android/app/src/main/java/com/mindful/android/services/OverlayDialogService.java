@@ -11,6 +11,7 @@ package com.mindful.android.services;
 
 import static com.mindful.android.generics.ServiceBinder.ACTION_START_MINDFUL_SERVICE;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_DIALOG_INFO;
+import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_INITIAL_ROUTE;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_MAX_PROGRESS;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PACKAGE_NAME;
 import static com.mindful.android.utils.AppConstants.INTENT_EXTRA_PROGRESS;
@@ -254,6 +255,7 @@ public class OverlayDialogService extends Service {
             appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appIntent.setData(Uri.parse(appIntent.toUri(Intent.URI_INTENT_SCHEME)));
             appIntent.putExtra(INTENT_EXTRA_PACKAGE_NAME, mPackageName);
+            appIntent.putExtra(INTENT_EXTRA_INITIAL_ROUTE, "/appDashboardScreen");
             startActivity(appIntent);
         }
 

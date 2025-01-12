@@ -13,9 +13,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/models/filter_model.dart';
-import 'package:mindful/providers/packages_by_filter_provider.dart';
+import 'package:mindful/models/usage_filter_model.dart';
+import 'package:mindful/providers/new/filtered_packages_provider.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
 
 class SampleRestrictionGroup extends ConsumerWidget {
@@ -24,8 +23,7 @@ class SampleRestrictionGroup extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final packages = ref
-            .watch(packagesByFilterProvider(
-                FilterModel(selectedDayOfWeek: todayOfWeek)))
+            .watch(filteredPackagesProvider(UsageFilterModel.constant()))
             .value ??
         [];
     final top = packages.take(15).toList();

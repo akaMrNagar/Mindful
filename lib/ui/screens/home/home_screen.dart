@@ -16,15 +16,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
-import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/core/utils/app_constants.dart';
 import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/core/utils/utils.dart';
-import 'package:mindful/models/android_app.dart';
-import 'package:mindful/providers/apps_provider.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -43,50 +39,14 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  ProviderSubscription? _subscription;
-
   @override
   void initState() {
     super.initState();
     _showDonationDialog();
 
-    final targetPackage =
-        MethodChannelService.instance.intentData.extraPackageName;
-
-    /// Return if no target package try routing instead
-    if (targetPackage.isEmpty) {
-      RoutingService.instance.init(context);
-      return;
-    }
-
-    /// Check if target package in method channel service is not empty,
-    /// that means user launched the app from overlay dialog
-    _subscription = ref.listenManual<AsyncValue<Map<String, AndroidApp>>>(
-      appsProvider,
-      (_, apps) {
-        if (!apps.hasValue) return;
-        if (apps.value!.containsKey(targetPackage)) {
-          _gotoAppDashboard(apps.value![targetPackage]!);
-        }
-
-        _subscription?.close();
-      },
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => RoutingService.instance.init(),
     );
-  }
-
-  /// Go to app dashboard screen after 300ms of loading
-  void _gotoAppDashboard(AndroidApp app) async {
-    await Future.delayed(300.ms);
-    if (mounted) {
-      Navigator.of(context).pushNamed(
-        AppRoutes.appDashboardScreen,
-        arguments: (
-          app: app,
-          selectedUsageType: UsageType.screenUsage,
-          selectedDoW: todayOfWeek,
-        ),
-      );
-    }
   }
 
   void _showDonationDialog() async {
