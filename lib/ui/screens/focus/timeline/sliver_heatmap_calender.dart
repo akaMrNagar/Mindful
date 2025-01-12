@@ -32,14 +32,13 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
 
   void _changeMonth(int direction) {
     setState(() {
-      _selectedDate = DateTime(
-        _selectedDate.year,
-        _selectedDate.month + direction,
-      );
+      _selectedDate = _selectedDate
+          .copyWith(month: _selectedDate.month + direction)
+          .dateOnly;
     });
 
-    widget.onMonthChanged(_selectedDate.dateOnly);
-    widget.onDayChanged(_selectedDate.dateOnly);
+    widget.onDayChanged(_selectedDate);
+    widget.onMonthChanged(_selectedDate);
   }
 
   @override
