@@ -24,7 +24,7 @@ object AppsUsageHelper {
         context: Context,
         startMsEpoch: Long?,
         endMsEpoch: Long?,
-        onSuccess: ((Any) -> Unit)
+        onSuccess: (Any) -> Unit,
     ) {
         if (startMsEpoch == null || endMsEpoch == null) {
             throw IllegalArgumentException("Either start or end time is null")
@@ -40,20 +40,20 @@ object AppsUsageHelper {
                 context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
 
             val screenUsage = ScreenUsageHelper.fetchUsageForInterval(
-                usageStatsManager,
-                startMsEpoch,
-                endMsEpoch
+                usageStatsManager = usageStatsManager,
+                start = startMsEpoch,
+                end = endMsEpoch
             )
 
             val mobileDataUsage = NetworkUsageHelper.fetchMobileUsageForInterval(
-                networkStatsManager,
-                startMsEpoch,
-                endMsEpoch
+                networkStatsManager = networkStatsManager,
+                start = startMsEpoch,
+                end = endMsEpoch
             )
             val wifiDataUsage = NetworkUsageHelper.fetchWifiUsageForInterval(
-                networkStatsManager,
-                startMsEpoch,
-                endMsEpoch
+                networkStatsManager = networkStatsManager,
+                start = startMsEpoch,
+                end = endMsEpoch
             )
 
             // Fetch package info of installed apps on device

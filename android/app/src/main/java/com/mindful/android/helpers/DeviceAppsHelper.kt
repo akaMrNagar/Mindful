@@ -40,10 +40,10 @@ object DeviceAppsHelper {
                     val isSysDefault = impSystemApps.contains(app.packageName)
                     deviceAppsMapList.add(
                         getAppInfoMap(
-                            app.applicationInfo.loadLabel(packageManager).toString(),  // name
-                            app.packageName,  // package name
-                            isSysDefault,  // is default app used by system like dialer or launcher
-                            Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app.applicationInfo)),  // icon
+                            name = app.applicationInfo.loadLabel(packageManager).toString(),  // name
+                            packageName = app.packageName,  // package name
+                            isImpSysApp = isSysDefault,  // is default app used by system like dialer or launcher
+                            appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app.applicationInfo)),  // icon
                         )
                     )
                 }
@@ -53,20 +53,20 @@ object DeviceAppsHelper {
             // Add additional apps for network usage
             deviceAppsMapList.add(
                 getAppInfoMap(
-                    TETHERING_APP_NAME,
-                    TETHERING_PACKAGE,
-                    true,
-                    Utils.getEncodedAppIcon(packageManager.getApplicationIcon(ApplicationInfo())),
+                    name = TETHERING_APP_NAME,
+                    packageName = TETHERING_PACKAGE,
+                    isImpSysApp = true,
+                    appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(ApplicationInfo())),
                 )
             )
 
             // removed apps
             deviceAppsMapList.add(
                 getAppInfoMap(
-                    REMOVED_APP_NAME,
-                    REMOVED_PACKAGE,
-                    true,
-                    Utils.getEncodedAppIcon(packageManager.getApplicationIcon(ApplicationInfo())),
+                    name = REMOVED_APP_NAME,
+                    packageName = REMOVED_PACKAGE,
+                    isImpSysApp = true,
+                    appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(ApplicationInfo())),
                 )
             )
 

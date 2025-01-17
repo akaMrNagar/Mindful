@@ -126,27 +126,22 @@
         <!-- ________________________________ SERVICES _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <service
-            android:name=".services.MindfulTrackerService"
+            android:name=".services.tracking.MindfulTrackerService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
         <service
-            android:name=".services.OverlayDialogService"
+            android:name=".services.timer.EmergencyPauseService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
         <service
-            android:name=".services.EmergencyPauseService"
+            android:name=".services.timer.FocusSessionService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
         <service
-            android:name=".services.FocusSessionService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
-        <service
-            android:name=".services.MindfulAccessibilityService"
+            android:name=".services.accessibility.MindfulAccessibilityService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -159,7 +154,7 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
         <service
-            android:name=".services.MindfulVpnService"
+            android:name=".services.vpn.MindfulVpnService"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse"
@@ -177,7 +172,7 @@
                 android:value="false" />
         </service>
         <service
-            android:name=".services.MindfulNotificationListenerService"
+            android:name=".services.notification.MindfulNotificationListenerService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
