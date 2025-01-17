@@ -16,6 +16,7 @@ import androidx.annotation.MainThread
 import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.models.RestrictionType
 import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
@@ -61,6 +62,18 @@ object OverlayBuilder {
                 }
             }
         }
+
+        // Limit type
+        val limitType = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_type)
+        limitType.text = context.getString(
+            when (state.type) {
+                RestrictionType.FocusMode -> R.string.app_paused_restriction_focus_mode
+                RestrictionType.BedtimeMode -> R.string.app_paused_restriction_bedtime_mode
+                RestrictionType.Timer -> R.string.app_paused_restriction_timer
+                RestrictionType.LaunchCount -> R.string.app_paused_restriction_launch_count
+                RestrictionType.ActivePeriod -> R.string.app_paused_restriction_active_period
+            }
+        )
 
         // Limit information
         val limitInfo = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_info)

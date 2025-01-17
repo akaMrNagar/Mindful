@@ -9,6 +9,7 @@ import com.mindful.android.helpers.ScreenUsageHelper
 import com.mindful.android.models.AppRestrictions
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.models.RestrictionType
 import com.mindful.android.utils.Utils
 
 class RestrictionManager(
@@ -84,7 +85,8 @@ class RestrictionManager(
         appsLaunchCount[packageName] = launchCount
         if ((restriction.launchLimit > 0) && (launchCount > restriction.launchLimit)) {
             val state = RestrictionState(
-                message = context.getString(R.string.app_paused_dialog_info_for_launch_count_out),
+                message = context.getString(R.string.app_paused_reason_launch_count_out),
+                type = RestrictionType.LaunchCount,
                 expirationFutureMs = -1L,
             )
             alreadyRestrictedApps[packageName] = state
@@ -94,12 +96,10 @@ class RestrictionManager(
         val futureStates: MutableSet<RestrictionState> = mutableSetOf()
 
         /// evaluate active periods
-        val activePeriodState = evaluateActivePeriodLimit(restriction, futureStates)
-        if (activePeriodState != null) return activePeriodState
+        evaluateActivePeriodLimit(restriction, futureStates)?.let { return it }
 
         /// Evaluate screen time
-        val timerState = evaluateScreenTimeLimit(restriction, futureStates)
-        if (timerState != null) return timerState
+        evaluateScreenTimeLimit(restriction, futureStates)?.let { return it }
 
         /// Return the nearest expiration
         if (futureStates.isNotEmpty()) {
@@ -113,12 +113,14 @@ class RestrictionManager(
     private fun evaluateIfAlreadyRestricted(packageName: String): RestrictionState? {
         return when {
             focusedApps.contains(packageName) -> RestrictionState(
-                message = context.getString(R.string.app_paused_dialog_info_for_focus_session),
+                message = context.getString(R.string.app_paused_reason_focus_session),
+                type = RestrictionType.FocusMode,
                 expirationFutureMs = -1L,
             )
 
             bedtimeApps.contains(packageName) -> RestrictionState(
-                message = context.getString(R.string.app_paused_dialog_info_for_bedtime),
+                message = context.getString(R.string.app_paused_reason_bedtime),
+                type = RestrictionType.BedtimeMode,
                 expirationFutureMs = -1L,
             )
 
@@ -139,7 +141,8 @@ class RestrictionManager(
                 restriction.activePeriodStart + restriction.periodDurationInMins
 
             val state = RestrictionState(
-                message = context.getString(R.string.app_paused_dialog_info_for_active_period_over),
+                message = context.getString(R.string.app_paused_reason_active_period_over),
+                type = RestrictionType.ActivePeriod,
                 expirationFutureMs = -1L,
             )
 
@@ -163,7 +166,8 @@ class RestrictionManager(
                     it.activePeriodStart + it.periodDurationInMins
 
                 val state = RestrictionState(
-                    message = context.getString(R.string.app_paused_dialog_info_for_active_period_over),
+                    message = context.getString(R.string.app_paused_reason_active_period_over),
+                    type = RestrictionType.ActivePeriod,
                     expirationFutureMs = -1L,
                 )
                 /// Outside active period
@@ -200,7 +204,8 @@ class RestrictionManager(
             if (screenTime >= restriction.timerSec) {
                 Log.d(TAG, "evaluateScreenTimeLimit: App's timer is over")
                 val state = RestrictionState(
-                    message = context.getString(R.string.app_paused_dialog_info_for_app_timer_out),
+                    message = context.getString(R.string.app_paused_reason_app_timer_out),
+                    type = RestrictionType.Timer,
                     expirationFutureMs = -1L,
                     usedScreenTime = screenTime,
                     totalScreenTimer = restriction.timerSec.toLong(),
@@ -213,7 +218,8 @@ class RestrictionManager(
                 val leftAppLimitMs = (restriction.timerSec - screenTime) * 1000L
                 futureStates.add(
                     RestrictionState(
-                        message = context.getString(R.string.app_paused_dialog_info_for_app_timer_left),
+                        message = context.getString(R.string.app_paused_reason_app_timer_left),
+                        type = RestrictionType.Timer,
                         expirationFutureMs = leftAppLimitMs,
                         usedScreenTime = screenTime,
                         totalScreenTimer = restriction.timerSec.toLong(),
@@ -238,9 +244,10 @@ class RestrictionManager(
                     Log.d(TAG, "evaluateScreenTimeLimit: App's timer is over")
                     val state = RestrictionState(
                         message = context.getString(
-                            R.string.app_paused_dialog_info_for_group_timer_out,
+                            R.string.app_paused_reason_group_timer_out,
                             group.groupName
                         ),
+                        type = RestrictionType.Timer,
                         expirationFutureMs = -1L,
                         usedScreenTime = groupScreenTime,
                         totalScreenTimer = group.timerSec.toLong(),
@@ -254,9 +261,10 @@ class RestrictionManager(
                     futureStates.add(
                         RestrictionState(
                             message = context.getString(
-                                R.string.app_paused_dialog_info_for_group_timer_left,
+                                R.string.app_paused_reason_group_timer_left,
                                 group.groupName
                             ),
+                            type = RestrictionType.Timer,
                             expirationFutureMs = leftAppLimitMs,
                             usedScreenTime = groupScreenTime,
                             totalScreenTimer = group.timerSec.toLong(),
