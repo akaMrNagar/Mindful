@@ -11,8 +11,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/models/usage_filter_model.dart';
-import 'package:mindful/providers/new/apps_info_provider.dart';
-import 'package:mindful/providers/new/dated_apps_usage_provider.dart';
+import 'package:mindful/providers/apps/apps_info_provider.dart';
+import 'package:mindful/providers/usage/dated_apps_usage_provider.dart';
 
 /// A provider that filters and sorts app packages based on [UsageFilterModel]
 final filteredPackagesProvider =

@@ -543,8 +543,6 @@
     "default_home_tab_tile_title": "Home tab",
     "bottom_navigation_tile_title": "Bottom navigation",
     "bottom_navigation_tile_subtitle": "Switch to bottom navigation system.",
-    "data_reset_time_tile_title": "Daily data usage reset time",
-    "data_reset_time_tile_subtitle": "Specify the time when your daily data cycle renews based on your recharge plan.",
     "@----------------------------- SETTINGS SCREEN - ADVANCE TAB -----------------------------": {},
     "advance_tab_title": "Advance",
     "parental_controls_heading": "Parental controls",

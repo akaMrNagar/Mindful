@@ -14,7 +14,7 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/models/usage_filter_model.dart';
-import 'package:mindful/providers/new/filtered_packages_provider.dart';
+import 'package:mindful/providers/apps/filtered_packages_provider.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
 
 class SampleRestrictionGroup extends ConsumerWidget {

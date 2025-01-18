@@ -17,9 +17,9 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/invincible_mode_provider.dart';
-import 'package:mindful/providers/permissions_provider.dart';
-import 'package:mindful/providers/wellbeing_provider.dart';
+import 'package:mindful/providers/focus/invincible_mode_provider.dart';
+import 'package:mindful/providers/system/permissions_provider.dart';
+import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -99,8 +99,6 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
         /// Information about bedtime
         StyledText(context.locale.wellbeing_tab_info).sliver,
 
-        const AccessibilityPermissionCard(),
-
         /// Short content header
         ContentSectionHeader(title: context.locale.short_content_heading)
             .sliver,
@@ -111,6 +109,8 @@ class _TabWellBeingState extends ConsumerState<TabWellBeing> {
           allowedTimeSec: max(allowedShortContentTimeSec, 0),
           remainingTimeSec: remainingTimeSec,
         ).sliver,
+
+        const AccessibilityPermissionCard(),
 
         /// Invincible Mode warning
         SliverPrimaryActionContainer(

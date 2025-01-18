@@ -21,7 +21,7 @@ import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';

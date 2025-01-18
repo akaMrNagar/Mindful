@@ -14,7 +14,7 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/providers/new/apps_info_provider.dart';
+import 'package:mindful/providers/apps/apps_info_provider.dart';
 
 /// A Riverpod state notifier provider that manages a map of group IDs and [RestrictionGroup].
 final restrictionGroupsProvider = StateNotifierProvider<

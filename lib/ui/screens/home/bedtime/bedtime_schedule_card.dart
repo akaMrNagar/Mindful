@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/restrictions/bedtime_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/time_period_start_end_cards.dart';

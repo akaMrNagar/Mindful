@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/notification_schedules_provider.dart';
+import 'package:mindful/providers/notifications/notification_schedules_provider.dart';
 import 'package:mindful/ui/common/default_slide_to_remove.dart';
 import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/time_card.dart';

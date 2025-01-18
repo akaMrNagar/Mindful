@@ -3,12 +3,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/providers/apps_restrictions_provider.dart';
-import 'package:mindful/providers/bedtime_provider.dart';
-import 'package:mindful/providers/focus_mode_provider.dart';
-import 'package:mindful/providers/new/apps_info_provider.dart';
-import 'package:mindful/providers/restriction_groups_provider.dart';
-import 'package:mindful/providers/wellbeing_provider.dart';
+import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
+import 'package:mindful/providers/restrictions/bedtime_provider.dart';
+import 'package:mindful/providers/focus/focus_mode_provider.dart';
+import 'package:mindful/providers/apps/apps_info_provider.dart';
+import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
+import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 
 /// Initializes all the necessary providers and restarts services if needed
 void initializeNecessaryProviders(WidgetRef ref) {

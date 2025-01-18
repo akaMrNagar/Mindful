@@ -14,7 +14,7 @@ import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
+import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
 
 /// Provides aggregated device usage based on day for current week.
 /// This includes screen time, wifi usage, and mobile usage

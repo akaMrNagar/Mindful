@@ -22,7 +22,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/device_info_provider.dart';
+import 'package:mindful/providers/system/device_info_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';

@@ -18,17 +18,13 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/config/locales.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
-import 'package:mindful/ui/common/styled_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
 
 class TabGeneral extends ConsumerWidget {
   const TabGeneral({super.key});
@@ -160,42 +156,12 @@ class TabGeneral extends ConsumerWidget {
 
         /// Bottom navigation
         DefaultListTile(
-          position: ItemPosition.mid,
+          position: ItemPosition.bottom,
           switchValue: mindfulSettings.useBottomNavigation,
           titleText: context.locale.bottom_navigation_tile_title,
           subtitleText: context.locale.bottom_navigation_tile_subtitle,
           onPressed:
               ref.read(mindfulSettingsProvider.notifier).switchBottomNavigation,
-        ).sliver,
-
-        /// Data reset time
-        DefaultHero(
-          tag: HeroTags.dataResetTimeTileTag,
-          child: DefaultListTile(
-            position: ItemPosition.bottom,
-            titleText: context.locale.data_reset_time_tile_title,
-            subtitleText: context.locale.data_reset_time_tile_subtitle,
-            trailing: StyledText(
-              mindfulSettings.dataResetTime.format(context),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-            onPressed: () async {
-              final pickedTime = await showCustomTimePickerDialog(
-                context: context,
-                heroTag: HeroTags.dataResetTimeTileTag,
-                initialTime: mindfulSettings.dataResetTime,
-                info: context.locale.data_reset_time_tile_title,
-              );
-
-              /// FIXME: Remove it
-              if (pickedTime != null && context.mounted) {
-                // ref
-                //     .read(mindfulSettingsProvider.notifier)
-                //     .changeDataResetTime(pickedTime);
-              }
-            },
-          ),
         ).sliver,
       ],
     );

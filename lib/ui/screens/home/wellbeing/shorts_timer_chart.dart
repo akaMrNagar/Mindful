@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/wellbeing_provider.dart';
+import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/common/styled_text.dart';

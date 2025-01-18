@@ -11,7 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/providers/focus/focus_mode_provider.dart';
 import 'package:mindful/ui/common/sliver_distracting_apps_list.dart';
 
 class FocusDistractingAppsList extends ConsumerWidget {
