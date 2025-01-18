@@ -47,7 +47,7 @@ class MainActivity : FlutterFragmentActivity() {
 
         // initialize method channel and bind to services
         fgMethodCallHandler = FgMethodCallHandler(
-            context = applicationContext,
+            context = this,
             activity = this,
             vpnPermLauncher = vpnPermissionLauncher
         )

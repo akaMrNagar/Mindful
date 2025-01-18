@@ -65,11 +65,11 @@ object PermissionsHelper {
         if (askPermissionToo) {
             try {
                 val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName)
-                intent.putExtra(
-                    DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                    R.string.admin_description
-                )
+                    .putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName)
+                    .putExtra(
+                        DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                        R.string.admin_description
+                    )
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
                 Log.e(TAG, "getAndAskAdminPermission: Unable to open device ADMIN settings", e)
@@ -116,7 +116,8 @@ object PermissionsHelper {
         if (askPermissionToo) {
             try {
                 val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                intent.setData(Uri.parse("package:${context.packageName}"))
+                    .setData(Uri.parse("package:${context.packageName}"))
+
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
                 val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
@@ -141,7 +142,8 @@ object PermissionsHelper {
         if (askPermissionToo) {
             try {
                 val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
-                intent.setData(Uri.parse("package:${context.packageName}"))
+                    .setData(Uri.parse("package:${context.packageName}"))
+
                 context.startActivity(intent)
                 Toast.makeText(
                     context,
@@ -175,7 +177,8 @@ object PermissionsHelper {
         if (askPermissionToo) {
             try {
                 val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                intent.setData(Uri.parse("package:${context.packageName}"))
+                    .setData(Uri.parse("package:${context.packageName}"))
+
                 context.startActivity(intent)
             } catch (e: Exception) {
                 Log.e(
@@ -197,7 +200,7 @@ object PermissionsHelper {
      */
     fun getAndAskIgnoreBatteryOptimizationPermission(
         context: Context,
-        askPermissionToo: Boolean
+        askPermissionToo: Boolean,
     ): Boolean {
         val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         if (powerManager.isIgnoringBatteryOptimizations(context.packageName)) return true
@@ -206,7 +209,7 @@ object PermissionsHelper {
             try {
                 @SuppressLint("BatteryLife")
                 val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-                intent.setData(Uri.parse("package:" + context.packageName))
+                    .setData(Uri.parse("package:" + context.packageName))
                 context.startActivity(intent)
             } catch (e: Exception) {
                 Log.e(
@@ -228,7 +231,7 @@ object PermissionsHelper {
      */
     fun getAndAskNotificationPermission(
         activity: Activity,
-        askPermissionToo: Boolean
+        askPermissionToo: Boolean,
     ): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val status = activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
@@ -299,7 +302,7 @@ object PermissionsHelper {
      */
     fun getAndAskNotificationAccessPermission(
         context: Context,
-        askPermissionToo: Boolean
+        askPermissionToo: Boolean,
     ): Boolean {
         val enabledPackages = NotificationManagerCompat.getEnabledListenerPackages(context)
         if (enabledPackages.contains(context.packageName)) return true

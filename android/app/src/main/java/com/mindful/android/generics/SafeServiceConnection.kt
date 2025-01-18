@@ -29,11 +29,12 @@ import com.mindful.android.utils.Utils
  */
 class SafeServiceConnection<T : Service>(
     private val serviceClass: Class<T>,
-    private val context: Context
-) :
-    ServiceConnection {
+    private val context: Context,
+) : ServiceConnection {
 
     var service: T? = null
+    val isActive: Boolean get() = service != null
+
     private var mIsBound = false
     private var mOnConnectedCallback: ((service: T) -> Unit)? = null;
 

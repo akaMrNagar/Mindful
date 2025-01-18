@@ -15,23 +15,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/extensions/ext_int.dart';
 import 'package:mindful/core/extensions/ext_list.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/providers/apps_provider.dart';
-import 'package:mindful/providers/focus_stats_provider.dart';
-import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/new/apps_info_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/progress_percentage_indicator.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 import 'package:mindful/ui/screens/home/dashboard/invincible_mode_settings.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
@@ -55,23 +49,23 @@ class TabDashboard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentStreak =
-        ref.watch(focusModeProvider.select((v) => v.focusMode.currentStreak));
+    // final currentStreak =
+    //     ref.watch(focusModeProvider.select((v) => v.focusMode.currentStreak));
 
-    final longestStreak =
-        ref.watch(focusModeProvider.select((v) => v.focusMode.longestStreak));
+    // final longestStreak =
+    //     ref.watch(focusModeProvider.select((v) => v.focusMode.longestStreak));
 
-    final focusStats = ref.watch(focusStatsProvider);
+    // final focusStats = ref.watch(focusStatsProvider);
 
     final username =
         ref.watch(mindfulSettingsProvider.select((v) => v.username));
 
-    const tilesGap = 4;
+    // const tilesGap = 4;
 
     return DefaultRefreshIndicator(
-      onRefresh: ref.read(appsProvider.notifier).refreshDeviceApps,
+      onRefresh: ref.read(appsInfoProvider.notifier).refreshAppsInfo,
       child: Skeletonizer.zone(
-        enabled: ref.read(appsProvider).isLoading,
+        enabled: ref.read(appsInfoProvider).isLoading,
         enableSwitchAnimation: true,
         ignorePointers: false,
         child: CustomScrollView(
@@ -104,119 +98,119 @@ class TabDashboard extends ConsumerWidget {
 
             Column(
               children: [
-                Row(
-                  children: [
-                    /// Screen time
-                    Expanded(
-                      child: UsageGlanceCard(
-                        isPrimary: true,
-                        position: ItemPosition.topLeft,
-                        icon: FluentIcons.phone_screen_time_20_regular,
-                        title: context.locale.screen_time_label,
-                        info: focusStats.todaysScreenTime.toTimeShort(context),
-                        badge: ProgressPercentageIndicator(
-                          progressPercentage: focusStats
-                              .todaysScreenTime.inSeconds
-                              .toDiffPercentage(
-                            focusStats.yesterdaysScreenTime.inSeconds,
-                          ),
-                        ),
-                        onTap: () => context.showSnackAlert(
-                          context.locale.screen_time_snack_alert(
-                            focusStats.todaysScreenTime.toTimeFull(context),
-                          ),
-                          icon: FluentIcons.phone_screen_time_20_filled,
-                        ),
-                      ),
-                    ),
-                    tilesGap.hBox,
+                // Row(
+                //   children: [
+                //     /// Screen time
+                //     Expanded(
+                //       child: UsageGlanceCard(
+                //         isPrimary: true,
+                //         position: ItemPosition.topLeft,
+                //         icon: FluentIcons.phone_screen_time_20_regular,
+                //         title: context.locale.screen_time_label,
+                //         info: focusStats.todaysScreenTime.toTimeShort(context),
+                //         badge: ProgressPercentageIndicator(
+                //           progressPercentage: focusStats
+                //               .todaysScreenTime.inSeconds
+                //               .toDiffPercentage(
+                //             focusStats.yesterdaysScreenTime.inSeconds,
+                //           ),
+                //         ),
+                //         onTap: () => context.showSnackAlert(
+                //           context.locale.screen_time_snack_alert(
+                //             focusStats.todaysScreenTime.toTimeFull(context),
+                //           ),
+                //           icon: FluentIcons.phone_screen_time_20_filled,
+                //         ),
+                //       ),
+                //     ),
+                //     tilesGap.hBox,
 
-                    // Focused time
-                    Expanded(
-                      child: UsageGlanceCard(
-                        isPrimary: true,
-                        position: ItemPosition.topRight,
-                        icon: FluentIcons.person_clock_20_regular,
-                        title: context.locale.focused_time_label,
-                        info: focusStats.todaysFocusedTime.toTimeShort(context),
-                        badge: ProgressPercentageIndicator(
-                          invertProgress: true,
-                          progressPercentage: focusStats
-                              .todaysFocusedTime.inMinutes
-                              .toDiffPercentage(
-                            focusStats.yesterdaysFocusedTime.inMinutes,
-                          ),
-                        ),
-                        onTap: () => context.showSnackAlert(
-                          context.locale.focused_time_snack_alert(
-                            focusStats.todaysFocusedTime.toTimeFull(context),
-                          ),
-                          icon: FluentIcons.person_clock_20_filled,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                //     // Focused time
+                //     Expanded(
+                //       child: UsageGlanceCard(
+                //         isPrimary: true,
+                //         position: ItemPosition.topRight,
+                //         icon: FluentIcons.person_clock_20_regular,
+                //         title: context.locale.focused_time_label,
+                //         info: focusStats.todaysFocusedTime.toTimeShort(context),
+                //         badge: ProgressPercentageIndicator(
+                //           invertProgress: true,
+                //           progressPercentage: focusStats
+                //               .todaysFocusedTime.inMinutes
+                //               .toDiffPercentage(
+                //             focusStats.yesterdaysFocusedTime.inMinutes,
+                //           ),
+                //         ),
+                //         onTap: () => context.showSnackAlert(
+                //           context.locale.focused_time_snack_alert(
+                //             focusStats.todaysFocusedTime.toTimeFull(context),
+                //           ),
+                //           icon: FluentIcons.person_clock_20_filled,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
-                tilesGap.vBox,
+                // tilesGap.vBox,
 
-                /// Total focused time from install to till now
-                UsageGlanceCard(
-                  icon: FluentIcons.sound_source_20_regular,
-                  title: context.locale.lifetime_focused_time_label,
-                  info: focusStats.lifetimeFocusedTime.toTimeFull(context),
-                  onTap: () => context.showSnackAlert(
-                    context.locale.lifetime_focused_time_snack_alert(
-                      focusStats.lifetimeFocusedTime.toTimeFull(context),
-                    ),
-                    icon: FluentIcons.sound_source_20_filled,
-                  ),
-                ),
+                // /// Total focused time from install to till now
+                // UsageGlanceCard(
+                //   icon: FluentIcons.sound_source_20_regular,
+                //   title: context.locale.lifetime_focused_time_label,
+                //   info: focusStats.lifetimeFocusedTime.toTimeFull(context),
+                //   onTap: () => context.showSnackAlert(
+                //     context.locale.lifetime_focused_time_snack_alert(
+                //       focusStats.lifetimeFocusedTime.toTimeFull(context),
+                //     ),
+                //     icon: FluentIcons.sound_source_20_filled,
+                //   ),
+                // ),
 
-                tilesGap.vBox,
+                // tilesGap.vBox,
 
-                /// Streaks
-                Row(
-                  children: [
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.longest_streak_label,
-                        icon: FluentIcons.trophy_20_regular,
-                        info: context.locale.nDays(longestStreak),
-                      ),
-                    ),
-                    tilesGap.hBox,
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.current_streak_label,
-                        icon: FluentIcons.fire_20_regular,
-                        info: context.locale.nDays(currentStreak),
-                      ),
-                    ),
-                  ],
-                ),
-                tilesGap.vBox,
+                // /// Streaks
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: UsageGlanceCard(
+                //         title: context.locale.longest_streak_label,
+                //         icon: FluentIcons.trophy_20_regular,
+                //         info: context.locale.nDays(longestStreak),
+                //       ),
+                //     ),
+                //     tilesGap.hBox,
+                //     Expanded(
+                //       child: UsageGlanceCard(
+                //         title: context.locale.current_streak_label,
+                //         icon: FluentIcons.fire_20_regular,
+                //         info: context.locale.nDays(currentStreak),
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // tilesGap.vBox,
 
-                /// Sessions
-                Row(
-                  children: [
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.successful_sessions_label,
-                        icon: FluentIcons.thumb_like_20_regular,
-                        info: focusStats.successfulSessions.toString(),
-                      ),
-                    ),
-                    tilesGap.hBox,
-                    Expanded(
-                      child: UsageGlanceCard(
-                        title: context.locale.failed_sessions_label,
-                        icon: FluentIcons.thumb_dislike_20_regular,
-                        info: focusStats.failedSessions.toString(),
-                      ),
-                    ),
-                  ],
-                ),
+                // /// Sessions
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: UsageGlanceCard(
+                //         title: context.locale.successful_sessions_label,
+                //         icon: FluentIcons.thumb_like_20_regular,
+                //         info: focusStats.successfulSessions.toString(),
+                //       ),
+                //     ),
+                //     tilesGap.hBox,
+                //     Expanded(
+                //       child: UsageGlanceCard(
+                //         title: context.locale.failed_sessions_label,
+                //         icon: FluentIcons.thumb_dislike_20_regular,
+                //         info: focusStats.failedSessions.toString(),
+                //       ),
+                //     ),
+                //   ],
+                // ),
 
                 /// Go to focus tab
                 DefaultListTile(
@@ -242,7 +236,7 @@ class TabDashboard extends ConsumerWidget {
                       .pushNamed(AppRoutes.focusScreen, arguments: 1),
                 ),
               ].animateListWhen(
-                when: !ref.read(appsProvider).hasValue,
+                when: !ref.read(appsInfoProvider).hasValue,
                 effects: DefaultEffects.transitionIn,
                 interval: 75.ms,
               ),

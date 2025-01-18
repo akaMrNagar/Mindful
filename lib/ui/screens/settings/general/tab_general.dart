@@ -188,10 +188,11 @@ class TabGeneral extends ConsumerWidget {
                 info: context.locale.data_reset_time_tile_title,
               );
 
+              /// FIXME: Remove it
               if (pickedTime != null && context.mounted) {
-                ref
-                    .read(mindfulSettingsProvider.notifier)
-                    .changeDataResetTime(pickedTime);
+                // ref
+                //     .read(mindfulSettingsProvider.notifier)
+                //     .changeDataResetTime(pickedTime);
               }
             },
           ),

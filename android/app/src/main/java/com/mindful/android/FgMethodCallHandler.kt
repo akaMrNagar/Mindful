@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.VpnService
+import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
@@ -157,17 +158,16 @@ class FgMethodCallHandler(
             "updateInternetBlockedApps" -> {
                 val blockedApps =
                     JsonDeserializer.jsonStrToStringHashSet(call.arguments() ?: "")
-                vpnServiceConn.service?.updateBlockedApps(blockedApps)
-                    ?: {
-                        if (blockedApps.isNotEmpty() && getAndAskVpnPermission(false)) {
-                            vpnServiceConn.setOnConnectedCallback { service ->
-                                service.updateBlockedApps(
-                                    blockedApps
-                                )
-                            }
-                            vpnServiceConn.startAndBind()
-                        }
+                if (vpnServiceConn.isActive) {
+                    vpnServiceConn.service?.updateBlockedApps(blockedApps)
+                } else if (blockedApps.isNotEmpty() && getAndAskVpnPermission(false)) {
+                    vpnServiceConn.setOnConnectedCallback { service ->
+                        service.updateBlockedApps(
+                            blockedApps
+                        )
                     }
+                    vpnServiceConn.startAndBind()
+                }
                 result.success(true)
             }
 
@@ -211,20 +211,22 @@ class FgMethodCallHandler(
 
             "updateFocusSession" -> {
                 val focusSession = FocusSession(JSONObject(call.arguments() ?: ""))
-                focusServiceConn.service?.updateFocusSession(focusSession)
-                    ?: {
-                        focusServiceConn.setOnConnectedCallback { service: FocusSessionService ->
-                            service.startFocusSession(
-                                focusSession
-                            )
-                        }
-                        focusServiceConn.startAndBind()
+                if (focusServiceConn.isActive) {
+                    focusServiceConn.service?.updateFocusSession(focusSession)
+                } else {
+                    Log.d("TAG", "onMethodCall: starting session service")
+                    focusServiceConn.setOnConnectedCallback { service: FocusSessionService ->
+                        service.startFocusSession(
+                            focusSession
+                        )
                     }
+                    focusServiceConn.startAndBind()
+                }
                 result.success(true)
             }
 
             "giveUpOrFinishFocusSession" -> {
-                if (focusServiceConn.service != null) {
+                if (focusServiceConn.isActive) {
                     focusServiceConn.service?.giveUpOrStopFocusSession(call.arguments() ?: false)
                     focusServiceConn.unBindService()
                 }
@@ -236,7 +238,7 @@ class FgMethodCallHandler(
                     context,
                     call.arguments() ?: ""
                 )
-                if (notificationServiceConn.service != null) {
+                if (notificationServiceConn.isActive) {
                     notificationServiceConn.service?.updateDistractingApps(distractingApps)
                 } else if (distractingApps.isNotEmpty()) {
                     notificationServiceConn.setOnConnectedCallback { service: MindfulNotificationListenerService ->
@@ -422,19 +424,19 @@ class FgMethodCallHandler(
         appRestrictions: HashMap<String, AppRestrictions>?,
         restrictionGroups: HashMap<Int, RestrictionGroup>?,
     ) {
-        trackerServiceConn.service?.getRestrictionManager?.updateRestrictions(
-            appRestrictions,
-            restrictionGroups
-        ) ?: {
-            if (appRestrictions?.isNotEmpty() == true || restrictionGroups?.isNotEmpty() == true) {
-                trackerServiceConn.setOnConnectedCallback { service ->
-                    service.getRestrictionManager.updateRestrictions(
-                        appRestrictions,
-                        restrictionGroups
-                    )
-                }
-                trackerServiceConn.startAndBind()
+        if (trackerServiceConn.isActive) {
+            trackerServiceConn.service?.getRestrictionManager?.updateRestrictions(
+                appRestrictions,
+                restrictionGroups
+            )
+        } else if (appRestrictions?.isNotEmpty() == true || restrictionGroups?.isNotEmpty() == true) {
+            trackerServiceConn.setOnConnectedCallback { service ->
+                service.getRestrictionManager.updateRestrictions(
+                    appRestrictions,
+                    restrictionGroups
+                )
             }
+            trackerServiceConn.startAndBind()
         }
     }
 

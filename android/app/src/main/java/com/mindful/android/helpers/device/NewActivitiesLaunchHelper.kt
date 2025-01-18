@@ -46,7 +46,8 @@ object NewActivitiesLaunchHelper {
      */
     fun launchUrl(context: Context, url: String) {
         try {
-            val urlIntent = Intent(Intent.ACTION_VIEW).setData(Uri.parse(url))
+            val urlIntent = Intent(Intent.ACTION_VIEW)
+                .setData(Uri.parse(url))
             context.startActivity(urlIntent)
         } catch (e: Exception) {
             Log.e(TAG, "launchUrl: Unable to launch url: $url", e)
@@ -61,7 +62,8 @@ object NewActivitiesLaunchHelper {
      */
     fun restartMindful(activity: Activity) {
         val appIntent = Intent(activity, MainActivity::class.java)
-        appIntent.putExtra(AppConstants.INTENT_EXTRA_IS_SELF_RESTART, true)
+            .putExtra(AppConstants.INTENT_EXTRA_IS_SELF_RESTART, true)
+
         val appPendingIntent = PendingIntent.getActivity(
             activity,
             0,
@@ -103,8 +105,9 @@ object NewActivitiesLaunchHelper {
     fun openMindfulNotificationSection(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
-            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+
             context.startActivity(intent)
         } else {
             openSettingsForPackage(context, context.packageName)
@@ -226,10 +229,8 @@ object NewActivitiesLaunchHelper {
         }
 
         try {
-            val appIntent = context.packageManager.getLaunchIntentForPackage(appPackage)
-
-            if (appIntent != null) {
-                context.startActivity(appIntent)
+            context.packageManager.getLaunchIntentForPackage(appPackage)?.let {
+                context.startActivity(it)
             }
         } catch (e: ActivityNotFoundException) {
             Log.e(
@@ -254,8 +255,8 @@ object NewActivitiesLaunchHelper {
         try {
             if (context.packageManager.getLaunchIntentForPackage(appPackage) != null) {
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.setData(Uri.parse("package:$appPackage"))
+                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .setData(Uri.parse("package:$appPackage"))
                 context.startActivity(intent)
             }
         } catch (e: ActivityNotFoundException) {

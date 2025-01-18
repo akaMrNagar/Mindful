@@ -71,7 +71,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         blockedContentGoBack = this::goBackWithToast
     )
 
-    private var mWellBeingSettings = WellBeingSettings(JSONObject(""))
+    private var mWellBeingSettings = WellBeingSettings(JSONObject())
     private var lastTimeBackActioned = 0L
 
 

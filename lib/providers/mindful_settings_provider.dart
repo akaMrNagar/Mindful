@@ -39,11 +39,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     await MethodChannelService.instance
         .updateLocale(languageCode: state.localeCode);
 
-    if (MethodChannelService.instance.intentData.extraIsSelfStart) {
-      await MethodChannelService.instance
-          .setDataResetTime(state.dataResetTime.toMinutes);
-    }
-
     if (addListenerToo) {
       /// Run after a delay to avoid database deadlock
       /// Listen to provider and save changes to Isar database
@@ -99,14 +94,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   /// Changes navigation bar from side to bottom
   void switchBottomNavigation() =>
       state = state.copyWith(useBottomNavigation: !state.useBottomNavigation);
-
-  /// Changes the time of day when app usage data is reset.
-  /// Also updates the native side with the new reset time.
-  void changeDataResetTime(TimeOfDayAdapter time) async {
-    state = state.copyWith(dataResetTime: time);
-    await MethodChannelService.instance
-        .setDataResetTime(state.dataResetTime.toMinutes);
-  }
 
   /// Update the emergency pass count if last used timestamp is before today midnight
   /// and returns it

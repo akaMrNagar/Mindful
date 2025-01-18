@@ -34,10 +34,9 @@ class AppInternetTile extends ConsumerWidget {
     final havePermission =
         ref.watch(permissionProvider.select((v) => v.haveVpnPermission));
 
-    final haveInternetAccess = havePermission &&
-        (ref.watch(appsRestrictionsProvider.select(
-                (value) => value[appInfo.packageName]?.canAccessInternet)) ??
-            true);
+    final haveInternetAccess = ref.watch(appsRestrictionsProvider.select(
+            (value) => value[appInfo.packageName]?.canAccessInternet)) ??
+        true;
 
     onPressed() => havePermission
         ? _switchInternet(context, ref, !haveInternetAccess)

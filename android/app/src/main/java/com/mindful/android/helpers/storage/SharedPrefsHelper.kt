@@ -117,7 +117,7 @@ object SharedPrefsHelper {
     ): WellBeingSettings {
         checkAndInitializeListenablePrefs(context)
         if (jsonWellBeingSettings == null) {
-            val json = mListenablePrefs!!.getString(PREF_KEY_WELLBEING_SETTINGS, "")!!
+            val json = mListenablePrefs!!.getString(PREF_KEY_WELLBEING_SETTINGS, "{}")!!
             return WellBeingSettings(JSONObject(json))
         } else {
             mListenablePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeingSettings)
