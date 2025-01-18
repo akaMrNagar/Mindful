@@ -12,11 +12,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/services/bg_executor_service.dart';
 import 'package:mindful/core/services/crash_log_service.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/mindful_app.dart';
 
+/// Dart background
+@pragma('vm:entry-point')
+Future<void> initBgExecutorService() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await BgExecutorService.instance.init();
+}
+
+/// Flutter main app
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

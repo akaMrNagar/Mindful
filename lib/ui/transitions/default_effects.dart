@@ -10,7 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 
 class DefaultEffects {
   static List<Effect> get transitionIn => [

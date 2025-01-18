@@ -18,7 +18,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/default_models.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
 
 /// A Riverpod state notifier provider that manages [MindfulSettings].
 final mindfulSettingsProvider =
@@ -38,11 +38,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
     state = await dao.loadMindfulSettings();
     await MethodChannelService.instance
         .updateLocale(languageCode: state.localeCode);
-
-    if (MethodChannelService.instance.intentData.extraIsSelfStart) {
-      await MethodChannelService.instance
-          .setDataResetTime(state.dataResetTime.toMinutes);
-    }
 
     if (addListenerToo) {
       /// Run after a delay to avoid database deadlock
@@ -99,14 +94,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   /// Changes navigation bar from side to bottom
   void switchBottomNavigation() =>
       state = state.copyWith(useBottomNavigation: !state.useBottomNavigation);
-
-  /// Changes the time of day when app usage data is reset.
-  /// Also updates the native side with the new reset time.
-  void changeDataResetTime(TimeOfDayAdapter time) async {
-    state = state.copyWith(dataResetTime: time);
-    await MethodChannelService.instance
-        .setDataResetTime(state.dataResetTime.toMinutes);
-  }
 
   /// Update the emergency pass count if last used timestamp is before today midnight
   /// and returns it

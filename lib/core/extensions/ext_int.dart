@@ -8,11 +8,7 @@
  *
  */
 
-import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/utils/utils.dart';
 
 extension ExtInt on int {
   /// Converts KB to MB
@@ -26,21 +22,6 @@ extension ExtInt on int {
 
   /// Converts Seconds to Hours
   double get inHours => this / 3600;
-
-  /// Generates day's date string based on the current day of week only for current week
-  /// this.int should correspond to 0-6 indexed week day.
-  String dateFromDoW(BuildContext context) {
-    if (toInt() == todayOfWeek) {
-      return context.locale.day_today;
-    } else if (toInt() == todayOfWeek - 1) {
-      return context.locale.day_yesterday;
-    } else {
-      return now
-          .subtract(todayOfWeek.days)
-          .add(toInt().days)
-          .dateString(context);
-    }
-  }
 
   /// Generates data usage string from data in KBs like 356 KB, 456 MB, 2.56 GB
   String toData() {

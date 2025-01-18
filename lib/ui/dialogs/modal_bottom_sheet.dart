@@ -10,7 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 

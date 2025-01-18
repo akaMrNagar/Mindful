@@ -13,7 +13,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_int.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 

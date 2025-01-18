@@ -5,7 +5,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';

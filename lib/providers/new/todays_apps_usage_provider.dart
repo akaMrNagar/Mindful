@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/providers/shared_unique_data_provider.dart';
 

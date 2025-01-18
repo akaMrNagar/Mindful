@@ -10,7 +10,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 

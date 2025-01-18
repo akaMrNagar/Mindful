@@ -9,7 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 
 // Offset from offscreen to the right to fully on screen.
 final Animatable<Offset> _kRightMiddleTween = Tween<Offset>(

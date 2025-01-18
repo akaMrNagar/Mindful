@@ -15,7 +15,7 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/utils/default_models.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
 import 'package:mindful/providers/new/apps_info_provider.dart';
 
 /// A Riverpod state notifier provider that manages a map of Package and [AppRestriction].

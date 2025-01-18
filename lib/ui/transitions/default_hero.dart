@@ -11,7 +11,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 
 class DefaultHero extends StatelessWidget {
   const DefaultHero({

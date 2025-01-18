@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/overlay_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--  Background  -->
+    <View
+        android:id="@+id/overlay_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/translucent_gradient_bt" />
+
+    <!-- Bottom Sheet -->
+    <LinearLayout
+        android:id="@+id/overlay_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/shape_rounded_top_lg"
+        android:backgroundTint="@color/tertiaryContainer"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="0dp">
+
+        <!--  Sheet handle-->
+        <View
+            android:layout_width="48dp"
+            android:layout_height="6dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="8dp"
+            android:background="@drawable/shape_rounded_sm"
+            android:backgroundTint="@color/primaryContainer" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="always">
+
+            <!--  Sheet body    -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp"
+                android:paddingBottom="24dp">
+
+
+                <!--  Main card  -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_rounded_md"
+                    android:backgroundTint="@color/secondaryContainer"
+                    android:orientation="vertical">
+
+                    <!--  Header row  -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <!--   App icon   -->
+                        <ImageView
+                            android:id="@+id/overlay_sheet_app_icon"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:background="@drawable/shape_rounded_sm"
+                            android:clipToOutline="true"
+                            android:contentDescription="@string/app_name"
+                            android:padding="0dp"
+                            android:src="@mipmap/ic_launcher"
+                            tools:ignore="UnusedAttribute" />
+
+                        <!--   App info column  -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:paddingHorizontal="12dp">
+
+                            <!--   App name   -->
+                            <TextView
+                                android:id="@+id/overlay_sheet_app_name"
+
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/app_name"
+                                android:textColor="@color/textPrimary"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                            <!--   Limit type   -->
+                            <TextView
+                                android:id="@+id/overlay_sheet_limit_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/focus_session_notification_title"
+                                android:textColor="@color/textSecondary"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <!--  Emergency button    -->
+                        <Button
+                            android:id="@+id/overlay_sheet_btn_emergency"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:background="@drawable/shape_rounded_md"
+                            android:backgroundTint="@color/primaryContainer"
+                            android:paddingVertical="0dp"
+                            android:text="@string/app_paused_overlay_button_emergency"
+                            android:textAllCaps="false"
+                            android:textColor="@color/textPrimary"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@color/primaryContainer" />
+
+                    <!--   Exhausted limit text   -->
+                    <TextView
+                        android:id="@+id/overlay_sheet_limit_info"
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="12dp"
+                        android:text="@string/app_paused_reason_app_timer_left"
+                        android:textColor="@color/textSecondary"
+                        android:textSize="14sp" />
+
+                    <!--   Within limit content   -->
+                    <LinearLayout
+                        android:id="@+id/overlay_sheet_limit_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <!-- Progress bar -->
+                        <ProgressBar
+                            android:id="@+id/overlay_sheet_limit_progress"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="10dp"
+                            android:indeterminate="false"
+                            android:max="100"
+                            android:minHeight="32dp"
+                            android:progress="50"
+                            android:progressDrawable="@drawable/progress_bar" />
+
+                        <!-- Limit spent and left-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="start"
+                            android:orientation="horizontal">
+
+                            <!--  Limit spent  -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <!--  Time text  -->
+                                <TextView
+                                    android:id="@+id/overlay_sheet_limit_spent"
+
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="12h 10m"
+                                    android:textColor="@color/textPrimary"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    tools:ignore="HardcodedText" />
+
+                                <!--  spent text  -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/app_paused_overlay_label_spent_today"
+                                    android:textColor="@color/textSecondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <!-- Spacer -->
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_weight="1" />
+
+                            <!--  Limit left -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:orientation="vertical">
+
+                                <!--  Time text  -->
+                                <TextView
+                                    android:id="@+id/overlay_sheet_limit_left"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="11h 50m"
+                                    android:textColor="@color/textPrimary"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"
+                                    tools:ignore="HardcodedText" />
+
+                                <!--  left text  -->
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/app_paused_overlay_label_left_today"
+                                    android:textColor="@color/textSecondary"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Reminder options -->
+                <LinearLayout
+                    android:id="@+id/overlay_sheet_limit_options_use_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!--  Text asking to keep using  -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:paddingVertical="24dp"
+                        android:text="@string/app_paused_overlay_ask_need_more_time"
+                        android:textColor="@color/textSecondary" />
+
+
+                    <!-- Options for reminder -->
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:orientation="horizontal"
+                        android:rowOrderPreserved="true"
+                        android:useDefaultMargins="false">
+
+                        <!--   2 minutes reminder     -->
+                        <Button
+                            android:id="@+id/overlay_sheet_reminder_option_btn_two_mins"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:background="@drawable/shape_rounded_md"
+                            android:backgroundTint="@color/primaryContainer"
+                            android:text="@string/app_paused_overlay_button_two_minutes"
+                            android:textAllCaps="false"
+                            android:textColor="@color/textSecondary"
+                            android:visibility="gone" />
+
+                        <!--   5 minutes reminder     -->
+                        <Button
+                            android:id="@+id/overlay_sheet_reminder_option_btn_five_mins"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:background="@drawable/shape_rounded_md"
+                            android:backgroundTint="@color/primaryContainer"
+                            android:text="@string/app_paused_overlay_button_five_minutes"
+                            android:textAllCaps="false"
+                            android:textColor="@color/textSecondary"
+                            android:visibility="gone" />
+
+                        <!--   10 minutes reminder     -->
+                        <Button
+                            android:id="@+id/overlay_sheet_reminder_option_btn_ten_mins"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:background="@drawable/shape_rounded_md"
+                            android:backgroundTint="@color/primaryContainer"
+                            android:text="@string/app_paused_overlay_button_ten_minutes"
+                            android:textAllCaps="false"
+                            android:textColor="@color/textSecondary"
+                            android:visibility="gone" />
+
+                        <!--   20 minutes reminder     -->
+                        <Button
+                            android:id="@+id/overlay_sheet_reminder_option_btn_twenty_mins"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="4dp"
+                            android:background="@drawable/shape_rounded_md"
+                            android:backgroundTint="@color/primaryContainer"
+                            android:text="@string/app_paused_overlay_button_twenty_minutes"
+                            android:textAllCaps="false"
+                            android:textColor="@color/textSecondary"
+                            android:visibility="gone" />
+                    </GridLayout>
+                </LinearLayout>
+
+                <!-- Close app button -->
+                <Button
+                    android:id="@+id/overlay_sheet_btn_close_app"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/shape_rounded_md"
+                    android:backgroundTint="@color/accent"
+                    android:text="@string/app_paused_overlay_button_close_app"
+                    android:textAllCaps="false"
+                    android:textColor="@color/secondaryContainer" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</FrameLayout>

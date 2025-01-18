@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/providers/new/apps_info_provider.dart';
 import 'package:mindful/providers/new/filtered_packages_provider.dart';

@@ -33,7 +33,7 @@ class MethodChannelService {
 
   /// The method channel object used for communication.
   final MethodChannel _methodChannel = const MethodChannel(
-    'com.mindful.android.methodchannel',
+    'com.mindful.android.methodchannel.fg',
   );
 
   /// Flag indicating if the app is restarted by itself (after importing database).
@@ -65,16 +65,10 @@ class MethodChannelService {
         jsonEncode(excludedApps),
       );
 
-  /// Sets the time of day when app data usage should be reset for the next day.
-  ///
-  /// This method takes the time of day in minutes and sends it to the native side
-  /// to be set as the data reset time.
-  Future<bool> setDataResetTime(int timeOfDayInMins) async =>
-      await _methodChannel.invokeMethod('setDataResetTime', timeOfDayInMins);
 
   /// Gets the map of device info and create and returns [DeviceInfoModel] .
   Future<DeviceInfoModel> getDeviceInfo() async => DeviceInfoModel.fromMap(
-      await _methodChannel.invokeMapMethod('getDeviceInfoMap') ?? {});
+      await _methodChannel.invokeMapMethod('getDeviceInfo') ?? {});
 
   /// Gets the total short screen time for the device in milliseconds.
   ///

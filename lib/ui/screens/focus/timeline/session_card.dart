@@ -18,7 +18,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/status_label.dart';
 import 'package:mindful/ui/common/styled_text.dart';

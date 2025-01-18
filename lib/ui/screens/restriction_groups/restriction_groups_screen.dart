@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';

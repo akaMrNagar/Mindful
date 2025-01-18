@@ -18,8 +18,8 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
-import 'package:mindful/core/utils/locales.dart';
+import 'package:mindful/config/hero_tags.dart';
+import 'package:mindful/config/locales.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -188,10 +188,11 @@ class TabGeneral extends ConsumerWidget {
                 info: context.locale.data_reset_time_tile_title,
               );
 
+              /// FIXME: Remove it
               if (pickedTime != null && context.mounted) {
-                ref
-                    .read(mindfulSettingsProvider.notifier)
-                    .changeDataResetTime(pickedTime);
+                // ref
+                //     .read(mindfulSettingsProvider.notifier)
+                //     .changeDataResetTime(pickedTime);
               }
             },
           ),

@@ -17,7 +17,7 @@ import 'package:mindful/core/database/tables/invincible_mode_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/database/tables/shared_unique_data_table.dart';
 import 'package:mindful/core/database/tables/wellbeing_table.dart';
-import 'package:mindful/core/utils/default_models.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
 
 part 'unique_records_dao.g.dart';
 
