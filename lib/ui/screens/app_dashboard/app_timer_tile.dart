@@ -15,7 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/models/app_info.dart';
 import 'package:mindful/providers/invincible_mode_provider.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';

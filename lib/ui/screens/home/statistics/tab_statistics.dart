@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/providers/new/weekly_device_usage_provider.dart';

@@ -18,7 +18,7 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/auth_service.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/providers/permissions_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';

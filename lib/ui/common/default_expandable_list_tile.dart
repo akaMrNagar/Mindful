@@ -11,8 +11,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/item_position.dart';
-import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 
 /// Global expandable list tile used throughout the app

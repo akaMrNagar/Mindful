@@ -74,7 +74,7 @@ class MethodChannelService {
 
   /// Gets the map of device info and create and returns [DeviceInfoModel] .
   Future<DeviceInfoModel> getDeviceInfo() async => DeviceInfoModel.fromMap(
-      await _methodChannel.invokeMapMethod('getDeviceInfoMap') ?? {});
+      await _methodChannel.invokeMapMethod('getDeviceInfo') ?? {});
 
   /// Gets the total short screen time for the device in milliseconds.
   ///

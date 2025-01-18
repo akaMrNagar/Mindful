@@ -14,7 +14,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';

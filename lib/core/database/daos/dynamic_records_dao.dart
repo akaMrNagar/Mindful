@@ -23,8 +23,8 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/utils/default_models.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
+import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/models/usage_model.dart';
 
 part 'dynamic_records_dao.g.dart';

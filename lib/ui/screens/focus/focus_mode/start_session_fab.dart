@@ -14,7 +14,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 

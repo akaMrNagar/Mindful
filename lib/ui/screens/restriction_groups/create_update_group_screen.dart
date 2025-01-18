@@ -21,7 +21,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/apps_restrictions_provider.dart';
 import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
 import 'package:mindful/providers/restriction_groups_provider.dart';

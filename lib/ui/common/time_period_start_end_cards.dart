@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/ui/common/time_card.dart';
 
 class TimePeriodStartEndCards extends StatelessWidget {

@@ -11,7 +11,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/core/utils/default_models.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
 
 /// A Riverpod state notifier provider that manages [InvincibleMode] settings.
 final invincibleModeProvider =

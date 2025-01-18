@@ -14,7 +14,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/ui/common/default_bar_chart.dart';
 import 'package:mindful/ui/common/styled_text.dart';

@@ -11,7 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/utils/utils.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 
 /// Filtering model to filter apps based on different filtering parameters.
 @immutable

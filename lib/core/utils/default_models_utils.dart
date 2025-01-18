@@ -2,7 +2,7 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/session_type.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 
 final defaultMindfulSettingsModel = MindfulSettings(
   id: 0,

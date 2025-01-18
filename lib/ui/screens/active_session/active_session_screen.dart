@@ -22,8 +22,8 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/utils/app_constants.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_scaffold.dart';
@@ -208,65 +208,34 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
       Theme.of(context).colorScheme.onSecondaryContainer,
     ];
 
-    int frameTime = 1000 ~/ 24;
-    int total = 5 * 1000 ~/ frameTime;
-    int progress = 0;
+    Confetti.launch(
+      context,
+      options: ConfettiOptions(
+        particleCount: 50,
+        scalar: 1.5,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        x: 0,
+        y: 1,
+        colors: colors,
+      ),
+      onFinished: (overlay) => overlay.remove(),
+    );
 
-    ConfettiController? controller1;
-    ConfettiController? controller2;
-    bool isDone = false;
-
-    Timer.periodic(Duration(milliseconds: frameTime), (timer) {
-      progress++;
-
-      if (progress >= total) {
-        timer.cancel();
-        isDone = true;
-        return;
-      }
-      if (controller1 == null) {
-        controller1 = Confetti.launch(
-          context,
-          options: ConfettiOptions(
-            particleCount: 2,
-            scalar: 1.5,
-            angle: 60,
-            spread: 55,
-            x: 0,
-            y: .75,
-            colors: colors,
-          ),
-          onFinished: (overlayEntry) {
-            if (isDone) {
-              overlayEntry.remove();
-            }
-          },
-        );
-      } else {
-        controller1!.launch();
-      }
-
-      if (controller2 == null) {
-        controller2 = Confetti.launch(
-          context,
-          options: ConfettiOptions(
-            particleCount: 2,
-            scalar: 1.5,
-            angle: 120,
-            spread: 55,
-            x: 1,
-            y: .75,
-            colors: colors,
-          ),
-          onFinished: (overlayEntry) {
-            if (isDone) {
-              overlayEntry.remove();
-            }
-          },
-        );
-      } else {
-        controller2!.launch();
-      }
-    });
+    Confetti.launch(
+      context,
+      options: ConfettiOptions(
+        particleCount: 50,
+        scalar: 1.5,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        x: 1,
+        y: 1,
+        colors: colors,
+      ),
+      onFinished: (overlay) => overlay.remove(),
+    );
   }
 }

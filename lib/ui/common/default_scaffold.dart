@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/providers/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/sliver_flexible_appbar.dart';
 

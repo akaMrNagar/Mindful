@@ -9,7 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 
 class HeroPageRoute<T> extends PageRoute<T> {
   HeroPageRoute({

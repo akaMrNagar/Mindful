@@ -13,7 +13,7 @@ import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
-import 'package:mindful/core/utils/app_constants.dart';
+import 'package:mindful/config/app_constants.dart';
 
 @DataClassName("MindfulSettings")
 class MindfulSettingsTable extends Table {

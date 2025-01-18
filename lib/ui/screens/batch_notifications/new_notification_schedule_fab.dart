@@ -12,7 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/utils/hero_tags.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/notification_schedules_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
