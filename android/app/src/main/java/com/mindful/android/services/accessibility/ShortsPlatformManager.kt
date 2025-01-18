@@ -3,7 +3,7 @@ package com.mindful.android.services.accessibility
 import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
 import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
@@ -53,7 +53,7 @@ class ShortsPlatformManager(
             }
 
             /// Update shorts screen time if content is open
-        }?.let { updateShortsScreenTime(it.maxAllowedDuration) }
+        }?.let { updateShortsScreenTime(settings.allowedShortContentTimeMs, it.maxAllowedDuration) }
     }
 
     /**
@@ -76,7 +76,7 @@ class ShortsPlatformManager(
             else -> false
         }.let {
             if (it) {
-                updateShortsScreenTime(30 * 1000L)
+                updateShortsScreenTime(settings.allowedShortContentTimeMs, 30 * 1000L)
                 return true
             }
         }
@@ -88,10 +88,11 @@ class ShortsPlatformManager(
      * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
      */
     private fun updateShortsScreenTime(
+        allowedShortContentTimeMs: Long,
         maxAllowedDuration: Long,
     ) {
         // Check if limit is exhausted
-        if (shortContentScreenTime < 0 || shortContentScreenTime > (shortContentScreenTime + SAVING_INTERVAL_MS)) {
+        if (allowedShortContentTimeMs < 0 || shortContentScreenTime > (allowedShortContentTimeMs + SAVING_INTERVAL_MS)) {
             blockedContentGoBack.invoke()
             return
         }

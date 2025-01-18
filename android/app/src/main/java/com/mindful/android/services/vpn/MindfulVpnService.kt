@@ -20,9 +20,8 @@ import android.util.Log
 import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
-import com.mindful.android.utils.Utils
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.SocketAddress
@@ -46,9 +45,8 @@ class MindfulVpnService : VpnService() {
     private var mIsServiceRunning = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val action = Utils.getActionFromIntent(intent)
 
-        if (ServiceBinder.ACTION_START_MINDFUL_SERVICE == action) {
+        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             startFgService()
             return START_STICKY
         }
@@ -205,7 +203,6 @@ class MindfulVpnService : VpnService() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        val action = Utils.getActionFromIntent(intent)
-        return if (action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder else null
+        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder else null
     }
 }

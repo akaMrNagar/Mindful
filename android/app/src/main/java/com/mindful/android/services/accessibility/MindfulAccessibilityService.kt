@@ -24,7 +24,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.mindful.android.R
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
 import com.mindful.android.receivers.alarm.MidnightResetReceiver
@@ -34,7 +34,7 @@ import com.mindful.android.utils.AppConstants.REDDIT_PACKAGE
 import com.mindful.android.utils.AppConstants.SNAPCHAT_PACKAGE
 import com.mindful.android.utils.AppConstants.YOUTUBE_PACKAGE
 import com.mindful.android.utils.ThreadUtils
-import com.mindful.android.utils.Utils
+import org.json.JSONObject
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -71,14 +71,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         blockedContentGoBack = this::goBackWithToast
     )
 
-    private var mWellBeingSettings = WellBeingSettings()
+    private var mWellBeingSettings = WellBeingSettings(JSONObject(""))
     private var lastTimeBackActioned = 0L
 
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val action = Utils.getActionFromIntent(intent)
-
-        if (MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET == action) {
+        if (intent.action == MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET) {
             shortsPlatformManager.resetShortsScreenTime()
             Log.d(TAG, "onStartCommand: Midnight reset completed")
         }
@@ -88,7 +86,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     override fun onServiceConnected() {
         super.onServiceConnected()
         // Register shared prefs listener and load data
-        SharedPrefsHelper.registerUnregisterListenerToUniquePrefs(this, true, this)
+        SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, true, this)
         mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
 
         // Register listener for install and uninstall events
@@ -127,7 +125,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     private fun processEventInBackground(packageName: String, node: AccessibilityNodeInfo) {
         try {
             // Copy settings for this thread
-            val settings = mWellBeingSettings.makeCopy()
+            val settings = mWellBeingSettings.copy()
             when {
                 shortsPlatforms.contains(packageName)
                 -> shortsPlatformManager.checkAndBlockShortsOnPlatforms(packageName, node, settings)
@@ -259,7 +257,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         mExecutorService.shutdown()
         // Unregister prefs listener and receiver
         unregisterReceiver(deviceAppsChangedReceiver)
-        SharedPrefsHelper.registerUnregisterListenerToUniquePrefs(this, false, this)
+        SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
         Log.d(TAG, "onDestroy: Accessibility service destroyed")
     }
 }

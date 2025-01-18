@@ -34,8 +34,6 @@ dependencies:
   sqlite3: ^2.4.5
   drift: ^2.18.0
   drift_flutter: ^0.2.0
-  isar: ^3.1.0+1
-  isar_flutter_libs: ^3.1.0+1
 
   # Util
   intl: ^0.19.0

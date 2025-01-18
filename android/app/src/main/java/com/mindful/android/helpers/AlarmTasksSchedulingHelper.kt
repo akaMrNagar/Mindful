@@ -27,6 +27,7 @@ import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.Utils
 import com.mindful.android.utils.Utils.todToTodayCal
+import org.json.JSONObject
 import java.util.Calendar
 import java.util.Date
 
@@ -35,6 +36,11 @@ import java.util.Date
  */
 object AlarmTasksSchedulingHelper {
     private const val TAG = "Mindful.AlarmTasksSchedulingHelper"
+    private const val MIDNIGHT_RESET_ALARM_ID = 101
+    private const val BEDTIME_ROUTINE_ALARM_ID = 102
+    private const val NOTIFICATION_BATCH_ALARM_ID = 103
+
+    const val ALARM_EXTRA_JSON = "com.mindful.android.alarmExtraJson"
 
     /**
      * Schedules the midnight reset task if it is not already scheduled.
@@ -43,7 +49,6 @@ object AlarmTasksSchedulingHelper {
      * @param context               The application context.
      * @param checkBeforeScheduling Flag indicating whether to check if the task is already scheduled.
      */
-    @JvmStatic
     fun scheduleMidnightResetTask(context: Context, checkBeforeScheduling: Boolean) {
         if (checkBeforeScheduling) {
             val intent =
@@ -52,7 +57,7 @@ object AlarmTasksSchedulingHelper {
                 )
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                0,
+                MIDNIGHT_RESET_ALARM_ID,
                 intent,
                 PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE
             )
@@ -70,10 +75,11 @@ object AlarmTasksSchedulingHelper {
         cal.add(Calendar.DATE, 1)
 
         scheduleOrUpdateExactAlarmTask(
-            context,
-            MidnightResetReceiver::class.java,
-            MidnightResetReceiver.ACTION_START_MIDNIGHT_RESET,
-            cal.timeInMillis
+            context = context,
+            receiverClass = MidnightResetReceiver::class.java,
+            intentAction = MidnightResetReceiver.ACTION_START_MIDNIGHT_RESET,
+            requestCode = MIDNIGHT_RESET_ALARM_ID,
+            epochTimeMs = cal.timeInMillis
         )
         Log.d(
             TAG,
@@ -85,10 +91,11 @@ object AlarmTasksSchedulingHelper {
      * Schedules the bedtime alert, start, and stop tasks based on the bedtime settings.
      *
      * @param context         The application context.
-     * @param bedtimeSettings The Bedtime settings object used for scheduling.
+     * @param jsonBedtimeSettings The json string representation of Bedtime settings object used for scheduling.
      */
-    @JvmStatic
-    fun scheduleBedtimeRoutineTasks(context: Context, bedtimeSettings: BedtimeSettings) {
+    fun scheduleBedtimeRoutineTasks(context: Context, jsonBedtimeSettings: String) {
+        val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+
         val nowInMs = System.currentTimeMillis()
         var alertTimeMs = todToTodayCal(bedtimeSettings.startTimeInMins - 30).timeInMillis
         var startTimeMs = todToTodayCal(bedtimeSettings.startTimeInMins).timeInMillis
@@ -108,7 +115,9 @@ object AlarmTasksSchedulingHelper {
                 context = context,
                 receiverClass = BedtimeRoutineReceiver::class.java,
                 intentAction = BedtimeRoutineReceiver.ACTION_ALERT_BEDTIME,
-                epochTimeMs = alertTimeMs
+                epochTimeMs = alertTimeMs,
+                requestCode = BEDTIME_ROUTINE_ALARM_ID,
+                extraJson = jsonBedtimeSettings,
             )
         }
 
@@ -117,13 +126,17 @@ object AlarmTasksSchedulingHelper {
             context = context,
             receiverClass = BedtimeRoutineReceiver::class.java,
             intentAction = BedtimeRoutineReceiver.ACTION_START_BEDTIME,
-            epochTimeMs = startTimeMs
+            epochTimeMs = startTimeMs,
+            requestCode = BEDTIME_ROUTINE_ALARM_ID,
+            extraJson = jsonBedtimeSettings,
         )
         scheduleOrUpdateExactAlarmTask(
             context = context,
             receiverClass = BedtimeRoutineReceiver::class.java,
             intentAction = BedtimeRoutineReceiver.ACTION_STOP_BEDTIME,
-            epochTimeMs = endTimeMs
+            epochTimeMs = endTimeMs,
+            requestCode = BEDTIME_ROUTINE_ALARM_ID,
+            extraJson = jsonBedtimeSettings,
         )
         Log.d(
             TAG, """
@@ -141,23 +154,27 @@ object AlarmTasksSchedulingHelper {
      *
      * @param context The application context.
      */
-    @JvmStatic
     fun cancelBedtimeRoutineTasks(context: Context) {
         // Cancel the alarms
         cancelExactAlarmTasks(
-            context,
-            BedtimeRoutineReceiver::class.java,
-            listOf(
+            context = context,
+            receiverClass = BedtimeRoutineReceiver::class.java,
+            requestCode = BEDTIME_ROUTINE_ALARM_ID,
+            intentActions = listOf(
                 BedtimeRoutineReceiver.ACTION_ALERT_BEDTIME,
                 BedtimeRoutineReceiver.ACTION_START_BEDTIME,
                 BedtimeRoutineReceiver.ACTION_STOP_BEDTIME
-            )
+            ),
         )
 
         // Let service know
         if (Utils.isServiceRunning(context, MindfulTrackerService::class.java)) {
             val conn = SafeServiceConnection(MindfulTrackerService::class.java, context)
-            conn.setOnConnectedCallback { service -> service.getRestrictionManager.updateBedtimeApps(null) }
+            conn.setOnConnectedCallback { service ->
+                service.getRestrictionManager.updateBedtimeApps(
+                    null
+                )
+            }
             conn.bindService()
             conn.unBindService()
         }
@@ -195,6 +212,7 @@ object AlarmTasksSchedulingHelper {
             context = context,
             receiverClass = NotificationBatchReceiver::class.java,
             intentAction = NotificationBatchReceiver.ACTION_PUSH_BATCH,
+            requestCode = NOTIFICATION_BATCH_ALARM_ID,
             epochTimeMs = nextAlarmTimeMs,
         )
         Log.d(
@@ -210,11 +228,11 @@ object AlarmTasksSchedulingHelper {
      *
      * @param context The application context.
      */
-    @JvmStatic
     fun cancelNotificationBatchTask(context: Context) {
         cancelExactAlarmTasks(
             context = context,
             receiverClass = NotificationBatchWorker::class.java,
+            requestCode = NOTIFICATION_BATCH_ALARM_ID,
             intentActions = listOf(NotificationBatchReceiver.ACTION_PUSH_BATCH)
         )
         Log.d(TAG, "cancelNotificationBatchTask: Notification batch tasks cancelled successfully")
@@ -232,13 +250,17 @@ object AlarmTasksSchedulingHelper {
         context: Context,
         receiverClass: Class<*>,
         intentAction: String,
-        epochTimeMs: Long
+        requestCode: Int,
+        epochTimeMs: Long,
+        extraJson: String? = null,
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context.applicationContext, receiverClass).setAction(intentAction)
+        extraJson?.let { intent.putExtra(ALARM_EXTRA_JSON, it) }
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            0,
+            requestCode,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -270,7 +292,8 @@ object AlarmTasksSchedulingHelper {
     private fun cancelExactAlarmTasks(
         context: Context,
         receiverClass: Class<*>,
-        intentActions: List<String>
+        requestCode: Int,
+        intentActions: List<String>,
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
@@ -278,7 +301,7 @@ object AlarmTasksSchedulingHelper {
             val intent = Intent(context.applicationContext, receiverClass).setAction(action)
             val pendingIntent = PendingIntent.getBroadcast(
                 context,
-                0,
+                requestCode,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )

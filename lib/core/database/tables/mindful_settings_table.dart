@@ -39,11 +39,6 @@ class MindfulSettingsTable extends Table {
   TextColumn get localeCode =>
       text().withDefault(const Constant(AppConstants.defaultLocale))();
 
-  /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
-  IntColumn get dataResetTime => integer()
-      .map(const TimeOfDayAdapterConverter())
-      .withDefault(const Constant(0))();
-
   /// Flag indicating if to use bottom navigation or the default sidebar
   BoolColumn get useBottomNavigation =>
       boolean().withDefault(const Constant(false))();

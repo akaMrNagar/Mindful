@@ -20,7 +20,7 @@ import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.FocusSession
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID
@@ -42,9 +42,7 @@ class FocusSessionService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val action = Utils.getActionFromIntent(intent)
-
-        if (ServiceBinder.ACTION_START_MINDFUL_SERVICE == action) {
+        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             return START_STICKY
         }
 
@@ -159,8 +157,8 @@ class FocusSessionService : Service() {
 
 
     override fun onBind(intent: Intent): IBinder? {
-        val action = Utils.getActionFromIntent(intent)
-        return if (action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder else null
+        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder
+        else null
     }
 
     companion object {

@@ -42,19 +42,11 @@ class AppRestrictionTable extends Table {
   IntColumn get periodDurationInMins =>
       integer().withDefault(const Constant(0))();
 
-  /// Flag denoting if this app can access internet or not
-  BoolColumn get canAccessInternet =>
-      boolean().withDefault(const Constant(true))();
-
   /// ID of the [RestrictionGroup] this app is associated with or NULL
   IntColumn get associatedGroupId =>
       integer().nullable().withDefault(const Constant(null))();
 
-  /// The interval between each usage alert in SECONDS
-  IntColumn get alertInterval =>
-      integer().withDefault(const Constant(15 * 60))();
-
-  ///  Whether to alert user by dialog if false user will be alerted by notification
-  BoolColumn get alertByDialog =>
-      boolean().withDefault(const Constant(false))();
+  /// Flag denoting if this app can access internet or not
+  BoolColumn get canAccessInternet =>
+      boolean().withDefault(const Constant(true))();
 }

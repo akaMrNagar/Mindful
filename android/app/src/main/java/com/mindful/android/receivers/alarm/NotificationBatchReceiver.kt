@@ -16,14 +16,13 @@ import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
 import com.mindful.android.helpers.device.NotificationHelper
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
-import com.mindful.android.utils.Utils
 import org.json.JSONArray
 
 class NotificationBatchReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (ACTION_PUSH_BATCH == Utils.getActionFromIntent(intent)) {
+        if (intent.action == ACTION_PUSH_BATCH) {
             WorkManager.getInstance(context).enqueueUniqueWork(
                 TAG, ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequest.Builder(NotificationBatchWorker::class.java).build()

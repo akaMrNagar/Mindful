@@ -32,7 +32,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import com.mindful.android.R
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.utils.AppConstants

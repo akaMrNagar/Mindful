@@ -13,7 +13,7 @@ package com.mindful.android.models
 
 import org.json.JSONObject
 
-data class RestrictionGroup(val jsonObject: JSONObject) {
+data class RestrictionGroup(private val jsonObject: JSONObject) {
     /**
      * Unique ID for each restriction group
      */
@@ -36,12 +36,6 @@ data class RestrictionGroup(val jsonObject: JSONObject) {
     val activePeriodStart: Int = jsonObject.optInt("activePeriodStart", 0)
 
     /**
-     * [TimeOfDay] in minutes when the active period will end
-     * It is stored as total minutes.
-     */
-    val activePeriodEnd: Int = jsonObject.optInt("activePeriodEnd", 0)
-
-    /**
      * Total duration of active period from start to end in MINUTES
      */
     val periodDurationInMins: Int = jsonObject.optInt("periodDurationInMins", 0)
@@ -49,18 +43,13 @@ data class RestrictionGroup(val jsonObject: JSONObject) {
     /**
      * List of app's packages which are associated with the group.
      */
-    val distractingApps: HashSet<String?>
+    val distractingApps: HashSet<String>
 
 
-    /**
-     * Constructor to initialize from JSON.
-     *
-     * @param jsonObject the JSON object containing restriction group data.
-     */
     init {
         // Deserialize apps package
         val appsJsonArray = jsonObject.optJSONArray("distractingApps")
-        val distractingApps = HashSet<String?>(0)
+        val distractingApps = HashSet<String>(0)
         if (appsJsonArray != null) {
             for (i in 0 until appsJsonArray.length()) {
                 distractingApps.add(appsJsonArray.getString(i))

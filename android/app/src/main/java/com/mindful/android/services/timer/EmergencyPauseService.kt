@@ -19,7 +19,7 @@ import com.mindful.android.R
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID
 import com.mindful.android.utils.Utils
@@ -55,9 +55,7 @@ class EmergencyPauseService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        val action = Utils.getActionFromIntent(intent)
-
-        if (ServiceBinder.ACTION_START_MINDFUL_SERVICE == action) {
+        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             startEmergencyTimer()
             return START_STICKY
         }

@@ -31,13 +31,16 @@ class DeviceLockUnlockReceiver(
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val action = Utils.getActionFromIntent(intent)
-        if (Intent.ACTION_USER_PRESENT == action) {
-            onDeviceLockChanged.invoke(true)
-            Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE")
-        } else if (Intent.ACTION_SCREEN_OFF == action) {
-            onDeviceLockChanged.invoke(false)
-            Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE")
+        when (intent.action) {
+            Intent.ACTION_USER_PRESENT -> {
+                onDeviceLockChanged.invoke(true)
+                Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE")
+            }
+
+            Intent.ACTION_SCREEN_OFF -> {
+                onDeviceLockChanged.invoke(false)
+                Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE")
+            }
         }
     }
 }

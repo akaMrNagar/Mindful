@@ -44,7 +44,7 @@ class BedtimeScheduleTable extends Table {
   /// [FALSE] indicates that schedule task will skip that day.
   TextColumn get scheduleDays =>
       text().map(const ListBoolConverter()).withDefault(
-          Constant(jsonEncode([false, true, true, true, true, true, false])))();
+          Constant(jsonEncode([true, true, true, true, true, false, false])))();
 
   /// Boolean denoting the status of the bedtime schedule means
   /// [For User] if the schedule is running or not.

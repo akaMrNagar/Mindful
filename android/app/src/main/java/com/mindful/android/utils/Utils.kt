@@ -172,27 +172,6 @@ object Utils {
         return bitmap
     }
 
-
-    /**
-     * Returns an empty string if the provided string is null.
-     *
-     * @param nullableString The string to check.
-     * @return The original string if it's not null, otherwise an empty string.
-     */
-    fun notNullStr(nullableString: String?): String {
-        return nullableString ?: ""
-    }
-
-    /**
-     * Null safe method that returns an empty string if the provided Intent is null or Intent's Action is null.
-     *
-     * @param intent The nullable Intent to check.
-     * @return The action string if it's not null, otherwise an empty string.
-     */
-    fun getActionFromIntent(intent: Intent?): String {
-        return if (intent == null) "" else notNullStr(intent.action)
-    }
-
     /**
      * Formats the total screen usage time into a human-readable string.
      * Example: 02h 43m 09s

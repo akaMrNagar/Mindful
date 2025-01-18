@@ -27,7 +27,7 @@ import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.helpers.usages.NetworkUsageHelper
 import com.mindful.android.helpers.usages.ScreenUsageHelper
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.AggregatedUsage
 import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.ThreadUtils
@@ -44,7 +44,7 @@ import java.util.Calendar
 class DeviceUsageWidget : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        val action = Utils.getActionFromIntent(intent)
+        val action = intent.action
         Log.d(TAG, "onReceive: Received event with action: $action")
 
         if (WIDGET_ACTION_REFRESH == action) {
@@ -170,17 +170,14 @@ class DeviceUsageWidget : AppWidgetProvider() {
      */
     @Contract("_ -> new")
     private fun fetchAggregatedUsage(context: Context): AggregatedUsage {
-        val screenUsageCal = Calendar.getInstance()
-        screenUsageCal[Calendar.HOUR_OF_DAY] = 0
-        screenUsageCal[Calendar.MINUTE] = 0
-        screenUsageCal[Calendar.SECOND] = 0
-        screenUsageCal[Calendar.MILLISECOND] = 0
+        val usageCal = Calendar.getInstance()
+        usageCal[Calendar.HOUR_OF_DAY] = 0
+        usageCal[Calendar.MINUTE] = 0
+        usageCal[Calendar.SECOND] = 0
+        usageCal[Calendar.MILLISECOND] = 0
 
-        // Users may have different timings for their data renewal or reset so keeping it in mind
-        val dataUsageCal = SharedPrefsHelper.getSetDataResetTimeMins(context, null)
-
-        val screenUsageStart = screenUsageCal.timeInMillis
-        val dataUsageStart = dataUsageCal.timeInMillis
+        val usageStart = usageCal.timeInMillis
+        val usageEnd = System.currentTimeMillis()
 
         val usageStatsManager =
             context.applicationContext.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
@@ -189,18 +186,18 @@ class DeviceUsageWidget : AppWidgetProvider() {
 
         val screenUsageOneDay = ScreenUsageHelper.fetchUsageForInterval(
             usageStatsManager,
-            screenUsageStart,
-            System.currentTimeMillis()
+            usageStart,
+            usageEnd
         )
         val mobileUsageOneDay = NetworkUsageHelper.fetchMobileUsageForInterval(
             networkStatsManager,
-            dataUsageStart,
-            dataUsageStart + AppConstants.ONE_DAY_IN_MS
+            usageStart,
+            usageEnd
         )
         val wifiUsageOneDay = NetworkUsageHelper.fetchWifiUsageForInterval(
             networkStatsManager,
-            dataUsageStart,
-            dataUsageStart + AppConstants.ONE_DAY_IN_MS
+            usageStart,
+            usageEnd
         )
 
 

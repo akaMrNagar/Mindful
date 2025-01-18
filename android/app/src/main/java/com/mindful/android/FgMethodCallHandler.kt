@@ -12,13 +12,14 @@ import com.mindful.android.helpers.AlarmTasksSchedulingHelper.cancelBedtimeRouti
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.cancelNotificationBatchTask
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.helpers.device.DeviceAppsHelper.getDeviceAppInfos
 import com.mindful.android.helpers.device.NewActivitiesLaunchHelper
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.device.PermissionsHelper
 import com.mindful.android.helpers.usages.AppsUsageHelper.getAppsUsageForInterval
 import com.mindful.android.models.AppRestrictions
+import com.mindful.android.models.BedtimeSettings
 import com.mindful.android.models.FocusSession
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.services.notification.MindfulNotificationListenerService
@@ -31,6 +32,7 @@ import com.mindful.android.utils.Utils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
+import org.json.JSONObject
 import java.util.Locale
 
 class FgMethodCallHandler(
@@ -86,17 +88,12 @@ class FgMethodCallHandler(
             // ==============================================================================================================
 
             "updateLocale" -> {
-                updateLocale(Utils.notNullStr(call.arguments()))
+                updateLocale(call.arguments() ?: "en")
                 result.success(true)
             }
 
             "updateExcludedApps" -> {
-                SharedPrefsHelper.getSetExcludedApps(context, Utils.notNullStr(call.arguments()))
-                result.success(true)
-            }
-
-            "setDataResetTime" -> {
-                SharedPrefsHelper.getSetDataResetTimeMins(context, call.arguments() ?: 0)
+                SharedPrefsHelper.getSetExcludedApps(context, call.arguments() ?: "")
                 result.success(true)
             }
 
@@ -142,18 +139,16 @@ class FgMethodCallHandler(
             // ==============================================================================================================
 
             "updateAppRestrictions" -> {
-                val appRestrictions = SharedPrefsHelper.getSetAppRestrictions(
-                    context,
-                    Utils.notNullStr(call.arguments())
+                val appRestrictions = JsonDeserializer.jsonStrToAppRestrictionsHashMap(
+                    call.arguments() ?: ""
                 )
                 updateTrackerServiceRestrictions(appRestrictions, null)
                 result.success(true)
             }
 
             "updateRestrictionsGroups" -> {
-                val restrictionGroups = SharedPrefsHelper.getSetRestrictionGroups(
-                    context,
-                    Utils.notNullStr(call.arguments())
+                val restrictionGroups = JsonDeserializer.jsonStrToRestrictionGroupsHashMap(
+                    call.arguments() ?: ""
                 )
                 updateTrackerServiceRestrictions(null, restrictionGroups)
                 result.success(true)
@@ -161,17 +156,18 @@ class FgMethodCallHandler(
 
             "updateInternetBlockedApps" -> {
                 val blockedApps =
-                    JsonDeserializer.jsonStrToStringHashSet(Utils.notNullStr(call.arguments()))
-                if (vpnServiceConn.service != null) {
-                    vpnServiceConn.service?.updateBlockedApps(blockedApps)
-                } else if (blockedApps.isNotEmpty() && getAndAskVpnPermission(false)) {
-                    vpnServiceConn.setOnConnectedCallback { service: MindfulVpnService ->
-                        service.updateBlockedApps(
-                            blockedApps
-                        )
+                    JsonDeserializer.jsonStrToStringHashSet(call.arguments() ?: "")
+                vpnServiceConn.service?.updateBlockedApps(blockedApps)
+                    ?: {
+                        if (blockedApps.isNotEmpty() && getAndAskVpnPermission(false)) {
+                            vpnServiceConn.setOnConnectedCallback { service ->
+                                service.updateBlockedApps(
+                                    blockedApps
+                                )
+                            }
+                            vpnServiceConn.startAndBind()
+                        }
                     }
-                    vpnServiceConn.startAndBind()
-                }
                 result.success(true)
             }
 
@@ -185,12 +181,10 @@ class FgMethodCallHandler(
             }
 
             "updateBedtimeSchedule" -> {
-                val bedtimeSettings = SharedPrefsHelper.getSetBedtimeSettings(
-                    context,
-                    Utils.notNullStr(call.arguments())
-                )
+                val jsonBedtimeSettings = call.arguments() ?: ""
+                val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
                 if (bedtimeSettings.isScheduleOn) {
-                    scheduleBedtimeRoutineTasks(context, bedtimeSettings)
+                    scheduleBedtimeRoutineTasks(context, jsonBedtimeSettings)
                 } else {
                     cancelBedtimeRoutineTasks(context)
                     if (bedtimeSettings.shouldStartDnd) {
@@ -216,23 +210,22 @@ class FgMethodCallHandler(
             }
 
             "updateFocusSession" -> {
-                val focusSession = FocusSession(Utils.notNullStr(call.arguments()))
-                if (focusServiceConn.service != null) {
-                    focusServiceConn.service?.updateFocusSession(focusSession)
-                } else {
-                    focusServiceConn.setOnConnectedCallback { service: FocusSessionService ->
-                        service.startFocusSession(
-                            focusSession
-                        )
+                val focusSession = FocusSession(JSONObject(call.arguments() ?: ""))
+                focusServiceConn.service?.updateFocusSession(focusSession)
+                    ?: {
+                        focusServiceConn.setOnConnectedCallback { service: FocusSessionService ->
+                            service.startFocusSession(
+                                focusSession
+                            )
+                        }
+                        focusServiceConn.startAndBind()
                     }
-                    focusServiceConn.startAndBind()
-                }
                 result.success(true)
             }
 
             "giveUpOrFinishFocusSession" -> {
                 if (focusServiceConn.service != null) {
-                    focusServiceConn.service?.giveUpOrStopFocusSession(java.lang.Boolean.TRUE == call.arguments())
+                    focusServiceConn.service?.giveUpOrStopFocusSession(call.arguments() ?: false)
                     focusServiceConn.unBindService()
                 }
                 result.success(true)
@@ -241,7 +234,7 @@ class FgMethodCallHandler(
             "updateDistractingNotificationApps" -> {
                 val distractingApps = SharedPrefsHelper.getSetNotificationBatchedApps(
                     context,
-                    Utils.notNullStr(call.arguments())
+                    call.arguments() ?: ""
                 )
                 if (notificationServiceConn.service != null) {
                     notificationServiceConn.service?.updateDistractingApps(distractingApps)
@@ -259,7 +252,7 @@ class FgMethodCallHandler(
             "updateNotificationBatchSchedules" -> {
                 val todMinutes = SharedPrefsHelper.getSetNotificationBatchSchedules(
                     context,
-                    Utils.notNullStr(call.arguments())
+                    call.arguments() ?: ""
                 )
                 if (todMinutes.isNotEmpty()) {
                     scheduleNotificationBatchTask(context, todMinutes)
@@ -277,7 +270,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskAccessibilityPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -286,7 +279,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskAdminPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -295,7 +288,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskUsageAccessPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -304,7 +297,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskIgnoreBatteryOptimizationPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -313,7 +306,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskDisplayOverlayPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -322,7 +315,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskExactAlarmPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -332,7 +325,7 @@ class FgMethodCallHandler(
                     activity?.let {
                         return@let PermissionsHelper.getAndAskNotificationPermission(
                             it,
-                            java.lang.Boolean.TRUE == call.arguments()
+                            call.arguments() ?: false
                         )
                     } ?: false
                 )
@@ -342,7 +335,7 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskDndPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
@@ -351,13 +344,13 @@ class FgMethodCallHandler(
                 result.success(
                     PermissionsHelper.getAndAskNotificationAccessPermission(
                         context,
-                        java.lang.Boolean.TRUE == call.arguments()
+                        call.arguments() ?: false
                     )
                 )
             }
 
             "getAndAskVpnPermission" -> {
-                result.success(getAndAskVpnPermission(java.lang.Boolean.TRUE == call.arguments()))
+                result.success(getAndAskVpnPermission(call.arguments() ?: false))
             }
 
             // ==============================================================================================================
@@ -372,7 +365,7 @@ class FgMethodCallHandler(
             "openAppWithPackage" -> {
                 NewActivitiesLaunchHelper.openAppWithPackage(
                     context,
-                    Utils.notNullStr(call.arguments())
+                    call.arguments() ?: ""
                 )
                 result.success(true)
             }
@@ -380,7 +373,7 @@ class FgMethodCallHandler(
             "openAppSettingsForPackage" -> {
                 NewActivitiesLaunchHelper.openSettingsForPackage(
                     context,
-                    Utils.notNullStr(call.arguments())
+                    call.arguments() ?: ""
                 )
                 result.success(true)
             }
@@ -402,16 +395,12 @@ class FgMethodCallHandler(
             }
 
             "launchUrl" -> {
-                NewActivitiesLaunchHelper.launchUrl(context, Utils.notNullStr(call.arguments()))
+                NewActivitiesLaunchHelper.launchUrl(context, call.arguments() ?: "")
                 result.success(true)
             }
 
             "parseHostFromUrl" -> {
-                result.success(
-                    if (call.arguments == null) "" else Utils.parseHostNameFromUrl(
-                        call.arguments as String
-                    )
-                )
+                result.success(Utils.parseHostNameFromUrl(call.arguments() ?: ""))
             }
 
             else -> result.notImplemented()
@@ -433,19 +422,19 @@ class FgMethodCallHandler(
         appRestrictions: HashMap<String, AppRestrictions>?,
         restrictionGroups: HashMap<Int, RestrictionGroup>?,
     ) {
-        if (trackerServiceConn.service != null) {
-            trackerServiceConn.service?.getRestrictionManager?.updateRestrictions(
-                appRestrictions,
-                restrictionGroups
-            )
-        } else if (appRestrictions?.isEmpty() == false || restrictionGroups?.isEmpty() == false) {
-            trackerServiceConn.setOnConnectedCallback { service: MindfulTrackerService ->
-                service.getRestrictionManager.updateRestrictions(
-                    appRestrictions,
-                    restrictionGroups
-                )
+        trackerServiceConn.service?.getRestrictionManager?.updateRestrictions(
+            appRestrictions,
+            restrictionGroups
+        ) ?: {
+            if (appRestrictions?.isNotEmpty() == true || restrictionGroups?.isNotEmpty() == true) {
+                trackerServiceConn.setOnConnectedCallback { service ->
+                    service.getRestrictionManager.updateRestrictions(
+                        appRestrictions,
+                        restrictionGroups
+                    )
+                }
+                trackerServiceConn.startAndBind()
             }
-            trackerServiceConn.startAndBind()
         }
     }
 

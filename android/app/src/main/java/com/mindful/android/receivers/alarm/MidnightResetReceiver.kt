@@ -22,14 +22,14 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleMidnightResetTask
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.Utils
 
 class MidnightResetReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        if (ACTION_START_MIDNIGHT_RESET == Utils.getActionFromIntent(intent)) {
+        if (intent.action == ACTION_START_MIDNIGHT_RESET) {
             WorkManager.getInstance(context).enqueueUniqueWork(
                 TAG, ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequest.Builder(MidnightResetWorker::class.java).build()
@@ -39,7 +39,7 @@ class MidnightResetReceiver : BroadcastReceiver() {
 
     class MidnightResetWorker(
         private val context: Context,
-        params: WorkerParameters
+        params: WorkerParameters,
     ) : Worker(context, params) {
         private val mTrackerServiceConn = SafeServiceConnection(
             MindfulTrackerService::class.java, context

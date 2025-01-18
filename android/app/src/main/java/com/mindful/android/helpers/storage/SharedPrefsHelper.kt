@@ -9,15 +9,12 @@
  *  *
  *
  */
-package com.mindful.android.helpers.database
+package com.mindful.android.helpers.storage
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
-import com.mindful.android.models.AppRestrictions
-import com.mindful.android.models.BedtimeSettings
-import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.UpcomingNotification
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.AppConstants
@@ -35,19 +32,12 @@ object SharedPrefsHelper {
     private var mUniquePrefs: SharedPreferences? = null
     private const val UNIQUE_PREFS_BOX = "UniquePrefs"
     private const val PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "notificationPermissionCount"
-    private const val PREF_KEY_DATA_RESET_TIME_MINS = "dataResetTimeMins"
     private const val PREF_KEY_SHORTS_SCREEN_TIME = "shortsScreenTime"
-    private const val PREF_KEY_BEDTIME_SETTINGS = "bedtimeSettings"
-    const val PREF_KEY_WELLBEING_SETTINGS: String = "wellBeingSettings"
     private const val PREF_KEY_EXCLUDED_APPS = "excludedApps"
 
-    private var mAppRestrictionPrefs: SharedPreferences? = null
-    private const val APP_RESTRICTION_PREFS_BOX = "AppRestrictionPrefs"
-    private const val PREF_KEY_APP_RESTRICTIONS = "appRestrictions"
-
-    private var mRestrictionGroupPrefs: SharedPreferences? = null
-    private const val RESTRICTION_GROUP_PREFS_BOX = "RestrictionGroupPrefs"
-    private const val PREF_KEY_RESTRICTION_GROUPS = "restrictionGroups"
+    private var mListenablePrefs: SharedPreferences? = null
+    private const val LISTENABLE_PREFS_BOX = "UniquePrefs"
+    const val PREF_KEY_WELLBEING_SETTINGS: String = "wellBeingSettings"
 
     private var mCrashLogPrefs: SharedPreferences? = null
     private const val CRASH_LOG_PREFS_BOX = "CrashLogPrefs"
@@ -60,25 +50,19 @@ object SharedPrefsHelper {
     private const val PREF_KEY_BATCHED_APPS = "batchedApps"
 
 
-
     private fun checkAndInitializeUniquePrefs(context: Context) {
         if (mUniquePrefs != null) return
         mUniquePrefs =
             context.applicationContext.getSharedPreferences(UNIQUE_PREFS_BOX, Context.MODE_PRIVATE)
     }
 
-    private fun checkAndInitializeAppRestrictionPrefs(context: Context) {
-        if (mAppRestrictionPrefs != null) return
-        mAppRestrictionPrefs = context.applicationContext.getSharedPreferences(
-            APP_RESTRICTION_PREFS_BOX, Context.MODE_PRIVATE
-        )
-    }
-
-    private fun checkAndInitializeRestrictionGroupPrefs(context: Context) {
-        if (mRestrictionGroupPrefs != null) return
-        mRestrictionGroupPrefs = context.applicationContext.getSharedPreferences(
-            RESTRICTION_GROUP_PREFS_BOX, Context.MODE_PRIVATE
-        )
+    private fun checkAndInitializeListenablePrefs(context: Context) {
+        if (mListenablePrefs != null) return
+        mListenablePrefs =
+            context.applicationContext.getSharedPreferences(
+                LISTENABLE_PREFS_BOX,
+                Context.MODE_PRIVATE
+            )
     }
 
     private fun checkAndInitializeCrashLogPrefs(context: Context) {
@@ -98,55 +82,50 @@ object SharedPrefsHelper {
 
 
     /**
-     * Checks and Migrates shared prefs data from old one file to multiple new files.
-     *
-     * @param context The application context.
-     */
-    fun migrateFromOldPrefs(context: Context) {
-        checkAndInitializeUniquePrefs(context)
-        val isMigrationDone = mUniquePrefs!!.getBoolean("MigrationDone", false)
-        if (isMigrationDone) return
-
-        // Load unique data
-        getSetNotificationAskCount(context, OldPrefsHelper.getNotificationAskCount(context))
-        getSetDataResetTimeMins(context, OldPrefsHelper.getDataResetTimeMins(context))
-        getSetShortsScreenTimeMs(context, OldPrefsHelper.getShortsScreenTimeMs(context))
-        getSetWellBeingSettings(context, OldPrefsHelper.getWellBeingSettingsString(context))
-        getSetBedtimeSettings(context, OldPrefsHelper.getBedtimeSettingsString(context))
-        getSetExcludedApps(context, OldPrefsHelper.getExcludedAppsString(context))
-
-        // Load app restrictions
-        getSetAppRestrictions(context, OldPrefsHelper.getAppRestrictionsString(context))
-
-        // Load restriction groups
-        getSetRestrictionGroups(context, OldPrefsHelper.getRestrictionGroupsString(context))
-
-        mUniquePrefs!!.edit().putBoolean("MigrationDone", true).apply()
-    }
-
-
-    /**
      * Registers or Unregister a listener to/from SharedPreferences changes.
+     * To listenable prefs box
      *
      * @param context        The application context.
      * @param shouldRegister If TRUE the callback will be registered else unregistered.
      * @param callback       The listener to register.
      */
-    fun registerUnregisterListenerToUniquePrefs(
+    fun registerUnregisterListenerToListenablePrefs(
         context: Context,
         shouldRegister: Boolean,
-        callback: OnSharedPreferenceChangeListener?
+        callback: OnSharedPreferenceChangeListener?,
     ) {
-        checkAndInitializeUniquePrefs(context)
+        checkAndInitializeListenablePrefs(context)
         try {
             if (shouldRegister) {
-                mUniquePrefs!!.registerOnSharedPreferenceChangeListener(callback)
+                mListenablePrefs!!.registerOnSharedPreferenceChangeListener(callback)
             } else {
-                mUniquePrefs!!.unregisterOnSharedPreferenceChangeListener(callback)
+                mListenablePrefs!!.unregisterOnSharedPreferenceChangeListener(callback)
             }
         } catch (ignored: Exception) {
         }
     }
+
+    /**
+     * Fetches the well-being settings if jsonWellBeingSettings is null else store it's json.
+     *
+     * @param context               The application context.
+     * @param jsonWellBeingSettings The JSON string of well-being settings.
+     */
+    fun getSetWellBeingSettings(
+        context: Context,
+        jsonWellBeingSettings: String?,
+    ): WellBeingSettings {
+        checkAndInitializeListenablePrefs(context)
+        if (jsonWellBeingSettings == null) {
+            val json = mListenablePrefs!!.getString(PREF_KEY_WELLBEING_SETTINGS, "")!!
+            return WellBeingSettings(JSONObject(json))
+        } else {
+            mListenablePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeingSettings)
+                .apply()
+            return WellBeingSettings(JSONObject(jsonWellBeingSettings))
+        }
+    }
+
 
     /**
      * Get the notification permission request count if count is null else store it.
@@ -161,23 +140,6 @@ object SharedPrefsHelper {
         } else {
             mUniquePrefs!!.edit().putInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, count).apply()
             return count
-        }
-    }
-
-    /**
-     * Get the data reset time in MINUTES if the passed timeInMins is null else store it .
-     *
-     * @param context    The application context.
-     * @param timeInMins The time in minutes.
-     * @return Instance of calender set to data reset time for today
-     */
-    fun getSetDataResetTimeMins(context: Context, timeInMins: Int?): Calendar {
-        checkAndInitializeUniquePrefs(context)
-        if (timeInMins == null) {
-            return Utils.todToTodayCal(mUniquePrefs!!.getInt(PREF_KEY_DATA_RESET_TIME_MINS, 0))
-        } else {
-            mUniquePrefs!!.edit().putInt(PREF_KEY_DATA_RESET_TIME_MINS, timeInMins).apply()
-            return Utils.todToTodayCal(timeInMins)
         }
     }
 
@@ -216,85 +178,6 @@ object SharedPrefsHelper {
         }
     }
 
-    /**
-     * Fetches the well-being settings if jsonWellBeingSettings is null else store it's json.
-     *
-     * @param context               The application context.
-     * @param jsonWellBeingSettings The JSON string of well-being settings.
-     */
-    fun getSetWellBeingSettings(
-        context: Context,
-        jsonWellBeingSettings: String?
-    ): WellBeingSettings {
-        checkAndInitializeUniquePrefs(context)
-        if (jsonWellBeingSettings == null) {
-            return WellBeingSettings(mUniquePrefs!!.getString(PREF_KEY_WELLBEING_SETTINGS, "")!!)
-        } else {
-            mUniquePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeingSettings)
-                .apply()
-            return WellBeingSettings(jsonWellBeingSettings)
-        }
-    }
-
-    /**
-     * Fetches the bedtime settings if jsonBedtimeSettings is null else store it's json.
-     *
-     * @param context             The application context.
-     * @param jsonBedtimeSettings The JSON string of bedtime settings.
-     */
-    fun getSetBedtimeSettings(context: Context, jsonBedtimeSettings: String?): BedtimeSettings {
-        checkAndInitializeUniquePrefs(context)
-        if (jsonBedtimeSettings == null) {
-            return BedtimeSettings(mUniquePrefs!!.getString(PREF_KEY_BEDTIME_SETTINGS, "")!!)
-        } else {
-            mUniquePrefs!!.edit().putString(PREF_KEY_BEDTIME_SETTINGS, jsonBedtimeSettings).apply()
-            return BedtimeSettings(jsonBedtimeSettings)
-        }
-    }
-
-    /**
-     * Fetches the hashmap of app restrictions if jsonAppRestrictions is null else store it's json.
-     *
-     * @param context             The application context.
-     * @param jsonAppRestrictions The JSON string of hashmap of app restrictions.
-     */
-    fun getSetAppRestrictions(
-        context: Context,
-        jsonAppRestrictions: String?
-    ): HashMap<String, AppRestrictions> {
-        checkAndInitializeAppRestrictionPrefs(context)
-        if (jsonAppRestrictions == null) {
-            return JsonDeserializer.jsonStrToAppRestrictionsHashMap(
-                mAppRestrictionPrefs!!.getString(PREF_KEY_APP_RESTRICTIONS, "")
-            )
-        } else {
-            mAppRestrictionPrefs!!.edit().putString(PREF_KEY_APP_RESTRICTIONS, jsonAppRestrictions)
-                .apply()
-            return JsonDeserializer.jsonStrToAppRestrictionsHashMap(jsonAppRestrictions)
-        }
-    }
-
-    /**
-     * Fetches the hashmap of restriction groups if jsonRestrictionGroups is null else store it's json.
-     *
-     * @param context               The application context.
-     * @param jsonRestrictionGroups The JSON string of hashmap of restriction groups.
-     */
-    fun getSetRestrictionGroups(
-        context: Context,
-        jsonRestrictionGroups: String?
-    ): HashMap<Int, RestrictionGroup> {
-        checkAndInitializeRestrictionGroupPrefs(context)
-        if (jsonRestrictionGroups == null) {
-            return JsonDeserializer.jsonStrToRestrictionGroupsHashMap(
-                mRestrictionGroupPrefs!!.getString(PREF_KEY_RESTRICTION_GROUPS, "")
-            )
-        } else {
-            mRestrictionGroupPrefs!!.edit()
-                .putString(PREF_KEY_RESTRICTION_GROUPS, jsonRestrictionGroups).apply()
-            return JsonDeserializer.jsonStrToRestrictionGroupsHashMap(jsonRestrictionGroups)
-        }
-    }
 
     /**
      * Creates and Inserts a new crash log into SharedPreferences based on the passed exception.
@@ -317,7 +200,7 @@ object SharedPrefsHelper {
 
         // Get existing crash logs
         val crashLogsJson = mCrashLogPrefs!!.getString(PREF_KEY_CRASH_LOGS, "[]")
-        var crashLogsArray = try {
+        val crashLogsArray = try {
             JSONArray(crashLogsJson)
         } catch (e1: Exception) {
             JSONArray()
@@ -360,7 +243,7 @@ object SharedPrefsHelper {
      */
     fun getSetNotificationBatchSchedules(
         context: Context,
-        jsonNotificationSchedules: String?
+        jsonNotificationSchedules: String?,
     ): HashSet<Int> {
         checkAndInitializeNotificationBatchPrefs(context)
         if (jsonNotificationSchedules == null) {
@@ -382,7 +265,7 @@ object SharedPrefsHelper {
      */
     fun getSetNotificationBatchedApps(
         context: Context,
-        jsonBatchedApps: String?
+        jsonBatchedApps: String?,
     ): HashSet<String> {
         checkAndInitializeNotificationBatchPrefs(context)
         if (jsonBatchedApps == null) {

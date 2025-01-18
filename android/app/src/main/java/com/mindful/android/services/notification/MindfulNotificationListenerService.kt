@@ -17,9 +17,8 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.mindful.android.generics.ServiceBinder
-import com.mindful.android.helpers.database.SharedPrefsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.UpcomingNotification
-import com.mindful.android.utils.Utils
 
 
 class MindfulNotificationListenerService : NotificationListenerService() {
@@ -102,8 +101,8 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     }
 
     override fun onBind(intent: Intent): IBinder? {
-        val action = Utils.getActionFromIntent(intent)
-        return if (action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder else super.onBind(intent)
+        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder
+        else super.onBind(intent)
     }
 
     override fun onDestroy() {

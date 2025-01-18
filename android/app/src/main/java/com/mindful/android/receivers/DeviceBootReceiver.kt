@@ -11,27 +11,20 @@
  */
 package com.mindful.android.receivers
 
-import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.net.VpnService
 import android.util.Log
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper
 import com.mindful.android.helpers.device.NotificationHelper
-import com.mindful.android.helpers.database.SharedPrefsHelper
-import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.services.vpn.MindfulVpnService
-import com.mindful.android.utils.Utils
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.workers.FlutterBgExecutionWorker
 import com.mindful.android.workers.FlutterBgExecutionWorker.Companion.FLUTTER_TASK_ID
+import java.lang.Exception
 
 /**
  * BroadcastReceiver that listens for device boot and package replacement events
@@ -43,14 +36,16 @@ class DeviceBootReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        intent.action?.let { action ->
-            when (action) {
-                Intent.ACTION_BOOT_COMPLETED, Intent.ACTION_MY_PACKAGE_REPLACED -> {
-                    Log.d(
-                        TAG,
-                        "onReceive: Device reboot broadcast received, initializing necessary services and tasks."
-                    )
+        when (intent.action) {
+            Intent.ACTION_BOOT_COMPLETED,
+            Intent.ACTION_MY_PACKAGE_REPLACED,
+            -> {
+                Log.d(
+                    TAG,
+                    "onReceive: Device reboot broadcast received, initializing necessary services and tasks."
+                )
 
+                try {
                     // Register channels before starting foreground services
                     NotificationHelper.registerNotificationChannels(context.applicationContext)
 
@@ -68,9 +63,10 @@ class DeviceBootReceiver : BroadcastReceiver() {
                             )
                             .build()
                     )
+                } catch (e: Exception) {
+                    SharedPrefsHelper.insertCrashLogToPrefs(context, e)
+                    Log.e(TAG, "onReceive: Something went wrong!", e)
                 }
-
-                else -> null
             }
         }
     }
