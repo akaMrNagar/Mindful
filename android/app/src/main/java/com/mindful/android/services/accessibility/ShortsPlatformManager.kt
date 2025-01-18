@@ -10,6 +10,7 @@ import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
 import com.mindful.android.utils.AppConstants.REDDIT_PACKAGE
 import com.mindful.android.utils.AppConstants.SNAPCHAT_PACKAGE
 import com.mindful.android.utils.AppConstants.YOUTUBE_CLIENT_PACKAGE_SUFFIX
+import com.mindful.android.utils.AppConstants.YOUTUBE_PACKAGE
 import org.jetbrains.annotations.Contract
 
 
@@ -31,29 +32,21 @@ class ShortsPlatformManager(
         packageName: String,
         node: AccessibilityNodeInfo,
         settings: WellBeingSettings,
-    ) {
-        /// Check if blocking ir enabled for package
-        val activeConfigs = blockingConfigs.filter { config ->
-            when (config.packageName) {
-                INSTAGRAM_PACKAGE -> settings.blockInstaReels
-                FACEBOOK_PACKAGE -> settings.blockFbReels
-                SNAPCHAT_PACKAGE -> settings.blockSnapSpotlight
-                REDDIT_PACKAGE -> settings.blockRedditShorts
-                YOUTUBE_CLIENT_PACKAGE_SUFFIX -> settings.blockYtShorts
-                else -> false
+    ): Boolean? {
+        /// Check if blocking is enabled for package
+        when {
+            packageName.contains(YOUTUBE_CLIENT_PACKAGE_SUFFIX) -> blockingConfigs[YOUTUBE_PACKAGE]
+            else -> blockingConfigs[packageName]
+        }?.let {
+            /// Update shorts screen time if content is open
+            if (it.isContentOpen.invoke(packageName, node)) {
+                updateShortsScreenTime(settings.allowedShortContentTimeMs, it.maxAllowedDuration)
             }
+
+            return true
         }
 
-        /// Verify the blocking
-        activeConfigs.firstOrNull { config ->
-            if (config.packageName == packageName || packageName.contains(config.packageName)) {
-                config.isContentOpen(packageName, node)
-            } else {
-                false
-            }
-
-            /// Update shorts screen time if content is open
-        }?.let { updateShortsScreenTime(settings.allowedShortContentTimeMs, it.maxAllowedDuration) }
+        return null
     }
 
     /**
@@ -124,19 +117,18 @@ class ShortsPlatformManager(
         private const val SAVING_INTERVAL_MS = (30 * 1000L)
 
         private data class BlockConfig(
-            val packageName: String,
             val isContentOpen: (String, AccessibilityNodeInfo) -> Boolean,
             // Max allowed duration for each short content platform (based on the highest short length or duration)
             // If the interval between two short content block event is <= DURATION then it is considered that user is watching short content
             val maxAllowedDuration: Long,
         )
 
-        private val blockingConfigs = listOf(
-            BlockConfig(INSTAGRAM_PACKAGE, ::isInstaReelsOpen, (90 * 1000L)),
-            BlockConfig(SNAPCHAT_PACKAGE, ::isSnapchatSpotlightOpen, (60 * 1000L)),
-            BlockConfig(FACEBOOK_PACKAGE, ::isFacebookReelsOpen, (90 * 1000L)),
-            BlockConfig(REDDIT_PACKAGE, ::isRedditShortsOpen, (60 * 1000L)),
-            BlockConfig(YOUTUBE_CLIENT_PACKAGE_SUFFIX, ::isYoutubeShortsOpen, (3 * 60 * 1000L)),
+        private val blockingConfigs = mapOf(
+            INSTAGRAM_PACKAGE to BlockConfig(::isInstaReelsOpen, (90 * 1000L)),
+            SNAPCHAT_PACKAGE to BlockConfig(::isSnapchatSpotlightOpen, (60 * 1000L)),
+            FACEBOOK_PACKAGE to BlockConfig(::isFacebookReelsOpen, (90 * 1000L)),
+            REDDIT_PACKAGE to BlockConfig(::isRedditShortsOpen, (60 * 1000L)),
+            YOUTUBE_PACKAGE to BlockConfig(::isYoutubeShortsOpen, (3 * 60 * 1000L)),
         )
 
         // Possible URLs of different short-form content platforms

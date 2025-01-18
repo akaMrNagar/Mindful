@@ -43,8 +43,7 @@ import java.util.concurrent.Executors
  */
 class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceChangeListener {
     companion object {
-        private const val TAG =
-            "Mindful.com.mindful.android.services.accessibility.MindfulAccessibilityService"
+        private const val TAG = "Mindful.MindfulAccessibilityService"
 
         //  The minimum interval between every Back Action [BACK PRESS] call from service
         private const val BACK_ACTION_INVOKE_INTERVAL_MS = 500L
@@ -57,14 +56,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceInfo() })
 
     // Short content management
-    private val shortsPlatforms: HashSet<String> = HashSet(0)
     private val shortsPlatformManager: ShortsPlatformManager = ShortsPlatformManager(
         context = this,
         blockedContentGoBack = this::goBackWithToast
     )
 
     // Browser management
-    private val browsers: HashSet<String> = HashSet(0)
     private val browserManager: BrowserManager = BrowserManager(
         context = this,
         shortsPlatformManager = shortsPlatformManager,
@@ -110,7 +107,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         try {
             if (mExecutorService.isShutdown) return
             event.source?.let {
-                mExecutorService.submit { processEventInBackground(packageName, it) }
+                mExecutorService.submit { processEventInBackground(it.packageName.toString(), it) }
             }
         } catch (ignored: Exception) {
         }
@@ -126,13 +123,11 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         try {
             // Copy settings for this thread
             val settings = mWellBeingSettings.copy()
-            when {
-                shortsPlatforms.contains(packageName)
-                -> shortsPlatformManager.checkAndBlockShortsOnPlatforms(packageName, node, settings)
 
-                browsers.contains(packageName)
-                -> browserManager.blockDistraction(packageName, node, settings)
-            }
+            shortsPlatformManager.checkAndBlockShortsOnPlatforms(packageName, node, settings)
+                ?: browserManager.blockDistraction(packageName, node, settings)
+
+
         } catch (e: Exception) {
             Log.e(
                 TAG,
@@ -188,37 +183,30 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     private fun refreshServiceInfo() {
         // Using hashset to avoid duplicates
         val pm = packageManager
+        val allowedPackages = mutableSetOf<String>()
 
         // Fetch installed browser packages
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
-        val appInfos = pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL)
-
-        for (info in appInfos) {
-            browsers.add(info.activityInfo.packageName)
-            Log.d(TAG, "refreshServiceInfo: Browsers found: " + info.activityInfo.packageName)
+        pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL).forEach {
+            allowedPackages.add(it.activityInfo.packageName)
         }
 
+
         // For short form content blocking on their native apps
-        if (mWellBeingSettings.blockInstaReels) shortsPlatforms.add(INSTAGRAM_PACKAGE)
-        if (mWellBeingSettings.blockSnapSpotlight) shortsPlatforms.add(SNAPCHAT_PACKAGE)
-        if (mWellBeingSettings.blockFbReels) shortsPlatforms.add(FACEBOOK_PACKAGE)
-        if (mWellBeingSettings.blockRedditShorts) shortsPlatforms.add(REDDIT_PACKAGE)
+        if (mWellBeingSettings.blockInstaReels) allowedPackages.add(INSTAGRAM_PACKAGE)
+        if (mWellBeingSettings.blockSnapSpotlight) allowedPackages.add(SNAPCHAT_PACKAGE)
+        if (mWellBeingSettings.blockFbReels) allowedPackages.add(FACEBOOK_PACKAGE)
+        if (mWellBeingSettings.blockRedditShorts) allowedPackages.add(REDDIT_PACKAGE)
 
         if (mWellBeingSettings.blockYtShorts) {
             // Fetch all the clients available for youtube. It can also include browsers too.
             val ytIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
-            val ytClients = pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL)
-
-            for (client in ytClients) {
-                shortsPlatforms.add(client.activityInfo.packageName)
-                Log.d(
-                    TAG,
-                    "refreshServiceInfo: Youtube clients found: " + client.activityInfo.packageName
-                )
+            pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL).forEach {
+                allowedPackages.add(it.activityInfo.packageName)
             }
 
             // Regardless of the results add original youtube package.
-            shortsPlatforms.add(YOUTUBE_PACKAGE)
+            allowedPackages.add(YOUTUBE_PACKAGE)
         }
 
         // Load nsfw website domains if needed
@@ -233,10 +221,14 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                 AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or
                 AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
         info.notificationTimeout = 1000
-        info.packageNames = (shortsPlatforms.union(browsers)).toTypedArray()
-
+        info.packageNames = allowedPackages.toTypedArray()
         serviceInfo = info
-        Log.d(TAG, "refreshServiceInfo: Accessibility service updated successfully")
+
+        Log.d(
+            TAG, "refreshServiceInfo: Accessibility service updated successfully: " +
+                    "\n settings: $mWellBeingSettings" +
+                    "\n packages: $allowedPackages"
+        )
     }
 
     override fun onSharedPreferenceChanged(prefs: SharedPreferences, changedKey: String?) {

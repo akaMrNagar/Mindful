@@ -14,6 +14,7 @@ import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.NsfwDomains
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
+import kotlin.math.log
 
 class BrowserManager(
     private val context: Context,
@@ -44,7 +45,7 @@ class BrowserManager(
         // Block websites
         val host = Utils.parseHostNameFromUrl(url)
         if (settings.blockedWebsites.contains(host) || nsfwDomains.containsKey(host)) {
-            Log.d(TAG, "blockDistractionOnBrowsers: Blocked website $host opened in $packageName")
+            Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
             blockedContentGoBack()
             return
         }
@@ -172,23 +173,25 @@ class BrowserManager(
          */
         private fun extractBrowserUrl(node: AccessibilityNodeInfo, packageName: String): String {
             try {
+                // Find by input field class
+                if (node.className == "android.widget.EditText") {
+                    val txtSequence = node.text
+                    if (!txtSequence.isNullOrBlank()) {
+                        return txtSequence.toString()
+                    }
+                }
+
+                // Find by recursive checking
                 for (id in urlBarNodeIds) {
                     val urlBarNodes = node.findAccessibilityNodeInfosByViewId(packageName + id)
                     if (urlBarNodes.isNotEmpty()) {
                         val txtSequence = urlBarNodes.first().text
-                        if (txtSequence.isNullOrBlank()) {
+                        if (!txtSequence.isNullOrBlank()) {
                             return txtSequence.toString()
                         }
                     }
                 }
 
-                // Find by input field class
-                if (node.className == "android.widget.EditText") {
-                    val txtSequence = node.text
-                    if (txtSequence.isNullOrBlank()) {
-                        return txtSequence.toString()
-                    }
-                }
             } catch (ignored: Exception) {
             }
 
