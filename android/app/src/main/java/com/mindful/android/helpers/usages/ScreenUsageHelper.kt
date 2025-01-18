@@ -9,12 +9,11 @@
  *  *
  *
  */
-package com.mindful.android.helpers
+package com.mindful.android.helpers.usages
 
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import java.util.Calendar
-import java.util.function.ToLongFunction
 
 /**
  * ScreenUsageHelper provides utility methods for gathering and calculating screen usage statistics

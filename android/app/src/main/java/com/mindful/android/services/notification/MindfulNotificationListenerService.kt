@@ -17,13 +17,16 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.mindful.android.generics.ServiceBinder
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.models.UpcomingNotification
 import com.mindful.android.utils.Utils
 
 
 class MindfulNotificationListenerService : NotificationListenerService() {
-    private val TAG = "Mindful.MindfulNotificationService"
+    companion object {
+        private const val TAG = "Mindful.MindfulNotificationService"
+    }
+
     private val mBinder = ServiceBinder(this@MindfulNotificationListenerService)
     private val mSocialMediaPackages =
         setOf("com.whatsapp", "com.instagram.android", "com.snapchat.android")

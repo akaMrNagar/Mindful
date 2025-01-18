@@ -33,7 +33,7 @@ class MethodChannelService {
 
   /// The method channel object used for communication.
   final MethodChannel _methodChannel = const MethodChannel(
-    'com.mindful.android.methodchannel',
+    'com.mindful.android.methodchannel.fg',
   );
 
   /// Flag indicating if the app is restarted by itself (after importing database).

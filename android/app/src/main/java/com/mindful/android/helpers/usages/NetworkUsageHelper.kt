@@ -9,7 +9,7 @@
  *  *
  *
  */
-package com.mindful.android.helpers
+package com.mindful.android.helpers.usages
 
 import android.app.usage.NetworkStats
 import android.app.usage.NetworkStatsManager

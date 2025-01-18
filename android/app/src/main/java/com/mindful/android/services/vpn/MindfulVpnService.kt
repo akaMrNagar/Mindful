@@ -19,8 +19,8 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
-import com.mindful.android.helpers.NotificationHelper
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.device.NotificationHelper
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.Utils
 import java.io.IOException

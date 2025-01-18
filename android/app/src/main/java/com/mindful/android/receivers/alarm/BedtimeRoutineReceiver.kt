@@ -15,8 +15,6 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
@@ -28,8 +26,8 @@ import androidx.work.WorkerParameters
 import com.mindful.android.R
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks
-import com.mindful.android.helpers.NotificationHelper
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.device.NotificationHelper
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.ThreadUtils
@@ -153,8 +151,10 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
 
         const val ACTION_ALERT_BEDTIME: String =
             "com.mindful.android.BedtimeRoutineReceiver.AlertBedtime"
+
         const val ACTION_START_BEDTIME: String =
             "com.mindful.android.BedtimeRoutineReceiver.StartBedtime"
+
         const val ACTION_STOP_BEDTIME: String =
             "com.mindful.android.BedtimeRoutineReceiver.StopBedtime"
     }

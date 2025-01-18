@@ -12,7 +12,9 @@
 package com.mindful.android.utils
 
 object AppConstants {
-    const val FLUTTER_METHOD_CHANNEL: String = "com.mindful.android.methodchannel"
+    const val FLUTTER_METHOD_CHANNEL_FG: String = "com.mindful.android.methodchannel.fg"
+    const val FLUTTER_METHOD_CHANNEL_BG: String = "com.mindful.android.methodchannel.bg"
+
     const val REMOVED_APP_NAME: String = "Removed Apps"
     const val REMOVED_PACKAGE: String = "com.android.removed"
     const val TETHERING_APP_NAME: String = "Tethering & Hotspot"

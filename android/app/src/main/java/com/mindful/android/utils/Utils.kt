@@ -38,9 +38,18 @@ import kotlin.math.abs
 object Utils {
     private const val TAG = "Mindful.Utils"
 
-    fun getPendingIntentForMindful(context: Context): PendingIntent {
+    fun getPendingIntentForMindful(
+        context: Context,
+        initialRoute: String? = null,
+        putExtraToIntent: ((intent: Intent) -> Unit)? = null,
+    ): PendingIntent {
         val appIntent = Intent(context.applicationContext, MainActivity::class.java)
         appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
+        // put extra to intent
+        initialRoute?.let { appIntent.putExtra(AppConstants.INTENT_EXTRA_INITIAL_ROUTE, it) }
+        putExtraToIntent?.invoke(appIntent)
+
         return PendingIntent.getActivity(
             context.applicationContext,
             0,
@@ -260,7 +269,7 @@ object Utils {
      * @return A string representing the formatted screen usage time.
      */
     @Contract(pure = true)
-    fun minutesToTimeStr( totalMinutes: Int): String {
+    fun minutesToTimeStr(totalMinutes: Int): String {
         val totalMinutesAbs = abs(totalMinutes)
 
         return if (totalMinutesAbs > 60

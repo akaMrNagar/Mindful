@@ -46,7 +46,6 @@
                 <TextView
                     android:id="@+id/widgetScreenUsage"
                     style="@style/Widget.Android.AppWidget.UsageInfo"
-                    android:text="@string/widget_screen_time_usage"
                     android:textSize="24sp" />
             </LinearLayout>
 
@@ -71,8 +70,7 @@
 
                     <TextView
                         android:id="@+id/widgetMobileUsage"
-                        style="@style/Widget.Android.AppWidget.UsageInfo"
-                        android:text="@string/widget_mobile_data_usage" />
+                        style="@style/Widget.Android.AppWidget.UsageInfo" />
                 </LinearLayout>
 
                 <!-- Wifi Usage -->
@@ -88,8 +86,7 @@
 
                     <TextView
                         android:id="@+id/widgetWifiUsage"
-                        style="@style/Widget.Android.AppWidget.UsageInfo"
-                        android:text="@string/widget_wifi_data_usage" />
+                        style="@style/Widget.Android.AppWidget.UsageInfo" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

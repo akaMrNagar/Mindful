@@ -1,4 +1,4 @@
-package com.mindful.android.helpers
+package com.mindful.android.helpers.database
 
 import android.content.Context
 import android.content.SharedPreferences

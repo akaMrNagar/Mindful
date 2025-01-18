@@ -9,7 +9,7 @@
  *  *
  *
  */
-package com.mindful.android.helpers
+package com.mindful.android.helpers.device
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -20,8 +20,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -138,7 +136,7 @@ object NotificationHelper {
             AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
             NotificationCompat.Builder(
                 context,
-                NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
+                NOTIFICATION_CRITICAL_CHANNEL_ID
             )
                 .setSmallIcon(R.drawable.ic_notification)
                 .setAutoCancel(true)

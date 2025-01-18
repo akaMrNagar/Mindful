@@ -19,14 +19,12 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.mindful.android.R
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
 import com.mindful.android.receivers.alarm.MidnightResetReceiver
@@ -44,11 +42,14 @@ import java.util.concurrent.Executors
  * An AccessibilityService that monitors app usage and blocks access to specified content based on user settings.
  */
 class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceChangeListener {
-    private val TAG =
-        "Mindful.com.mindful.android.services.accessibility.MindfulAccessibilityService"
+    companion object {
+        private const val TAG =
+            "Mindful.com.mindful.android.services.accessibility.MindfulAccessibilityService"
 
-    //  The minimum interval between every Back Action [BACK PRESS] call from service
-    private val BACK_ACTION_INVOKE_INTERVAL_MS = 500L
+        //  The minimum interval between every Back Action [BACK PRESS] call from service
+        private const val BACK_ACTION_INVOKE_INTERVAL_MS = 500L
+    }
+
 
     // Fixed thread pool for parallel event processing
     private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(4)

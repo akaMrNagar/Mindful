@@ -9,7 +9,7 @@
  *  *
  *
  */
-package com.mindful.android.helpers
+package com.mindful.android.helpers.device
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -32,6 +32,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import com.mindful.android.R
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.utils.AppConstants
@@ -221,24 +222,22 @@ object PermissionsHelper {
     /**
      * Checks if notification permissions are granted and optionally asks for it if not granted.
      *
-     * @param context          The application context used to check notification permissions.
      * @param activity         The activity used to request notification permissions if needed.
      * @param askPermissionToo Whether to request notification permission if not already granted.
      * @return True if notification permissions are granted, false otherwise.
      */
     fun getAndAskNotificationPermission(
-        context: Context,
         activity: Activity,
         askPermissionToo: Boolean
     ): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+            val status = activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
             if (status == PackageManager.PERMISSION_GRANTED) {
                 return true
             }
         } else {
             val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                activity.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (notificationManager.areNotificationsEnabled()) {
                 return true
             }
@@ -246,9 +245,9 @@ object PermissionsHelper {
 
         if (askPermissionToo) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                NewActivitiesLaunchHelper.openMindfulNotificationSection(context)
+                NewActivitiesLaunchHelper.openMindfulNotificationSection(activity)
             } else {
-                val count = SharedPrefsHelper.getSetNotificationAskCount(context, null)
+                val count = SharedPrefsHelper.getSetNotificationAskCount(activity, null)
                 if (count < 2) {
                     ActivityCompat.requestPermissions(
                         activity,
@@ -256,10 +255,10 @@ object PermissionsHelper {
                         0
                     )
                 } else {
-                    NewActivitiesLaunchHelper.openMindfulNotificationSection(context)
+                    NewActivitiesLaunchHelper.openMindfulNotificationSection(activity)
                 }
 
-                SharedPrefsHelper.getSetNotificationAskCount(context, count + 1)
+                SharedPrefsHelper.getSetNotificationAskCount(activity, count + 1)
             }
         }
         return false

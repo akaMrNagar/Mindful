@@ -18,9 +18,9 @@ import android.util.Log
 import com.mindful.android.R
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
-import com.mindful.android.helpers.NotificationHelper
-import com.mindful.android.helpers.NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.device.NotificationHelper
+import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.models.FocusSession
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID

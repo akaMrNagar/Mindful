@@ -1,4 +1,4 @@
-package com.mindful.android.helpers
+package com.mindful.android.helpers.device
 
 import android.content.Context
 import android.content.pm.ApplicationInfo

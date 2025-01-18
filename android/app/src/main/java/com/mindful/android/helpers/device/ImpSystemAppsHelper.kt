@@ -9,7 +9,7 @@
  *  *
  *
  */
-package com.mindful.android.helpers
+package com.mindful.android.helpers.device
 
 import android.content.Intent
 import android.content.pm.PackageManager

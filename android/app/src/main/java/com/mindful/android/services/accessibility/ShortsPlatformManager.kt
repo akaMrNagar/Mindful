@@ -3,7 +3,7 @@ package com.mindful.android.services.accessibility
 import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
 import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
@@ -132,9 +132,9 @@ class ShortsPlatformManager(
 
         private val blockingConfigs = listOf(
             BlockConfig(INSTAGRAM_PACKAGE, ::isInstaReelsOpen, (90 * 1000L)),
-            BlockConfig(SNAPCHAT_PACKAGE, ::isInstaReelsOpen, (60 * 1000L)),
-            BlockConfig(FACEBOOK_PACKAGE, ::isInstaReelsOpen, (90 * 1000L)),
-            BlockConfig(REDDIT_PACKAGE, ::isInstaReelsOpen, (60 * 1000L)),
+            BlockConfig(SNAPCHAT_PACKAGE, ::isSnapchatSpotlightOpen, (60 * 1000L)),
+            BlockConfig(FACEBOOK_PACKAGE, ::isFacebookReelsOpen, (90 * 1000L)),
+            BlockConfig(REDDIT_PACKAGE, ::isRedditShortsOpen, (60 * 1000L)),
             BlockConfig(YOUTUBE_CLIENT_PACKAGE_SUFFIX, ::isYoutubeShortsOpen, (3 * 60 * 1000L)),
         )
 

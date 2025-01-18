@@ -15,8 +15,8 @@ import androidx.work.WorkerParameters
 import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
-import com.mindful.android.helpers.NotificationHelper
-import com.mindful.android.helpers.SharedPrefsHelper
+import com.mindful.android.helpers.device.NotificationHelper
+import com.mindful.android.helpers.database.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.Utils
 import org.json.JSONArray
@@ -33,7 +33,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
 
     class NotificationBatchWorker(
         private val context: Context,
-        params: WorkerParameters
+        params: WorkerParameters,
     ) : Worker(context, params) {
         override fun doWork(): Result {
             try {
@@ -97,6 +97,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
 
     companion object {
         private const val TAG = "Mindful.NotificationBatchReceiver"
+
         const val ACTION_PUSH_BATCH: String =
             "com.mindful.android.NotificationBatchReceiver.PushBatch"
     }

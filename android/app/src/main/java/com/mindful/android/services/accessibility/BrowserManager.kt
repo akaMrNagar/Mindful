@@ -135,7 +135,7 @@ class BrowserManager(
 
 
     companion object {
-        private val TAG = "Mindful.BrowserEventsManager"
+        private const val TAG = "Mindful.BrowserEventsManager"
         private var nsfwDomains: Map<String, Boolean> = mapOf()
 
         fun initializeNsfwDomains() {

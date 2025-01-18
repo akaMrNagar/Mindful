@@ -3,8 +3,6 @@ package com.mindful.android.services.tracking
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
@@ -12,24 +10,18 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
-import android.view.animation.AnimationSet
 import android.view.animation.OvershootInterpolator
 import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import android.widget.LinearLayout
-import androidx.annotation.MainThread
-import androidx.annotation.UiThread
 import com.mindful.android.R
-import com.mindful.android.helpers.NotificationHelper
+import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.utils.ThreadUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class OverlayManager(
     private val context: Context,
 ) {
-    private val TAG = "Mindful.OverlayManager"
     private val windowManager: WindowManager =
         context.getSystemService(WINDOW_SERVICE) as WindowManager
 
@@ -131,6 +123,8 @@ class OverlayManager(
     }
 
     companion object {
+        private const val TAG = "Mindful.OverlayManager"
+
         private val elasticOutInterpolator = OvershootInterpolator(1.5f)
 
         private val fadeInAnim = AlphaAnimation(0f, 1f).apply {

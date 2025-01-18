@@ -1,15 +1,13 @@
-package com.mindful.android.helpers
+package com.mindful.android.helpers.usages
 
 import android.app.usage.NetworkStats
 import android.app.usage.NetworkStatsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import com.mindful.android.utils.AppConstants.REMOVED_PACKAGE
 import com.mindful.android.utils.AppConstants.TETHERING_PACKAGE
 import java.lang.IllegalArgumentException
-import java.util.Date
 
 object AppsUsageHelper {
     /**

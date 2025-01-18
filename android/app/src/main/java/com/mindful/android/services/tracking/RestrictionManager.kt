@@ -5,7 +5,7 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.util.Log
 import com.mindful.android.R
-import com.mindful.android.helpers.ScreenUsageHelper
+import com.mindful.android.helpers.usages.ScreenUsageHelper
 import com.mindful.android.models.AppRestrictions
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState

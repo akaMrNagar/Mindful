@@ -12,8 +12,6 @@ import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.mindful.android.receivers.DeviceLockUnlockReceiver
-import java.util.Timer
-import java.util.TimerTask
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -23,8 +21,12 @@ class LaunchTrackingManager(
     private val context: Context,
     private val onNewAppLaunched: (packageName: String) -> Unit,
 ) : OnSharedPreferenceChangeListener {
-    private val TAG = "Mindful.LaunchTrackingManager"
-    private val TIMER_RATE: Long = 500 // Interval for tracking app launches in milliseconds
+    companion object {
+        private const val TAG = "Mindful.LaunchTrackingManager"
+
+        // Interval for tracking app launches in milliseconds
+        private const val TIMER_RATE: Long = 500
+    }
 
     private val lockUnlockReceiver: DeviceLockUnlockReceiver =
         DeviceLockUnlockReceiver { isUnlocked ->
@@ -90,7 +92,7 @@ class LaunchTrackingManager(
     @WorkerThread
     private fun findLaunchedApp() {
         val now = System.currentTimeMillis()
-        val usageEvents = usageStatsManager?.queryEvents(now - (TIMER_RATE * 2), now)
+        val usageEvents = usageStatsManager?.queryEvents(now.minus(TIMER_RATE * 2), now)
 
         usageEvents?.let {
             val currentEvent = UsageEvents.Event()
