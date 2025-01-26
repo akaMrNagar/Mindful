@@ -22,7 +22,6 @@ import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/status_label.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class SessionCard extends StatelessWidget {
@@ -121,6 +120,6 @@ class SessionCard extends StatelessWidget {
           ),
         ],
       ),
-    ).animate(effects: DefaultEffects.transitionIn);
+    );
   }
 }

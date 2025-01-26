@@ -15,7 +15,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/home/wellbeing/website_tile.dart';
+import 'package:mindful/ui/screens/websites_blocking/website_tile.dart';
 
 class SliverBlockedWebsitesList extends ConsumerWidget {
   const SliverBlockedWebsitesList({super.key});

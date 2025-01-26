@@ -16,10 +16,12 @@ import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
 import 'package:mindful/ui/screens/focus/focus_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
-import 'package:mindful/ui/screens/batch_notifications/batch_notifications_screen.dart';
+import 'package:mindful/ui/screens/parental_controls/parental_controls_screen.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_groups_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
+import 'package:mindful/ui/screens/shorts_blocking/shorts_blocking_screen.dart';
 import 'package:mindful/ui/screens/upcoming_notifications/upcoming_notifications_screen.dart';
+import 'package:mindful/ui/screens/websites_blocking/websites_blocking_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
 
 /// Parameters passed to [AppDashboardScreen] when using push named
@@ -38,23 +40,30 @@ class AppDashboardParams {
 
 class AppRoutes {
   static const String splashScreen = '/';
-  static const String homeScreen = '/homeScreen';
-  static const String onboardingScreen = '/onboardingScreen';
-  static const String appDashboardScreen = '/appDashboardScreen';
-  static const String settingsScreen = '/mindfulSettingsScreen';
-  static const String restrictionGroupsScreen = '/restrictionGroupsScreen';
-  static const String batchNotificationsScreen = '/batchNotificationsScreen';
-  static const String upcomingNotificationsScreen =
-      '/upcomingNotificationsScreen';
-  static const String focusScreen = '/focusScreen';
-  static const String activeSessionScreen = '/activeSessionScreen';
+  static const String onboardingScreen = '/onboarding';
+  static const String settingsScreen = '/settings';
+
+  static const String homeScreen = '/home';
+  static const String activeSessionScreen = '/activeSession';
+  static const String focusScreen = '/focus';
+
+  static const String parentalControlsScreen = '/parentalControls';
+  static const String restrictionGroupsScreen = '/restrictionGroups';
+  static const String shortsBlockingScreen = '/shortsBlocking';
+  static const String websitesBlockingScreen = '/websitesBlocking';
+
+  static const String appDashboardScreen = '/appDashboard';
+  static const String upcomingNotificationsScreen = '/upcomingNotifications';
 
   static final routes = {
     splashScreen: (context) => const SplashScreen(),
     homeScreen: (context) => const HomeScreen(),
     settingsScreen: (context) => const SettingsScreen(),
+    parentalControlsScreen: (context) => const ParentalControlsScreen(),
     restrictionGroupsScreen: (context) => const RestrictionGroupsScreen(),
-    batchNotificationsScreen: (context) => const BatchNotificationsScreen(),
+    shortsBlockingScreen: (context) => const ShortsBlockingScreen(),
+    websitesBlockingScreen: (context) => const WebsitesBlockingScreen(),
+
     upcomingNotificationsScreen: (context) =>
         const UpcomingNotificationsScreen(),
 

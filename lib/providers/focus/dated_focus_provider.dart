@@ -14,36 +14,32 @@ import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:mindful/models/focus_timeline_model.dart';
+import 'package:mindful/models/dated_focus_model.dart';
 
-/// A Riverpod state notifier provider that manages [FocusTimelineModel].
-final focusTimelineProvider =
-    StateNotifierProvider<FocusModeNotifier, FocusTimelineModel>(
-  (ref) => FocusModeNotifier(),
+
+/// A Riverpod state notifier provider that manages [DatedFocusModel].
+final datedFocusProvider =
+    StateNotifierProvider.family<FocusModeNotifier, DatedFocusModel, DateTime>(
+  (ref, day) => FocusModeNotifier(day),
 );
 
 /// This class manages the state of Focus Timeline.
-class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
+class FocusModeNotifier extends StateNotifier<DatedFocusModel> {
   late DynamicRecordsDao _dao;
+  final DateTime selectedDay;
 
-  FocusModeNotifier() : super(const FocusTimelineModel()) {
+  FocusModeNotifier(this.selectedDay) : super(const DatedFocusModel()) {
     _dao = DriftDbService.instance.driftDb.dynamicRecordsDao;
     refreshTimeline();
   }
 
   /// Refresh the state
   Future<void> refreshTimeline() async {
-    await onMonthChanged(DateTime.now().dateOnly);
-    await onDayChanged(DateTime.now().dateOnly);
-  }
-
-  /// Reload the list of focus session when the selected DAY changes
-  Future<void> onDayChanged(DateTime dayDate) async {
     // Start of the day
-    final startOfDay = dayDate.dateOnly;
+    final startOfDay = selectedDay.dateOnly;
 
     // End of the day
-    final endOfDay = dayDate.copyWith(
+    final endOfDay = startOfDay.copyWith(
       hour: 23,
       minute: 59,
       second: 59,
@@ -66,23 +62,6 @@ class FocusModeNotifier extends StateNotifier<FocusTimelineModel> {
     state = state.copyWith(
       selectedDaysSessions: AsyncData(sessions),
       selectedDaysFocusedTime: todaysFocusedTime,
-    );
-  }
-
-  /// Reload focus session states when the selected MONTH changes
-  Future<void> onMonthChanged(DateTime month) async {
-    final productiveDaysMap = await _dao.fetchSessionsDurationMapForInterval(
-      month.startOfMonth,
-      month.endOfMonth,
-    );
-
-    final totalProductiveTime =
-        productiveDaysMap.values.fold(0, (a, b) => a + b);
-
-    state = state.copyWith(
-      monthlyFocusTimeMap: productiveDaysMap,
-      totalProductiveDays: productiveDaysMap.length,
-      totalProductiveTime: totalProductiveTime.seconds,
     );
   }
 }

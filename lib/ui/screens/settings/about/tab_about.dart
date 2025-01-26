@@ -48,7 +48,7 @@ class TabAbout extends ConsumerWidget {
           fontSize: 14,
           isSubtitle: true,
           height: 1,
-        ).rightCentered.sliver,
+        ).sliver,
         2.vSliverBox,
         StyledText(
           "db-v${DriftDbService.instance.driftDb.schemaVersion}",
@@ -56,7 +56,7 @@ class TabAbout extends ConsumerWidget {
           fontSize: 14,
           isSubtitle: true,
           height: 1,
-        ).rightCentered.sliver,
+        ).sliver,
 
         /// Breathing logo
         BreathingWidget(

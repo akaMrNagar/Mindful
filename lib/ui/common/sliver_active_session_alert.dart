@@ -29,7 +29,7 @@ class SliverActiveSessionAlert extends ConsumerWidget {
     return SliverPrimaryActionContainer(
       isVisible: activeSession != null,
       icon: FluentIcons.timer_20_regular,
-      margin: const EdgeInsets.symmetric(vertical: 6),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       title: context.locale.active_session_card_title,
       information: context.locale.active_session_card_info,
       positiveBtn: FilledButton(

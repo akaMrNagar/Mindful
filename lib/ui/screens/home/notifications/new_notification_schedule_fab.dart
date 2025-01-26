@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/notifications/notification_schedules_provider.dart';
+import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 
@@ -36,11 +37,16 @@ class NewNotificationScheduleFab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DefaultFabButton(
-      heroTag: HeroTags.newNotificationScheduleFABTag,
-      label: context.locale.new_schedule_fab_button,
-      icon: FluentIcons.add_20_filled,
-      onPressed: () => _onPressed(context, ref),
-    );
+    final havePermission = ref.watch(
+        permissionProvider.select((v) => v.haveNotificationAccessPermission));
+
+    return havePermission
+        ? DefaultFabButton(
+            heroTag: HeroTags.newNotificationScheduleFABTag,
+            label: context.locale.new_schedule_fab_button,
+            icon: FluentIcons.add_20_filled,
+            onPressed: () => _onPressed(context, ref),
+          )
+        : const SizedBox.shrink();
   }
 }

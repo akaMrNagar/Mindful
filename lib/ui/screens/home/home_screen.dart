@@ -22,13 +22,16 @@ import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
+import 'package:mindful/ui/screens/home/dashboard/customize_glance_cards.dart';
+import 'package:mindful/ui/screens/home/dashboard/focus_now_fab.dart';
+import 'package:mindful/ui/screens/home/dashboard/greetings_username.dart';
 import 'package:mindful/ui/screens/home/dashboard/tab_dashboard.dart';
+import 'package:mindful/ui/screens/home/notifications/new_notification_schedule_fab.dart';
 import 'package:mindful/ui/screens/home/statistics/tab_statistics.dart';
-import 'package:mindful/ui/screens/home/wellbeing/add_websites_fab.dart';
-import 'package:mindful/ui/screens/home/wellbeing/tab_wellbeing.dart';
+import 'package:mindful/ui/screens/home/notifications/tab_notifications.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -78,43 +81,57 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
-      child: DefaultScaffold(
-        initialTabIndex: homeTab.index,
-        leading: DefaultHero(
-          tag: HeroTags.donationDialogTag,
-          child: IconButton(
-            icon: const Icon(FluentIcons.settings_20_regular),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
-          ),
-        ),
-        navbarItems: [
+      child: ScaffoldShell(
+        initialTab: homeTab.index,
+        items: [
           NavbarItem(
-            title: context.locale.dashboard_tab_title,
+            titleText: context.locale.dashboard_tab_title,
             icon: FluentIcons.home_20_regular,
             filledIcon: FluentIcons.home_20_filled,
             sliverBody: const TabDashboard(),
+            title: const GreetingsUsername(),
+            fab: const FocusNowFab(),
+            actions: const [CustomizeGlanceCards(), _SettingsButton()],
           ),
           NavbarItem(
-            title: context.locale.statistics_tab_title,
+            titleText: context.locale.statistics_tab_title,
             icon: FluentIcons.data_pie_24_regular,
             filledIcon: FluentIcons.data_pie_24_filled,
             sliverBody: const TabStatistics(),
+            actions: const [_SettingsButton()],
           ),
           NavbarItem(
-            title: context.locale.wellbeing_tab_title,
-            icon: FluentIcons.brain_circuit_20_regular,
-            filledIcon: FluentIcons.brain_circuit_20_filled,
-            fab: const AddWebsitesFAB(),
-            sliverBody: const TabWellBeing(),
+            icon: FluentIcons.alert_urgent_20_regular,
+            filledIcon: FluentIcons.alert_urgent_20_filled,
+            titleText: context.locale.upcoming_notifications_tab_title,
+            fab: const NewNotificationScheduleFab(),
+            sliverBody: const TabNotifications(),
+            actions: const [_SettingsButton()],
           ),
           NavbarItem(
-            title: context.locale.bedtime_tab_title,
+            titleText: context.locale.bedtime_tab_title,
             icon: FluentIcons.sleep_20_regular,
             filledIcon: FluentIcons.sleep_20_filled,
             sliverBody: const TabBedtime(),
+            actions: const [_SettingsButton()],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _SettingsButton extends StatelessWidget {
+  const _SettingsButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultHero(
+      tag: HeroTags.donationDialogTag,
+      child: IconButton(
+        icon: const Icon(FluentIcons.settings_20_filled),
+        onPressed: () =>
+            Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
       ),
     );
   }

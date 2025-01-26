@@ -63,7 +63,7 @@ class BedtimeQuickActions extends ConsumerWidget {
           leading: const Icon(FluentIcons.weather_moon_20_regular),
           titleText: context.locale.distracting_apps_tile_title,
           subtitleText: context.locale.distracting_apps_tile_subtitle,
-          trailing: const Icon(FluentIcons.chevron_right_20_filled),
+          trailing: const Icon(FluentIcons.arrow_up_right_20_filled),
           onPressed: () => showDefaultBottomSheet(
             context: context,
             sliverBody: const BedtimeDistractingAppsList(),

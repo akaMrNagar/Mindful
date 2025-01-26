@@ -21,7 +21,7 @@ class SliverTabsBottomPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: EdgeInsets.symmetric(vertical: 128),
+      padding: EdgeInsets.only(top: 140, bottom: 240),
       child: Center(
         child: StyledText(
           "Made with ♥️ in 🇮🇳",

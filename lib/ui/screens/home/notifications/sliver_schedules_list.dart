@@ -96,6 +96,7 @@ class _ScheduleCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: getBorderRadiusFromPosition(position),
         child: DefaultSlideToRemove(
+          enabled: enabled,
           key: Key("${schedule.label}:${schedule.id}"),
           onDismiss: () => onRemove(schedule),
           child: Container(
