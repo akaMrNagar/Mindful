@@ -19,15 +19,29 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/locales.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 
 class TabGeneral extends ConsumerWidget {
   const TabGeneral({super.key});
+
+  void _openAutoStartSettings(BuildContext context) async {
+    final success = await MethodChannelService.instance.openAutoStartSettings();
+
+    if (!success && context.mounted) {
+      context.showSnackAlert(
+        context.locale.whitelist_app_unsupported_snack_alert,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -163,6 +177,24 @@ class TabGeneral extends ConsumerWidget {
           onPressed:
               ref.read(mindfulSettingsProvider.notifier).switchBottomNavigation,
         ).sliver,
+
+        /// Service
+        ContentSectionHeader(title: context.locale.service_heading).sliver,
+
+        /// Battery permission
+        StyledText(context.locale.service_stopping_warning).sliver,
+        6.vSliverBox,
+        const SliverBatteryPermissionSwitchTile(),
+        DefaultListTile(
+          position: ItemPosition.bottom,
+          leadingIcon: FluentIcons.leaf_three_20_regular,
+          titleText: context.locale.whitelist_app_tile_title,
+          subtitleText: context.locale.whitelist_app_tile_subtitle,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => _openAutoStartSettings(context),
+        ).sliver,
+
+        const SliverTabsBottomPadding(),
       ],
     );
   }

@@ -160,15 +160,12 @@ class TabAbout extends ConsumerWidget {
             .sliver,
         StyledText(context.locale.privacy_policy_info).sliver,
         12.vSliverBox,
-        Align(
-          alignment: Alignment.centerRight,
-          child: FilledButton.tonalIcon(
-            icon: const Icon(FluentIcons.info_20_regular),
-            label: Text(context.locale.more_details_button),
-            onPressed: () => MethodChannelService.instance
-                .launchUrl(AppConstants.privacyPolicyUrl),
-          ),
-        ).sliver,
+        FilledButton.tonalIcon(
+          icon: const Icon(FluentIcons.info_20_regular),
+          label: Text(context.locale.more_details_button),
+          onPressed: () => MethodChannelService.instance
+              .launchUrl(AppConstants.privacyPolicyUrl),
+        ).rightCentered.sliver,
 
         const SliverTabsBottomPadding(),
       ],

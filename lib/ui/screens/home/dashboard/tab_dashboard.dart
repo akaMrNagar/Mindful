@@ -73,7 +73,7 @@ class TabDashboard extends ConsumerWidget {
                 DefaultListTile(
                   position: ItemPosition.bottom,
                   leadingIcon: FluentIcons.shield_keyhole_20_regular,
-                  titleText: context.locale.parental_controls_tile_title,
+                  titleText: context.locale.parental_controls_tab_title,
                   subtitleText: context.locale.parental_controls_tile_subtitle,
                   color: Theme.of(context).colorScheme.secondaryContainer,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),

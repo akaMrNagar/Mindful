@@ -15,7 +15,6 @@ import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/screens/settings/about/tab_about.dart';
 import 'package:mindful/ui/screens/settings/database/tab_database.dart';
 import 'package:mindful/ui/screens/settings/general/tab_general.dart';
-import 'package:mindful/ui/screens/settings/advance/tab_advance.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -29,12 +28,6 @@ class SettingsScreen extends StatelessWidget {
           icon: FluentIcons.color_20_regular,
           filledIcon: FluentIcons.color_20_filled,
           sliverBody: const TabGeneral(),
-        ),
-        NavbarItem(
-          titleText: context.locale.advance_tab_title,
-          icon: FluentIcons.launcher_settings_24_regular,
-          filledIcon: FluentIcons.launcher_settings_24_filled,
-          sliverBody: const TabAdvance(),
         ),
         NavbarItem(
           titleText: context.locale.database_tab_title,

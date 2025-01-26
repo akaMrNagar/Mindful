@@ -130,12 +130,14 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     ScrollController scrollController,
     bool innerBoxIsScrolled,
   ) {
-    final canGoBack = Navigator.of(context).canPop();
     final navItem = widget.items[_selectedTabIndex];
 
     return AnimatedBuilder(
       animation: scrollController,
       builder: (context, constraints) {
+        /// Moved here to fix glitch
+        final canGoBack = Navigator.of(context).canPop();
+
         // Calculate the scroll percentage
         final offset = scrollController.hasClients
             ? scrollController.offset.clamp(0.0, widget.appBarExpandedHeight)
@@ -194,7 +196,6 @@ class _ScaffoldShellState extends State<ScaffoldShell>
                   maxLines: 2,
                   fontWeight: FontWeight.w600,
                   overflow: TextOverflow.ellipsis,
-                  color: Theme.of(context).colorScheme.onSecondaryContainer,
                 ),
           ),
         );
