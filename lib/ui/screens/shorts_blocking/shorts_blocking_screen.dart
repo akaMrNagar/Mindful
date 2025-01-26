@@ -63,12 +63,12 @@ class ShortsBlockingScreen extends ConsumerWidget {
         NavbarItem(
           icon: FluentIcons.arrow_flow_diagonal_up_right_12_filled,
           filledIcon: FluentIcons.arrow_flow_diagonal_up_right_12_filled,
-          titleText: "Shorts blocking",
+          titleText: context.locale.shorts_blocking_tab_title,
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
               /// Information about shorts blocking
-              StyledText(context.locale.wellbeing_tab_info).sliver,
+              StyledText(context.locale.shorts_blocking_tab_info).sliver,
 
               /// Short content header
               ContentSectionHeader(title: context.locale.short_content_heading)

@@ -17,7 +17,8 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/restriction_groups/create_update_group_screen.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
@@ -31,12 +32,12 @@ class RestrictionGroupsScreen extends ConsumerWidget {
     final groups =
         ref.watch(restrictionGroupsProvider.select((v) => v.values.toList()));
 
-    return DefaultScaffold(
-      navbarItems: [
+    return ScaffoldShell(
+      items: [
         NavbarItem(
           icon: FluentIcons.app_title_20_regular,
           filledIcon: FluentIcons.app_title_20_filled,
-          title: context.locale.restriction_groups_tab_title,
+          titleText: context.locale.restriction_groups_tab_title,
           fab: DefaultFabButton(
             label: context.locale.create_group_fab_button,
             icon: FluentIcons.tab_add_20_filled,
@@ -64,6 +65,8 @@ class RestrictionGroupsScreen extends ConsumerWidget {
                         position: getItemPositionInList(index, groups.length),
                       ),
                     ),
+
+              const SliverTabsBottomPadding(),
             ],
           ),
         )

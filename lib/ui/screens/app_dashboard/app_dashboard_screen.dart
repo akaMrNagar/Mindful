@@ -28,13 +28,13 @@ import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/providers/usage/weekly_app_usage_provider.dart';
 import 'package:mindful/providers/shared_unique_data_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/sliver_usage_cards.dart';
 import 'package:mindful/ui/common/sliver_usage_chart_panel.dart';
 import 'package:mindful/ui/screens/app_dashboard/emergency_fab.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_restrictions.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -115,39 +115,21 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     return Skeletonizer.zone(
       enabled: appInfo.name.isEmpty,
       ignorePointers: false,
-      child: DefaultScaffold(
-        navbarItems: [
+      child: ScaffoldShell(
+        appBarExpandedHeight: 220,
+        items: [
           NavbarItem(
             icon: FluentIcons.data_pie_20_regular,
             filledIcon: FluentIcons.data_pie_20_filled,
-            title: context.locale.dashboard_tab_title,
-            appBarTitle: appInfo.name.isEmpty ? null : appInfo.name,
+            titleText: appInfo.name.isEmpty
+                ? context.locale.dashboard_tab_title
+                : appInfo.name,
             fab: const EmergencyFAB(),
+            titleBuilder: (percentage) =>
+                _buildTitle(percentage, appInfo, isPurged),
             sliverBody: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                /// App icon and app package name
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    /// App Icon
-                    ApplicationIcon(
-                      size: 32,
-                      appInfo: appInfo,
-                      isGrayedOut: isPurged,
-                    ),
-                    8.vBox,
-
-                    /// App package name
-                    StyledText(
-                      widget.packageName,
-                      color: Theme.of(context).hintColor,
-                    ),
-                  ],
-                ).sliver,
-
-                12.vSliverBox,
-
                 /// Usage type selector and usage info card
                 SliverUsageCards(
                   usage:
@@ -235,6 +217,46 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Column _buildTitle(
+    double percentage,
+    AppInfo appInfo,
+    bool isPurged,
+  ) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// App icon
+        Opacity(
+          opacity: percentage,
+          child: ApplicationIcon(
+            size: 16 * percentage,
+            appInfo: appInfo,
+            isGrayedOut: isPurged,
+          ),
+        ),
+        4.vBox,
+
+        /// App name
+        AppBarTitle(
+          titleText: appInfo.name.isEmpty
+              ? context.locale.dashboard_tab_title
+              : appInfo.name,
+        ),
+
+        /// App package
+        Opacity(
+          opacity: percentage,
+          child: StyledText(
+            widget.packageName,
+            color: Theme.of(context).hintColor,
+            fontSize: 8 * percentage,
+          ),
+        ),
+      ],
     );
   }
 }

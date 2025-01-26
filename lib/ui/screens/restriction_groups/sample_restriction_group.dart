@@ -32,7 +32,7 @@ class SampleRestrictionGroup extends ConsumerWidget {
 
     return IgnorePointer(
       child: Opacity(
-        opacity: 0.4,
+        opacity: 0.5,
         child: Column(
           children: [
             RestrictionGroupCard(

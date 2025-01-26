@@ -18,8 +18,9 @@ import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/websites_blocking/add_websites_fab.dart';
 import 'package:mindful/ui/screens/websites_blocking/sliver_blocked_websites_list.dart';
@@ -52,15 +53,18 @@ class WebsitesBlockingScreen extends ConsumerWidget {
       permissionProvider.select((v) => v.haveAccessibilityPermission),
     );
 
-    return DefaultScaffold(navbarItems: [
+    return ScaffoldShell(items: [
       NavbarItem(
         icon: FluentIcons.arrow_flow_diagonal_up_right_12_filled,
         filledIcon: FluentIcons.arrow_flow_diagonal_up_right_12_filled,
         fab: const AddWebsitesFAB(),
-        title: "Website restrictions",
+        titleText: context.locale.websites_blocking_tab_title,
         sliverBody: CustomScrollView(
           physics: const BouncingScrollPhysics(),
           slivers: [
+            /// Information about websites blocking
+            StyledText(context.locale.websites_blocking_tab_info).sliver,
+
             /// Adult content header
             ContentSectionHeader(title: context.locale.adult_content_heading)
                 .sliver,

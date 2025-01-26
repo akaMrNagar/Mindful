@@ -89,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: FluentIcons.home_20_regular,
             filledIcon: FluentIcons.home_20_filled,
             sliverBody: const TabDashboard(),
-            title: const GreetingsUsername(),
+            titleBuilder: (v) => const GreetingsUsername(),
             fab: const FocusNowFab(),
             actions: const [CustomizeGlanceCards(), _SettingsButton()],
           ),
@@ -103,7 +103,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           NavbarItem(
             icon: FluentIcons.alert_urgent_20_regular,
             filledIcon: FluentIcons.alert_urgent_20_filled,
-            titleText: context.locale.upcoming_notifications_tab_title,
+            titleText: context.locale.notifications_tab_title,
             fab: const NewNotificationScheduleFab(),
             sliverBody: const TabNotifications(),
             actions: const [_SettingsButton()],

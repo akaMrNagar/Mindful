@@ -158,8 +158,8 @@ class TabGeneral extends ConsumerWidget {
               value: DefaultHomeTab.statistics,
             ),
             DefaultDropdownItem(
-              label: context.locale.wellbeing_tab_title,
-              value: DefaultHomeTab.wellbeing,
+              label: context.locale.notifications_tab_title,
+              value: DefaultHomeTab.notifications,
             ),
             DefaultDropdownItem(
               label: context.locale.bedtime_tab_title,

@@ -114,7 +114,7 @@ class TabDashboard extends ConsumerWidget {
                 DefaultListTile(
                   position: ItemPosition.mid,
                   leadingIcon: FluentIcons.resize_video_20_regular,
-                  titleText: context.locale.shorts_blocking_tile_title,
+                  titleText: context.locale.shorts_blocking_tab_title,
                   subtitleText: context.locale.shorts_blocking_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
@@ -125,7 +125,7 @@ class TabDashboard extends ConsumerWidget {
                 DefaultListTile(
                   position: ItemPosition.bottom,
                   leadingIcon: FluentIcons.earth_20_regular,
-                  titleText: context.locale.websites_blocking_tile_title,
+                  titleText: context.locale.websites_blocking_tab_title,
                   subtitleText: context.locale.websites_blocking_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)

@@ -59,8 +59,8 @@
         It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.
     </string>
     <string name="app_paused_reason_app_timer_left">
-        You\’ve been using this app for a while now.
-        Let\’s shift gears and take a break from the screen and focus on something productive.
+        You\'ve been using this app for a while now.
+        Let\'s shift gears and take a break from the screen and focus on something productive.
     </string>
     <string name="app_paused_reason_app_timer_out">
         You\'ve hit your daily limit on this app.
@@ -71,7 +71,7 @@
         It\'s time to step away and refocus on your priorities.
     </string>
     <string name="app_paused_reason_active_period_over">
-        Access to this app is currently paused because it's outside your set active hours.
+        Access to this app is currently paused because it\'s outside your set active hours.
         Take this time to focus on what matters most, and check back during the allowed time.
     </string>
 
@@ -85,7 +85,7 @@
         Take a break and recharge your focus.
     </string>
     <string name="app_paused_reason_group_active_period_over" formatted="true">
-        Apps in the “%s” group are currently paused as it's outside your set active hours.
+        Apps in the “%s” group are currently paused as it\'s outside your set active hours.
         Use this opportunity to recharge or focus on your tasks, and return during the designated time.
     </string>
 
@@ -132,7 +132,7 @@
     <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">"Focus session will end in %s"</string>
     <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">You\'ve been focused for %s</string>
     <string name="focus_session_success_notification_info">
-        Congratulations! You've successfully completed your focus session.
+        Congratulations! You\'ve successfully completed your focus session.
         Great job staying on track! Keep up the amazing work!
     </string>
     <string name="focus_session_giveup_notification_info">

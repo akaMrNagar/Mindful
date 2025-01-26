@@ -157,9 +157,7 @@
     "apps_blocking_tile_subtitle": "Limit apps in multiple ways.",
     "grouped_apps_blocking_tile_title": "Grouped apps blocking",
     "grouped_apps_blocking_tile_subtitle": "Limit group of apps simultaneously.",
-    "shorts_blocking_tile_title": "Shorts blocking",
     "shorts_blocking_tile_subtitle": "Limit short content on multiple platforms.",
-    "websites_blocking_tile_title": "Websites blocking",
     "websites_blocking_tile_subtitle": "Limit adult and custom websites.",
     "screen_time_label": "Screen time",
     "total_data_label": "Total data",
@@ -183,54 +181,14 @@
     "batch_notifications_tile_subtitle": "Batch and schedule app notifications.",
     "most_used_apps_heading": "Most used apps",
     "show_all_apps_tile_title": "Show all apps",
-    "@----------------------------- HOME SCREEN - WELLBEING TAB -----------------------------": {},
-    "wellbeing_tab_title": "Wellbeing",
-    "wellbeing_tab_info": "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites. Additionally, block adult websites and custom sites for a balanced and focused online experience.",
-    "short_content_heading": "Short content",
-    "shorts_time_left_from": "Left from {timeShortString}",
-    "@shorts_time_left_from": {
-        "placeholders": {
-            "timeShortString": {
-                "type": "String",
-                "example": "1h 23m"
-            }
-        }
-    },
-    "short_content_invincible_mode_info": "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
-    "short_content_timer_picker_dialog_info": "Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.",
-    "block_insta_reels_title": "Block reels",
-    "block_insta_reels_subtitle": "Restrict reels on instagram.",
-    "block_yt_shorts_title": "Block shorts",
-    "block_yt_shorts_subtitle": "Restrict shorts on youtube.",
-    "block_snap_spotlight_title": "Block spotlight",
-    "block_snap_spotlight_subtitle": "Restrict spotlight on snapchat.",
-    "block_fb_reels_title": "Block reels",
-    "block_fb_reels_subtitle": "Restrict reels on facebook.",
-    "block_reddit_shorts_title": "Block shorts",
-    "block_reddit_shorts_subtitle": "Restrict shorts on reddit.",
-    "adult_content_heading": "Adult content",
-    "block_nsfw_title": "Block Nsfw",
-    "block_nsfw_subtitle": "Restrict browsers from opening adult and porn websites.",
-    "block_nsfw_dialog_info": "Are you sure? This action is irreversible. Once adult sites blocker is turned ON, you cannot turn it OFF as long as this app is installed on your device.",
-    "block_nsfw_dialog_button_block_anyway": "Block anyway",
-    "blocked_websites_heading": "Blocked websites",
-    "blocked_websites_empty_list_hint": "Click on '+ Add Website' button to add distracting websites which you wish to block.",
-    "add_website_fab_button": "Add Website",
-    "add_website_dialog_title": "Distracting website",
-    "add_website_dialog_info": "Enter url of a website which you want to block.",
-    "add_website_dialog_button_block": "Block",
-    "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
-    "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
-    "remove_website_dialog_title": "Remove website",
-    "remove_website_dialog_info": "Are you sure? you want to remove '{websitehost}' from blocked websites.",
-    "@remove_website_dialog_info": {
-        "placeholders": {
-            "websitehost": {
-                "type": "String",
-                "example": "example.com"
-            }
-        }
-    },
+    "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_tab_title": "Notifications",
+    "notifications_tab_info": "Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.",
+    "batched_apps_tile_title": "Batched apps",
+    "schedules_heading": "Schedules",
+    "new_schedule_fab_button": "New Schedule",
+    "new_schedule_dialog_info": "Enter a name for the notification schedule to help identify it easily.",
+    "new_schedule_dialog_field_label": "Schedule name",
     "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "bedtime_tab_title": "Bedtime",
     "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
@@ -267,6 +225,57 @@
     "tamper_protection_tile_title": "Tamper protection",
     "tamper_protection_tile_subtitle": "Prevent uninstalling and force stopping the app.",
     "uninstall_window_tile_title": "Uninstall window",
+    "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
+    "shorts_blocking_tab_title": "Shorts blocking",
+    "shorts_blocking_tab_info": "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.",
+    "short_content_heading": "Short content",
+    "shorts_time_left_from": "Left from {timeShortString}",
+    "@shorts_time_left_from": {
+        "placeholders": {
+            "timeShortString": {
+                "type": "String",
+                "example": "1h 23m"
+            }
+        }
+    },
+    "short_content_invincible_mode_info": "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
+    "short_content_timer_picker_dialog_info": "Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.",
+    "block_insta_reels_title": "Block reels",
+    "block_insta_reels_subtitle": "Restrict reels on instagram.",
+    "block_yt_shorts_title": "Block shorts",
+    "block_yt_shorts_subtitle": "Restrict shorts on youtube.",
+    "block_snap_spotlight_title": "Block spotlight",
+    "block_snap_spotlight_subtitle": "Restrict spotlight on snapchat.",
+    "block_fb_reels_title": "Block reels",
+    "block_fb_reels_subtitle": "Restrict reels on facebook.",
+    "block_reddit_shorts_title": "Block shorts",
+    "block_reddit_shorts_subtitle": "Restrict shorts on reddit.",
+    "@----------------------------- WEBSITES BLOCKING SCREEN-----------------------------": {},
+    "websites_blocking_tab_title": "Websites blocking",
+    "websites_blocking_tab_info": "Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.",
+    "adult_content_heading": "Adult content",
+    "block_nsfw_title": "Block Nsfw",
+    "block_nsfw_subtitle": "Restrict browsers from opening adult and porn websites.",
+    "block_nsfw_dialog_info": "Are you sure? This action is irreversible. Once adult sites blocker is turned ON, you cannot turn it OFF as long as this app is installed on your device.",
+    "block_nsfw_dialog_button_block_anyway": "Block anyway",
+    "blocked_websites_heading": "Blocked websites",
+    "blocked_websites_empty_list_hint": "Click on '+ Add Website' button to add distracting websites which you wish to block.",
+    "add_website_fab_button": "Add Website",
+    "add_website_dialog_title": "Distracting website",
+    "add_website_dialog_info": "Enter url of a website which you want to block.",
+    "add_website_dialog_button_block": "Block",
+    "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
+    "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
+    "remove_website_dialog_title": "Remove website",
+    "remove_website_dialog_info": "Are you sure? you want to remove '{websitehost}' from blocked websites.",
+    "@remove_website_dialog_info": {
+        "placeholders": {
+            "websitehost": {
+                "type": "String",
+                "example": "example.com"
+            }
+        }
+    },
     "@----------------------------- FOCUS SCREEN - FOCUS TAB -----------------------------": {},
     "focus_tab_title": "Focus",
     "focus_tab_info": "When you need time to focus, start a new session by selecting the type, choosing distracting apps to pause, and enabling Do Not Disturb for uninterrupted concentration.",
@@ -387,16 +396,7 @@
         }
     },
     "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
-    "@----------------------------- BATCH NOTIFICATIONS SCREEN -----------------------------": {},
-    "batch_notifications_tab_title": "Batch notifications",
-    "batch_notifications_tab_info": "Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.",
-    "batched_apps_tile_title": "Batched apps",
-    "schedules_heading": "Schedules",
-    "new_schedule_fab_button": "New Schedule",
-    "new_schedule_dialog_info": "Enter a name for the notification schedule to help identify it easily.",
-    "new_schedule_dialog_field_label": "Schedule name",
     "@----------------------------- UPCOMING NOTIFICATIONS SCREEN -----------------------------": {},
-    "upcoming_notifications_tab_title": "Notifications",
     "upcoming_notifications_empty_list_hint": "No notifications have been batched today.",
     "button_segment_grouped_label": "Grouped",
     "button_segment_ungrouped_label": "Un-Grouped",

@@ -54,7 +54,7 @@ class TabNotifications extends ConsumerWidget {
         physics: const BouncingScrollPhysics(),
         slivers: [
           /// Information about notification groups
-          StyledText(context.locale.batch_notifications_tab_info).sliver,
+          StyledText(context.locale.notifications_tab_info).sliver,
 
           16.vSliverBox,
 
@@ -69,7 +69,7 @@ class TabNotifications extends ConsumerWidget {
                   position:
                       havePermission ? ItemPosition.left : ItemPosition.topLeft,
                   icon: FluentIcons.alert_badge_20_regular,
-                  title: context.locale.upcoming_notifications_tab_title,
+                  title: context.locale.notifications_tab_title,
                   info: upcomingNotificationsCount.toString(),
                   onTap: () => Navigator.of(context)
                       .pushNamed(AppRoutes.upcomingNotificationsScreen),

@@ -20,25 +20,27 @@ import 'package:mindful/ui/common/tab_controller_provider.dart';
 class NavbarItem {
   final IconData icon;
   final IconData filledIcon;
-  final String titleText;
-  final Widget? title;
+  final String? titleText;
+  final Widget Function(double collapsingPercentage)? titleBuilder;
   final Widget? fab;
   final Widget sliverBody;
   final Widget? appBarBg;
   final List<Widget>? actions;
 
   const NavbarItem({
-    required this.titleText,
     required this.icon,
     required this.filledIcon,
     required this.sliverBody,
-    this.title,
+    this.titleText,
+    this.titleBuilder,
     this.fab,
     this.appBarBg,
     this.actions,
-  });
+  }) : assert(titleText != null || titleBuilder != null,
+            "Title and TitleBuilder both can't be null, Specify at least one of them");
 }
 
+/// Global Scaffold navigation bar and tab bar used throughout the app for consistent ui/ux
 class ScaffoldShell extends StatefulWidget {
   const ScaffoldShell({
     super.key,
@@ -185,18 +187,13 @@ class _ScaffoldShellState extends State<ScaffoldShell>
           flexibleSpace: FlexibleSpaceBar(
             expandedTitleScale: 1.75,
             background: innerBoxIsScrolled ? null : navItem.appBarBg,
+            collapseMode: CollapseMode.parallax,
             titlePadding: EdgeInsets.only(
               bottom: 13,
               left: widget.bodyPadding.left + leftPadding,
             ),
-            title: navItem.title ??
-                StyledText(
-                  navItem.titleText,
-                  fontSize: 24,
-                  maxLines: 2,
-                  fontWeight: FontWeight.w600,
-                  overflow: TextOverflow.ellipsis,
-                ),
+            title: navItem.titleBuilder?.call(1 - percentage) ??
+                AppBarTitle(titleText: navItem.titleText!),
           ),
         );
       },
@@ -216,7 +213,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
       destinations: widget.items
           .map(
             (e) => NavigationDestination(
-              label: e.titleText,
+              label: e.titleText!,
               icon: Icon(e.icon).animate(target: 0),
               selectedIcon: Icon(e.filledIcon).animate().scale(
                     begin: const Offset(0.5, 0.5),
@@ -227,6 +224,26 @@ class _ScaffoldShellState extends State<ScaffoldShell>
             ),
           )
           .toList(),
+    );
+  }
+}
+
+class AppBarTitle extends StatelessWidget {
+  const AppBarTitle({
+    super.key,
+    required this.titleText,
+  });
+
+  final String titleText;
+
+  @override
+  Widget build(BuildContext context) {
+    return StyledText(
+      titleText,
+      fontSize: 24,
+      maxLines: 2,
+      fontWeight: FontWeight.w600,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }
