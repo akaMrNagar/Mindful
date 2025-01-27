@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -145,7 +144,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
               ? Theme.of(context).colorScheme.primary
               : heatmapValue > 0 && maxHeatmapValue > 0
                   ? _getHeatmapColor(maxHeatmapValue, heatmapValue)
-                  : Colors.grey.withOpacity(0.025),
+                  : Colors.transparent,
           onPressed: () {
             setState(() {
               _selectedDate = currentDay;
@@ -158,7 +157,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
             color:
                 isSelectedDay ? Theme.of(context).colorScheme.onPrimary : null,
           ),
-        ).animate(key: Key(currentDay.toString())).fade(delay: (day * 25).ms),
+        ),
       );
     }
 

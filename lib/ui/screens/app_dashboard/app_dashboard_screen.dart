@@ -240,21 +240,22 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
         ),
         4.vBox,
 
-        /// App name
-        AppBarTitle(
-          titleText: appInfo.name.isEmpty
-              ? context.locale.dashboard_tab_title
-              : appInfo.name,
-        ),
-
         /// App package
         Opacity(
           opacity: percentage,
           child: StyledText(
             widget.packageName,
             color: Theme.of(context).hintColor,
+            height: 1,
             fontSize: 8 * percentage,
           ),
+        ),
+
+        /// App name
+        AppBarTitle(
+          titleText: appInfo.name.isEmpty
+              ? context.locale.dashboard_tab_title
+              : appInfo.name,
         ),
       ],
     );

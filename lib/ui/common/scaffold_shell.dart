@@ -10,11 +10,12 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/common/tab_controller_provider.dart';
+import 'package:mindful/ui/controllers/tab_controller_provider.dart';
 
 @immutable
 class NavbarItem {
@@ -61,6 +62,8 @@ class ScaffoldShell extends StatefulWidget {
 
 class _ScaffoldShellState extends State<ScaffoldShell>
     with SingleTickerProviderStateMixin {
+  final ValueNotifier<bool> _isBottomNavVisible = ValueNotifier<bool>(true);
+  final List<ScrollController> _scrollControllers = [];
   late final TabController _tabController;
 
   late final bool _haveMultiTabs = widget.items.length > 1;
@@ -69,6 +72,8 @@ class _ScaffoldShellState extends State<ScaffoldShell>
   @override
   void initState() {
     super.initState();
+
+    /// Handle tab controller
     _tabController = TabController(
       length: widget.items.length,
       initialIndex: widget.initialTab,
@@ -80,11 +85,32 @@ class _ScaffoldShellState extends State<ScaffoldShell>
         setState(() => _selectedTabIndex = _tabController.index);
       }
     });
+
+    /// Handle scroll controllers
+    /// Initialize ScrollControllers for each tab
+    for (int i = 0; i < widget.items.length; i++) {
+      final controller = ScrollController();
+      controller.addListener(() => _onScrolled(controller));
+      _scrollControllers.add(controller);
+    }
+  }
+
+  /// Listen to scrolling
+  void _onScrolled(ScrollController controller) {
+    if (controller.position.userScrollDirection == ScrollDirection.reverse) {
+      _isBottomNavVisible.value = false;
+    } else if (controller.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      _isBottomNavVisible.value = true;
+    }
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    for (var e in _scrollControllers) {
+      e.dispose();
+    }
     super.dispose();
   }
 
@@ -98,32 +124,33 @@ class _ScaffoldShellState extends State<ScaffoldShell>
       body: TabBarView(
         controller: _tabController,
         physics: const NeverScrollableScrollPhysics(),
-        children: widget.items.map(
-          (e) {
-            final scrollController = ScrollController();
-            return NestedScrollView(
-              controller: scrollController,
-              physics: const BouncingScrollPhysics(),
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) => [
-                sliverAppBar(
-                  scrollController,
-                  innerBoxIsScrolled,
-                ),
-              ],
-
-              /// Provides access to the tab controller to the children in tree
-              /// To get =>  TabControllerProvider.of(context)?.controller;
-              body: TabControllerProvider(
-                controller: _tabController,
-                child: Padding(
-                  padding: widget.bodyPadding,
-                  child: e.sliverBody,
-                ),
+        children: List.generate(
+          widget.items.length,
+          (i) => NestedScrollView(
+            controller: _scrollControllers[i],
+            physics: const BouncingScrollPhysics(),
+            headerSliverBuilder: (
+              BuildContext context,
+              bool innerBoxIsScrolled,
+            ) =>
+                [
+              sliverAppBar(
+                _scrollControllers[i],
+                innerBoxIsScrolled,
               ),
-            );
-          },
-        ).toList(),
+            ],
+
+            /// Provides access to the tab controller to the children in tree
+            /// To get =>  TabControllerProvider.of(context)?.controller;
+            body: TabControllerProvider(
+              controller: _tabController,
+              child: Padding(
+                padding: widget.bodyPadding,
+                child: widget.items[i].sliverBody,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -201,29 +228,38 @@ class _ScaffoldShellState extends State<ScaffoldShell>
   }
 
   Widget bottomNavBar() {
-    return NavigationBar(
-      selectedIndex: _selectedTabIndex,
-      animationDuration: AppConstants.defaultAnimDuration,
-      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
-      onDestinationSelected: (index) => _tabController.animateTo(
-        index,
-        duration: AppConstants.defaultAnimDuration,
-        curve: AppConstants.defaultCurve,
+    return ValueListenableBuilder<bool>(
+      valueListenable: _isBottomNavVisible,
+      builder: (context, isVisible, child) => AnimatedContainer(
+        height: isVisible ? 104 : 0,
+        duration: 300.ms,
+        curve: isVisible ? Curves.easeOut : Curves.easeOut.flipped,
+        child: SingleChildScrollView(child: child),
       ),
-      destinations: widget.items
-          .map(
-            (e) => NavigationDestination(
-              label: e.titleText!,
-              icon: Icon(e.icon).animate(target: 0),
-              selectedIcon: Icon(e.filledIcon).animate().scale(
-                    begin: const Offset(0.5, 0.5),
-                    end: const Offset(1.05, 1.05),
-                    curve: Curves.elasticOut,
-                    duration: 1.seconds,
-                  ),
-            ),
-          )
-          .toList(),
+      child: NavigationBar(
+        selectedIndex: _selectedTabIndex,
+        animationDuration: AppConstants.defaultAnimDuration,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHigh,
+        onDestinationSelected: (index) => _tabController.animateTo(
+          index,
+          duration: AppConstants.defaultAnimDuration,
+          curve: AppConstants.defaultCurve,
+        ),
+        destinations: widget.items
+            .map(
+              (e) => NavigationDestination(
+                label: e.titleText!,
+                icon: Icon(e.icon).animate(target: 0),
+                selectedIcon: Icon(e.filledIcon).animate().scale(
+                      begin: const Offset(0.5, 0.5),
+                      end: const Offset(1.05, 1.05),
+                      curve: Curves.elasticOut,
+                      duration: 1.seconds,
+                    ),
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 }

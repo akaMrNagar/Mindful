@@ -23,7 +23,7 @@ import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/sliver_active_session_alert.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
-import 'package:mindful/ui/common/tab_controller_provider.dart';
+import 'package:mindful/ui/controllers/tab_controller_provider.dart';
 import 'package:mindful/ui/screens/home/dashboard/glance_cards/focus_daily_glance.dart';
 import 'package:mindful/ui/screens/home/dashboard/glance_cards/screen_time_glance.dart';
 import 'package:mindful/ui/screens/home/dashboard/glance_cards_grid.dart';

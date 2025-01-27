@@ -116,7 +116,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               Skeletonizer.zone(
                 enabled: dailyFocus.selectedDaysSessions.isLoading,
                 ignorePointers: false,
-                enableSwitchAnimation: true,
+                enableSwitchAnimation: false,
                 child: UsageGlanceCard(
                   isPrimary: true,
                   position: ItemPosition.bottom,
@@ -155,7 +155,9 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                   itemCount: dailyFocus.selectedDaysSessions.value!.length,
                   itemBuilder: (context, index) => SessionCard(
                     position: getItemPositionInList(
-                        index, dailyFocus.selectedDaysSessions.value!.length),
+                      index,
+                      dailyFocus.selectedDaysSessions.value!.length,
+                    ),
                     session: dailyFocus.selectedDaysSessions.value![index],
                   ),
                 )
