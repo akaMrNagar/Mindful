@@ -8,7 +8,6 @@ Future<String> getSqliteDbPath() async => path.join(
       'Mindful.sqlite',
     );
 
-
 /// Invoke the method in the [try/catch] block and print the error if it occurred
 Future<void> runSafe(String tag, Future<void> Function() method) async {
   try {
@@ -17,5 +16,3 @@ Future<void> runSafe(String tag, Future<void> Function() method) async {
     debugPrint("Error Occurred [$tag] : ${e.toString()}");
   }
 }
-
-

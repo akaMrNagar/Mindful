@@ -98,7 +98,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: FluentIcons.data_pie_24_regular,
             filledIcon: FluentIcons.data_pie_24_filled,
             sliverBody: const TabStatistics(),
-            actions: const [_SettingsButton()],
           ),
           NavbarItem(
             icon: FluentIcons.alert_urgent_20_regular,
@@ -106,14 +105,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             titleText: context.locale.notifications_tab_title,
             fab: const NewNotificationScheduleFab(),
             sliverBody: const TabNotifications(),
-            actions: const [_SettingsButton()],
           ),
           NavbarItem(
             titleText: context.locale.bedtime_tab_title,
             icon: FluentIcons.sleep_20_regular,
             filledIcon: FluentIcons.sleep_20_filled,
             sliverBody: const TabBedtime(),
-            actions: const [_SettingsButton()],
           ),
         ],
       ),

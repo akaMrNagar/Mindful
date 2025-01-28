@@ -43,7 +43,6 @@ import java.util.Calendar
  */
 class DeviceUsageWidget : AppWidgetProvider() {
     override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
         val action = intent.action
         Log.d(TAG, "onReceive: Received event with action: $action")
 
@@ -65,6 +64,7 @@ class DeviceUsageWidget : AppWidgetProvider() {
                 isAutomatic = false
             )
         }
+        super.onReceive(context, intent)
     }
 
 

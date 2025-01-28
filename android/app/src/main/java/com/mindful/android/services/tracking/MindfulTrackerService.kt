@@ -29,11 +29,11 @@ class MindfulTrackerService : Service() {
 
 
     override fun onCreate() {
-        super.onCreate()
         overlayManager = OverlayManager(this)
         reminderManager = ReminderManager(overlayManager, ::onNewAppLaunch)
         restrictionManager = RestrictionManager(this, ::stopIfNoUsage)
         launchTrackingManager = LaunchTrackingManager(this, ::onNewAppLaunch)
+        super.onCreate()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -119,8 +119,8 @@ class MindfulTrackerService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         Log.d(TAG, "onDestroy: TRACKER service destroyed successfully")
+        super.onDestroy()
     }
 
 

@@ -116,7 +116,7 @@ class FlutterBgExecutionWorker(
     }
 
     override fun onStopped() {
-        super.onStopped()
         dispose()
+        super.onStopped()
     }
 }

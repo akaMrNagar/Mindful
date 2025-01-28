@@ -29,7 +29,6 @@ class EmergencyPauseService : Service() {
     private lateinit var mTrackerServiceConn: SafeServiceConnection<MindfulTrackerService>
 
     override fun onCreate() {
-        super.onCreate()
         mTrackerServiceConn = SafeServiceConnection(MindfulTrackerService::class.java, this)
         mNotificationTimer = NotificationTimer(
             context = this,
@@ -52,6 +51,7 @@ class EmergencyPauseService : Service() {
                 stopSelf()
             }
         )
+        super.onCreate()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -86,11 +86,11 @@ class EmergencyPauseService : Service() {
 
 
     override fun onDestroy() {
-        super.onDestroy()
         mTrackerServiceConn.service?.getLaunchTrackingManager?.pauseResumeTracking(false)
         mTrackerServiceConn.unBindService()
         stopForeground(STOP_FOREGROUND_DETACH)
         Log.d(TAG, "onDestroy: EMERGENCY service destroyed successfully")
+        super.onDestroy()
     }
 
     override fun onBind(intent: Intent): IBinder? {

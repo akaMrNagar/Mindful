@@ -36,28 +36,15 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     override fun onListenerConnected() {
         super.onListenerConnected()
         mDistractingApps = SharedPrefsHelper.getSetNotificationBatchedApps(this, null)
-
-        //
-        SharedPrefsHelper.insertCrashLogToPrefs(
-            this,
-            Throwable("MindfulNotificationListenerService is CONNECTED by system")
-        )
         mIsListenerActive = true
     }
 
     override fun onListenerDisconnected() {
-        super.onListenerDisconnected()
-
-        //
-        SharedPrefsHelper.insertCrashLogToPrefs(
-            this,
-            Throwable("MindfulNotificationListenerService is DIS-CONNECTED by system")
-        )
         mIsListenerActive = false
+        super.onListenerDisconnected()
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        super.onNotificationPosted(sbn)
         if (!mIsListenerActive) return
         val packageName = sbn.packageName
         try {
@@ -92,6 +79,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
             SharedPrefsHelper.insertCrashLogToPrefs(this, e)
             Log.e(TAG, "onNotificationPosted: Something went wrong for package: $packageName", e)
         }
+        super.onNotificationPosted(sbn)
     }
 
 
@@ -106,10 +94,10 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         SharedPrefsHelper.insertCrashLogToPrefs(
             this,
             Throwable("MindfulNotificationListenerService is DESTROYED")
         )
+        super.onDestroy()
     }
 }

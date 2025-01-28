@@ -35,7 +35,8 @@ import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/core/utils/db_utils.dart';
+
+import 'migrations/migrations.dart';
 
 part 'app_database.g.dart';
 
@@ -68,7 +69,6 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 3;
 
-
   // Always use [runSafe()] for upgrades - why?
   // If a user imports a backup from a newer schema when they are on an older
   // App version, it will import correctly. However, when they do update the app
@@ -82,63 +82,8 @@ class AppDatabase extends _$AppDatabase {
             from: from,
             to: to,
             steps: migrationSteps(
-              from1To2: (m, schema) async => runSafe(
-                "Migration($from to $to)",
-                () async {
-                  /// Add protective access [Bool] column
-                  await m.addColumn(
-                    schema.mindfulSettingsTable,
-                    schema.mindfulSettingsTable.protectedAccess,
-                  );
-
-                  /// Add uninstall window time [TimeOfDayAdapter] column
-                  await m.addColumn(
-                    schema.mindfulSettingsTable,
-                    schema.mindfulSettingsTable.uninstallWindowTime,
-                  );
-                },
-              ),
-              from2To3: (m, schema) async => runSafe(
-                "Migration($from to $to)",
-                () async {
-                  /// Create notification schedule table
-                  await m.createTable(notificationScheduleTable);
-
-                  /// Create shared unique data table
-                  await m.createTable(sharedUniqueDataTable);
-
-                  /// Fetch excluded apps from [MindfulSettingsTable]
-                  final settings = await m.database
-                      .select(mindfulSettingsTable)
-                      .getSingleOrNull();
-
-                  /// Insert excluded apps to [SharedUniqueDataTable]
-                  if (settings != null) {
-                    /// Get record
-                    final record = await m.database
-                        .customSelect(
-                          'SELECT excluded_apps FROM mindful_settings_table',
-                        )
-                        .getSingleOrNull();
-
-                    /// Decode to list
-                    List<String> excludedApps = List.from(
-                      jsonDecode(record?.data['excluded_apps'] ?? '[]'),
-                    );
-
-                    /// Insert to table
-                    await m.database.into(sharedUniqueDataTable).insert(
-                          SharedUniqueDataTableCompanion(
-                            excludedApps: Value(excludedApps),
-                          ),
-                          mode: InsertMode.insertOrReplace,
-                        );
-                  }
-
-                  /// Drop excluded apps column from [MindfulSettingsTable]
-                  await m.alterTable(TableMigration(mindfulSettingsTable));
-                },
-              ),
+              from1To2: from1To2,
+              from2To3: from2To3,
             ),
           );
         },

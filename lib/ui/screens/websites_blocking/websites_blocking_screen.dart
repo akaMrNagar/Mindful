@@ -22,6 +22,7 @@ import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/permissions/accessibility_permission_card.dart';
 import 'package:mindful/ui/screens/websites_blocking/add_websites_fab.dart';
 import 'package:mindful/ui/screens/websites_blocking/sliver_blocked_websites_list.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -68,6 +69,8 @@ class WebsitesBlockingScreen extends ConsumerWidget {
             /// Adult content header
             ContentSectionHeader(title: context.locale.adult_content_heading)
                 .sliver,
+
+            const AccessibilityPermissionCard(),
 
             /// Block NSFW websites
             DefaultHero(
