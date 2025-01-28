@@ -18,6 +18,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/focus/invincible_mode_provider.dart';
 import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
+import 'package:mindful/providers/usage/shorts_screen_time_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
@@ -32,8 +33,7 @@ class ShortsBlockingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // FIXME: Fetch shorts screen time
-    int _shortsScreenTimeSec = 0;
+    final shortsScreenTimeSec = ref.watch(shortsScreenTimeProvider).value ?? 0;
 
     final allowedShortContentTimeSec =
         ref.watch(wellBeingProvider.select((v) => v.allowedShortsTimeSec));
@@ -46,7 +46,7 @@ class ShortsBlockingScreen extends ConsumerWidget {
         ? 0
         : max(
             0,
-            (allowedShortContentTimeSec - _shortsScreenTimeSec),
+            (allowedShortContentTimeSec - shortsScreenTimeSec),
           );
 
     final isInvincibleModeRestricted = ref.watch(

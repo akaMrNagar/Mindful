@@ -52,7 +52,9 @@ class MethodChannelService {
     );
   }
 
-  // SECTION: Setup Methods ======================================================================
+  // ===========================================================================================
+  // ==================================== SETUP ================================================
+  // ===========================================================================================
 
   /// Update locale on the native side
   Future<bool> updateLocale({required String languageCode}) async =>
@@ -65,10 +67,14 @@ class MethodChannelService {
         jsonEncode(excludedApps),
       );
 
-
   /// Gets the map of device info and create and returns [DeviceInfoModel] .
   Future<DeviceInfoModel> getDeviceInfo() async => DeviceInfoModel.fromMap(
       await _methodChannel.invokeMapMethod('getDeviceInfo') ?? {});
+
+  /// Gets the launch counts of apps mapped to their package name.
+  Future<Map<String, int>> getAppsLaunchCount() async =>
+      await _methodChannel.invokeMapMethod<String, int>('getAppsLaunchCount') ??
+      {};
 
   /// Gets the total short screen time for the device in milliseconds.
   ///
@@ -175,8 +181,9 @@ class MethodChannelService {
     return notifications;
   }
 
-  // !SECTION
-  // SECTION: Foreground Service and Background Worker Methods ======================================================================
+  // ===========================================================================================
+  // ==================================== SERVICES =============================================
+  // ===========================================================================================
 
   /// Safe method to update app restrictions list in the TRACKER service.
   ///
@@ -284,9 +291,9 @@ class MethodChannelService {
         isTheSessionSuccessful,
       );
 
-  // !SECTION
-  // SECTION: Permissions Handler Methods ======================================================================
-
+  // ===========================================================================================
+  // ==================================== PERMISSIONS ==========================================
+  // ===========================================================================================
   /// Checks if the admin permission is granted and optionally asks for it.
   ///
   /// Returns `true` if the permission is granted Otherwise, returns `false`.
@@ -389,8 +396,9 @@ class MethodChannelService {
   Future<bool> disableDeviceAdmin() async =>
       await _methodChannel.invokeMethod('disableDeviceAdmin');
 
-  // !SECTION
-  // SECTION: New Activity Launch Methods ======================================================================
+  // ===========================================================================================
+  // ============================== EXTERNAL ACTIVITIES ========================================
+  // ===========================================================================================
 
   /// Opens the device's Do Not Disturb (DND) settings.
   Future<bool> openDeviceDndSettings() async =>
@@ -411,8 +419,9 @@ class MethodChannelService {
         appPackage,
       );
 
-  // !SECTION
-  // SECTION: Utility methods ======================================================================
+  // ===========================================================================================
+  // ==================================== UTILS ================================================
+  // ===========================================================================================
 
   /// Pop animates and close the app
   Future<bool> restartApp() async =>

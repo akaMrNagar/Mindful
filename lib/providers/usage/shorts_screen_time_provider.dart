@@ -11,7 +11,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 
-/// Apps launch counts mapped to their package names provider
-final appsLaunchCountProvider = FutureProvider.autoDispose<Map<String, int>>(
-  (ref) async => await MethodChannelService.instance.getAppsLaunchCount(),
+/// Short content's screen time in SECONDS provider
+final shortsScreenTimeProvider = FutureProvider.autoDispose<int>(
+  (ref) async => await MethodChannelService.instance.getShortsScreenTimeSec(),
 );

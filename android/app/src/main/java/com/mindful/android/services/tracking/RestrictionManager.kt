@@ -35,6 +35,8 @@ class RestrictionManager(
 
     //  Cache
     private val appsLaunchCount = HashMap<String, Int>(0)
+    val getAppsLaunchCount: HashMap<String, Int> get() = appsLaunchCount
+
     private val alreadyRestrictedApps = HashMap<String, RestrictionState>(0)
     private val alreadyRestrictedGroups = HashMap<Int, RestrictionState>(0)
 

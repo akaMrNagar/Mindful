@@ -118,6 +118,13 @@ class FgMethodCallHandler(
                 )
             }
 
+            "getAppsLaunchCount" -> {
+                result.success(
+                    trackerServiceConn.service?.getRestrictionManager?.getAppsLaunchCount
+                        ?: mapOf<String, Int>()
+                )
+            }
+
             "getUpComingNotifications" -> {
                 result.success(SharedPrefsHelper.getSerializedNotificationsJson(context))
             }
