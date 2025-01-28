@@ -157,7 +157,6 @@ class _CreateUpdateRestrictionGroupState
                   ),
                 ],
               ).sliver,
-              2.vSliverBox,
 
               /// Group name
               DefaultHero(

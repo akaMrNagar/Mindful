@@ -90,9 +90,9 @@ class LaunchTrackingManager(
     }
 
     @WorkerThread
-    private fun findLaunchedApp() {
+    private fun findLaunchedApp(interval: Long = TIMER_RATE * 2) {
         val now = System.currentTimeMillis()
-        val usageEvents = usageStatsManager?.queryEvents(now.minus(TIMER_RATE * 2), now)
+        val usageEvents = usageStatsManager?.queryEvents(now.minus(interval), now)
 
         usageEvents?.let {
             val currentEvent = UsageEvents.Event()
@@ -136,6 +136,14 @@ class LaunchTrackingManager(
     fun pauseResumeTracking(shouldPause: Boolean) {
         isTrackingPaused = shouldPause
         if (!shouldPause) broadcastLastAppLaunchEvent()
+    }
+
+    /**
+     * Detect if any app is opened in last 6 hours and it is still active.
+     * Show overlay if that app is marked as distracting bedtime app.
+     */
+    fun detectActiveAppForBedtime() {
+        findLaunchedApp(6 * 60 * 60 * 1000)
     }
 
     fun dispose() {

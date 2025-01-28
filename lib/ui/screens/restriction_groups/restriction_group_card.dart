@@ -30,17 +30,24 @@ class RestrictionGroupCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final groupedApps = ref
+    final groupedAppsInfo = ref
             .watch(appsInfoProvider.select((v) => v.value?.values
                 .where((e) => group.distractingApps.contains(e.packageName))))
             ?.toList() ??
         [];
 
-    final timeSpent = ref
-            .watch(todaysAppsUsageProvider.select(
-              (v) => v.value?.entries.where((e) => groupedApps.contains(e.key)),
-            ))
-            ?.fold(0, (time, entry) => time + entry.value.screenTime) ??
+    final installedDistractingApps = groupedAppsInfo.map((e) => e.packageName);
+
+    final timeSpent = ref.watch(
+          todaysAppsUsageProvider.select(
+            (v) => v.value?.entries
+                .where((e) => installedDistractingApps.contains(e.key))
+                .fold<int>(
+                  0,
+                  (t, e) => (t + e.value.screenTime),
+                ),
+          ),
+        ) ??
         0;
 
     final timeLeft = max(0, (group.timerSec - timeSpent));
@@ -68,12 +75,18 @@ class RestrictionGroupCard extends ConsumerWidget {
                   children: [
                     CircularProgressIndicator(
                       value: 1,
+                      strokeWidth: 6,
                       strokeCap: StrokeCap.round,
                       color: Theme.of(context).colorScheme.secondaryContainer,
                     ),
                     CircularProgressIndicator(
-                      value: group.timerSec > 0 ? progress : 1,
+                      strokeWidth: 6,
                       strokeCap: StrokeCap.round,
+                      value: progress > 0 ? progress : 1,
+                      color:
+                          timeSpent > 0 && group.timerSec > 0 && progress <= 0
+                              ? Theme.of(context).colorScheme.error
+                              : null,
                     ),
                   ],
                 ),
@@ -110,13 +123,29 @@ class RestrictionGroupCard extends ConsumerWidget {
 
               12.hBox,
 
-              if (group.timerSec > 0)
+              /// Timer and left time
+              if (group.timerSec > 0) ...[
+                /// Time left
                 TimeTextShort(
-                  timeDuration: group.timerSec.seconds,
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  timeDuration: timeLeft.seconds,
                   secondaryFontWeight: FontWeight.w600,
                 ),
+
+                const StyledText(
+                  " / ",
+                  fontSize: 14,
+                ),
+
+                /// Timer limit
+                TimeTextShort(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  timeDuration: group.timerSec.seconds,
+                  secondaryFontWeight: FontWeight.w600,
+                ),
+              ],
             ],
           ),
           12.vBox,
@@ -131,9 +160,9 @@ class RestrictionGroupCard extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 6),
                 physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                itemCount: groupedApps.length,
+                itemCount: groupedAppsInfo.length,
                 itemBuilder: (context, index) {
-                  final app = groupedApps[index];
+                  final app = groupedAppsInfo[index];
 
                   return Padding(
                     padding: const EdgeInsets.only(right: 4),

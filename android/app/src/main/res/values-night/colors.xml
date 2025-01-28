@@ -15,7 +15,6 @@
     <color name="textPrimary">#ffffff </color>
     <color name="textSecondary">#e1e1e1 </color>
     <color name="surface">#121418 </color>
-    <color name="surfaceTranslucent">#b0121418 </color>
     <color name="primaryContainer">#424659 </color>
     <color name="secondaryContainer">#2a2930 </color>
     <color name="tertiaryContainer">#1c1b22 </color>

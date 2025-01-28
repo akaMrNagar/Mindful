@@ -35,7 +35,6 @@
     <string name="app_paused_overlay_label_spent_today" comment="app_paused_dialog_progress_spent placeholder in app_paused_dialog_progress_spent will be time formatted string like '4h 13m' for 4 minutes 13 seconds">%s 使用</string>
     <string name="app_paused_overlay_label_left_today" comment="app_paused_dialog_progress_left placeholder in app_paused_dialog_progress_left will be time formatted string like '4h 13m' for 4 minutes 13 seconds">残りあと %s</string>
     <string name="app_paused_overlay_button_emergency">緊急時の使用</string>
-    <string name="app_paused_overlay_button_close_app">アプリを閉じる</string>
     <string name="bedtime_upcoming_notification_info" comment="bedtime_upcoming_notification_info bedtime = scheduled bedtime alert notification">就寝時間は30分後に始まります。今日の活動を締めくくり、明日に備えましょう。</string>
     <string name="bedtime_started_notification_info">リラックスして、質の高い睡眠を。就寝時間が始まりました。</string>
     <string name="bedtime_ended_notification_info">おはようございます！就寝時間が終了しました。今日も元気に過ごしましょう！</string>

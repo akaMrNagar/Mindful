@@ -136,7 +136,7 @@ object OverlayBuilder {
 
         // Close app button
         val closeAppBtn = sheetView.findViewById<Button>(R.id.overlay_sheet_btn_close_app)
-        closeAppBtn.text = "Close $appName"
+        closeAppBtn.text = context.getString(R.string.app_paused_overlay_button_close_app, appName)
         closeAppBtn.setOnClickListener {
             ThreadUtils.runOnMainThread {
                 val homeIntent = Intent(Intent.ACTION_MAIN)

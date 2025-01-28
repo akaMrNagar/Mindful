@@ -169,7 +169,7 @@ class AppsRestrictionsNotifier
     /// Update database and state
     state = updatedState;
     await _dao.insertAppRestrictionsByPackage(updatedRestrictions);
-    _updateTrackerService();
+    await _updateTrackerService();
   }
 
   /// Updates the alert interval for a specific app package.
