@@ -17,14 +17,16 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/focus_timeline_provider.dart';
+import 'package:mindful/providers/focus/dated_focus_provider.dart';
+import 'package:mindful/providers/focus/monthly_focus_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/focus/timeline/sliver_heatmap_calender.dart';
 import 'package:mindful/ui/screens/focus/timeline/session_card.dart';
+import 'package:mindful/ui/screens/focus/timeline/sliver_heatmap_calender.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -36,141 +38,146 @@ class TabTimeline extends ConsumerStatefulWidget {
 }
 
 class _TabTimelineState extends ConsumerState<TabTimeline> {
-  @override
-  void initState() {
-    super.initState();
-    ref
-        .read(focusTimelineProvider.notifier)
-        .onDayChanged(DateTime.now().dateOnly);
-  }
+  DateTimeRange _monthRange = dateToday.monthRange;
+  DateTime _selectedDay = dateToday;
 
   @override
   Widget build(BuildContext context) {
-    final timeline = ref.watch(focusTimelineProvider);
+    final monthlyFocus = ref.watch(monthlyFocusProvider(_monthRange));
+    final dailyFocus = ref.watch(datedFocusProvider(_selectedDay));
 
-    return Skeletonizer.zone(
-      enabled: timeline.selectedDaysSessions.isLoading,
-      ignorePointers: false,
-      enableSwitchAnimation: true,
-      child: DefaultRefreshIndicator(
-        onRefresh: ref.read(focusTimelineProvider.notifier).refreshTimeline,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            StyledText(context.locale.timeline_tab_info).sliver,
+    return DefaultRefreshIndicator(
+      onRefresh: () async {
+        await ref
+            .read(monthlyFocusProvider(_monthRange).notifier)
+            .refreshTimeline();
+        await ref
+            .read(datedFocusProvider(_selectedDay).notifier)
+            .refreshTimeline();
+      },
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          StyledText(context.locale.timeline_tab_info).sliver,
 
-            24.vSliverBox,
+          24.vSliverBox,
 
-            /// Productivity stats
-            Column(
-              children: [
-                Row(
-                  children: [
-                    /// Total productive time
-                    Expanded(
-                      child: UsageGlanceCard(
-                        isPrimary: true,
-                        position: ItemPosition.topLeft,
-                        icon: FluentIcons.clock_20_regular,
-                        title:
-                            context.locale.selected_month_productive_time_label,
-                        info: timeline.totalProductiveTime.toTimeShort(context),
-                        onTap: () => context.showSnackAlert(
-                          context.locale
-                              .selected_month_productive_time_snack_alert(
-                            timeline.totalProductiveTime.toTimeFull(context),
-                          ),
-                          icon: FluentIcons.clock_20_filled,
+          /// Productivity stats
+          Column(
+            children: [
+              Row(
+                children: [
+                  /// Total productive time
+                  Expanded(
+                    child: UsageGlanceCard(
+                      isPrimary: true,
+                      position: ItemPosition.topLeft,
+                      icon: FluentIcons.clock_20_regular,
+                      title:
+                          context.locale.selected_month_productive_time_label,
+                      info:
+                          monthlyFocus.totalProductiveTime.toTimeShort(context),
+                      onTap: () => context.showSnackAlert(
+                        context.locale
+                            .selected_month_productive_time_snack_alert(
+                          monthlyFocus.totalProductiveTime.toTimeFull(context),
                         ),
+                        icon: FluentIcons.clock_20_filled,
                       ),
                     ),
-                    4.hBox,
+                  ),
+                  4.hBox,
 
-                    /// Productive days
-                    Expanded(
-                      child: UsageGlanceCard(
-                        isPrimary: true,
-                        position: ItemPosition.topRight,
-                        icon: FluentIcons.calendar_day_20_regular,
-                        title:
-                            context.locale.selected_month_productive_days_label,
-                        info:
-                            context.locale.nDays(timeline.totalProductiveDays),
-                        onTap: () => context.showSnackAlert(
-                          context.locale
-                              .selected_month_productive_days_snack_alert(
-                            timeline.totalProductiveDays,
-                          ),
-                          icon: FluentIcons.calendar_day_20_filled,
+                  /// Productive days
+                  Expanded(
+                    child: UsageGlanceCard(
+                      isPrimary: true,
+                      position: ItemPosition.topRight,
+                      icon: FluentIcons.calendar_day_20_regular,
+                      title:
+                          context.locale.selected_month_productive_days_label,
+                      info: context.locale
+                          .nDays(monthlyFocus.totalProductiveDays),
+                      onTap: () => context.showSnackAlert(
+                        context.locale
+                            .selected_month_productive_days_snack_alert(
+                          monthlyFocus.totalProductiveDays,
                         ),
+                        icon: FluentIcons.calendar_day_20_filled,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
+              ),
 
-                4.vBox,
+              4.vBox,
 
-                /// Today's total focused time
-                UsageGlanceCard(
+              /// Today's total focused time
+              Skeletonizer.zone(
+                enabled: dailyFocus.selectedDaysSessions.isLoading,
+                ignorePointers: false,
+                enableSwitchAnimation: false,
+                child: UsageGlanceCard(
                   isPrimary: true,
                   position: ItemPosition.bottom,
                   icon: FluentIcons.shifts_day_20_regular,
                   title: context.locale.selected_day_focused_time_label,
-                  info: timeline.selectedDaysFocusedTime.toTimeFull(context),
+                  info: dailyFocus.selectedDaysFocusedTime.toTimeFull(context),
                   onTap: () => context.showSnackAlert(
                     context.locale.selected_day_focused_time_snack_alert(
-                      timeline.selectedDaysFocusedTime.toTimeFull(context),
+                      dailyFocus.selectedDaysFocusedTime.toTimeFull(context),
                     ),
                     icon: FluentIcons.shifts_day_20_filled,
                   ),
                 ),
-              ],
-            ).sliver,
+              ),
+            ],
+          ).sliver,
 
-            /// Calender
-            ContentSectionHeader(title: context.locale.calender_heading).sliver,
-            SliverHeatMapCalendar(
-              heatmapData: timeline.monthlyFocusTimeMap,
-              onDayChanged:
-                  ref.read(focusTimelineProvider.notifier).onDayChanged,
-              onMonthChanged:
-                  ref.read(focusTimelineProvider.notifier).onMonthChanged,
-            ),
+          /// Calender
+          ContentSectionHeader(title: context.locale.calender_heading).sliver,
+          SliverHeatMapCalendar(
+            heatmapData: monthlyFocus.monthlyFocus,
+            onDayChanged: (day) => setState(() => _selectedDay = day),
+            onMonthChanged: (date) =>
+                setState(() => _monthRange = date.monthRange),
+          ),
 
-            8.vSliverBox,
-            ContentSectionHeader(title: context.locale.your_sessions_heading)
-                .sliver,
-            8.vSliverBox,
+          8.vSliverBox,
+          ContentSectionHeader(title: context.locale.your_sessions_heading)
+              .sliver,
+          8.vSliverBox,
 
-            /// List of today's sessions
-            timeline.selectedDaysSessions.hasValue &&
-                    timeline.selectedDaysSessions.value!.isNotEmpty
-                ? SliverList.builder(
-                    itemCount: timeline.selectedDaysSessions.value!.length,
-                    itemBuilder: (context, index) => SessionCard(
-                      position: getItemPositionInList(
-                          index, timeline.selectedDaysSessions.value!.length),
-                      session: timeline.selectedDaysSessions.value![index],
+          /// List of today's sessions
+          dailyFocus.selectedDaysSessions.hasValue &&
+                  dailyFocus.selectedDaysSessions.value!.isNotEmpty
+              ? SliverList.builder(
+                  itemCount: dailyFocus.selectedDaysSessions.value!.length,
+                  itemBuilder: (context, index) => SessionCard(
+                    position: getItemPositionInList(
+                      index,
+                      dailyFocus.selectedDaysSessions.value!.length,
                     ),
-                  )
-                : SizedBox(
-                    height: 256,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(FluentIcons.emoji_sad_20_filled, size: 32),
-                        StyledText(
-                          context.locale.your_sessions_empty_list_hint,
-                          fontSize: 14,
-                          isSubtitle: true,
-                        ),
-                      ],
-                    ),
-                  ).sliver,
+                    session: dailyFocus.selectedDaysSessions.value![index],
+                  ),
+                )
+              : SizedBox(
+                  height: 256,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(FluentIcons.emoji_sad_20_filled, size: 32),
+                      StyledText(
+                        context.locale.your_sessions_empty_list_hint,
+                        fontSize: 14,
+                        isSubtitle: true,
+                      ),
+                    ],
+                  ),
+                ).sliver,
 
-            const SliverTabsBottomPadding(),
-          ],
-        ),
+          const SliverTabsBottomPadding(),
+        ],
       ),
     );
   }

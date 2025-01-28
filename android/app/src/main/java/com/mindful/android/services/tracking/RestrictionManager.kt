@@ -20,7 +20,10 @@ class RestrictionManager(
     private val TAG = "Mindful.RestrictionManager"
 
     val isIdle: Boolean
-        get() = focusedApps.isEmpty() && bedtimeApps.isEmpty() && appsRestrictions.isEmpty()
+        get() = focusedApps.isEmpty()
+                && bedtimeApps.isEmpty()
+                && appsRestrictions.isEmpty()
+                && restrictionGroups.isEmpty()
 
     // Restrictions
     private var appsRestrictions = HashMap<String, AppRestrictions>()
@@ -32,6 +35,8 @@ class RestrictionManager(
 
     //  Cache
     private val appsLaunchCount = HashMap<String, Int>(0)
+    val getAppsLaunchCount: HashMap<String, Int> get() = appsLaunchCount
+
     private val alreadyRestrictedApps = HashMap<String, RestrictionState>(0)
     private val alreadyRestrictedGroups = HashMap<Int, RestrictionState>(0)
 
@@ -47,14 +52,14 @@ class RestrictionManager(
         appsRestrictionsMap?.let {
             appsRestrictions = it
             alreadyRestrictedApps.clear()
+            Log.d(TAG, "updateRestrictions: Apps restrictions updated")
         }
 
         restrictionGroupsMap?.let {
             restrictionGroups = it
             alreadyRestrictedGroups.clear()
+            Log.d(TAG, "updateRestrictions: Restriction groups updated")
         }
-        Log.d(TAG, "updateRestrictions: Restrictions updated")
-
         stopIfNoUsage.invoke()
     }
 

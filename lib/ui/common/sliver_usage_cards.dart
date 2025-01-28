@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mindful/core/enums/item_position.dart';
 
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -69,6 +70,7 @@ class SliverUsageCards extends StatelessWidget {
             /// Screen usage card
             ? _buildUsageCard(
                 context,
+                position: ItemPosition.none,
                 icon: FluentIcons.phone_20_regular,
                 title: context.locale.screen_time_label,
                 subtitle: usage.screenTime.seconds.toTimeFull(context),
@@ -80,6 +82,7 @@ class SliverUsageCards extends StatelessWidget {
                   Expanded(
                     child: _buildUsageCard(
                       context,
+                      position: ItemPosition.left,
                       icon: FluentIcons.cellular_data_1_20_filled,
                       title: context.locale.mobile_label,
                       subtitle: usage.mobileData.toData(),
@@ -89,6 +92,7 @@ class SliverUsageCards extends StatelessWidget {
                   Expanded(
                     child: _buildUsageCard(
                       context,
+                      position: ItemPosition.right,
                       icon: FluentIcons.wifi_1_20_filled,
                       title: context.locale.wifi_label,
                       subtitle: usage.wifiData.toData(),
@@ -105,11 +109,13 @@ class SliverUsageCards extends StatelessWidget {
     required IconData icon,
     required String title,
     required String subtitle,
+    required ItemPosition position,
   }) {
     return DefaultListTile(
       isPrimary: true,
       margin: const EdgeInsets.only(top: 2),
       leading: Icon(icon),
+      position: position,
       title: StyledText(
         title,
         color: Theme.of(context).hintColor,

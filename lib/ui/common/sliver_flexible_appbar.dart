@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/device_info_provider.dart';
+import 'package:mindful/providers/system/device_info_provider.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';

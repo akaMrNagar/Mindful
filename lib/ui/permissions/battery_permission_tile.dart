@@ -14,8 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/device_info_provider.dart';
-import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/providers/system/device_info_provider.dart';
+import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 
 class SliverBatteryPermissionSwitchTile extends ConsumerWidget {

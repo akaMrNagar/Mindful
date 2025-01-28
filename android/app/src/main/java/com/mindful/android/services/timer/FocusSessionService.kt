@@ -37,8 +37,8 @@ class FocusSessionService : Service() {
     private var mFocusSession: FocusSession? = null
 
     override fun onCreate() {
-        super.onCreate()
         mTrackerServiceConn = SafeServiceConnection(MindfulTrackerService::class.java, this)
+        super.onCreate()
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -149,10 +149,10 @@ class FocusSessionService : Service() {
 
 
     override fun onDestroy() {
-        super.onDestroy()
         mTrackerServiceConn.unBindService()
         stopForeground(STOP_FOREGROUND_DETACH)
         Log.d(TAG, "onDestroy: FOCUS service destroyed successfully")
+        super.onDestroy()
     }
 
 

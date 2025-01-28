@@ -59,8 +59,8 @@
         It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.
     </string>
     <string name="app_paused_reason_app_timer_left">
-        You\’ve been using this app for a while now.
-        Let\’s shift gears and take a break from the screen and focus on something productive.
+        You\'ve been using this app for a while now.
+        Let\'s shift gears and take a break from the screen and focus on something productive.
     </string>
     <string name="app_paused_reason_app_timer_out">
         You\'ve hit your daily limit on this app.
@@ -71,43 +71,43 @@
         It\'s time to step away and refocus on your priorities.
     </string>
     <string name="app_paused_reason_active_period_over">
-        Access to this app is currently paused because it’s outside your set active hours.
+        Access to this app is currently paused because it\'s outside your set active hours.
         Take this time to focus on what matters most, and check back during the allowed time.
     </string>
 
     <!-- App paused restriction group related reason  -->
     <string name="app_paused_reason_group_timer_left" formatted="true">
-        You\’ve been using apps from the “%s” group for a while now.
-        It\’s time to take a step back and concentrate on your tasks, not your screen.
+        You\'ve been using apps from the “%s” group for a while now.
+        It\'s time to take a step back and concentrate on your tasks, not your screen.
     </string>
     <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">
-        You\’ve reached the total time limit for the “%s” group today.
+        You\'ve reached the total time limit for the “%s” group today.
         Take a break and recharge your focus.
     </string>
     <string name="app_paused_reason_group_active_period_over" formatted="true">
-        Apps in the “%s” group are currently paused as it’s outside your set active hours.
+        Apps in the “%s” group are currently paused as it\'s outside your set active hours.
         Use this opportunity to recharge or focus on your tasks, and return during the designated time.
     </string>
 
 
     <!--  Types of restrictions  -->
-    <string name="app_paused_restriction_focus_mode">"Focus mode"</string>
-    <string name="app_paused_restriction_bedtime_mode">"Bedtime mode"</string>
-    <string name="app_paused_restriction_timer">"Timer"</string>
-    <string name="app_paused_restriction_launch_count">"Launch count"</string>
-    <string name="app_paused_restriction_active_period">"Active period"</string>
+    <string name="app_paused_restriction_focus_mode">Focus mode</string>
+    <string name="app_paused_restriction_bedtime_mode">Bedtime mode</string>
+    <string name="app_paused_restriction_timer">Timer</string>
+    <string name="app_paused_restriction_launch_count">Launch count</string>
+    <string name="app_paused_restriction_active_period">Active period</string>
 
     <string name="app_paused_overlay_button_emergency">Emergency</string>
 
 
-    <string name="app_paused_overlay_label_spent_today">"Spent today"</string>
-    <string name="app_paused_overlay_label_left_today">"Left today"</string>
-    <string name="app_paused_overlay_ask_need_more_time">"Need a few more minutes?"</string>
-    <string name="app_paused_overlay_button_two_minutes">"2 minutes"</string>
-    <string name="app_paused_overlay_button_five_minutes">"5 minutes"</string>
-    <string name="app_paused_overlay_button_ten_minutes">"10 minutes"</string>
-    <string name="app_paused_overlay_button_twenty_minutes">"20 minutes"</string>
-    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">Close %s</string>
+    <string name="app_paused_overlay_label_spent_today">Spent today</string>
+    <string name="app_paused_overlay_label_left_today">Left today</string>
+    <string name="app_paused_overlay_ask_need_more_time">Need a few more minutes?</string>
+    <string name="app_paused_overlay_button_two_minutes">2 minutes</string>
+    <string name="app_paused_overlay_button_five_minutes">5 minutes</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 minutes</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 minutes</string>
+    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">Close "%s"</string>
 
     <!-- bedtime = scheduled bedtime alert notification -->
     <string name="bedtime_upcoming_notification_info">
@@ -122,17 +122,17 @@
 
     <!-- emergency pause service = when user uses emergency pass -->
     <string name="emergency_pause_notification_title">Emergency Pause</string>
-    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">"App blocker will resume after %s"</string>
+    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">App blocker will resume after "%s"</string>
     <string name="emergency_pause_ended_notification_info">
         Emergency pause is over, and app blocker is back in action. Distractions are now blocked again, stay focused!
     </string>
 
     <!-- focus session service = service responsible for ongoing focus session -->
     <string name="focus_session_notification_title">Focus Session</string>
-    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">"Focus session will end in %s"</string>
-    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">You\'ve been focused for %s</string>
+    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">Focus session will end in "%s"</string>
+    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">You\'ve been focused for "%s"</string>
     <string name="focus_session_success_notification_info">
-        Congratulations! You’ve successfully completed your focus session.
+        Congratulations! You\'ve successfully completed your focus session.
         Great job staying on track! Keep up the amazing work!
     </string>
     <string name="focus_session_giveup_notification_info">
@@ -141,7 +141,7 @@
 
     <!-- Notification scheduling-->
     <string name="notification_schedule_notification_info" comment="Number of notifications as placeholder" formatted="true">
-        You have %d notifications while you were away.
+        You have "%d" notifications while you were away.
         They will be cleared automatically after 24 hours.
     </string>
 </resources>

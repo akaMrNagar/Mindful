@@ -39,7 +39,7 @@ Future<void> showDefaultBottomSheet({
           padding: padding,
           child: Column(
             children: [
-              /// Header2
+              /// Header
               headerTitle != null
                   ? ContentSectionHeader(
                       title: headerTitle,

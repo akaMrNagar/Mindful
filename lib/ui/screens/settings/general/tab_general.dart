@@ -18,20 +18,30 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/config/locales.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
-import 'package:mindful/ui/common/styled_text.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
-import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
+import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/permissions/battery_permission_tile.dart';
 
 class TabGeneral extends ConsumerWidget {
   const TabGeneral({super.key});
+
+  void _openAutoStartSettings(BuildContext context) async {
+    final success = await MethodChannelService.instance.openAutoStartSettings();
+
+    if (!success && context.mounted) {
+      context.showSnackAlert(
+        context.locale.whitelist_app_unsupported_snack_alert,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -148,8 +158,8 @@ class TabGeneral extends ConsumerWidget {
               value: DefaultHomeTab.statistics,
             ),
             DefaultDropdownItem(
-              label: context.locale.wellbeing_tab_title,
-              value: DefaultHomeTab.wellbeing,
+              label: context.locale.notifications_tab_title,
+              value: DefaultHomeTab.notifications,
             ),
             DefaultDropdownItem(
               label: context.locale.bedtime_tab_title,
@@ -160,7 +170,7 @@ class TabGeneral extends ConsumerWidget {
 
         /// Bottom navigation
         DefaultListTile(
-          position: ItemPosition.mid,
+          position: ItemPosition.bottom,
           switchValue: mindfulSettings.useBottomNavigation,
           titleText: context.locale.bottom_navigation_tile_title,
           subtitleText: context.locale.bottom_navigation_tile_subtitle,
@@ -168,35 +178,23 @@ class TabGeneral extends ConsumerWidget {
               ref.read(mindfulSettingsProvider.notifier).switchBottomNavigation,
         ).sliver,
 
-        /// Data reset time
-        DefaultHero(
-          tag: HeroTags.dataResetTimeTileTag,
-          child: DefaultListTile(
-            position: ItemPosition.bottom,
-            titleText: context.locale.data_reset_time_tile_title,
-            subtitleText: context.locale.data_reset_time_tile_subtitle,
-            trailing: StyledText(
-              mindfulSettings.dataResetTime.format(context),
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-            onPressed: () async {
-              final pickedTime = await showCustomTimePickerDialog(
-                context: context,
-                heroTag: HeroTags.dataResetTimeTileTag,
-                initialTime: mindfulSettings.dataResetTime,
-                info: context.locale.data_reset_time_tile_title,
-              );
+        /// Service
+        ContentSectionHeader(title: context.locale.service_heading).sliver,
 
-              /// FIXME: Remove it
-              if (pickedTime != null && context.mounted) {
-                // ref
-                //     .read(mindfulSettingsProvider.notifier)
-                //     .changeDataResetTime(pickedTime);
-              }
-            },
-          ),
+        /// Battery permission
+        StyledText(context.locale.service_stopping_warning).sliver,
+        6.vSliverBox,
+        const SliverBatteryPermissionSwitchTile(),
+        DefaultListTile(
+          position: ItemPosition.bottom,
+          leadingIcon: FluentIcons.leaf_three_20_regular,
+          titleText: context.locale.whitelist_app_tile_title,
+          subtitleText: context.locale.whitelist_app_tile_subtitle,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => _openAutoStartSettings(context),
         ).sliver,
+
+        const SliverTabsBottomPadding(),
       ],
     );
   }

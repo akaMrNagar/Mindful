@@ -13,11 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/upcoming_notifications_provider.dart';
+import 'package:mindful/providers/notifications/upcoming_notifications_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/default_segmented_button.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
@@ -44,12 +44,12 @@ class _UpcomingStateNotificationsScreen
     /// {App Package : List of notifications}
     final notificationsByApp = notificationMap.value?.entries.toList() ?? [];
 
-    return DefaultScaffold(
-      navbarItems: [
+    return ScaffoldShell(
+      items: [
         NavbarItem(
           icon: FluentIcons.alert_badge_20_regular,
           filledIcon: FluentIcons.alert_badge_20_filled,
-          title: context.locale.upcoming_notifications_tab_title,
+          titleText: context.locale.notifications_tab_title,
           sliverBody: DefaultRefreshIndicator(
             onRefresh: ref
                 .read(upcomingNotificationsProvider(_shouldGroup).notifier)

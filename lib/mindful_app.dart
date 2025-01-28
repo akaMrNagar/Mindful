@@ -17,7 +17,7 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mindful/core/services/routing_service.dart';
-import 'package:mindful/providers/mindful_settings_provider.dart';
+import 'package:mindful/providers/system/mindful_settings_provider.dart';
 
 class MindfulApp extends ConsumerWidget {
   const MindfulApp({super.key});

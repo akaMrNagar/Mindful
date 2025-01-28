@@ -24,10 +24,10 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/focus_mode_provider.dart';
+import 'package:mindful/providers/focus/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
 import 'package:mindful/ui/common/flip_countdown_text.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
@@ -100,14 +100,12 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
     final quoteIndex = (progress / 25).floor() - 1;
     final quotes = _getQuotes(context);
 
-    return DefaultScaffold(
-      navbarItems: [
+    return ScaffoldShell(
+      items: [
         NavbarItem(
           icon: FluentIcons.brain_circuit_20_regular,
           filledIcon: FluentIcons.brain_circuit_20_filled,
-          title: context.locale.active_session_tab_title,
-          appBarTitle: sessionTypeLabels(context)[widget.session.type] ??
-              context.locale.active_session_tab_title,
+          titleBuilder: (percentage) => _buildTitle(percentage),
           fab: _isCompleted
               ? const SizedBox.shrink()
               : DefaultFabButton(
@@ -123,6 +121,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
           sliverBody: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
+              24.vSliverBox,
               TimerProgressClock(
                 progress: progress.toDouble(),
               ).sliver,
@@ -158,6 +157,28 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  Column _buildTitle(double percentage) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Opacity(
+          opacity: percentage,
+          child: Icon(
+            sessionTypeIcons[widget.session.type] ??
+                FluentIcons.target_arrow_20_regular,
+            size: 24 * percentage,
+          ),
+        ),
+        2.vBox,
+        AppBarTitle(
+          titleText: sessionTypeLabels(context)[widget.session.type] ??
+              context.locale.active_session_tab_title,
+        )
       ],
     );
   }

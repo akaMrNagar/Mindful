@@ -19,16 +19,16 @@ import 'package:skeletonizer/skeletonizer.dart';
 class UsageGlanceCard extends StatelessWidget {
   const UsageGlanceCard({
     super.key,
-    required this.icon,
     required this.title,
     required this.info,
+    this.icon,
     this.onTap,
     this.badge,
     this.isPrimary = false,
     this.position = ItemPosition.mid,
   });
 
-  final IconData icon;
+  final IconData? icon;
   final bool isPrimary;
   final String title;
   final String info;
@@ -38,6 +38,8 @@ class UsageGlanceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mini = icon == null;
+
     return RoundedContainer(
       circularRadius: 6,
       borderRadius: getBorderRadiusFromPosition(position),
@@ -45,33 +47,38 @@ class UsageGlanceCard extends StatelessWidget {
       color:
           isPrimary ? Theme.of(context).colorScheme.secondaryContainer : null,
       onPressed: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
+          /// Usage
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon),
-              const Spacer(),
-              badge ?? 0.hBox,
+              if (!mini) Icon(icon),
+              mini ? 0.vBox : 14.vBox,
+              StyledText(
+                title,
+                fontSize: 12,
+              ),
+              Skeleton.leaf(
+                child: FittedBox(
+                  child: StyledText(
+                    info.isEmpty ? " " : info,
+                    fontSize: 24,
+                    maxLines: 1,
+                    fontWeight: FontWeight.bold,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
             ],
           ),
-          12.vBox,
-          StyledText(
-            title,
-            fontSize: 12,
-          ),
-          Skeleton.leaf(
-            child: FittedBox(
-              child: StyledText(
-                info.isEmpty ? " " : info,
-                fontSize: 24,
-                maxLines: 1,
-                fontWeight: FontWeight.bold,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ),
+
+          /// Badge
+          Align(
+            alignment: Alignment.topRight,
+            child: badge ?? 0.hBox,
+          )
         ],
       ),
     );

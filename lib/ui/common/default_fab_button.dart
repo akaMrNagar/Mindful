@@ -11,7 +11,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class DefaultFabButton extends StatelessWidget {
@@ -33,24 +32,10 @@ class DefaultFabButton extends StatelessWidget {
       tag: heroTag ?? "defaultScaffoldFabButton",
       child: FilledButton.icon(
         onPressed: onPressed,
-        icon: Icon(
-          icon,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
-        ),
-        label: StyledText(
-          label,
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
-        ),
+        icon: Icon(icon),
+        label: Text(label),
         style: const ButtonStyle().copyWith(
           padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
-          overlayColor: WidgetStatePropertyAll(
-            Theme.of(context).colorScheme.primary.withOpacity(0.25),
-          ),
-          backgroundColor: WidgetStatePropertyAll(
-            Theme.of(context).colorScheme.primaryContainer,
-          ),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           ),

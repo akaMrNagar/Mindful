@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/providers/permissions_provider.dart';
+import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
 
@@ -30,7 +30,7 @@ class AccessibilityPermissionCard extends ConsumerWidget {
 
     return SliverPrimaryActionContainer(
       isVisible: !havePermission,
-      margin: const EdgeInsets.only(top: 12),
+      margin: const EdgeInsets.symmetric(vertical: 4),
       icon: FluentIcons.accessibility_20_regular,
       title: context.locale.permission_accessibility_title,
       information: context.locale.permission_accessibility_required,

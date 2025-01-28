@@ -10,6 +10,7 @@
 
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/app_restriction_table.dart';
@@ -337,11 +338,11 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
         .getSingle();
   }
 
-  /// Loads the total duration in seconds for all the [FocusSession] in the database
+  /// Loads the total duration for all the [FocusSession] in the database
   ///
-  /// i.e., The lifetime duration in seconds of all the sessions user have taken
+  /// i.e., The lifetime duration of all the sessions user have taken
   /// with state no equal to [SessionState.active]
-  Future<int> fetchLifetimeSessionsDuration() async {
+  Future<Duration> fetchLifetimeSessionsDuration() async {
     final totalDurationQuery = selectOnly(focusSessionsTable)
       ..where(focusSessionsTable.state.isNotValue(SessionState.active.index))
       ..addColumns([focusSessionsTable.durationSecs.sum()]);
@@ -350,7 +351,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
         .map((row) => row.read(focusSessionsTable.durationSecs.sum()) ?? 0)
         .getSingle();
 
-    return totalDuration;
+    return totalDuration.seconds;
   }
 
   /// Loads all [FocusSession] objects from the database within the interval.

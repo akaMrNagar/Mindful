@@ -28,7 +28,6 @@ class MainActivity : FlutterFragmentActivity() {
     private lateinit var vpnPermissionLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         // Store uncaught exceptions
         Thread.setDefaultUncaughtExceptionHandler { _: Thread?, exception: Throwable ->
@@ -54,11 +53,11 @@ class MainActivity : FlutterFragmentActivity() {
 
         // Schedule midnight 12 task if already not scheduled
         scheduleMidnightResetTask(this, true)
+        super.onCreate(savedInstanceState)
     }
 
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
-        super.configureFlutterEngine(flutterEngine)
         val methodChannel = MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             AppConstants.FLUTTER_METHOD_CHANNEL_FG
@@ -75,12 +74,13 @@ class MainActivity : FlutterFragmentActivity() {
 
         // Update intent data on flutter side
         methodChannel.invokeMethod("updateIntentData", intentData)
+        super.configureFlutterEngine(flutterEngine)
     }
 
 
     override fun onDestroy() {
-        super.onDestroy()
         fgMethodCallHandler.dispose()
+        super.onDestroy()
     }
 
     companion object {

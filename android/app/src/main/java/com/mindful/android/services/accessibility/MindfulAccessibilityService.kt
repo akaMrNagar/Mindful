@@ -56,20 +56,27 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceInfo() })
 
     // Short content management
-    private val shortsPlatformManager: ShortsPlatformManager = ShortsPlatformManager(
-        context = this,
-        blockedContentGoBack = this::goBackWithToast
-    )
+    private lateinit var shortsPlatformManager: ShortsPlatformManager
 
     // Browser management
-    private val browserManager: BrowserManager = BrowserManager(
-        context = this,
-        shortsPlatformManager = shortsPlatformManager,
-        blockedContentGoBack = this::goBackWithToast
-    )
+    private lateinit var browserManager: BrowserManager
 
     private var mWellBeingSettings = WellBeingSettings(JSONObject())
     private var lastTimeBackActioned = 0L
+
+    override fun onCreate() {
+        super.onCreate()
+        shortsPlatformManager = ShortsPlatformManager(
+            context = this,
+            blockedContentGoBack = this::goBackWithToast
+        )
+
+        browserManager = BrowserManager(
+            context = this,
+            shortsPlatformManager = shortsPlatformManager,
+            blockedContentGoBack = this::goBackWithToast
+        )
+    }
 
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -81,7 +88,6 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     }
 
     override fun onServiceConnected() {
-        super.onServiceConnected()
         // Register shared prefs listener and load data
         SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, true, this)
         mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
@@ -95,6 +101,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
         refreshServiceInfo()
         Log.d(TAG, "onCreate: Accessibility service started successfully")
+        super.onServiceConnected()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -245,11 +252,11 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         mExecutorService.shutdown()
         // Unregister prefs listener and receiver
         unregisterReceiver(deviceAppsChangedReceiver)
         SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
         Log.d(TAG, "onDestroy: Accessibility service destroyed")
+        super.onDestroy()
     }
 }

@@ -14,7 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/bedtime_provider.dart';
+import 'package:mindful/providers/restrictions/bedtime_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -63,7 +63,7 @@ class BedtimeQuickActions extends ConsumerWidget {
           leading: const Icon(FluentIcons.weather_moon_20_regular),
           titleText: context.locale.distracting_apps_tile_title,
           subtitleText: context.locale.distracting_apps_tile_subtitle,
-          trailing: const Icon(FluentIcons.chevron_right_20_filled),
+          trailing: const Icon(FluentIcons.arrow_up_right_20_filled),
           onPressed: () => showDefaultBottomSheet(
             context: context,
             sliverBody: const BedtimeDistractingAppsList(),

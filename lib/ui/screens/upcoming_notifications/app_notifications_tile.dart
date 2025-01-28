@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/models/notification_model.dart';
-import 'package:mindful/providers/new/apps_info_provider.dart';
+import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';

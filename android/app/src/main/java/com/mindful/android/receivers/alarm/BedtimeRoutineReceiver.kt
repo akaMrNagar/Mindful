@@ -114,7 +114,10 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
         private fun startBedtimeRoutine() {
             if (!canStartRoutineToday) return
             trackerServiceConn.setOnConnectedCallback { service: MindfulTrackerService ->
-                service.getRestrictionManager.updateBedtimeApps(bedtimeSettings.distractingApps)
+                with(service) {
+                    getRestrictionManager.updateBedtimeApps(bedtimeSettings.distractingApps)
+                    getLaunchTrackingManager.detectActiveAppForBedtime()
+                }
             }
             trackerServiceConn.startAndBind()
 

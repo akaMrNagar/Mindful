@@ -11,8 +11,6 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
-import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -20,10 +18,10 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/models/usage_model.dart';
-import 'package:mindful/providers/new/weekly_device_usage_provider.dart';
-import 'package:mindful/providers/new/apps_info_provider.dart';
-import 'package:mindful/providers/new/filtered_packages_provider.dart';
-import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
+import 'package:mindful/providers/usage/weekly_device_usage_provider.dart';
+import 'package:mindful/providers/apps/apps_info_provider.dart';
+import 'package:mindful/providers/apps/filtered_packages_provider.dart';
+import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/battery_optimization_tip.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
@@ -95,32 +93,6 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             onWeekChanged: (day) => setState(
                 () => _filter = _filter.copyWith(selectedWeek: day.weekRange)),
           ),
-
-          8.vSliverBox,
-
-          /// Restriction groups
-          DefaultListTile(
-            position: ItemPosition.top,
-            leadingIcon: FluentIcons.app_title_20_regular,
-            titleText: context.locale.restriction_groups_tab_title,
-            subtitleText: context.locale.restriction_groups_tile_subtitle,
-            trailing: const Icon(FluentIcons.chevron_right_20_regular),
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
-            onPressed: () => Navigator.of(context)
-                .pushNamed(AppRoutes.restrictionGroupsScreen),
-          ).sliver,
-
-          /// Notification batching
-          DefaultListTile(
-            position: ItemPosition.bottom,
-            leadingIcon: FluentIcons.channel_alert_20_regular,
-            titleText: context.locale.batch_notifications_tab_title,
-            subtitleText: context.locale.batch_notifications_tile_subtitle,
-            trailing: const Icon(FluentIcons.chevron_right_20_regular),
-            color: Theme.of(context).colorScheme.surfaceContainerHigh,
-            onPressed: () => Navigator.of(context)
-                .pushNamed(AppRoutes.batchNotificationsScreen),
-          ).sliver,
 
           ContentSectionHeader(title: context.locale.most_used_apps_heading)
               .sliver,

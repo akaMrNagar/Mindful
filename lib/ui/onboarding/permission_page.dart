@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/device_info_provider.dart';
+import 'package:mindful/providers/system/device_info_provider.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/permissions/alarm_permission_tile.dart';
 import 'package:mindful/ui/permissions/battery_permission_tile.dart';

@@ -21,13 +21,13 @@ import android.widget.Toast
  */
 class DeviceAdminReceiver : DeviceAdminReceiver() {
     override fun onEnabled(context: Context, intent: Intent) {
-        super.onEnabled(context, intent)
         Toast.makeText(context, "Tamper protection enabled", Toast.LENGTH_LONG).show()
+        super.onEnabled(context, intent)
     }
 
     override fun onDisabled(context: Context, intent: Intent) {
-        super.onDisabled(context, intent)
         Toast.makeText(context, "Tamper protection disabled", Toast.LENGTH_LONG).show()
+        super.onDisabled(context, intent)
     }
 }
 

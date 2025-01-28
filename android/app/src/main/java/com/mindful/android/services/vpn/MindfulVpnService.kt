@@ -196,10 +196,10 @@ class MindfulVpnService : VpnService() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         disconnectVpn()
         stopForeground(STOP_FOREGROUND_REMOVE)
         Log.d(TAG, "onDestroy: VPN service destroyed successfully")
+        super.onDestroy()
     }
 
     override fun onBind(intent: Intent): IBinder? {

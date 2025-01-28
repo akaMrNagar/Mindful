@@ -22,15 +22,16 @@ import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/apps_restrictions_provider.dart';
-import 'package:mindful/providers/new/todays_apps_usage_provider.dart';
-import 'package:mindful/providers/restriction_groups_provider.dart';
+import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
+import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
+import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/default_scaffold.dart';
+import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/sliver_distracting_apps_list.dart';
+import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
@@ -91,12 +92,12 @@ class _CreateUpdateRestrictionGroupState
             .map((e) => e.appPackage)))
         .toList();
 
-    return DefaultScaffold(
-      navbarItems: [
+    return ScaffoldShell(
+      items: [
         NavbarItem(
           icon: FluentIcons.tab_desktop_bottom_20_regular,
           filledIcon: FluentIcons.tab_desktop_bottom_20_filled,
-          title: _group.groupName,
+          titleText: _group.groupName,
           fab: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -156,7 +157,6 @@ class _CreateUpdateRestrictionGroupState
                   ),
                 ],
               ).sliver,
-              2.vSliverBox,
 
               /// Group name
               DefaultHero(
@@ -279,6 +279,8 @@ class _CreateUpdateRestrictionGroupState
                   setState(() {});
                 },
               ),
+
+              const SliverTabsBottomPadding(),
             ],
           ),
         )

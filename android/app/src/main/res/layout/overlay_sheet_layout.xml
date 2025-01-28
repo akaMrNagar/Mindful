@@ -18,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginTop="16dp"
         android:background="@drawable/shape_rounded_top_lg"
         android:backgroundTint="@color/tertiaryContainer"
         android:orientation="vertical"

@@ -21,7 +21,7 @@ import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/device_info_provider.dart';
+import 'package:mindful/providers/system/device_info_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -48,7 +48,7 @@ class TabAbout extends ConsumerWidget {
           fontSize: 14,
           isSubtitle: true,
           height: 1,
-        ).rightCentered.sliver,
+        ).sliver,
         2.vSliverBox,
         StyledText(
           "db-v${DriftDbService.instance.driftDb.schemaVersion}",
@@ -56,7 +56,7 @@ class TabAbout extends ConsumerWidget {
           fontSize: 14,
           isSubtitle: true,
           height: 1,
-        ).rightCentered.sliver,
+        ).sliver,
 
         /// Breathing logo
         BreathingWidget(
@@ -160,15 +160,12 @@ class TabAbout extends ConsumerWidget {
             .sliver,
         StyledText(context.locale.privacy_policy_info).sliver,
         12.vSliverBox,
-        Align(
-          alignment: Alignment.centerRight,
-          child: FilledButton.tonalIcon(
-            icon: const Icon(FluentIcons.info_20_regular),
-            label: Text(context.locale.more_details_button),
-            onPressed: () => MethodChannelService.instance
-                .launchUrl(AppConstants.privacyPolicyUrl),
-          ),
-        ).sliver,
+        FilledButton.tonalIcon(
+          icon: const Icon(FluentIcons.info_20_regular),
+          label: Text(context.locale.more_details_button),
+          onPressed: () => MethodChannelService.instance
+              .launchUrl(AppConstants.privacyPolicyUrl),
+        ).rightCentered.sliver,
 
         const SliverTabsBottomPadding(),
       ],
