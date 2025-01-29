@@ -27,6 +27,7 @@ import org.jetbrains.annotations.Contract
 import java.io.ByteArrayOutputStream
 import java.net.URI
 import java.net.URISyntaxException
+import java.time.DayOfWeek
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
@@ -196,6 +197,28 @@ object Utils {
 
         return timeStr.toString()
     }
+
+    /**
+     * Returns the current day of the week as a zero-based index, where Monday is 0 and Sunday is 6.
+     *
+     * The `Calendar.DAY_OF_WEEK` values range from `1` (Sunday) to `7` (Saturday).
+     * This method shifts the values so that:
+     * - Monday → `0`
+     * - Tuesday → `1`
+     * - Wednesday → `2`
+     * - Thursday → `3`
+     * - Friday → `4`
+     * - Saturday → `5`
+     * - Sunday → `6`
+     *
+     * @return An integer representing the day of the week with Monday as index `0` and Sunday as index `6`.
+     */
+    @Contract(pure = true)
+    fun zeroIndexedDayOfWeek(): Int {
+        val javaDayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK]
+        return (javaDayOfWeek + 5) % 7
+    }
+
 
     /**
      * Create a calender instance from the Time Of Day total minutes.

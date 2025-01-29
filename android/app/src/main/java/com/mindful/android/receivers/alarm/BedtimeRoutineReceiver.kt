@@ -68,22 +68,18 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
     ) : Worker(context, params) {
         private val jsonBedtimeSettings = inputData.getString(ALARM_EXTRA_JSON) ?: ""
         private val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+        private val canStartRoutineToday: Boolean =
+            bedtimeSettings.scheduleDays[Utils.zeroIndexedDayOfWeek()]
+
         private val trackerServiceConn = SafeServiceConnection(
             MindfulTrackerService::class.java, context
         )
-
-        private val canStartRoutineToday: Boolean
-
-        init {
-            // (dayOfWeek -1) for zero based indexing (0-6) of week days (1-7)
-            val dayOfWeek = Calendar.getInstance()[Calendar.DAY_OF_WEEK] - 1
-            this.canStartRoutineToday = bedtimeSettings.scheduleDays[dayOfWeek]
-        }
 
 
         override fun doWork(): Result {
             try {
                 val action = inputData.getString("action")
+                Log.d(TAG, "doWork: Can start today : $canStartRoutineToday")
 
                 when (action) {
                     ACTION_ALERT_BEDTIME -> pushAlertNotification(context.getString(R.string.bedtime_upcoming_notification_info))
