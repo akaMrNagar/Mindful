@@ -18,6 +18,7 @@ import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/notifications/notification_schedules_provider.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_slide_to_remove.dart';
 import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/time_card.dart';
@@ -99,41 +100,33 @@ class _ScheduleCard extends StatelessWidget {
           enabled: enabled,
           key: Key("${schedule.label}:${schedule.id}"),
           onDismiss: () => onRemove(schedule),
-          child: Container(
-            padding: const EdgeInsets.only(right: 12),
-            color: Theme.of(context).colorScheme.surfaceContainer,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    /// Time
-                    TimeCard(
-                      label: schedule.label,
-                      heroTag: HeroTags.notificationScheduleTimerTileTag(
-                        schedule.id,
-                      ),
-                      enabled: enabled,
-                      icon: _resolveIconFromTime(schedule.time.hour),
-                      iconColor: accent,
-                      initialTime: schedule.time,
-                      onChange: (newTime) {
-                        if (newTime == schedule.time) return;
-                        onUpdate(schedule.copyWith(time: newTime));
-                      },
-                    ),
+          child: DefaultListTile(
+            position: ItemPosition.fit,
+            margin: const EdgeInsets.all(0),
 
-                    /// Switch
-                    Switch(
-                      value: schedule.isActive,
-                      onChanged: enabled
-                          ? (isActive) =>
-                              onUpdate(schedule.copyWith(isActive: isActive))
-                          : null,
-                    ),
-                  ],
-                ),
-              ],
+            /// Time
+            leading: TimeCard(
+              label: schedule.label,
+              heroTag: HeroTags.notificationScheduleTimerTileTag(
+                schedule.id,
+              ),
+              enabled: enabled,
+              icon: _resolveIconFromTime(schedule.time.hour),
+              iconColor: accent,
+              initialTime: schedule.time,
+              onChange: (newTime) {
+                if (newTime == schedule.time) return;
+                onUpdate(schedule.copyWith(time: newTime));
+              },
+            ),
+
+            /// Switch
+            trailing: Switch(
+              value: schedule.isActive,
+              onChanged: enabled
+                  ? (isActive) =>
+                      onUpdate(schedule.copyWith(isActive: isActive))
+                  : null,
             ),
           ),
         ),

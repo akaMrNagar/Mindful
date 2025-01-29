@@ -11,7 +11,6 @@ final defaultMindfulSettingsModel = MindfulSettings(
   accentColor: AppConstants.defaultMaterialColor,
   username: AppConstants.defaultUsername,
   localeCode: AppConstants.defaultLocale,
-  dataResetTime: const TimeOfDayAdapter.zero(),
   useBottomNavigation: false,
   useAmoledDark: false,
   useDynamicColors: false,
@@ -50,6 +49,7 @@ const defaultWellbeingModel = Wellbeing(
   blockRedditShorts: false,
   blockNsfwSites: false,
   blockedWebsites: [],
+  nsfwWebsites: [],
 );
 
 const defaultBedtimeScheduleModel = BedtimeSchedule(
@@ -71,8 +71,6 @@ const defaultAppRestrictionModel = AppRestriction(
   activePeriodEnd: TimeOfDayAdapter.zero(),
   periodDurationInMins: 0,
   canAccessInternet: true,
-  alertInterval: 15 * 60, // Every 15 minutes
-  alertByDialog: false,
 );
 
 final defaultFocusModeModel = FocusMode(

@@ -54,4 +54,8 @@ class WellbeingTable extends Table {
       .map(const ListStringConverter())
       .withDefault(Constant(jsonEncode([])))();
 
+  /// List of website hosts which are nsfw.
+  TextColumn get nsfwWebsites => text()
+      .map(const ListStringConverter())
+      .withDefault(Constant(jsonEncode([])))();
 }

@@ -16,7 +16,6 @@ import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
 import 'package:mindful/config/hero_tags.dart';
@@ -26,13 +25,11 @@ import 'package:mindful/providers/focus/invincible_mode_provider.dart';
 import 'package:mindful/providers/usage/apps_launch_count_provider.dart';
 import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
-import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/app_launch_limit_dialog.dart';
-import 'package:mindful/ui/dialogs/timer_picker_dialog.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_internet_tile.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_timer_tile.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -193,58 +190,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
           ),
           onPressed: () => Navigator.of(context)
               .pushNamed(AppRoutes.restrictionGroupsScreen),
-        ).sliver,
-
-        /// Alerts section
-        ContentSectionHeader(title: context.locale.usage_alerts_heading).sliver,
-
-        /// Alert interval
-        DefaultHero(
-          tag: HeroTags.appAlertIntervalTileTag(appInfo.packageName),
-          child: DefaultListTile(
-            enabled: !appInfo.isImpSysApp,
-            position: ItemPosition.top,
-            titleText: context.locale.app_alert_interval_tile_title,
-            subtitleText: context.locale.app_alert_interval_tile_subtitle(
-              restriction.alertInterval.seconds.toTimeFull(context),
-            ),
-            leadingIcon: FluentIcons.alert_urgent_20_regular,
-            onPressed: () async => showAppAlertIntervalPicker(
-              context: context,
-              heroTag: HeroTags.appAlertIntervalTileTag(appInfo.packageName),
-              initialTime: restriction.alertInterval,
-            ).then(
-              (v) => ref
-                  .read(appsRestrictionsProvider.notifier)
-                  .updateAlertInterval(
-                    appInfo.packageName,
-                    v ?? restriction.alertInterval,
-                  ),
-            ),
-          ),
-        ).sliver,
-
-        /// Alert type
-        DefaultDropdownTile<bool>(
-          enabled: !appInfo.isImpSysApp,
-          position: ItemPosition.bottom,
-          value: restriction.alertByDialog,
-          leadingIcon: FluentIcons.channel_alert_20_regular,
-          dialogIcon: FluentIcons.channel_alert_20_filled,
-          titleText: context.locale.app_alert_type_tile_title,
-          onSelected: (v) => ref
-              .read(appsRestrictionsProvider.notifier)
-              .setAlertByDialog(appInfo.packageName, v),
-          items: [
-            DefaultDropdownItem(
-              label: context.locale.app_alert_type_notification,
-              value: false,
-            ),
-            DefaultDropdownItem(
-              label: context.locale.app_alert_type_dialog,
-              value: true,
-            ),
-          ],
         ).sliver,
       ],
     );

@@ -263,6 +263,8 @@
     "add_website_fab_button": "Add Website",
     "add_website_dialog_title": "Distracting website",
     "add_website_dialog_info": "Enter url of a website which you want to block.",
+    "add_website_dialog_is_nsfw": "Is nsfw site?",
+    "add_website_dialog_nsfw_warning": "Warning: Nsfw sites cannot be removed once added.",
     "add_website_dialog_button_block": "Block",
     "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
     "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",

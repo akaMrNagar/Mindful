@@ -61,6 +61,14 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _associatedGroupIdMeta =
+      const VerificationMeta('associatedGroupId');
+  @override
+  late final GeneratedColumn<int> associatedGroupId = GeneratedColumn<int>(
+      'associated_group_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(null));
   static const VerificationMeta _canAccessInternetMeta =
       const VerificationMeta('canAccessInternet');
   @override
@@ -71,32 +79,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("can_access_internet" IN (0, 1))'),
       defaultValue: const Constant(true));
-  static const VerificationMeta _associatedGroupIdMeta =
-      const VerificationMeta('associatedGroupId');
-  @override
-  late final GeneratedColumn<int> associatedGroupId = GeneratedColumn<int>(
-      'associated_group_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(null));
-  static const VerificationMeta _alertIntervalMeta =
-      const VerificationMeta('alertInterval');
-  @override
-  late final GeneratedColumn<int> alertInterval = GeneratedColumn<int>(
-      'alert_interval', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(15 * 60));
-  static const VerificationMeta _alertByDialogMeta =
-      const VerificationMeta('alertByDialog');
-  @override
-  late final GeneratedColumn<bool> alertByDialog = GeneratedColumn<bool>(
-      'alert_by_dialog', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("alert_by_dialog" IN (0, 1))'),
-      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         appPackage,
@@ -105,10 +87,8 @@ class $AppRestrictionTableTable extends AppRestrictionTable
         activePeriodStart,
         activePeriodEnd,
         periodDurationInMins,
-        canAccessInternet,
         associatedGroupId,
-        alertInterval,
-        alertByDialog
+        canAccessInternet
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -146,29 +126,17 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           periodDurationInMins.isAcceptableOrUnknown(
               data['period_duration_in_mins']!, _periodDurationInMinsMeta));
     }
-    if (data.containsKey('can_access_internet')) {
-      context.handle(
-          _canAccessInternetMeta,
-          canAccessInternet.isAcceptableOrUnknown(
-              data['can_access_internet']!, _canAccessInternetMeta));
-    }
     if (data.containsKey('associated_group_id')) {
       context.handle(
           _associatedGroupIdMeta,
           associatedGroupId.isAcceptableOrUnknown(
               data['associated_group_id']!, _associatedGroupIdMeta));
     }
-    if (data.containsKey('alert_interval')) {
+    if (data.containsKey('can_access_internet')) {
       context.handle(
-          _alertIntervalMeta,
-          alertInterval.isAcceptableOrUnknown(
-              data['alert_interval']!, _alertIntervalMeta));
-    }
-    if (data.containsKey('alert_by_dialog')) {
-      context.handle(
-          _alertByDialogMeta,
-          alertByDialog.isAcceptableOrUnknown(
-              data['alert_by_dialog']!, _alertByDialogMeta));
+          _canAccessInternetMeta,
+          canAccessInternet.isAcceptableOrUnknown(
+              data['can_access_internet']!, _canAccessInternetMeta));
     }
     return context;
   }
@@ -193,14 +161,10 @@ class $AppRestrictionTableTable extends AppRestrictionTable
               DriftSqlType.int, data['${effectivePrefix}active_period_end'])!),
       periodDurationInMins: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}period_duration_in_mins'])!,
-      canAccessInternet: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
       associatedGroupId: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}associated_group_id']),
-      alertInterval: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}alert_interval'])!,
-      alertByDialog: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}alert_by_dialog'])!,
+      canAccessInternet: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
     );
   }
 
@@ -236,17 +200,11 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   /// Total duration of active period from start to end in MINUTES
   final int periodDurationInMins;
 
-  /// Flag denoting if this app can access internet or not
-  final bool canAccessInternet;
-
   /// ID of the [RestrictionGroup] this app is associated with or NULL
   final int? associatedGroupId;
 
-  /// The interval between each usage alert in SECONDS
-  final int alertInterval;
-
-  ///  Whether to alert user by dialog if false user will be alerted by notification
-  final bool alertByDialog;
+  /// Flag denoting if this app can access internet or not
+  final bool canAccessInternet;
   const AppRestriction(
       {required this.appPackage,
       required this.timerSec,
@@ -254,10 +212,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       required this.activePeriodStart,
       required this.activePeriodEnd,
       required this.periodDurationInMins,
-      required this.canAccessInternet,
       this.associatedGroupId,
-      required this.alertInterval,
-      required this.alertByDialog});
+      required this.canAccessInternet});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -275,12 +231,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           .toSql(activePeriodEnd));
     }
     map['period_duration_in_mins'] = Variable<int>(periodDurationInMins);
-    map['can_access_internet'] = Variable<bool>(canAccessInternet);
     if (!nullToAbsent || associatedGroupId != null) {
       map['associated_group_id'] = Variable<int>(associatedGroupId);
     }
-    map['alert_interval'] = Variable<int>(alertInterval);
-    map['alert_by_dialog'] = Variable<bool>(alertByDialog);
+    map['can_access_internet'] = Variable<bool>(canAccessInternet);
     return map;
   }
 
@@ -292,12 +246,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       activePeriodStart: Value(activePeriodStart),
       activePeriodEnd: Value(activePeriodEnd),
       periodDurationInMins: Value(periodDurationInMins),
-      canAccessInternet: Value(canAccessInternet),
       associatedGroupId: associatedGroupId == null && nullToAbsent
           ? const Value.absent()
           : Value(associatedGroupId),
-      alertInterval: Value(alertInterval),
-      alertByDialog: Value(alertByDialog),
+      canAccessInternet: Value(canAccessInternet),
     );
   }
 
@@ -314,10 +266,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           .fromJson(serializer.fromJson<dynamic>(json['activePeriodEnd'])),
       periodDurationInMins:
           serializer.fromJson<int>(json['periodDurationInMins']),
-      canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
       associatedGroupId: serializer.fromJson<int?>(json['associatedGroupId']),
-      alertInterval: serializer.fromJson<int>(json['alertInterval']),
-      alertByDialog: serializer.fromJson<bool>(json['alertByDialog']),
+      canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
     );
   }
   @override
@@ -334,10 +284,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           .$converteractivePeriodEnd
           .toJson(activePeriodEnd)),
       'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
-      'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
       'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
-      'alertInterval': serializer.toJson<int>(alertInterval),
-      'alertByDialog': serializer.toJson<bool>(alertByDialog),
+      'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
     };
   }
 
@@ -348,10 +296,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           TimeOfDayAdapter? activePeriodStart,
           TimeOfDayAdapter? activePeriodEnd,
           int? periodDurationInMins,
-          bool? canAccessInternet,
           Value<int?> associatedGroupId = const Value.absent(),
-          int? alertInterval,
-          bool? alertByDialog}) =>
+          bool? canAccessInternet}) =>
       AppRestriction(
         appPackage: appPackage ?? this.appPackage,
         timerSec: timerSec ?? this.timerSec,
@@ -359,12 +305,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
         activePeriodStart: activePeriodStart ?? this.activePeriodStart,
         activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
         periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
-        canAccessInternet: canAccessInternet ?? this.canAccessInternet,
         associatedGroupId: associatedGroupId.present
             ? associatedGroupId.value
             : this.associatedGroupId,
-        alertInterval: alertInterval ?? this.alertInterval,
-        alertByDialog: alertByDialog ?? this.alertByDialog,
+        canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       );
   @override
   String toString() {
@@ -375,10 +319,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           ..write('activePeriodStart: $activePeriodStart, ')
           ..write('activePeriodEnd: $activePeriodEnd, ')
           ..write('periodDurationInMins: $periodDurationInMins, ')
-          ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId, ')
-          ..write('alertInterval: $alertInterval, ')
-          ..write('alertByDialog: $alertByDialog')
+          ..write('canAccessInternet: $canAccessInternet')
           ..write(')'))
         .toString();
   }
@@ -391,10 +333,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       activePeriodStart,
       activePeriodEnd,
       periodDurationInMins,
-      canAccessInternet,
       associatedGroupId,
-      alertInterval,
-      alertByDialog);
+      canAccessInternet);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -405,10 +345,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           other.activePeriodStart == this.activePeriodStart &&
           other.activePeriodEnd == this.activePeriodEnd &&
           other.periodDurationInMins == this.periodDurationInMins &&
-          other.canAccessInternet == this.canAccessInternet &&
           other.associatedGroupId == this.associatedGroupId &&
-          other.alertInterval == this.alertInterval &&
-          other.alertByDialog == this.alertByDialog);
+          other.canAccessInternet == this.canAccessInternet);
 }
 
 class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
@@ -418,10 +356,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   final Value<TimeOfDayAdapter> activePeriodStart;
   final Value<TimeOfDayAdapter> activePeriodEnd;
   final Value<int> periodDurationInMins;
-  final Value<bool> canAccessInternet;
   final Value<int?> associatedGroupId;
-  final Value<int> alertInterval;
-  final Value<bool> alertByDialog;
+  final Value<bool> canAccessInternet;
   final Value<int> rowid;
   const AppRestrictionTableCompanion({
     this.appPackage = const Value.absent(),
@@ -430,10 +366,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     this.activePeriodStart = const Value.absent(),
     this.activePeriodEnd = const Value.absent(),
     this.periodDurationInMins = const Value.absent(),
-    this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
-    this.alertInterval = const Value.absent(),
-    this.alertByDialog = const Value.absent(),
+    this.canAccessInternet = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppRestrictionTableCompanion.insert({
@@ -443,10 +377,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     this.activePeriodStart = const Value.absent(),
     this.activePeriodEnd = const Value.absent(),
     this.periodDurationInMins = const Value.absent(),
-    this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
-    this.alertInterval = const Value.absent(),
-    this.alertByDialog = const Value.absent(),
+    this.canAccessInternet = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : appPackage = Value(appPackage);
   static Insertable<AppRestriction> custom({
@@ -456,10 +388,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     Expression<int>? activePeriodStart,
     Expression<int>? activePeriodEnd,
     Expression<int>? periodDurationInMins,
-    Expression<bool>? canAccessInternet,
     Expression<int>? associatedGroupId,
-    Expression<int>? alertInterval,
-    Expression<bool>? alertByDialog,
+    Expression<bool>? canAccessInternet,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -470,10 +400,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       if (activePeriodEnd != null) 'active_period_end': activePeriodEnd,
       if (periodDurationInMins != null)
         'period_duration_in_mins': periodDurationInMins,
-      if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
       if (associatedGroupId != null) 'associated_group_id': associatedGroupId,
-      if (alertInterval != null) 'alert_interval': alertInterval,
-      if (alertByDialog != null) 'alert_by_dialog': alertByDialog,
+      if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -485,10 +413,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       Value<TimeOfDayAdapter>? activePeriodStart,
       Value<TimeOfDayAdapter>? activePeriodEnd,
       Value<int>? periodDurationInMins,
-      Value<bool>? canAccessInternet,
       Value<int?>? associatedGroupId,
-      Value<int>? alertInterval,
-      Value<bool>? alertByDialog,
+      Value<bool>? canAccessInternet,
       Value<int>? rowid}) {
     return AppRestrictionTableCompanion(
       appPackage: appPackage ?? this.appPackage,
@@ -497,10 +423,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       activePeriodStart: activePeriodStart ?? this.activePeriodStart,
       activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
       periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
-      canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       associatedGroupId: associatedGroupId ?? this.associatedGroupId,
-      alertInterval: alertInterval ?? this.alertInterval,
-      alertByDialog: alertByDialog ?? this.alertByDialog,
+      canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -531,17 +455,11 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       map['period_duration_in_mins'] =
           Variable<int>(periodDurationInMins.value);
     }
-    if (canAccessInternet.present) {
-      map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
-    }
     if (associatedGroupId.present) {
       map['associated_group_id'] = Variable<int>(associatedGroupId.value);
     }
-    if (alertInterval.present) {
-      map['alert_interval'] = Variable<int>(alertInterval.value);
-    }
-    if (alertByDialog.present) {
-      map['alert_by_dialog'] = Variable<bool>(alertByDialog.value);
+    if (canAccessInternet.present) {
+      map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -558,10 +476,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
           ..write('activePeriodStart: $activePeriodStart, ')
           ..write('activePeriodEnd: $activePeriodEnd, ')
           ..write('periodDurationInMins: $periodDurationInMins, ')
-          ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId, ')
-          ..write('alertInterval: $alertInterval, ')
-          ..write('alertByDialog: $alertByDialog, ')
+          ..write('canAccessInternet: $canAccessInternet, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -619,7 +535,7 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
               type: DriftSqlType.string,
               requiredDuringInsert: false,
               defaultValue: Constant(
-                  jsonEncode([false, true, true, true, true, true, false])))
+                  jsonEncode([true, true, true, true, true, false, false])))
           .withConverter<List<bool>>(
               $BedtimeScheduleTableTable.$converterscheduleDays);
   static const VerificationMeta _isScheduleOnMeta =
@@ -2314,17 +2230,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(AppConstants.defaultLocale));
-  static const VerificationMeta _dataResetTimeMeta =
-      const VerificationMeta('dataResetTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
-      dataResetTime = GeneratedColumn<int>(
-              'data_reset_time', aliasedName, false,
-              type: DriftSqlType.int,
-              requiredDuringInsert: false,
-              defaultValue: const Constant(0))
-          .withConverter<TimeOfDayAdapter>(
-              $MindfulSettingsTableTable.$converterdataResetTime);
   static const VerificationMeta _useBottomNavigationMeta =
       const VerificationMeta('useBottomNavigation');
   @override
@@ -2420,7 +2325,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         accentColor,
         username,
         localeCode,
-        dataResetTime,
         useBottomNavigation,
         useAmoledDark,
         useDynamicColors,
@@ -2461,7 +2365,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           localeCode.isAcceptableOrUnknown(
               data['locale_code']!, _localeCodeMeta));
     }
-    context.handle(_dataResetTimeMeta, const VerificationResult.success());
     if (data.containsKey('use_bottom_navigation')) {
       context.handle(
           _useBottomNavigationMeta,
@@ -2527,9 +2430,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       localeCode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}locale_code'])!,
-      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.int, data['${effectivePrefix}data_reset_time'])!),
       useBottomNavigation: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}use_bottom_navigation'])!,
       useAmoledDark: attachedDatabase.typeMapping
@@ -2562,8 +2462,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
 
   static JsonTypeConverter2<AppThemeMode, int, int> $converterthemeMode =
       const EnumIndexConverter<AppThemeMode>(AppThemeMode.values);
-  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
-      $converterdataResetTime = const TimeOfDayAdapterConverter();
   static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
   static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
@@ -2585,9 +2483,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// App Locale (Language code)
   final String localeCode;
-
-  /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
-  final TimeOfDayAdapter dataResetTime;
 
   /// Flag indicating if to use bottom navigation or the default sidebar
   final bool useBottomNavigation;
@@ -2621,7 +2516,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.accentColor,
       required this.username,
       required this.localeCode,
-      required this.dataResetTime,
       required this.useBottomNavigation,
       required this.useAmoledDark,
       required this.useDynamicColors,
@@ -2642,11 +2536,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['accent_color'] = Variable<String>(accentColor);
     map['username'] = Variable<String>(username);
     map['locale_code'] = Variable<String>(localeCode);
-    {
-      map['data_reset_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converterdataResetTime
-          .toSql(dataResetTime));
-    }
     map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation);
     map['use_amoled_dark'] = Variable<bool>(useAmoledDark);
     map['use_dynamic_colors'] = Variable<bool>(useDynamicColors);
@@ -2674,7 +2563,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: Value(accentColor),
       username: Value(username),
       localeCode: Value(localeCode),
-      dataResetTime: Value(dataResetTime),
       useBottomNavigation: Value(useBottomNavigation),
       useAmoledDark: Value(useAmoledDark),
       useDynamicColors: Value(useDynamicColors),
@@ -2697,8 +2585,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: serializer.fromJson<String>(json['accentColor']),
       username: serializer.fromJson<String>(json['username']),
       localeCode: serializer.fromJson<String>(json['localeCode']),
-      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime
-          .fromJson(serializer.fromJson<dynamic>(json['dataResetTime'])),
       useBottomNavigation:
           serializer.fromJson<bool>(json['useBottomNavigation']),
       useAmoledDark: serializer.fromJson<bool>(json['useAmoledDark']),
@@ -2726,9 +2612,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'accentColor': serializer.toJson<String>(accentColor),
       'username': serializer.toJson<String>(username),
       'localeCode': serializer.toJson<String>(localeCode),
-      'dataResetTime': serializer.toJson<dynamic>($MindfulSettingsTableTable
-          .$converterdataResetTime
-          .toJson(dataResetTime)),
       'useBottomNavigation': serializer.toJson<bool>(useBottomNavigation),
       'useAmoledDark': serializer.toJson<bool>(useAmoledDark),
       'useDynamicColors': serializer.toJson<bool>(useDynamicColors),
@@ -2751,7 +2634,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           String? accentColor,
           String? username,
           String? localeCode,
-          TimeOfDayAdapter? dataResetTime,
           bool? useBottomNavigation,
           bool? useAmoledDark,
           bool? useDynamicColors,
@@ -2767,7 +2649,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         accentColor: accentColor ?? this.accentColor,
         username: username ?? this.username,
         localeCode: localeCode ?? this.localeCode,
-        dataResetTime: dataResetTime ?? this.dataResetTime,
         useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
         useAmoledDark: useAmoledDark ?? this.useAmoledDark,
         useDynamicColors: useDynamicColors ?? this.useDynamicColors,
@@ -2786,7 +2667,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('dataResetTime: $dataResetTime, ')
           ..write('useBottomNavigation: $useBottomNavigation, ')
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
@@ -2807,7 +2687,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor,
       username,
       localeCode,
-      dataResetTime,
       useBottomNavigation,
       useAmoledDark,
       useDynamicColors,
@@ -2826,7 +2705,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.accentColor == this.accentColor &&
           other.username == this.username &&
           other.localeCode == this.localeCode &&
-          other.dataResetTime == this.dataResetTime &&
           other.useBottomNavigation == this.useBottomNavigation &&
           other.useAmoledDark == this.useAmoledDark &&
           other.useDynamicColors == this.useDynamicColors &&
@@ -2844,7 +2722,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<String> accentColor;
   final Value<String> username;
   final Value<String> localeCode;
-  final Value<TimeOfDayAdapter> dataResetTime;
   final Value<bool> useBottomNavigation;
   final Value<bool> useAmoledDark;
   final Value<bool> useDynamicColors;
@@ -2860,7 +2737,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.accentColor = const Value.absent(),
     this.username = const Value.absent(),
     this.localeCode = const Value.absent(),
-    this.dataResetTime = const Value.absent(),
     this.useBottomNavigation = const Value.absent(),
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
@@ -2877,7 +2753,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.accentColor = const Value.absent(),
     this.username = const Value.absent(),
     this.localeCode = const Value.absent(),
-    this.dataResetTime = const Value.absent(),
     this.useBottomNavigation = const Value.absent(),
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
@@ -2894,7 +2769,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<String>? accentColor,
     Expression<String>? username,
     Expression<String>? localeCode,
-    Expression<int>? dataResetTime,
     Expression<bool>? useBottomNavigation,
     Expression<bool>? useAmoledDark,
     Expression<bool>? useDynamicColors,
@@ -2911,7 +2785,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       if (accentColor != null) 'accent_color': accentColor,
       if (username != null) 'username': username,
       if (localeCode != null) 'locale_code': localeCode,
-      if (dataResetTime != null) 'data_reset_time': dataResetTime,
       if (useBottomNavigation != null)
         'use_bottom_navigation': useBottomNavigation,
       if (useAmoledDark != null) 'use_amoled_dark': useAmoledDark,
@@ -2933,7 +2806,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<String>? accentColor,
       Value<String>? username,
       Value<String>? localeCode,
-      Value<TimeOfDayAdapter>? dataResetTime,
       Value<bool>? useBottomNavigation,
       Value<bool>? useAmoledDark,
       Value<bool>? useDynamicColors,
@@ -2949,7 +2821,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       accentColor: accentColor ?? this.accentColor,
       username: username ?? this.username,
       localeCode: localeCode ?? this.localeCode,
-      dataResetTime: dataResetTime ?? this.dataResetTime,
       useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
       useAmoledDark: useAmoledDark ?? this.useAmoledDark,
       useDynamicColors: useDynamicColors ?? this.useDynamicColors,
@@ -2981,11 +2852,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     }
     if (localeCode.present) {
       map['locale_code'] = Variable<String>(localeCode.value);
-    }
-    if (dataResetTime.present) {
-      map['data_reset_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converterdataResetTime
-          .toSql(dataResetTime.value));
     }
     if (useBottomNavigation.present) {
       map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation.value);
@@ -3029,7 +2895,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('dataResetTime: $dataResetTime, ')
           ..write('useBottomNavigation: $useBottomNavigation, ')
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
@@ -4096,6 +3961,17 @@ class $WellbeingTableTable extends WellbeingTable
               defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $WellbeingTableTable.$converterblockedWebsites);
+  static const VerificationMeta _nsfwWebsitesMeta =
+      const VerificationMeta('nsfwWebsites');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      nsfwWebsites = GeneratedColumn<String>(
+              'nsfw_websites', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
+          .withConverter<List<String>>(
+              $WellbeingTableTable.$converternsfwWebsites);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -4106,7 +3982,8 @@ class $WellbeingTableTable extends WellbeingTable
         blockFbReels,
         blockRedditShorts,
         blockNsfwSites,
-        blockedWebsites
+        blockedWebsites,
+        nsfwWebsites
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4164,6 +4041,7 @@ class $WellbeingTableTable extends WellbeingTable
               data['block_nsfw_sites']!, _blockNsfwSitesMeta));
     }
     context.handle(_blockedWebsitesMeta, const VerificationResult.success());
+    context.handle(_nsfwWebsitesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4192,6 +4070,9 @@ class $WellbeingTableTable extends WellbeingTable
       blockedWebsites: $WellbeingTableTable.$converterblockedWebsites.fromSql(
           attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}blocked_websites'])!),
+      nsfwWebsites: $WellbeingTableTable.$converternsfwWebsites.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}nsfw_websites'])!),
     );
   }
 
@@ -4201,6 +4082,8 @@ class $WellbeingTableTable extends WellbeingTable
   }
 
   static TypeConverter<List<String>, String> $converterblockedWebsites =
+      const ListStringConverter();
+  static TypeConverter<List<String>, String> $converternsfwWebsites =
       const ListStringConverter();
 }
 
@@ -4232,6 +4115,9 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
 
   /// List of website hosts which are blocked.
   final List<String> blockedWebsites;
+
+  /// List of website hosts which are nsfw.
+  final List<String> nsfwWebsites;
   const Wellbeing(
       {required this.id,
       required this.allowedShortsTimeSec,
@@ -4241,7 +4127,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       required this.blockFbReels,
       required this.blockRedditShorts,
       required this.blockNsfwSites,
-      required this.blockedWebsites});
+      required this.blockedWebsites,
+      required this.nsfwWebsites});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4258,6 +4145,10 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           .$converterblockedWebsites
           .toSql(blockedWebsites));
     }
+    {
+      map['nsfw_websites'] = Variable<String>(
+          $WellbeingTableTable.$converternsfwWebsites.toSql(nsfwWebsites));
+    }
     return map;
   }
 
@@ -4272,6 +4163,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       blockRedditShorts: Value(blockRedditShorts),
       blockNsfwSites: Value(blockNsfwSites),
       blockedWebsites: Value(blockedWebsites),
+      nsfwWebsites: Value(nsfwWebsites),
     );
   }
 
@@ -4290,6 +4182,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       blockNsfwSites: serializer.fromJson<bool>(json['blockNsfwSites']),
       blockedWebsites:
           serializer.fromJson<List<String>>(json['blockedWebsites']),
+      nsfwWebsites: serializer.fromJson<List<String>>(json['nsfwWebsites']),
     );
   }
   @override
@@ -4305,6 +4198,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       'blockRedditShorts': serializer.toJson<bool>(blockRedditShorts),
       'blockNsfwSites': serializer.toJson<bool>(blockNsfwSites),
       'blockedWebsites': serializer.toJson<List<String>>(blockedWebsites),
+      'nsfwWebsites': serializer.toJson<List<String>>(nsfwWebsites),
     };
   }
 
@@ -4317,7 +4211,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           bool? blockFbReels,
           bool? blockRedditShorts,
           bool? blockNsfwSites,
-          List<String>? blockedWebsites}) =>
+          List<String>? blockedWebsites,
+          List<String>? nsfwWebsites}) =>
       Wellbeing(
         id: id ?? this.id,
         allowedShortsTimeSec: allowedShortsTimeSec ?? this.allowedShortsTimeSec,
@@ -4328,6 +4223,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
         blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
         blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
         blockedWebsites: blockedWebsites ?? this.blockedWebsites,
+        nsfwWebsites: nsfwWebsites ?? this.nsfwWebsites,
       );
   @override
   String toString() {
@@ -4340,7 +4236,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           ..write('blockFbReels: $blockFbReels, ')
           ..write('blockRedditShorts: $blockRedditShorts, ')
           ..write('blockNsfwSites: $blockNsfwSites, ')
-          ..write('blockedWebsites: $blockedWebsites')
+          ..write('blockedWebsites: $blockedWebsites, ')
+          ..write('nsfwWebsites: $nsfwWebsites')
           ..write(')'))
         .toString();
   }
@@ -4355,7 +4252,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       blockFbReels,
       blockRedditShorts,
       blockNsfwSites,
-      blockedWebsites);
+      blockedWebsites,
+      nsfwWebsites);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4368,7 +4266,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           other.blockFbReels == this.blockFbReels &&
           other.blockRedditShorts == this.blockRedditShorts &&
           other.blockNsfwSites == this.blockNsfwSites &&
-          other.blockedWebsites == this.blockedWebsites);
+          other.blockedWebsites == this.blockedWebsites &&
+          other.nsfwWebsites == this.nsfwWebsites);
 }
 
 class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
@@ -4381,6 +4280,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   final Value<bool> blockRedditShorts;
   final Value<bool> blockNsfwSites;
   final Value<List<String>> blockedWebsites;
+  final Value<List<String>> nsfwWebsites;
   const WellbeingTableCompanion({
     this.id = const Value.absent(),
     this.allowedShortsTimeSec = const Value.absent(),
@@ -4391,6 +4291,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     this.blockRedditShorts = const Value.absent(),
     this.blockNsfwSites = const Value.absent(),
     this.blockedWebsites = const Value.absent(),
+    this.nsfwWebsites = const Value.absent(),
   });
   WellbeingTableCompanion.insert({
     this.id = const Value.absent(),
@@ -4402,6 +4303,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     this.blockRedditShorts = const Value.absent(),
     this.blockNsfwSites = const Value.absent(),
     this.blockedWebsites = const Value.absent(),
+    this.nsfwWebsites = const Value.absent(),
   });
   static Insertable<Wellbeing> custom({
     Expression<int>? id,
@@ -4413,6 +4315,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     Expression<bool>? blockRedditShorts,
     Expression<bool>? blockNsfwSites,
     Expression<String>? blockedWebsites,
+    Expression<String>? nsfwWebsites,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -4426,6 +4329,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       if (blockRedditShorts != null) 'block_reddit_shorts': blockRedditShorts,
       if (blockNsfwSites != null) 'block_nsfw_sites': blockNsfwSites,
       if (blockedWebsites != null) 'blocked_websites': blockedWebsites,
+      if (nsfwWebsites != null) 'nsfw_websites': nsfwWebsites,
     });
   }
 
@@ -4438,7 +4342,8 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       Value<bool>? blockFbReels,
       Value<bool>? blockRedditShorts,
       Value<bool>? blockNsfwSites,
-      Value<List<String>>? blockedWebsites}) {
+      Value<List<String>>? blockedWebsites,
+      Value<List<String>>? nsfwWebsites}) {
     return WellbeingTableCompanion(
       id: id ?? this.id,
       allowedShortsTimeSec: allowedShortsTimeSec ?? this.allowedShortsTimeSec,
@@ -4449,6 +4354,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
       blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
+      nsfwWebsites: nsfwWebsites ?? this.nsfwWebsites,
     );
   }
 
@@ -4485,6 +4391,11 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
           .$converterblockedWebsites
           .toSql(blockedWebsites.value));
     }
+    if (nsfwWebsites.present) {
+      map['nsfw_websites'] = Variable<String>($WellbeingTableTable
+          .$converternsfwWebsites
+          .toSql(nsfwWebsites.value));
+    }
     return map;
   }
 
@@ -4499,7 +4410,8 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
           ..write('blockFbReels: $blockFbReels, ')
           ..write('blockRedditShorts: $blockRedditShorts, ')
           ..write('blockNsfwSites: $blockNsfwSites, ')
-          ..write('blockedWebsites: $blockedWebsites')
+          ..write('blockedWebsites: $blockedWebsites, ')
+          ..write('nsfwWebsites: $nsfwWebsites')
           ..write(')'))
         .toString();
   }
@@ -5388,10 +5300,8 @@ typedef $$AppRestrictionTableTableInsertCompanionBuilder
   Value<TimeOfDayAdapter> activePeriodStart,
   Value<TimeOfDayAdapter> activePeriodEnd,
   Value<int> periodDurationInMins,
-  Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
-  Value<int> alertInterval,
-  Value<bool> alertByDialog,
+  Value<bool> canAccessInternet,
   Value<int> rowid,
 });
 typedef $$AppRestrictionTableTableUpdateCompanionBuilder
@@ -5402,10 +5312,8 @@ typedef $$AppRestrictionTableTableUpdateCompanionBuilder
   Value<TimeOfDayAdapter> activePeriodStart,
   Value<TimeOfDayAdapter> activePeriodEnd,
   Value<int> periodDurationInMins,
-  Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
-  Value<int> alertInterval,
-  Value<bool> alertByDialog,
+  Value<bool> canAccessInternet,
   Value<int> rowid,
 });
 
@@ -5436,10 +5344,8 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
             Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
             Value<int> periodDurationInMins = const Value.absent(),
-            Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
-            Value<int> alertInterval = const Value.absent(),
-            Value<bool> alertByDialog = const Value.absent(),
+            Value<bool> canAccessInternet = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion(
@@ -5449,10 +5355,8 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             activePeriodStart: activePeriodStart,
             activePeriodEnd: activePeriodEnd,
             periodDurationInMins: periodDurationInMins,
-            canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
-            alertInterval: alertInterval,
-            alertByDialog: alertByDialog,
+            canAccessInternet: canAccessInternet,
             rowid: rowid,
           ),
           getInsertCompanionBuilder: ({
@@ -5462,10 +5366,8 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
             Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
             Value<int> periodDurationInMins = const Value.absent(),
-            Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
-            Value<int> alertInterval = const Value.absent(),
-            Value<bool> alertByDialog = const Value.absent(),
+            Value<bool> canAccessInternet = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion.insert(
@@ -5475,10 +5377,8 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             activePeriodStart: activePeriodStart,
             activePeriodEnd: activePeriodEnd,
             periodDurationInMins: periodDurationInMins,
-            canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
-            alertInterval: alertInterval,
-            alertByDialog: alertByDialog,
+            canAccessInternet: canAccessInternet,
             rowid: rowid,
           ),
         ));
@@ -5534,23 +5434,13 @@ class $$AppRestrictionTableTableFilterComposer
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<bool> get canAccessInternet => $state.composableBuilder(
-      column: $state.table.canAccessInternet,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
   ColumnFilters<int> get associatedGroupId => $state.composableBuilder(
       column: $state.table.associatedGroupId,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 
-  ColumnFilters<int> get alertInterval => $state.composableBuilder(
-      column: $state.table.alertInterval,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get alertByDialog => $state.composableBuilder(
-      column: $state.table.alertByDialog,
+  ColumnFilters<bool> get canAccessInternet => $state.composableBuilder(
+      column: $state.table.canAccessInternet,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
 }
@@ -5588,23 +5478,13 @@ class $$AppRestrictionTableTableOrderingComposer
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<bool> get canAccessInternet => $state.composableBuilder(
-      column: $state.table.canAccessInternet,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
   ColumnOrderings<int> get associatedGroupId => $state.composableBuilder(
       column: $state.table.associatedGroupId,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
-  ColumnOrderings<int> get alertInterval => $state.composableBuilder(
-      column: $state.table.alertInterval,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get alertByDialog => $state.composableBuilder(
-      column: $state.table.alertByDialog,
+  ColumnOrderings<bool> get canAccessInternet => $state.composableBuilder(
+      column: $state.table.canAccessInternet,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }
@@ -6360,7 +6240,6 @@ typedef $$MindfulSettingsTableTableInsertCompanionBuilder
   Value<String> accentColor,
   Value<String> username,
   Value<String> localeCode,
-  Value<TimeOfDayAdapter> dataResetTime,
   Value<bool> useBottomNavigation,
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
@@ -6378,7 +6257,6 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<String> accentColor,
   Value<String> username,
   Value<String> localeCode,
-  Value<TimeOfDayAdapter> dataResetTime,
   Value<bool> useBottomNavigation,
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
@@ -6416,7 +6294,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<String> accentColor = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> localeCode = const Value.absent(),
-            Value<TimeOfDayAdapter> dataResetTime = const Value.absent(),
             Value<bool> useBottomNavigation = const Value.absent(),
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
@@ -6433,7 +6310,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            dataResetTime: dataResetTime,
             useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
@@ -6450,7 +6326,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<String> accentColor = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> localeCode = const Value.absent(),
-            Value<TimeOfDayAdapter> dataResetTime = const Value.absent(),
             Value<bool> useBottomNavigation = const Value.absent(),
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
@@ -6467,7 +6342,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            dataResetTime: dataResetTime,
             useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
@@ -6523,13 +6397,6 @@ class $$MindfulSettingsTableTableFilterComposer
       column: $state.table.localeCode,
       builder: (column, joinBuilders) =>
           ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get dataResetTime => $state.composableBuilder(
-          column: $state.table.dataResetTime,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
 
   ColumnFilters<bool> get useBottomNavigation => $state.composableBuilder(
       column: $state.table.useBottomNavigation,
@@ -6606,11 +6473,6 @@ class $$MindfulSettingsTableTableOrderingComposer
 
   ColumnOrderings<String> get localeCode => $state.composableBuilder(
       column: $state.table.localeCode,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get dataResetTime => $state.composableBuilder(
-      column: $state.table.dataResetTime,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 
@@ -7052,6 +6914,7 @@ typedef $$WellbeingTableTableInsertCompanionBuilder = WellbeingTableCompanion
   Value<bool> blockRedditShorts,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
+  Value<List<String>> nsfwWebsites,
 });
 typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
     Function({
@@ -7064,6 +6927,7 @@ typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
   Value<bool> blockRedditShorts,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
+  Value<List<String>> nsfwWebsites,
 });
 
 class $$WellbeingTableTableTableManager extends RootTableManager<
@@ -7096,6 +6960,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             Value<bool> blockRedditShorts = const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
+            Value<List<String>> nsfwWebsites = const Value.absent(),
           }) =>
               WellbeingTableCompanion(
             id: id,
@@ -7107,6 +6972,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             blockRedditShorts: blockRedditShorts,
             blockNsfwSites: blockNsfwSites,
             blockedWebsites: blockedWebsites,
+            nsfwWebsites: nsfwWebsites,
           ),
           getInsertCompanionBuilder: ({
             Value<int> id = const Value.absent(),
@@ -7118,6 +6984,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             Value<bool> blockRedditShorts = const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
+            Value<List<String>> nsfwWebsites = const Value.absent(),
           }) =>
               WellbeingTableCompanion.insert(
             id: id,
@@ -7129,6 +6996,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             blockRedditShorts: blockRedditShorts,
             blockNsfwSites: blockNsfwSites,
             blockedWebsites: blockedWebsites,
+            nsfwWebsites: nsfwWebsites,
           ),
         ));
 }
@@ -7194,6 +7062,13 @@ class $$WellbeingTableTableFilterComposer
           builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
               column,
               joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get nsfwWebsites => $state.composableBuilder(
+          column: $state.table.nsfwWebsites,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
 }
 
 class $$WellbeingTableTableOrderingComposer
@@ -7241,6 +7116,11 @@ class $$WellbeingTableTableOrderingComposer
 
   ColumnOrderings<String> get blockedWebsites => $state.composableBuilder(
       column: $state.table.blockedWebsites,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get nsfwWebsites => $state.composableBuilder(
+      column: $state.table.nsfwWebsites,
       builder: (column, joinBuilders) =>
           ColumnOrderings(column, joinBuilders: joinBuilders));
 }

@@ -172,39 +172,6 @@ class AppsRestrictionsNotifier
     await _updateTrackerService();
   }
 
-  /// Updates the alert interval for a specific app package.
-  ///
-  /// Anyway updated the platform-specific service.
-  Future<void> updateAlertInterval(
-    String appPackage,
-    int intervalSec,
-  ) async {
-    final restriction =
-        state[appPackage]?.copyWith(alertInterval: intervalSec) ??
-            defaultAppRestrictionModel.copyWith(
-              appPackage: appPackage,
-              alertInterval: intervalSec,
-            );
-
-    /// Update database and state
-    _updateStateDbAndServices(appPackage, restriction);
-  }
-
-  /// Set alert by dialog for a specific app package.
-  ///
-  /// Anyway updated the platform-specific service.
-  void setAlertByDialog(String appPackage, bool alertByDialog) async {
-    final restriction =
-        state[appPackage]?.copyWith(alertByDialog: alertByDialog) ??
-            defaultAppRestrictionModel.copyWith(
-              appPackage: appPackage,
-              alertByDialog: alertByDialog,
-            );
-
-    /// Update database and state
-    _updateStateDbAndServices(appPackage, restriction);
-  }
-
   /// Updates state and database with the provided data.
   ///
   /// Also update VPN service if flag is TRUE else update Tracker service
