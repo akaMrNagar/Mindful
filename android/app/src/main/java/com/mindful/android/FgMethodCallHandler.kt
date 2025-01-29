@@ -241,10 +241,8 @@ class FgMethodCallHandler(
             }
 
             "updateDistractingNotificationApps" -> {
-                val distractingApps = SharedPrefsHelper.getSetNotificationBatchedApps(
-                    context,
-                    call.arguments() ?: ""
-                )
+                val distractingApps =
+                    JsonDeserializer.jsonStrToStringHashSet(call.arguments() ?: "")
                 if (notificationServiceConn.isActive) {
                     notificationServiceConn.service?.updateDistractingApps(distractingApps)
                 } else if (distractingApps.isNotEmpty()) {
@@ -259,12 +257,9 @@ class FgMethodCallHandler(
             }
 
             "updateNotificationBatchSchedules" -> {
-                val todMinutes = SharedPrefsHelper.getSetNotificationBatchSchedules(
-                    context,
-                    call.arguments() ?: ""
-                )
-                if (todMinutes.isNotEmpty()) {
-                    scheduleNotificationBatchTask(context, todMinutes)
+                val jsonScheduleTods = call.arguments() ?: ""
+                if (jsonScheduleTods.isNotBlank()) {
+                    scheduleNotificationBatchTask(context, jsonScheduleTods)
                 } else {
                     cancelNotificationBatchTask(context)
                 }

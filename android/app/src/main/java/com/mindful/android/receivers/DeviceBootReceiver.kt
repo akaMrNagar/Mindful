@@ -60,8 +60,7 @@ class DeviceBootReceiver : BroadcastReceiver() {
                             .setInputData(
                                 Data.Builder().putString(FLUTTER_TASK_ID, "onBootOrAppUpdate")
                                     .build()
-                            )
-                            .build()
+                            ).build()
                     )
                 } catch (e: Exception) {
                     SharedPrefsHelper.insertCrashLogToPrefs(context, e)

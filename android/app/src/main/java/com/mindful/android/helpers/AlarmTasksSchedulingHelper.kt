@@ -25,6 +25,7 @@ import com.mindful.android.receivers.alarm.NotificationBatchReceiver
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver.NotificationBatchWorker
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.JsonDeserializer
 import com.mindful.android.utils.Utils
 import com.mindful.android.utils.Utils.todToTodayCal
 import org.json.JSONObject
@@ -185,10 +186,10 @@ object AlarmTasksSchedulingHelper {
      * Schedules next future possible notification batch.
      *
      * @param context      The application context.
-     * @param scheduleTods The hashset of integers representing TODs in minutes.
+     * @param jsonScheduleTods The json of hashset of integers representing TODs in minutes.
      */
-    fun scheduleNotificationBatchTask(context: Context, scheduleTods: HashSet<Int>) {
-        val sortedTods = scheduleTods.sorted()
+    fun scheduleNotificationBatchTask(context: Context, jsonScheduleTods: String) {
+        val sortedTods = JsonDeserializer.jsonStrToIntegerHashSet(jsonScheduleTods).sorted()
         if (sortedTods.isEmpty()) return
 
         val now = System.currentTimeMillis()
@@ -213,6 +214,7 @@ object AlarmTasksSchedulingHelper {
             receiverClass = NotificationBatchReceiver::class.java,
             intentAction = NotificationBatchReceiver.ACTION_PUSH_BATCH,
             requestCode = NOTIFICATION_BATCH_ALARM_ID,
+            extraJson = jsonScheduleTods,
             epochTimeMs = nextAlarmTimeMs,
         )
         Log.d(

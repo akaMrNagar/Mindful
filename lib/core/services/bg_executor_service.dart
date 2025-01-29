@@ -102,5 +102,19 @@ class BgExecutorService {
     /// Fetch and update bedtime routine
     final bedtime = await uniqueDao.loadBedtimeSchedule();
     await MethodChannelService.instance.updateBedtimeSchedule(bedtime);
+
+    /// Fetch and update notification batched apps and schedule
+    final notificationSchedules = await dynamicDao.fetchNotificationSchedules();
+    final distractingNotificationApps =
+        (await uniqueDao.loadSharedData()).notificationBatchedApps;
+
+    await MethodChannelService.instance
+        .updateDistractingNotificationApps(distractingNotificationApps);
+    await MethodChannelService.instance.updateNotificationBatchSchedules(
+      notificationSchedules
+          .where((e) => e.isActive)
+          .map((e) => e.time.toMinutes)
+          .toList(),
+    );
   }
 }

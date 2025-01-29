@@ -46,8 +46,6 @@ object SharedPrefsHelper {
     private var mNotificationBatchPrefs: SharedPreferences? = null
     private const val NOTIFICATION_BATCH_PREFS_BOX = "NotificationBatchPrefs"
     private const val PREF_KEY_UPCOMING_NOTIFICATIONS = "upcomingNotifications"
-    private const val PREF_KEY_BATCH_SCHEDULES = "batchSchedules"
-    private const val PREF_KEY_BATCHED_APPS = "batchedApps"
 
 
     private fun checkAndInitializeUniquePrefs(context: Context) {
@@ -236,50 +234,6 @@ object SharedPrefsHelper {
 
 
     /**
-     * Fetches the hashset of integers representing notification schedules if jsonNotificationSchedules is null else store it's json.
-     *
-     * @param context                   The application context.
-     * @param jsonNotificationSchedules The JSON string of hashset of integers representing notification schedules.
-     */
-    fun getSetNotificationBatchSchedules(
-        context: Context,
-        jsonNotificationSchedules: String?,
-    ): HashSet<Int> {
-        checkAndInitializeNotificationBatchPrefs(context)
-        if (jsonNotificationSchedules == null) {
-            return JsonDeserializer.jsonStrToIntegerHashSet(
-                mNotificationBatchPrefs!!.getString(PREF_KEY_BATCH_SCHEDULES, "")!!
-            )
-        } else {
-            mNotificationBatchPrefs!!.edit()
-                .putString(PREF_KEY_BATCH_SCHEDULES, jsonNotificationSchedules).apply()
-            return JsonDeserializer.jsonStrToIntegerHashSet(jsonNotificationSchedules)
-        }
-    }
-
-    /**
-     * Fetches the hashset of notification batched apps if jsonBatchedApps is null else store it's json.
-     *
-     * @param context         The application context.
-     * @param jsonBatchedApps The JSON string of notification batched apps.
-     */
-    fun getSetNotificationBatchedApps(
-        context: Context,
-        jsonBatchedApps: String?,
-    ): HashSet<String> {
-        checkAndInitializeNotificationBatchPrefs(context)
-        if (jsonBatchedApps == null) {
-            return JsonDeserializer.jsonStrToStringHashSet(
-                mNotificationBatchPrefs!!.getString(PREF_KEY_BATCHED_APPS, "")!!
-            )
-        } else {
-            mNotificationBatchPrefs!!.edit().putString(PREF_KEY_BATCHED_APPS, jsonBatchedApps)
-                .apply()
-            return JsonDeserializer.jsonStrToStringHashSet(jsonBatchedApps)
-        }
-    }
-
-    /**
      * Creates and Inserts a new notification into SharedPreferences based on the passed object.
      *
      * @param context      The application context used to retrieve app version and store the log.
@@ -294,7 +248,7 @@ object SharedPrefsHelper {
         // Get existing notifications
         val notificationsJson =
             mNotificationBatchPrefs!!.getString(PREF_KEY_UPCOMING_NOTIFICATIONS, "[]")
-        var notificationsArray: JSONArray? = null
+        var notificationsArray: JSONArray = JSONArray()
         try {
             notificationsArray = JSONArray(notificationsJson)
 
@@ -312,7 +266,7 @@ object SharedPrefsHelper {
         }
 
         // Insert current notification and update prefs
-        notificationsArray!!.put(currentNotification)
+        notificationsArray.put(currentNotification)
         mNotificationBatchPrefs!!.edit()
             .putString(PREF_KEY_UPCOMING_NOTIFICATIONS, notificationsArray.toString()).apply()
     }

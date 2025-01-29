@@ -79,7 +79,6 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
         override fun doWork(): Result {
             try {
                 val action = inputData.getString("action")
-                Log.d(TAG, "doWork: Can start today : $canStartRoutineToday")
 
                 when (action) {
                     ACTION_ALERT_BEDTIME -> pushAlertNotification(context.getString(R.string.bedtime_upcoming_notification_info))
