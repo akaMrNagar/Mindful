@@ -9,7 +9,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/focus/invincible_mode_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
@@ -181,7 +181,7 @@ class RestrictionGroupCard extends ConsumerWidget {
   }
 
   void _goToEditScreen(BuildContext context, WidgetRef ref, int timeLeft) {
-    final invincibleMode = ref.read(invincibleModeProvider);
+    final invincibleMode = ref.read(parentalControlsProvider);
 
     final canModifyTimer = !(invincibleMode.isInvincibleModeOn &&
         invincibleMode.includeGroupsTimer &&

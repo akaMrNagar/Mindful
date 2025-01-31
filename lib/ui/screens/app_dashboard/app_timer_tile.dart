@@ -17,7 +17,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/models/app_info.dart';
-import 'package:mindful/providers/focus/invincible_mode_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
@@ -70,7 +70,7 @@ class AppTimerTile extends ConsumerWidget {
     WidgetRef ref,
   ) async {
     final isInvincibleModeRestricted = ref.read(
-      invincibleModeProvider
+      parentalControlsProvider
           .select((v) => v.isInvincibleModeOn && v.includeAppsTimer),
     );
 

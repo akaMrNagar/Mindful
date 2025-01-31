@@ -134,7 +134,7 @@ class FocusSessionService : Service() {
 
 
     fun giveUpOrStopFocusSession(isTheSessionSuccessful: Boolean) {
-        if (mFocusSession != null && mFocusSession!!.toggleDnd) {
+        if (mFocusSession?.toggleDnd == true) {
             NotificationHelper.toggleDnd(this, false)
         }
 

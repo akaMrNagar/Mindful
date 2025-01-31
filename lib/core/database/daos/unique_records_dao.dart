@@ -13,7 +13,7 @@ import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
 import 'package:mindful/core/database/tables/focus_mode_table.dart';
-import 'package:mindful/core/database/tables/invincible_mode_table.dart';
+import 'package:mindful/core/database/tables/parental_controls_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/database/tables/shared_unique_data_table.dart';
 import 'package:mindful/core/database/tables/wellbeing_table.dart';
@@ -24,7 +24,7 @@ part 'unique_records_dao.g.dart';
 @DriftAccessor(
   tables: [
     MindfulSettingsTable,
-    InvincibleModeTable,
+    ParentalControlsTable,
     BedtimeScheduleTable,
     FocusModeTable,
     WellbeingTable,
@@ -57,17 +57,18 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
       await select(mindfulSettingsTable).getSingleOrNull() ??
       defaultMindfulSettingsModel;
 
-  /// Saves a single [InvincibleMode] object to the database.
-  Future<void> saveInvincibleModeSettings(
-          InvincibleMode invincibleModeSettings) async =>
-      into(invincibleModeTable)
-          .insert(invincibleModeSettings, mode: InsertMode.insertOrReplace);
+  /// Saves a single [ParentalControls] object to the database.
+  Future<void> saveParentalControls(
+    ParentalControls parentalControls,
+  ) async =>
+      into(parentalControlsTable)
+          .insert(parentalControls, mode: InsertMode.insertOrReplace);
 
-  /// Loads the first (and likely only) [InvincibleMode] object
+  /// Loads the first (and likely only) [ParentalControls] object
   /// from the database. If none exists, returns default instance.
-  Future<InvincibleMode> loadInvincibleModeSettings() async =>
-      await select(invincibleModeTable).getSingleOrNull() ??
-      defaultInvincibleModeModel;
+  Future<ParentalControls> loadParentalControls() async =>
+      await select(parentalControlsTable).getSingleOrNull() ??
+      defaultParentalControlsModel;
 
   /// Saves a single [BedtimeSchedule] object to the database.
   Future<void> saveBedtimeSchedule(BedtimeSchedule bedtimeSchedule) async =>

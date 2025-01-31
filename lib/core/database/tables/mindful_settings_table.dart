@@ -9,7 +9,6 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/config/app_constants.dart';
@@ -64,13 +63,4 @@ class MindfulSettingsTable extends Table {
   /// Flag indicating if onboarding is completed or not
   BoolColumn get isOnboardingDone =>
       boolean().withDefault(const Constant(false))();
-
-  /// Flag indicating whether to authenticate before opening Mindful or not
-  BoolColumn get protectedAccess =>
-      boolean().withDefault(const Constant(false))();
-
-  /// Daily uninstall window start time [TimeOfDay] stored as minutes
-  IntColumn get uninstallWindowTime => integer()
-      .map(const TimeOfDayAdapterConverter())
-      .withDefault(const Constant(0))();
 }

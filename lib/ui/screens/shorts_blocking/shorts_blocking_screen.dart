@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/focus/invincible_mode_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/providers/usage/shorts_screen_time_provider.dart';
@@ -50,7 +50,7 @@ class ShortsBlockingScreen extends ConsumerWidget {
           );
 
     final isInvincibleModeRestricted = ref.watch(
-      invincibleModeProvider
+      parentalControlsProvider
           .select((v) => v.isInvincibleModeOn && v.includeShortsTimer),
     );
 

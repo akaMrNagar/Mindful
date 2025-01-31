@@ -2406,27 +2406,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_onboarding_done" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _protectedAccessMeta =
-      const VerificationMeta('protectedAccess');
-  @override
-  late final GeneratedColumn<bool> protectedAccess = GeneratedColumn<bool>(
-      'protected_access', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("protected_access" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _uninstallWindowTimeMeta =
-      const VerificationMeta('uninstallWindowTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
-      uninstallWindowTime = GeneratedColumn<int>(
-              'uninstall_window_time', aliasedName, false,
-              type: DriftSqlType.int,
-              requiredDuringInsert: false,
-              defaultValue: const Constant(0))
-          .withConverter<TimeOfDayAdapter>(
-              $MindfulSettingsTableTable.$converteruninstallWindowTime);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2440,9 +2419,7 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         usageHistoryWeeks,
         leftEmergencyPasses,
         lastEmergencyUsed,
-        isOnboardingDone,
-        protectedAccess,
-        uninstallWindowTime
+        isOnboardingDone
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2511,14 +2488,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           isOnboardingDone.isAcceptableOrUnknown(
               data['is_onboarding_done']!, _isOnboardingDoneMeta));
     }
-    if (data.containsKey('protected_access')) {
-      context.handle(
-          _protectedAccessMeta,
-          protectedAccess.isAcceptableOrUnknown(
-              data['protected_access']!, _protectedAccessMeta));
-    }
-    context.handle(
-        _uninstallWindowTimeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2555,12 +2524,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           data['${effectivePrefix}last_emergency_used'])!,
       isOnboardingDone: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_onboarding_done'])!,
-      protectedAccess: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}protected_access'])!,
-      uninstallWindowTime: $MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
-              data['${effectivePrefix}uninstall_window_time'])!),
     );
   }
 
@@ -2573,8 +2536,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       const EnumIndexConverter<AppThemeMode>(AppThemeMode.values);
   static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
-  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
-      $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
 
 class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
@@ -2602,7 +2563,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   /// Default initial home tab
   final DefaultHomeTab defaultHomeTab;
 
-  /// Maximum number of past weeks till the app's usage will be stored
+  /// Maximum number of weeks till the app's usage history will be kept
   final int usageHistoryWeeks;
 
   /// Number of emergency break passes left for today
@@ -2613,12 +2574,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// Flag indicating if onboarding is completed or not
   final bool isOnboardingDone;
-
-  /// Flag indicating whether to authenticate before opening Mindful or not
-  final bool protectedAccess;
-
-  /// Daily uninstall window start time [TimeOfDay] stored as minutes
-  final TimeOfDayAdapter uninstallWindowTime;
   const MindfulSettings(
       {required this.id,
       required this.themeMode,
@@ -2631,9 +2586,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.usageHistoryWeeks,
       required this.leftEmergencyPasses,
       required this.lastEmergencyUsed,
-      required this.isOnboardingDone,
-      required this.protectedAccess,
-      required this.uninstallWindowTime});
+      required this.isOnboardingDone});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2656,12 +2609,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses);
     map['last_emergency_used'] = Variable<DateTime>(lastEmergencyUsed);
     map['is_onboarding_done'] = Variable<bool>(isOnboardingDone);
-    map['protected_access'] = Variable<bool>(protectedAccess);
-    {
-      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .toSql(uninstallWindowTime));
-    }
     return map;
   }
 
@@ -2679,8 +2626,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       leftEmergencyPasses: Value(leftEmergencyPasses),
       lastEmergencyUsed: Value(lastEmergencyUsed),
       isOnboardingDone: Value(isOnboardingDone),
-      protectedAccess: Value(protectedAccess),
-      uninstallWindowTime: Value(uninstallWindowTime),
     );
   }
 
@@ -2704,10 +2649,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       lastEmergencyUsed:
           serializer.fromJson<DateTime>(json['lastEmergencyUsed']),
       isOnboardingDone: serializer.fromJson<bool>(json['isOnboardingDone']),
-      protectedAccess: serializer.fromJson<bool>(json['protectedAccess']),
-      uninstallWindowTime: $MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
     );
   }
   @override
@@ -2729,10 +2670,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'leftEmergencyPasses': serializer.toJson<int>(leftEmergencyPasses),
       'lastEmergencyUsed': serializer.toJson<DateTime>(lastEmergencyUsed),
       'isOnboardingDone': serializer.toJson<bool>(isOnboardingDone),
-      'protectedAccess': serializer.toJson<bool>(protectedAccess),
-      'uninstallWindowTime': serializer.toJson<dynamic>(
-          $MindfulSettingsTableTable.$converteruninstallWindowTime
-              .toJson(uninstallWindowTime)),
     };
   }
 
@@ -2748,9 +2685,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           int? usageHistoryWeeks,
           int? leftEmergencyPasses,
           DateTime? lastEmergencyUsed,
-          bool? isOnboardingDone,
-          bool? protectedAccess,
-          TimeOfDayAdapter? uninstallWindowTime}) =>
+          bool? isOnboardingDone}) =>
       MindfulSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
@@ -2764,8 +2699,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
         lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
-        protectedAccess: protectedAccess ?? this.protectedAccess,
-        uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       );
   MindfulSettings copyWithCompanion(MindfulSettingsTableCompanion data) {
     return MindfulSettings(
@@ -2797,12 +2730,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       isOnboardingDone: data.isOnboardingDone.present
           ? data.isOnboardingDone.value
           : this.isOnboardingDone,
-      protectedAccess: data.protectedAccess.present
-          ? data.protectedAccess.value
-          : this.protectedAccess,
-      uninstallWindowTime: data.uninstallWindowTime.present
-          ? data.uninstallWindowTime.value
-          : this.uninstallWindowTime,
     );
   }
 
@@ -2820,9 +2747,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('usageHistoryWeeks: $usageHistoryWeeks, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone, ')
-          ..write('protectedAccess: $protectedAccess, ')
-          ..write('uninstallWindowTime: $uninstallWindowTime')
+          ..write('isOnboardingDone: $isOnboardingDone')
           ..write(')'))
         .toString();
   }
@@ -2840,9 +2765,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       usageHistoryWeeks,
       leftEmergencyPasses,
       lastEmergencyUsed,
-      isOnboardingDone,
-      protectedAccess,
-      uninstallWindowTime);
+      isOnboardingDone);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2858,9 +2781,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.usageHistoryWeeks == this.usageHistoryWeeks &&
           other.leftEmergencyPasses == this.leftEmergencyPasses &&
           other.lastEmergencyUsed == this.lastEmergencyUsed &&
-          other.isOnboardingDone == this.isOnboardingDone &&
-          other.protectedAccess == this.protectedAccess &&
-          other.uninstallWindowTime == this.uninstallWindowTime);
+          other.isOnboardingDone == this.isOnboardingDone);
 }
 
 class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
@@ -2876,8 +2797,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<int> leftEmergencyPasses;
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
-  final Value<bool> protectedAccess;
-  final Value<TimeOfDayAdapter> uninstallWindowTime;
   const MindfulSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
@@ -2891,8 +2810,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
-    this.protectedAccess = const Value.absent(),
-    this.uninstallWindowTime = const Value.absent(),
   });
   MindfulSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2907,8 +2824,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
-    this.protectedAccess = const Value.absent(),
-    this.uninstallWindowTime = const Value.absent(),
   });
   static Insertable<MindfulSettings> custom({
     Expression<int>? id,
@@ -2923,8 +2838,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<int>? leftEmergencyPasses,
     Expression<DateTime>? lastEmergencyUsed,
     Expression<bool>? isOnboardingDone,
-    Expression<bool>? protectedAccess,
-    Expression<int>? uninstallWindowTime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2940,9 +2853,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
         'left_emergency_passes': leftEmergencyPasses,
       if (lastEmergencyUsed != null) 'last_emergency_used': lastEmergencyUsed,
       if (isOnboardingDone != null) 'is_onboarding_done': isOnboardingDone,
-      if (protectedAccess != null) 'protected_access': protectedAccess,
-      if (uninstallWindowTime != null)
-        'uninstall_window_time': uninstallWindowTime,
     });
   }
 
@@ -2958,9 +2868,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<int>? usageHistoryWeeks,
       Value<int>? leftEmergencyPasses,
       Value<DateTime>? lastEmergencyUsed,
-      Value<bool>? isOnboardingDone,
-      Value<bool>? protectedAccess,
-      Value<TimeOfDayAdapter>? uninstallWindowTime}) {
+      Value<bool>? isOnboardingDone}) {
     return MindfulSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
@@ -2974,8 +2882,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
       lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
       isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
-      protectedAccess: protectedAccess ?? this.protectedAccess,
-      uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
     );
   }
 
@@ -3022,14 +2928,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (isOnboardingDone.present) {
       map['is_onboarding_done'] = Variable<bool>(isOnboardingDone.value);
     }
-    if (protectedAccess.present) {
-      map['protected_access'] = Variable<bool>(protectedAccess.value);
-    }
-    if (uninstallWindowTime.present) {
-      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .toSql(uninstallWindowTime.value));
-    }
     return map;
   }
 
@@ -3047,20 +2945,18 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('usageHistoryWeeks: $usageHistoryWeeks, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone, ')
-          ..write('protectedAccess: $protectedAccess, ')
-          ..write('uninstallWindowTime: $uninstallWindowTime')
+          ..write('isOnboardingDone: $isOnboardingDone')
           ..write(')'))
         .toString();
   }
 }
 
-class $InvincibleModeTableTable extends InvincibleModeTable
-    with TableInfo<$InvincibleModeTableTable, InvincibleMode> {
+class $ParentalControlsTableTable extends ParentalControlsTable
+    with TableInfo<$ParentalControlsTableTable, ParentalControls> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $InvincibleModeTableTable(this.attachedDatabase, [this._alias]);
+  $ParentalControlsTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3068,6 +2964,27 @@ class $InvincibleModeTableTable extends InvincibleModeTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _protectedAccessMeta =
+      const VerificationMeta('protectedAccess');
+  @override
+  late final GeneratedColumn<bool> protectedAccess = GeneratedColumn<bool>(
+      'protected_access', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("protected_access" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _uninstallWindowTimeMeta =
+      const VerificationMeta('uninstallWindowTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      uninstallWindowTime = GeneratedColumn<int>(
+              'uninstall_window_time', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<TimeOfDayAdapter>(
+              $ParentalControlsTableTable.$converteruninstallWindowTime);
   static const VerificationMeta _isInvincibleModeOnMeta =
       const VerificationMeta('isInvincibleModeOn');
   @override
@@ -3151,6 +3068,8 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   @override
   List<GeneratedColumn> get $columns => [
         id,
+        protectedAccess,
+        uninstallWindowTime,
         isInvincibleModeOn,
         includeAppsTimer,
         includeAppsLaunchLimit,
@@ -3164,15 +3083,23 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'invincible_mode_table';
+  static const String $name = 'parental_controls_table';
   @override
-  VerificationContext validateIntegrity(Insertable<InvincibleMode> instance,
+  VerificationContext validateIntegrity(Insertable<ParentalControls> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('protected_access')) {
+      context.handle(
+          _protectedAccessMeta,
+          protectedAccess.isAcceptableOrUnknown(
+              data['protected_access']!, _protectedAccessMeta));
+    }
+    context.handle(
+        _uninstallWindowTimeMeta, const VerificationResult.success());
     if (data.containsKey('is_invincible_mode_on')) {
       context.handle(
           _isInvincibleModeOnMeta,
@@ -3229,11 +3156,17 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  InvincibleMode map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ParentalControls map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return InvincibleMode(
+    return ParentalControls(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      protectedAccess: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}protected_access'])!,
+      uninstallWindowTime: $ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}uninstall_window_time'])!),
       isInvincibleModeOn: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_invincible_mode_on'])!,
       includeAppsTimer: attachedDatabase.typeMapping.read(
@@ -3258,14 +3191,24 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   }
 
   @override
-  $InvincibleModeTableTable createAlias(String alias) {
-    return $InvincibleModeTableTable(attachedDatabase, alias);
+  $ParentalControlsTableTable createAlias(String alias) {
+    return $ParentalControlsTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
 
-class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
+class ParentalControls extends DataClass
+    implements Insertable<ParentalControls> {
   /// Unique ID for Invincible Mode settings
   final int id;
+
+  /// Flag indicating whether to authenticate before opening Mindful or not
+  final bool protectedAccess;
+
+  /// Daily uninstall window start time [TimeOfDay] stored as minutes
+  final TimeOfDayAdapter uninstallWindowTime;
 
   /// Flag indicating if invincible mode is ON
   final bool isInvincibleModeOn;
@@ -3304,8 +3247,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   ///
   /// If included user cannot modify bedtime schedule during the active period
   final bool includeBedtimeSchedule;
-  const InvincibleMode(
+  const ParentalControls(
       {required this.id,
+      required this.protectedAccess,
+      required this.uninstallWindowTime,
       required this.isInvincibleModeOn,
       required this.includeAppsTimer,
       required this.includeAppsLaunchLimit,
@@ -3318,6 +3263,12 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['protected_access'] = Variable<bool>(protectedAccess);
+    {
+      map['uninstall_window_time'] = Variable<int>($ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime));
+    }
     map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
     map['include_apps_timer'] = Variable<bool>(includeAppsTimer);
     map['include_apps_launch_limit'] = Variable<bool>(includeAppsLaunchLimit);
@@ -3330,9 +3281,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     return map;
   }
 
-  InvincibleModeTableCompanion toCompanion(bool nullToAbsent) {
-    return InvincibleModeTableCompanion(
+  ParentalControlsTableCompanion toCompanion(bool nullToAbsent) {
+    return ParentalControlsTableCompanion(
       id: Value(id),
+      protectedAccess: Value(protectedAccess),
+      uninstallWindowTime: Value(uninstallWindowTime),
       isInvincibleModeOn: Value(isInvincibleModeOn),
       includeAppsTimer: Value(includeAppsTimer),
       includeAppsLaunchLimit: Value(includeAppsLaunchLimit),
@@ -3344,11 +3297,15 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     );
   }
 
-  factory InvincibleMode.fromJson(Map<String, dynamic> json,
+  factory ParentalControls.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return InvincibleMode(
+    return ParentalControls(
       id: serializer.fromJson<int>(json['id']),
+      protectedAccess: serializer.fromJson<bool>(json['protectedAccess']),
+      uninstallWindowTime: $ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
       isInvincibleModeOn: serializer.fromJson<bool>(json['isInvincibleModeOn']),
       includeAppsTimer: serializer.fromJson<bool>(json['includeAppsTimer']),
       includeAppsLaunchLimit:
@@ -3368,6 +3325,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'protectedAccess': serializer.toJson<bool>(protectedAccess),
+      'uninstallWindowTime': serializer.toJson<dynamic>(
+          $ParentalControlsTableTable.$converteruninstallWindowTime
+              .toJson(uninstallWindowTime)),
       'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
       'includeAppsTimer': serializer.toJson<bool>(includeAppsTimer),
       'includeAppsLaunchLimit': serializer.toJson<bool>(includeAppsLaunchLimit),
@@ -3381,8 +3342,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     };
   }
 
-  InvincibleMode copyWith(
+  ParentalControls copyWith(
           {int? id,
+          bool? protectedAccess,
+          TimeOfDayAdapter? uninstallWindowTime,
           bool? isInvincibleModeOn,
           bool? includeAppsTimer,
           bool? includeAppsLaunchLimit,
@@ -3391,8 +3354,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           bool? includeGroupsActivePeriod,
           bool? includeShortsTimer,
           bool? includeBedtimeSchedule}) =>
-      InvincibleMode(
+      ParentalControls(
         id: id ?? this.id,
+        protectedAccess: protectedAccess ?? this.protectedAccess,
+        uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
         isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
         includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
         includeAppsLaunchLimit:
@@ -3406,9 +3371,15 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
         includeBedtimeSchedule:
             includeBedtimeSchedule ?? this.includeBedtimeSchedule,
       );
-  InvincibleMode copyWithCompanion(InvincibleModeTableCompanion data) {
-    return InvincibleMode(
+  ParentalControls copyWithCompanion(ParentalControlsTableCompanion data) {
+    return ParentalControls(
       id: data.id.present ? data.id.value : this.id,
+      protectedAccess: data.protectedAccess.present
+          ? data.protectedAccess.value
+          : this.protectedAccess,
+      uninstallWindowTime: data.uninstallWindowTime.present
+          ? data.uninstallWindowTime.value
+          : this.uninstallWindowTime,
       isInvincibleModeOn: data.isInvincibleModeOn.present
           ? data.isInvincibleModeOn.value
           : this.isInvincibleModeOn,
@@ -3438,8 +3409,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
 
   @override
   String toString() {
-    return (StringBuffer('InvincibleMode(')
+    return (StringBuffer('ParentalControls(')
           ..write('id: $id, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime, ')
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
@@ -3455,6 +3428,8 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   @override
   int get hashCode => Object.hash(
       id,
+      protectedAccess,
+      uninstallWindowTime,
       isInvincibleModeOn,
       includeAppsTimer,
       includeAppsLaunchLimit,
@@ -3466,8 +3441,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is InvincibleMode &&
+      (other is ParentalControls &&
           other.id == this.id &&
+          other.protectedAccess == this.protectedAccess &&
+          other.uninstallWindowTime == this.uninstallWindowTime &&
           other.isInvincibleModeOn == this.isInvincibleModeOn &&
           other.includeAppsTimer == this.includeAppsTimer &&
           other.includeAppsLaunchLimit == this.includeAppsLaunchLimit &&
@@ -3478,8 +3455,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           other.includeBedtimeSchedule == this.includeBedtimeSchedule);
 }
 
-class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
+class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
   final Value<int> id;
+  final Value<bool> protectedAccess;
+  final Value<TimeOfDayAdapter> uninstallWindowTime;
   final Value<bool> isInvincibleModeOn;
   final Value<bool> includeAppsTimer;
   final Value<bool> includeAppsLaunchLimit;
@@ -3488,8 +3467,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   final Value<bool> includeGroupsActivePeriod;
   final Value<bool> includeShortsTimer;
   final Value<bool> includeBedtimeSchedule;
-  const InvincibleModeTableCompanion({
+  const ParentalControlsTableCompanion({
     this.id = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
     this.isInvincibleModeOn = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
@@ -3499,8 +3480,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     this.includeShortsTimer = const Value.absent(),
     this.includeBedtimeSchedule = const Value.absent(),
   });
-  InvincibleModeTableCompanion.insert({
+  ParentalControlsTableCompanion.insert({
     this.id = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
     this.isInvincibleModeOn = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
@@ -3510,8 +3493,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     this.includeShortsTimer = const Value.absent(),
     this.includeBedtimeSchedule = const Value.absent(),
   });
-  static Insertable<InvincibleMode> custom({
+  static Insertable<ParentalControls> custom({
     Expression<int>? id,
+    Expression<bool>? protectedAccess,
+    Expression<int>? uninstallWindowTime,
     Expression<bool>? isInvincibleModeOn,
     Expression<bool>? includeAppsTimer,
     Expression<bool>? includeAppsLaunchLimit,
@@ -3523,6 +3508,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (protectedAccess != null) 'protected_access': protectedAccess,
+      if (uninstallWindowTime != null)
+        'uninstall_window_time': uninstallWindowTime,
       if (isInvincibleModeOn != null)
         'is_invincible_mode_on': isInvincibleModeOn,
       if (includeAppsTimer != null) 'include_apps_timer': includeAppsTimer,
@@ -3541,8 +3529,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     });
   }
 
-  InvincibleModeTableCompanion copyWith(
+  ParentalControlsTableCompanion copyWith(
       {Value<int>? id,
+      Value<bool>? protectedAccess,
+      Value<TimeOfDayAdapter>? uninstallWindowTime,
       Value<bool>? isInvincibleModeOn,
       Value<bool>? includeAppsTimer,
       Value<bool>? includeAppsLaunchLimit,
@@ -3551,8 +3541,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       Value<bool>? includeGroupsActivePeriod,
       Value<bool>? includeShortsTimer,
       Value<bool>? includeBedtimeSchedule}) {
-    return InvincibleModeTableCompanion(
+    return ParentalControlsTableCompanion(
       id: id ?? this.id,
+      protectedAccess: protectedAccess ?? this.protectedAccess,
+      uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
       includeAppsLaunchLimit:
@@ -3573,6 +3565,14 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (protectedAccess.present) {
+      map['protected_access'] = Variable<bool>(protectedAccess.value);
+    }
+    if (uninstallWindowTime.present) {
+      map['uninstall_window_time'] = Variable<int>($ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime.value));
     }
     if (isInvincibleModeOn.present) {
       map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn.value);
@@ -3607,8 +3607,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
 
   @override
   String toString() {
-    return (StringBuffer('InvincibleModeTableCompanion(')
+    return (StringBuffer('ParentalControlsTableCompanion(')
           ..write('id: $id, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime, ')
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
@@ -5521,8 +5523,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $FocusSessionsTableTable(this);
   late final $MindfulSettingsTableTable mindfulSettingsTable =
       $MindfulSettingsTableTable(this);
-  late final $InvincibleModeTableTable invincibleModeTable =
-      $InvincibleModeTableTable(this);
+  late final $ParentalControlsTableTable parentalControlsTable =
+      $ParentalControlsTableTable(this);
   late final $RestrictionGroupsTableTable restrictionGroupsTable =
       $RestrictionGroupsTableTable(this);
   late final $WellbeingTableTable wellbeingTable = $WellbeingTableTable(this);
@@ -5547,7 +5549,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         focusProfileTable,
         focusSessionsTable,
         mindfulSettingsTable,
-        invincibleModeTable,
+        parentalControlsTable,
         restrictionGroupsTable,
         wellbeingTable,
         sharedUniqueDataTable,
@@ -6714,8 +6716,6 @@ typedef $$MindfulSettingsTableTableCreateCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
-  Value<bool> protectedAccess,
-  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
@@ -6731,8 +6731,6 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
-  Value<bool> protectedAccess,
-  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 
 class $$MindfulSettingsTableTableFilterComposer
@@ -6788,15 +6786,6 @@ class $$MindfulSettingsTableTableFilterComposer
   ColumnFilters<bool> get isOnboardingDone => $composableBuilder(
       column: $table.isOnboardingDone,
       builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get protectedAccess => $composableBuilder(
-      column: $table.protectedAccess,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get uninstallWindowTime => $composableBuilder(
-          column: $table.uninstallWindowTime,
-          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$MindfulSettingsTableTableOrderingComposer
@@ -6850,14 +6839,6 @@ class $$MindfulSettingsTableTableOrderingComposer
   ColumnOrderings<bool> get isOnboardingDone => $composableBuilder(
       column: $table.isOnboardingDone,
       builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get protectedAccess => $composableBuilder(
-      column: $table.protectedAccess,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<int> get uninstallWindowTime => $composableBuilder(
-      column: $table.uninstallWindowTime,
-      builder: (column) => ColumnOrderings(column));
 }
 
 class $$MindfulSettingsTableTableAnnotationComposer
@@ -6905,13 +6886,6 @@ class $$MindfulSettingsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isOnboardingDone => $composableBuilder(
       column: $table.isOnboardingDone, builder: (column) => column);
-
-  GeneratedColumn<bool> get protectedAccess => $composableBuilder(
-      column: $table.protectedAccess, builder: (column) => column);
-
-  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
-      get uninstallWindowTime => $composableBuilder(
-          column: $table.uninstallWindowTime, builder: (column) => column);
 }
 
 class $$MindfulSettingsTableTableTableManager extends RootTableManager<
@@ -6955,8 +6929,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
-            Value<bool> protectedAccess = const Value.absent(),
-            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion(
             id: id,
@@ -6971,8 +6943,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
-            protectedAccess: protectedAccess,
-            uninstallWindowTime: uninstallWindowTime,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -6987,8 +6957,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
-            Value<bool> protectedAccess = const Value.absent(),
-            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion.insert(
             id: id,
@@ -7003,8 +6971,6 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
-            protectedAccess: protectedAccess,
-            uninstallWindowTime: uninstallWindowTime,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -7030,9 +6996,11 @@ typedef $$MindfulSettingsTableTableProcessedTableManager
         ),
         MindfulSettings,
         PrefetchHooks Function()>;
-typedef $$InvincibleModeTableTableCreateCompanionBuilder
-    = InvincibleModeTableCompanion Function({
+typedef $$ParentalControlsTableTableCreateCompanionBuilder
+    = ParentalControlsTableCompanion Function({
   Value<int> id,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
   Value<bool> isInvincibleModeOn,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
@@ -7042,9 +7010,11 @@ typedef $$InvincibleModeTableTableCreateCompanionBuilder
   Value<bool> includeShortsTimer,
   Value<bool> includeBedtimeSchedule,
 });
-typedef $$InvincibleModeTableTableUpdateCompanionBuilder
-    = InvincibleModeTableCompanion Function({
+typedef $$ParentalControlsTableTableUpdateCompanionBuilder
+    = ParentalControlsTableCompanion Function({
   Value<int> id,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
   Value<bool> isInvincibleModeOn,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
@@ -7055,9 +7025,9 @@ typedef $$InvincibleModeTableTableUpdateCompanionBuilder
   Value<bool> includeBedtimeSchedule,
 });
 
-class $$InvincibleModeTableTableFilterComposer
-    extends Composer<_$AppDatabase, $InvincibleModeTableTable> {
-  $$InvincibleModeTableTableFilterComposer({
+class $$ParentalControlsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ParentalControlsTableTable> {
+  $$ParentalControlsTableTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7066,6 +7036,15 @@ class $$InvincibleModeTableTableFilterComposer
   });
   ColumnFilters<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get protectedAccess => $composableBuilder(
+      column: $table.protectedAccess,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get uninstallWindowTime => $composableBuilder(
+          column: $table.uninstallWindowTime,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get isInvincibleModeOn => $composableBuilder(
       column: $table.isInvincibleModeOn,
@@ -7100,9 +7079,9 @@ class $$InvincibleModeTableTableFilterComposer
       builder: (column) => ColumnFilters(column));
 }
 
-class $$InvincibleModeTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $InvincibleModeTableTable> {
-  $$InvincibleModeTableTableOrderingComposer({
+class $$ParentalControlsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ParentalControlsTableTable> {
+  $$ParentalControlsTableTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7111,6 +7090,14 @@ class $$InvincibleModeTableTableOrderingComposer
   });
   ColumnOrderings<int> get id => $composableBuilder(
       column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get protectedAccess => $composableBuilder(
+      column: $table.protectedAccess,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get uninstallWindowTime => $composableBuilder(
+      column: $table.uninstallWindowTime,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<bool> get isInvincibleModeOn => $composableBuilder(
       column: $table.isInvincibleModeOn,
@@ -7145,9 +7132,9 @@ class $$InvincibleModeTableTableOrderingComposer
       builder: (column) => ColumnOrderings(column));
 }
 
-class $$InvincibleModeTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $InvincibleModeTableTable> {
-  $$InvincibleModeTableTableAnnotationComposer({
+class $$ParentalControlsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ParentalControlsTableTable> {
+  $$ParentalControlsTableTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -7156,6 +7143,13 @@ class $$InvincibleModeTableTableAnnotationComposer
   });
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get protectedAccess => $composableBuilder(
+      column: $table.protectedAccess, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      get uninstallWindowTime => $composableBuilder(
+          column: $table.uninstallWindowTime, builder: (column) => column);
 
   GeneratedColumn<bool> get isInvincibleModeOn => $composableBuilder(
       column: $table.isInvincibleModeOn, builder: (column) => column);
@@ -7182,36 +7176,40 @@ class $$InvincibleModeTableTableAnnotationComposer
       column: $table.includeBedtimeSchedule, builder: (column) => column);
 }
 
-class $$InvincibleModeTableTableTableManager extends RootTableManager<
+class $$ParentalControlsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $InvincibleModeTableTable,
-    InvincibleMode,
-    $$InvincibleModeTableTableFilterComposer,
-    $$InvincibleModeTableTableOrderingComposer,
-    $$InvincibleModeTableTableAnnotationComposer,
-    $$InvincibleModeTableTableCreateCompanionBuilder,
-    $$InvincibleModeTableTableUpdateCompanionBuilder,
+    $ParentalControlsTableTable,
+    ParentalControls,
+    $$ParentalControlsTableTableFilterComposer,
+    $$ParentalControlsTableTableOrderingComposer,
+    $$ParentalControlsTableTableAnnotationComposer,
+    $$ParentalControlsTableTableCreateCompanionBuilder,
+    $$ParentalControlsTableTableUpdateCompanionBuilder,
     (
-      InvincibleMode,
-      BaseReferences<_$AppDatabase, $InvincibleModeTableTable, InvincibleMode>
+      ParentalControls,
+      BaseReferences<_$AppDatabase, $ParentalControlsTableTable,
+          ParentalControls>
     ),
-    InvincibleMode,
+    ParentalControls,
     PrefetchHooks Function()> {
-  $$InvincibleModeTableTableTableManager(
-      _$AppDatabase db, $InvincibleModeTableTable table)
+  $$ParentalControlsTableTableTableManager(
+      _$AppDatabase db, $ParentalControlsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$InvincibleModeTableTableFilterComposer($db: db, $table: table),
+              $$ParentalControlsTableTableFilterComposer(
+                  $db: db, $table: table),
           createOrderingComposer: () =>
-              $$InvincibleModeTableTableOrderingComposer(
+              $$ParentalControlsTableTableOrderingComposer(
                   $db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$InvincibleModeTableTableAnnotationComposer(
+              $$ParentalControlsTableTableAnnotationComposer(
                   $db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
             Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
@@ -7221,8 +7219,10 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             Value<bool> includeShortsTimer = const Value.absent(),
             Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
-              InvincibleModeTableCompanion(
+              ParentalControlsTableCompanion(
             id: id,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
@@ -7234,6 +7234,8 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
             Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
@@ -7243,8 +7245,10 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             Value<bool> includeShortsTimer = const Value.absent(),
             Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
-              InvincibleModeTableCompanion.insert(
+              ParentalControlsTableCompanion.insert(
             id: id,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
@@ -7261,21 +7265,23 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$InvincibleModeTableTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $InvincibleModeTableTable,
-    InvincibleMode,
-    $$InvincibleModeTableTableFilterComposer,
-    $$InvincibleModeTableTableOrderingComposer,
-    $$InvincibleModeTableTableAnnotationComposer,
-    $$InvincibleModeTableTableCreateCompanionBuilder,
-    $$InvincibleModeTableTableUpdateCompanionBuilder,
-    (
-      InvincibleMode,
-      BaseReferences<_$AppDatabase, $InvincibleModeTableTable, InvincibleMode>
-    ),
-    InvincibleMode,
-    PrefetchHooks Function()>;
+typedef $$ParentalControlsTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $ParentalControlsTableTable,
+        ParentalControls,
+        $$ParentalControlsTableTableFilterComposer,
+        $$ParentalControlsTableTableOrderingComposer,
+        $$ParentalControlsTableTableAnnotationComposer,
+        $$ParentalControlsTableTableCreateCompanionBuilder,
+        $$ParentalControlsTableTableUpdateCompanionBuilder,
+        (
+          ParentalControls,
+          BaseReferences<_$AppDatabase, $ParentalControlsTableTable,
+              ParentalControls>
+        ),
+        ParentalControls,
+        PrefetchHooks Function()>;
 typedef $$RestrictionGroupsTableTableCreateCompanionBuilder
     = RestrictionGroupsTableCompanion Function({
   Value<int> id,
@@ -8249,8 +8255,8 @@ class $AppDatabaseManager {
       $$FocusSessionsTableTableTableManager(_db, _db.focusSessionsTable);
   $$MindfulSettingsTableTableTableManager get mindfulSettingsTable =>
       $$MindfulSettingsTableTableTableManager(_db, _db.mindfulSettingsTable);
-  $$InvincibleModeTableTableTableManager get invincibleModeTable =>
-      $$InvincibleModeTableTableTableManager(_db, _db.invincibleModeTable);
+  $$ParentalControlsTableTableTableManager get parentalControlsTable =>
+      $$ParentalControlsTableTableTableManager(_db, _db.parentalControlsTable);
   $$RestrictionGroupsTableTableTableManager get restrictionGroupsTable =>
       $$RestrictionGroupsTableTableTableManager(
           _db, _db.restrictionGroupsTable);

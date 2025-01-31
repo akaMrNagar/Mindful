@@ -16,7 +16,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/auth_service.dart';
-import 'package:mindful/providers/system/mindful_settings_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -51,7 +51,7 @@ class ParentalControlsScreen extends ConsumerWidget {
         }
       }
 
-      ref.read(mindfulSettingsProvider.notifier).switchProtectedAccess();
+      ref.read(parentalControlsProvider.notifier).switchProtectedAccess();
     } catch (e) {
       debugPrint("Failed to authenticate: ${e.toString()}");
     }
@@ -59,7 +59,7 @@ class ParentalControlsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mindfulSettings = ref.watch(mindfulSettingsProvider);
+    final parentalControls = ref.watch(parentalControlsProvider);
     final isAdminEnabled =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
 
@@ -83,14 +83,14 @@ class ParentalControlsScreen extends ConsumerWidget {
               /// Protected access
               DefaultListTile(
                 position: ItemPosition.top,
-                switchValue: mindfulSettings.protectedAccess,
+                switchValue: parentalControls.protectedAccess,
                 leadingIcon: FluentIcons.fingerprint_20_regular,
                 titleText: context.locale.protected_access_tile_title,
                 subtitleText: context.locale.protected_access_tile_subtitle,
                 onPressed: () => _toggleProtectedAccess(
                   context,
                   ref,
-                  mindfulSettings.protectedAccess,
+                  parentalControls.protectedAccess,
                 ),
               ).sliver,
 
@@ -106,7 +106,7 @@ class ParentalControlsScreen extends ConsumerWidget {
                   titleText: context.locale.uninstall_window_tile_title,
                   subtitleText: context.locale.uninstall_window_tile_subtitle,
                   trailing: StyledText(
-                    mindfulSettings.uninstallWindowTime.format(context),
+                    parentalControls.uninstallWindowTime.format(context),
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     isSubtitle: isAdminEnabled,
@@ -115,13 +115,13 @@ class ParentalControlsScreen extends ConsumerWidget {
                     final pickedTime = await showCustomTimePickerDialog(
                       context: context,
                       heroTag: HeroTags.uninstallWindowTileTag,
-                      initialTime: mindfulSettings.uninstallWindowTime,
+                      initialTime: parentalControls.uninstallWindowTime,
                       info: context.locale.uninstall_window_tile_title,
                     );
 
                     if (pickedTime != null && context.mounted) {
                       ref
-                          .read(mindfulSettingsProvider.notifier)
+                          .read(parentalControlsProvider.notifier)
                           .changeUninstallWindowTime(pickedTime);
                     }
                   },

@@ -20,6 +20,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/auth_service.dart';
 import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -45,12 +46,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _goToNextScreen() async {
-    final settings = await ref.read(mindfulSettingsProvider.notifier).init();
     final perms =
         await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
 
-    _isOnboardingDone = settings.isOnboardingDone;
-    _isAccessProtected = settings.protectedAccess;
+    _isOnboardingDone =
+        (await ref.read(mindfulSettingsProvider.notifier).init())
+            .isOnboardingDone;
+    _isAccessProtected =
+        (await ref.read(parentalControlsProvider.notifier).init())
+            .protectedAccess;
     _haveAllEssentialPermissions = perms.haveUsageAccessPermission &&
         perms.haveDisplayOverlayPermission &&
         perms.haveAlarmsPermission &&

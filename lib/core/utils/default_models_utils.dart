@@ -17,8 +17,6 @@ final defaultMindfulSettingsModel = MindfulSettings(
   leftEmergencyPasses: 3,
   lastEmergencyUsed: DateTime(0),
   isOnboardingDone: false,
-  protectedAccess: false,
-  uninstallWindowTime: const TimeOfDayAdapter.zero(),
 );
 
 const defaultSharedUniqueDataModel = SharedUniqueData(
@@ -27,8 +25,10 @@ const defaultSharedUniqueDataModel = SharedUniqueData(
   notificationBatchedApps: [],
 );
 
-const defaultInvincibleModeModel = InvincibleMode(
+const defaultParentalControlsModel = ParentalControls(
   id: 0,
+  protectedAccess: false,
+  uninstallWindowTime: TimeOfDayAdapter.zero(),
   isInvincibleModeOn: false,
   includeAppsTimer: true,
   includeAppsLaunchLimit: false,

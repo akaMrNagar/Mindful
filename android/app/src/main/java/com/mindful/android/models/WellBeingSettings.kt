@@ -62,14 +62,25 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
 
 
     init {
+        val allWebsites = mutableListOf<String>()
+
         // Deserialize blocked websites
         val websitesJsonArray = jsonObject.optJSONArray("blockedWebsites")
-        val websites = mutableListOf<String>()
         if (websitesJsonArray != null) {
             for (i in 0 until websitesJsonArray.length()) {
-                websites.add(websitesJsonArray.getString(i))
+                allWebsites.add(websitesJsonArray.getString(i))
             }
         }
-        this.blockedWebsites = websites
+
+        // Deserialize nsfw websites
+        val nsfwSitesJsonArray = jsonObject.optJSONArray("nsfwWebsites")
+        if (nsfwSitesJsonArray != null) {
+            for (i in 0 until nsfwSitesJsonArray.length()) {
+                allWebsites.add(nsfwSitesJsonArray.getString(i))
+            }
+        }
+
+
+        this.blockedWebsites = allWebsites
     }
 }

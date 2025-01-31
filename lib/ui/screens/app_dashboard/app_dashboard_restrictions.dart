@@ -21,7 +21,7 @@ import 'package:mindful/core/utils/default_models_utils.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/models/app_info.dart';
 import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
-import 'package:mindful/providers/focus/invincible_mode_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/usage/apps_launch_count_provider.dart';
 import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
@@ -54,7 +54,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
     required int launchCount,
     required int launchLimit,
   }) async {
-    final isAppLimitRestricted = ref.read(invincibleModeProvider
+    final isAppLimitRestricted = ref.read(parentalControlsProvider
         .select((v) => v.isInvincibleModeOn && v.includeAppsLaunchLimit));
 
     /// Show snack bar and return if restricted
@@ -91,7 +91,7 @@ class AppDashboardRestrictions extends ConsumerWidget {
         .select((v) => v[restriction.associatedGroupId]?.groupName));
 
     final canModifyActivePeriod = !(restriction.periodDurationInMins > 0 &&
-        ref.watch(invincibleModeProvider.select(
+        ref.watch(parentalControlsProvider.select(
             (v) => v.isInvincibleModeOn && v.includeAppsActivePeriod)) &&
         !DateTime.now().isBetweenTod(
           restriction.activePeriodStart,

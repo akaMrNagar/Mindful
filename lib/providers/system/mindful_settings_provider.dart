@@ -10,7 +10,6 @@
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
@@ -112,12 +111,4 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
 
   /// Mark onboarding as completed
   void markOnboardingDone() => state = state.copyWith(isOnboardingDone: true);
-
-  /// Switch protected access
-  void switchProtectedAccess() =>
-      state = state.copyWith(protectedAccess: !state.protectedAccess);
-
-  /// Changes the time of day when uninstall widow starts for 5 minutes.
-  void changeUninstallWindowTime(TimeOfDayAdapter time) =>
-      state = state.copyWith(uninstallWindowTime: time);
 }
