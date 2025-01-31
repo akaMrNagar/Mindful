@@ -12,6 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 
 class DefaultSlideToRemove extends StatelessWidget {
   const DefaultSlideToRemove({
@@ -19,10 +20,12 @@ class DefaultSlideToRemove extends StatelessWidget {
     required this.child,
     required this.onDismiss,
     this.enabled = true,
+    this.removable = true,
   });
 
   final Widget child;
   final bool enabled;
+  final bool removable;
   final VoidCallback onDismiss;
 
   @override
@@ -33,13 +36,38 @@ class DefaultSlideToRemove extends StatelessWidget {
       endActionPane: ActionPane(
         motion: const DrawerMotion(),
         children: [
-          SlidableAction(
+          CustomSlidableAction(
             autoClose: true,
-            label: context.locale.dialog_button_remove,
-            icon: FluentIcons.delete_20_filled,
-            backgroundColor: Theme.of(context).colorScheme.errorContainer,
-            foregroundColor: Theme.of(context).colorScheme.onErrorContainer,
-            onPressed: (_) => onDismiss(),
+            backgroundColor: removable
+                ? Theme.of(context).colorScheme.error
+                : Theme.of(context).focusColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /// Icon
+                Icon(
+                  removable
+                      ? FluentIcons.delete_20_filled
+                      : FluentIcons.delete_off_20_filled,
+                  color: removable
+                      ? Theme.of(context).colorScheme.onError
+                      : Theme.of(context).disabledColor,
+                  size: removable ? 20 : 24,
+                ),
+
+                /// Text
+                if (removable)
+                  StyledText(
+                    context.locale.dialog_button_remove,
+                    fontSize: 14,
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.onError,
+                  ),
+              ],
+            ),
+            onPressed: (_) => removable ? onDismiss() : null,
           ),
         ],
       ),

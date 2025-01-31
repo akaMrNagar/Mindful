@@ -16,9 +16,9 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/providers/notifications/upcoming_notifications_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/providers/shared_unique_data_provider.dart';
-import 'package:mindful/providers/notifications/upcoming_notifications_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/go_to_badge_icon.dart';
@@ -42,14 +42,12 @@ class TabNotifications extends ConsumerWidget {
         .select((v) => v.notificationBatchedApps.length));
 
     final upcomingNotificationsCount = ref.watch(
-            upcomingNotificationsProvider(false).select(
-                (v) => v.value?.values.fold(0, (v, e) => v + e.length))) ??
+            upcomingNotificationsProvider.select((v) => v.value?.length)) ??
         0;
 
     return DefaultRefreshIndicator(
-      onRefresh: ref
-          .read(upcomingNotificationsProvider(false).notifier)
-          .refreshNotifications,
+      onRefresh:
+          ref.read(upcomingNotificationsProvider.notifier).refreshNotifications,
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [

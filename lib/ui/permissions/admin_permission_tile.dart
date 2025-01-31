@@ -15,7 +15,7 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
-import 'package:mindful/providers/system/mindful_settings_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
@@ -63,7 +63,7 @@ class AdminPermissionTile extends ConsumerWidget {
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
 
     final uninstallWindowTime =
-        ref.watch(mindfulSettingsProvider.select((v) => v.uninstallWindowTime));
+        ref.watch(parentalControlsProvider.select((v) => v.uninstallWindowTime));
 
     return DefaultListTile(
       position: ItemPosition.mid,

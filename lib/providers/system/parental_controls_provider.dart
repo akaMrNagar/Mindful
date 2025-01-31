@@ -9,34 +9,43 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
 
-/// A Riverpod state notifier provider that manages [InvincibleMode] settings.
-final invincibleModeProvider =
-    StateNotifierProvider<InvincibleModeNotifier, InvincibleMode>(
-  (ref) => InvincibleModeNotifier(),
+/// A Riverpod state notifier provider that manages [ParentalControls]
+final parentalControlsProvider =
+    StateNotifierProvider<ParentalControlsNotifier, ParentalControls>(
+  (ref) => ParentalControlsNotifier(),
 );
 
-/// This class manages the state of invincible mode settings.
-class InvincibleModeNotifier extends StateNotifier<InvincibleMode> {
-  InvincibleModeNotifier()
-      : super(defaultInvincibleModeModel) {
-    _init();
+class ParentalControlsNotifier extends StateNotifier<ParentalControls> {
+  ParentalControlsNotifier() : super(defaultParentalControlsModel) {
+    init();
   }
 
   /// Initializes the settings state by loading from the database and setting up a listener for saving changes.
-  void _init() async {
+  Future<ParentalControls> init() async {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
-    state = await dao.loadInvincibleModeSettings();
+    state = await dao.loadParentalControls();
 
     /// Listen to provider and save changes to Isar database
     addListener(
       fireImmediately: false,
-      (state) => dao.saveInvincibleModeSettings(state),
+      (state) => dao.saveParentalControls(state),
     );
+
+    return state;
   }
+
+  /// Switch protected access
+  void switchProtectedAccess() =>
+      state = state.copyWith(protectedAccess: !state.protectedAccess);
+
+  /// Changes the time of day when uninstall widow starts for 5 minutes.
+  void changeUninstallWindowTime(TimeOfDayAdapter time) =>
+      state = state.copyWith(uninstallWindowTime: time);
 
   void switchInvincibleMode() =>
       state = state.copyWith(isInvincibleModeOn: !state.isInvincibleModeOn);

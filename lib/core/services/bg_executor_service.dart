@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking flutter code.
 ///
@@ -29,7 +33,10 @@ class BgExecutorService {
           /// Handle tasks
           switch (call.method) {
             case "onBootOrAppUpdate":
-              await onBootOrAppUpdate();
+              await _onBootOrAppUpdate();
+              break;
+            case "onMidnightReset":
+              await _onMidnightReset();
               break;
             default:
           }
@@ -54,7 +61,8 @@ class BgExecutorService {
   void _signalTaskCompletion({String? error}) async {
     try {
       debugPrint(
-          'BgExecutorService._signalTaskCompletion(): Background task completed');
+        'BgExecutorService._signalTaskCompletion(): Background task completed',
+      );
       _methodChannel.invokeMethod("signalTaskCompleted", error);
       // ignore: empty_catches
     } catch (e) {}
@@ -64,7 +72,7 @@ class BgExecutorService {
   /// if the Mindful app is updated or changed
   ///
   /// Initialize and start all necessary services here
-  Future<void> onBootOrAppUpdate() async {
+  Future<void> _onBootOrAppUpdate() async {
     await MethodChannelService.instance.init();
     await DriftDbService.instance.init();
 
@@ -102,5 +110,58 @@ class BgExecutorService {
     /// Fetch and update bedtime routine
     final bedtime = await uniqueDao.loadBedtimeSchedule();
     await MethodChannelService.instance.updateBedtimeSchedule(bedtime);
+
+    /// Fetch and update notification batched apps and schedule
+    final notificationSchedules = await dynamicDao.fetchNotificationSchedules();
+    final distractingNotificationApps =
+        (await uniqueDao.loadSharedData()).notificationBatchedApps;
+
+    await MethodChannelService.instance
+        .updateDistractingNotificationApps(distractingNotificationApps);
+    await MethodChannelService.instance.updateNotificationBatchSchedules(
+      notificationSchedules
+          .where((e) => e.isActive)
+          .map((e) => e.time.toMinutes)
+          .toList(),
+    );
+  }
+
+  /// This method will be invoked everyday at Midnight 12
+  ///
+  /// Backup app's usage to database
+  Future<void> _onMidnightReset() async {
+    await MethodChannelService.instance.init();
+    await DriftDbService.instance.init();
+
+    final dynamicDao = DriftDbService.instance.driftDb.dynamicRecordsDao;
+    final uniqueDao = DriftDbService.instance.driftDb.uniqueRecordsDao;
+
+    /// Number of day from today till then to keep history
+    final historyDays =
+        (await uniqueDao.loadMindfulSettings()).usageHistoryWeeks * 7;
+
+    /// Remove usages before the specified history time
+    await dynamicDao
+        .removeBatchAppUsagesBefore(dateToday.subtract(historyDays.days));
+
+    /// Fetch usage for yesterday
+    final usages =
+        await MethodChannelService.instance.fetchAppsUsageForInterval(
+      start: dateToday.subtract(1.days),
+      end: dateToday,
+    );
+
+    final usageCompanions = usages.entries
+        .map(
+          (entry) => AppUsageTableCompanion(
+            packageName: Value(entry.key),
+            screenTime: Value(entry.value.screenTime),
+            mobileData: Value(entry.value.mobileData),
+            wifiData: Value(entry.value.wifiData),
+          ),
+        )
+        .toList();
+
+    await dynamicDao.insertBatchAppUsages(usageCompanions);
   }
 }

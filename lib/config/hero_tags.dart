@@ -16,34 +16,37 @@ class HeroTags {
   static const donationDialogTag = "mindful.appbar.donation";
 
   /// Tag used to identify the FAB for adding a distracting website.
-  static const editUsernameTag = "home.dashboard.editUsername";
+  static const editUsernameTag = "dashboard.editUsername";
 
   /// Tag used to identify the invincible mode tile.
-  static const invincibleModeTileTag = "home.dashboard.invincibleModeTile";
+  static const invincibleModeTileTag = "parentalControls.invincibleModeTile";
+
+  /// Tag used to identify the tile for selecting uninstall window start time.
+  static const uninstallWindowTileTag = "parentalControls.uninstallWindow";
+
+  /// Tag used to identify the short content timer picker.
+  static const shortContentTimerPickerTag = "shortsBlocking.shortsTimerPicker";
+
+  /// Tag used to identify the block NSFW sites tile in wellbeing tab.
+  static const blockNsfwTileTag = "websitesBlocking.blockNsfwTile";
+
+  /// Tag used to identify the FAB for adding a website.
+  static const addDistractingSiteFABTag = "websitesBlocking.addDistractingWebsite";
+
+
+  /// Generates a tag for a website tile based on the provided host name.
+  static String websiteTileTag(String host) =>
+      "websitesBlocking.websiteTile.$host";
 
   /// Generates a tag for an application tile based on the provided package name.
   static String applicationTileTag(String package) =>
-      "home.statistics.applicationTile.$package";
+      "statistics.applicationTile.$package";
 
   /// Tag used to identify the schedule start time picker.
   static const scheduleStartTimePickerTag = "schedule.startTimePicker";
 
   /// Tag used to identify the schedule end time picker.
   static const scheduleEndTimePickerTag = "schedule.endTimePicker";
-
-  /// Tag used to identify the short content timer picker.
-  static const shortContentTimerPickerTag = "home.wellBeing.shortsTimerPicker";
-
-  /// Tag used to identify the block NSFW sites tile in wellbeing tab.
-  static const blockNsfwTileTag = "home.wellBeing.blockNsfwTile";
-
-  /// Tag used to identify the FAB for adding a distracting website.
-  static const addDistractingSiteFABTag =
-      "home.wellBeing.addDistractingWebsite";
-
-  /// Generates a tag for a website tile based on the provided host name.
-  static String websiteTileTag(String host) =>
-      "home.wellBeing.websiteTile.$host";
 
   /// Tag used to identify the emergency tile in app dashboard screen.
   static const emergencyTileTag = "appDashboard.useEmergencyTile";
@@ -56,10 +59,6 @@ class HeroTags {
   static String appLaunchLimitTileTag(String package) =>
       "appDashboard.launchLimitTile.$package";
 
-  /// Generates a tag for an app alert interval tile based on the provided package name.
-  static String appAlertIntervalTileTag(String package) =>
-      "appDashboard.alertIntervalTile.$package";
-
   /// Tag used to identify in focus mode.
   static const focusModeFABTag = "focus.focusModeFab";
 
@@ -71,9 +70,6 @@ class HeroTags {
 
   /// Tag used to identify the tile for data reset time in settings.
   static const dataResetTimeTileTag = "settings.general.dataResetTime";
-
-  /// Tag used to identify the tile for clearing crash log in settings.
-  static const uninstallWindowTileTag = "settings.advance.uninstallWindow";
 
   /// Tag used to identify the tile for importing database in settings.
   static const importDatabaseTileTag = "settings.database.importDatabase";
@@ -95,9 +91,9 @@ class HeroTags {
 
   /// Tag used to identify the create notification schedule FAB .
   static const newNotificationScheduleFABTag =
-      "batchNotificationScreen.newNotificationScheduleFAB";
+      "notifications.newNotificationScheduleFAB";
 
   /// Tag used to identify the notification schedule timer tile based on the schedule ID.
   static String notificationScheduleTimerTileTag(int scheduleId) =>
-      "batchNotificationScreen.notificationScheduleTimer.$scheduleId";
+      "notifications.notificationScheduleTimer.$scheduleId";
 }

@@ -61,6 +61,14 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _associatedGroupIdMeta =
+      const VerificationMeta('associatedGroupId');
+  @override
+  late final GeneratedColumn<int> associatedGroupId = GeneratedColumn<int>(
+      'associated_group_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(null));
   static const VerificationMeta _canAccessInternetMeta =
       const VerificationMeta('canAccessInternet');
   @override
@@ -71,32 +79,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("can_access_internet" IN (0, 1))'),
       defaultValue: const Constant(true));
-  static const VerificationMeta _associatedGroupIdMeta =
-      const VerificationMeta('associatedGroupId');
-  @override
-  late final GeneratedColumn<int> associatedGroupId = GeneratedColumn<int>(
-      'associated_group_id', aliasedName, true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(null));
-  static const VerificationMeta _alertIntervalMeta =
-      const VerificationMeta('alertInterval');
-  @override
-  late final GeneratedColumn<int> alertInterval = GeneratedColumn<int>(
-      'alert_interval', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(15 * 60));
-  static const VerificationMeta _alertByDialogMeta =
-      const VerificationMeta('alertByDialog');
-  @override
-  late final GeneratedColumn<bool> alertByDialog = GeneratedColumn<bool>(
-      'alert_by_dialog', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("alert_by_dialog" IN (0, 1))'),
-      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         appPackage,
@@ -105,10 +87,8 @@ class $AppRestrictionTableTable extends AppRestrictionTable
         activePeriodStart,
         activePeriodEnd,
         periodDurationInMins,
-        canAccessInternet,
         associatedGroupId,
-        alertInterval,
-        alertByDialog
+        canAccessInternet
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -146,29 +126,17 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           periodDurationInMins.isAcceptableOrUnknown(
               data['period_duration_in_mins']!, _periodDurationInMinsMeta));
     }
-    if (data.containsKey('can_access_internet')) {
-      context.handle(
-          _canAccessInternetMeta,
-          canAccessInternet.isAcceptableOrUnknown(
-              data['can_access_internet']!, _canAccessInternetMeta));
-    }
     if (data.containsKey('associated_group_id')) {
       context.handle(
           _associatedGroupIdMeta,
           associatedGroupId.isAcceptableOrUnknown(
               data['associated_group_id']!, _associatedGroupIdMeta));
     }
-    if (data.containsKey('alert_interval')) {
+    if (data.containsKey('can_access_internet')) {
       context.handle(
-          _alertIntervalMeta,
-          alertInterval.isAcceptableOrUnknown(
-              data['alert_interval']!, _alertIntervalMeta));
-    }
-    if (data.containsKey('alert_by_dialog')) {
-      context.handle(
-          _alertByDialogMeta,
-          alertByDialog.isAcceptableOrUnknown(
-              data['alert_by_dialog']!, _alertByDialogMeta));
+          _canAccessInternetMeta,
+          canAccessInternet.isAcceptableOrUnknown(
+              data['can_access_internet']!, _canAccessInternetMeta));
     }
     return context;
   }
@@ -193,14 +161,10 @@ class $AppRestrictionTableTable extends AppRestrictionTable
               DriftSqlType.int, data['${effectivePrefix}active_period_end'])!),
       periodDurationInMins: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}period_duration_in_mins'])!,
-      canAccessInternet: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
       associatedGroupId: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}associated_group_id']),
-      alertInterval: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}alert_interval'])!,
-      alertByDialog: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}alert_by_dialog'])!,
+      canAccessInternet: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
     );
   }
 
@@ -236,17 +200,11 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   /// Total duration of active period from start to end in MINUTES
   final int periodDurationInMins;
 
-  /// Flag denoting if this app can access internet or not
-  final bool canAccessInternet;
-
   /// ID of the [RestrictionGroup] this app is associated with or NULL
   final int? associatedGroupId;
 
-  /// The interval between each usage alert in SECONDS
-  final int alertInterval;
-
-  ///  Whether to alert user by dialog if false user will be alerted by notification
-  final bool alertByDialog;
+  /// Flag denoting if this app can access internet or not
+  final bool canAccessInternet;
   const AppRestriction(
       {required this.appPackage,
       required this.timerSec,
@@ -254,10 +212,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       required this.activePeriodStart,
       required this.activePeriodEnd,
       required this.periodDurationInMins,
-      required this.canAccessInternet,
       this.associatedGroupId,
-      required this.alertInterval,
-      required this.alertByDialog});
+      required this.canAccessInternet});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -275,12 +231,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           .toSql(activePeriodEnd));
     }
     map['period_duration_in_mins'] = Variable<int>(periodDurationInMins);
-    map['can_access_internet'] = Variable<bool>(canAccessInternet);
     if (!nullToAbsent || associatedGroupId != null) {
       map['associated_group_id'] = Variable<int>(associatedGroupId);
     }
-    map['alert_interval'] = Variable<int>(alertInterval);
-    map['alert_by_dialog'] = Variable<bool>(alertByDialog);
+    map['can_access_internet'] = Variable<bool>(canAccessInternet);
     return map;
   }
 
@@ -292,12 +246,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       activePeriodStart: Value(activePeriodStart),
       activePeriodEnd: Value(activePeriodEnd),
       periodDurationInMins: Value(periodDurationInMins),
-      canAccessInternet: Value(canAccessInternet),
       associatedGroupId: associatedGroupId == null && nullToAbsent
           ? const Value.absent()
           : Value(associatedGroupId),
-      alertInterval: Value(alertInterval),
-      alertByDialog: Value(alertByDialog),
+      canAccessInternet: Value(canAccessInternet),
     );
   }
 
@@ -314,10 +266,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           .fromJson(serializer.fromJson<dynamic>(json['activePeriodEnd'])),
       periodDurationInMins:
           serializer.fromJson<int>(json['periodDurationInMins']),
-      canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
       associatedGroupId: serializer.fromJson<int?>(json['associatedGroupId']),
-      alertInterval: serializer.fromJson<int>(json['alertInterval']),
-      alertByDialog: serializer.fromJson<bool>(json['alertByDialog']),
+      canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
     );
   }
   @override
@@ -334,10 +284,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           .$converteractivePeriodEnd
           .toJson(activePeriodEnd)),
       'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
-      'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
       'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
-      'alertInterval': serializer.toJson<int>(alertInterval),
-      'alertByDialog': serializer.toJson<bool>(alertByDialog),
+      'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
     };
   }
 
@@ -348,10 +296,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           TimeOfDayAdapter? activePeriodStart,
           TimeOfDayAdapter? activePeriodEnd,
           int? periodDurationInMins,
-          bool? canAccessInternet,
           Value<int?> associatedGroupId = const Value.absent(),
-          int? alertInterval,
-          bool? alertByDialog}) =>
+          bool? canAccessInternet}) =>
       AppRestriction(
         appPackage: appPackage ?? this.appPackage,
         timerSec: timerSec ?? this.timerSec,
@@ -359,13 +305,36 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
         activePeriodStart: activePeriodStart ?? this.activePeriodStart,
         activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
         periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
-        canAccessInternet: canAccessInternet ?? this.canAccessInternet,
         associatedGroupId: associatedGroupId.present
             ? associatedGroupId.value
             : this.associatedGroupId,
-        alertInterval: alertInterval ?? this.alertInterval,
-        alertByDialog: alertByDialog ?? this.alertByDialog,
+        canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       );
+  AppRestriction copyWithCompanion(AppRestrictionTableCompanion data) {
+    return AppRestriction(
+      appPackage:
+          data.appPackage.present ? data.appPackage.value : this.appPackage,
+      timerSec: data.timerSec.present ? data.timerSec.value : this.timerSec,
+      launchLimit:
+          data.launchLimit.present ? data.launchLimit.value : this.launchLimit,
+      activePeriodStart: data.activePeriodStart.present
+          ? data.activePeriodStart.value
+          : this.activePeriodStart,
+      activePeriodEnd: data.activePeriodEnd.present
+          ? data.activePeriodEnd.value
+          : this.activePeriodEnd,
+      periodDurationInMins: data.periodDurationInMins.present
+          ? data.periodDurationInMins.value
+          : this.periodDurationInMins,
+      associatedGroupId: data.associatedGroupId.present
+          ? data.associatedGroupId.value
+          : this.associatedGroupId,
+      canAccessInternet: data.canAccessInternet.present
+          ? data.canAccessInternet.value
+          : this.canAccessInternet,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('AppRestriction(')
@@ -375,10 +344,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           ..write('activePeriodStart: $activePeriodStart, ')
           ..write('activePeriodEnd: $activePeriodEnd, ')
           ..write('periodDurationInMins: $periodDurationInMins, ')
-          ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId, ')
-          ..write('alertInterval: $alertInterval, ')
-          ..write('alertByDialog: $alertByDialog')
+          ..write('canAccessInternet: $canAccessInternet')
           ..write(')'))
         .toString();
   }
@@ -391,10 +358,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       activePeriodStart,
       activePeriodEnd,
       periodDurationInMins,
-      canAccessInternet,
       associatedGroupId,
-      alertInterval,
-      alertByDialog);
+      canAccessInternet);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -405,10 +370,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           other.activePeriodStart == this.activePeriodStart &&
           other.activePeriodEnd == this.activePeriodEnd &&
           other.periodDurationInMins == this.periodDurationInMins &&
-          other.canAccessInternet == this.canAccessInternet &&
           other.associatedGroupId == this.associatedGroupId &&
-          other.alertInterval == this.alertInterval &&
-          other.alertByDialog == this.alertByDialog);
+          other.canAccessInternet == this.canAccessInternet);
 }
 
 class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
@@ -418,10 +381,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   final Value<TimeOfDayAdapter> activePeriodStart;
   final Value<TimeOfDayAdapter> activePeriodEnd;
   final Value<int> periodDurationInMins;
-  final Value<bool> canAccessInternet;
   final Value<int?> associatedGroupId;
-  final Value<int> alertInterval;
-  final Value<bool> alertByDialog;
+  final Value<bool> canAccessInternet;
   final Value<int> rowid;
   const AppRestrictionTableCompanion({
     this.appPackage = const Value.absent(),
@@ -430,10 +391,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     this.activePeriodStart = const Value.absent(),
     this.activePeriodEnd = const Value.absent(),
     this.periodDurationInMins = const Value.absent(),
-    this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
-    this.alertInterval = const Value.absent(),
-    this.alertByDialog = const Value.absent(),
+    this.canAccessInternet = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppRestrictionTableCompanion.insert({
@@ -443,10 +402,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     this.activePeriodStart = const Value.absent(),
     this.activePeriodEnd = const Value.absent(),
     this.periodDurationInMins = const Value.absent(),
-    this.canAccessInternet = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
-    this.alertInterval = const Value.absent(),
-    this.alertByDialog = const Value.absent(),
+    this.canAccessInternet = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : appPackage = Value(appPackage);
   static Insertable<AppRestriction> custom({
@@ -456,10 +413,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     Expression<int>? activePeriodStart,
     Expression<int>? activePeriodEnd,
     Expression<int>? periodDurationInMins,
-    Expression<bool>? canAccessInternet,
     Expression<int>? associatedGroupId,
-    Expression<int>? alertInterval,
-    Expression<bool>? alertByDialog,
+    Expression<bool>? canAccessInternet,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -470,10 +425,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       if (activePeriodEnd != null) 'active_period_end': activePeriodEnd,
       if (periodDurationInMins != null)
         'period_duration_in_mins': periodDurationInMins,
-      if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
       if (associatedGroupId != null) 'associated_group_id': associatedGroupId,
-      if (alertInterval != null) 'alert_interval': alertInterval,
-      if (alertByDialog != null) 'alert_by_dialog': alertByDialog,
+      if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -485,10 +438,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       Value<TimeOfDayAdapter>? activePeriodStart,
       Value<TimeOfDayAdapter>? activePeriodEnd,
       Value<int>? periodDurationInMins,
-      Value<bool>? canAccessInternet,
       Value<int?>? associatedGroupId,
-      Value<int>? alertInterval,
-      Value<bool>? alertByDialog,
+      Value<bool>? canAccessInternet,
       Value<int>? rowid}) {
     return AppRestrictionTableCompanion(
       appPackage: appPackage ?? this.appPackage,
@@ -497,10 +448,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       activePeriodStart: activePeriodStart ?? this.activePeriodStart,
       activePeriodEnd: activePeriodEnd ?? this.activePeriodEnd,
       periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
-      canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       associatedGroupId: associatedGroupId ?? this.associatedGroupId,
-      alertInterval: alertInterval ?? this.alertInterval,
-      alertByDialog: alertByDialog ?? this.alertByDialog,
+      canAccessInternet: canAccessInternet ?? this.canAccessInternet,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -531,17 +480,11 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       map['period_duration_in_mins'] =
           Variable<int>(periodDurationInMins.value);
     }
-    if (canAccessInternet.present) {
-      map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
-    }
     if (associatedGroupId.present) {
       map['associated_group_id'] = Variable<int>(associatedGroupId.value);
     }
-    if (alertInterval.present) {
-      map['alert_interval'] = Variable<int>(alertInterval.value);
-    }
-    if (alertByDialog.present) {
-      map['alert_by_dialog'] = Variable<bool>(alertByDialog.value);
+    if (canAccessInternet.present) {
+      map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -558,10 +501,8 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
           ..write('activePeriodStart: $activePeriodStart, ')
           ..write('activePeriodEnd: $activePeriodEnd, ')
           ..write('periodDurationInMins: $periodDurationInMins, ')
-          ..write('canAccessInternet: $canAccessInternet, ')
           ..write('associatedGroupId: $associatedGroupId, ')
-          ..write('alertInterval: $alertInterval, ')
-          ..write('alertByDialog: $alertByDialog, ')
+          ..write('canAccessInternet: $canAccessInternet, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -619,7 +560,7 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
               type: DriftSqlType.string,
               requiredDuringInsert: false,
               defaultValue: Constant(
-                  jsonEncode([false, true, true, true, true, true, false])))
+                  jsonEncode([true, true, true, true, true, false, false])))
           .withConverter<List<bool>>(
               $BedtimeScheduleTableTable.$converterscheduleDays);
   static const VerificationMeta _isScheduleOnMeta =
@@ -887,6 +828,33 @@ class BedtimeSchedule extends DataClass implements Insertable<BedtimeSchedule> {
         shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
         distractingApps: distractingApps ?? this.distractingApps,
       );
+  BedtimeSchedule copyWithCompanion(BedtimeScheduleTableCompanion data) {
+    return BedtimeSchedule(
+      id: data.id.present ? data.id.value : this.id,
+      scheduleStartTime: data.scheduleStartTime.present
+          ? data.scheduleStartTime.value
+          : this.scheduleStartTime,
+      scheduleEndTime: data.scheduleEndTime.present
+          ? data.scheduleEndTime.value
+          : this.scheduleEndTime,
+      scheduleDurationInMins: data.scheduleDurationInMins.present
+          ? data.scheduleDurationInMins.value
+          : this.scheduleDurationInMins,
+      scheduleDays: data.scheduleDays.present
+          ? data.scheduleDays.value
+          : this.scheduleDays,
+      isScheduleOn: data.isScheduleOn.present
+          ? data.isScheduleOn.value
+          : this.isScheduleOn,
+      shouldStartDnd: data.shouldStartDnd.present
+          ? data.shouldStartDnd.value
+          : this.shouldStartDnd,
+      distractingApps: data.distractingApps.present
+          ? data.distractingApps.value
+          : this.distractingApps,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('BedtimeSchedule(')
@@ -1243,6 +1211,18 @@ class CrashLog extends DataClass implements Insertable<CrashLog> {
         error: error ?? this.error,
         stackTrace: stackTrace ?? this.stackTrace,
       );
+  CrashLog copyWithCompanion(CrashLogsTableCompanion data) {
+    return CrashLog(
+      id: data.id.present ? data.id.value : this.id,
+      appVersion:
+          data.appVersion.present ? data.appVersion.value : this.appVersion,
+      timeStamp: data.timeStamp.present ? data.timeStamp.value : this.timeStamp,
+      error: data.error.present ? data.error.value : this.error,
+      stackTrace:
+          data.stackTrace.present ? data.stackTrace.value : this.stackTrace,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('CrashLog(')
@@ -1554,6 +1534,23 @@ class FocusMode extends DataClass implements Insertable<FocusMode> {
         lastTimeStreakUpdated:
             lastTimeStreakUpdated ?? this.lastTimeStreakUpdated,
       );
+  FocusMode copyWithCompanion(FocusModeTableCompanion data) {
+    return FocusMode(
+      id: data.id.present ? data.id.value : this.id,
+      sessionType:
+          data.sessionType.present ? data.sessionType.value : this.sessionType,
+      longestStreak: data.longestStreak.present
+          ? data.longestStreak.value
+          : this.longestStreak,
+      currentStreak: data.currentStreak.present
+          ? data.currentStreak.value
+          : this.currentStreak,
+      lastTimeStreakUpdated: data.lastTimeStreakUpdated.present
+          ? data.lastTimeStreakUpdated.value
+          : this.lastTimeStreakUpdated,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('FocusMode(')
@@ -1850,6 +1847,22 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
         shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
         distractingApps: distractingApps ?? this.distractingApps,
       );
+  FocusProfile copyWithCompanion(FocusProfileTableCompanion data) {
+    return FocusProfile(
+      sessionType:
+          data.sessionType.present ? data.sessionType.value : this.sessionType,
+      sessionDuration: data.sessionDuration.present
+          ? data.sessionDuration.value
+          : this.sessionDuration,
+      shouldStartDnd: data.shouldStartDnd.present
+          ? data.shouldStartDnd.value
+          : this.shouldStartDnd,
+      distractingApps: data.distractingApps.present
+          ? data.distractingApps.value
+          : this.distractingApps,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('FocusProfile(')
@@ -2155,6 +2168,20 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
         startDateTime: startDateTime ?? this.startDateTime,
         durationSecs: durationSecs ?? this.durationSecs,
       );
+  FocusSession copyWithCompanion(FocusSessionsTableCompanion data) {
+    return FocusSession(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      state: data.state.present ? data.state.value : this.state,
+      startDateTime: data.startDateTime.present
+          ? data.startDateTime.value
+          : this.startDateTime,
+      durationSecs: data.durationSecs.present
+          ? data.durationSecs.value
+          : this.durationSecs,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('FocusSession(')
@@ -2314,27 +2341,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(AppConstants.defaultLocale));
-  static const VerificationMeta _dataResetTimeMeta =
-      const VerificationMeta('dataResetTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
-      dataResetTime = GeneratedColumn<int>(
-              'data_reset_time', aliasedName, false,
-              type: DriftSqlType.int,
-              requiredDuringInsert: false,
-              defaultValue: const Constant(0))
-          .withConverter<TimeOfDayAdapter>(
-              $MindfulSettingsTableTable.$converterdataResetTime);
-  static const VerificationMeta _useBottomNavigationMeta =
-      const VerificationMeta('useBottomNavigation');
-  @override
-  late final GeneratedColumn<bool> useBottomNavigation = GeneratedColumn<bool>(
-      'use_bottom_navigation', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("use_bottom_navigation" IN (0, 1))'),
-      defaultValue: const Constant(false));
   static const VerificationMeta _useAmoledDarkMeta =
       const VerificationMeta('useAmoledDark');
   @override
@@ -2366,6 +2372,14 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
               defaultValue: Constant(DefaultHomeTab.dashboard.index))
           .withConverter<DefaultHomeTab>(
               $MindfulSettingsTableTable.$converterdefaultHomeTab);
+  static const VerificationMeta _usageHistoryWeeksMeta =
+      const VerificationMeta('usageHistoryWeeks');
+  @override
+  late final GeneratedColumn<int> usageHistoryWeeks = GeneratedColumn<int>(
+      'usage_history_weeks', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(4));
   static const VerificationMeta _leftEmergencyPassesMeta =
       const VerificationMeta('leftEmergencyPasses');
   @override
@@ -2392,27 +2406,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_onboarding_done" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _protectedAccessMeta =
-      const VerificationMeta('protectedAccess');
-  @override
-  late final GeneratedColumn<bool> protectedAccess = GeneratedColumn<bool>(
-      'protected_access', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("protected_access" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _uninstallWindowTimeMeta =
-      const VerificationMeta('uninstallWindowTime');
-  @override
-  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
-      uninstallWindowTime = GeneratedColumn<int>(
-              'uninstall_window_time', aliasedName, false,
-              type: DriftSqlType.int,
-              requiredDuringInsert: false,
-              defaultValue: const Constant(0))
-          .withConverter<TimeOfDayAdapter>(
-              $MindfulSettingsTableTable.$converteruninstallWindowTime);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2420,16 +2413,13 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         accentColor,
         username,
         localeCode,
-        dataResetTime,
-        useBottomNavigation,
         useAmoledDark,
         useDynamicColors,
         defaultHomeTab,
+        usageHistoryWeeks,
         leftEmergencyPasses,
         lastEmergencyUsed,
-        isOnboardingDone,
-        protectedAccess,
-        uninstallWindowTime
+        isOnboardingDone
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2461,13 +2451,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           localeCode.isAcceptableOrUnknown(
               data['locale_code']!, _localeCodeMeta));
     }
-    context.handle(_dataResetTimeMeta, const VerificationResult.success());
-    if (data.containsKey('use_bottom_navigation')) {
-      context.handle(
-          _useBottomNavigationMeta,
-          useBottomNavigation.isAcceptableOrUnknown(
-              data['use_bottom_navigation']!, _useBottomNavigationMeta));
-    }
     if (data.containsKey('use_amoled_dark')) {
       context.handle(
           _useAmoledDarkMeta,
@@ -2481,6 +2464,12 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
               data['use_dynamic_colors']!, _useDynamicColorsMeta));
     }
     context.handle(_defaultHomeTabMeta, const VerificationResult.success());
+    if (data.containsKey('usage_history_weeks')) {
+      context.handle(
+          _usageHistoryWeeksMeta,
+          usageHistoryWeeks.isAcceptableOrUnknown(
+              data['usage_history_weeks']!, _usageHistoryWeeksMeta));
+    }
     if (data.containsKey('left_emergency_passes')) {
       context.handle(
           _leftEmergencyPassesMeta,
@@ -2499,14 +2488,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           isOnboardingDone.isAcceptableOrUnknown(
               data['is_onboarding_done']!, _isOnboardingDoneMeta));
     }
-    if (data.containsKey('protected_access')) {
-      context.handle(
-          _protectedAccessMeta,
-          protectedAccess.isAcceptableOrUnknown(
-              data['protected_access']!, _protectedAccessMeta));
-    }
-    context.handle(
-        _uninstallWindowTimeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2527,11 +2508,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           .read(DriftSqlType.string, data['${effectivePrefix}username'])!,
       localeCode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}locale_code'])!,
-      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime.fromSql(
-          attachedDatabase.typeMapping.read(
-              DriftSqlType.int, data['${effectivePrefix}data_reset_time'])!),
-      useBottomNavigation: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}use_bottom_navigation'])!,
       useAmoledDark: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}use_amoled_dark'])!,
       useDynamicColors: attachedDatabase.typeMapping.read(
@@ -2539,6 +2515,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
           .fromSql(attachedDatabase.typeMapping.read(
               DriftSqlType.int, data['${effectivePrefix}default_home_tab'])!),
+      usageHistoryWeeks: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}usage_history_weeks'])!,
       leftEmergencyPasses: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}left_emergency_passes'])!,
       lastEmergencyUsed: attachedDatabase.typeMapping.read(
@@ -2546,12 +2524,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           data['${effectivePrefix}last_emergency_used'])!,
       isOnboardingDone: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_onboarding_done'])!,
-      protectedAccess: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}protected_access'])!,
-      uninstallWindowTime: $MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
-              data['${effectivePrefix}uninstall_window_time'])!),
     );
   }
 
@@ -2562,12 +2534,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
 
   static JsonTypeConverter2<AppThemeMode, int, int> $converterthemeMode =
       const EnumIndexConverter<AppThemeMode>(AppThemeMode.values);
-  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
-      $converterdataResetTime = const TimeOfDayAdapterConverter();
   static JsonTypeConverter2<DefaultHomeTab, int, int> $converterdefaultHomeTab =
       const EnumIndexConverter<DefaultHomeTab>(DefaultHomeTab.values);
-  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
-      $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
 
 class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
@@ -2586,12 +2554,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   /// App Locale (Language code)
   final String localeCode;
 
-  /// Daily data usage renew or reset time [TimeOfDay] stored as minutes
-  final TimeOfDayAdapter dataResetTime;
-
-  /// Flag indicating if to use bottom navigation or the default sidebar
-  final bool useBottomNavigation;
-
   /// Flag indicating if to use pure amoled black color for dark theme
   final bool useAmoledDark;
 
@@ -2601,6 +2563,9 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
   /// Default initial home tab
   final DefaultHomeTab defaultHomeTab;
 
+  /// Maximum number of weeks till the app's usage history will be kept
+  final int usageHistoryWeeks;
+
   /// Number of emergency break passes left for today
   final int leftEmergencyPasses;
 
@@ -2609,28 +2574,19 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// Flag indicating if onboarding is completed or not
   final bool isOnboardingDone;
-
-  /// Flag indicating whether to authenticate before opening Mindful or not
-  final bool protectedAccess;
-
-  /// Daily uninstall window start time [TimeOfDay] stored as minutes
-  final TimeOfDayAdapter uninstallWindowTime;
   const MindfulSettings(
       {required this.id,
       required this.themeMode,
       required this.accentColor,
       required this.username,
       required this.localeCode,
-      required this.dataResetTime,
-      required this.useBottomNavigation,
       required this.useAmoledDark,
       required this.useDynamicColors,
       required this.defaultHomeTab,
+      required this.usageHistoryWeeks,
       required this.leftEmergencyPasses,
       required this.lastEmergencyUsed,
-      required this.isOnboardingDone,
-      required this.protectedAccess,
-      required this.uninstallWindowTime});
+      required this.isOnboardingDone});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2642,12 +2598,6 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['accent_color'] = Variable<String>(accentColor);
     map['username'] = Variable<String>(username);
     map['locale_code'] = Variable<String>(localeCode);
-    {
-      map['data_reset_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converterdataResetTime
-          .toSql(dataResetTime));
-    }
-    map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation);
     map['use_amoled_dark'] = Variable<bool>(useAmoledDark);
     map['use_dynamic_colors'] = Variable<bool>(useDynamicColors);
     {
@@ -2655,15 +2605,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           .$converterdefaultHomeTab
           .toSql(defaultHomeTab));
     }
+    map['usage_history_weeks'] = Variable<int>(usageHistoryWeeks);
     map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses);
     map['last_emergency_used'] = Variable<DateTime>(lastEmergencyUsed);
     map['is_onboarding_done'] = Variable<bool>(isOnboardingDone);
-    map['protected_access'] = Variable<bool>(protectedAccess);
-    {
-      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .toSql(uninstallWindowTime));
-    }
     return map;
   }
 
@@ -2674,16 +2619,13 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: Value(accentColor),
       username: Value(username),
       localeCode: Value(localeCode),
-      dataResetTime: Value(dataResetTime),
-      useBottomNavigation: Value(useBottomNavigation),
       useAmoledDark: Value(useAmoledDark),
       useDynamicColors: Value(useDynamicColors),
       defaultHomeTab: Value(defaultHomeTab),
+      usageHistoryWeeks: Value(usageHistoryWeeks),
       leftEmergencyPasses: Value(leftEmergencyPasses),
       lastEmergencyUsed: Value(lastEmergencyUsed),
       isOnboardingDone: Value(isOnboardingDone),
-      protectedAccess: Value(protectedAccess),
-      uninstallWindowTime: Value(uninstallWindowTime),
     );
   }
 
@@ -2697,23 +2639,16 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor: serializer.fromJson<String>(json['accentColor']),
       username: serializer.fromJson<String>(json['username']),
       localeCode: serializer.fromJson<String>(json['localeCode']),
-      dataResetTime: $MindfulSettingsTableTable.$converterdataResetTime
-          .fromJson(serializer.fromJson<dynamic>(json['dataResetTime'])),
-      useBottomNavigation:
-          serializer.fromJson<bool>(json['useBottomNavigation']),
       useAmoledDark: serializer.fromJson<bool>(json['useAmoledDark']),
       useDynamicColors: serializer.fromJson<bool>(json['useDynamicColors']),
       defaultHomeTab: $MindfulSettingsTableTable.$converterdefaultHomeTab
           .fromJson(serializer.fromJson<int>(json['defaultHomeTab'])),
+      usageHistoryWeeks: serializer.fromJson<int>(json['usageHistoryWeeks']),
       leftEmergencyPasses:
           serializer.fromJson<int>(json['leftEmergencyPasses']),
       lastEmergencyUsed:
           serializer.fromJson<DateTime>(json['lastEmergencyUsed']),
       isOnboardingDone: serializer.fromJson<bool>(json['isOnboardingDone']),
-      protectedAccess: serializer.fromJson<bool>(json['protectedAccess']),
-      uninstallWindowTime: $MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
     );
   }
   @override
@@ -2726,22 +2661,15 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'accentColor': serializer.toJson<String>(accentColor),
       'username': serializer.toJson<String>(username),
       'localeCode': serializer.toJson<String>(localeCode),
-      'dataResetTime': serializer.toJson<dynamic>($MindfulSettingsTableTable
-          .$converterdataResetTime
-          .toJson(dataResetTime)),
-      'useBottomNavigation': serializer.toJson<bool>(useBottomNavigation),
       'useAmoledDark': serializer.toJson<bool>(useAmoledDark),
       'useDynamicColors': serializer.toJson<bool>(useDynamicColors),
       'defaultHomeTab': serializer.toJson<int>($MindfulSettingsTableTable
           .$converterdefaultHomeTab
           .toJson(defaultHomeTab)),
+      'usageHistoryWeeks': serializer.toJson<int>(usageHistoryWeeks),
       'leftEmergencyPasses': serializer.toJson<int>(leftEmergencyPasses),
       'lastEmergencyUsed': serializer.toJson<DateTime>(lastEmergencyUsed),
       'isOnboardingDone': serializer.toJson<bool>(isOnboardingDone),
-      'protectedAccess': serializer.toJson<bool>(protectedAccess),
-      'uninstallWindowTime': serializer.toJson<dynamic>(
-          $MindfulSettingsTableTable.$converteruninstallWindowTime
-              .toJson(uninstallWindowTime)),
     };
   }
 
@@ -2751,33 +2679,60 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           String? accentColor,
           String? username,
           String? localeCode,
-          TimeOfDayAdapter? dataResetTime,
-          bool? useBottomNavigation,
           bool? useAmoledDark,
           bool? useDynamicColors,
           DefaultHomeTab? defaultHomeTab,
+          int? usageHistoryWeeks,
           int? leftEmergencyPasses,
           DateTime? lastEmergencyUsed,
-          bool? isOnboardingDone,
-          bool? protectedAccess,
-          TimeOfDayAdapter? uninstallWindowTime}) =>
+          bool? isOnboardingDone}) =>
       MindfulSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
         accentColor: accentColor ?? this.accentColor,
         username: username ?? this.username,
         localeCode: localeCode ?? this.localeCode,
-        dataResetTime: dataResetTime ?? this.dataResetTime,
-        useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
         useAmoledDark: useAmoledDark ?? this.useAmoledDark,
         useDynamicColors: useDynamicColors ?? this.useDynamicColors,
         defaultHomeTab: defaultHomeTab ?? this.defaultHomeTab,
+        usageHistoryWeeks: usageHistoryWeeks ?? this.usageHistoryWeeks,
         leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
         lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
-        protectedAccess: protectedAccess ?? this.protectedAccess,
-        uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       );
+  MindfulSettings copyWithCompanion(MindfulSettingsTableCompanion data) {
+    return MindfulSettings(
+      id: data.id.present ? data.id.value : this.id,
+      themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+      accentColor:
+          data.accentColor.present ? data.accentColor.value : this.accentColor,
+      username: data.username.present ? data.username.value : this.username,
+      localeCode:
+          data.localeCode.present ? data.localeCode.value : this.localeCode,
+      useAmoledDark: data.useAmoledDark.present
+          ? data.useAmoledDark.value
+          : this.useAmoledDark,
+      useDynamicColors: data.useDynamicColors.present
+          ? data.useDynamicColors.value
+          : this.useDynamicColors,
+      defaultHomeTab: data.defaultHomeTab.present
+          ? data.defaultHomeTab.value
+          : this.defaultHomeTab,
+      usageHistoryWeeks: data.usageHistoryWeeks.present
+          ? data.usageHistoryWeeks.value
+          : this.usageHistoryWeeks,
+      leftEmergencyPasses: data.leftEmergencyPasses.present
+          ? data.leftEmergencyPasses.value
+          : this.leftEmergencyPasses,
+      lastEmergencyUsed: data.lastEmergencyUsed.present
+          ? data.lastEmergencyUsed.value
+          : this.lastEmergencyUsed,
+      isOnboardingDone: data.isOnboardingDone.present
+          ? data.isOnboardingDone.value
+          : this.isOnboardingDone,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('MindfulSettings(')
@@ -2786,16 +2741,13 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('dataResetTime: $dataResetTime, ')
-          ..write('useBottomNavigation: $useBottomNavigation, ')
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
           ..write('defaultHomeTab: $defaultHomeTab, ')
+          ..write('usageHistoryWeeks: $usageHistoryWeeks, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone, ')
-          ..write('protectedAccess: $protectedAccess, ')
-          ..write('uninstallWindowTime: $uninstallWindowTime')
+          ..write('isOnboardingDone: $isOnboardingDone')
           ..write(')'))
         .toString();
   }
@@ -2807,16 +2759,13 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       accentColor,
       username,
       localeCode,
-      dataResetTime,
-      useBottomNavigation,
       useAmoledDark,
       useDynamicColors,
       defaultHomeTab,
+      usageHistoryWeeks,
       leftEmergencyPasses,
       lastEmergencyUsed,
-      isOnboardingDone,
-      protectedAccess,
-      uninstallWindowTime);
+      isOnboardingDone);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2826,16 +2775,13 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.accentColor == this.accentColor &&
           other.username == this.username &&
           other.localeCode == this.localeCode &&
-          other.dataResetTime == this.dataResetTime &&
-          other.useBottomNavigation == this.useBottomNavigation &&
           other.useAmoledDark == this.useAmoledDark &&
           other.useDynamicColors == this.useDynamicColors &&
           other.defaultHomeTab == this.defaultHomeTab &&
+          other.usageHistoryWeeks == this.usageHistoryWeeks &&
           other.leftEmergencyPasses == this.leftEmergencyPasses &&
           other.lastEmergencyUsed == this.lastEmergencyUsed &&
-          other.isOnboardingDone == this.isOnboardingDone &&
-          other.protectedAccess == this.protectedAccess &&
-          other.uninstallWindowTime == this.uninstallWindowTime);
+          other.isOnboardingDone == this.isOnboardingDone);
 }
 
 class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
@@ -2844,32 +2790,26 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<String> accentColor;
   final Value<String> username;
   final Value<String> localeCode;
-  final Value<TimeOfDayAdapter> dataResetTime;
-  final Value<bool> useBottomNavigation;
   final Value<bool> useAmoledDark;
   final Value<bool> useDynamicColors;
   final Value<DefaultHomeTab> defaultHomeTab;
+  final Value<int> usageHistoryWeeks;
   final Value<int> leftEmergencyPasses;
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
-  final Value<bool> protectedAccess;
-  final Value<TimeOfDayAdapter> uninstallWindowTime;
   const MindfulSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.accentColor = const Value.absent(),
     this.username = const Value.absent(),
     this.localeCode = const Value.absent(),
-    this.dataResetTime = const Value.absent(),
-    this.useBottomNavigation = const Value.absent(),
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
     this.defaultHomeTab = const Value.absent(),
+    this.usageHistoryWeeks = const Value.absent(),
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
-    this.protectedAccess = const Value.absent(),
-    this.uninstallWindowTime = const Value.absent(),
   });
   MindfulSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2877,16 +2817,13 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.accentColor = const Value.absent(),
     this.username = const Value.absent(),
     this.localeCode = const Value.absent(),
-    this.dataResetTime = const Value.absent(),
-    this.useBottomNavigation = const Value.absent(),
     this.useAmoledDark = const Value.absent(),
     this.useDynamicColors = const Value.absent(),
     this.defaultHomeTab = const Value.absent(),
+    this.usageHistoryWeeks = const Value.absent(),
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
-    this.protectedAccess = const Value.absent(),
-    this.uninstallWindowTime = const Value.absent(),
   });
   static Insertable<MindfulSettings> custom({
     Expression<int>? id,
@@ -2894,16 +2831,13 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<String>? accentColor,
     Expression<String>? username,
     Expression<String>? localeCode,
-    Expression<int>? dataResetTime,
-    Expression<bool>? useBottomNavigation,
     Expression<bool>? useAmoledDark,
     Expression<bool>? useDynamicColors,
     Expression<int>? defaultHomeTab,
+    Expression<int>? usageHistoryWeeks,
     Expression<int>? leftEmergencyPasses,
     Expression<DateTime>? lastEmergencyUsed,
     Expression<bool>? isOnboardingDone,
-    Expression<bool>? protectedAccess,
-    Expression<int>? uninstallWindowTime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2911,19 +2845,14 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       if (accentColor != null) 'accent_color': accentColor,
       if (username != null) 'username': username,
       if (localeCode != null) 'locale_code': localeCode,
-      if (dataResetTime != null) 'data_reset_time': dataResetTime,
-      if (useBottomNavigation != null)
-        'use_bottom_navigation': useBottomNavigation,
       if (useAmoledDark != null) 'use_amoled_dark': useAmoledDark,
       if (useDynamicColors != null) 'use_dynamic_colors': useDynamicColors,
       if (defaultHomeTab != null) 'default_home_tab': defaultHomeTab,
+      if (usageHistoryWeeks != null) 'usage_history_weeks': usageHistoryWeeks,
       if (leftEmergencyPasses != null)
         'left_emergency_passes': leftEmergencyPasses,
       if (lastEmergencyUsed != null) 'last_emergency_used': lastEmergencyUsed,
       if (isOnboardingDone != null) 'is_onboarding_done': isOnboardingDone,
-      if (protectedAccess != null) 'protected_access': protectedAccess,
-      if (uninstallWindowTime != null)
-        'uninstall_window_time': uninstallWindowTime,
     });
   }
 
@@ -2933,32 +2862,26 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<String>? accentColor,
       Value<String>? username,
       Value<String>? localeCode,
-      Value<TimeOfDayAdapter>? dataResetTime,
-      Value<bool>? useBottomNavigation,
       Value<bool>? useAmoledDark,
       Value<bool>? useDynamicColors,
       Value<DefaultHomeTab>? defaultHomeTab,
+      Value<int>? usageHistoryWeeks,
       Value<int>? leftEmergencyPasses,
       Value<DateTime>? lastEmergencyUsed,
-      Value<bool>? isOnboardingDone,
-      Value<bool>? protectedAccess,
-      Value<TimeOfDayAdapter>? uninstallWindowTime}) {
+      Value<bool>? isOnboardingDone}) {
     return MindfulSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
       accentColor: accentColor ?? this.accentColor,
       username: username ?? this.username,
       localeCode: localeCode ?? this.localeCode,
-      dataResetTime: dataResetTime ?? this.dataResetTime,
-      useBottomNavigation: useBottomNavigation ?? this.useBottomNavigation,
       useAmoledDark: useAmoledDark ?? this.useAmoledDark,
       useDynamicColors: useDynamicColors ?? this.useDynamicColors,
       defaultHomeTab: defaultHomeTab ?? this.defaultHomeTab,
+      usageHistoryWeeks: usageHistoryWeeks ?? this.usageHistoryWeeks,
       leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
       lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
       isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
-      protectedAccess: protectedAccess ?? this.protectedAccess,
-      uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
     );
   }
 
@@ -2982,14 +2905,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (localeCode.present) {
       map['locale_code'] = Variable<String>(localeCode.value);
     }
-    if (dataResetTime.present) {
-      map['data_reset_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converterdataResetTime
-          .toSql(dataResetTime.value));
-    }
-    if (useBottomNavigation.present) {
-      map['use_bottom_navigation'] = Variable<bool>(useBottomNavigation.value);
-    }
     if (useAmoledDark.present) {
       map['use_amoled_dark'] = Variable<bool>(useAmoledDark.value);
     }
@@ -3001,6 +2916,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           .$converterdefaultHomeTab
           .toSql(defaultHomeTab.value));
     }
+    if (usageHistoryWeeks.present) {
+      map['usage_history_weeks'] = Variable<int>(usageHistoryWeeks.value);
+    }
     if (leftEmergencyPasses.present) {
       map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses.value);
     }
@@ -3009,14 +2927,6 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     }
     if (isOnboardingDone.present) {
       map['is_onboarding_done'] = Variable<bool>(isOnboardingDone.value);
-    }
-    if (protectedAccess.present) {
-      map['protected_access'] = Variable<bool>(protectedAccess.value);
-    }
-    if (uninstallWindowTime.present) {
-      map['uninstall_window_time'] = Variable<int>($MindfulSettingsTableTable
-          .$converteruninstallWindowTime
-          .toSql(uninstallWindowTime.value));
     }
     return map;
   }
@@ -3029,27 +2939,24 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('accentColor: $accentColor, ')
           ..write('username: $username, ')
           ..write('localeCode: $localeCode, ')
-          ..write('dataResetTime: $dataResetTime, ')
-          ..write('useBottomNavigation: $useBottomNavigation, ')
           ..write('useAmoledDark: $useAmoledDark, ')
           ..write('useDynamicColors: $useDynamicColors, ')
           ..write('defaultHomeTab: $defaultHomeTab, ')
+          ..write('usageHistoryWeeks: $usageHistoryWeeks, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone, ')
-          ..write('protectedAccess: $protectedAccess, ')
-          ..write('uninstallWindowTime: $uninstallWindowTime')
+          ..write('isOnboardingDone: $isOnboardingDone')
           ..write(')'))
         .toString();
   }
 }
 
-class $InvincibleModeTableTable extends InvincibleModeTable
-    with TableInfo<$InvincibleModeTableTable, InvincibleMode> {
+class $ParentalControlsTableTable extends ParentalControlsTable
+    with TableInfo<$ParentalControlsTableTable, ParentalControls> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $InvincibleModeTableTable(this.attachedDatabase, [this._alias]);
+  $ParentalControlsTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3057,6 +2964,27 @@ class $InvincibleModeTableTable extends InvincibleModeTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _protectedAccessMeta =
+      const VerificationMeta('protectedAccess');
+  @override
+  late final GeneratedColumn<bool> protectedAccess = GeneratedColumn<bool>(
+      'protected_access', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("protected_access" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _uninstallWindowTimeMeta =
+      const VerificationMeta('uninstallWindowTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      uninstallWindowTime = GeneratedColumn<int>(
+              'uninstall_window_time', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<TimeOfDayAdapter>(
+              $ParentalControlsTableTable.$converteruninstallWindowTime);
   static const VerificationMeta _isInvincibleModeOnMeta =
       const VerificationMeta('isInvincibleModeOn');
   @override
@@ -3140,6 +3068,8 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   @override
   List<GeneratedColumn> get $columns => [
         id,
+        protectedAccess,
+        uninstallWindowTime,
         isInvincibleModeOn,
         includeAppsTimer,
         includeAppsLaunchLimit,
@@ -3153,15 +3083,23 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'invincible_mode_table';
+  static const String $name = 'parental_controls_table';
   @override
-  VerificationContext validateIntegrity(Insertable<InvincibleMode> instance,
+  VerificationContext validateIntegrity(Insertable<ParentalControls> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
+    if (data.containsKey('protected_access')) {
+      context.handle(
+          _protectedAccessMeta,
+          protectedAccess.isAcceptableOrUnknown(
+              data['protected_access']!, _protectedAccessMeta));
+    }
+    context.handle(
+        _uninstallWindowTimeMeta, const VerificationResult.success());
     if (data.containsKey('is_invincible_mode_on')) {
       context.handle(
           _isInvincibleModeOnMeta,
@@ -3218,11 +3156,17 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  InvincibleMode map(Map<String, dynamic> data, {String? tablePrefix}) {
+  ParentalControls map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return InvincibleMode(
+    return ParentalControls(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      protectedAccess: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}protected_access'])!,
+      uninstallWindowTime: $ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}uninstall_window_time'])!),
       isInvincibleModeOn: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_invincible_mode_on'])!,
       includeAppsTimer: attachedDatabase.typeMapping.read(
@@ -3247,14 +3191,24 @@ class $InvincibleModeTableTable extends InvincibleModeTable
   }
 
   @override
-  $InvincibleModeTableTable createAlias(String alias) {
-    return $InvincibleModeTableTable(attachedDatabase, alias);
+  $ParentalControlsTableTable createAlias(String alias) {
+    return $ParentalControlsTableTable(attachedDatabase, alias);
   }
+
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
 }
 
-class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
+class ParentalControls extends DataClass
+    implements Insertable<ParentalControls> {
   /// Unique ID for Invincible Mode settings
   final int id;
+
+  /// Flag indicating whether to authenticate before opening Mindful or not
+  final bool protectedAccess;
+
+  /// Daily uninstall window start time [TimeOfDay] stored as minutes
+  final TimeOfDayAdapter uninstallWindowTime;
 
   /// Flag indicating if invincible mode is ON
   final bool isInvincibleModeOn;
@@ -3293,8 +3247,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   ///
   /// If included user cannot modify bedtime schedule during the active period
   final bool includeBedtimeSchedule;
-  const InvincibleMode(
+  const ParentalControls(
       {required this.id,
+      required this.protectedAccess,
+      required this.uninstallWindowTime,
       required this.isInvincibleModeOn,
       required this.includeAppsTimer,
       required this.includeAppsLaunchLimit,
@@ -3307,6 +3263,12 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
+    map['protected_access'] = Variable<bool>(protectedAccess);
+    {
+      map['uninstall_window_time'] = Variable<int>($ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime));
+    }
     map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
     map['include_apps_timer'] = Variable<bool>(includeAppsTimer);
     map['include_apps_launch_limit'] = Variable<bool>(includeAppsLaunchLimit);
@@ -3319,9 +3281,11 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     return map;
   }
 
-  InvincibleModeTableCompanion toCompanion(bool nullToAbsent) {
-    return InvincibleModeTableCompanion(
+  ParentalControlsTableCompanion toCompanion(bool nullToAbsent) {
+    return ParentalControlsTableCompanion(
       id: Value(id),
+      protectedAccess: Value(protectedAccess),
+      uninstallWindowTime: Value(uninstallWindowTime),
       isInvincibleModeOn: Value(isInvincibleModeOn),
       includeAppsTimer: Value(includeAppsTimer),
       includeAppsLaunchLimit: Value(includeAppsLaunchLimit),
@@ -3333,11 +3297,15 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     );
   }
 
-  factory InvincibleMode.fromJson(Map<String, dynamic> json,
+  factory ParentalControls.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return InvincibleMode(
+    return ParentalControls(
       id: serializer.fromJson<int>(json['id']),
+      protectedAccess: serializer.fromJson<bool>(json['protectedAccess']),
+      uninstallWindowTime: $ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
       isInvincibleModeOn: serializer.fromJson<bool>(json['isInvincibleModeOn']),
       includeAppsTimer: serializer.fromJson<bool>(json['includeAppsTimer']),
       includeAppsLaunchLimit:
@@ -3357,6 +3325,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
+      'protectedAccess': serializer.toJson<bool>(protectedAccess),
+      'uninstallWindowTime': serializer.toJson<dynamic>(
+          $ParentalControlsTableTable.$converteruninstallWindowTime
+              .toJson(uninstallWindowTime)),
       'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
       'includeAppsTimer': serializer.toJson<bool>(includeAppsTimer),
       'includeAppsLaunchLimit': serializer.toJson<bool>(includeAppsLaunchLimit),
@@ -3370,8 +3342,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
     };
   }
 
-  InvincibleMode copyWith(
+  ParentalControls copyWith(
           {int? id,
+          bool? protectedAccess,
+          TimeOfDayAdapter? uninstallWindowTime,
           bool? isInvincibleModeOn,
           bool? includeAppsTimer,
           bool? includeAppsLaunchLimit,
@@ -3380,8 +3354,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           bool? includeGroupsActivePeriod,
           bool? includeShortsTimer,
           bool? includeBedtimeSchedule}) =>
-      InvincibleMode(
+      ParentalControls(
         id: id ?? this.id,
+        protectedAccess: protectedAccess ?? this.protectedAccess,
+        uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
         isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
         includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
         includeAppsLaunchLimit:
@@ -3395,10 +3371,48 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
         includeBedtimeSchedule:
             includeBedtimeSchedule ?? this.includeBedtimeSchedule,
       );
+  ParentalControls copyWithCompanion(ParentalControlsTableCompanion data) {
+    return ParentalControls(
+      id: data.id.present ? data.id.value : this.id,
+      protectedAccess: data.protectedAccess.present
+          ? data.protectedAccess.value
+          : this.protectedAccess,
+      uninstallWindowTime: data.uninstallWindowTime.present
+          ? data.uninstallWindowTime.value
+          : this.uninstallWindowTime,
+      isInvincibleModeOn: data.isInvincibleModeOn.present
+          ? data.isInvincibleModeOn.value
+          : this.isInvincibleModeOn,
+      includeAppsTimer: data.includeAppsTimer.present
+          ? data.includeAppsTimer.value
+          : this.includeAppsTimer,
+      includeAppsLaunchLimit: data.includeAppsLaunchLimit.present
+          ? data.includeAppsLaunchLimit.value
+          : this.includeAppsLaunchLimit,
+      includeAppsActivePeriod: data.includeAppsActivePeriod.present
+          ? data.includeAppsActivePeriod.value
+          : this.includeAppsActivePeriod,
+      includeGroupsTimer: data.includeGroupsTimer.present
+          ? data.includeGroupsTimer.value
+          : this.includeGroupsTimer,
+      includeGroupsActivePeriod: data.includeGroupsActivePeriod.present
+          ? data.includeGroupsActivePeriod.value
+          : this.includeGroupsActivePeriod,
+      includeShortsTimer: data.includeShortsTimer.present
+          ? data.includeShortsTimer.value
+          : this.includeShortsTimer,
+      includeBedtimeSchedule: data.includeBedtimeSchedule.present
+          ? data.includeBedtimeSchedule.value
+          : this.includeBedtimeSchedule,
+    );
+  }
+
   @override
   String toString() {
-    return (StringBuffer('InvincibleMode(')
+    return (StringBuffer('ParentalControls(')
           ..write('id: $id, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime, ')
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
@@ -3414,6 +3428,8 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   @override
   int get hashCode => Object.hash(
       id,
+      protectedAccess,
+      uninstallWindowTime,
       isInvincibleModeOn,
       includeAppsTimer,
       includeAppsLaunchLimit,
@@ -3425,8 +3441,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is InvincibleMode &&
+      (other is ParentalControls &&
           other.id == this.id &&
+          other.protectedAccess == this.protectedAccess &&
+          other.uninstallWindowTime == this.uninstallWindowTime &&
           other.isInvincibleModeOn == this.isInvincibleModeOn &&
           other.includeAppsTimer == this.includeAppsTimer &&
           other.includeAppsLaunchLimit == this.includeAppsLaunchLimit &&
@@ -3437,8 +3455,10 @@ class InvincibleMode extends DataClass implements Insertable<InvincibleMode> {
           other.includeBedtimeSchedule == this.includeBedtimeSchedule);
 }
 
-class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
+class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
   final Value<int> id;
+  final Value<bool> protectedAccess;
+  final Value<TimeOfDayAdapter> uninstallWindowTime;
   final Value<bool> isInvincibleModeOn;
   final Value<bool> includeAppsTimer;
   final Value<bool> includeAppsLaunchLimit;
@@ -3447,8 +3467,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   final Value<bool> includeGroupsActivePeriod;
   final Value<bool> includeShortsTimer;
   final Value<bool> includeBedtimeSchedule;
-  const InvincibleModeTableCompanion({
+  const ParentalControlsTableCompanion({
     this.id = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
     this.isInvincibleModeOn = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
@@ -3458,8 +3480,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     this.includeShortsTimer = const Value.absent(),
     this.includeBedtimeSchedule = const Value.absent(),
   });
-  InvincibleModeTableCompanion.insert({
+  ParentalControlsTableCompanion.insert({
     this.id = const Value.absent(),
+    this.protectedAccess = const Value.absent(),
+    this.uninstallWindowTime = const Value.absent(),
     this.isInvincibleModeOn = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
@@ -3469,8 +3493,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     this.includeShortsTimer = const Value.absent(),
     this.includeBedtimeSchedule = const Value.absent(),
   });
-  static Insertable<InvincibleMode> custom({
+  static Insertable<ParentalControls> custom({
     Expression<int>? id,
+    Expression<bool>? protectedAccess,
+    Expression<int>? uninstallWindowTime,
     Expression<bool>? isInvincibleModeOn,
     Expression<bool>? includeAppsTimer,
     Expression<bool>? includeAppsLaunchLimit,
@@ -3482,6 +3508,9 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
+      if (protectedAccess != null) 'protected_access': protectedAccess,
+      if (uninstallWindowTime != null)
+        'uninstall_window_time': uninstallWindowTime,
       if (isInvincibleModeOn != null)
         'is_invincible_mode_on': isInvincibleModeOn,
       if (includeAppsTimer != null) 'include_apps_timer': includeAppsTimer,
@@ -3500,8 +3529,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     });
   }
 
-  InvincibleModeTableCompanion copyWith(
+  ParentalControlsTableCompanion copyWith(
       {Value<int>? id,
+      Value<bool>? protectedAccess,
+      Value<TimeOfDayAdapter>? uninstallWindowTime,
       Value<bool>? isInvincibleModeOn,
       Value<bool>? includeAppsTimer,
       Value<bool>? includeAppsLaunchLimit,
@@ -3510,8 +3541,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
       Value<bool>? includeGroupsActivePeriod,
       Value<bool>? includeShortsTimer,
       Value<bool>? includeBedtimeSchedule}) {
-    return InvincibleModeTableCompanion(
+    return ParentalControlsTableCompanion(
       id: id ?? this.id,
+      protectedAccess: protectedAccess ?? this.protectedAccess,
+      uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
       includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
       includeAppsLaunchLimit:
@@ -3532,6 +3565,14 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
     final map = <String, Expression>{};
     if (id.present) {
       map['id'] = Variable<int>(id.value);
+    }
+    if (protectedAccess.present) {
+      map['protected_access'] = Variable<bool>(protectedAccess.value);
+    }
+    if (uninstallWindowTime.present) {
+      map['uninstall_window_time'] = Variable<int>($ParentalControlsTableTable
+          .$converteruninstallWindowTime
+          .toSql(uninstallWindowTime.value));
     }
     if (isInvincibleModeOn.present) {
       map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn.value);
@@ -3566,8 +3607,10 @@ class InvincibleModeTableCompanion extends UpdateCompanion<InvincibleMode> {
 
   @override
   String toString() {
-    return (StringBuffer('InvincibleModeTableCompanion(')
+    return (StringBuffer('ParentalControlsTableCompanion(')
           ..write('id: $id, ')
+          ..write('protectedAccess: $protectedAccess, ')
+          ..write('uninstallWindowTime: $uninstallWindowTime, ')
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
@@ -3858,6 +3901,26 @@ class RestrictionGroup extends DataClass
         periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
         distractingApps: distractingApps ?? this.distractingApps,
       );
+  RestrictionGroup copyWithCompanion(RestrictionGroupsTableCompanion data) {
+    return RestrictionGroup(
+      id: data.id.present ? data.id.value : this.id,
+      groupName: data.groupName.present ? data.groupName.value : this.groupName,
+      timerSec: data.timerSec.present ? data.timerSec.value : this.timerSec,
+      activePeriodStart: data.activePeriodStart.present
+          ? data.activePeriodStart.value
+          : this.activePeriodStart,
+      activePeriodEnd: data.activePeriodEnd.present
+          ? data.activePeriodEnd.value
+          : this.activePeriodEnd,
+      periodDurationInMins: data.periodDurationInMins.present
+          ? data.periodDurationInMins.value
+          : this.periodDurationInMins,
+      distractingApps: data.distractingApps.present
+          ? data.distractingApps.value
+          : this.distractingApps,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('RestrictionGroup(')
@@ -4096,6 +4159,17 @@ class $WellbeingTableTable extends WellbeingTable
               defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $WellbeingTableTable.$converterblockedWebsites);
+  static const VerificationMeta _nsfwWebsitesMeta =
+      const VerificationMeta('nsfwWebsites');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String>
+      nsfwWebsites = GeneratedColumn<String>(
+              'nsfw_websites', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
+          .withConverter<List<String>>(
+              $WellbeingTableTable.$converternsfwWebsites);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -4106,7 +4180,8 @@ class $WellbeingTableTable extends WellbeingTable
         blockFbReels,
         blockRedditShorts,
         blockNsfwSites,
-        blockedWebsites
+        blockedWebsites,
+        nsfwWebsites
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4164,6 +4239,7 @@ class $WellbeingTableTable extends WellbeingTable
               data['block_nsfw_sites']!, _blockNsfwSitesMeta));
     }
     context.handle(_blockedWebsitesMeta, const VerificationResult.success());
+    context.handle(_nsfwWebsitesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4192,6 +4268,9 @@ class $WellbeingTableTable extends WellbeingTable
       blockedWebsites: $WellbeingTableTable.$converterblockedWebsites.fromSql(
           attachedDatabase.typeMapping.read(DriftSqlType.string,
               data['${effectivePrefix}blocked_websites'])!),
+      nsfwWebsites: $WellbeingTableTable.$converternsfwWebsites.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}nsfw_websites'])!),
     );
   }
 
@@ -4201,6 +4280,8 @@ class $WellbeingTableTable extends WellbeingTable
   }
 
   static TypeConverter<List<String>, String> $converterblockedWebsites =
+      const ListStringConverter();
+  static TypeConverter<List<String>, String> $converternsfwWebsites =
       const ListStringConverter();
 }
 
@@ -4232,6 +4313,9 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
 
   /// List of website hosts which are blocked.
   final List<String> blockedWebsites;
+
+  /// List of website hosts which are nsfw.
+  final List<String> nsfwWebsites;
   const Wellbeing(
       {required this.id,
       required this.allowedShortsTimeSec,
@@ -4241,7 +4325,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       required this.blockFbReels,
       required this.blockRedditShorts,
       required this.blockNsfwSites,
-      required this.blockedWebsites});
+      required this.blockedWebsites,
+      required this.nsfwWebsites});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4258,6 +4343,10 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           .$converterblockedWebsites
           .toSql(blockedWebsites));
     }
+    {
+      map['nsfw_websites'] = Variable<String>(
+          $WellbeingTableTable.$converternsfwWebsites.toSql(nsfwWebsites));
+    }
     return map;
   }
 
@@ -4272,6 +4361,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       blockRedditShorts: Value(blockRedditShorts),
       blockNsfwSites: Value(blockNsfwSites),
       blockedWebsites: Value(blockedWebsites),
+      nsfwWebsites: Value(nsfwWebsites),
     );
   }
 
@@ -4290,6 +4380,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       blockNsfwSites: serializer.fromJson<bool>(json['blockNsfwSites']),
       blockedWebsites:
           serializer.fromJson<List<String>>(json['blockedWebsites']),
+      nsfwWebsites: serializer.fromJson<List<String>>(json['nsfwWebsites']),
     );
   }
   @override
@@ -4305,6 +4396,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       'blockRedditShorts': serializer.toJson<bool>(blockRedditShorts),
       'blockNsfwSites': serializer.toJson<bool>(blockNsfwSites),
       'blockedWebsites': serializer.toJson<List<String>>(blockedWebsites),
+      'nsfwWebsites': serializer.toJson<List<String>>(nsfwWebsites),
     };
   }
 
@@ -4317,7 +4409,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           bool? blockFbReels,
           bool? blockRedditShorts,
           bool? blockNsfwSites,
-          List<String>? blockedWebsites}) =>
+          List<String>? blockedWebsites,
+          List<String>? nsfwWebsites}) =>
       Wellbeing(
         id: id ?? this.id,
         allowedShortsTimeSec: allowedShortsTimeSec ?? this.allowedShortsTimeSec,
@@ -4328,7 +4421,41 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
         blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
         blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
         blockedWebsites: blockedWebsites ?? this.blockedWebsites,
+        nsfwWebsites: nsfwWebsites ?? this.nsfwWebsites,
       );
+  Wellbeing copyWithCompanion(WellbeingTableCompanion data) {
+    return Wellbeing(
+      id: data.id.present ? data.id.value : this.id,
+      allowedShortsTimeSec: data.allowedShortsTimeSec.present
+          ? data.allowedShortsTimeSec.value
+          : this.allowedShortsTimeSec,
+      blockInstaReels: data.blockInstaReels.present
+          ? data.blockInstaReels.value
+          : this.blockInstaReels,
+      blockYtShorts: data.blockYtShorts.present
+          ? data.blockYtShorts.value
+          : this.blockYtShorts,
+      blockSnapSpotlight: data.blockSnapSpotlight.present
+          ? data.blockSnapSpotlight.value
+          : this.blockSnapSpotlight,
+      blockFbReels: data.blockFbReels.present
+          ? data.blockFbReels.value
+          : this.blockFbReels,
+      blockRedditShorts: data.blockRedditShorts.present
+          ? data.blockRedditShorts.value
+          : this.blockRedditShorts,
+      blockNsfwSites: data.blockNsfwSites.present
+          ? data.blockNsfwSites.value
+          : this.blockNsfwSites,
+      blockedWebsites: data.blockedWebsites.present
+          ? data.blockedWebsites.value
+          : this.blockedWebsites,
+      nsfwWebsites: data.nsfwWebsites.present
+          ? data.nsfwWebsites.value
+          : this.nsfwWebsites,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('Wellbeing(')
@@ -4340,7 +4467,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           ..write('blockFbReels: $blockFbReels, ')
           ..write('blockRedditShorts: $blockRedditShorts, ')
           ..write('blockNsfwSites: $blockNsfwSites, ')
-          ..write('blockedWebsites: $blockedWebsites')
+          ..write('blockedWebsites: $blockedWebsites, ')
+          ..write('nsfwWebsites: $nsfwWebsites')
           ..write(')'))
         .toString();
   }
@@ -4355,7 +4483,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       blockFbReels,
       blockRedditShorts,
       blockNsfwSites,
-      blockedWebsites);
+      blockedWebsites,
+      nsfwWebsites);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4368,7 +4497,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
           other.blockFbReels == this.blockFbReels &&
           other.blockRedditShorts == this.blockRedditShorts &&
           other.blockNsfwSites == this.blockNsfwSites &&
-          other.blockedWebsites == this.blockedWebsites);
+          other.blockedWebsites == this.blockedWebsites &&
+          other.nsfwWebsites == this.nsfwWebsites);
 }
 
 class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
@@ -4381,6 +4511,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   final Value<bool> blockRedditShorts;
   final Value<bool> blockNsfwSites;
   final Value<List<String>> blockedWebsites;
+  final Value<List<String>> nsfwWebsites;
   const WellbeingTableCompanion({
     this.id = const Value.absent(),
     this.allowedShortsTimeSec = const Value.absent(),
@@ -4391,6 +4522,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     this.blockRedditShorts = const Value.absent(),
     this.blockNsfwSites = const Value.absent(),
     this.blockedWebsites = const Value.absent(),
+    this.nsfwWebsites = const Value.absent(),
   });
   WellbeingTableCompanion.insert({
     this.id = const Value.absent(),
@@ -4402,6 +4534,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     this.blockRedditShorts = const Value.absent(),
     this.blockNsfwSites = const Value.absent(),
     this.blockedWebsites = const Value.absent(),
+    this.nsfwWebsites = const Value.absent(),
   });
   static Insertable<Wellbeing> custom({
     Expression<int>? id,
@@ -4413,6 +4546,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     Expression<bool>? blockRedditShorts,
     Expression<bool>? blockNsfwSites,
     Expression<String>? blockedWebsites,
+    Expression<String>? nsfwWebsites,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -4426,6 +4560,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       if (blockRedditShorts != null) 'block_reddit_shorts': blockRedditShorts,
       if (blockNsfwSites != null) 'block_nsfw_sites': blockNsfwSites,
       if (blockedWebsites != null) 'blocked_websites': blockedWebsites,
+      if (nsfwWebsites != null) 'nsfw_websites': nsfwWebsites,
     });
   }
 
@@ -4438,7 +4573,8 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       Value<bool>? blockFbReels,
       Value<bool>? blockRedditShorts,
       Value<bool>? blockNsfwSites,
-      Value<List<String>>? blockedWebsites}) {
+      Value<List<String>>? blockedWebsites,
+      Value<List<String>>? nsfwWebsites}) {
     return WellbeingTableCompanion(
       id: id ?? this.id,
       allowedShortsTimeSec: allowedShortsTimeSec ?? this.allowedShortsTimeSec,
@@ -4449,6 +4585,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
       blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
+      nsfwWebsites: nsfwWebsites ?? this.nsfwWebsites,
     );
   }
 
@@ -4485,6 +4622,11 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
           .$converterblockedWebsites
           .toSql(blockedWebsites.value));
     }
+    if (nsfwWebsites.present) {
+      map['nsfw_websites'] = Variable<String>($WellbeingTableTable
+          .$converternsfwWebsites
+          .toSql(nsfwWebsites.value));
+    }
     return map;
   }
 
@@ -4499,7 +4641,8 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
           ..write('blockFbReels: $blockFbReels, ')
           ..write('blockRedditShorts: $blockRedditShorts, ')
           ..write('blockNsfwSites: $blockNsfwSites, ')
-          ..write('blockedWebsites: $blockedWebsites')
+          ..write('blockedWebsites: $blockedWebsites, ')
+          ..write('nsfwWebsites: $nsfwWebsites')
           ..write(')'))
         .toString();
   }
@@ -4661,6 +4804,18 @@ class SharedUniqueData extends DataClass
         notificationBatchedApps:
             notificationBatchedApps ?? this.notificationBatchedApps,
       );
+  SharedUniqueData copyWithCompanion(SharedUniqueDataTableCompanion data) {
+    return SharedUniqueData(
+      id: data.id.present ? data.id.value : this.id,
+      excludedApps: data.excludedApps.present
+          ? data.excludedApps.value
+          : this.excludedApps,
+      notificationBatchedApps: data.notificationBatchedApps.present
+          ? data.notificationBatchedApps.value
+          : this.notificationBatchedApps,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('SharedUniqueData(')
@@ -4919,6 +5074,16 @@ class NotificationSchedule extends DataClass
         label: label ?? this.label,
         time: time ?? this.time,
       );
+  NotificationSchedule copyWithCompanion(
+      NotificationScheduleTableCompanion data) {
+    return NotificationSchedule(
+      id: data.id.present ? data.id.value : this.id,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      label: data.label.present ? data.label.value : this.label,
+      time: data.time.present ? data.time.value : this.time,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('NotificationSchedule(')
@@ -5208,6 +5373,19 @@ class AppUsage extends DataClass implements Insertable<AppUsage> {
         mobileData: mobileData ?? this.mobileData,
         wifiData: wifiData ?? this.wifiData,
       );
+  AppUsage copyWithCompanion(AppUsageTableCompanion data) {
+    return AppUsage(
+      packageName:
+          data.packageName.present ? data.packageName.value : this.packageName,
+      date: data.date.present ? data.date.value : this.date,
+      screenTime:
+          data.screenTime.present ? data.screenTime.value : this.screenTime,
+      mobileData:
+          data.mobileData.present ? data.mobileData.value : this.mobileData,
+      wifiData: data.wifiData.present ? data.wifiData.value : this.wifiData,
+    );
+  }
+
   @override
   String toString() {
     return (StringBuffer('AppUsage(')
@@ -5332,7 +5510,7 @@ class AppUsageTableCompanion extends UpdateCompanion<AppUsage> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  _$AppDatabaseManager get managers => _$AppDatabaseManager(this);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AppRestrictionTableTable appRestrictionTable =
       $AppRestrictionTableTable(this);
   late final $BedtimeScheduleTableTable bedtimeScheduleTable =
@@ -5345,8 +5523,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $FocusSessionsTableTable(this);
   late final $MindfulSettingsTableTable mindfulSettingsTable =
       $MindfulSettingsTableTable(this);
-  late final $InvincibleModeTableTable invincibleModeTable =
-      $InvincibleModeTableTable(this);
+  late final $ParentalControlsTableTable parentalControlsTable =
+      $ParentalControlsTableTable(this);
   late final $RestrictionGroupsTableTable restrictionGroupsTable =
       $RestrictionGroupsTableTable(this);
   late final $WellbeingTableTable wellbeingTable = $WellbeingTableTable(this);
@@ -5371,7 +5549,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         focusProfileTable,
         focusSessionsTable,
         mindfulSettingsTable,
-        invincibleModeTable,
+        parentalControlsTable,
         restrictionGroupsTable,
         wellbeingTable,
         sharedUniqueDataTable,
@@ -5380,7 +5558,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       ];
 }
 
-typedef $$AppRestrictionTableTableInsertCompanionBuilder
+typedef $$AppRestrictionTableTableCreateCompanionBuilder
     = AppRestrictionTableCompanion Function({
   required String appPackage,
   Value<int> timerSec,
@@ -5388,10 +5566,8 @@ typedef $$AppRestrictionTableTableInsertCompanionBuilder
   Value<TimeOfDayAdapter> activePeriodStart,
   Value<TimeOfDayAdapter> activePeriodEnd,
   Value<int> periodDurationInMins,
-  Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
-  Value<int> alertInterval,
-  Value<bool> alertByDialog,
+  Value<bool> canAccessInternet,
   Value<int> rowid,
 });
 typedef $$AppRestrictionTableTableUpdateCompanionBuilder
@@ -5402,12 +5578,126 @@ typedef $$AppRestrictionTableTableUpdateCompanionBuilder
   Value<TimeOfDayAdapter> activePeriodStart,
   Value<TimeOfDayAdapter> activePeriodEnd,
   Value<int> periodDurationInMins,
-  Value<bool> canAccessInternet,
   Value<int?> associatedGroupId,
-  Value<int> alertInterval,
-  Value<bool> alertByDialog,
+  Value<bool> canAccessInternet,
   Value<int> rowid,
 });
+
+class $$AppRestrictionTableTableFilterComposer
+    extends Composer<_$AppDatabase, $AppRestrictionTableTable> {
+  $$AppRestrictionTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get appPackage => $composableBuilder(
+      column: $table.appPackage, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get timerSec => $composableBuilder(
+      column: $table.timerSec, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get launchLimit => $composableBuilder(
+      column: $table.launchLimit, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodStart => $composableBuilder(
+          column: $table.activePeriodStart,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodEnd => $composableBuilder(
+          column: $table.activePeriodEnd,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get periodDurationInMins => $composableBuilder(
+      column: $table.periodDurationInMins,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get associatedGroupId => $composableBuilder(
+      column: $table.associatedGroupId,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get canAccessInternet => $composableBuilder(
+      column: $table.canAccessInternet,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$AppRestrictionTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppRestrictionTableTable> {
+  $$AppRestrictionTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get appPackage => $composableBuilder(
+      column: $table.appPackage, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get timerSec => $composableBuilder(
+      column: $table.timerSec, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get launchLimit => $composableBuilder(
+      column: $table.launchLimit, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get activePeriodStart => $composableBuilder(
+      column: $table.activePeriodStart,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get activePeriodEnd => $composableBuilder(
+      column: $table.activePeriodEnd,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get periodDurationInMins => $composableBuilder(
+      column: $table.periodDurationInMins,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get associatedGroupId => $composableBuilder(
+      column: $table.associatedGroupId,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get canAccessInternet => $composableBuilder(
+      column: $table.canAccessInternet,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppRestrictionTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppRestrictionTableTable> {
+  $$AppRestrictionTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get appPackage => $composableBuilder(
+      column: $table.appPackage, builder: (column) => column);
+
+  GeneratedColumn<int> get timerSec =>
+      $composableBuilder(column: $table.timerSec, builder: (column) => column);
+
+  GeneratedColumn<int> get launchLimit => $composableBuilder(
+      column: $table.launchLimit, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      get activePeriodStart => $composableBuilder(
+          column: $table.activePeriodStart, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int> get activePeriodEnd =>
+      $composableBuilder(
+          column: $table.activePeriodEnd, builder: (column) => column);
+
+  GeneratedColumn<int> get periodDurationInMins => $composableBuilder(
+      column: $table.periodDurationInMins, builder: (column) => column);
+
+  GeneratedColumn<int> get associatedGroupId => $composableBuilder(
+      column: $table.associatedGroupId, builder: (column) => column);
+
+  GeneratedColumn<bool> get canAccessInternet => $composableBuilder(
+      column: $table.canAccessInternet, builder: (column) => column);
+}
 
 class $$AppRestrictionTableTableTableManager extends RootTableManager<
     _$AppDatabase,
@@ -5415,31 +5705,37 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
     AppRestriction,
     $$AppRestrictionTableTableFilterComposer,
     $$AppRestrictionTableTableOrderingComposer,
-    $$AppRestrictionTableTableProcessedTableManager,
-    $$AppRestrictionTableTableInsertCompanionBuilder,
-    $$AppRestrictionTableTableUpdateCompanionBuilder> {
+    $$AppRestrictionTableTableAnnotationComposer,
+    $$AppRestrictionTableTableCreateCompanionBuilder,
+    $$AppRestrictionTableTableUpdateCompanionBuilder,
+    (
+      AppRestriction,
+      BaseReferences<_$AppDatabase, $AppRestrictionTableTable, AppRestriction>
+    ),
+    AppRestriction,
+    PrefetchHooks Function()> {
   $$AppRestrictionTableTableTableManager(
       _$AppDatabase db, $AppRestrictionTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$AppRestrictionTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$AppRestrictionTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$AppRestrictionTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$AppRestrictionTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppRestrictionTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppRestrictionTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<String> appPackage = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
             Value<int> launchLimit = const Value.absent(),
             Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
             Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
             Value<int> periodDurationInMins = const Value.absent(),
-            Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
-            Value<int> alertInterval = const Value.absent(),
-            Value<bool> alertByDialog = const Value.absent(),
+            Value<bool> canAccessInternet = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion(
@@ -5449,23 +5745,19 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             activePeriodStart: activePeriodStart,
             activePeriodEnd: activePeriodEnd,
             periodDurationInMins: periodDurationInMins,
-            canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
-            alertInterval: alertInterval,
-            alertByDialog: alertByDialog,
+            canAccessInternet: canAccessInternet,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required String appPackage,
             Value<int> timerSec = const Value.absent(),
             Value<int> launchLimit = const Value.absent(),
             Value<TimeOfDayAdapter> activePeriodStart = const Value.absent(),
             Value<TimeOfDayAdapter> activePeriodEnd = const Value.absent(),
             Value<int> periodDurationInMins = const Value.absent(),
-            Value<bool> canAccessInternet = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
-            Value<int> alertInterval = const Value.absent(),
-            Value<bool> alertByDialog = const Value.absent(),
+            Value<bool> canAccessInternet = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion.insert(
@@ -5475,141 +5767,33 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             activePeriodStart: activePeriodStart,
             activePeriodEnd: activePeriodEnd,
             periodDurationInMins: periodDurationInMins,
-            canAccessInternet: canAccessInternet,
             associatedGroupId: associatedGroupId,
-            alertInterval: alertInterval,
-            alertByDialog: alertByDialog,
+            canAccessInternet: canAccessInternet,
             rowid: rowid,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$AppRestrictionTableTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $AppRestrictionTableTable,
-        AppRestriction,
-        $$AppRestrictionTableTableFilterComposer,
-        $$AppRestrictionTableTableOrderingComposer,
-        $$AppRestrictionTableTableProcessedTableManager,
-        $$AppRestrictionTableTableInsertCompanionBuilder,
-        $$AppRestrictionTableTableUpdateCompanionBuilder> {
-  $$AppRestrictionTableTableProcessedTableManager(super.$state);
-}
-
-class $$AppRestrictionTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $AppRestrictionTableTable> {
-  $$AppRestrictionTableTableFilterComposer(super.$state);
-  ColumnFilters<String> get appPackage => $state.composableBuilder(
-      column: $state.table.appPackage,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get timerSec => $state.composableBuilder(
-      column: $state.table.timerSec,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get launchLimit => $state.composableBuilder(
-      column: $state.table.launchLimit,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get activePeriodStart => $state.composableBuilder(
-          column: $state.table.activePeriodStart,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get activePeriodEnd => $state.composableBuilder(
-          column: $state.table.activePeriodEnd,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get periodDurationInMins => $state.composableBuilder(
-      column: $state.table.periodDurationInMins,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get canAccessInternet => $state.composableBuilder(
-      column: $state.table.canAccessInternet,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get associatedGroupId => $state.composableBuilder(
-      column: $state.table.associatedGroupId,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get alertInterval => $state.composableBuilder(
-      column: $state.table.alertInterval,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get alertByDialog => $state.composableBuilder(
-      column: $state.table.alertByDialog,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$AppRestrictionTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $AppRestrictionTableTable> {
-  $$AppRestrictionTableTableOrderingComposer(super.$state);
-  ColumnOrderings<String> get appPackage => $state.composableBuilder(
-      column: $state.table.appPackage,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get timerSec => $state.composableBuilder(
-      column: $state.table.timerSec,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get launchLimit => $state.composableBuilder(
-      column: $state.table.launchLimit,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get activePeriodStart => $state.composableBuilder(
-      column: $state.table.activePeriodStart,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get activePeriodEnd => $state.composableBuilder(
-      column: $state.table.activePeriodEnd,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get periodDurationInMins => $state.composableBuilder(
-      column: $state.table.periodDurationInMins,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get canAccessInternet => $state.composableBuilder(
-      column: $state.table.canAccessInternet,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get associatedGroupId => $state.composableBuilder(
-      column: $state.table.associatedGroupId,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get alertInterval => $state.composableBuilder(
-      column: $state.table.alertInterval,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get alertByDialog => $state.composableBuilder(
-      column: $state.table.alertByDialog,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$BedtimeScheduleTableTableInsertCompanionBuilder
+typedef $$AppRestrictionTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppRestrictionTableTable,
+    AppRestriction,
+    $$AppRestrictionTableTableFilterComposer,
+    $$AppRestrictionTableTableOrderingComposer,
+    $$AppRestrictionTableTableAnnotationComposer,
+    $$AppRestrictionTableTableCreateCompanionBuilder,
+    $$AppRestrictionTableTableUpdateCompanionBuilder,
+    (
+      AppRestriction,
+      BaseReferences<_$AppDatabase, $AppRestrictionTableTable, AppRestriction>
+    ),
+    AppRestriction,
+    PrefetchHooks Function()>;
+typedef $$BedtimeScheduleTableTableCreateCompanionBuilder
     = BedtimeScheduleTableCompanion Function({
   Value<int> id,
   Value<TimeOfDayAdapter> scheduleStartTime,
@@ -5632,27 +5816,158 @@ typedef $$BedtimeScheduleTableTableUpdateCompanionBuilder
   Value<List<String>> distractingApps,
 });
 
+class $$BedtimeScheduleTableTableFilterComposer
+    extends Composer<_$AppDatabase, $BedtimeScheduleTableTable> {
+  $$BedtimeScheduleTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get scheduleStartTime => $composableBuilder(
+          column: $table.scheduleStartTime,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get scheduleEndTime => $composableBuilder(
+          column: $table.scheduleEndTime,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get scheduleDurationInMins => $composableBuilder(
+      column: $table.scheduleDurationInMins,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<bool>, List<bool>, String>
+      get scheduleDays => $composableBuilder(
+          column: $table.scheduleDays,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<bool> get isScheduleOn => $composableBuilder(
+      column: $table.isScheduleOn, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get shouldStartDnd => $composableBuilder(
+      column: $table.shouldStartDnd,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get distractingApps => $composableBuilder(
+          column: $table.distractingApps,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$BedtimeScheduleTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $BedtimeScheduleTableTable> {
+  $$BedtimeScheduleTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get scheduleStartTime => $composableBuilder(
+      column: $table.scheduleStartTime,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get scheduleEndTime => $composableBuilder(
+      column: $table.scheduleEndTime,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get scheduleDurationInMins => $composableBuilder(
+      column: $table.scheduleDurationInMins,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get scheduleDays => $composableBuilder(
+      column: $table.scheduleDays,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isScheduleOn => $composableBuilder(
+      column: $table.isScheduleOn,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get shouldStartDnd => $composableBuilder(
+      column: $table.shouldStartDnd,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get distractingApps => $composableBuilder(
+      column: $table.distractingApps,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$BedtimeScheduleTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BedtimeScheduleTableTable> {
+  $$BedtimeScheduleTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      get scheduleStartTime => $composableBuilder(
+          column: $table.scheduleStartTime, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int> get scheduleEndTime =>
+      $composableBuilder(
+          column: $table.scheduleEndTime, builder: (column) => column);
+
+  GeneratedColumn<int> get scheduleDurationInMins => $composableBuilder(
+      column: $table.scheduleDurationInMins, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<bool>, String> get scheduleDays =>
+      $composableBuilder(
+          column: $table.scheduleDays, builder: (column) => column);
+
+  GeneratedColumn<bool> get isScheduleOn => $composableBuilder(
+      column: $table.isScheduleOn, builder: (column) => column);
+
+  GeneratedColumn<bool> get shouldStartDnd => $composableBuilder(
+      column: $table.shouldStartDnd, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get distractingApps =>
+      $composableBuilder(
+          column: $table.distractingApps, builder: (column) => column);
+}
+
 class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $BedtimeScheduleTableTable,
     BedtimeSchedule,
     $$BedtimeScheduleTableTableFilterComposer,
     $$BedtimeScheduleTableTableOrderingComposer,
-    $$BedtimeScheduleTableTableProcessedTableManager,
-    $$BedtimeScheduleTableTableInsertCompanionBuilder,
-    $$BedtimeScheduleTableTableUpdateCompanionBuilder> {
+    $$BedtimeScheduleTableTableAnnotationComposer,
+    $$BedtimeScheduleTableTableCreateCompanionBuilder,
+    $$BedtimeScheduleTableTableUpdateCompanionBuilder,
+    (
+      BedtimeSchedule,
+      BaseReferences<_$AppDatabase, $BedtimeScheduleTableTable, BedtimeSchedule>
+    ),
+    BedtimeSchedule,
+    PrefetchHooks Function()> {
   $$BedtimeScheduleTableTableTableManager(
       _$AppDatabase db, $BedtimeScheduleTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$BedtimeScheduleTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$BedtimeScheduleTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$BedtimeScheduleTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$BedtimeScheduleTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BedtimeScheduleTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BedtimeScheduleTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<TimeOfDayAdapter> scheduleStartTime = const Value.absent(),
             Value<TimeOfDayAdapter> scheduleEndTime = const Value.absent(),
@@ -5672,7 +5987,7 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
             shouldStartDnd: shouldStartDnd,
             distractingApps: distractingApps,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<TimeOfDayAdapter> scheduleStartTime = const Value.absent(),
             Value<TimeOfDayAdapter> scheduleEndTime = const Value.absent(),
@@ -5692,119 +6007,31 @@ class $$BedtimeScheduleTableTableTableManager extends RootTableManager<
             shouldStartDnd: shouldStartDnd,
             distractingApps: distractingApps,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$BedtimeScheduleTableTableProcessedTableManager
-    extends ProcessedTableManager<
+typedef $$BedtimeScheduleTableTableProcessedTableManager
+    = ProcessedTableManager<
         _$AppDatabase,
         $BedtimeScheduleTableTable,
         BedtimeSchedule,
         $$BedtimeScheduleTableTableFilterComposer,
         $$BedtimeScheduleTableTableOrderingComposer,
-        $$BedtimeScheduleTableTableProcessedTableManager,
-        $$BedtimeScheduleTableTableInsertCompanionBuilder,
-        $$BedtimeScheduleTableTableUpdateCompanionBuilder> {
-  $$BedtimeScheduleTableTableProcessedTableManager(super.$state);
-}
-
-class $$BedtimeScheduleTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $BedtimeScheduleTableTable> {
-  $$BedtimeScheduleTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get scheduleStartTime => $state.composableBuilder(
-          column: $state.table.scheduleStartTime,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get scheduleEndTime => $state.composableBuilder(
-          column: $state.table.scheduleEndTime,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get scheduleDurationInMins => $state.composableBuilder(
-      column: $state.table.scheduleDurationInMins,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<bool>, List<bool>, String>
-      get scheduleDays => $state.composableBuilder(
-          column: $state.table.scheduleDays,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get isScheduleOn => $state.composableBuilder(
-      column: $state.table.isScheduleOn,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get shouldStartDnd => $state.composableBuilder(
-      column: $state.table.shouldStartDnd,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get distractingApps => $state.composableBuilder(
-          column: $state.table.distractingApps,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$BedtimeScheduleTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $BedtimeScheduleTableTable> {
-  $$BedtimeScheduleTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get scheduleStartTime => $state.composableBuilder(
-      column: $state.table.scheduleStartTime,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get scheduleEndTime => $state.composableBuilder(
-      column: $state.table.scheduleEndTime,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get scheduleDurationInMins => $state.composableBuilder(
-      column: $state.table.scheduleDurationInMins,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get scheduleDays => $state.composableBuilder(
-      column: $state.table.scheduleDays,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get isScheduleOn => $state.composableBuilder(
-      column: $state.table.isScheduleOn,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get shouldStartDnd => $state.composableBuilder(
-      column: $state.table.shouldStartDnd,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get distractingApps => $state.composableBuilder(
-      column: $state.table.distractingApps,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$CrashLogsTableTableInsertCompanionBuilder = CrashLogsTableCompanion
+        $$BedtimeScheduleTableTableAnnotationComposer,
+        $$BedtimeScheduleTableTableCreateCompanionBuilder,
+        $$BedtimeScheduleTableTableUpdateCompanionBuilder,
+        (
+          BedtimeSchedule,
+          BaseReferences<_$AppDatabase, $BedtimeScheduleTableTable,
+              BedtimeSchedule>
+        ),
+        BedtimeSchedule,
+        PrefetchHooks Function()>;
+typedef $$CrashLogsTableTableCreateCompanionBuilder = CrashLogsTableCompanion
     Function({
   Value<int> id,
   Value<String> appVersion,
@@ -5821,27 +6048,105 @@ typedef $$CrashLogsTableTableUpdateCompanionBuilder = CrashLogsTableCompanion
   Value<String> stackTrace,
 });
 
+class $$CrashLogsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $CrashLogsTableTable> {
+  $$CrashLogsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get appVersion => $composableBuilder(
+      column: $table.appVersion, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get timeStamp => $composableBuilder(
+      column: $table.timeStamp, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get error => $composableBuilder(
+      column: $table.error, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get stackTrace => $composableBuilder(
+      column: $table.stackTrace, builder: (column) => ColumnFilters(column));
+}
+
+class $$CrashLogsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $CrashLogsTableTable> {
+  $$CrashLogsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get appVersion => $composableBuilder(
+      column: $table.appVersion, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get timeStamp => $composableBuilder(
+      column: $table.timeStamp, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get error => $composableBuilder(
+      column: $table.error, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get stackTrace => $composableBuilder(
+      column: $table.stackTrace, builder: (column) => ColumnOrderings(column));
+}
+
+class $$CrashLogsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CrashLogsTableTable> {
+  $$CrashLogsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get appVersion => $composableBuilder(
+      column: $table.appVersion, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get timeStamp =>
+      $composableBuilder(column: $table.timeStamp, builder: (column) => column);
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<String> get stackTrace => $composableBuilder(
+      column: $table.stackTrace, builder: (column) => column);
+}
+
 class $$CrashLogsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $CrashLogsTableTable,
     CrashLog,
     $$CrashLogsTableTableFilterComposer,
     $$CrashLogsTableTableOrderingComposer,
-    $$CrashLogsTableTableProcessedTableManager,
-    $$CrashLogsTableTableInsertCompanionBuilder,
-    $$CrashLogsTableTableUpdateCompanionBuilder> {
+    $$CrashLogsTableTableAnnotationComposer,
+    $$CrashLogsTableTableCreateCompanionBuilder,
+    $$CrashLogsTableTableUpdateCompanionBuilder,
+    (CrashLog, BaseReferences<_$AppDatabase, $CrashLogsTableTable, CrashLog>),
+    CrashLog,
+    PrefetchHooks Function()> {
   $$CrashLogsTableTableTableManager(
       _$AppDatabase db, $CrashLogsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$CrashLogsTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$CrashLogsTableTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$CrashLogsTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$CrashLogsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CrashLogsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CrashLogsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> appVersion = const Value.absent(),
             Value<DateTime> timeStamp = const Value.absent(),
@@ -5855,7 +6160,7 @@ class $$CrashLogsTableTableTableManager extends RootTableManager<
             error: error,
             stackTrace: stackTrace,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> appVersion = const Value.absent(),
             Value<DateTime> timeStamp = const Value.absent(),
@@ -5869,80 +6174,26 @@ class $$CrashLogsTableTableTableManager extends RootTableManager<
             error: error,
             stackTrace: stackTrace,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$CrashLogsTableTableProcessedTableManager extends ProcessedTableManager<
+typedef $$CrashLogsTableTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $CrashLogsTableTable,
     CrashLog,
     $$CrashLogsTableTableFilterComposer,
     $$CrashLogsTableTableOrderingComposer,
-    $$CrashLogsTableTableProcessedTableManager,
-    $$CrashLogsTableTableInsertCompanionBuilder,
-    $$CrashLogsTableTableUpdateCompanionBuilder> {
-  $$CrashLogsTableTableProcessedTableManager(super.$state);
-}
-
-class $$CrashLogsTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $CrashLogsTableTable> {
-  $$CrashLogsTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get appVersion => $state.composableBuilder(
-      column: $state.table.appVersion,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get timeStamp => $state.composableBuilder(
-      column: $state.table.timeStamp,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get error => $state.composableBuilder(
-      column: $state.table.error,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get stackTrace => $state.composableBuilder(
-      column: $state.table.stackTrace,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$CrashLogsTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $CrashLogsTableTable> {
-  $$CrashLogsTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get appVersion => $state.composableBuilder(
-      column: $state.table.appVersion,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get timeStamp => $state.composableBuilder(
-      column: $state.table.timeStamp,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get error => $state.composableBuilder(
-      column: $state.table.error,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get stackTrace => $state.composableBuilder(
-      column: $state.table.stackTrace,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$FocusModeTableTableInsertCompanionBuilder = FocusModeTableCompanion
+    $$CrashLogsTableTableAnnotationComposer,
+    $$CrashLogsTableTableCreateCompanionBuilder,
+    $$CrashLogsTableTableUpdateCompanionBuilder,
+    (CrashLog, BaseReferences<_$AppDatabase, $CrashLogsTableTable, CrashLog>),
+    CrashLog,
+    PrefetchHooks Function()>;
+typedef $$FocusModeTableTableCreateCompanionBuilder = FocusModeTableCompanion
     Function({
   Value<int> id,
   Value<SessionType> sessionType,
@@ -5959,27 +6210,112 @@ typedef $$FocusModeTableTableUpdateCompanionBuilder = FocusModeTableCompanion
   Value<DateTime> lastTimeStreakUpdated,
 });
 
+class $$FocusModeTableTableFilterComposer
+    extends Composer<_$AppDatabase, $FocusModeTableTable> {
+  $$FocusModeTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<SessionType, SessionType, int>
+      get sessionType => $composableBuilder(
+          column: $table.sessionType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get longestStreak => $composableBuilder(
+      column: $table.longestStreak, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get currentStreak => $composableBuilder(
+      column: $table.currentStreak, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastTimeStreakUpdated => $composableBuilder(
+      column: $table.lastTimeStreakUpdated,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$FocusModeTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $FocusModeTableTable> {
+  $$FocusModeTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sessionType => $composableBuilder(
+      column: $table.sessionType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get longestStreak => $composableBuilder(
+      column: $table.longestStreak,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get currentStreak => $composableBuilder(
+      column: $table.currentStreak,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastTimeStreakUpdated => $composableBuilder(
+      column: $table.lastTimeStreakUpdated,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$FocusModeTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FocusModeTableTable> {
+  $$FocusModeTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SessionType, int> get sessionType =>
+      $composableBuilder(
+          column: $table.sessionType, builder: (column) => column);
+
+  GeneratedColumn<int> get longestStreak => $composableBuilder(
+      column: $table.longestStreak, builder: (column) => column);
+
+  GeneratedColumn<int> get currentStreak => $composableBuilder(
+      column: $table.currentStreak, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastTimeStreakUpdated => $composableBuilder(
+      column: $table.lastTimeStreakUpdated, builder: (column) => column);
+}
+
 class $$FocusModeTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $FocusModeTableTable,
     FocusMode,
     $$FocusModeTableTableFilterComposer,
     $$FocusModeTableTableOrderingComposer,
-    $$FocusModeTableTableProcessedTableManager,
-    $$FocusModeTableTableInsertCompanionBuilder,
-    $$FocusModeTableTableUpdateCompanionBuilder> {
+    $$FocusModeTableTableAnnotationComposer,
+    $$FocusModeTableTableCreateCompanionBuilder,
+    $$FocusModeTableTableUpdateCompanionBuilder,
+    (FocusMode, BaseReferences<_$AppDatabase, $FocusModeTableTable, FocusMode>),
+    FocusMode,
+    PrefetchHooks Function()> {
   $$FocusModeTableTableTableManager(
       _$AppDatabase db, $FocusModeTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$FocusModeTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$FocusModeTableTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$FocusModeTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$FocusModeTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FocusModeTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FocusModeTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<SessionType> sessionType = const Value.absent(),
             Value<int> longestStreak = const Value.absent(),
@@ -5993,7 +6329,7 @@ class $$FocusModeTableTableTableManager extends RootTableManager<
             currentStreak: currentStreak,
             lastTimeStreakUpdated: lastTimeStreakUpdated,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<SessionType> sessionType = const Value.absent(),
             Value<int> longestStreak = const Value.absent(),
@@ -6007,83 +6343,26 @@ class $$FocusModeTableTableTableManager extends RootTableManager<
             currentStreak: currentStreak,
             lastTimeStreakUpdated: lastTimeStreakUpdated,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$FocusModeTableTableProcessedTableManager extends ProcessedTableManager<
+typedef $$FocusModeTableTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $FocusModeTableTable,
     FocusMode,
     $$FocusModeTableTableFilterComposer,
     $$FocusModeTableTableOrderingComposer,
-    $$FocusModeTableTableProcessedTableManager,
-    $$FocusModeTableTableInsertCompanionBuilder,
-    $$FocusModeTableTableUpdateCompanionBuilder> {
-  $$FocusModeTableTableProcessedTableManager(super.$state);
-}
-
-class $$FocusModeTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $FocusModeTableTable> {
-  $$FocusModeTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<SessionType, SessionType, int>
-      get sessionType => $state.composableBuilder(
-          column: $state.table.sessionType,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get longestStreak => $state.composableBuilder(
-      column: $state.table.longestStreak,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get currentStreak => $state.composableBuilder(
-      column: $state.table.currentStreak,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get lastTimeStreakUpdated => $state.composableBuilder(
-      column: $state.table.lastTimeStreakUpdated,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$FocusModeTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $FocusModeTableTable> {
-  $$FocusModeTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get sessionType => $state.composableBuilder(
-      column: $state.table.sessionType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get longestStreak => $state.composableBuilder(
-      column: $state.table.longestStreak,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get currentStreak => $state.composableBuilder(
-      column: $state.table.currentStreak,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get lastTimeStreakUpdated =>
-      $state.composableBuilder(
-          column: $state.table.lastTimeStreakUpdated,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$FocusProfileTableTableInsertCompanionBuilder
+    $$FocusModeTableTableAnnotationComposer,
+    $$FocusModeTableTableCreateCompanionBuilder,
+    $$FocusModeTableTableUpdateCompanionBuilder,
+    (FocusMode, BaseReferences<_$AppDatabase, $FocusModeTableTable, FocusMode>),
+    FocusMode,
+    PrefetchHooks Function()>;
+typedef $$FocusProfileTableTableCreateCompanionBuilder
     = FocusProfileTableCompanion Function({
   Value<SessionType> sessionType,
   Value<int> sessionDuration,
@@ -6098,27 +6377,111 @@ typedef $$FocusProfileTableTableUpdateCompanionBuilder
   Value<List<String>> distractingApps,
 });
 
+class $$FocusProfileTableTableFilterComposer
+    extends Composer<_$AppDatabase, $FocusProfileTableTable> {
+  $$FocusProfileTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnWithTypeConverterFilters<SessionType, SessionType, int>
+      get sessionType => $composableBuilder(
+          column: $table.sessionType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get sessionDuration => $composableBuilder(
+      column: $table.sessionDuration,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get shouldStartDnd => $composableBuilder(
+      column: $table.shouldStartDnd,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get distractingApps => $composableBuilder(
+          column: $table.distractingApps,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$FocusProfileTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $FocusProfileTableTable> {
+  $$FocusProfileTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get sessionType => $composableBuilder(
+      column: $table.sessionType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get sessionDuration => $composableBuilder(
+      column: $table.sessionDuration,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get shouldStartDnd => $composableBuilder(
+      column: $table.shouldStartDnd,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get distractingApps => $composableBuilder(
+      column: $table.distractingApps,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$FocusProfileTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FocusProfileTableTable> {
+  $$FocusProfileTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumnWithTypeConverter<SessionType, int> get sessionType =>
+      $composableBuilder(
+          column: $table.sessionType, builder: (column) => column);
+
+  GeneratedColumn<int> get sessionDuration => $composableBuilder(
+      column: $table.sessionDuration, builder: (column) => column);
+
+  GeneratedColumn<bool> get shouldStartDnd => $composableBuilder(
+      column: $table.shouldStartDnd, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get distractingApps =>
+      $composableBuilder(
+          column: $table.distractingApps, builder: (column) => column);
+}
+
 class $$FocusProfileTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $FocusProfileTableTable,
     FocusProfile,
     $$FocusProfileTableTableFilterComposer,
     $$FocusProfileTableTableOrderingComposer,
-    $$FocusProfileTableTableProcessedTableManager,
-    $$FocusProfileTableTableInsertCompanionBuilder,
-    $$FocusProfileTableTableUpdateCompanionBuilder> {
+    $$FocusProfileTableTableAnnotationComposer,
+    $$FocusProfileTableTableCreateCompanionBuilder,
+    $$FocusProfileTableTableUpdateCompanionBuilder,
+    (
+      FocusProfile,
+      BaseReferences<_$AppDatabase, $FocusProfileTableTable, FocusProfile>
+    ),
+    FocusProfile,
+    PrefetchHooks Function()> {
   $$FocusProfileTableTableTableManager(
       _$AppDatabase db, $FocusProfileTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$FocusProfileTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$FocusProfileTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$FocusProfileTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$FocusProfileTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FocusProfileTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FocusProfileTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<SessionType> sessionType = const Value.absent(),
             Value<int> sessionDuration = const Value.absent(),
             Value<bool> shouldStartDnd = const Value.absent(),
@@ -6130,7 +6493,7 @@ class $$FocusProfileTableTableTableManager extends RootTableManager<
             shouldStartDnd: shouldStartDnd,
             distractingApps: distractingApps,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<SessionType> sessionType = const Value.absent(),
             Value<int> sessionDuration = const Value.absent(),
             Value<bool> shouldStartDnd = const Value.absent(),
@@ -6142,75 +6505,29 @@ class $$FocusProfileTableTableTableManager extends RootTableManager<
             shouldStartDnd: shouldStartDnd,
             distractingApps: distractingApps,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$FocusProfileTableTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $FocusProfileTableTable,
-        FocusProfile,
-        $$FocusProfileTableTableFilterComposer,
-        $$FocusProfileTableTableOrderingComposer,
-        $$FocusProfileTableTableProcessedTableManager,
-        $$FocusProfileTableTableInsertCompanionBuilder,
-        $$FocusProfileTableTableUpdateCompanionBuilder> {
-  $$FocusProfileTableTableProcessedTableManager(super.$state);
-}
-
-class $$FocusProfileTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $FocusProfileTableTable> {
-  $$FocusProfileTableTableFilterComposer(super.$state);
-  ColumnWithTypeConverterFilters<SessionType, SessionType, int>
-      get sessionType => $state.composableBuilder(
-          column: $state.table.sessionType,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get sessionDuration => $state.composableBuilder(
-      column: $state.table.sessionDuration,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get shouldStartDnd => $state.composableBuilder(
-      column: $state.table.shouldStartDnd,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get distractingApps => $state.composableBuilder(
-          column: $state.table.distractingApps,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$FocusProfileTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $FocusProfileTableTable> {
-  $$FocusProfileTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get sessionType => $state.composableBuilder(
-      column: $state.table.sessionType,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get sessionDuration => $state.composableBuilder(
-      column: $state.table.sessionDuration,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get shouldStartDnd => $state.composableBuilder(
-      column: $state.table.shouldStartDnd,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get distractingApps => $state.composableBuilder(
-      column: $state.table.distractingApps,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$FocusSessionsTableTableInsertCompanionBuilder
+typedef $$FocusProfileTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FocusProfileTableTable,
+    FocusProfile,
+    $$FocusProfileTableTableFilterComposer,
+    $$FocusProfileTableTableOrderingComposer,
+    $$FocusProfileTableTableAnnotationComposer,
+    $$FocusProfileTableTableCreateCompanionBuilder,
+    $$FocusProfileTableTableUpdateCompanionBuilder,
+    (
+      FocusProfile,
+      BaseReferences<_$AppDatabase, $FocusProfileTableTable, FocusProfile>
+    ),
+    FocusProfile,
+    PrefetchHooks Function()>;
+typedef $$FocusSessionsTableTableCreateCompanionBuilder
     = FocusSessionsTableCompanion Function({
   Value<int> id,
   Value<SessionType> type,
@@ -6227,27 +6544,115 @@ typedef $$FocusSessionsTableTableUpdateCompanionBuilder
   Value<int> durationSecs,
 });
 
+class $$FocusSessionsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $FocusSessionsTableTable> {
+  $$FocusSessionsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<SessionType, SessionType, int> get type =>
+      $composableBuilder(
+          column: $table.type,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<SessionState, SessionState, int> get state =>
+      $composableBuilder(
+          column: $table.state,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get startDateTime => $composableBuilder(
+      column: $table.startDateTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get durationSecs => $composableBuilder(
+      column: $table.durationSecs, builder: (column) => ColumnFilters(column));
+}
+
+class $$FocusSessionsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $FocusSessionsTableTable> {
+  $$FocusSessionsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get state => $composableBuilder(
+      column: $table.state, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get startDateTime => $composableBuilder(
+      column: $table.startDateTime,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get durationSecs => $composableBuilder(
+      column: $table.durationSecs,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$FocusSessionsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FocusSessionsTableTable> {
+  $$FocusSessionsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SessionType, int> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<SessionState, int> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDateTime => $composableBuilder(
+      column: $table.startDateTime, builder: (column) => column);
+
+  GeneratedColumn<int> get durationSecs => $composableBuilder(
+      column: $table.durationSecs, builder: (column) => column);
+}
+
 class $$FocusSessionsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $FocusSessionsTableTable,
     FocusSession,
     $$FocusSessionsTableTableFilterComposer,
     $$FocusSessionsTableTableOrderingComposer,
-    $$FocusSessionsTableTableProcessedTableManager,
-    $$FocusSessionsTableTableInsertCompanionBuilder,
-    $$FocusSessionsTableTableUpdateCompanionBuilder> {
+    $$FocusSessionsTableTableAnnotationComposer,
+    $$FocusSessionsTableTableCreateCompanionBuilder,
+    $$FocusSessionsTableTableUpdateCompanionBuilder,
+    (
+      FocusSession,
+      BaseReferences<_$AppDatabase, $FocusSessionsTableTable, FocusSession>
+    ),
+    FocusSession,
+    PrefetchHooks Function()> {
   $$FocusSessionsTableTableTableManager(
       _$AppDatabase db, $FocusSessionsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$FocusSessionsTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer: $$FocusSessionsTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$FocusSessionsTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$FocusSessionsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FocusSessionsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FocusSessionsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<SessionType> type = const Value.absent(),
             Value<SessionState> state = const Value.absent(),
@@ -6261,7 +6666,7 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             startDateTime: startDateTime,
             durationSecs: durationSecs,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<SessionType> type = const Value.absent(),
             Value<SessionState> state = const Value.absent(),
@@ -6275,101 +6680,42 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             startDateTime: startDateTime,
             durationSecs: durationSecs,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$FocusSessionsTableTableProcessedTableManager
-    extends ProcessedTableManager<
-        _$AppDatabase,
-        $FocusSessionsTableTable,
-        FocusSession,
-        $$FocusSessionsTableTableFilterComposer,
-        $$FocusSessionsTableTableOrderingComposer,
-        $$FocusSessionsTableTableProcessedTableManager,
-        $$FocusSessionsTableTableInsertCompanionBuilder,
-        $$FocusSessionsTableTableUpdateCompanionBuilder> {
-  $$FocusSessionsTableTableProcessedTableManager(super.$state);
-}
-
-class $$FocusSessionsTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $FocusSessionsTableTable> {
-  $$FocusSessionsTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<SessionType, SessionType, int> get type =>
-      $state.composableBuilder(
-          column: $state.table.type,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<SessionState, SessionState, int> get state =>
-      $state.composableBuilder(
-          column: $state.table.state,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get startDateTime => $state.composableBuilder(
-      column: $state.table.startDateTime,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get durationSecs => $state.composableBuilder(
-      column: $state.table.durationSecs,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$FocusSessionsTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $FocusSessionsTableTable> {
-  $$FocusSessionsTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get type => $state.composableBuilder(
-      column: $state.table.type,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get state => $state.composableBuilder(
-      column: $state.table.state,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get startDateTime => $state.composableBuilder(
-      column: $state.table.startDateTime,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get durationSecs => $state.composableBuilder(
-      column: $state.table.durationSecs,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$MindfulSettingsTableTableInsertCompanionBuilder
+typedef $$FocusSessionsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FocusSessionsTableTable,
+    FocusSession,
+    $$FocusSessionsTableTableFilterComposer,
+    $$FocusSessionsTableTableOrderingComposer,
+    $$FocusSessionsTableTableAnnotationComposer,
+    $$FocusSessionsTableTableCreateCompanionBuilder,
+    $$FocusSessionsTableTableUpdateCompanionBuilder,
+    (
+      FocusSession,
+      BaseReferences<_$AppDatabase, $FocusSessionsTableTable, FocusSession>
+    ),
+    FocusSession,
+    PrefetchHooks Function()>;
+typedef $$MindfulSettingsTableTableCreateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
   Value<int> id,
   Value<AppThemeMode> themeMode,
   Value<String> accentColor,
   Value<String> username,
   Value<String> localeCode,
-  Value<TimeOfDayAdapter> dataResetTime,
-  Value<bool> useBottomNavigation,
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
   Value<DefaultHomeTab> defaultHomeTab,
+  Value<int> usageHistoryWeeks,
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
-  Value<bool> protectedAccess,
-  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
 typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
@@ -6378,17 +6724,169 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<String> accentColor,
   Value<String> username,
   Value<String> localeCode,
-  Value<TimeOfDayAdapter> dataResetTime,
-  Value<bool> useBottomNavigation,
   Value<bool> useAmoledDark,
   Value<bool> useDynamicColors,
   Value<DefaultHomeTab> defaultHomeTab,
+  Value<int> usageHistoryWeeks,
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
-  Value<bool> protectedAccess,
-  Value<TimeOfDayAdapter> uninstallWindowTime,
 });
+
+class $$MindfulSettingsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $MindfulSettingsTableTable> {
+  $$MindfulSettingsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<AppThemeMode, AppThemeMode, int>
+      get themeMode => $composableBuilder(
+          column: $table.themeMode,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get accentColor => $composableBuilder(
+      column: $table.accentColor, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get username => $composableBuilder(
+      column: $table.username, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get localeCode => $composableBuilder(
+      column: $table.localeCode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get useAmoledDark => $composableBuilder(
+      column: $table.useAmoledDark, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get useDynamicColors => $composableBuilder(
+      column: $table.useDynamicColors,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<DefaultHomeTab, DefaultHomeTab, int>
+      get defaultHomeTab => $composableBuilder(
+          column: $table.defaultHomeTab,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get usageHistoryWeeks => $composableBuilder(
+      column: $table.usageHistoryWeeks,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get leftEmergencyPasses => $composableBuilder(
+      column: $table.leftEmergencyPasses,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get lastEmergencyUsed => $composableBuilder(
+      column: $table.lastEmergencyUsed,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isOnboardingDone => $composableBuilder(
+      column: $table.isOnboardingDone,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$MindfulSettingsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $MindfulSettingsTableTable> {
+  $$MindfulSettingsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get themeMode => $composableBuilder(
+      column: $table.themeMode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get accentColor => $composableBuilder(
+      column: $table.accentColor, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get username => $composableBuilder(
+      column: $table.username, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get localeCode => $composableBuilder(
+      column: $table.localeCode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get useAmoledDark => $composableBuilder(
+      column: $table.useAmoledDark,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get useDynamicColors => $composableBuilder(
+      column: $table.useDynamicColors,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get defaultHomeTab => $composableBuilder(
+      column: $table.defaultHomeTab,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get usageHistoryWeeks => $composableBuilder(
+      column: $table.usageHistoryWeeks,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get leftEmergencyPasses => $composableBuilder(
+      column: $table.leftEmergencyPasses,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get lastEmergencyUsed => $composableBuilder(
+      column: $table.lastEmergencyUsed,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isOnboardingDone => $composableBuilder(
+      column: $table.isOnboardingDone,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$MindfulSettingsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MindfulSettingsTableTable> {
+  $$MindfulSettingsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<AppThemeMode, int> get themeMode =>
+      $composableBuilder(column: $table.themeMode, builder: (column) => column);
+
+  GeneratedColumn<String> get accentColor => $composableBuilder(
+      column: $table.accentColor, builder: (column) => column);
+
+  GeneratedColumn<String> get username =>
+      $composableBuilder(column: $table.username, builder: (column) => column);
+
+  GeneratedColumn<String> get localeCode => $composableBuilder(
+      column: $table.localeCode, builder: (column) => column);
+
+  GeneratedColumn<bool> get useAmoledDark => $composableBuilder(
+      column: $table.useAmoledDark, builder: (column) => column);
+
+  GeneratedColumn<bool> get useDynamicColors => $composableBuilder(
+      column: $table.useDynamicColors, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DefaultHomeTab, int> get defaultHomeTab =>
+      $composableBuilder(
+          column: $table.defaultHomeTab, builder: (column) => column);
+
+  GeneratedColumn<int> get usageHistoryWeeks => $composableBuilder(
+      column: $table.usageHistoryWeeks, builder: (column) => column);
+
+  GeneratedColumn<int> get leftEmergencyPasses => $composableBuilder(
+      column: $table.leftEmergencyPasses, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastEmergencyUsed => $composableBuilder(
+      column: $table.lastEmergencyUsed, builder: (column) => column);
+
+  GeneratedColumn<bool> get isOnboardingDone => $composableBuilder(
+      column: $table.isOnboardingDone, builder: (column) => column);
+}
 
 class $$MindfulSettingsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
@@ -6396,36 +6894,41 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
     MindfulSettings,
     $$MindfulSettingsTableTableFilterComposer,
     $$MindfulSettingsTableTableOrderingComposer,
-    $$MindfulSettingsTableTableProcessedTableManager,
-    $$MindfulSettingsTableTableInsertCompanionBuilder,
-    $$MindfulSettingsTableTableUpdateCompanionBuilder> {
+    $$MindfulSettingsTableTableAnnotationComposer,
+    $$MindfulSettingsTableTableCreateCompanionBuilder,
+    $$MindfulSettingsTableTableUpdateCompanionBuilder,
+    (
+      MindfulSettings,
+      BaseReferences<_$AppDatabase, $MindfulSettingsTableTable, MindfulSettings>
+    ),
+    MindfulSettings,
+    PrefetchHooks Function()> {
   $$MindfulSettingsTableTableTableManager(
       _$AppDatabase db, $MindfulSettingsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$MindfulSettingsTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$MindfulSettingsTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$MindfulSettingsTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$MindfulSettingsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MindfulSettingsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MindfulSettingsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<AppThemeMode> themeMode = const Value.absent(),
             Value<String> accentColor = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> localeCode = const Value.absent(),
-            Value<TimeOfDayAdapter> dataResetTime = const Value.absent(),
-            Value<bool> useBottomNavigation = const Value.absent(),
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
             Value<DefaultHomeTab> defaultHomeTab = const Value.absent(),
+            Value<int> usageHistoryWeeks = const Value.absent(),
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
-            Value<bool> protectedAccess = const Value.absent(),
-            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion(
             id: id,
@@ -6433,33 +6936,27 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            dataResetTime: dataResetTime,
-            useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
             defaultHomeTab: defaultHomeTab,
+            usageHistoryWeeks: usageHistoryWeeks,
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
-            protectedAccess: protectedAccess,
-            uninstallWindowTime: uninstallWindowTime,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<AppThemeMode> themeMode = const Value.absent(),
             Value<String> accentColor = const Value.absent(),
             Value<String> username = const Value.absent(),
             Value<String> localeCode = const Value.absent(),
-            Value<TimeOfDayAdapter> dataResetTime = const Value.absent(),
-            Value<bool> useBottomNavigation = const Value.absent(),
             Value<bool> useAmoledDark = const Value.absent(),
             Value<bool> useDynamicColors = const Value.absent(),
             Value<DefaultHomeTab> defaultHomeTab = const Value.absent(),
+            Value<int> usageHistoryWeeks = const Value.absent(),
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
-            Value<bool> protectedAccess = const Value.absent(),
-            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion.insert(
             id: id,
@@ -6467,202 +6964,43 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             accentColor: accentColor,
             username: username,
             localeCode: localeCode,
-            dataResetTime: dataResetTime,
-            useBottomNavigation: useBottomNavigation,
             useAmoledDark: useAmoledDark,
             useDynamicColors: useDynamicColors,
             defaultHomeTab: defaultHomeTab,
+            usageHistoryWeeks: usageHistoryWeeks,
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
-            protectedAccess: protectedAccess,
-            uninstallWindowTime: uninstallWindowTime,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$MindfulSettingsTableTableProcessedTableManager
-    extends ProcessedTableManager<
+typedef $$MindfulSettingsTableTableProcessedTableManager
+    = ProcessedTableManager<
         _$AppDatabase,
         $MindfulSettingsTableTable,
         MindfulSettings,
         $$MindfulSettingsTableTableFilterComposer,
         $$MindfulSettingsTableTableOrderingComposer,
-        $$MindfulSettingsTableTableProcessedTableManager,
-        $$MindfulSettingsTableTableInsertCompanionBuilder,
-        $$MindfulSettingsTableTableUpdateCompanionBuilder> {
-  $$MindfulSettingsTableTableProcessedTableManager(super.$state);
-}
-
-class $$MindfulSettingsTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $MindfulSettingsTableTable> {
-  $$MindfulSettingsTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<AppThemeMode, AppThemeMode, int>
-      get themeMode => $state.composableBuilder(
-          column: $state.table.themeMode,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get accentColor => $state.composableBuilder(
-      column: $state.table.accentColor,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get username => $state.composableBuilder(
-      column: $state.table.username,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get localeCode => $state.composableBuilder(
-      column: $state.table.localeCode,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get dataResetTime => $state.composableBuilder(
-          column: $state.table.dataResetTime,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get useBottomNavigation => $state.composableBuilder(
-      column: $state.table.useBottomNavigation,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get useAmoledDark => $state.composableBuilder(
-      column: $state.table.useAmoledDark,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get useDynamicColors => $state.composableBuilder(
-      column: $state.table.useDynamicColors,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<DefaultHomeTab, DefaultHomeTab, int>
-      get defaultHomeTab => $state.composableBuilder(
-          column: $state.table.defaultHomeTab,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get leftEmergencyPasses => $state.composableBuilder(
-      column: $state.table.leftEmergencyPasses,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get lastEmergencyUsed => $state.composableBuilder(
-      column: $state.table.lastEmergencyUsed,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get isOnboardingDone => $state.composableBuilder(
-      column: $state.table.isOnboardingDone,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get protectedAccess => $state.composableBuilder(
-      column: $state.table.protectedAccess,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get uninstallWindowTime => $state.composableBuilder(
-          column: $state.table.uninstallWindowTime,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$MindfulSettingsTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $MindfulSettingsTableTable> {
-  $$MindfulSettingsTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get themeMode => $state.composableBuilder(
-      column: $state.table.themeMode,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get accentColor => $state.composableBuilder(
-      column: $state.table.accentColor,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get username => $state.composableBuilder(
-      column: $state.table.username,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get localeCode => $state.composableBuilder(
-      column: $state.table.localeCode,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get dataResetTime => $state.composableBuilder(
-      column: $state.table.dataResetTime,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get useBottomNavigation => $state.composableBuilder(
-      column: $state.table.useBottomNavigation,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get useAmoledDark => $state.composableBuilder(
-      column: $state.table.useAmoledDark,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get useDynamicColors => $state.composableBuilder(
-      column: $state.table.useDynamicColors,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get defaultHomeTab => $state.composableBuilder(
-      column: $state.table.defaultHomeTab,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get leftEmergencyPasses => $state.composableBuilder(
-      column: $state.table.leftEmergencyPasses,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get lastEmergencyUsed => $state.composableBuilder(
-      column: $state.table.lastEmergencyUsed,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get isOnboardingDone => $state.composableBuilder(
-      column: $state.table.isOnboardingDone,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get protectedAccess => $state.composableBuilder(
-      column: $state.table.protectedAccess,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get uninstallWindowTime => $state.composableBuilder(
-      column: $state.table.uninstallWindowTime,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$InvincibleModeTableTableInsertCompanionBuilder
-    = InvincibleModeTableCompanion Function({
+        $$MindfulSettingsTableTableAnnotationComposer,
+        $$MindfulSettingsTableTableCreateCompanionBuilder,
+        $$MindfulSettingsTableTableUpdateCompanionBuilder,
+        (
+          MindfulSettings,
+          BaseReferences<_$AppDatabase, $MindfulSettingsTableTable,
+              MindfulSettings>
+        ),
+        MindfulSettings,
+        PrefetchHooks Function()>;
+typedef $$ParentalControlsTableTableCreateCompanionBuilder
+    = ParentalControlsTableCompanion Function({
   Value<int> id,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
   Value<bool> isInvincibleModeOn,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
@@ -6672,9 +7010,11 @@ typedef $$InvincibleModeTableTableInsertCompanionBuilder
   Value<bool> includeShortsTimer,
   Value<bool> includeBedtimeSchedule,
 });
-typedef $$InvincibleModeTableTableUpdateCompanionBuilder
-    = InvincibleModeTableCompanion Function({
+typedef $$ParentalControlsTableTableUpdateCompanionBuilder
+    = ParentalControlsTableCompanion Function({
   Value<int> id,
+  Value<bool> protectedAccess,
+  Value<TimeOfDayAdapter> uninstallWindowTime,
   Value<bool> isInvincibleModeOn,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
@@ -6685,28 +7025,191 @@ typedef $$InvincibleModeTableTableUpdateCompanionBuilder
   Value<bool> includeBedtimeSchedule,
 });
 
-class $$InvincibleModeTableTableTableManager extends RootTableManager<
+class $$ParentalControlsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $ParentalControlsTableTable> {
+  $$ParentalControlsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get protectedAccess => $composableBuilder(
+      column: $table.protectedAccess,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get uninstallWindowTime => $composableBuilder(
+          column: $table.uninstallWindowTime,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<bool> get isInvincibleModeOn => $composableBuilder(
+      column: $table.isInvincibleModeOn,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeAppsTimer => $composableBuilder(
+      column: $table.includeAppsTimer,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeAppsLaunchLimit => $composableBuilder(
+      column: $table.includeAppsLaunchLimit,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeAppsActivePeriod => $composableBuilder(
+      column: $table.includeAppsActivePeriod,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeGroupsTimer => $composableBuilder(
+      column: $table.includeGroupsTimer,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeGroupsActivePeriod => $composableBuilder(
+      column: $table.includeGroupsActivePeriod,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeShortsTimer => $composableBuilder(
+      column: $table.includeShortsTimer,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get includeBedtimeSchedule => $composableBuilder(
+      column: $table.includeBedtimeSchedule,
+      builder: (column) => ColumnFilters(column));
+}
+
+class $$ParentalControlsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $ParentalControlsTableTable> {
+  $$ParentalControlsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get protectedAccess => $composableBuilder(
+      column: $table.protectedAccess,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get uninstallWindowTime => $composableBuilder(
+      column: $table.uninstallWindowTime,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isInvincibleModeOn => $composableBuilder(
+      column: $table.isInvincibleModeOn,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeAppsTimer => $composableBuilder(
+      column: $table.includeAppsTimer,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeAppsLaunchLimit => $composableBuilder(
+      column: $table.includeAppsLaunchLimit,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeAppsActivePeriod => $composableBuilder(
+      column: $table.includeAppsActivePeriod,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeGroupsTimer => $composableBuilder(
+      column: $table.includeGroupsTimer,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeGroupsActivePeriod => $composableBuilder(
+      column: $table.includeGroupsActivePeriod,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeShortsTimer => $composableBuilder(
+      column: $table.includeShortsTimer,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get includeBedtimeSchedule => $composableBuilder(
+      column: $table.includeBedtimeSchedule,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$ParentalControlsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ParentalControlsTableTable> {
+  $$ParentalControlsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get protectedAccess => $composableBuilder(
+      column: $table.protectedAccess, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      get uninstallWindowTime => $composableBuilder(
+          column: $table.uninstallWindowTime, builder: (column) => column);
+
+  GeneratedColumn<bool> get isInvincibleModeOn => $composableBuilder(
+      column: $table.isInvincibleModeOn, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeAppsTimer => $composableBuilder(
+      column: $table.includeAppsTimer, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeAppsLaunchLimit => $composableBuilder(
+      column: $table.includeAppsLaunchLimit, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeAppsActivePeriod => $composableBuilder(
+      column: $table.includeAppsActivePeriod, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeGroupsTimer => $composableBuilder(
+      column: $table.includeGroupsTimer, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeGroupsActivePeriod => $composableBuilder(
+      column: $table.includeGroupsActivePeriod, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeShortsTimer => $composableBuilder(
+      column: $table.includeShortsTimer, builder: (column) => column);
+
+  GeneratedColumn<bool> get includeBedtimeSchedule => $composableBuilder(
+      column: $table.includeBedtimeSchedule, builder: (column) => column);
+}
+
+class $$ParentalControlsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $InvincibleModeTableTable,
-    InvincibleMode,
-    $$InvincibleModeTableTableFilterComposer,
-    $$InvincibleModeTableTableOrderingComposer,
-    $$InvincibleModeTableTableProcessedTableManager,
-    $$InvincibleModeTableTableInsertCompanionBuilder,
-    $$InvincibleModeTableTableUpdateCompanionBuilder> {
-  $$InvincibleModeTableTableTableManager(
-      _$AppDatabase db, $InvincibleModeTableTable table)
+    $ParentalControlsTableTable,
+    ParentalControls,
+    $$ParentalControlsTableTableFilterComposer,
+    $$ParentalControlsTableTableOrderingComposer,
+    $$ParentalControlsTableTableAnnotationComposer,
+    $$ParentalControlsTableTableCreateCompanionBuilder,
+    $$ParentalControlsTableTableUpdateCompanionBuilder,
+    (
+      ParentalControls,
+      BaseReferences<_$AppDatabase, $ParentalControlsTableTable,
+          ParentalControls>
+    ),
+    ParentalControls,
+    PrefetchHooks Function()> {
+  $$ParentalControlsTableTableTableManager(
+      _$AppDatabase db, $ParentalControlsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$InvincibleModeTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$InvincibleModeTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$InvincibleModeTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$ParentalControlsTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ParentalControlsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ParentalControlsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
             Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
@@ -6716,8 +7219,10 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             Value<bool> includeShortsTimer = const Value.absent(),
             Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
-              InvincibleModeTableCompanion(
+              ParentalControlsTableCompanion(
             id: id,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
@@ -6727,8 +7232,10 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             includeShortsTimer: includeShortsTimer,
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
+            Value<bool> protectedAccess = const Value.absent(),
+            Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
             Value<bool> isInvincibleModeOn = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
@@ -6738,8 +7245,10 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             Value<bool> includeShortsTimer = const Value.absent(),
             Value<bool> includeBedtimeSchedule = const Value.absent(),
           }) =>
-              InvincibleModeTableCompanion.insert(
+              ParentalControlsTableCompanion.insert(
             id: id,
+            protectedAccess: protectedAccess,
+            uninstallWindowTime: uninstallWindowTime,
             isInvincibleModeOn: isInvincibleModeOn,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
@@ -6749,122 +7258,31 @@ class $$InvincibleModeTableTableTableManager extends RootTableManager<
             includeShortsTimer: includeShortsTimer,
             includeBedtimeSchedule: includeBedtimeSchedule,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$InvincibleModeTableTableProcessedTableManager
-    extends ProcessedTableManager<
+typedef $$ParentalControlsTableTableProcessedTableManager
+    = ProcessedTableManager<
         _$AppDatabase,
-        $InvincibleModeTableTable,
-        InvincibleMode,
-        $$InvincibleModeTableTableFilterComposer,
-        $$InvincibleModeTableTableOrderingComposer,
-        $$InvincibleModeTableTableProcessedTableManager,
-        $$InvincibleModeTableTableInsertCompanionBuilder,
-        $$InvincibleModeTableTableUpdateCompanionBuilder> {
-  $$InvincibleModeTableTableProcessedTableManager(super.$state);
-}
-
-class $$InvincibleModeTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $InvincibleModeTableTable> {
-  $$InvincibleModeTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get isInvincibleModeOn => $state.composableBuilder(
-      column: $state.table.isInvincibleModeOn,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeAppsTimer => $state.composableBuilder(
-      column: $state.table.includeAppsTimer,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeAppsLaunchLimit => $state.composableBuilder(
-      column: $state.table.includeAppsLaunchLimit,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeAppsActivePeriod => $state.composableBuilder(
-      column: $state.table.includeAppsActivePeriod,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeGroupsTimer => $state.composableBuilder(
-      column: $state.table.includeGroupsTimer,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeGroupsActivePeriod => $state.composableBuilder(
-      column: $state.table.includeGroupsActivePeriod,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeShortsTimer => $state.composableBuilder(
-      column: $state.table.includeShortsTimer,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get includeBedtimeSchedule => $state.composableBuilder(
-      column: $state.table.includeBedtimeSchedule,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$InvincibleModeTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $InvincibleModeTableTable> {
-  $$InvincibleModeTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get isInvincibleModeOn => $state.composableBuilder(
-      column: $state.table.isInvincibleModeOn,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeAppsTimer => $state.composableBuilder(
-      column: $state.table.includeAppsTimer,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeAppsLaunchLimit => $state.composableBuilder(
-      column: $state.table.includeAppsLaunchLimit,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeAppsActivePeriod => $state.composableBuilder(
-      column: $state.table.includeAppsActivePeriod,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeGroupsTimer => $state.composableBuilder(
-      column: $state.table.includeGroupsTimer,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeGroupsActivePeriod =>
-      $state.composableBuilder(
-          column: $state.table.includeGroupsActivePeriod,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeShortsTimer => $state.composableBuilder(
-      column: $state.table.includeShortsTimer,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get includeBedtimeSchedule => $state.composableBuilder(
-      column: $state.table.includeBedtimeSchedule,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$RestrictionGroupsTableTableInsertCompanionBuilder
+        $ParentalControlsTableTable,
+        ParentalControls,
+        $$ParentalControlsTableTableFilterComposer,
+        $$ParentalControlsTableTableOrderingComposer,
+        $$ParentalControlsTableTableAnnotationComposer,
+        $$ParentalControlsTableTableCreateCompanionBuilder,
+        $$ParentalControlsTableTableUpdateCompanionBuilder,
+        (
+          ParentalControls,
+          BaseReferences<_$AppDatabase, $ParentalControlsTableTable,
+              ParentalControls>
+        ),
+        ParentalControls,
+        PrefetchHooks Function()>;
+typedef $$RestrictionGroupsTableTableCreateCompanionBuilder
     = RestrictionGroupsTableCompanion Function({
   Value<int> id,
   Value<String> groupName,
@@ -6885,27 +7303,144 @@ typedef $$RestrictionGroupsTableTableUpdateCompanionBuilder
   Value<List<String>> distractingApps,
 });
 
+class $$RestrictionGroupsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $RestrictionGroupsTableTable> {
+  $$RestrictionGroupsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get groupName => $composableBuilder(
+      column: $table.groupName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get timerSec => $composableBuilder(
+      column: $table.timerSec, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodStart => $composableBuilder(
+          column: $table.activePeriodStart,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get activePeriodEnd => $composableBuilder(
+          column: $table.activePeriodEnd,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<int> get periodDurationInMins => $composableBuilder(
+      column: $table.periodDurationInMins,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get distractingApps => $composableBuilder(
+          column: $table.distractingApps,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$RestrictionGroupsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $RestrictionGroupsTableTable> {
+  $$RestrictionGroupsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get groupName => $composableBuilder(
+      column: $table.groupName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get timerSec => $composableBuilder(
+      column: $table.timerSec, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get activePeriodStart => $composableBuilder(
+      column: $table.activePeriodStart,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get activePeriodEnd => $composableBuilder(
+      column: $table.activePeriodEnd,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get periodDurationInMins => $composableBuilder(
+      column: $table.periodDurationInMins,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get distractingApps => $composableBuilder(
+      column: $table.distractingApps,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$RestrictionGroupsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RestrictionGroupsTableTable> {
+  $$RestrictionGroupsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get groupName =>
+      $composableBuilder(column: $table.groupName, builder: (column) => column);
+
+  GeneratedColumn<int> get timerSec =>
+      $composableBuilder(column: $table.timerSec, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      get activePeriodStart => $composableBuilder(
+          column: $table.activePeriodStart, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int> get activePeriodEnd =>
+      $composableBuilder(
+          column: $table.activePeriodEnd, builder: (column) => column);
+
+  GeneratedColumn<int> get periodDurationInMins => $composableBuilder(
+      column: $table.periodDurationInMins, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get distractingApps =>
+      $composableBuilder(
+          column: $table.distractingApps, builder: (column) => column);
+}
+
 class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $RestrictionGroupsTableTable,
     RestrictionGroup,
     $$RestrictionGroupsTableTableFilterComposer,
     $$RestrictionGroupsTableTableOrderingComposer,
-    $$RestrictionGroupsTableTableProcessedTableManager,
-    $$RestrictionGroupsTableTableInsertCompanionBuilder,
-    $$RestrictionGroupsTableTableUpdateCompanionBuilder> {
+    $$RestrictionGroupsTableTableAnnotationComposer,
+    $$RestrictionGroupsTableTableCreateCompanionBuilder,
+    $$RestrictionGroupsTableTableUpdateCompanionBuilder,
+    (
+      RestrictionGroup,
+      BaseReferences<_$AppDatabase, $RestrictionGroupsTableTable,
+          RestrictionGroup>
+    ),
+    RestrictionGroup,
+    PrefetchHooks Function()> {
   $$RestrictionGroupsTableTableTableManager(
       _$AppDatabase db, $RestrictionGroupsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$RestrictionGroupsTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$RestrictionGroupsTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$RestrictionGroupsTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$RestrictionGroupsTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RestrictionGroupsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RestrictionGroupsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> groupName = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
@@ -6923,7 +7458,7 @@ class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
             periodDurationInMins: periodDurationInMins,
             distractingApps: distractingApps,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> groupName = const Value.absent(),
             Value<int> timerSec = const Value.absent(),
@@ -6941,107 +7476,31 @@ class $$RestrictionGroupsTableTableTableManager extends RootTableManager<
             periodDurationInMins: periodDurationInMins,
             distractingApps: distractingApps,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$RestrictionGroupsTableTableProcessedTableManager
-    extends ProcessedTableManager<
+typedef $$RestrictionGroupsTableTableProcessedTableManager
+    = ProcessedTableManager<
         _$AppDatabase,
         $RestrictionGroupsTableTable,
         RestrictionGroup,
         $$RestrictionGroupsTableTableFilterComposer,
         $$RestrictionGroupsTableTableOrderingComposer,
-        $$RestrictionGroupsTableTableProcessedTableManager,
-        $$RestrictionGroupsTableTableInsertCompanionBuilder,
-        $$RestrictionGroupsTableTableUpdateCompanionBuilder> {
-  $$RestrictionGroupsTableTableProcessedTableManager(super.$state);
-}
-
-class $$RestrictionGroupsTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $RestrictionGroupsTableTable> {
-  $$RestrictionGroupsTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get groupName => $state.composableBuilder(
-      column: $state.table.groupName,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get timerSec => $state.composableBuilder(
-      column: $state.table.timerSec,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get activePeriodStart => $state.composableBuilder(
-          column: $state.table.activePeriodStart,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get activePeriodEnd => $state.composableBuilder(
-          column: $state.table.activePeriodEnd,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get periodDurationInMins => $state.composableBuilder(
-      column: $state.table.periodDurationInMins,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get distractingApps => $state.composableBuilder(
-          column: $state.table.distractingApps,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$RestrictionGroupsTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $RestrictionGroupsTableTable> {
-  $$RestrictionGroupsTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get groupName => $state.composableBuilder(
-      column: $state.table.groupName,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get timerSec => $state.composableBuilder(
-      column: $state.table.timerSec,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get activePeriodStart => $state.composableBuilder(
-      column: $state.table.activePeriodStart,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get activePeriodEnd => $state.composableBuilder(
-      column: $state.table.activePeriodEnd,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get periodDurationInMins => $state.composableBuilder(
-      column: $state.table.periodDurationInMins,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get distractingApps => $state.composableBuilder(
-      column: $state.table.distractingApps,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$WellbeingTableTableInsertCompanionBuilder = WellbeingTableCompanion
+        $$RestrictionGroupsTableTableAnnotationComposer,
+        $$RestrictionGroupsTableTableCreateCompanionBuilder,
+        $$RestrictionGroupsTableTableUpdateCompanionBuilder,
+        (
+          RestrictionGroup,
+          BaseReferences<_$AppDatabase, $RestrictionGroupsTableTable,
+              RestrictionGroup>
+        ),
+        RestrictionGroup,
+        PrefetchHooks Function()>;
+typedef $$WellbeingTableTableCreateCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
   Value<int> allowedShortsTimeSec,
@@ -7052,6 +7511,7 @@ typedef $$WellbeingTableTableInsertCompanionBuilder = WellbeingTableCompanion
   Value<bool> blockRedditShorts,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
+  Value<List<String>> nsfwWebsites,
 });
 typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
     Function({
@@ -7064,7 +7524,148 @@ typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
   Value<bool> blockRedditShorts,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
+  Value<List<String>> nsfwWebsites,
 });
+
+class $$WellbeingTableTableFilterComposer
+    extends Composer<_$AppDatabase, $WellbeingTableTable> {
+  $$WellbeingTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get allowedShortsTimeSec => $composableBuilder(
+      column: $table.allowedShortsTimeSec,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get blockInstaReels => $composableBuilder(
+      column: $table.blockInstaReels,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get blockYtShorts => $composableBuilder(
+      column: $table.blockYtShorts, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get blockSnapSpotlight => $composableBuilder(
+      column: $table.blockSnapSpotlight,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get blockFbReels => $composableBuilder(
+      column: $table.blockFbReels, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get blockRedditShorts => $composableBuilder(
+      column: $table.blockRedditShorts,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get blockNsfwSites => $composableBuilder(
+      column: $table.blockNsfwSites,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get blockedWebsites => $composableBuilder(
+          column: $table.blockedWebsites,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get nsfwWebsites => $composableBuilder(
+          column: $table.nsfwWebsites,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$WellbeingTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $WellbeingTableTable> {
+  $$WellbeingTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get allowedShortsTimeSec => $composableBuilder(
+      column: $table.allowedShortsTimeSec,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get blockInstaReels => $composableBuilder(
+      column: $table.blockInstaReels,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get blockYtShorts => $composableBuilder(
+      column: $table.blockYtShorts,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get blockSnapSpotlight => $composableBuilder(
+      column: $table.blockSnapSpotlight,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get blockFbReels => $composableBuilder(
+      column: $table.blockFbReels,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get blockRedditShorts => $composableBuilder(
+      column: $table.blockRedditShorts,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get blockNsfwSites => $composableBuilder(
+      column: $table.blockNsfwSites,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get blockedWebsites => $composableBuilder(
+      column: $table.blockedWebsites,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get nsfwWebsites => $composableBuilder(
+      column: $table.nsfwWebsites,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$WellbeingTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WellbeingTableTable> {
+  $$WellbeingTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get allowedShortsTimeSec => $composableBuilder(
+      column: $table.allowedShortsTimeSec, builder: (column) => column);
+
+  GeneratedColumn<bool> get blockInstaReels => $composableBuilder(
+      column: $table.blockInstaReels, builder: (column) => column);
+
+  GeneratedColumn<bool> get blockYtShorts => $composableBuilder(
+      column: $table.blockYtShorts, builder: (column) => column);
+
+  GeneratedColumn<bool> get blockSnapSpotlight => $composableBuilder(
+      column: $table.blockSnapSpotlight, builder: (column) => column);
+
+  GeneratedColumn<bool> get blockFbReels => $composableBuilder(
+      column: $table.blockFbReels, builder: (column) => column);
+
+  GeneratedColumn<bool> get blockRedditShorts => $composableBuilder(
+      column: $table.blockRedditShorts, builder: (column) => column);
+
+  GeneratedColumn<bool> get blockNsfwSites => $composableBuilder(
+      column: $table.blockNsfwSites, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get blockedWebsites =>
+      $composableBuilder(
+          column: $table.blockedWebsites, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get nsfwWebsites =>
+      $composableBuilder(
+          column: $table.nsfwWebsites, builder: (column) => column);
+}
 
 class $$WellbeingTableTableTableManager extends RootTableManager<
     _$AppDatabase,
@@ -7072,21 +7673,24 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
     Wellbeing,
     $$WellbeingTableTableFilterComposer,
     $$WellbeingTableTableOrderingComposer,
-    $$WellbeingTableTableProcessedTableManager,
-    $$WellbeingTableTableInsertCompanionBuilder,
-    $$WellbeingTableTableUpdateCompanionBuilder> {
+    $$WellbeingTableTableAnnotationComposer,
+    $$WellbeingTableTableCreateCompanionBuilder,
+    $$WellbeingTableTableUpdateCompanionBuilder,
+    (Wellbeing, BaseReferences<_$AppDatabase, $WellbeingTableTable, Wellbeing>),
+    Wellbeing,
+    PrefetchHooks Function()> {
   $$WellbeingTableTableTableManager(
       _$AppDatabase db, $WellbeingTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$WellbeingTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$WellbeingTableTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$WellbeingTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$WellbeingTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WellbeingTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WellbeingTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> allowedShortsTimeSec = const Value.absent(),
             Value<bool> blockInstaReels = const Value.absent(),
@@ -7096,6 +7700,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             Value<bool> blockRedditShorts = const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
+            Value<List<String>> nsfwWebsites = const Value.absent(),
           }) =>
               WellbeingTableCompanion(
             id: id,
@@ -7107,8 +7712,9 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             blockRedditShorts: blockRedditShorts,
             blockNsfwSites: blockNsfwSites,
             blockedWebsites: blockedWebsites,
+            nsfwWebsites: nsfwWebsites,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> allowedShortsTimeSec = const Value.absent(),
             Value<bool> blockInstaReels = const Value.absent(),
@@ -7118,6 +7724,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             Value<bool> blockRedditShorts = const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
+            Value<List<String>> nsfwWebsites = const Value.absent(),
           }) =>
               WellbeingTableCompanion.insert(
             id: id,
@@ -7129,123 +7736,28 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
             blockRedditShorts: blockRedditShorts,
             blockNsfwSites: blockNsfwSites,
             blockedWebsites: blockedWebsites,
+            nsfwWebsites: nsfwWebsites,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$WellbeingTableTableProcessedTableManager extends ProcessedTableManager<
+typedef $$WellbeingTableTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $WellbeingTableTable,
     Wellbeing,
     $$WellbeingTableTableFilterComposer,
     $$WellbeingTableTableOrderingComposer,
-    $$WellbeingTableTableProcessedTableManager,
-    $$WellbeingTableTableInsertCompanionBuilder,
-    $$WellbeingTableTableUpdateCompanionBuilder> {
-  $$WellbeingTableTableProcessedTableManager(super.$state);
-}
-
-class $$WellbeingTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $WellbeingTableTable> {
-  $$WellbeingTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get allowedShortsTimeSec => $state.composableBuilder(
-      column: $state.table.allowedShortsTimeSec,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get blockInstaReels => $state.composableBuilder(
-      column: $state.table.blockInstaReels,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get blockYtShorts => $state.composableBuilder(
-      column: $state.table.blockYtShorts,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get blockSnapSpotlight => $state.composableBuilder(
-      column: $state.table.blockSnapSpotlight,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get blockFbReels => $state.composableBuilder(
-      column: $state.table.blockFbReels,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get blockRedditShorts => $state.composableBuilder(
-      column: $state.table.blockRedditShorts,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get blockNsfwSites => $state.composableBuilder(
-      column: $state.table.blockNsfwSites,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get blockedWebsites => $state.composableBuilder(
-          column: $state.table.blockedWebsites,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$WellbeingTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $WellbeingTableTable> {
-  $$WellbeingTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get allowedShortsTimeSec => $state.composableBuilder(
-      column: $state.table.allowedShortsTimeSec,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get blockInstaReels => $state.composableBuilder(
-      column: $state.table.blockInstaReels,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get blockYtShorts => $state.composableBuilder(
-      column: $state.table.blockYtShorts,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get blockSnapSpotlight => $state.composableBuilder(
-      column: $state.table.blockSnapSpotlight,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get blockFbReels => $state.composableBuilder(
-      column: $state.table.blockFbReels,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get blockRedditShorts => $state.composableBuilder(
-      column: $state.table.blockRedditShorts,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get blockNsfwSites => $state.composableBuilder(
-      column: $state.table.blockNsfwSites,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get blockedWebsites => $state.composableBuilder(
-      column: $state.table.blockedWebsites,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$SharedUniqueDataTableTableInsertCompanionBuilder
+    $$WellbeingTableTableAnnotationComposer,
+    $$WellbeingTableTableCreateCompanionBuilder,
+    $$WellbeingTableTableUpdateCompanionBuilder,
+    (Wellbeing, BaseReferences<_$AppDatabase, $WellbeingTableTable, Wellbeing>),
+    Wellbeing,
+    PrefetchHooks Function()>;
+typedef $$SharedUniqueDataTableTableCreateCompanionBuilder
     = SharedUniqueDataTableCompanion Function({
   Value<int> id,
   Value<List<String>> excludedApps,
@@ -7258,27 +7770,102 @@ typedef $$SharedUniqueDataTableTableUpdateCompanionBuilder
   Value<List<String>> notificationBatchedApps,
 });
 
+class $$SharedUniqueDataTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SharedUniqueDataTableTable> {
+  $$SharedUniqueDataTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get excludedApps => $composableBuilder(
+          column: $table.excludedApps,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get notificationBatchedApps => $composableBuilder(
+          column: $table.notificationBatchedApps,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$SharedUniqueDataTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SharedUniqueDataTableTable> {
+  $$SharedUniqueDataTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get excludedApps => $composableBuilder(
+      column: $table.excludedApps,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get notificationBatchedApps => $composableBuilder(
+      column: $table.notificationBatchedApps,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$SharedUniqueDataTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SharedUniqueDataTableTable> {
+  $$SharedUniqueDataTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get excludedApps =>
+      $composableBuilder(
+          column: $table.excludedApps, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String>
+      get notificationBatchedApps => $composableBuilder(
+          column: $table.notificationBatchedApps, builder: (column) => column);
+}
+
 class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $SharedUniqueDataTableTable,
     SharedUniqueData,
     $$SharedUniqueDataTableTableFilterComposer,
     $$SharedUniqueDataTableTableOrderingComposer,
-    $$SharedUniqueDataTableTableProcessedTableManager,
-    $$SharedUniqueDataTableTableInsertCompanionBuilder,
-    $$SharedUniqueDataTableTableUpdateCompanionBuilder> {
+    $$SharedUniqueDataTableTableAnnotationComposer,
+    $$SharedUniqueDataTableTableCreateCompanionBuilder,
+    $$SharedUniqueDataTableTableUpdateCompanionBuilder,
+    (
+      SharedUniqueData,
+      BaseReferences<_$AppDatabase, $SharedUniqueDataTableTable,
+          SharedUniqueData>
+    ),
+    SharedUniqueData,
+    PrefetchHooks Function()> {
   $$SharedUniqueDataTableTableTableManager(
       _$AppDatabase db, $SharedUniqueDataTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$SharedUniqueDataTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$SharedUniqueDataTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$SharedUniqueDataTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$SharedUniqueDataTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SharedUniqueDataTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SharedUniqueDataTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<List<String>> excludedApps = const Value.absent(),
             Value<List<String>> notificationBatchedApps = const Value.absent(),
@@ -7288,7 +7875,7 @@ class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
             excludedApps: excludedApps,
             notificationBatchedApps: notificationBatchedApps,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<List<String>> excludedApps = const Value.absent(),
             Value<List<String>> notificationBatchedApps = const Value.absent(),
@@ -7298,66 +7885,31 @@ class $$SharedUniqueDataTableTableTableManager extends RootTableManager<
             excludedApps: excludedApps,
             notificationBatchedApps: notificationBatchedApps,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$SharedUniqueDataTableTableProcessedTableManager
-    extends ProcessedTableManager<
+typedef $$SharedUniqueDataTableTableProcessedTableManager
+    = ProcessedTableManager<
         _$AppDatabase,
         $SharedUniqueDataTableTable,
         SharedUniqueData,
         $$SharedUniqueDataTableTableFilterComposer,
         $$SharedUniqueDataTableTableOrderingComposer,
-        $$SharedUniqueDataTableTableProcessedTableManager,
-        $$SharedUniqueDataTableTableInsertCompanionBuilder,
-        $$SharedUniqueDataTableTableUpdateCompanionBuilder> {
-  $$SharedUniqueDataTableTableProcessedTableManager(super.$state);
-}
-
-class $$SharedUniqueDataTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $SharedUniqueDataTableTable> {
-  $$SharedUniqueDataTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get excludedApps => $state.composableBuilder(
-          column: $state.table.excludedApps,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
-      get notificationBatchedApps => $state.composableBuilder(
-          column: $state.table.notificationBatchedApps,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$SharedUniqueDataTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $SharedUniqueDataTableTable> {
-  $$SharedUniqueDataTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get excludedApps => $state.composableBuilder(
-      column: $state.table.excludedApps,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get notificationBatchedApps =>
-      $state.composableBuilder(
-          column: $state.table.notificationBatchedApps,
-          builder: (column, joinBuilders) =>
-              ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$NotificationScheduleTableTableInsertCompanionBuilder
+        $$SharedUniqueDataTableTableAnnotationComposer,
+        $$SharedUniqueDataTableTableCreateCompanionBuilder,
+        $$SharedUniqueDataTableTableUpdateCompanionBuilder,
+        (
+          SharedUniqueData,
+          BaseReferences<_$AppDatabase, $SharedUniqueDataTableTable,
+              SharedUniqueData>
+        ),
+        SharedUniqueData,
+        PrefetchHooks Function()>;
+typedef $$NotificationScheduleTableTableCreateCompanionBuilder
     = NotificationScheduleTableCompanion Function({
   Value<int> id,
   Value<bool> isActive,
@@ -7372,27 +7924,105 @@ typedef $$NotificationScheduleTableTableUpdateCompanionBuilder
   Value<TimeOfDayAdapter> time,
 });
 
+class $$NotificationScheduleTableTableFilterComposer
+    extends Composer<_$AppDatabase, $NotificationScheduleTableTable> {
+  $$NotificationScheduleTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+      column: $table.isActive, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get time => $composableBuilder(
+          column: $table.time,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+}
+
+class $$NotificationScheduleTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $NotificationScheduleTableTable> {
+  $$NotificationScheduleTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+      column: $table.isActive, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get label => $composableBuilder(
+      column: $table.label, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get time => $composableBuilder(
+      column: $table.time, builder: (column) => ColumnOrderings(column));
+}
+
+class $$NotificationScheduleTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NotificationScheduleTableTable> {
+  $$NotificationScheduleTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<String> get label =>
+      $composableBuilder(column: $table.label, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int> get time =>
+      $composableBuilder(column: $table.time, builder: (column) => column);
+}
+
 class $$NotificationScheduleTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $NotificationScheduleTableTable,
     NotificationSchedule,
     $$NotificationScheduleTableTableFilterComposer,
     $$NotificationScheduleTableTableOrderingComposer,
-    $$NotificationScheduleTableTableProcessedTableManager,
-    $$NotificationScheduleTableTableInsertCompanionBuilder,
-    $$NotificationScheduleTableTableUpdateCompanionBuilder> {
+    $$NotificationScheduleTableTableAnnotationComposer,
+    $$NotificationScheduleTableTableCreateCompanionBuilder,
+    $$NotificationScheduleTableTableUpdateCompanionBuilder,
+    (
+      NotificationSchedule,
+      BaseReferences<_$AppDatabase, $NotificationScheduleTableTable,
+          NotificationSchedule>
+    ),
+    NotificationSchedule,
+    PrefetchHooks Function()> {
   $$NotificationScheduleTableTableTableManager(
       _$AppDatabase db, $NotificationScheduleTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer: $$NotificationScheduleTableTableFilterComposer(
-              ComposerState(db, table)),
-          orderingComposer: $$NotificationScheduleTableTableOrderingComposer(
-              ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$NotificationScheduleTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$NotificationScheduleTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NotificationScheduleTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NotificationScheduleTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
             Value<String> label = const Value.absent(),
@@ -7404,7 +8034,7 @@ class $$NotificationScheduleTableTableTableManager extends RootTableManager<
             label: label,
             time: time,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<bool> isActive = const Value.absent(),
             Value<String> label = const Value.absent(),
@@ -7416,73 +8046,31 @@ class $$NotificationScheduleTableTableTableManager extends RootTableManager<
             label: label,
             time: time,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$NotificationScheduleTableTableProcessedTableManager
-    extends ProcessedTableManager<
+typedef $$NotificationScheduleTableTableProcessedTableManager
+    = ProcessedTableManager<
         _$AppDatabase,
         $NotificationScheduleTableTable,
         NotificationSchedule,
         $$NotificationScheduleTableTableFilterComposer,
         $$NotificationScheduleTableTableOrderingComposer,
-        $$NotificationScheduleTableTableProcessedTableManager,
-        $$NotificationScheduleTableTableInsertCompanionBuilder,
-        $$NotificationScheduleTableTableUpdateCompanionBuilder> {
-  $$NotificationScheduleTableTableProcessedTableManager(super.$state);
-}
-
-class $$NotificationScheduleTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $NotificationScheduleTableTable> {
-  $$NotificationScheduleTableTableFilterComposer(super.$state);
-  ColumnFilters<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<bool> get isActive => $state.composableBuilder(
-      column: $state.table.isActive,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<String> get label => $state.composableBuilder(
-      column: $state.table.label,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
-      get time => $state.composableBuilder(
-          column: $state.table.time,
-          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
-              column,
-              joinBuilders: joinBuilders));
-}
-
-class $$NotificationScheduleTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $NotificationScheduleTableTable> {
-  $$NotificationScheduleTableTableOrderingComposer(super.$state);
-  ColumnOrderings<int> get id => $state.composableBuilder(
-      column: $state.table.id,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<bool> get isActive => $state.composableBuilder(
-      column: $state.table.isActive,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<String> get label => $state.composableBuilder(
-      column: $state.table.label,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get time => $state.composableBuilder(
-      column: $state.table.time,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-typedef $$AppUsageTableTableInsertCompanionBuilder = AppUsageTableCompanion
+        $$NotificationScheduleTableTableAnnotationComposer,
+        $$NotificationScheduleTableTableCreateCompanionBuilder,
+        $$NotificationScheduleTableTableUpdateCompanionBuilder,
+        (
+          NotificationSchedule,
+          BaseReferences<_$AppDatabase, $NotificationScheduleTableTable,
+              NotificationSchedule>
+        ),
+        NotificationSchedule,
+        PrefetchHooks Function()>;
+typedef $$AppUsageTableTableCreateCompanionBuilder = AppUsageTableCompanion
     Function({
   required String packageName,
   Value<DateTime> date,
@@ -7501,26 +8089,104 @@ typedef $$AppUsageTableTableUpdateCompanionBuilder = AppUsageTableCompanion
   Value<int> rowid,
 });
 
+class $$AppUsageTableTableFilterComposer
+    extends Composer<_$AppDatabase, $AppUsageTableTable> {
+  $$AppUsageTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get packageName => $composableBuilder(
+      column: $table.packageName, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get screenTime => $composableBuilder(
+      column: $table.screenTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get mobileData => $composableBuilder(
+      column: $table.mobileData, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get wifiData => $composableBuilder(
+      column: $table.wifiData, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppUsageTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppUsageTableTable> {
+  $$AppUsageTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get packageName => $composableBuilder(
+      column: $table.packageName, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+      column: $table.date, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get screenTime => $composableBuilder(
+      column: $table.screenTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mobileData => $composableBuilder(
+      column: $table.mobileData, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get wifiData => $composableBuilder(
+      column: $table.wifiData, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppUsageTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppUsageTableTable> {
+  $$AppUsageTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get packageName => $composableBuilder(
+      column: $table.packageName, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<int> get screenTime => $composableBuilder(
+      column: $table.screenTime, builder: (column) => column);
+
+  GeneratedColumn<int> get mobileData => $composableBuilder(
+      column: $table.mobileData, builder: (column) => column);
+
+  GeneratedColumn<int> get wifiData =>
+      $composableBuilder(column: $table.wifiData, builder: (column) => column);
+}
+
 class $$AppUsageTableTableTableManager extends RootTableManager<
     _$AppDatabase,
     $AppUsageTableTable,
     AppUsage,
     $$AppUsageTableTableFilterComposer,
     $$AppUsageTableTableOrderingComposer,
-    $$AppUsageTableTableProcessedTableManager,
-    $$AppUsageTableTableInsertCompanionBuilder,
-    $$AppUsageTableTableUpdateCompanionBuilder> {
+    $$AppUsageTableTableAnnotationComposer,
+    $$AppUsageTableTableCreateCompanionBuilder,
+    $$AppUsageTableTableUpdateCompanionBuilder,
+    (AppUsage, BaseReferences<_$AppDatabase, $AppUsageTableTable, AppUsage>),
+    AppUsage,
+    PrefetchHooks Function()> {
   $$AppUsageTableTableTableManager(_$AppDatabase db, $AppUsageTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
-          filteringComposer:
-              $$AppUsageTableTableFilterComposer(ComposerState(db, table)),
-          orderingComposer:
-              $$AppUsageTableTableOrderingComposer(ComposerState(db, table)),
-          getChildManagerBuilder: (p) =>
-              $$AppUsageTableTableProcessedTableManager(p),
-          getUpdateCompanionBuilder: ({
+          createFilteringComposer: () =>
+              $$AppUsageTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppUsageTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppUsageTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
             Value<String> packageName = const Value.absent(),
             Value<DateTime> date = const Value.absent(),
             Value<int> screenTime = const Value.absent(),
@@ -7536,7 +8202,7 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             wifiData: wifiData,
             rowid: rowid,
           ),
-          getInsertCompanionBuilder: ({
+          createCompanionCallback: ({
             required String packageName,
             Value<DateTime> date = const Value.absent(),
             Value<int> screenTime = const Value.absent(),
@@ -7552,82 +8218,29 @@ class $$AppUsageTableTableTableManager extends RootTableManager<
             wifiData: wifiData,
             rowid: rowid,
           ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
         ));
 }
 
-class $$AppUsageTableTableProcessedTableManager extends ProcessedTableManager<
+typedef $$AppUsageTableTableProcessedTableManager = ProcessedTableManager<
     _$AppDatabase,
     $AppUsageTableTable,
     AppUsage,
     $$AppUsageTableTableFilterComposer,
     $$AppUsageTableTableOrderingComposer,
-    $$AppUsageTableTableProcessedTableManager,
-    $$AppUsageTableTableInsertCompanionBuilder,
-    $$AppUsageTableTableUpdateCompanionBuilder> {
-  $$AppUsageTableTableProcessedTableManager(super.$state);
-}
+    $$AppUsageTableTableAnnotationComposer,
+    $$AppUsageTableTableCreateCompanionBuilder,
+    $$AppUsageTableTableUpdateCompanionBuilder,
+    (AppUsage, BaseReferences<_$AppDatabase, $AppUsageTableTable, AppUsage>),
+    AppUsage,
+    PrefetchHooks Function()>;
 
-class $$AppUsageTableTableFilterComposer
-    extends FilterComposer<_$AppDatabase, $AppUsageTableTable> {
-  $$AppUsageTableTableFilterComposer(super.$state);
-  ColumnFilters<String> get packageName => $state.composableBuilder(
-      column: $state.table.packageName,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get screenTime => $state.composableBuilder(
-      column: $state.table.screenTime,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get mobileData => $state.composableBuilder(
-      column: $state.table.mobileData,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-
-  ColumnFilters<int> get wifiData => $state.composableBuilder(
-      column: $state.table.wifiData,
-      builder: (column, joinBuilders) =>
-          ColumnFilters(column, joinBuilders: joinBuilders));
-}
-
-class $$AppUsageTableTableOrderingComposer
-    extends OrderingComposer<_$AppDatabase, $AppUsageTableTable> {
-  $$AppUsageTableTableOrderingComposer(super.$state);
-  ColumnOrderings<String> get packageName => $state.composableBuilder(
-      column: $state.table.packageName,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<DateTime> get date => $state.composableBuilder(
-      column: $state.table.date,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get screenTime => $state.composableBuilder(
-      column: $state.table.screenTime,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get mobileData => $state.composableBuilder(
-      column: $state.table.mobileData,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-
-  ColumnOrderings<int> get wifiData => $state.composableBuilder(
-      column: $state.table.wifiData,
-      builder: (column, joinBuilders) =>
-          ColumnOrderings(column, joinBuilders: joinBuilders));
-}
-
-class _$AppDatabaseManager {
+class $AppDatabaseManager {
   final _$AppDatabase _db;
-  _$AppDatabaseManager(this._db);
+  $AppDatabaseManager(this._db);
   $$AppRestrictionTableTableTableManager get appRestrictionTable =>
       $$AppRestrictionTableTableTableManager(_db, _db.appRestrictionTable);
   $$BedtimeScheduleTableTableTableManager get bedtimeScheduleTable =>
@@ -7642,8 +8255,8 @@ class _$AppDatabaseManager {
       $$FocusSessionsTableTableTableManager(_db, _db.focusSessionsTable);
   $$MindfulSettingsTableTableTableManager get mindfulSettingsTable =>
       $$MindfulSettingsTableTableTableManager(_db, _db.mindfulSettingsTable);
-  $$InvincibleModeTableTableTableManager get invincibleModeTable =>
-      $$InvincibleModeTableTableTableManager(_db, _db.invincibleModeTable);
+  $$ParentalControlsTableTableTableManager get parentalControlsTable =>
+      $$ParentalControlsTableTableTableManager(_db, _db.parentalControlsTable);
   $$RestrictionGroupsTableTableTableManager get restrictionGroupsTable =>
       $$RestrictionGroupsTableTableTableManager(
           _db, _db.restrictionGroupsTable);

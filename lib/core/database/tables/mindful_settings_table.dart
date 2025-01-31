@@ -8,9 +8,7 @@
  *
  */
 
-
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/config/app_constants.dart';
@@ -39,10 +37,6 @@ class MindfulSettingsTable extends Table {
   TextColumn get localeCode =>
       text().withDefault(const Constant(AppConstants.defaultLocale))();
 
-  /// Flag indicating if to use bottom navigation or the default sidebar
-  BoolColumn get useBottomNavigation =>
-      boolean().withDefault(const Constant(false))();
-
   /// Flag indicating if to use pure amoled black color for dark theme
   BoolColumn get useAmoledDark =>
       boolean().withDefault(const Constant(false))();
@@ -55,6 +49,9 @@ class MindfulSettingsTable extends Table {
   IntColumn get defaultHomeTab => intEnum<DefaultHomeTab>()
       .withDefault(Constant(DefaultHomeTab.dashboard.index))();
 
+  /// Maximum number of weeks till the app's usage history will be kept
+  IntColumn get usageHistoryWeeks => integer().withDefault(const Constant(4))();
+
   /// Number of emergency break passes left for today
   IntColumn get leftEmergencyPasses =>
       integer().withDefault(const Constant(3))();
@@ -66,13 +63,4 @@ class MindfulSettingsTable extends Table {
   /// Flag indicating if onboarding is completed or not
   BoolColumn get isOnboardingDone =>
       boolean().withDefault(const Constant(false))();
-
-  /// Flag indicating whether to authenticate before opening Mindful or not
-  BoolColumn get protectedAccess =>
-      boolean().withDefault(const Constant(false))();
-
-  /// Daily uninstall window start time [TimeOfDay] stored as minutes
-  IntColumn get uninstallWindowTime => integer()
-      .map(const TimeOfDayAdapterConverter())
-      .withDefault(const Constant(0))();
 }

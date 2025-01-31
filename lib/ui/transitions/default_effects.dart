@@ -15,7 +15,7 @@ import 'package:mindful/config/app_constants.dart';
 class DefaultEffects {
   static List<Effect> get transitionIn => [
         MoveEffect(
-          duration: AppConstants.defaultAnimDuration * 2.5,
+          duration: AppConstants.defaultAnimDuration * 3,
           curve: AppConstants.defaultCurve,
           begin: const Offset(0, 100),
           end: Offset.zero,

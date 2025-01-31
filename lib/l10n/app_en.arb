@@ -177,8 +177,6 @@
     "data_segment_label": "Data",
     "mobile_label": "Mobile",
     "wifi_label": "Wifi",
-    "restriction_groups_tile_subtitle": "Limit screen time for group of apps.",
-    "batch_notifications_tile_subtitle": "Batch and schedule app notifications.",
     "most_used_apps_heading": "Most used apps",
     "show_all_apps_tile_title": "Show all apps",
     "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
@@ -225,6 +223,7 @@
     "tamper_protection_tile_title": "Tamper protection",
     "tamper_protection_tile_subtitle": "Prevent uninstalling and force stopping the app.",
     "uninstall_window_tile_title": "Uninstall window",
+    "uninstall_window_tile_subtitle": "Tamper protection can be disabled within 5 minutes from the selected time.",
     "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
     "shorts_blocking_tab_title": "Shorts blocking",
     "shorts_blocking_tab_info": "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.",
@@ -263,6 +262,8 @@
     "add_website_fab_button": "Add Website",
     "add_website_dialog_title": "Distracting website",
     "add_website_dialog_info": "Enter url of a website which you want to block.",
+    "add_website_dialog_is_nsfw": "Is nsfw site?",
+    "add_website_dialog_nsfw_warning": "Warning: Nsfw sites cannot be removed once added.",
     "add_website_dialog_button_block": "Block",
     "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
     "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
@@ -473,21 +474,6 @@
             }
         }
     },
-    "usage_alerts_heading": "Usage alerts",
-    "app_alert_interval_tile_title": "Alert interval",
-    "app_alert_interval_tile_subtitle": "Every {intervalString}.",
-    "@app_alert_interval_tile_subtitle": {
-        "placeholders": {
-            "intervalString": {
-                "type": "String",
-                "example": "15 minutes"
-            }
-        }
-    },
-    "app_alert_interval_picker_dialog_info": "Set the interval for alerts to remind you of your screen time while using this app.",
-    "app_alert_type_tile_title": "Alert type",
-    "app_alert_type_notification": "Notification",
-    "app_alert_type_dialog": "Dialog",
     "launch_app_tile_title": "Launch app",
     "launch_app_tile_subtitle": "Open {appName}.",
     "@launch_app_tile_subtitle": {
@@ -535,15 +521,18 @@
     "defaults_heading": "Defaults",
     "app_language_tile_title": "App language",
     "default_home_tab_tile_title": "Home tab",
-    "bottom_navigation_tile_title": "Bottom navigation",
-    "bottom_navigation_tile_subtitle": "Switch to bottom navigation system.",
+    "usage_history_tile_title": "Usage history",
+    "usage_history_15_days": "15 days",
+    "usage_history_1_month": "1 month",
+    "usage_history_3_month": "3 months",
+    "usage_history_6_month": "6 months",
+    "usage_history_1_year": "1 year",
     "service_heading": "Service",
     "service_stopping_warning": "If Mindful stops working unexpectedly, please grant the 'Ignore Battery Optimization' permission to keep it running in the background. If the issue continues, try whitelisting Mindful for uninterrupted performance.",
     "whitelist_app_tile_title": "Whitelist Mindful",
     "whitelist_app_tile_subtitle": "Allow Mindful to auto start.",
     "whitelist_app_unsupported_snack_alert": "This device does not support automatic startup management.",
     "@----------------------------- SETTINGS SCREEN - DATABASE TAB -----------------------------": {},
-    "uninstall_window_tile_subtitle": "Tamper protection can be disabled within 5 minutes from the selected time.",
     "database_tab_title": "Database",
     "import_db_tile_title": "Import database",
     "import_db_tile_subtitle": "Import database from a file.",

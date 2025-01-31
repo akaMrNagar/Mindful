@@ -16,7 +16,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/focus/invincible_mode_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -44,7 +44,7 @@ class InvincibleModeSettings extends ConsumerWidget {
             context.locale.invincible_mode_dialog_button_start_anyway,
       );
       if (isConfirm) {
-        ref.read(invincibleModeProvider.notifier).switchInvincibleMode();
+        ref.read(parentalControlsProvider.notifier).switchInvincibleMode();
       }
     } else {
       context.showSnackAlert(
@@ -55,7 +55,7 @@ class InvincibleModeSettings extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final invincibleMode = ref.watch(invincibleModeProvider);
+    final parentalControls = ref.watch(parentalControlsProvider);
 
     return MultiSliver(
       children: [
@@ -75,13 +75,13 @@ class InvincibleModeSettings extends ConsumerWidget {
           child: DefaultListTile(
             position: ItemPosition.top,
             isPrimary: true,
-            switchValue: invincibleMode.isInvincibleModeOn,
+            switchValue: parentalControls.isInvincibleModeOn,
             leadingIcon: FluentIcons.animal_cat_20_regular,
             titleText: context.locale.invincible_mode_tile_title,
             onPressed: () => _turnOnInvincibleMode(
               context,
               ref,
-              invincibleMode.isInvincibleModeOn,
+              parentalControls.isInvincibleModeOn,
             ),
           ),
         ).sliver,
@@ -97,42 +97,42 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Apps timer
               DefaultListTile(
                 position: ItemPosition.mid,
-                enabled: !invincibleMode.isInvincibleModeOn ||
-                    !invincibleMode.includeAppsTimer,
-                isSelected: invincibleMode.includeAppsTimer,
+                enabled: !parentalControls.isInvincibleModeOn ||
+                    !parentalControls.includeAppsTimer,
+                isSelected: parentalControls.includeAppsTimer,
                 leadingIcon: FluentIcons.timer_20_regular,
                 titleText:
                     context.locale.invincible_mode_include_timer_tile_title,
                 onPressed: ref
-                    .read(invincibleModeProvider.notifier)
+                    .read(parentalControlsProvider.notifier)
                     .toggleIncludeAppsTimer,
               ),
 
               /// Apps launch limit
               DefaultListTile(
                 position: ItemPosition.mid,
-                enabled: !invincibleMode.isInvincibleModeOn ||
-                    !invincibleMode.includeAppsLaunchLimit,
-                isSelected: invincibleMode.includeAppsLaunchLimit,
+                enabled: !parentalControls.isInvincibleModeOn ||
+                    !parentalControls.includeAppsLaunchLimit,
+                isSelected: parentalControls.includeAppsLaunchLimit,
                 leadingIcon: FluentIcons.rocket_20_regular,
                 titleText: context
                     .locale.invincible_mode_include_launch_limit_tile_title,
                 onPressed: ref
-                    .read(invincibleModeProvider.notifier)
+                    .read(parentalControlsProvider.notifier)
                     .toggleIncludeAppsLaunchLimit,
               ),
 
               /// Apps active period
               DefaultListTile(
                 position: ItemPosition.mid,
-                enabled: !invincibleMode.isInvincibleModeOn ||
-                    !invincibleMode.includeAppsActivePeriod,
-                isSelected: invincibleMode.includeAppsActivePeriod,
+                enabled: !parentalControls.isInvincibleModeOn ||
+                    !parentalControls.includeAppsActivePeriod,
+                isSelected: parentalControls.includeAppsActivePeriod,
                 leadingIcon: FluentIcons.drink_coffee_20_regular,
                 titleText: context
                     .locale.invincible_mode_include_active_period_tile_title,
                 onPressed: ref
-                    .read(invincibleModeProvider.notifier)
+                    .read(parentalControlsProvider.notifier)
                     .toggleIncludeAppsActivePeriod,
               ),
             ],
@@ -151,28 +151,28 @@ class InvincibleModeSettings extends ConsumerWidget {
               /// Groups timer
               DefaultListTile(
                 position: ItemPosition.mid,
-                enabled: !invincibleMode.isInvincibleModeOn ||
-                    !invincibleMode.includeGroupsTimer,
-                isSelected: invincibleMode.includeGroupsTimer,
+                enabled: !parentalControls.isInvincibleModeOn ||
+                    !parentalControls.includeGroupsTimer,
+                isSelected: parentalControls.includeGroupsTimer,
                 leadingIcon: FluentIcons.timer_20_regular,
                 titleText:
                     context.locale.invincible_mode_include_timer_tile_title,
                 onPressed: ref
-                    .read(invincibleModeProvider.notifier)
+                    .read(parentalControlsProvider.notifier)
                     .toggleIncludeGroupsTimer,
               ),
 
               /// Groups active period
               DefaultListTile(
                 position: ItemPosition.mid,
-                enabled: !invincibleMode.isInvincibleModeOn ||
-                    !invincibleMode.includeGroupsActivePeriod,
-                isSelected: invincibleMode.includeGroupsActivePeriod,
+                enabled: !parentalControls.isInvincibleModeOn ||
+                    !parentalControls.includeGroupsActivePeriod,
+                isSelected: parentalControls.includeGroupsActivePeriod,
                 leadingIcon: FluentIcons.drink_coffee_20_regular,
                 titleText: context
                     .locale.invincible_mode_include_active_period_tile_title,
                 onPressed: ref
-                    .read(invincibleModeProvider.notifier)
+                    .read(parentalControlsProvider.notifier)
                     .toggleIncludeGroupsActivePeriod,
               ),
             ],
@@ -182,31 +182,31 @@ class InvincibleModeSettings extends ConsumerWidget {
         /// Shorts timer
         DefaultListTile(
           position: ItemPosition.mid,
-          enabled: !invincibleMode.isInvincibleModeOn ||
-              !invincibleMode.includeShortsTimer,
-          isSelected: invincibleMode.includeShortsTimer,
+          enabled: !parentalControls.isInvincibleModeOn ||
+              !parentalControls.includeShortsTimer,
+          isSelected: parentalControls.includeShortsTimer,
           leadingIcon: FluentIcons.video_clip_multiple_20_regular,
           titleText:
               context.locale.invincible_mode_include_shorts_timer_tile_title,
           subtitleText:
               context.locale.invincible_mode_include_shorts_timer_tile_subtitle,
           onPressed: ref
-              .read(invincibleModeProvider.notifier)
+              .read(parentalControlsProvider.notifier)
               .toggleIncludeShortsTimer,
         ).sliver,
 
         /// Bedtime schedule
         DefaultListTile(
           position: ItemPosition.bottom,
-          enabled: !invincibleMode.isInvincibleModeOn ||
-              !invincibleMode.includeBedtimeSchedule,
-          isSelected: invincibleMode.includeBedtimeSchedule,
+          enabled: !parentalControls.isInvincibleModeOn ||
+              !parentalControls.includeBedtimeSchedule,
+          isSelected: parentalControls.includeBedtimeSchedule,
           leadingIcon: FluentIcons.sleep_20_regular,
           titleText: context.locale.invincible_mode_include_bedtime_tile_title,
           subtitleText:
               context.locale.invincible_mode_include_bedtime_tile_subtitle,
           onPressed: ref
-              .read(invincibleModeProvider.notifier)
+              .read(parentalControlsProvider.notifier)
               .toggleIncludeBedtimeSchedule,
         ).sliver,
       ],

@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 
 class CustomizeGlanceCards extends StatelessWidget {
   const CustomizeGlanceCards({super.key});
@@ -18,7 +19,10 @@ class CustomizeGlanceCards extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(FluentIcons.table_edit_20_filled),
-      onPressed: () {},
+      onPressed: () => context.showSnackAlert(
+        "Glance tiles customization is coming soon...",
+        icon: FluentIcons.info_20_filled,
+      ),
     );
   }
 }

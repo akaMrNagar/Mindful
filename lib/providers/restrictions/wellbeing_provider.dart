@@ -79,6 +79,10 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
             : [...state.blockedWebsites.where((e) => e != websiteHost)],
       );
 
+  /// Adds a website host to the nsfw websites list.
+  void insertNsfwSite(String websiteHost) async => state =
+      state.copyWith(nsfwWebsites: [...state.nsfwWebsites, websiteHost]);
+
   /// Sets the allowed time limit for short content consumption.
   void setAllowedShortContentTime(int timeSec) =>
       state = state.copyWith(allowedShortsTimeSec: timeSec > 0 ? timeSec : -1);

@@ -18,11 +18,11 @@ import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/default_segmented_button.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/upcoming_notifications/app_notifications_tile.dart';
+import 'package:mindful/ui/screens/upcoming_notifications/grouped_notifications_list.dart';
+import 'package:mindful/ui/screens/upcoming_notifications/ungrouped_notifications_list.dart';
 
 class UpcomingNotificationsScreen extends ConsumerStatefulWidget {
   const UpcomingNotificationsScreen({super.key});
@@ -38,11 +38,9 @@ class _UpcomingStateNotificationsScreen
 
   @override
   Widget build(BuildContext context) {
-    final notificationMap =
-        ref.watch(upcomingNotificationsProvider(_shouldGroup));
-
-    /// {App Package : List of notifications}
-    final notificationsByApp = notificationMap.value?.entries.toList() ?? [];
+    final (isLoading, haveNotifications) = ref.watch(
+        upcomingNotificationsProvider
+            .select((v) => (!v.hasValue, v.value?.isNotEmpty ?? false)));
 
     return ScaffoldShell(
       items: [
@@ -52,7 +50,7 @@ class _UpcomingStateNotificationsScreen
           titleText: context.locale.notifications_tab_title,
           sliverBody: DefaultRefreshIndicator(
             onRefresh: ref
-                .read(upcomingNotificationsProvider(_shouldGroup).notifier)
+                .read(upcomingNotificationsProvider.notifier)
                 .refreshNotifications,
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
@@ -78,7 +76,7 @@ class _UpcomingStateNotificationsScreen
                 ).sliver,
 
                 /// Notifications
-                !notificationMap.hasValue
+                isLoading
 
                     /// Loading notifications
                     ? const SliverShimmerList(
@@ -86,9 +84,14 @@ class _UpcomingStateNotificationsScreen
                         includeTrailing: true,
                       )
 
-                    /// No notifications
-                    : notificationsByApp.isEmpty
-                        ? SizedBox(
+                    /// Have notifications
+                    : haveNotifications
+                        ? _shouldGroup
+                            ? const GroupedNotificationsList()
+                            : const UngroupedNotificationsList()
+
+                        /// No notifications
+                        : SizedBox(
                             height: MediaQuery.of(context).size.height * 0.5,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -105,19 +108,7 @@ class _UpcomingStateNotificationsScreen
                                 ),
                               ],
                             ),
-                          ).sliver
-
-                        /// Have notifications
-                        : SliverImplicitlyAnimatedList(
-                            items: notificationsByApp,
-                            keyBuilder: (entry) => entry.key,
-                            itemBuilder: (context, entry, position) =>
-                                AppsNotificationsTile(
-                              packageName: entry.key,
-                              notifications: entry.value,
-                              position: position,
-                            ),
-                          ),
+                          ).sliver,
 
                 /// padding
                 const SliverTabsBottomPadding(),

@@ -22,7 +22,7 @@ object AppsUsageHelper {
         context: Context,
         startMsEpoch: Long?,
         endMsEpoch: Long?,
-        onSuccess: (Any) -> Unit,
+        onSuccess: (MutableList<Map<String, Any>>) -> Unit,
     ) {
         if (startMsEpoch == null || endMsEpoch == null) {
             throw IllegalArgumentException("Either start or end time is null")
@@ -126,6 +126,12 @@ object AppsUsageHelper {
     }
 
 
+    /// Keys for the map
+    const val KEY_PACKAGE_NAME = "packageName"
+    const val KEY_SCREEN_TIME = "screenTime"
+    const val KEY_MOBILE_DATA = "mobileData"
+    const val KEY_WIFI_DATA = "wifiData"
+
     private fun getAppInfoMap(
         packageName: String,
         screenTime: Long,
@@ -133,10 +139,10 @@ object AppsUsageHelper {
         wifiData: Long,
     ): Map<String, Any> {
         return mapOf(
-            "packageName" to packageName,
-            "screenTime" to screenTime,
-            "mobileData" to mobileData,
-            "wifiData" to wifiData,
+            KEY_PACKAGE_NAME to packageName,
+            KEY_SCREEN_TIME to screenTime,
+            KEY_MOBILE_DATA to mobileData,
+            KEY_WIFI_DATA to wifiData,
         );
     }
 }

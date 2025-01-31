@@ -164,9 +164,6 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     return AnimatedBuilder(
       animation: scrollController,
       builder: (context, constraints) {
-        /// Moved here to fix glitch
-        final canGoBack = Navigator.of(context).canPop();
-
         // Calculate the scroll percentage
         final offset = scrollController.hasClients
             ? scrollController.offset.clamp(0.0, widget.appBarExpandedHeight)
@@ -182,6 +179,9 @@ class _ScaffoldShellState extends State<ScaffoldShell>
           Theme.of(context).colorScheme.secondaryContainer,
           percentage,
         );
+
+        /// Moved here to fix glitch
+        final canGoBack = Navigator.of(context).canPop();
 
         // Interpolate left padding for the AppBar's title
         final leftPadding = canGoBack ? 44 * percentage : 0.0;

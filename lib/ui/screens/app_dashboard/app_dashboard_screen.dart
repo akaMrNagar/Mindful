@@ -238,7 +238,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
             isGrayedOut: isPurged,
           ),
         ),
-        4.vBox,
+        6.vBox,
 
         /// App package
         Opacity(
@@ -247,7 +247,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
             widget.packageName,
             color: Theme.of(context).hintColor,
             height: 1,
-            fontSize: 8 * percentage,
+            fontSize: 7 * percentage,
           ),
         ),
 

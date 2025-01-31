@@ -89,9 +89,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             icon: FluentIcons.home_20_regular,
             filledIcon: FluentIcons.home_20_filled,
             sliverBody: const TabDashboard(),
-            titleBuilder: (v) => const GreetingsUsername(),
+            titleBuilder: (_) => const GreetingsUsername(),
             fab: const FocusNowFab(),
-            actions: const [CustomizeGlanceCards(), _SettingsButton()],
+            actions: const [
+              CustomizeGlanceCards(),
+              _SettingsButton(),
+            ],
           ),
           NavbarItem(
             titleText: context.locale.statistics_tab_title,

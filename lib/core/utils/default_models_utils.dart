@@ -11,15 +11,12 @@ final defaultMindfulSettingsModel = MindfulSettings(
   accentColor: AppConstants.defaultMaterialColor,
   username: AppConstants.defaultUsername,
   localeCode: AppConstants.defaultLocale,
-  dataResetTime: const TimeOfDayAdapter.zero(),
-  useBottomNavigation: false,
+  usageHistoryWeeks: 4,
   useAmoledDark: false,
   useDynamicColors: false,
   leftEmergencyPasses: 3,
   lastEmergencyUsed: DateTime(0),
   isOnboardingDone: false,
-  protectedAccess: false,
-  uninstallWindowTime: const TimeOfDayAdapter.zero(),
 );
 
 const defaultSharedUniqueDataModel = SharedUniqueData(
@@ -28,8 +25,10 @@ const defaultSharedUniqueDataModel = SharedUniqueData(
   notificationBatchedApps: [],
 );
 
-const defaultInvincibleModeModel = InvincibleMode(
+const defaultParentalControlsModel = ParentalControls(
   id: 0,
+  protectedAccess: false,
+  uninstallWindowTime: TimeOfDayAdapter.zero(),
   isInvincibleModeOn: false,
   includeAppsTimer: true,
   includeAppsLaunchLimit: false,
@@ -50,6 +49,7 @@ const defaultWellbeingModel = Wellbeing(
   blockRedditShorts: false,
   blockNsfwSites: false,
   blockedWebsites: [],
+  nsfwWebsites: [],
 );
 
 const defaultBedtimeScheduleModel = BedtimeSchedule(
@@ -71,8 +71,6 @@ const defaultAppRestrictionModel = AppRestriction(
   activePeriodEnd: TimeOfDayAdapter.zero(),
   periodDurationInMins: 0,
   canAccessInternet: true,
-  alertInterval: 15 * 60, // Every 15 minutes
-  alertByDialog: false,
 );
 
 final defaultFocusModeModel = FocusMode(

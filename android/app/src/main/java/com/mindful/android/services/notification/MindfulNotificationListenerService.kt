@@ -35,7 +35,6 @@ class MindfulNotificationListenerService : NotificationListenerService() {
 
     override fun onListenerConnected() {
         super.onListenerConnected()
-        mDistractingApps = SharedPrefsHelper.getSetNotificationBatchedApps(this, null)
         mIsListenerActive = true
     }
 
@@ -61,20 +60,11 @@ class MindfulNotificationListenerService : NotificationListenerService() {
 
             // Check if we can store it or not
             val notification = UpcomingNotification(sbn)
-            if (notification.titleText.isEmpty() || notification.contentText.isEmpty()) {
-                Log.d(
-                    TAG,
-                    "onNotificationPosted: Notification is not valid, so skipping it from storing."
-                )
-                SharedPrefsHelper.insertCrashLogToPrefs(
-                    this,
-                    Exception("Invalid notification from " + packageName + " with title: " + notification.titleText + " and content: " + notification.contentText)
-                )
-                return
+            if (notification.titleText.isNotBlank() || notification.contentText.isNotBlank()) {
+                SharedPrefsHelper.insertNotificationToPrefs(this, notification)
+                Log.d(TAG, "onNotificationPosted: Notification stored from package: $packageName")
             }
 
-            SharedPrefsHelper.insertNotificationToPrefs(this, notification)
-            Log.d(TAG, "onNotificationPosted: Notification stored from package: $packageName")
         } catch (e: Exception) {
             SharedPrefsHelper.insertCrashLogToPrefs(this, e)
             Log.e(TAG, "onNotificationPosted: Something went wrong for package: $packageName", e)
@@ -91,13 +81,5 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     override fun onBind(intent: Intent): IBinder? {
         return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder
         else super.onBind(intent)
-    }
-
-    override fun onDestroy() {
-        SharedPrefsHelper.insertCrashLogToPrefs(
-            this,
-            Throwable("MindfulNotificationListenerService is DESTROYED")
-        )
-        super.onDestroy()
     }
 }

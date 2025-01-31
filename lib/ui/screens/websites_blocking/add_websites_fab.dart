@@ -17,6 +17,7 @@ import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 
 class AddWebsitesFAB extends ConsumerWidget {
@@ -39,12 +40,24 @@ class AddWebsitesFAB extends ConsumerWidget {
   }
 
   void _onPressedFab(BuildContext context, WidgetRef ref) async {
+    bool isNsfw = false;
+
     final url = await showWebsiteInputDialog(
       context: context,
       heroTag: HeroTags.addDistractingSiteFABTag,
+      moreContent: StatefulBuilder(
+        builder: (context, setState) {
+          return DefaultListTile(
+            isSelected: isNsfw,
+            color: Colors.transparent,
+            titleText: context.locale.add_website_dialog_is_nsfw,
+            onPressed: () => setState(() => isNsfw = !isNsfw),
+          );
+        },
+      ),
     );
 
-    if (url == null || url.isEmpty) return;
+    if (url == null) return;
 
     final host =
         await MethodChannelService.instance.parseHostFromUrl(url.toLowerCase());
@@ -52,7 +65,8 @@ class AddWebsitesFAB extends ConsumerWidget {
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
       if (context.mounted &&
-          ref.read(wellBeingProvider).blockedWebsites.contains(host)) {
+          (ref.read(wellBeingProvider).blockedWebsites.contains(host) ||
+              ref.read(wellBeingProvider).nsfwWebsites.contains(host))) {
         context.showSnackAlert(
           context.locale.add_website_already_exist_snack_alert,
         );
@@ -60,7 +74,11 @@ class AddWebsitesFAB extends ConsumerWidget {
       }
 
       /// Add to blocked sites list
-      ref.read(wellBeingProvider.notifier).insertRemoveBlockedSite(host, true);
+      isNsfw
+          ? ref.read(wellBeingProvider.notifier).insertNsfwSite(host)
+          : ref
+              .read(wellBeingProvider.notifier)
+              .insertRemoveBlockedSite(host, true);
     } else if (context.mounted) {
       context.showSnackAlert(
         context.locale.add_website_invalid_url_snack_alert,

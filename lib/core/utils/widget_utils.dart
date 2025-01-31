@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/item_position.dart';
 
@@ -14,6 +13,10 @@ ItemPosition getItemPositionInList(int index, int length) => length <= 1
 /// Creates [BorderRadius] from the given [ItemPosition] for the group item
 BorderRadius getBorderRadiusFromPosition(ItemPosition position) =>
     switch (position) {
+      /// Nothing
+      ItemPosition.fit => BorderRadius.circular(0),
+
+      /// Default all sides
       ItemPosition.none => BorderRadius.circular(24),
 
       /// Top

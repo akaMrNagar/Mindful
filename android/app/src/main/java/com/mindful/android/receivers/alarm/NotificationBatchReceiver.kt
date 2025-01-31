@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -14,10 +15,12 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.mindful.android.MainActivity
 import com.mindful.android.R
+import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
+import com.mindful.android.workers.FlutterBgExecutionWorker.Companion.FLUTTER_TASK_ID
 import org.json.JSONArray
 
 class NotificationBatchReceiver : BroadcastReceiver() {
@@ -25,14 +28,20 @@ class NotificationBatchReceiver : BroadcastReceiver() {
         if (intent.action == ACTION_PUSH_BATCH) {
             WorkManager.getInstance(context).enqueueUniqueWork(
                 TAG, ExistingWorkPolicy.KEEP,
-                OneTimeWorkRequest.Builder(NotificationBatchWorker::class.java).build()
+                OneTimeWorkRequest.Builder(NotificationBatchWorker::class.java)
+                    .setInputData(
+                        Data.Builder().putString(
+                            ALARM_EXTRA_JSON,
+                            intent.extras?.getString(ALARM_EXTRA_JSON) ?: ""
+                        ).build()
+                    ).build()
             )
         }
     }
 
     class NotificationBatchWorker(
         private val context: Context,
-        params: WorkerParameters,
+        private val params: WorkerParameters,
     ) : Worker(context, params) {
         override fun doWork(): Result {
             try {
@@ -88,8 +97,10 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                 return Result.failure()
             } finally {
                 // schedule next possible task
-                val todMinutes = SharedPrefsHelper.getSetNotificationBatchSchedules(context, null)
-                scheduleNotificationBatchTask(context, todMinutes)
+                scheduleNotificationBatchTask(
+                    context,
+                    params.inputData.getString(ALARM_EXTRA_JSON) ?: "",
+                )
             }
         }
     }

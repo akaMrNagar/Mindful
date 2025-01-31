@@ -22,6 +22,7 @@ import 'package:mindful/ui/common/styled_text.dart';
 Future<String?> showWebsiteInputDialog({
   required BuildContext context,
   required Object heroTag,
+  required Widget moreContent,
 }) async {
   return await Navigator.of(context).push<String>(
     HeroPageRoute(
@@ -33,9 +34,11 @@ Future<String?> showWebsiteInputDialog({
         title: context.locale.add_website_dialog_title,
         fieldLabel: "Url",
         hintText: "example.com",
-        helperText: context.locale.add_website_dialog_info,
+        helperText:
+            "${context.locale.add_website_dialog_info}\n\n${context.locale.add_website_dialog_nsfw_warning}",
         negativeBtnLabel: context.locale.dialog_button_cancel,
         positiveBtnLabel: context.locale.add_website_dialog_button_block,
+        moreContent: moreContent,
       ),
     ),
   );
@@ -133,6 +136,7 @@ class _InputFieldDialog extends StatefulWidget {
     required this.positiveBtnLabel,
     required this.negativeBtnLabel,
     this.initialText = "",
+    this.moreContent,
   });
 
   final Object heroTag;
@@ -147,6 +151,7 @@ class _InputFieldDialog extends StatefulWidget {
 
   final String positiveBtnLabel;
   final String negativeBtnLabel;
+  final Widget? moreContent;
 
   @override
   State<_InputFieldDialog> createState() => _InputFieldDialogState();
@@ -195,23 +200,32 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
               content: SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: SingleChildScrollView(
-                  child: TextField(
-                    controller: _controller,
-                    focusNode: _focusNode,
-                    onTapOutside: (event) => FocusScope.of(context).unfocus(),
-                    onSubmitted: (txt) =>
-                        Navigator.maybePop(context, txt.trim()),
-                    keyboardType: widget.keyboardType,
-                    decoration: InputDecoration(
-                      label: Text(widget.fieldLabel),
-                      hintText: widget.hintText,
-                      helperText: widget.helperText,
-                      helperMaxLines: 10,
-                      prefixIcon: Icon(widget.fieldIcon),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(18),
+                  child: Column(
+                    children: [
+                      /// Input field
+                      TextField(
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
+                        onSubmitted: (txt) =>
+                            Navigator.maybePop(context, txt.trim()),
+                        keyboardType: widget.keyboardType,
+                        decoration: InputDecoration(
+                          label: Text(widget.fieldLabel),
+                          hintText: widget.hintText,
+                          helperText: widget.helperText,
+                          helperMaxLines: 10,
+                          prefixIcon: Icon(widget.fieldIcon),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
                       ),
-                    ),
+
+                      /// More actions widget
+                      widget.moreContent ?? const SizedBox.shrink()
+                    ],
                   ),
                 ),
               ),

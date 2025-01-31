@@ -13,11 +13,6 @@ data class UpcomingNotification(val sbn: StatusBarNotification) {
     val contentText: String
     val timeStamp: Long
 
-    /**
-     * Constructor that initializes the object using StatusBarNotification
-     *
-     * @param sbn Status Bar Notification object
-     */
     init {
         val extras = sbn.notification.extras
         this.packageName = sbn.packageName
