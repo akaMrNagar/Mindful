@@ -90,6 +90,10 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   void changeHomeTab(DefaultHomeTab tab) =>
       state = state.copyWith(defaultHomeTab: tab);
 
+  /// Changes the default usage history weeks.
+  void changeUsageHistoryWeeks(int weeks) =>
+      state = state.copyWith(usageHistoryWeeks: weeks);
+
   /// Update the emergency pass count if last used timestamp is before today midnight
   /// and returns it
   int getUpdatedEmergencyPassCount() {

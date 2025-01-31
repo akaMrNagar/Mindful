@@ -168,6 +168,48 @@ class TabGeneral extends ConsumerWidget {
           ],
         ).sliver,
 
+        /// Usage history in weeks
+        DefaultDropdownTile<int>(
+          position: ItemPosition.bottom,
+          titleText: context.locale.usage_history_tile_title,
+          dialogIcon: FluentIcons.history_20_filled,
+          value: mindfulSettings.usageHistoryWeeks,
+          onSelected: ref
+              .read(mindfulSettingsProvider.notifier)
+              .changeUsageHistoryWeeks,
+          items: [
+            // 15 days = 2 weeks
+            DefaultDropdownItem(
+              label: context.locale.usage_history_15_days,
+              value: 2,
+            ),
+
+            // 1 month = 4 weeks
+            DefaultDropdownItem(
+              label: context.locale.usage_history_1_month,
+              value: 4,
+            ),
+
+            // 3 months = 13 weeks
+            DefaultDropdownItem(
+              label: context.locale.usage_history_3_month,
+              value: 13,
+            ),
+
+            // 6 months = 26 weeks
+            DefaultDropdownItem(
+              label: context.locale.usage_history_6_month,
+              value: 26,
+            ),
+
+            // 1 year = 52 weeks
+            DefaultDropdownItem(
+              label: context.locale.usage_history_1_year,
+              value: 52,
+            ),
+          ],
+        ).sliver,
+
         /// Service
         ContentSectionHeader(title: context.locale.service_heading).sliver,
 
