@@ -11,6 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/ui/common/styled_text.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class ProgressPercentageIndicator extends StatelessWidget {
   const ProgressPercentageIndicator({
@@ -33,24 +34,27 @@ class ProgressPercentageIndicator extends StatelessWidget {
         ? colors[invertProgress ? 1 : 0]
         : colors[invertProgress ? 0 : 1];
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        StyledText(
-          "${progressPercentage.abs()}%",
-          fontSize: 13,
-          color: progressColor,
-          fontWeight: FontWeight.bold,
-        ),
-        Icon(
-          progressPercentage.isNegative
-              ? FluentIcons.caret_down_20_filled
-              : FluentIcons.caret_up_20_filled,
-          size: 20,
-          color: progressColor,
-        )
-      ],
+    return Skeleton.replace(
+      replacement: const Bone.icon(),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          StyledText(
+            "${progressPercentage.abs()}%",
+            fontSize: 13,
+            color: progressColor,
+            fontWeight: FontWeight.bold,
+          ),
+          Icon(
+            progressPercentage.isNegative
+                ? FluentIcons.caret_down_20_filled
+                : FluentIcons.caret_up_20_filled,
+            size: 20,
+            color: progressColor,
+          )
+        ],
+      ),
     );
   }
 }

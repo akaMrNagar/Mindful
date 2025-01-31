@@ -109,30 +109,6 @@ Future<int?> showRestrictionGroupTimerPicker({
   );
 }
 
-/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
-///
-/// Returns time in seconds and take initial time in seconds
-Future<int?> showAppAlertIntervalPicker({
-  required BuildContext context,
-  required Object heroTag,
-  required int initialTime,
-}) async {
-  return await Navigator.of(context).push<int?>(
-    HeroPageRoute(
-      builder: (context) => _DurationPickerDialog(
-        title: context.locale.app_alert_interval_tile_title,
-        icon: const Icon(FluentIcons.alert_urgent_20_filled),
-        heroTag: heroTag,
-        initialTimeInSec: initialTime,
-        info: context.locale.app_alert_interval_picker_dialog_info,
-        positiveButtonLabel: context.locale.dialog_button_set,
-        showActionButton: false,
-        minuteInterval: 5,
-      ),
-    ),
-  );
-}
-
 class _DurationPickerDialog extends StatefulWidget {
   const _DurationPickerDialog({
     required this.icon,
@@ -141,9 +117,12 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.heroTag,
     required this.info,
     required this.positiveButtonLabel,
-    this.showActionButton = true,
-    this.minuteInterval = 1,
     this.actionButtonLabel,
+    // ignore: unused_element
+    this.showActionButton = true,
+
+    // ignore: unused_element
+    this.minuteInterval = 1,
   });
 
   final Widget icon;
