@@ -128,12 +128,21 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Insert or Update list of multiple [AppUsageTableCompanion] objects to/in the database.
   Future<void> insertBatchAppUsages(
-          List<AppUsageTableCompanion> usages) async =>
+    List<AppUsageTableCompanion> usages,
+  ) async =>
       batch(
         (batch) => batch.insertAll(
           appUsageTable,
           usages,
           mode: InsertMode.insertOrReplace,
+        ),
+      );
+
+  /// Removes app usages from the database which have date before the provided date.
+  Future<void> removeBatchAppUsagesBefore(DateTime date) async => batch(
+        (batch) => batch.deleteWhere(
+          appUsageTable,
+          (tbl) => tbl.date.isSmallerThanValue(date),
         ),
       );
 

@@ -22,6 +22,7 @@ import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
+import 'package:mindful/ui/common/debug_drift_db_button.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/home/bedtime/tab_bedtime.dart';
@@ -91,7 +92,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             sliverBody: const TabDashboard(),
             titleBuilder: (v) => const GreetingsUsername(),
             fab: const FocusNowFab(),
-            actions: const [CustomizeGlanceCards(), _SettingsButton()],
+            actions: const [
+              CustomizeGlanceCards(),
+              _SettingsButton(),
+            ],
           ),
           NavbarItem(
             titleText: context.locale.statistics_tab_title,

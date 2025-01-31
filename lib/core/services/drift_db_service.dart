@@ -71,8 +71,8 @@ class DriftDbService {
 
   /// Setup before opening db
   static void _setup(Database db) {
-    /// Retry until 3 seconds then throw db lock error
-    db.execute('PRAGMA busy_timeout = 3000;');
+    /// Retry until 5 seconds then throw db lock error
+    db.execute('PRAGMA busy_timeout = 5000;');
 
     /// Enable WAL mode to allow multiple reader/writers (1000 pages = 4MB)
     // db.execute('PRAGMA journal_mode = WAL;');

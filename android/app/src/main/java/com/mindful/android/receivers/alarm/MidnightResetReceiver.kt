@@ -15,6 +15,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -26,13 +27,28 @@ import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.Utils
+import com.mindful.android.workers.FlutterBgExecutionWorker
+import com.mindful.android.workers.FlutterBgExecutionWorker.Companion.FLUTTER_TASK_ID
 
 class MidnightResetReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_START_MIDNIGHT_RESET) {
+            /// Enqueue midnight worker for services
             WorkManager.getInstance(context).enqueueUniqueWork(
                 TAG, ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequest.Builder(MidnightResetWorker::class.java).build()
+            )
+
+            /// Enqueue flutter bg worker to backup apps usage
+            WorkManager.getInstance(context).enqueueUniqueWork(
+                "Mindful.MidnightResetReceiver",
+                ExistingWorkPolicy.KEEP,
+                OneTimeWorkRequest
+                    .Builder(FlutterBgExecutionWorker::class.java)
+                    .setInputData(
+                        Data.Builder().putString(FLUTTER_TASK_ID, "onMidnightReset")
+                            .build()
+                    ).build()
             )
         }
     }
@@ -72,8 +88,8 @@ class MidnightResetReceiver : BroadcastReceiver() {
                 return Result.failure()
             } finally {
                 // Unbind service and schedule task for the next day
-                scheduleMidnightResetTask(context, false)
                 mTrackerServiceConn.unBindService()
+                scheduleMidnightResetTask(context, false)
             }
         }
     }

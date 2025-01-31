@@ -10,11 +10,13 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_routes.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_list.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -27,8 +29,11 @@ import 'package:mindful/ui/controllers/tab_controller_provider.dart';
 import 'package:mindful/ui/screens/home/dashboard/glance_cards/focus_daily_glance.dart';
 import 'package:mindful/ui/screens/home/dashboard/glance_cards/screen_time_glance.dart';
 import 'package:mindful/ui/screens/home/dashboard/glance_cards_grid.dart';
+import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+
+final _isLoadingProvider = StateProvider<bool>((ref) => true);
 
 class TabDashboard extends ConsumerWidget {
   const TabDashboard({super.key});
@@ -36,11 +41,12 @@ class TabDashboard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultRefreshIndicator(
-      onRefresh: ref.read(todaysAppsUsageProvider.notifier).refreshTodaysUsage,
+      onRefresh: () async => ref
+          .read(todaysAppsUsageProvider.notifier)
+          .refreshTodaysUsage(resetState: true),
       child: Skeletonizer.zone(
-        enabled: false,
-        // enabled: ref.read(appsProvider).isLoading,
-        // enableSwitchAnimation: true,
+        enabled: ref.watch(todaysAppsUsageProvider).isLoading,
+        enableSwitchAnimation: true,
         ignorePointers: false,
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -131,7 +137,13 @@ class TabDashboard extends ConsumerWidget {
                   onPressed: () => Navigator.of(context)
                       .pushNamed(AppRoutes.websitesBlockingScreen),
                 ),
-              ],
+              ].animateListWhen(
+                when: ref.watch(_isLoadingProvider),
+                onComplete: (_) =>
+                    ref.read(_isLoadingProvider.notifier).update((_) => false),
+                effects: DefaultEffects.transitionIn,
+                interval: 100.ms,
+              ),
             ),
 
             const SliverTabsBottomPadding(),

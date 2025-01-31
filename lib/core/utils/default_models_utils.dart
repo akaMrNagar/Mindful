@@ -11,7 +11,7 @@ final defaultMindfulSettingsModel = MindfulSettings(
   accentColor: AppConstants.defaultMaterialColor,
   username: AppConstants.defaultUsername,
   localeCode: AppConstants.defaultLocale,
-  useBottomNavigation: false,
+  usageHistoryWeeks: 4,
   useAmoledDark: false,
   useDynamicColors: false,
   leftEmergencyPasses: 3,

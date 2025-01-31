@@ -168,16 +168,6 @@ class TabGeneral extends ConsumerWidget {
           ],
         ).sliver,
 
-        /// Bottom navigation
-        DefaultListTile(
-          position: ItemPosition.bottom,
-          switchValue: mindfulSettings.useBottomNavigation,
-          titleText: context.locale.bottom_navigation_tile_title,
-          subtitleText: context.locale.bottom_navigation_tile_subtitle,
-          onPressed:
-              ref.read(mindfulSettingsProvider.notifier).switchBottomNavigation,
-        ).sliver,
-
         /// Service
         ContentSectionHeader(title: context.locale.service_heading).sliver,
 

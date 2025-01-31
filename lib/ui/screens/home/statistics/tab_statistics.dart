@@ -16,6 +16,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/models/usage_filter_model.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/providers/usage/weekly_device_usage_provider.dart';
@@ -60,7 +61,9 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
     return DefaultRefreshIndicator(
       onRefresh: () async {
         setState(() => _isLoading = true);
-        await ref.read(appsInfoProvider.notifier).refreshAppsInfo();
+
+        /// Refresh apps info and todays usage
+        ref.read(appsInfoProvider.notifier).refreshAppsInfo();
         await ref.read(todaysAppsUsageProvider.notifier).refreshTodaysUsage();
 
         if (!mounted) return;
@@ -71,7 +74,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
         slivers: [
           /// Usage type selector and usage info card
           SliverSkeletonizer.zone(
-            enabled: filteredApps.isLoading || _isLoading,
+            enabled: _isLoading,
             child: SliverUsageCards(
               usageType: _filter.usageType,
               usage: weeklyUsages[_filter.selectedDay] ?? const UsageModel(),
@@ -87,7 +90,9 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           SliverUsageChartPanel(
             selectedDay: _filter.selectedDay,
             usageType: _filter.usageType,
-            barChartData: weeklyUsages,
+            barChartData: _isLoading
+                ? generateEmptyWeekUsage(_filter.selectedDay)
+                : weeklyUsages,
             onDayOfWeekChanged: (day) =>
                 setState(() => _filter = _filter.copyWith(selectedDay: day)),
             onWeekChanged: (day) => setState(
@@ -104,8 +109,9 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             duration: AppConstants.defaultAnimDuration,
             switchInCurve: AppConstants.defaultCurve,
             switchOutCurve: AppConstants.defaultCurve.flipped,
-            child: filteredApps.hasValue && !_isLoading
-                ? SliverImplicitlyAnimatedList<String>(
+            child: filteredApps.isLoading
+                ? const SliverShimmerList(includeSubtitle: true)
+                : SliverImplicitlyAnimatedList<String>(
                     items: filteredApps.value ?? [],
                     animationDurationMultiplier: 1.5,
                     keyBuilder: (item) => item,
@@ -116,8 +122,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                       selectedDay: _filter.selectedDay,
                       position: itemPosition,
                     ),
-                  )
-                : const SliverShimmerList(includeSubtitle: true),
+                  ),
           ),
 
           20.vSliverBox,

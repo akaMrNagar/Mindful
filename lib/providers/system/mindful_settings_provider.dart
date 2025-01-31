@@ -91,10 +91,6 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
   void changeHomeTab(DefaultHomeTab tab) =>
       state = state.copyWith(defaultHomeTab: tab);
 
-  /// Changes navigation bar from side to bottom
-  void switchBottomNavigation() =>
-      state = state.copyWith(useBottomNavigation: !state.useBottomNavigation);
-
   /// Update the emergency pass count if last used timestamp is before today midnight
   /// and returns it
   int getUpdatedEmergencyPassCount() {
