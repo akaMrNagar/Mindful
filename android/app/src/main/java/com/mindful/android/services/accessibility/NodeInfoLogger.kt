@@ -16,7 +16,7 @@ object NodeInfoLogger {
      * @param parentNode The root node from which to start logging. This should be the
      * top-level accessibility node to explore its hierarchy.
      */
-    private fun logNodeInfoRecursively(parentNode: AccessibilityNodeInfo, level: Int) {
+    fun logNodeInfoRecursively(parentNode: AccessibilityNodeInfo, level: Int) {
         var currentLevel = level
         logNode(parentNode, currentLevel)
         currentLevel++

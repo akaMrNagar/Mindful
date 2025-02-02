@@ -24,10 +24,6 @@ object AppConstants {
     const val INTENT_EXTRA_INITIAL_ROUTE: String = "com.mindful.android.initialRoute"
     const val INTENT_EXTRA_IS_SELF_RESTART: String = "com.mindful.android.isSelfRestart"
     const val INTENT_EXTRA_PACKAGE_NAME: String = "com.mindful.android.launchedAppPackageName"
-    const val INTENT_EXTRA_DIALOG_INFO: String = "com.mindful.android.dialogInformation"
-    const val INTENT_EXTRA_MAX_PROGRESS: String = "com.mindful.android.maxProgress"
-    const val INTENT_EXTRA_PROGRESS: String = "com.mindful.android.progress"
-
 
     // Notification IDs
     const val TRACKER_SERVICE_NOTIFICATION_ID: Int = 101
@@ -38,7 +34,9 @@ object AppConstants {
     const val BEDTIME_ROUTINE_NOTIFICATION_ID: Int = 106
     const val NOTIFICATION_BATCH_SCHEDULE_NOTIFICATION_ID: Int = 107
 
-    // App package names
+    const val SETTINGS_PACKAGE: String = "com.android.settings"
+
+    // Platforms package names
     const val INSTAGRAM_PACKAGE: String = "com.instagram.android"
     const val YOUTUBE_PACKAGE: String = "com.google.android.youtube"
     const val YOUTUBE_CLIENT_PACKAGE_SUFFIX: String = ".android.youtube"
