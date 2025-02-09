@@ -256,6 +256,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
 
     if (!confirm) return;
 
+    _isPoppingTriggered = true;
     await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
           isTheSessionSuccessful: !isFinite,
           isFiniteSession: isFinite,

@@ -12,8 +12,10 @@
 package com.mindful.android.services.timer
 
 import android.app.Service
+import android.content.ComponentName
 import android.content.Intent
 import android.os.IBinder
+import android.service.quicksettings.TileService
 import android.util.Log
 import com.mindful.android.R
 import com.mindful.android.generics.SafeServiceConnection
@@ -22,6 +24,7 @@ import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.FocusSession
+import com.mindful.android.services.quickTiles.FocusQuickTileService
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID
 import com.mindful.android.utils.Utils
@@ -82,6 +85,12 @@ class FocusSessionService : Service() {
             if (focusSession.toggleDnd) NotificationHelper.toggleDnd(this, true)
 
             mNotificationTimer.startTimer()
+
+            /// Update focus quick tile
+            TileService.requestListeningState(
+                this,
+                ComponentName(this, FocusQuickTileService::class.java)
+            )
             Log.d(TAG, "startFocusSession: FOCUS service started successfully")
         } catch (e: Exception) {
             Log.d(TAG, "startFocusSession: Failed to start FOCUS service", e)
@@ -160,6 +169,12 @@ class FocusSessionService : Service() {
         mTrackerServiceConn.unBindService()
         stopForeground(STOP_FOREGROUND_REMOVE)
         Log.d(TAG, "onDestroy: FOCUS service destroyed successfully")
+
+        /// Update focus quick tile
+        TileService.requestListeningState(
+            this,
+            ComponentName(this, FocusQuickTileService::class.java)
+        )
         super.onDestroy()
     }
 

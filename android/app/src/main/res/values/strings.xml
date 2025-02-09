@@ -27,6 +27,7 @@
     <string name="toast_blocked_content">Content blocked! going back</string>
     <string name="toast_redirecting">Filtering search results</string>
     <string name="service_running_notification_title">Mindful is running</string>
+    <string name="focus_quick_tile_status_active">Active</string>
 
     <!-- usage widget values = usage home widget for android -->
     <string name="usage_widget_description">Get a daily view of your screen and data usage</string>

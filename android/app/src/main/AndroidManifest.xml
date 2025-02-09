@@ -37,6 +37,10 @@
     <uses-permission
         android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.BIND_QUICK_SETTINGS_TILE"
+        tools:ignore="ProtectedPermissions" />
+
 
     <application
         android:name="${applicationName}"
@@ -76,7 +80,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="com.mindful.android"  android:host="open"/>
+                <data
+                    android:host="open"
+                    android:scheme="com.mindful.android" />
             </intent-filter>
 
             <!-- Default -->
@@ -84,6 +90,12 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Focus quick tile-->
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+
         </activity>
 
         <!-- _________________________________________________________________________________ -->
@@ -140,6 +152,34 @@
         <!-- ________________________________ SERVICES _______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <service
+            android:name=".services.quickTiles.FocusQuickTileService"
+            android:description="@string/app_paused_restriction_focus_mode"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@drawable/ic_notification"
+            android:label="@string/app_paused_restriction_focus_mode"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
+        <service
+            android:name=".services.accessibility.MindfulAccessibilityService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility_service_config" />
+        </service>
+        <service
             android:name=".services.tracking.MindfulTrackerService"
             android:enabled="true"
             android:exported="false"
@@ -154,19 +194,6 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
-        <service
-            android:name=".services.accessibility.MindfulAccessibilityService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
-        </service>
         <service
             android:name=".services.vpn.MindfulVpnService"
             android:enabled="true"
