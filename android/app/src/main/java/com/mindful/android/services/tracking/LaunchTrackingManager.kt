@@ -57,6 +57,7 @@ class LaunchTrackingManager(
 
     @MainThread
     private fun onDeviceUnlocked() {
+        // TODO: Use accessibility for tracking if permission is granted to improve battery health.
         if (isManualTrackingOn) {
             // First cancel earlier task if already not cancelled
             trackingExecutor?.shutdownNow()

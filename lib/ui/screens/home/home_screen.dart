@@ -15,10 +15,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
-import 'package:mindful/core/services/routing_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
@@ -35,7 +34,12 @@ import 'package:mindful/ui/screens/home/notifications/tab_notifications.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({
+    super.key,
+    this.initialTabIndex,
+  });
+
+  final int? initialTabIndex;
 
   @override
   ConsumerState<HomeScreen> createState() => _HomeScreenState();
@@ -46,10 +50,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     _showDonationDialog();
-
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => RoutingService.instance.init(),
-    );
   }
 
   void _showDonationDialog() async {
@@ -82,7 +82,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: ScaffoldShell(
-        initialTab: homeTab.index,
+        initialTab: widget.initialTabIndex ?? homeTab.index,
+        canGoBack: false,
         items: [
           NavbarItem(
             titleText: context.locale.dashboard_tab_title,
@@ -131,7 +132,7 @@ class _SettingsButton extends StatelessWidget {
       child: IconButton(
         icon: const Icon(FluentIcons.settings_20_filled),
         onPressed: () =>
-            Navigator.of(context).pushNamed(AppRoutes.settingsScreen),
+            Navigator.of(context).pushNamed(AppRoutes.settingsPath),
       ),
     );
   }

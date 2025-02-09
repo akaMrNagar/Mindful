@@ -11,7 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/focus/focus_mode_provider.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
@@ -27,7 +27,7 @@ class SliverActiveSessionAlert extends ConsumerWidget {
         ref.watch(focusModeProvider.select((v) => v.activeSession));
 
     return SliverPrimaryActionContainer(
-      isVisible: activeSession != null,
+      isVisible: activeSession.value != null,
       icon: FluentIcons.timer_20_regular,
       margin: const EdgeInsets.symmetric(vertical: 4),
       title: context.locale.active_session_card_title,
@@ -35,12 +35,9 @@ class SliverActiveSessionAlert extends ConsumerWidget {
       positiveBtn: FilledButton(
         child: Text(context.locale.active_session_card_view_button),
         onPressed: () {
-          if (activeSession == null) return;
+          if (activeSession.value == null) return;
 
-          Navigator.of(context).pushNamed(
-            AppRoutes.activeSessionScreen,
-            arguments: activeSession,
-          );
+          Navigator.of(context).pushNamed(AppRoutes.activeSessionPath);
         },
       ),
     );

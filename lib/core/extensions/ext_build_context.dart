@@ -21,6 +21,63 @@ extension ExtBuildContext on BuildContext {
   /// Which can be used to access Locale Strings
   AppLocalizations get locale => AppLocalizations.of(this);
 
+  /// Either go back if [Navigator] can pop or push replace [replacingRoute]
+  Future<bool> popOrPushReplace<T>(String replacingRoute) async {
+    try {
+      if (Navigator.of(this).canPop()) {
+        return await Navigator.of(this).maybePop();
+      } else {
+        await Navigator.of(this).pushReplacementNamed(replacingRoute);
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Resolve the parameter from the modal route settings arguments
+  /// and returns the nullable generic of type [T].
+  T? resolveParam<T>(String key) {
+    try {
+      final args = ModalRoute.of(this)?.settings.arguments;
+      if (args is Map) {
+        final value = args[key];
+
+        if (value != null) {
+          if (T == int) {
+            return int.tryParse(value) as T?;
+          } else if (T == double) {
+            return double.tryParse(value) as T?;
+          } else if (T == bool) {
+            return (value.toLowerCase() == 'true') as T?;
+          } else if (T == DateTime) {
+            return DateTime.tryParse(value) as T?;
+          } else if (T == String) {
+            return value as T?;
+          }
+        }
+      }
+    }
+    // ignore: empty_catches
+    catch (e) {}
+    return null;
+  }
+
+  /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
+  void showSnackAlert(
+    String info, {
+    IconData icon = FluentIcons.warning_20_filled,
+  }) {
+    final bgColor = Theme.of(this).colorScheme.primary;
+    final fgColor = Theme.of(this).colorScheme.onPrimary;
+    _showSnackBar(
+      icon: icon,
+      info: info,
+      fgColor: fgColor,
+      bgColor: bgColor,
+    );
+  }
+
   void _showSnackBar({
     required IconData icon,
     required String info,
@@ -32,6 +89,7 @@ extension ExtBuildContext on BuildContext {
         ScaffoldMessenger.of(this).clearSnackBars();
         ScaffoldMessenger.of(this).showSnackBar(
           SnackBar(
+            key: UniqueKey(),
             dismissDirection: DismissDirection.horizontal,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
@@ -63,20 +121,5 @@ extension ExtBuildContext on BuildContext {
     } catch (e) {
       debugPrint("ExtBuildContext._showSnackBar(): Exception $e");
     }
-  }
-
-  /// Shows information snackbar only if the widget is mounted so it is safe to use in async method
-  void showSnackAlert(
-    String info, {
-    IconData icon = FluentIcons.warning_20_filled,
-  }) {
-    final bgColor = Theme.of(this).colorScheme.primary;
-    final fgColor = Theme.of(this).colorScheme.onPrimary;
-    _showSnackBar(
-      icon: icon,
-      info: info,
-      fgColor: fgColor,
-      bgColor: bgColor,
-    );
   }
 }

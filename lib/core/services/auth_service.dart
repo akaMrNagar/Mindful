@@ -22,14 +22,20 @@ class AuthService {
   /// Auth instance
   final _auth = LocalAuthentication();
 
-  /// Returns TRUE if user have setup any type of biometrics and verified successfully
-  Future<bool> authenticate() async {
+  /// Returns `TRUE` if user have setup any type of biometrics and verified successfully
+  /// otherwise `FALSE`.
+  ///
+  /// But if user does not have any biometrics available it returns `NULL`
+  Future<bool?> authenticate() async {
     try {
       final List<BiometricType> availableBiometrics =
           await _auth.getAvailableBiometrics();
 
-      return availableBiometrics.isNotEmpty &&
-          await _auth.authenticate(localizedReason: "Mindful");
+      /// Return null if no available biometrics
+      if (availableBiometrics.isEmpty) return null;
+
+      /// Return status
+      return await _auth.authenticate(localizedReason: "Mindful");
     } catch (e) {
       debugPrint("Failed to authenticate : ${e.toString()}");
       return false;

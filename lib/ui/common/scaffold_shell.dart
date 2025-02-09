@@ -13,9 +13,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/controllers/tab_controller_provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 @immutable
 class NavbarItem {
@@ -45,13 +48,15 @@ class NavbarItem {
 class ScaffoldShell extends StatefulWidget {
   const ScaffoldShell({
     super.key,
-    this.initialTab = 0,
+    this.initialTab,
+    this.canGoBack = true,
     this.appBarExpandedHeight = 200,
     this.bodyPadding = const EdgeInsets.symmetric(horizontal: 12),
     required this.items,
   });
 
-  final int initialTab;
+  final int? initialTab;
+  final bool canGoBack;
   final double appBarExpandedHeight;
   final EdgeInsets bodyPadding;
   final List<NavbarItem> items;
@@ -67,16 +72,19 @@ class _ScaffoldShellState extends State<ScaffoldShell>
   late final TabController _tabController;
 
   late final bool _haveMultiTabs = widget.items.length > 1;
-  late int _selectedTabIndex = widget.initialTab;
+  int _selectedTabIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
+    /// Resolve initial tab index
+    _selectedTabIndex = (widget.initialTab ?? 0) % widget.items.length;
+
     /// Handle tab controller
     _tabController = TabController(
       length: widget.items.length,
-      initialIndex: widget.initialTab,
+      initialIndex: _selectedTabIndex,
       vsync: this,
     );
 
@@ -160,7 +168,6 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     bool innerBoxIsScrolled,
   ) {
     final navItem = widget.items[_selectedTabIndex];
-
     return AnimatedBuilder(
       animation: scrollController,
       builder: (context, constraints) {
@@ -180,11 +187,8 @@ class _ScaffoldShellState extends State<ScaffoldShell>
           percentage,
         );
 
-        /// Moved here to fix glitch
-        final canGoBack = Navigator.of(context).canPop();
-
         // Interpolate left padding for the AppBar's title
-        final leftPadding = canGoBack ? 44 * percentage : 0.0;
+        final leftPadding = widget.canGoBack ? 44 * percentage : 0.0;
 
         return SliverAppBar(
           expandedHeight: widget.appBarExpandedHeight,
@@ -202,13 +206,13 @@ class _ScaffoldShellState extends State<ScaffoldShell>
             ...navItem.actions ?? [],
             widget.bodyPadding.right.hBox,
           ],
-          leading: canGoBack
+          leading: widget.canGoBack
               ? IconButton(
                   icon: Icon(
                     FluentIcons.chevron_left_24_filled,
                     color: Theme.of(context).colorScheme.onSecondaryContainer,
                   ),
-                  onPressed: () => Navigator.of(context).maybePop(),
+                  onPressed: () => context.popOrPushReplace(AppRoutes.homePath),
                 )
               : null,
           flexibleSpace: FlexibleSpaceBar(
@@ -274,12 +278,14 @@ class AppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StyledText(
-      titleText,
-      fontSize: 24,
-      maxLines: 2,
-      fontWeight: FontWeight.w600,
-      overflow: TextOverflow.ellipsis,
+    return Skeleton.leaf(
+      child: StyledText(
+        titleText.isEmpty ? "Title" : titleText,
+        fontSize: 24,
+        maxLines: 2,
+        fontWeight: FontWeight.w600,
+        overflow: TextOverflow.ellipsis,
+      ),
     );
   }
 }

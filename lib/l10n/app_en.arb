@@ -219,7 +219,9 @@
     "invincible_mode_include_bedtime_tile_subtitle": "Prevents changes during the active bedtime schedule.",
     "protected_access_tile_title": "Protected access",
     "protected_access_tile_subtitle": "Protect Mindful with your device lock.",
-    "protected_access_no_lock_snack_alert": "Please set up a PIN, pattern, or lock on your device first to enable this feature.",
+    "protected_access_no_lock_snack_alert": "Please set up a biometric lock on your device first to enable this feature.",
+    "protected_access_removed_lock_snack_alert": "Your device lock has been removed. To continue, please set up a new lock.",
+    "protected_access_failed_lock_snack_alert": "Authentication failed. You need to verify your device lock to proceed.",
     "tamper_protection_tile_title": "Tamper protection",
     "tamper_protection_tile_subtitle": "Prevent uninstalling and force stopping the app.",
     "uninstall_window_tile_title": "Uninstall window",
@@ -357,6 +359,7 @@
     "focus_session_state_failed": "Failed",
     "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
     "active_session_tab_title": "Session",
+    "active_session_none_warning": "No active session found. Returning to the home screen.",
     "active_session_dialog_button_keep_pushing": "Keep pushing",
     "active_session_finish_dialog_title": "Finish",
     "active_session_finish_dialog_info": "Stay strong! You're building valuable focus. Are you sure you want to end this focus session? Every extra moment counts toward your goals.",
@@ -412,6 +415,7 @@
         }
     },
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
+    "app_info_none_warning": "Couldn't find the app for the given package. Returning to the home screen.",
     "emergency_fab_button": "Emergency",
     "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",
     "@emergency_dialog_info": {

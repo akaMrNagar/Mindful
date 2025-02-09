@@ -65,11 +65,13 @@ class RestrictionManager(
 
     fun updateFocusedApps(apps: HashSet<String>?) {
         focusedApps = apps ?: setOf()
+        if(apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateFocusedApps: Focus apps updated: $focusedApps")
     }
 
     fun updateBedtimeApps(apps: HashSet<String>?) {
         bedtimeApps = apps ?: setOf()
+        if(apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateBedtimeApps: Bedtime apps updated: $bedtimeApps")
     }
 

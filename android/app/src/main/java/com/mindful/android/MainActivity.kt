@@ -64,16 +64,12 @@ class MainActivity : FlutterFragmentActivity() {
         )
         methodChannel.setMethodCallHandler(fgMethodCallHandler)
 
-        // Get and set intent data
-        val intentData: MutableMap<String, Any?> = HashMap()
-        intentData["route"] = intent.getStringExtra(AppConstants.INTENT_EXTRA_INITIAL_ROUTE)
-        intentData["extraPackageName"] =
-            intent.getStringExtra(AppConstants.INTENT_EXTRA_PACKAGE_NAME)
-        intentData["extraIsSelfStart"] =
+        // Get the self start status
+        val isSelfStart =
             intent.getBooleanExtra(AppConstants.INTENT_EXTRA_IS_SELF_RESTART, false)
 
-        // Update intent data on flutter side
-        methodChannel.invokeMethod("updateIntentData", intentData)
+        // Update self start status on flutter side
+        methodChannel.invokeMethod("updateSelfStartStatus", isSelfStart)
         super.configureFlutterEngine(flutterEngine)
     }
 

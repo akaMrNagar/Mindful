@@ -38,14 +38,26 @@ class ParentalControlsScreen extends ConsumerWidget {
   ) async {
     try {
       if (!isAccessProtected) {
-        final canEnable = await AuthService.instance.authenticate();
-        if (!canEnable) {
-          /// Show alert for no lock
-          if (context.mounted) {
-            context.showSnackAlert(
-              context.locale.protected_access_no_lock_snack_alert,
-            );
-          }
+        final isAuthenticated = await AuthService.instance.authenticate();
+
+        /// Return if not mounted
+        if (!context.mounted) return;
+
+        /// If no locks available
+        if (isAuthenticated == null) {
+          context.showSnackAlert(
+            context.locale.protected_access_no_lock_snack_alert,
+            icon: FluentIcons.fingerprint_20_filled,
+          );
+          return;
+        }
+
+        /// If aborted the auth
+        if (!isAuthenticated) {
+          context.showSnackAlert(
+            context.locale.protected_access_failed_lock_snack_alert,
+            icon: FluentIcons.fingerprint_20_filled,
+          );
 
           return;
         }

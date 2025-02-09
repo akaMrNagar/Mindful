@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 
 /// A model containing both [FocusMode] and [FocusProfile] along with nullable active [FocusSession].
@@ -16,13 +17,13 @@ import 'package:mindful/core/database/app_database.dart';
 class FocusModeModel {
   final FocusMode focusMode;
   final FocusProfile focusProfile;
-  final FocusSession? activeSession;
+  final AsyncValue<FocusSession?> activeSession;
   final int elapsedTimeSec;
 
   const FocusModeModel({
     required this.focusMode,
     required this.focusProfile,
-    this.activeSession,
+    this.activeSession = const AsyncLoading(),
     this.elapsedTimeSec = 0,
   });
 
@@ -31,7 +32,7 @@ class FocusModeModel {
       focusMode: focusMode,
       focusProfile: focusProfile,
       elapsedTimeSec: elapsedTimeSec,
-      activeSession: null,
+      activeSession: const AsyncData(null),
     );
   }
 
@@ -45,7 +46,7 @@ class FocusModeModel {
       focusMode: focusMode ?? this.focusMode,
       focusProfile: focusProfile ?? this.focusProfile,
       elapsedTimeSec: elapsedTimeSec ?? this.elapsedTimeSec,
-      activeSession: activeSession ?? this.activeSession,
+      activeSession: AsyncData(activeSession ?? this.activeSession.value),
     );
   }
 }

@@ -27,7 +27,7 @@ class DeviceLockUnlockReceiver(
     private val onDeviceLockChanged: (isUnLocked: Boolean) -> Unit,
 ) : BroadcastReceiver() {
     companion object {
-        private val TAG = "Mindful.DeviceLockUnlockReceiver"
+        private const val TAG = "Mindful.DeviceLockUnlockReceiver"
     }
 
     override fun onReceive(context: Context, intent: Intent) {

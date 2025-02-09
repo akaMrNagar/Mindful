@@ -12,12 +12,14 @@ import 'dart:math';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/services/auth_service.dart';
+import 'package:mindful/config/navigation/navigation_service.dart';
 import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/providers/system/parental_controls_provider.dart';
@@ -42,10 +44,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _goToNextScreen();
+    _checkOnboardingAndPerms();
   }
 
-  void _goToNextScreen() async {
+  void _checkOnboardingAndPerms() async {
     final perms =
         await ref.read(permissionProvider.notifier).fetchPermissionsStatus();
 
@@ -67,41 +69,54 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       initializeNecessaryProviders(ref);
     }
 
-    _isAccessProtected ? _authenticate() : _pushNextScreen(true);
+    _isAccessProtected ? _authenticate() : _goToNextScreen(true);
   }
 
-  void _pushNextScreen(bool shouldDelay) async {
-    await Future.delayed(
-      shouldDelay && _haveAllEssentialPermissions && _isOnboardingDone
-          ? 1250.ms
-          : 0.ms,
-    );
-
+  void _goToNextScreen(bool shouldDelay) async {
     if (!mounted) return;
 
     if (_haveAllEssentialPermissions && _isOnboardingDone) {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.homeScreen,
-        (_) => false,
-      );
+      NavigationService.instance.init();
     } else {
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        AppRoutes.onboardingScreen,
-        (_) => false,
-        arguments: _isOnboardingDone,
+      Navigator.of(context).pushReplacementNamed(
+        AppRoutes.onboardingPath,
+        arguments: {"isOnboardingDone": _isOnboardingDone},
       );
     }
   }
 
   void _authenticate() async {
-    final isSuccess = await AuthService.instance.authenticate();
-    if (isSuccess) _pushNextScreen(false);
+    final isAuthenticated = await AuthService.instance.authenticate();
+
+    /// Return if not mounted
+    if (!mounted) return;
+
+    /// If removed locks
+    if (isAuthenticated == null) {
+      context.showSnackAlert(
+        context.locale.protected_access_removed_lock_snack_alert,
+        icon: FluentIcons.fingerprint_20_filled,
+      );
+      return;
+    }
+
+    /// If aborted the auth
+    if (!isAuthenticated) {
+      context.showSnackAlert(
+        context.locale.protected_access_failed_lock_snack_alert,
+        icon: FluentIcons.fingerprint_20_filled,
+      );
+
+      return;
+    }
+
+    _goToNextScreen(false);
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,

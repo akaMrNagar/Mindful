@@ -105,6 +105,14 @@ class FocusSessionService : Service() {
 
         mNotificationTimer = NotificationTimer(
             context = this,
+            ongoingPendingIntent = Utils.getPendingIntentForMindfulUri(
+                this,
+                "com.mindful.android://open/activeSession"
+            ),
+            finishedPendingIntent = Utils.getPendingIntentForMindfulUri(
+                this,
+                "com.mindful.android://open/focus?tab=1"
+            ),
             isFinite = isFiniteSession,
             title = getString(R.string.focus_session_notification_title),
             timerDurationSeconds = timerDuration,
@@ -138,7 +146,6 @@ class FocusSessionService : Service() {
             NotificationHelper.toggleDnd(this, false)
         }
 
-        mTrackerServiceConn.service?.getRestrictionManager?.updateFocusedApps(null)
         mNotificationTimer.forceDisposeTimer(
             getString(
                 if (isTheSessionSuccessful) R.string.focus_session_success_notification_info
@@ -149,8 +156,9 @@ class FocusSessionService : Service() {
 
 
     override fun onDestroy() {
+        mTrackerServiceConn.service?.getRestrictionManager?.updateFocusedApps(null)
         mTrackerServiceConn.unBindService()
-        stopForeground(STOP_FOREGROUND_DETACH)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         Log.d(TAG, "onDestroy: FOCUS service destroyed successfully")
         super.onDestroy()
     }

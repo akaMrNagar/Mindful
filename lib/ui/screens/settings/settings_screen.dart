@@ -17,11 +17,17 @@ import 'package:mindful/ui/screens/settings/database/tab_database.dart';
 import 'package:mindful/ui/screens/settings/general/tab_general.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  const SettingsScreen({
+    super.key,
+    this.initialTabIndex,
+  });
+
+  final int? initialTabIndex;
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldShell(
+      initialTab: initialTabIndex,
       items: [
         NavbarItem(
           titleText: context.locale.general_tab_title,

@@ -21,9 +21,7 @@ object AppConstants {
     const val TETHERING_PACKAGE: String = "com.android.tethering"
 
     // Extra intent data
-    const val INTENT_EXTRA_INITIAL_ROUTE: String = "com.mindful.android.initialRoute"
     const val INTENT_EXTRA_IS_SELF_RESTART: String = "com.mindful.android.isSelfRestart"
-    const val INTENT_EXTRA_PACKAGE_NAME: String = "com.mindful.android.launchedAppPackageName"
 
     // Notification IDs
     const val TRACKER_SERVICE_NOTIFICATION_ID: Int = 101

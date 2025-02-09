@@ -19,6 +19,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import android.util.Log
@@ -27,7 +28,6 @@ import org.jetbrains.annotations.Contract
 import java.io.ByteArrayOutputStream
 import java.net.URI
 import java.net.URISyntaxException
-import java.time.DayOfWeek
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
@@ -39,22 +39,45 @@ import kotlin.math.abs
 object Utils {
     private const val TAG = "Mindful.Utils"
 
-    fun getPendingIntentForMindful(
-        context: Context,
-        initialRoute: String? = null,
-        putExtraToIntent: ((intent: Intent) -> Unit)? = null,
-    ): PendingIntent {
-        val appIntent = Intent(context.applicationContext, MainActivity::class.java)
-        appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-        // put extra to intent
-        initialRoute?.let { appIntent.putExtra(AppConstants.INTENT_EXTRA_INITIAL_ROUTE, it) }
-        putExtraToIntent?.invoke(appIntent)
+    /**
+     * Creates a intent for Mindful with the provided URI.
+     *
+     * @param context          The application context.
+     * @param uriString          The string representation of URI.
+     * @return The pending intent.
+     */
+    fun getIntentForMindfulUri(
+        context: Context,
+        uriString: String = "com.mindful.android://open/home",
+    ): Intent {
+        val appIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(uriString)
+        ).apply {
+            `package` = context.packageName
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        return appIntent
+    }
+
+    /**
+     * Creates a pending intent for Mindful with the provided URI.
+     *
+     * @param context          The application context.
+     * @param uriString          The string representation of URI.
+     * @return The pending intent.
+     */
+    fun getPendingIntentForMindfulUri(
+        context: Context,
+        uriString: String = "com.mindful.android://open/home",
+    ): PendingIntent {
 
         return PendingIntent.getActivity(
             context.applicationContext,
             0,
-            appIntent,
+            getIntentForMindfulUri(context, uriString),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
     }

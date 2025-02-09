@@ -12,7 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -84,7 +84,7 @@ class TabDashboard extends ConsumerWidget {
                   color: Theme.of(context).colorScheme.secondaryContainer,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.parentalControlsScreen),
+                      .pushNamed(AppRoutes.parentalControlsPath),
                 ),
 
                 /// Restrictions
@@ -113,7 +113,7 @@ class TabDashboard extends ConsumerWidget {
                       context.locale.grouped_apps_blocking_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.restrictionGroupsScreen),
+                      .pushNamed(AppRoutes.restrictionGroupsPath),
                 ),
 
                 /// Shorts restrictions
@@ -124,7 +124,7 @@ class TabDashboard extends ConsumerWidget {
                   subtitleText: context.locale.shorts_blocking_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.shortsBlockingScreen),
+                      .pushNamed(AppRoutes.shortsBlockingPath),
                 ),
 
                 /// Website restrictions
@@ -135,7 +135,7 @@ class TabDashboard extends ConsumerWidget {
                   subtitleText: context.locale.websites_blocking_tile_subtitle,
                   trailing: const Icon(FluentIcons.chevron_right_20_regular),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.websitesBlockingScreen),
+                      .pushNamed(AppRoutes.websitesBlockingPath),
                 ),
               ].animateListWhen(
                 when: ref.watch(_isLoadingProvider),

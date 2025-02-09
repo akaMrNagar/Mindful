@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.VpnService
-import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
@@ -221,7 +220,6 @@ class FgMethodCallHandler(
                 if (focusServiceConn.isActive) {
                     focusServiceConn.service?.updateFocusSession(focusSession)
                 } else {
-                    Log.d("TAG", "onMethodCall: starting session service")
                     focusServiceConn.setOnConnectedCallback { service: FocusSessionService ->
                         service.startFocusSession(
                             focusSession

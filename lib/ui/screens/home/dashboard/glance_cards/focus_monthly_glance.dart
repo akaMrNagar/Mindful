@@ -11,7 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
@@ -36,7 +36,7 @@ class FocusMonthlyGlance extends ConsumerWidget {
       info: monthlyFocus.seconds.toTimeShort(context),
       badge: const GoToBadgeIcon(),
       onTap: () => Navigator.of(context).pushNamed(
-        AppRoutes.focusScreen,
+        AppRoutes.focusModePath,
         arguments: 1,
       ),
     );

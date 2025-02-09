@@ -69,8 +69,8 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     /// Run after a delay to avoid database deadlock
     await Future.delayed(1.seconds, () {
       /// restart session service if needed
-      if (state.activeSession != null) {
-        _startSessionServiceAndTimer(activeSession!);
+      if (activeSession != null) {
+        _startSessionServiceAndTimer(activeSession);
       }
 
       /// Reset streak if needed
@@ -86,9 +86,11 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
   void _startSessionServiceAndTimer(FocusSession session) async {
     _activeSessionTimer?.cancel();
     final isFiniteSession = session.durationSecs > 0;
+    final elapsedSeconds =
+        DateTime.now().difference(session.startDateTime).inSeconds;
 
     /// check if it is already completed
-    if (isFiniteSession && state.elapsedTimeSec >= session.durationSecs) {
+    if (isFiniteSession && elapsedSeconds >= session.durationSecs) {
       giveUpOrFinishFocusSession(
         isTheSessionSuccessful: true,
         isFiniteSession: isFiniteSession,
@@ -162,9 +164,9 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     _updateFocusProfileInDb();
 
     /// Update service if session is active
-    if (state.activeSession != null) {
+    if (state.activeSession.value != null) {
       await MethodChannelService.instance.updateFocusSession(
-        session: state.activeSession!,
+        session: state.activeSession.value!,
         profile: state.focusProfile,
       );
     }
@@ -185,7 +187,7 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
   /// Starts a new focus session, either finite or infinite, and saves it to the database.
   ///
   /// Returns a [FocusSession] object representing the newly started session.
-  Future<FocusSession> startNewSession() async {
+  Future<void> startNewSession() async {
     /// Insert session to database
     final session = await _dynamicDao.insertFocusSession(
       type: state.focusMode.sessionType,
@@ -198,7 +200,6 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
       elapsedTimeSec: 0,
     );
     _startSessionServiceAndTimer(session);
-    return session;
   }
 
   /// Ends the active focus session, updating its status based on success or failure.
@@ -208,21 +209,22 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     required bool isTheSessionSuccessful,
     required bool isFiniteSession,
   }) async {
-    if (state.activeSession == null) return;
+    if (state.activeSession.value == null) return;
 
     /// Cancel active session timer
     _activeSessionTimer?.cancel();
 
     /// The difference from the session start and now
-    final diffFromNow =
-        DateTime.now().difference(state.activeSession!.startDateTime).inSeconds;
+    final diffFromNow = DateTime.now()
+        .difference(state.activeSession.value!.startDateTime)
+        .inSeconds;
 
     /// Valid duration for finite session must be <= active session's duration
     final validDuration = isFiniteSession
-        ? min(state.activeSession!.durationSecs, diffFromNow)
+        ? min(state.activeSession.value!.durationSecs, diffFromNow)
         : diffFromNow;
 
-    final updatedSession = state.activeSession!.copyWith(
+    final updatedSession = state.activeSession.value!.copyWith(
       state: isTheSessionSuccessful
           ? SessionState.successful
           : SessionState.failed,
@@ -299,9 +301,9 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     /// Synchronize timer if resumed after pause or not
     if (appState == AppLifecycleState.resumed &&
         _isAppPaused &&
-        state.activeSession != null) {
+        state.activeSession.value != null) {
       _isAppPaused = false;
-      _startSessionServiceAndTimer(state.activeSession!);
+      _startSessionServiceAndTimer(state.activeSession.value!);
     }
   }
 }

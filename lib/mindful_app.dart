@@ -13,10 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/config/app_themes.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mindful/core/services/routing_service.dart';
+import 'package:mindful/config/navigation/app_routes_observer.dart';
+import 'package:mindful/config/navigation/navigation_service.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 
 class MindfulApp extends ConsumerWidget {
@@ -51,7 +52,10 @@ class MindfulApp extends ConsumerWidget {
     return DynamicColorBuilder(
       builder: (light, dark) => MaterialApp(
         debugShowCheckedModeBanner: false,
+
+        /// Themes
         themeAnimationCurve: Curves.ease,
+        themeMode: ThemeMode.values[themeMode.index],
         darkTheme: AppTheme.darkTheme(
           isAmoled: useAmoledDark,
           seedColor: useDynamicColors
@@ -63,18 +67,22 @@ class MindfulApp extends ConsumerWidget {
               ? light?.primary
               : AppTheme.materialColors[accentColor],
         ),
-        themeMode: ThemeMode.values[themeMode.index],
-        routes: AppRoutes.routes,
-        initialRoute: AppRoutes.splashScreen,
+
+        /// Localization
+        locale: Locale(localeCode),
+        supportedLocales: AppLocalizations.supportedLocales,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: Locale(localeCode),
-        navigatorKey: RoutingService.navigatorKey,
+
+        /// Navigation
+        initialRoute: AppRoutes.rootSplashPath,
+        routes: AppRoutes.routes,
+        navigatorKey: NavigationService.navigatorKey,
+        navigatorObservers: [AppRoutesObserver.instance],
       ),
     );
   }
