@@ -27,6 +27,16 @@
     <string name="toast_blocked_content">Content blocked! going back</string>
     <string name="toast_redirecting">Filtering search results</string>
     <string name="service_running_notification_title">Mindful is running</string>
+
+    <string name="shortcut_focus_mode_label">Focus mode</string>
+    <string name="shortcut_focus_mode_description">Quickly start a focus session with custom profiles.</string>
+
+    <string name="shortcut_upcoming_notifications_label">Batched notifications</string>
+    <string name="shortcut_upcoming_notifications_description">Check upcoming batched notifications.</string>
+
+    <string name="shortcut_parental_controls_label">Parental controls</string>
+    <string name="shortcut_parental_controls_description">Manage parental controls and security settings</string>
+
     <string name="focus_quick_tile_status_active">Active</string>
 
     <!-- usage widget values = usage home widget for android -->
