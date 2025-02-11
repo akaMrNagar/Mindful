@@ -11,7 +11,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
@@ -77,12 +77,12 @@ class ApplicationTile extends ConsumerWidget {
               position: position,
               onPressed: () {
                 Navigator.of(context).pushNamed(
-                  AppRoutes.appDashboardScreen,
-                  arguments: AppDashboardParams(
-                    packageName: packageName,
-                    initialUsageType: usageType,
-                    selectedDay: selectedDay,
-                  ),
+                  AppRoutes.appDashboardPath,
+                  arguments: {
+                    "package": packageName,
+                    "type": usageType.index,
+                    "day": selectedDay.toIso8601String(),
+                  },
                 );
               },
 

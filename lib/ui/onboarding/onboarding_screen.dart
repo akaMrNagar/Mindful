@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/navigation_service.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/config/app_constants.dart';
@@ -27,11 +27,11 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({
-    required this.isOnboardingDone,
+    this.isOnboardingDone,
     super.key,
   });
 
-  final bool isOnboardingDone;
+  final bool? isOnboardingDone;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _OnboardingState();
@@ -84,8 +84,10 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
     /// Go to permissions page if already done onboarding
     /// but user removed some essential permissions
-    if (widget.isOnboardingDone) {
-      Future.delayed(250.ms, _skipToLastPage);
+    if (widget.isOnboardingDone ?? false) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _skipToLastPage();
+      });
     }
   }
 
@@ -102,13 +104,10 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
       ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
 
       Future.delayed(
-        150.ms,
+        200.ms,
         () {
           if (!mounted) return;
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            AppRoutes.homeScreen,
-            (_) => false,
-          );
+          NavigationService.instance.init();
         },
       );
     }
@@ -136,13 +135,6 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
     return PopScope(
       onPopInvokedWithResult: (didPop, _) => SystemNavigator.pop(),
       child: Scaffold(
-        // appBar: AppBar(
-        //   automaticallyImplyLeading: false,
-        //   elevation: 0,
-        //   scrolledUnderElevation: 0,
-        //   toolbarHeight: 0,
-        //   backgroundColor: Colors.transparent,
-        // ),
         body: Stack(
           children: [
             /// Onboarding Page

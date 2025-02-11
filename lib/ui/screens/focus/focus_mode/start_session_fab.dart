@@ -12,7 +12,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/focus/focus_mode_provider.dart';
@@ -35,7 +35,7 @@ class StartSessionFAB extends ConsumerWidget {
     final focusModeModel = ref.read(focusModeProvider);
 
     /// If another focus session is already active
-    if (focusModeModel.activeSession != null) {
+    if (focusModeModel.activeSession.value != null) {
       context.showSnackAlert(
         context.locale.focus_session_already_active_snack_alert,
       );
@@ -50,15 +50,11 @@ class StartSessionFAB extends ConsumerWidget {
       return;
     }
 
-    final newSession =
-        await ref.read(focusModeProvider.notifier).startNewSession();
+    await ref.read(focusModeProvider.notifier).startNewSession();
 
     await Future.delayed(300.ms);
     if (context.mounted) {
-      Navigator.of(context).pushNamed(
-        AppRoutes.activeSessionScreen,
-        arguments: newSession,
-      );
+      Navigator.of(context).pushNamed(AppRoutes.activeSessionPath);
     }
   }
 }

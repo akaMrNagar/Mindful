@@ -128,7 +128,7 @@ class BgExecutorService {
 
   /// This method will be invoked everyday at Midnight 12
   ///
-  /// Backup app's usage to database
+  /// Backup app's usage for yesterday to database
   Future<void> _onMidnightReset() async {
     await MethodChannelService.instance.init();
     await DriftDbService.instance.init();
@@ -136,24 +136,28 @@ class BgExecutorService {
     final dynamicDao = DriftDbService.instance.driftDb.dynamicRecordsDao;
     final uniqueDao = DriftDbService.instance.driftDb.uniqueRecordsDao;
 
+    /// Date yesterday
+    final dateYesterday = dateToday.subtract(1.days);
+
     /// Number of day from today till then to keep history
     final historyDays =
         (await uniqueDao.loadMindfulSettings()).usageHistoryWeeks * 7;
 
     /// Remove usages before the specified history time
     await dynamicDao
-        .removeBatchAppUsagesBefore(dateToday.subtract(historyDays.days));
+        .removeBatchAppUsagesBefore(dateYesterday.subtract(historyDays.days));
 
     /// Fetch usage for yesterday
     final usages =
         await MethodChannelService.instance.fetchAppsUsageForInterval(
-      start: dateToday.subtract(1.days),
+      start: dateYesterday,
       end: dateToday,
     );
 
     final usageCompanions = usages.entries
         .map(
           (entry) => AppUsageTableCompanion(
+            date: Value(dateYesterday),
             packageName: Value(entry.key),
             screenTime: Value(entry.value.screenTime),
             mobileData: Value(entry.value.mobileData),

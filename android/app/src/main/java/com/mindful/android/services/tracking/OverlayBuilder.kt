@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
@@ -13,11 +12,9 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.MainThread
-import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.models.RestrictionType
-import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
 
@@ -49,15 +46,12 @@ object OverlayBuilder {
             emergencyBtn.visibility = View.VISIBLE
             emergencyBtn.setOnClickListener {
                 ThreadUtils.runOnMainThread {
-                    val appIntent = Intent(context.applicationContext, MainActivity::class.java)
-                    appIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    appIntent.setData(Uri.parse(appIntent.toUri(Intent.URI_INTENT_SCHEME)))
-                    appIntent.putExtra(AppConstants.INTENT_EXTRA_PACKAGE_NAME, packageName)
-                    appIntent.putExtra(
-                        AppConstants.INTENT_EXTRA_INITIAL_ROUTE,
-                        "/appDashboardScreen"
+                    context.applicationContext.startActivity(
+                        Utils.getIntentForMindfulUri(
+                            context,
+                            "com.mindful.android://open/appDashboard?package=$packageName"
+                        )
                     )
-                    context.applicationContext.startActivity(appIntent)
                     removeOverlay.invoke()
                 }
             }

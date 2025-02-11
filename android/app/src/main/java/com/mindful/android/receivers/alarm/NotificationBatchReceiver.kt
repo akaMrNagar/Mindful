@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
@@ -13,14 +14,12 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
-import com.mindful.android.workers.FlutterBgExecutionWorker.Companion.FLUTTER_TASK_ID
 import org.json.JSONArray
 
 class NotificationBatchReceiver : BroadcastReceiver() {
@@ -51,12 +50,13 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                 if (notificationsCount == 0) return Result.success()
 
                 // Create pending intent
-                val appIntent = Intent(applicationContext, MainActivity::class.java)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(
-                        AppConstants.INTENT_EXTRA_INITIAL_ROUTE,
-                        "/upcomingNotificationsScreen"
-                    )
+                val appIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("com.mindful.android://open/upcomingNotifications")
+                ).apply {
+                    `package` = context.packageName
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 val pendingIntent = PendingIntent.getActivity(
                     applicationContext,
                     0,
@@ -74,7 +74,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                     context,
                     NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
                 )
-                    .setSmallIcon(R.drawable.ic_notification)
+                    .setSmallIcon(R.drawable.ic_mindful)
                     .setAutoCancel(true)
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentIntent(pendingIntent)

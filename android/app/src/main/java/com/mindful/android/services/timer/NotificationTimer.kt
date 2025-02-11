@@ -2,12 +2,11 @@ package com.mindful.android.services.timer
 
 import android.app.Notification
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.os.CountDownTimer
 import androidx.core.app.NotificationCompat
 import com.mindful.android.R
 import com.mindful.android.utils.CountDownExecutor
-import com.mindful.android.utils.Utils
 import java.util.concurrent.TimeUnit
 
 /**
@@ -16,6 +15,8 @@ import java.util.concurrent.TimeUnit
  * actions on timer ticks, completion, and forced stops.
  *
  * @property context The application context used to create and display notifications.
+ * @property ongoingPendingIntent The pending intent for ongoing notifications.
+ * @property finishedPendingIntent The pending intent fon success notification. If this is null the [ongoingPendingIntent] will be used.
  * @property title The title of the notification displayed during the timer's operation.
  * @property isFinite Flag indicating if this timer is finite if TRUE else infinite (max 24 hours).
  * @property timerDurationSeconds The total duration of the timer in SECONDS. Set -1 for possible infinite timer.
@@ -28,6 +29,8 @@ import java.util.concurrent.TimeUnit
  */
 class NotificationTimer(
     private val context: Context,
+    private val ongoingPendingIntent: PendingIntent,
+    private val finishedPendingIntent: PendingIntent? = null,
     private val title: String,
     private val isFinite: Boolean = true,
     private val timerDurationSeconds: Long,
@@ -48,20 +51,21 @@ class NotificationTimer(
 
     private val notificationBuilder: NotificationCompat.Builder =
         NotificationCompat.Builder(context, notificationChannelId)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setOngoing(true) // Ensures the notification cannot be dismissed during operation.
-            .setOnlyAlertOnce(true) // Ensures the notification does not alert repeatedly.
-            .setContentIntent(Utils.getPendingIntentForMindful(context)) // Optional pending intent.
-            .setContentTitle(title) // Title for the notification.
+            .setSmallIcon(R.drawable.ic_mindful)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setContentIntent(ongoingPendingIntent)
+            .setContentTitle(title)
 
     private val countDownExecutor: CountDownExecutor = CountDownExecutor(
         duration = timerDurationSeconds,
         interval = 1L,
         timeUnit = TimeUnit.SECONDS,
         onTick = { elapsedSeconds ->
+            val totalElapsedSeconds = elapsedSeconds + alreadyElapsedTimeSecond
             val progressSeconds =
-                if (isFinite) (timerDurationSeconds - elapsedSeconds).toInt()
-                else elapsedSeconds.toInt()
+                if (isFinite) (timerDurationSeconds - totalElapsedSeconds).toInt()
+                else totalElapsedSeconds.toInt()
 
             // Update the notification with the progress.
             val contentText = onTicked.invoke(progressSeconds)
@@ -105,12 +109,14 @@ class NotificationTimer(
             .setContentText(contentText)
             .setOngoing(false)
             .setAutoCancel(true)
+            .setProgress(0, 0, false)
+            .setContentIntent(finishedPendingIntent ?: ongoingPendingIntent)
             .setStyle(NotificationCompat.BigTextStyle().bigText(contentText))
-
-        notificationManager.notify(notificationId, notificationBuilder.build())
 
         // Invoke the onDispose callback to handle any cleanup.
         onDispose.invoke()
+
+        notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
     /**

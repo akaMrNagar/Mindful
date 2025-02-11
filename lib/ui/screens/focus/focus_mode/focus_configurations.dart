@@ -58,8 +58,8 @@ class FocusConfigurations extends ConsumerWidget {
     final sessionDuration = ref
         .watch(focusModeProvider.select((v) => v.focusProfile.sessionDuration));
 
-    final isSessionActive =
-        ref.watch(focusModeProvider.select((v) => v.activeSession != null));
+    final isSessionActive = ref
+        .watch(focusModeProvider.select((v) => v.activeSession.value != null));
 
     return MultiSliver(
       children: [

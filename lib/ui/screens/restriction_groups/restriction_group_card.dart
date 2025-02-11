@@ -192,8 +192,8 @@ class RestrictionGroupCard extends ConsumerWidget {
         invincibleMode.includeGroupsActivePeriod &&
         group.periodDurationInMins > 0 &&
         !DateTime.now().isBetweenTod(
-          group.activePeriodEnd,
           group.activePeriodStart,
+          group.activePeriodEnd,
         ));
 
     /// Go to screen

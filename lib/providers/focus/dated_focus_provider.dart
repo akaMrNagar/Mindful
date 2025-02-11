@@ -14,13 +14,19 @@ import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/models/dated_focus_model.dart';
-
+import 'package:mindful/providers/focus/focus_mode_provider.dart';
 
 /// A Riverpod state notifier provider that manages [DatedFocusModel].
 final datedFocusProvider =
     StateNotifierProvider.family<FocusModeNotifier, DatedFocusModel, DateTime>(
-  (ref, day) => FocusModeNotifier(day),
+  (ref, day) {
+    if (day == dateToday) {
+      ref.watch(focusModeProvider.select((v) => v.activeSession));
+    }
+    return FocusModeNotifier(day);
+  },
 );
 
 /// This class manages the state of Focus Timeline.

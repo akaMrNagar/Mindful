@@ -14,6 +14,7 @@ class ReminderManager(
     private val overlayManager: OverlayManager,
     private val onNewAppLaunched: (packageName: String) -> Unit,
 ) {
+    private val TAG = "Mindful.ReminderManager"
     private val reminderTriggers: HashSet<Int> = HashSet(0)
     private var onGoingTimer: CountDownExecutor? = null
 
@@ -25,7 +26,7 @@ class ReminderManager(
 
     private fun addNewReminder(futureMinutes: Int) {
         reminderTriggers.add(futureMinutes)
-        Log.d("TAG", "addNewReminder: New reminder added $futureMinutes")
+        Log.d(TAG, "addNewReminder: New reminder added $futureMinutes")
     }
 
     fun scheduleReminders(
@@ -50,7 +51,7 @@ class ReminderManager(
                 val spentMins = (elapsedMs / 60000).toInt()
 
                 Log.d(
-                    "TAG",
+                    TAG,
                     "onTick: $spentMins Minute ticked with reminders: $reminderTriggers"
                 )
 
@@ -68,7 +69,7 @@ class ReminderManager(
             },
 
             onFinish = {
-                Log.d("TAG", "onFinish: Timer finished for $packageName")
+                Log.d(TAG, "onFinish: Timer finished for $packageName")
                 // Recalculate restriction state
                 onNewAppLaunched.invoke(packageName)
             }
@@ -78,7 +79,7 @@ class ReminderManager(
 
 
         Log.d(
-            "TAG",
+            TAG,
             "scheduleReminders: Timer scheduled for $packageName till  ${Date(System.currentTimeMillis() + state.expirationFutureMs)} "
         )
     }

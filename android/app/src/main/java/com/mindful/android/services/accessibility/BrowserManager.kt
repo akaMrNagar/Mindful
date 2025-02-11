@@ -127,7 +127,9 @@ class BrowserManager(
                 )
 
                 // Clean redirection url after approximate loading time
-                Handler().postDelayed({ mLastRedirectedUrl = "" }, 500L)
+                Handler(
+                    Looper.myLooper() ?: Looper.getMainLooper()
+                ).postDelayed({ mLastRedirectedUrl = "" }, 500L)
             } else {
                 Log.e(TAG, "No application found to handle the Intent for URL: $url")
             }

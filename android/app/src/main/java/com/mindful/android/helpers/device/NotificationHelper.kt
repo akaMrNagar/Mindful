@@ -106,10 +106,11 @@ object NotificationHelper {
      */
     fun buildFgServiceNotification(context: Context, content: String?): Notification {
         return NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
+            .setSmallIcon(R.drawable.ic_mindful)
+            .setOngoing(true)
             .setAutoCancel(true)
             .setContentTitle(context.getString(R.string.service_running_notification_title))
-            .setContentIntent(Utils.getPendingIntentForMindful(context))
+            .setContentIntent(Utils.getPendingIntentForMindfulUri(context))
             .setContentText(content)
             .build()
     }
@@ -138,7 +139,7 @@ object NotificationHelper {
                 context,
                 NOTIFICATION_CRITICAL_CHANNEL_ID
             )
-                .setSmallIcon(R.drawable.ic_notification)
+                .setSmallIcon(R.drawable.ic_mindful)
                 .setAutoCancel(true)
                 .setContentTitle(context.getString(R.string.overlay_permission_denied_notification_title))
                 .setContentText(msg)

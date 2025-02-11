@@ -18,7 +18,6 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/models/app_info.dart';
 import 'package:mindful/models/device_info_model.dart';
-import 'package:mindful/models/intent_data_model.dart';
 import 'package:mindful/models/notification_model.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
@@ -37,16 +36,15 @@ class MethodChannelService {
   );
 
   /// Flag indicating if the app is restarted by itself (after importing database).
-  IntentDataModel get intentData => _intentData;
-  IntentDataModel _intentData = const IntentDataModel();
+  bool get isSelfRestart => _isSelfRestart;
+  bool _isSelfRestart = false;
 
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
     _methodChannel.setMethodCallHandler(
       (call) async {
-        if (call.method == "updateIntentData") {
-          _intentData = IntentDataModel.fromMap(call.arguments as Map);
-          debugPrint("updateIntentData(): Intent data updated : $_intentData");
+        if (call.method == "updateSelfStartStatus") {
+          _isSelfRestart = call.arguments as bool? ?? false;
         }
       },
     );

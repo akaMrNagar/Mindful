@@ -31,7 +31,7 @@ class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
     final dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await dao.loadBedtimeSchedule();
 
-    if (MethodChannelService.instance.intentData.extraIsSelfStart) {
+    if (MethodChannelService.instance.isSelfRestart) {
       if (state.isScheduleOn &&
           state.distractingApps.isNotEmpty &&
           state.scheduleDurationInMins >= 30) {

@@ -32,6 +32,7 @@ class EmergencyPauseService : Service() {
         mTrackerServiceConn = SafeServiceConnection(MindfulTrackerService::class.java, this)
         mNotificationTimer = NotificationTimer(
             context = this,
+            ongoingPendingIntent = Utils.getPendingIntentForMindfulUri(this),
             title = getString(R.string.emergency_pause_notification_title),
             timerDurationSeconds = DEFAULT_EMERGENCY_PASS_PERIOD_SECONDS,
             notificationId = EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID,
@@ -88,7 +89,7 @@ class EmergencyPauseService : Service() {
     override fun onDestroy() {
         mTrackerServiceConn.service?.getLaunchTrackingManager?.pauseResumeTracking(false)
         mTrackerServiceConn.unBindService()
-        stopForeground(STOP_FOREGROUND_DETACH)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         Log.d(TAG, "onDestroy: EMERGENCY service destroyed successfully")
         super.onDestroy()
     }

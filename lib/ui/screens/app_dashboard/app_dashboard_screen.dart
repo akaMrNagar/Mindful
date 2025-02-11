@@ -10,7 +10,9 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -57,6 +59,7 @@ class AppDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
+  bool _isPoppingTriggered = false;
   late UsageFilterModel _filter = UsageFilterModel(
     selectedDay: widget.selectedDay ?? dateToday,
     selectedWeek: (widget.selectedDay ?? dateToday).weekRange,
@@ -71,6 +74,29 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
         Navigator.of(context).maybePop();
       }
     });
+  }
+
+  /// This callback will be invoked after a frame is rendered only when
+  /// the app info provider is initialized and loaded successfully
+  void _postFrameCallback(bool isAppValid) {
+    if (_isPoppingTriggered || isAppValid) return;
+    _isPoppingTriggered = true;
+
+    /// maybe first frame is rendering so call it after completion
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        context.showSnackAlert(
+          context.locale.app_info_none_warning,
+        );
+
+        /// Let the snackbar appear then go back
+        await Future.delayed(1.seconds);
+        if (!mounted) return;
+
+        /// Either go back if navigator can pop or go to home screen
+        context.popOrPushReplace(AppRoutes.homePath);
+      },
+    );
   }
 
   void _includeExcludeApp(String appName, bool isExcluded) {
@@ -111,6 +137,11 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
     final isNetworkOnlyApp =
         widget.packageName == AppConstants.removedAppPackage ||
             widget.packageName == AppConstants.tetheringAppPackage;
+
+    /// Add post frame callback after loading
+    if (ref.watch(appsInfoProvider.select((v) => v.hasValue))) {
+      _postFrameCallback(appInfo.name.isNotEmpty);
+    }
 
     return Skeletonizer.zone(
       enabled: appInfo.name.isEmpty,
@@ -173,6 +204,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
                 /// Launch app button
                 DefaultListTile(
+                  enabled: appInfo.name.isNotEmpty,
                   position: ItemPosition.top,
                   titleText: context.locale.launch_app_tile_title,
                   subtitleText:
@@ -184,6 +216,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
                 /// Launch app settings button
                 DefaultListTile(
+                  enabled: appInfo.name.isNotEmpty,
                   position: ItemPosition.mid,
                   titleText: context.locale.go_to_app_settings_tile_title,
                   subtitleText: context.locale.go_to_app_settings_tile_subtitle,
@@ -194,7 +227,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
 
                 /// Exclude from usage chart
                 DefaultListTile(
-                  enabled: !isNetworkOnlyApp,
+                  enabled: !isNetworkOnlyApp && appInfo.name.isNotEmpty,
                   position: ItemPosition.bottom,
                   leadingIcon: isExcludedFromStats
                       ? FluentIcons.phone_dismiss_20_regular

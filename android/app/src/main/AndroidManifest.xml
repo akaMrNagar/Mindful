@@ -37,6 +37,10 @@
     <uses-permission
         android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
         tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.BIND_QUICK_SETTINGS_TILE"
+        tools:ignore="ProtectedPermissions" />
+
 
     <application
         android:name="${applicationName}"
@@ -65,11 +69,37 @@
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
 
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="false" />
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/app_shortcuts" />
+
+            <!-- Deep Link -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="open"
+                    android:scheme="com.mindful.android" />
+            </intent-filter>
+
+            <!-- Default -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!-- Focus quick tile-->
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+
         </activity>
 
         <!-- _________________________________________________________________________________ -->
@@ -123,23 +153,22 @@
             android:enabled="true"
             android:exported="false" />
         <!-- _________________________________________________________________________________ -->
-        <!-- ________________________________ SERVICES _______________________________________ -->
+        <!-- ________________________ SYSTEM BOUND SERVICES __________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <service
-            android:name=".services.tracking.MindfulTrackerService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
-        <service
-            android:name=".services.timer.EmergencyPauseService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
-        <service
-            android:name=".services.timer.FocusSessionService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:name=".services.quickTiles.FocusQuickTileService"
+            android:description="@string/shortcut_focus_mode_description"
+            android:exported="true"
+            android:icon="@drawable/ic_focus_mode"
+            android:label="@string/shortcut_focus_mode_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.service.quicksettings.ACTIVE_TILE"
+                android:value="true" />
+        </service>
         <service
             android:name=".services.accessibility.MindfulAccessibilityService"
             android:enabled="true"
@@ -153,6 +182,18 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+        <service
+            android:name=".services.notification.MindfulNotificationListenerService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+        <!-- _________________________________________________________________________________ -->
+        <!-- ______________________________ APP SERVICES _____________________________________ -->
+        <!-- _________________________________________________________________________________ -->
         <service
             android:name=".services.vpn.MindfulVpnService"
             android:enabled="true"
@@ -172,14 +213,20 @@
                 android:value="false" />
         </service>
         <service
-            android:name=".services.notification.MindfulNotificationListenerService"
+            android:name=".services.tracking.MindfulTrackerService"
             android:enabled="true"
             android:exported="false"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
+            android:foregroundServiceType="specialUse" />
+        <service
+            android:name=".services.timer.FocusSessionService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+        <service
+            android:name=".services.timer.EmergencyPauseService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
         <!-- Don't delete the meta-data below.This
         is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

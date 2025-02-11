@@ -38,7 +38,7 @@ class NotificationSchedulesNotifier
     /// Check if no schedules then initialize with defaults
     if (schedules.isEmpty) await _createInitialSchedules();
 
-    if (MethodChannelService.instance.intentData.extraIsSelfStart) {
+    if (MethodChannelService.instance.isSelfRestart) {
       await _updateNativeSchedules();
     }
 

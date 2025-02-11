@@ -17,9 +17,9 @@ import 'package:mindful/ui/screens/focus/focus_mode/tab_focus.dart';
 import 'package:mindful/ui/screens/focus/timeline/tab_timeline.dart';
 
 class FocusScreen extends StatelessWidget {
-  const FocusScreen({super.key, this.initialTabIndex = 0});
+  const FocusScreen({super.key, this.initialTabIndex});
 
-  final int initialTabIndex;
+  final int? initialTabIndex;
 
   @override
   Widget build(BuildContext context) {

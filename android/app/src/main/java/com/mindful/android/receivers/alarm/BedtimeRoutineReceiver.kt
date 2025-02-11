@@ -35,7 +35,6 @@ import com.mindful.android.utils.AppConstants
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
 import org.json.JSONObject
-import java.util.Calendar
 
 class BedtimeRoutineReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -144,10 +143,15 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
                     context,
                     NotificationHelper.NOTIFICATION_BEDTIME_CHANNEL_ID
                 )
-                    .setSmallIcon(R.drawable.ic_notification)
+                    .setSmallIcon(R.drawable.ic_mindful)
                     .setOngoing(false)
                     .setOnlyAlertOnce(true)
-                    .setContentIntent(Utils.getPendingIntentForMindful(context))
+                    .setContentIntent(
+                        Utils.getPendingIntentForMindfulUri(
+                            context,
+                            "com.mindful.android://open/home?tab=3",
+                        )
+                    )
                     .setContentTitle(context.getString(R.string.app_name))
                     .setContentText(alert)
                     .setStyle(NotificationCompat.BigTextStyle().bigText(alert))

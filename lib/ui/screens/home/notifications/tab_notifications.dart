@@ -11,7 +11,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/config/app_routes.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -70,7 +70,7 @@ class TabNotifications extends ConsumerWidget {
                   title: context.locale.notifications_tab_title,
                   info: upcomingNotificationsCount.toString(),
                   onTap: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.upcomingNotificationsScreen),
+                      .pushNamed(AppRoutes.upcomingNotificationsPath),
                 ),
               ),
               4.hBox,

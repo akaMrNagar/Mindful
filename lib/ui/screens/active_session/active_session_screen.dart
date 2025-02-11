@@ -16,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -32,12 +33,11 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
 import 'package:mindful/ui/screens/active_session/timer_progress_clock.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class ActiveSessionScreen extends ConsumerStatefulWidget {
-  const ActiveSessionScreen({required this.session, super.key});
-
-  final FocusSession session;
+  const ActiveSessionScreen({super.key});
 
   @override
   ConsumerState<ActiveSessionScreen> createState() =>
@@ -45,14 +45,15 @@ class ActiveSessionScreen extends ConsumerStatefulWidget {
 }
 
 class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
-  final int _secondsInHour = 3600;
+  static const int _secondsInHour = 3600;
   bool _isCompleted = false;
-  late bool _isFinite;
+  bool _isPoppingTriggered = false;
 
   @override
   void initState() {
     super.initState();
-    _isFinite = widget.session.durationSecs > 0;
+
+    /// Add a callback when the session will is completed successfully
     ref.read(focusModeProvider.notifier).setSessionSuccessCallback(
       () {
         if (!mounted) return;
@@ -62,9 +63,27 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  /// This callback will be after a frame is rendered only when
+  /// the active session provider is initialized and loaded successfully
+  void _postFrameCallback(bool haveActiveSession) {
+    if (haveActiveSession || _isCompleted || _isPoppingTriggered) return;
+    _isPoppingTriggered = true;
+
+    /// maybe first frame is rendering so call it after completion
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) async {
+        context.showSnackAlert(
+          context.locale.active_session_none_warning,
+        );
+
+        /// Let the snackbar appear then go back
+        await Future.delayed(1.seconds);
+        if (!mounted) return;
+
+        /// Either go back if navigator can pop or go to home screen
+        context.popOrPushReplace(AppRoutes.homePath);
+      },
+    );
   }
 
   List<String> _getQuotes(BuildContext context) => [
@@ -74,11 +93,18 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
         context.locale.active_session_quote_four,
       ];
 
-  double _getProgress(int elapsedSec) {
-    if (_isFinite) {
+  double _getProgress(
+    FocusSession? activeSession,
+    bool isFinite,
+    int elapsedSec,
+  ) {
+    /// Check if active session is null {may be loading}
+    if (activeSession == null) return 0;
+
+    if (isFinite) {
       return _isCompleted
           ? 100
-          : 100 - ((elapsedSec / widget.session.durationSecs) * 100);
+          : 100 - ((elapsedSec / (activeSession.durationSecs)) * 100);
     } else {
       return ((elapsedSec % _secondsInHour) / _secondsInHour) * 100;
     }
@@ -86,82 +112,108 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    /// Active session and Elapsed time in seconds
+    final activeSession =
+        ref.watch(focusModeProvider.select((v) => v.activeSession));
+
     final elapsedSeconds =
         ref.watch(focusModeProvider.select((v) => v.elapsedTimeSec));
-    final progress = _getProgress(elapsedSeconds);
 
-    final totalDuration = (_isFinite
+    final sessionDurationSec = activeSession.value?.durationSecs ?? 0;
+
+    /// Is the session finite means it does have any finite duration
+    final isFinite = sessionDurationSec > 0;
+    final progress =
+        _getProgress(activeSession.value, isFinite, elapsedSeconds);
+
+    final totalDuration = (isFinite
             ? _isCompleted
-                ? widget.session.durationSecs
-                : widget.session.durationSecs - elapsedSeconds
+                ? sessionDurationSec
+                : sessionDurationSec - elapsedSeconds
             : elapsedSeconds)
         .seconds;
 
     final quoteIndex = (progress / 25).floor() - 1;
     final quotes = _getQuotes(context);
 
-    return ScaffoldShell(
-      items: [
-        NavbarItem(
-          icon: FluentIcons.brain_circuit_20_regular,
-          filledIcon: FluentIcons.brain_circuit_20_filled,
-          titleBuilder: (percentage) => _buildTitle(percentage),
-          fab: _isCompleted
-              ? const SizedBox.shrink()
-              : DefaultFabButton(
-                  heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
-                  label: _isFinite
-                      ? context.locale.active_session_giveup_dialog_title
-                      : context.locale.active_session_finish_dialog_title,
-                  icon: _isFinite
-                      ? FluentIcons.emoji_sad_20_filled
-                      : FluentIcons.emoji_surprise_20_filled,
-                  onPressed: _giveUpOrFinishActiveSession,
+    /// Add post frame callback after loading
+    if (activeSession.hasValue) {
+      _postFrameCallback(activeSession.value != null);
+    }
+
+    return Skeletonizer.zone(
+      enabled: !activeSession.hasValue,
+      ignorePointers: false,
+      enableSwitchAnimation: true,
+      child: ScaffoldShell(
+        items: [
+          NavbarItem(
+            icon: FluentIcons.brain_circuit_20_regular,
+            filledIcon: FluentIcons.brain_circuit_20_filled,
+            titleBuilder: (percentage) =>
+                _buildTitle(activeSession.value, percentage),
+            fab: _isCompleted || !activeSession.hasValue
+                ? const SizedBox.shrink()
+                : DefaultFabButton(
+                    heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
+                    label: isFinite
+                        ? context.locale.active_session_giveup_dialog_title
+                        : context.locale.active_session_finish_dialog_title,
+                    icon: isFinite
+                        ? FluentIcons.emoji_sad_20_filled
+                        : FluentIcons.emoji_surprise_20_filled,
+                    onPressed: () => _giveUpOrFinishActiveSession(isFinite),
+                  ),
+            sliverBody: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                24.vSliverBox,
+
+                /// Clock painter
+                TimerProgressClock(
+                  progress: progress.toDouble(),
+                ).sliver,
+                20.vSliverBox,
+
+                /// Countdown timer
+                FlipCountdownText(duration: totalDuration).sliver,
+                40.vSliverBox,
+
+                /// Motivation quote
+                SliverAnimatedPaintExtent(
+                  duration: AppConstants.defaultAnimDuration,
+                  child: Skeleton.leaf(
+                    child: StyledText(
+                      _isCompleted
+                          ? context.locale.active_session_quote_five(
+                              totalDuration.toTimeFull(
+                                context,
+                                replaceCommaWithAnd: true,
+                              ),
+                            )
+                          : quotes[max(quoteIndex, 0)],
+                      fontSize: 14,
+                      textAlign: TextAlign.center,
+                    ),
+                  ).centered.sliver,
                 ),
-          sliverBody: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              24.vSliverBox,
-              TimerProgressClock(
-                progress: progress.toDouble(),
-              ).sliver,
-              20.vSliverBox,
 
-              /// Countdown timer
-              FlipCountdownText(duration: totalDuration).sliver,
-              40.vSliverBox,
+                64.vSliverBox,
 
-              SliverAnimatedPaintExtent(
-                duration: AppConstants.defaultAnimDuration,
-                child: StyledText(
-                  _isCompleted
-                      ? context.locale.active_session_quote_five(
-                          totalDuration.toTimeFull(
-                            context,
-                            replaceCommaWithAnd: true,
-                          ),
-                        )
-                      : quotes[max(quoteIndex, 0)],
-                  fontSize: 14,
-                  textAlign: TextAlign.center,
-                ).centered.sliver,
-              ),
-
-              64.vSliverBox,
-
-              /// Waves
-              SineWave(
-                sinColor: Theme.of(context).colorScheme.primaryContainer,
-                cosColor: Theme.of(context).colorScheme.primary,
-              ).sliver,
-            ],
+                /// Waves
+                SineWave(
+                  sinColor: Theme.of(context).colorScheme.primaryContainer,
+                  cosColor: Theme.of(context).colorScheme.primary,
+                ).sliver,
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
-  Column _buildTitle(double percentage) {
+  Widget _buildTitle(FocusSession? session, double percentage) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,34 +221,34 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
         Opacity(
           opacity: percentage,
           child: Icon(
-            sessionTypeIcons[widget.session.type] ??
+            sessionTypeIcons[session?.type] ??
                 FluentIcons.target_arrow_20_regular,
             size: 24 * percentage,
           ),
         ),
         2.vBox,
         AppBarTitle(
-          titleText: sessionTypeLabels(context)[widget.session.type] ??
+          titleText: sessionTypeLabels(context)[session?.type] ??
               context.locale.active_session_tab_title,
         )
       ],
     );
   }
 
-  void _giveUpOrFinishActiveSession() async {
+  void _giveUpOrFinishActiveSession(bool isFinite) async {
     final confirm = await showConfirmationDialog(
       context: context,
       heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
-      title: _isFinite
+      title: isFinite
           ? context.locale.active_session_giveup_dialog_title
           : context.locale.active_session_finish_dialog_title,
-      info: _isFinite
+      info: isFinite
           ? context.locale.active_session_giveup_dialog_info
           : context.locale.active_session_finish_dialog_info,
-      icon: _isFinite
+      icon: isFinite
           ? FluentIcons.emoji_sad_20_filled
           : FluentIcons.emoji_surprise_20_filled,
-      positiveLabel: _isFinite
+      positiveLabel: isFinite
           ? context.locale.active_session_giveup_dialog_title
           : context.locale.active_session_finish_dialog_title,
       negativeLabel: context.locale.active_session_dialog_button_keep_pushing,
@@ -204,12 +256,13 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
 
     if (!confirm) return;
 
+    _isPoppingTriggered = true;
     await ref.read(focusModeProvider.notifier).giveUpOrFinishFocusSession(
-          isTheSessionSuccessful: !_isFinite,
-          isFiniteSession: _isFinite,
+          isTheSessionSuccessful: !isFinite,
+          isFiniteSession: isFinite,
         );
 
-    if (_isFinite) {
+    if (isFinite) {
       await Future.delayed(1.seconds);
 
       /// Show alert and go back
