@@ -127,6 +127,8 @@ class _ScaffoldShellState extends State<ScaffoldShell>
       floatingActionButton:
           widget.items[_selectedTabIndex].fab ?? const SizedBox.shrink(),
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
+      extendBody: true,
+      extendBodyBehindAppBar: true,
       bottomNavigationBar: _haveMultiTabs ? bottomNavBar() : null,
       body: TabBarView(
         controller: _tabController,
@@ -234,9 +236,10 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     return ValueListenableBuilder<bool>(
       valueListenable: _isBottomNavVisible,
       builder: (context, isVisible, child) => AnimatedContainer(
-        height: isVisible ? 104 : 0,
+        height: isVisible ? (80 + MediaQuery.of(context).padding.bottom) : 0,
         duration: 300.ms,
         curve: isVisible ? Curves.easeOut : Curves.easeOut.flipped,
+        alignment: Alignment.bottomCenter,
         child: SingleChildScrollView(child: child),
       ),
       child: NavigationBar(
