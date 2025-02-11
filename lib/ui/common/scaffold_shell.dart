@@ -107,8 +107,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
   void _onScrolled(ScrollController controller) {
     if (controller.position.userScrollDirection == ScrollDirection.reverse) {
       _isBottomNavVisible.value = false;
-    } else if (controller.position.userScrollDirection ==
-        ScrollDirection.forward) {
+    } else {
       _isBottomNavVisible.value = true;
     }
   }

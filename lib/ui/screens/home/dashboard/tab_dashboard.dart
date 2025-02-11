@@ -18,6 +18,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_list.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
@@ -32,8 +33,6 @@ import 'package:mindful/ui/screens/home/dashboard/glance_cards_grid.dart';
 import 'package:mindful/ui/transitions/default_effects.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-
-final _isLoadingProvider = StateProvider<bool>((ref) => true);
 
 class TabDashboard extends ConsumerWidget {
   const TabDashboard({super.key});
@@ -138,11 +137,9 @@ class TabDashboard extends ConsumerWidget {
                       .pushNamed(AppRoutes.websitesBlockingPath),
                 ),
               ].animateListWhen(
-                when: ref.watch(_isLoadingProvider),
-                onComplete: (_) =>
-                    ref.read(_isLoadingProvider.notifier).update((_) => false),
+                when: ref.watch(appsInfoProvider).isLoading,
                 effects: DefaultEffects.transitionIn,
-                interval: 100.ms,
+                interval: 75.ms,
               ),
             ),
 

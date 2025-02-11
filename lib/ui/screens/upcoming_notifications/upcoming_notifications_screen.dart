@@ -38,9 +38,7 @@ class _UpcomingStateNotificationsScreen
 
   @override
   Widget build(BuildContext context) {
-    final (isLoading, haveNotifications) = ref.watch(
-        upcomingNotificationsProvider
-            .select((v) => (!v.hasValue, v.value?.isNotEmpty ?? false)));
+    final notifications = ref.watch(upcomingNotificationsProvider);
 
     return ScaffoldShell(
       items: [
@@ -75,17 +73,11 @@ class _UpcomingStateNotificationsScreen
                   title: context.locale.last_24_hours_heading,
                 ).sliver,
 
-                /// Notifications
-                isLoading
-
-                    /// Loading notifications
-                    ? const SliverShimmerList(
-                        includeSubtitle: true,
-                        includeTrailing: true,
-                      )
+                /// Have value
+                notifications.hasValue
 
                     /// Have notifications
-                    : haveNotifications
+                    ? notifications.value!.isNotEmpty
                         ? _shouldGroup
                             ? const GroupedNotificationsList()
                             : const UngroupedNotificationsList()
@@ -108,7 +100,14 @@ class _UpcomingStateNotificationsScreen
                                 ),
                               ],
                             ),
-                          ).sliver,
+                          ).sliver
+                    :
+
+                    /// Loading notifications
+                    const SliverShimmerList(
+                        includeSubtitle: true,
+                        includeTrailing: true,
+                      ),
 
                 /// padding
                 const SliverTabsBottomPadding(),
