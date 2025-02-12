@@ -19,6 +19,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
+import 'package:mindful/core/services/crash_log_service.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/hero_tags.dart';
@@ -42,6 +43,12 @@ class ExportClearCrashLogs extends ConsumerStatefulWidget {
 
 class _ExportClearCrashLogsState extends ConsumerState<ExportClearCrashLogs> {
   bool _isExporting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    CrashLogService.instance.loadLogsFromNativeToDriftDb();
+  }
 
   @override
   Widget build(BuildContext context) {
