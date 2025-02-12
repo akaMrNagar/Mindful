@@ -39,6 +39,10 @@ class MethodChannelService {
   bool get isSelfRestart => _isSelfRestart;
   bool _isSelfRestart = false;
 
+  /// [DeviceInfoModel] containing information about this device on which app is running
+  DeviceInfoModel get deviceInfo => _deviceInfo;
+  late DeviceInfoModel _deviceInfo;
+
   /// Initializes the method channel by setting a handler for incoming method calls from the native side.
   Future<void> init() async {
     _methodChannel.setMethodCallHandler(
@@ -48,6 +52,9 @@ class MethodChannelService {
         }
       },
     );
+
+    /// Load information about the device
+    _deviceInfo = await MethodChannelService.instance.getDeviceInfo();
   }
 
   // ===========================================================================================

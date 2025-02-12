@@ -57,8 +57,8 @@ class CrashLogService {
   void recordCrashError(String error, String stackTrace) async {
     /// Create log
     final crashLog = CrashLogsTableCompanion.insert(
-      appVersion: Value(
-          (await MethodChannelService.instance.getDeviceInfo()).mindfulVersion),
+      appVersion:
+          Value(MethodChannelService.instance.deviceInfo.mindfulVersion),
       error: Value(error),
       stackTrace: Value(stackTrace),
       timeStamp: Value(DateTime.now()),

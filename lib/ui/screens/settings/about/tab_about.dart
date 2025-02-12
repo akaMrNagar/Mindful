@@ -21,7 +21,6 @@ import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/system/device_info_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -35,8 +34,7 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion =
-        ref.watch(deviceInfoProvider).value?.mindfulVersion ?? "Loading..";
+    final appVersion = MethodChannelService.instance.deviceInfo.mindfulVersion;
 
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
