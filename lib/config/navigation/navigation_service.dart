@@ -39,14 +39,16 @@ class NavigationService {
   Future<void> init() async {
     /// Listen to changes and handle deep links when their is a valid link either on app startup
     /// or even when app is active.
-    _appLinks.uriLinkStream.listen((uri) {
-      if (AppRoutes.routes.keys.contains(uri.path)) {
-        _goToRoute(
-          uri.path,
-          parameters: uri.queryParameters,
-        );
-      }
-    });
+    _appLinks.uriLinkStream.listen(
+      (uri) {
+        if (AppRoutes.routes.keys.contains(uri.path)) {
+          _goToRoute(
+            uri.path,
+            parameters: uri.queryParameters,
+          );
+        }
+      },
+    );
 
     /// Fetch initial deep link
     final initialUri = await _appLinks.getInitialLink();

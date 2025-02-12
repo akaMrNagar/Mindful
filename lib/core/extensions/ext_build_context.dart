@@ -41,7 +41,7 @@ extension ExtBuildContext on BuildContext {
     try {
       final args = ModalRoute.of(this)?.settings.arguments;
       if (args is Map) {
-        final value = args[key];
+        final value = args[key]?.toString();
 
         if (value != null) {
           if (T == int) {
@@ -57,9 +57,9 @@ extension ExtBuildContext on BuildContext {
           }
         }
       }
+    } catch (e) {
+      debugPrint("Failed to resolve parameter with key `$key`");
     }
-    // ignore: empty_catches
-    catch (e) {}
     return null;
   }
 

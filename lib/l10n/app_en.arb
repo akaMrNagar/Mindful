@@ -318,7 +318,6 @@
     "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
     "timeline_tab_title": "Timeline",
     "timeline_tab_info": "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
-    "selected_month_productive_time_label": "Productive time",
     "selected_month_productive_time_snack_alert": "Your total productive time for the selected month is {timeString}.",
     "@selected_month_productive_time_snack_alert": {
         "placeholders": {

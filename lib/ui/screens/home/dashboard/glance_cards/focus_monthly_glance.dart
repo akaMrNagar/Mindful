@@ -37,7 +37,7 @@ class FocusMonthlyGlance extends ConsumerWidget {
       badge: const GoToBadgeIcon(),
       onTap: () => Navigator.of(context).pushNamed(
         AppRoutes.focusModePath,
-        arguments: 1,
+        arguments: {"tab": 1},
       ),
     );
   }

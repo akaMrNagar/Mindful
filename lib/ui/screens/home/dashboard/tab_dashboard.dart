@@ -39,23 +39,27 @@ class TabDashboard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isUsageLoading =
+        ref.watch(todaysAppsUsageProvider.select((v) => v.isLoading));
+    final isAppsLoading =
+        ref.watch(appsInfoProvider.select((v) => v.isLoading));
+
     return DefaultRefreshIndicator(
       onRefresh: () async => ref
           .read(todaysAppsUsageProvider.notifier)
           .refreshTodaysUsage(resetState: true),
-      child: Skeletonizer.zone(
-        enabled: ref.watch(todaysAppsUsageProvider).isLoading,
-        enableSwitchAnimation: true,
-        ignorePointers: false,
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            /// Active session
-            const SliverActiveSessionAlert(),
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          /// Active session
+          const SliverActiveSessionAlert(),
 
-            MultiSliver(
-              children: [
-                Row(
+          MultiSliver(
+            children: [
+              Skeletonizer.zone(
+                enabled: isUsageLoading,
+                enableSwitchAnimation: true,
+                child: Row(
                   children: [
                     /// Screen time
                     const Expanded(child: ScreenTimeGlance()),
@@ -65,87 +69,91 @@ class TabDashboard extends ConsumerWidget {
                     const Expanded(child: FocusDailyGlance()),
                   ],
                 ),
-
-                /// Usage glance
-                DefaultExpandableListTile(
-                  position: ItemPosition.mid,
-                  titleText: context.locale.glance_tile_title,
-                  subtitleText: context.locale.glance_tile_subtitle,
-                  content: const GlanceCardsGrid(),
-                ),
-
-                /// Parental controls
-                DefaultListTile(
-                  position: ItemPosition.bottom,
-                  leadingIcon: FluentIcons.shield_keyhole_20_regular,
-                  titleText: context.locale.parental_controls_tab_title,
-                  subtitleText: context.locale.parental_controls_tile_subtitle,
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.parentalControlsPath),
-                ),
-
-                /// Restrictions
-                ContentSectionHeader(
-                  title: context.locale.restrictions_heading,
-                ),
-
-                /// Apps blocking
-                DefaultListTile(
-                  position: ItemPosition.top,
-                  leadingIcon: FluentIcons.app_title_20_regular,
-                  titleText: context.locale.apps_blocking_tile_title,
-                  subtitleText: context.locale.apps_blocking_tile_subtitle,
-                  onPressed: () =>
-                      TabControllerProvider.of(context)?.animateToTab(
-                    DefaultHomeTab.statistics.index,
-                  ),
-                ),
-
-                /// Grouped apps blocking
-                DefaultListTile(
-                  position: ItemPosition.mid,
-                  leadingIcon: FluentIcons.app_recent_20_regular,
-                  titleText: context.locale.grouped_apps_blocking_tile_title,
-                  subtitleText:
-                      context.locale.grouped_apps_blocking_tile_subtitle,
-                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.restrictionGroupsPath),
-                ),
-
-                /// Shorts restrictions
-                DefaultListTile(
-                  position: ItemPosition.mid,
-                  leadingIcon: FluentIcons.resize_video_20_regular,
-                  titleText: context.locale.shorts_blocking_tab_title,
-                  subtitleText: context.locale.shorts_blocking_tile_subtitle,
-                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.shortsBlockingPath),
-                ),
-
-                /// Website restrictions
-                DefaultListTile(
-                  position: ItemPosition.bottom,
-                  leadingIcon: FluentIcons.earth_20_regular,
-                  titleText: context.locale.websites_blocking_tab_title,
-                  subtitleText: context.locale.websites_blocking_tile_subtitle,
-                  trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.websitesBlockingPath),
-                ),
-              ].animateListWhen(
-                when: ref.watch(appsInfoProvider).isLoading,
-                effects: DefaultEffects.transitionIn,
-                interval: 75.ms,
               ),
-            ),
 
-            const SliverTabsBottomPadding(),
-          ],
-        ),
+              /// Usage glance
+              DefaultExpandableListTile(
+                position: ItemPosition.mid,
+                titleText: context.locale.glance_tile_title,
+                subtitleText: context.locale.glance_tile_subtitle,
+                content: Skeletonizer.zone(
+                  enabled: isUsageLoading,
+                  enableSwitchAnimation: true,
+                  child: const GlanceCardsGrid(),
+                ),
+              ),
+
+              /// Parental controls
+              DefaultListTile(
+                position: ItemPosition.bottom,
+                leadingIcon: FluentIcons.shield_keyhole_20_regular,
+                titleText: context.locale.parental_controls_tab_title,
+                subtitleText: context.locale.parental_controls_tile_subtitle,
+                color: Theme.of(context).colorScheme.secondaryContainer,
+                trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(AppRoutes.parentalControlsPath),
+              ),
+
+              /// Restrictions
+              ContentSectionHeader(
+                title: context.locale.restrictions_heading,
+              ),
+
+              /// Apps blocking
+              DefaultListTile(
+                position: ItemPosition.top,
+                leadingIcon: FluentIcons.app_title_20_regular,
+                titleText: context.locale.apps_blocking_tile_title,
+                subtitleText: context.locale.apps_blocking_tile_subtitle,
+                onPressed: () =>
+                    TabControllerProvider.of(context)?.animateToTab(
+                  DefaultHomeTab.statistics.index,
+                ),
+              ),
+
+              /// Grouped apps blocking
+              DefaultListTile(
+                position: ItemPosition.mid,
+                leadingIcon: FluentIcons.app_recent_20_regular,
+                titleText: context.locale.grouped_apps_blocking_tile_title,
+                subtitleText:
+                    context.locale.grouped_apps_blocking_tile_subtitle,
+                trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(AppRoutes.restrictionGroupsPath),
+              ),
+
+              /// Shorts restrictions
+              DefaultListTile(
+                position: ItemPosition.mid,
+                leadingIcon: FluentIcons.resize_video_20_regular,
+                titleText: context.locale.shorts_blocking_tab_title,
+                subtitleText: context.locale.shorts_blocking_tile_subtitle,
+                trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(AppRoutes.shortsBlockingPath),
+              ),
+
+              /// Website restrictions
+              DefaultListTile(
+                position: ItemPosition.bottom,
+                leadingIcon: FluentIcons.earth_20_regular,
+                titleText: context.locale.websites_blocking_tab_title,
+                subtitleText: context.locale.websites_blocking_tile_subtitle,
+                trailing: const Icon(FluentIcons.chevron_right_20_regular),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(AppRoutes.websitesBlockingPath),
+              ),
+            ].animateListWhen(
+              when: isAppsLoading,
+              effects: DefaultEffects.transitionIn,
+              interval: 75.ms,
+            ),
+          ),
+
+          const SliverTabsBottomPadding(),
+        ],
       ),
     );
   }

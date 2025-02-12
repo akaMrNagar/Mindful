@@ -10,8 +10,15 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
+import 'package:mindful/providers/focus/dated_focus_provider.dart';
 
 final lifetimeFocusProvider = FutureProvider<Duration>(
-  (ref) => DriftDbService.instance.driftDb.dynamicRecordsDao
-      .fetchLifetimeSessionsDuration(),
+  (ref) {
+    /// Listen to todays focus changes
+    ref.watch(datedFocusProvider(dateToday));
+
+    return DriftDbService.instance.driftDb.dynamicRecordsDao
+        .fetchLifetimeSessionsDuration();
+  },
 );

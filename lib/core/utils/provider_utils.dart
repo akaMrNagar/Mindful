@@ -21,7 +21,6 @@ void initializeNecessaryProviders(WidgetRef ref) {
   debugPrint("Necessary providers initialized.");
 }
 
-
 /// Generates a Map<DateTime, int> for the 7 days of the week starting
 /// from the given date's start of the week, initializing all values to 0.
 Map<DateTime, UsageModel> generateEmptyWeekUsage(DateTime dt) {

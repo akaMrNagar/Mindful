@@ -73,6 +73,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _goToNextScreen(bool shouldDelay) async {
+    if (shouldDelay) await Future.delayed(100.ms);
     if (!mounted) return;
 
     if (_haveAllEssentialPermissions && _isOnboardingDone) {
