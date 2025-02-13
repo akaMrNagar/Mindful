@@ -364,6 +364,10 @@ class FgMethodCallHandler(
                 result.success(true)
             }
 
+            "promptForQuickTile" -> {
+                NewActivitiesLaunchHelper.promptForQuickFocusTile(context, result)
+            }
+
             "openAppWithPackage" -> {
                 NewActivitiesLaunchHelper.openAppWithPackage(
                     context,

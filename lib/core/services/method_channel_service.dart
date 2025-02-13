@@ -443,4 +443,8 @@ class MethodChannelService {
   /// This method takes the URL string and sends it to the native side for launching in the browser.
   Future<bool> launchUrl(String siteUrl) async =>
       await _methodChannel.invokeMethod('launchUrl', siteUrl);
+
+  /// Prompts the user to add Quick Focus Tile to the status bar
+  Future<bool> promptForQuickTile() async =>
+      await _methodChannel.invokeMethod('promptForQuickTile');
 }

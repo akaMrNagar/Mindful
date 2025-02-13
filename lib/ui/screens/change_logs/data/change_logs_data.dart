@@ -1,5 +1,7 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
+import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 
 @immutable
@@ -40,10 +42,23 @@ class ChangeLogsData {
 
   /// Change logs for this latest version
   final List<ChangeLog> _latest = [
-    const ChangeLog(
+    ChangeLog(
       icon: FluentIcons.target_arrow_20_filled,
       label: "Quick Focus Tile",
-      bulletPoints: [
+      onTap: (ctx) async {
+        final isSuccess =
+            await MethodChannelService.instance.promptForQuickTile();
+
+        if (!ctx.mounted) return;
+
+        ctx.showSnackAlert(
+          isSuccess
+              ? "Quick tile added successfully."
+              : "Something went wrong!",
+          icon: FluentIcons.target_arrow_20_filled,
+        );
+      },
+      bulletPoints: const [
         "One tap to focus mode.",
         "Directly open focus mode.",
         "Use pre-configured profiles."
@@ -57,6 +72,7 @@ class ChangeLogsData {
         "One tap to Batched Notifications.",
         "One tap to Focus Mode.",
         "Automate with third party apps.",
+        "Press and hold app icon for options."
       ],
     ),
     const ChangeLog(
@@ -64,27 +80,31 @@ class ChangeLogsData {
       label: "Mindful overlay",
       bulletPoints: [
         "New app paused overlay with more info.",
-        "See reason behind blocking.",
-        "See left and used limit.",
-        "More usage options.",
-        "Use emergency.",
+        "Clearly see why an app is blocked.",
+        "Check how much time you have left for an app.",
+        "Use emergency for urgent situation.",
+        "More reminder options.",
       ],
     ),
-    const ChangeLog(
+    ChangeLog(
       icon: FluentIcons.shield_keyhole_20_filled,
       label: "Parental controls",
-      bulletPoints: [
+      onTap: (context) =>
+          Navigator.of(context).pushNamed(AppRoutes.parentalControlsPath),
+      bulletPoints: const [
         "Invincible mode for distractions.",
-        "Tamper protection for the cravings.",
-        "Biometric lock for access.",
+        "Tamper protection for sneaky workarounds.",
+        "Biometric lock for added security.",
       ],
     ),
-    const ChangeLog(
+    ChangeLog(
       icon: FluentIcons.earth_20_filled,
       label: "Websites blocker",
-      bulletPoints: [
+      onTap: (context) =>
+          Navigator.of(context).pushNamed(AppRoutes.websitesBlockingPath),
+      bulletPoints: const [
         "Mark custom websites as NSFW.",
-        "NSFW websites can't be removed.",
+        "NSFW websites can't be removed once added.",
       ],
     ),
   ];
@@ -97,15 +117,15 @@ class ChangeLogsData {
       bulletPoints: [
         "Batch notifications from different apps.",
         "Schedule them for later.",
-        "Stay distraction free.",
+        "Stay focused without missing anything important.",
       ],
     ),
     const ChangeLog(
       icon: FluentIcons.box_multiple_20_filled,
       label: "Notification grouping",
       bulletPoints: [
-        "Apps based notification grouping.",
-        "Conversation based grouping.",
+        "Organizes notifications by app for easy browsing.",
+        "Groups messages from the same conversation together.",
       ],
     ),
   ];
@@ -120,12 +140,14 @@ class ChangeLogsData {
         "New active period limit.",
       ],
     ),
-    const ChangeLog(
+    ChangeLog(
       icon: FluentIcons.prohibited_multiple_20_filled,
       label: "Group restrictions",
-      bulletPoints: [
+      onTap: (context) =>
+          Navigator.of(context).pushNamed(AppRoutes.restrictionGroupsPath),
+      bulletPoints: const [
         "Add restrictions to group of apps.",
-        "Combined timer limit.",
+        "Combined time limit.",
         "Combined active period limit.",
       ],
     ),
