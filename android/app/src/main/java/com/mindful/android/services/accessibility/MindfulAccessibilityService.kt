@@ -188,54 +188,58 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * Updates the service info with the latest settings and registered packages.
      */
     private fun refreshServiceInfo() {
-        // Using hashset to avoid duplicates
-        val pm = packageManager
-        val allowedPackages = mutableSetOf<String>()
+        try {// Using hashset to avoid duplicates
+            val pm = packageManager
+            val allowedPackages = mutableSetOf<String>()
 
-        // Fetch installed browser packages
-        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
-        pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL).forEach {
-            allowedPackages.add(it.activityInfo.packageName)
-        }
-
-
-        // For short form content blocking on their native apps
-        if (mWellBeingSettings.blockInstaReels) allowedPackages.add(INSTAGRAM_PACKAGE)
-        if (mWellBeingSettings.blockSnapSpotlight) allowedPackages.add(SNAPCHAT_PACKAGE)
-        if (mWellBeingSettings.blockFbReels) allowedPackages.add(FACEBOOK_PACKAGE)
-        if (mWellBeingSettings.blockRedditShorts) allowedPackages.add(REDDIT_PACKAGE)
-
-        if (mWellBeingSettings.blockYtShorts) {
-            // Fetch all the clients available for youtube. It can also include browsers too.
-            val ytIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
-            pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL).forEach {
+            // Fetch installed browser packages
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
+            pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL).forEach {
                 allowedPackages.add(it.activityInfo.packageName)
             }
 
-            // Regardless of the results add original youtube package.
-            allowedPackages.add(YOUTUBE_PACKAGE)
+
+            // For short form content blocking on their native apps
+            if (mWellBeingSettings.blockInstaReels) allowedPackages.add(INSTAGRAM_PACKAGE)
+            if (mWellBeingSettings.blockSnapSpotlight) allowedPackages.add(SNAPCHAT_PACKAGE)
+            if (mWellBeingSettings.blockFbReels) allowedPackages.add(FACEBOOK_PACKAGE)
+            if (mWellBeingSettings.blockRedditShorts) allowedPackages.add(REDDIT_PACKAGE)
+
+            if (mWellBeingSettings.blockYtShorts) {
+                // Fetch all the clients available for youtube. It can also include browsers too.
+                val ytIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
+                pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL).forEach {
+                    allowedPackages.add(it.activityInfo.packageName)
+                }
+
+                // Regardless of the results add original youtube package.
+                allowedPackages.add(YOUTUBE_PACKAGE)
+            }
+
+            // Load nsfw website domains if needed
+            if (mWellBeingSettings.blockNsfwSites) BrowserManager.initializeNsfwDomains()
+            else BrowserManager.clearNsfwDomains()
+
+            val info = AccessibilityServiceInfo()
+            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
+            info.flags = AccessibilityServiceInfo.DEFAULT or
+                    AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS or
+                    AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or
+                    AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+            info.notificationTimeout = 1000
+            info.packageNames = allowedPackages.toTypedArray()
+            serviceInfo = info
+
+            Log.d(
+                TAG, "refreshServiceInfo: Accessibility service updated successfully: " +
+                        "\n settings: $mWellBeingSettings" +
+                        "\n packages: $allowedPackages"
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "refreshServiceInfo: Failed to refresh service info", e)
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e)
         }
-
-        // Load nsfw website domains if needed
-        if (mWellBeingSettings.blockNsfwSites) BrowserManager.initializeNsfwDomains()
-        else BrowserManager.clearNsfwDomains()
-
-        val info = AccessibilityServiceInfo()
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
-        info.flags = AccessibilityServiceInfo.DEFAULT or
-                AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS or
-                AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or
-                AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
-        info.notificationTimeout = 1000
-        info.packageNames = allowedPackages.toTypedArray()
-        serviceInfo = info
-
-        Log.d(
-            TAG, "refreshServiceInfo: Accessibility service updated successfully: " +
-                    "\n settings: $mWellBeingSettings" +
-                    "\n packages: $allowedPackages"
-        )
     }
 
     override fun onSharedPreferenceChanged(prefs: SharedPreferences, changedKey: String?) {

@@ -13,20 +13,20 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/system/device_info_provider.dart';
 import 'package:mindful/ui/common/breathing_widget.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_primary_action_container.dart';
+import 'package:mindful/ui/common/sliver_app_version_info.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 
@@ -35,28 +35,10 @@ class TabAbout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appVersion =
-        ref.watch(deviceInfoProvider).value?.mindfulVersion ?? "Loading..";
-
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
       slivers: [
-        /// App version
-        StyledText(
-          appVersion,
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          isSubtitle: true,
-          height: 1,
-        ).sliver,
-        2.vSliverBox,
-        StyledText(
-          "db-v${DriftDbService.instance.driftDb.schemaVersion}",
-          fontWeight: FontWeight.bold,
-          fontSize: 14,
-          isSubtitle: true,
-          height: 1,
-        ).sliver,
+        const SliverAppVersionInfo(),
 
         /// Breathing logo
         BreathingWidget(
@@ -106,10 +88,10 @@ class TabAbout extends ConsumerWidget {
           position: ItemPosition.bottom,
           leadingIcon: FluentIcons.slide_text_20_regular,
           titleText: context.locale.changelog_tile_title,
-          subtitleText: context.locale.redirected_to_github_subtitle,
+          subtitleText: context.locale.changelog_tile_subtitle,
           trailing: const Icon(FluentIcons.chevron_right_20_regular),
-          onPressed: () => MethodChannelService.instance
-              .launchUrl(AppConstants.githubChangeLogUrl(appVersion)),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.changeLogsPath),
         ).sliver,
 
         /// Contribute

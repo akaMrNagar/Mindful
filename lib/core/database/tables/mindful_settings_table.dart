@@ -63,4 +63,8 @@ class MindfulSettingsTable extends Table {
   /// Flag indicating if onboarding is completed or not
   BoolColumn get isOnboardingDone =>
       boolean().withDefault(const Constant(false))();
+
+  /// The currently installed version of Mindful.
+  /// Mainly used to show changelogs screen.
+  TextColumn get appVersion => text().withDefault(const Constant(""))();
 }

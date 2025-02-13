@@ -35,13 +35,14 @@ class MidnightResetReceiver : BroadcastReceiver() {
         if (intent.action == ACTION_START_MIDNIGHT_RESET) {
             /// Enqueue midnight worker for services
             WorkManager.getInstance(context).enqueueUniqueWork(
-                TAG, ExistingWorkPolicy.KEEP,
+                "Mindful.MidnightResetReceiver.Native",
+                ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequest.Builder(MidnightResetWorker::class.java).build()
             )
 
             /// Enqueue flutter bg worker to backup apps usage
             WorkManager.getInstance(context).enqueueUniqueWork(
-                "Mindful.MidnightResetReceiver",
+                "Mindful.MidnightResetReceiver.FlutterBg",
                 ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequest
                     .Builder(FlutterBgExecutionWorker::class.java)

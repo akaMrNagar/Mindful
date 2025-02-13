@@ -67,7 +67,7 @@ class AppDatabase extends _$AppDatabase {
   //
   // STEP 3 => Add migration steps to migration strategy
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   // Always use [runSafe()] for upgrades - why?
   // If a user imports a backup from a newer schema when they are on an older
@@ -75,6 +75,7 @@ class AppDatabase extends _$AppDatabase {
   // The migrator will run and it will throw error!
   @override
   MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) async => await m.createAll(),
         onUpgrade: (m, from, to) async {
           debugPrint("Upgrading database from schema version $from to $to");
 
@@ -84,6 +85,7 @@ class AppDatabase extends _$AppDatabase {
             steps: migrationSteps(
               from1To2: from1To2,
               from2To3: from2To3,
+              from3To4: from3To4,
             ),
           );
         },

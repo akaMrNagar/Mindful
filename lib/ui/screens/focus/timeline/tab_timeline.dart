@@ -73,8 +73,7 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
                       isPrimary: true,
                       position: ItemPosition.topLeft,
                       icon: FluentIcons.clock_20_regular,
-                      title:
-                          context.locale.selected_month_productive_time_label,
+                      title: context.locale.focus_monthly_label,
                       info:
                           monthlyFocus.totalProductiveTime.toTimeShort(context),
                       onTap: () => context.showSnackAlert(

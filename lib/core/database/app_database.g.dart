@@ -2406,6 +2406,14 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_onboarding_done" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _appVersionMeta =
+      const VerificationMeta('appVersion');
+  @override
+  late final GeneratedColumn<String> appVersion = GeneratedColumn<String>(
+      'app_version', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -2419,7 +2427,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
         usageHistoryWeeks,
         leftEmergencyPasses,
         lastEmergencyUsed,
-        isOnboardingDone
+        isOnboardingDone,
+        appVersion
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2488,6 +2497,12 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           isOnboardingDone.isAcceptableOrUnknown(
               data['is_onboarding_done']!, _isOnboardingDoneMeta));
     }
+    if (data.containsKey('app_version')) {
+      context.handle(
+          _appVersionMeta,
+          appVersion.isAcceptableOrUnknown(
+              data['app_version']!, _appVersionMeta));
+    }
     return context;
   }
 
@@ -2524,6 +2539,8 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           data['${effectivePrefix}last_emergency_used'])!,
       isOnboardingDone: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_onboarding_done'])!,
+      appVersion: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}app_version'])!,
     );
   }
 
@@ -2574,6 +2591,10 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
 
   /// Flag indicating if onboarding is completed or not
   final bool isOnboardingDone;
+
+  /// The currently installed version of Mindful.
+  /// Mainly used to show changelogs screen.
+  final String appVersion;
   const MindfulSettings(
       {required this.id,
       required this.themeMode,
@@ -2586,7 +2607,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       required this.usageHistoryWeeks,
       required this.leftEmergencyPasses,
       required this.lastEmergencyUsed,
-      required this.isOnboardingDone});
+      required this.isOnboardingDone,
+      required this.appVersion});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2609,6 +2631,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
     map['left_emergency_passes'] = Variable<int>(leftEmergencyPasses);
     map['last_emergency_used'] = Variable<DateTime>(lastEmergencyUsed);
     map['is_onboarding_done'] = Variable<bool>(isOnboardingDone);
+    map['app_version'] = Variable<String>(appVersion);
     return map;
   }
 
@@ -2626,6 +2649,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       leftEmergencyPasses: Value(leftEmergencyPasses),
       lastEmergencyUsed: Value(lastEmergencyUsed),
       isOnboardingDone: Value(isOnboardingDone),
+      appVersion: Value(appVersion),
     );
   }
 
@@ -2649,6 +2673,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       lastEmergencyUsed:
           serializer.fromJson<DateTime>(json['lastEmergencyUsed']),
       isOnboardingDone: serializer.fromJson<bool>(json['isOnboardingDone']),
+      appVersion: serializer.fromJson<String>(json['appVersion']),
     );
   }
   @override
@@ -2670,6 +2695,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       'leftEmergencyPasses': serializer.toJson<int>(leftEmergencyPasses),
       'lastEmergencyUsed': serializer.toJson<DateTime>(lastEmergencyUsed),
       'isOnboardingDone': serializer.toJson<bool>(isOnboardingDone),
+      'appVersion': serializer.toJson<String>(appVersion),
     };
   }
 
@@ -2685,7 +2711,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           int? usageHistoryWeeks,
           int? leftEmergencyPasses,
           DateTime? lastEmergencyUsed,
-          bool? isOnboardingDone}) =>
+          bool? isOnboardingDone,
+          String? appVersion}) =>
       MindfulSettings(
         id: id ?? this.id,
         themeMode: themeMode ?? this.themeMode,
@@ -2699,6 +2726,7 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
         leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
         lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
         isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
+        appVersion: appVersion ?? this.appVersion,
       );
   MindfulSettings copyWithCompanion(MindfulSettingsTableCompanion data) {
     return MindfulSettings(
@@ -2730,6 +2758,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       isOnboardingDone: data.isOnboardingDone.present
           ? data.isOnboardingDone.value
           : this.isOnboardingDone,
+      appVersion:
+          data.appVersion.present ? data.appVersion.value : this.appVersion,
     );
   }
 
@@ -2747,7 +2777,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           ..write('usageHistoryWeeks: $usageHistoryWeeks, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone')
+          ..write('isOnboardingDone: $isOnboardingDone, ')
+          ..write('appVersion: $appVersion')
           ..write(')'))
         .toString();
   }
@@ -2765,7 +2796,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
       usageHistoryWeeks,
       leftEmergencyPasses,
       lastEmergencyUsed,
-      isOnboardingDone);
+      isOnboardingDone,
+      appVersion);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2781,7 +2813,8 @@ class MindfulSettings extends DataClass implements Insertable<MindfulSettings> {
           other.usageHistoryWeeks == this.usageHistoryWeeks &&
           other.leftEmergencyPasses == this.leftEmergencyPasses &&
           other.lastEmergencyUsed == this.lastEmergencyUsed &&
-          other.isOnboardingDone == this.isOnboardingDone);
+          other.isOnboardingDone == this.isOnboardingDone &&
+          other.appVersion == this.appVersion);
 }
 
 class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
@@ -2797,6 +2830,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
   final Value<int> leftEmergencyPasses;
   final Value<DateTime> lastEmergencyUsed;
   final Value<bool> isOnboardingDone;
+  final Value<String> appVersion;
   const MindfulSettingsTableCompanion({
     this.id = const Value.absent(),
     this.themeMode = const Value.absent(),
@@ -2810,6 +2844,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
+    this.appVersion = const Value.absent(),
   });
   MindfulSettingsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2824,6 +2859,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     this.leftEmergencyPasses = const Value.absent(),
     this.lastEmergencyUsed = const Value.absent(),
     this.isOnboardingDone = const Value.absent(),
+    this.appVersion = const Value.absent(),
   });
   static Insertable<MindfulSettings> custom({
     Expression<int>? id,
@@ -2838,6 +2874,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     Expression<int>? leftEmergencyPasses,
     Expression<DateTime>? lastEmergencyUsed,
     Expression<bool>? isOnboardingDone,
+    Expression<String>? appVersion,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2853,6 +2890,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
         'left_emergency_passes': leftEmergencyPasses,
       if (lastEmergencyUsed != null) 'last_emergency_used': lastEmergencyUsed,
       if (isOnboardingDone != null) 'is_onboarding_done': isOnboardingDone,
+      if (appVersion != null) 'app_version': appVersion,
     });
   }
 
@@ -2868,7 +2906,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       Value<int>? usageHistoryWeeks,
       Value<int>? leftEmergencyPasses,
       Value<DateTime>? lastEmergencyUsed,
-      Value<bool>? isOnboardingDone}) {
+      Value<bool>? isOnboardingDone,
+      Value<String>? appVersion}) {
     return MindfulSettingsTableCompanion(
       id: id ?? this.id,
       themeMode: themeMode ?? this.themeMode,
@@ -2882,6 +2921,7 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
       leftEmergencyPasses: leftEmergencyPasses ?? this.leftEmergencyPasses,
       lastEmergencyUsed: lastEmergencyUsed ?? this.lastEmergencyUsed,
       isOnboardingDone: isOnboardingDone ?? this.isOnboardingDone,
+      appVersion: appVersion ?? this.appVersion,
     );
   }
 
@@ -2928,6 +2968,9 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
     if (isOnboardingDone.present) {
       map['is_onboarding_done'] = Variable<bool>(isOnboardingDone.value);
     }
+    if (appVersion.present) {
+      map['app_version'] = Variable<String>(appVersion.value);
+    }
     return map;
   }
 
@@ -2945,7 +2988,8 @@ class MindfulSettingsTableCompanion extends UpdateCompanion<MindfulSettings> {
           ..write('usageHistoryWeeks: $usageHistoryWeeks, ')
           ..write('leftEmergencyPasses: $leftEmergencyPasses, ')
           ..write('lastEmergencyUsed: $lastEmergencyUsed, ')
-          ..write('isOnboardingDone: $isOnboardingDone')
+          ..write('isOnboardingDone: $isOnboardingDone, ')
+          ..write('appVersion: $appVersion')
           ..write(')'))
         .toString();
   }
@@ -6716,6 +6760,7 @@ typedef $$MindfulSettingsTableTableCreateCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
+  Value<String> appVersion,
 });
 typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
     = MindfulSettingsTableCompanion Function({
@@ -6731,6 +6776,7 @@ typedef $$MindfulSettingsTableTableUpdateCompanionBuilder
   Value<int> leftEmergencyPasses,
   Value<DateTime> lastEmergencyUsed,
   Value<bool> isOnboardingDone,
+  Value<String> appVersion,
 });
 
 class $$MindfulSettingsTableTableFilterComposer
@@ -6786,6 +6832,9 @@ class $$MindfulSettingsTableTableFilterComposer
   ColumnFilters<bool> get isOnboardingDone => $composableBuilder(
       column: $table.isOnboardingDone,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get appVersion => $composableBuilder(
+      column: $table.appVersion, builder: (column) => ColumnFilters(column));
 }
 
 class $$MindfulSettingsTableTableOrderingComposer
@@ -6839,6 +6888,9 @@ class $$MindfulSettingsTableTableOrderingComposer
   ColumnOrderings<bool> get isOnboardingDone => $composableBuilder(
       column: $table.isOnboardingDone,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get appVersion => $composableBuilder(
+      column: $table.appVersion, builder: (column) => ColumnOrderings(column));
 }
 
 class $$MindfulSettingsTableTableAnnotationComposer
@@ -6886,6 +6938,9 @@ class $$MindfulSettingsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isOnboardingDone => $composableBuilder(
       column: $table.isOnboardingDone, builder: (column) => column);
+
+  GeneratedColumn<String> get appVersion => $composableBuilder(
+      column: $table.appVersion, builder: (column) => column);
 }
 
 class $$MindfulSettingsTableTableTableManager extends RootTableManager<
@@ -6929,6 +6984,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
+            Value<String> appVersion = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion(
             id: id,
@@ -6943,6 +6999,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
+            appVersion: appVersion,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -6957,6 +7014,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             Value<int> leftEmergencyPasses = const Value.absent(),
             Value<DateTime> lastEmergencyUsed = const Value.absent(),
             Value<bool> isOnboardingDone = const Value.absent(),
+            Value<String> appVersion = const Value.absent(),
           }) =>
               MindfulSettingsTableCompanion.insert(
             id: id,
@@ -6971,6 +7029,7 @@ class $$MindfulSettingsTableTableTableManager extends RootTableManager<
             leftEmergencyPasses: leftEmergencyPasses,
             lastEmergencyUsed: lastEmergencyUsed,
             isOnboardingDone: isOnboardingDone,
+            appVersion: appVersion,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

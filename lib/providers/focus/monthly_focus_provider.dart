@@ -13,13 +13,17 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/models/monthly_focus_model.dart';
+import 'package:mindful/providers/focus/dated_focus_provider.dart';
 
 /// A Riverpod state notifier provider that manages [MonthlyFocusModel].
 final monthlyFocusProvider = StateNotifierProvider.family<FocusModeNotifier,
-    MonthlyFocusModel, DateTimeRange>(
-  (ref, monthRange) => FocusModeNotifier(monthRange),
-);
+    MonthlyFocusModel, DateTimeRange>((ref, monthRange) {
+  /// Listen to todays focus changes
+  ref.watch(datedFocusProvider(dateToday));
+  return FocusModeNotifier(monthRange);
+});
 
 /// This class manages the state of Focus Timeline.
 class FocusModeNotifier extends StateNotifier<MonthlyFocusModel> {
@@ -41,10 +45,12 @@ class FocusModeNotifier extends StateNotifier<MonthlyFocusModel> {
     final totalProductiveTime =
         productiveDaysMap.values.fold(0, (a, b) => a + b);
 
-    state = state.copyWith(
-      monthlyFocus: productiveDaysMap,
-      totalProductiveDays: productiveDaysMap.length,
-      totalProductiveTime: totalProductiveTime.seconds,
-    );
+    if (mounted) {
+      state = state.copyWith(
+        monthlyFocus: productiveDaysMap,
+        totalProductiveDays: productiveDaysMap.length,
+        totalProductiveTime: totalProductiveTime.seconds,
+      );
+    }
   }
 }

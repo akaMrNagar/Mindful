@@ -17,6 +17,7 @@ final defaultMindfulSettingsModel = MindfulSettings(
   leftEmergencyPasses: 3,
   lastEmergencyUsed: DateTime(0),
   isOnboardingDone: false,
+  appVersion: "",
 );
 
 const defaultSharedUniqueDataModel = SharedUniqueData(

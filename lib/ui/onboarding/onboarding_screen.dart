@@ -27,11 +27,11 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({
-    this.isOnboardingDone,
+    required this.isOnboardingDone,
     super.key,
   });
 
-  final bool? isOnboardingDone;
+  final bool isOnboardingDone;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _OnboardingState();
@@ -84,7 +84,7 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
     /// Go to permissions page if already done onboarding
     /// but user removed some essential permissions
-    if (widget.isOnboardingDone ?? false) {
+    if (widget.isOnboardingDone) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _skipToLastPage();
       });
@@ -107,7 +107,8 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
         200.ms,
         () {
           if (!mounted) return;
-          NavigationService.instance.init();
+          NavigationService.instance
+              .init(showChangeLogsToo: !widget.isOnboardingDone);
         },
       );
     }

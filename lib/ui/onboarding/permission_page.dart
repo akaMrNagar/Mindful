@@ -9,10 +9,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/system/device_info_provider.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/ui/onboarding/onboarding_page.dart';
 import 'package:mindful/ui/permissions/alarm_permission_tile.dart';
 import 'package:mindful/ui/permissions/battery_permission_tile.dart';
@@ -20,16 +19,15 @@ import 'package:mindful/ui/permissions/display_overlay_permission_tile.dart';
 import 'package:mindful/ui/permissions/notification_permission_tile.dart';
 import 'package:mindful/ui/permissions/usage_access_permission_tile.dart';
 
-class PermissionsPage extends ConsumerWidget {
+class PermissionsPage extends StatelessWidget {
   const PermissionsPage({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // 24 is min sdk
-    final sdkVersion =
-        ref.watch(deviceInfoProvider.select((v) => v.value?.sdkVersion)) ?? 24;
+    final sdkVersion = MethodChannelService.instance.deviceInfo.sdkVersion;
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),

@@ -115,4 +115,9 @@ class MindfulSettingsNotifier extends StateNotifier<MindfulSettings> {
 
   /// Mark onboarding as completed
   void markOnboardingDone() => state = state.copyWith(isOnboardingDone: true);
+
+  /// Update app version
+  void updateAppVersion() => state = state.copyWith(
+        appVersion: MethodChannelService.instance.deviceInfo.mindfulVersion,
+      );
 }

@@ -18,19 +18,19 @@ class FocusQuickTileService : TileService() {
         try {
             /// Check focus session status
             val isFocusActive = Utils.isServiceRunning(this, FocusSessionService::class.java)
-            val tile = qsTile
+            val tile:Tile? = qsTile
 
 
-            tile.state = if (isFocusActive) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
+            tile?.state = if (isFocusActive) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                tile.subtitle =
+                tile?.subtitle =
                     getString(
                         if (isFocusActive) R.string.focus_quick_tile_status_active
                         else R.string.app_name
                     )
             }
 
-            tile.updateTile()
+            tile?.updateTile()
         } catch (e: Exception) {
             Log.e(TAG, "onStartListening: Failed to update focus quick tile", e)
             SharedPrefsHelper.insertCrashLogToPrefs(this, e)

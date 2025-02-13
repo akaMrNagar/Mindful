@@ -36,45 +36,51 @@ class NavigationService {
   ///
   /// Should be called from splash screen after authentication if access is protected
   /// or Onboarding Screen after setup
-  Future<void> init() async {
+  Future<void> init({required bool showChangeLogsToo}) async {
     /// Listen to changes and handle deep links when their is a valid link either on app startup
     /// or even when app is active.
-    _appLinks.uriLinkStream.listen((uri) {
-      if (AppRoutes.routes.keys.contains(uri.path)) {
-        _goToRoute(
-          uri.path,
-          parameters: uri.queryParameters,
-        );
-      }
-    });
+    _appLinks.uriLinkStream.listen(
+      (uri) {
+        if (AppRoutes.routes.keys.contains(uri.path)) {
+          _goToRoute(
+            uri.path,
+            parameters: uri.queryParameters,
+          );
+        }
+      },
+    );
 
     /// Fetch initial deep link
     final initialUri = await _appLinks.getInitialLink();
     if (initialUri == null) {
-      _goToRoute(AppRoutes.homePath, canPop: false);
+      await _goToRoute(AppRoutes.homePath, replaceCurrent: true);
+    }
+
+    /// Now push the changelog screen if needed
+    if (showChangeLogsToo) {
+      await Future.delayed(3.seconds);
+      await _goToRoute(AppRoutes.changeLogsPath);
     }
   }
 
-  /// Forwards or push the new route with the arguments based on the [canPop].
+  /// Forwards or push the new route with the arguments based on the [replaceCurrent].
   /// It checks the current route before pushing the new route and guarantee
   /// no duplicate routes on top of each other.
   ///
-  /// If [canPop] is TRUE the route is pushed otherwise replaced with current route
+  /// If [replaceCurrent] is TRUE the route is replaced otherwise pushed to the current route
   Future<void> _goToRoute(
     String routePath, {
     Map<String, String>? parameters,
-    bool canPop = true,
+    bool replaceCurrent = false,
   }) async {
     try {
-      await Future.delayed(100.ms);
-
       /// If mounted to any widgets
       if (!(navigatorKey.currentState?.mounted ?? false)) return;
 
       // Get the current route
       final currentRoute = AppRoutesObserver.instance.currentRoute;
 
-      if (canPop &&
+      if (!replaceCurrent &&
           currentRoute != routePath &&
           currentRoute != AppRoutes.rootSplashPath) {
         /// Push on top
