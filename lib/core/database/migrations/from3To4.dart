@@ -28,6 +28,12 @@ Future<void> from3To4(Migrator m, Schema4 schema) async => await runSafe(
           schema.mindfulSettingsTable.usageHistoryWeeks,
         );
 
+        /// Add app version column to [MindfulSettingsTable]
+        await m.addColumn(
+          schema.mindfulSettingsTable,
+          schema.mindfulSettingsTable.appVersion,
+        );
+
         /// Move values from [MindfulSettingsTable] and [InvincibleModeTable]  to [ParentalControlsTable]
         /// Get first record
         final settingsRecord = await m.database

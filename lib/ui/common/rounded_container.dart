@@ -19,7 +19,6 @@ class RoundedContainer extends StatelessWidget {
     this.height,
     this.width,
     this.color,
-    this.borderColor,
     this.borderRadius,
     this.child,
     this.onPressed,
@@ -32,7 +31,6 @@ class RoundedContainer extends StatelessWidget {
   final double? height;
   final double? width;
   final Color? color;
-  final Color? borderColor;
   final double circularRadius;
   final BorderRadius? borderRadius;
   final EdgeInsets margin;

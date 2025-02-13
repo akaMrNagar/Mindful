@@ -555,6 +555,8 @@
     "@----------------------------- SETTINGS SCREEN - ABOUT TAB -----------------------------": {},
     "about_tab_title": "About",
     "changelog_tile_title": "Changelog",
+    "changelog_tile_subtitle": "Find out what's new.",
+    "full_changelog_tile_title": "Full changelog",
     "redirected_to_github_subtitle": "You will be redirected to GitHub.",
     "contribute_heading": "Contribute",
     "github_tile_title": "GitHub",

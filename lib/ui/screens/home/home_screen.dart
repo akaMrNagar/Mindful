@@ -49,7 +49,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _showDonationDialog();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showDonationDialog());
   }
 
   void _showDonationDialog() async {

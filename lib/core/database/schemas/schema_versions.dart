@@ -1179,6 +1179,7 @@ final class Schema4 extends i0.VersionedSchema {
           _column_43,
           _column_44,
           _column_45,
+          _column_19,
         ],
         attachedDatabase: database,
       ),
@@ -1351,6 +1352,8 @@ class Shape14 extends i0.VersionedTable {
       columnsByName['last_emergency_used']! as i1.GeneratedColumn<DateTime>;
   i1.GeneratedColumn<bool> get isOnboardingDone =>
       columnsByName['is_onboarding_done']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get appVersion =>
+      columnsByName['app_version']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<int> _column_70(String aliasedName) =>
