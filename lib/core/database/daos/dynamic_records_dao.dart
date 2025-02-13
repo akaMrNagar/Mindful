@@ -24,6 +24,7 @@ import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
 import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/models/usage_model.dart';
@@ -48,6 +49,21 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   // ==================================================================================================================
   // ===================================== APP USAGE =======================================================
   // ==================================================================================================================
+
+  /// Checks if the current week have any usage in the database.
+  ///
+  /// Returns `TRUE` if the usages is not empty otherwise `FALSE`
+  Future<bool> doesThisWeekHaveUsage() async {
+    final weekRange = dateToday.weekRange;
+    final usages = await (selectOnly(appUsageTable)
+          ..where(appUsageTable.date
+              .isBetweenValues(weekRange.start, weekRange.end))
+          ..groupBy([appUsageTable.date])
+          ..addColumns([appUsageTable.date]))
+        .get();
+
+    return usages.isNotEmpty;
+  }
 
   /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
   /// Used to load and aggregated 7 days usage of all apps

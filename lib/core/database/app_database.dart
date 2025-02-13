@@ -35,6 +35,7 @@ import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
 
 import 'migrations/migrations.dart';
 
@@ -76,6 +77,10 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
         onCreate: (m) async => await m.createAll(),
+        beforeOpen: (details) => DriftDbService.instance.beforeOpen(
+          this,
+          details,
+        ),
         onUpgrade: (m, from, to) async {
           debugPrint("Upgrading database from schema version $from to $to");
 

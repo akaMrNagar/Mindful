@@ -35,10 +35,10 @@ class WeeklyDeviceUsageNotifier
 
   WeeklyDeviceUsageNotifier(this.range, this.todaysUsage)
       : super(generateEmptyWeekUsage(range.start)) {
-    init();
+    refreshUsage();
   }
 
-  void init() async {
+  void refreshUsage() async {
     final cache = await DriftDbService.instance.driftDb.dynamicRecordsDao
         .fetchWeeklyDeviceUsage(weekRange: range);
 
