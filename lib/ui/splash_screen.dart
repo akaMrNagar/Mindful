@@ -47,6 +47,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   void initState() {
     super.initState();
     _checkOnboardingAndPerms();
+
+    /// Initialize necessary providers and services
+    Initializer.initializePrimaryProviders(ref);
   }
 
   void _checkOnboardingAndPerms() async {
@@ -67,12 +70,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         perms.haveNotificationPermission;
 
     if (mounted) setState(() {});
-
-    /// Initialize necessary providers and services
-    if (_haveAllEssentialPermissions && _isOnboardingDone) {
-      Initializer.initializeNecessaryProviders(ref);
-    }
-
     _isAccessProtected ? _authenticate() : _goToNextScreen(true);
   }
 

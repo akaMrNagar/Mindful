@@ -17,7 +17,6 @@ import 'package:mindful/config/navigation/navigation_service.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/config/app_constants.dart';
-import 'package:mindful/initializer.dart';
 import 'package:mindful/models/permissions_model.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
@@ -99,8 +98,6 @@ class _OnboardingState extends ConsumerState<OnboardingScreen> {
 
   void _finishOnboarding() async {
     if (mounted) {
-      /// Initialize necessary providers and services
-      Initializer.initializeNecessaryProviders(ref);
       ref.read(mindfulSettingsProvider.notifier).markOnboardingDone();
 
       Future.delayed(

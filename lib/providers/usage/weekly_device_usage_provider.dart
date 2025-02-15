@@ -8,9 +8,13 @@
  *
  */
 
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/core/utils/provider_utils.dart';
 import 'package:mindful/models/usage_model.dart';
@@ -35,21 +39,65 @@ class WeeklyDeviceUsageNotifier
 
   WeeklyDeviceUsageNotifier(this.range, this.todaysUsage)
       : super(generateEmptyWeekUsage(range.start)) {
-    refreshUsage();
+    refreshUsage(isInitialLoad: true);
   }
 
-  void refreshUsage() async {
-    final cache = await DriftDbService.instance.driftDb.dynamicRecordsDao
+  void refreshUsage({bool isInitialLoad = false}) async {
+    final (haveUsage, cache) = await DriftDbService
+        .instance.driftDb.dynamicRecordsDao
         .fetchWeeklyDeviceUsage(weekRange: range);
 
     /// Only reload todays usage if needed
     if (cache.containsKey(dateToday)) {
+      /// Update todays usage
       cache[dateToday] = todaysUsage.values.fold(
         const UsageModel(),
         (prev, e) => prev + e,
       );
     }
 
-    state = cache;
+    if (mounted) state = cache;
+    if (!haveUsage && isInitialLoad) _populateAppsUsageHistory();
+  }
+
+  /// Populates the database with app's usage history for last 10 days
+  Future<void> _populateAppsUsageHistory() async {
+    debugPrint("Populating database with last 10 days usage");
+
+    final db = DriftDbService.instance.driftDb;
+    List<AppUsageTableCompanion> weeksUsageCompanions = [];
+
+    for (var i = 0; i < 10; i++) {
+      final currentDay = dateToday.subtract(i.days);
+
+      /// Fetch usages for the day
+      final usages =
+          await MethodChannelService.instance.fetchAppsUsageForInterval(
+        start: currentDay.subtract(1.days),
+        end: currentDay,
+      );
+
+      /// Map to companions
+      final usageCompanions = usages.entries
+          .map(
+            (entry) => AppUsageTableCompanion(
+              date: Value(currentDay.subtract(1.days)),
+              packageName: Value(entry.key),
+              screenTime: Value(entry.value.screenTime),
+              mobileData: Value(entry.value.mobileData),
+              wifiData: Value(entry.value.wifiData),
+            ),
+          )
+          .toList();
+
+      weeksUsageCompanions.addAll(usageCompanions);
+    }
+
+    /// Insert all usages to db
+    await db.dynamicRecordsDao.insertBatchAppUsages(weeksUsageCompanions);
+    debugPrint("Successfully populated database with last 10 days usage");
+
+    /// Refresh provider state
+    refreshUsage();
   }
 }

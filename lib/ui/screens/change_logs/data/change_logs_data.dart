@@ -54,7 +54,7 @@ class ChangeLogsData {
         ctx.showSnackAlert(
           isSuccess
               ? "Quick tile added successfully."
-              : "Something went wrong!",
+              : "Tile is already added or something went wrong!",
           icon: FluentIcons.target_arrow_20_filled,
         );
       },

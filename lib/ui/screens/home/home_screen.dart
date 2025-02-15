@@ -52,7 +52,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        Initializer.populateDatabaseIfNecessary(ref);
+        /// Initialize necessary providers and services
+        Initializer.initializeSecondaryProviders(ref);
         _showDonationDialog();
       },
     );
