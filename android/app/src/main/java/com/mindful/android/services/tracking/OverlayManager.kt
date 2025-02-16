@@ -14,10 +14,14 @@ import android.view.animation.OvershootInterpolator
 import android.view.animation.TranslateAnimation
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.utils.ThreadUtils
+import java.util.concurrent.atomic.AtomicBoolean
 
 class OverlayManager(
     private val context: Context,
@@ -26,30 +30,42 @@ class OverlayManager(
         context.getSystemService(WINDOW_SERVICE) as WindowManager
 
     private var overlay: View? = null
+    private var isDismissingOverlay: Boolean = false
 
     init {
         fadeOutAnim.setAnimationListener(
             object : Animation.AnimationListener {
-                override fun onAnimationStart(a: Animation?) {}
+                override fun onAnimationStart(a: Animation?) {
+                    isDismissingOverlay = true
+                }
+
                 override fun onAnimationRepeat(a: Animation?) {}
 
                 override fun onAnimationEnd(a: Animation?) {
                     removeOverlay()
+                    isDismissingOverlay = false
                 }
             }
         )
     }
 
+    /// Animate out the overlay
+    fun dismissOverlay() {
+        /// Skip if already animating to dismiss
+        if (isDismissingOverlay) {
+            return
+        }
+
+        ThreadUtils.runOnMainThread {
+            animateOverlay(animateIn = false)
+        }
+    }
+
+    /// Remove overlay after animating out
     private fun removeOverlay() {
         overlay?.let {
             windowManager.removeView(it)
             overlay = null
-        }
-    }
-
-    fun dismissOverlay() {
-        ThreadUtils.runOnMainThread {
-            animateOverlay(animateIn = false)
         }
     }
 
@@ -90,9 +106,17 @@ class OverlayManager(
                 } else {
                     WindowManager.LayoutParams.TYPE_PHONE
                 },
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS or
+                        WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
                 android.graphics.PixelFormat.TRANSLUCENT
             )
+
+            // TODO: Fix the deprecated logic
+            // Full screen edge to edge view
+            overlay?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
 
             // Add the overlay view to the window

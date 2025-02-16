@@ -72,14 +72,12 @@ class MindfulTrackerService : Service() {
     @WorkerThread
     private fun onNewAppLaunch(packageName: String) {
         try {
-            /// Cancel previous reminders
-            reminderManager.cancelReminders()
-
-            /// dismiss overlays if launched app is not Mindful
-            if (packageName != this.packageName) overlayManager.dismissOverlay()
-
             Log.d(TAG, "onNewAppLaunch: $packageName launched")
 
+            /// Cancel previous reminders and dismiss overlay
+            reminderManager.cancelReminders()
+            overlayManager.dismissOverlay()
+            
             /// check current restrictions
             val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
 

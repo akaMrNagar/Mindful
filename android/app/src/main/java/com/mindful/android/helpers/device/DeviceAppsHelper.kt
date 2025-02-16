@@ -1,8 +1,10 @@
 package com.mindful.android.helpers.device
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.util.Log
 import com.mindful.android.utils.AppConstants.REMOVED_APP_NAME
 import com.mindful.android.utils.AppConstants.REMOVED_PACKAGE
 import com.mindful.android.utils.AppConstants.TETHERING_APP_NAME
@@ -19,7 +21,7 @@ object DeviceAppsHelper {
      */
     fun getDeviceAppInfos(
         context: Context,
-        onSuccess: (data: Any) -> Unit
+        onSuccess: (data: Any) -> Unit,
     ) {
         Thread {
             val packageManager = context.packageManager
@@ -28,27 +30,35 @@ object DeviceAppsHelper {
             val impSystemApps = ImpSystemAppsHelper.fetchImpApps(packageManager)
             impSystemApps.add(context.packageName)
 
+            // Fetch set of all launchable apps
+            val launchableApps = packageManager.queryIntentActivities(
+                Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
+                0
+            ).map { it.activityInfo.packageName }.toSet()
 
             // Fetch package info of installed apps on device
-            val fetchedApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
-            val deviceAppsMapList: MutableList<Map<String, Any>> = ArrayList()
+            val installedApps =
+                packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
-            for (app in fetchedApps) {
-                // Only include apps which are launchable
-                if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
-                    // Check if the app is important or default to system like dialer and launcher
-                    val isSysDefault = impSystemApps.contains(app.packageName)
-                    deviceAppsMapList.add(
-                        getAppInfoMap(
-                            name = app.applicationInfo.loadLabel(packageManager).toString(),  // name
-                            packageName = app.packageName,  // package name
-                            isImpSysApp = isSysDefault,  // is default app used by system like dialer or launcher
-                            appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app.applicationInfo)),  // icon
-                        )
+
+            val deviceAppsMapList: MutableList<Map<String, Any>> = installedApps
+                .filter { launchableApps.contains(it.packageName) }
+                .map { app ->
+                    getAppInfoMap(
+                        name = app.loadLabel(packageManager).toString(),
+                        packageName = app.packageName,
+                        isImpSysApp = impSystemApps.contains(app.packageName),
+                        appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app)),
                     )
-                }
-            }
+                }.toMutableList()
 
+
+            // Get placeholder icon
+            val placeholderIcon = Utils.getEncodedAppIcon(
+                packageManager.getApplicationIcon(
+                    ApplicationInfo()
+                )
+            )
 
             // Add additional apps for network usage
             deviceAppsMapList.add(
@@ -56,7 +66,7 @@ object DeviceAppsHelper {
                     name = TETHERING_APP_NAME,
                     packageName = TETHERING_PACKAGE,
                     isImpSysApp = true,
-                    appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(ApplicationInfo())),
+                    appIcon = placeholderIcon,
                 )
             )
 
@@ -66,7 +76,7 @@ object DeviceAppsHelper {
                     name = REMOVED_APP_NAME,
                     packageName = REMOVED_PACKAGE,
                     isImpSysApp = true,
-                    appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(ApplicationInfo())),
+                    appIcon = placeholderIcon,
                 )
             )
 

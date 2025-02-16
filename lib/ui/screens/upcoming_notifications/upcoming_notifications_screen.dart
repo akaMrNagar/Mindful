@@ -74,7 +74,7 @@ class _UpcomingStateNotificationsScreen
                 ).sliver,
 
                 /// Have value
-                notifications.hasValue
+                notifications.value != null
 
                     /// Have notifications
                     ? notifications.value!.isNotEmpty
@@ -101,10 +101,9 @@ class _UpcomingStateNotificationsScreen
                               ],
                             ),
                           ).sliver
-                    :
 
                     /// Loading notifications
-                    const SliverShimmerList(
+                    : const SliverShimmerList(
                         includeSubtitle: true,
                         includeTrailing: true,
                       ),

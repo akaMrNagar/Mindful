@@ -26,8 +26,11 @@ class AppsInfoNotifier extends StateNotifier<AsyncValue<Map<String, AppInfo>>> {
   /// Fetches and updates the state with the latest list of installed Android applications.
   Future<void> refreshAppsInfo() async {
     final appsList = await MethodChannelService.instance.fetchDeviceAppsInfo();
-    state = AsyncData(
-      Map.fromEntries(appsList.map((e) => MapEntry(e.packageName, e))),
-    );
+
+    if (mounted) {
+      state = AsyncData(
+        Map.fromEntries(appsList.map((e) => MapEntry(e.packageName, e))),
+      );
+    }
   }
 }

@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit
 class LaunchTrackingManager(
     private val context: Context,
     private val onNewAppLaunched: (packageName: String) -> Unit,
-) : OnSharedPreferenceChangeListener {
+) {
     companion object {
         private const val TAG = "Mindful.LaunchTrackingManager"
 
@@ -91,7 +91,7 @@ class LaunchTrackingManager(
     }
 
     @WorkerThread
-    private fun findLaunchedApp(interval: Long = TIMER_RATE * 2) {
+    private fun findLaunchedApp(interval: Long = TIMER_RATE) {
         val now = System.currentTimeMillis()
         val usageEvents = usageStatsManager?.queryEvents(now.minus(interval), now)
 
@@ -150,9 +150,5 @@ class LaunchTrackingManager(
     fun dispose() {
         context.unregisterReceiver(lockUnlockReceiver)
         onDeviceLocked()
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        TODO("Not yet implemented")
     }
 }

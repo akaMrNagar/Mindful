@@ -26,16 +26,10 @@ object ImpSystemAppsHelper {
      * @return A HashSet containing the package names of important system apps.
      */
     fun fetchImpApps(packageManager: PackageManager): HashSet<String> {
-        val impSystemApps = HashSet<String>()
-
-        // Get and add the package names of the default launcher and dialer app.
-        val launcherAppPackage = getDefaultLauncherPackageName(packageManager)
-        val callerAppPackage = getDefaultDialerPackageName(packageManager)
-
-        if (launcherAppPackage != null) impSystemApps.add(launcherAppPackage)
-        if (callerAppPackage != null) impSystemApps.add(callerAppPackage)
-
-        return impSystemApps
+        return HashSet<String>(3).apply {
+            getDefaultLauncherPackageName(packageManager)?.let { add(it) }
+            getDefaultDialerPackageName(packageManager)?.let { add(it) }
+        }
     }
 
     /**
@@ -44,12 +38,11 @@ object ImpSystemAppsHelper {
      * @param packageManager The package manager used for resolving the default launcher.
      * @return The package name of the default launcher app or null if not found.
      */
-    private fun getDefaultLauncherPackageName(packageManager: PackageManager): String? {
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_HOME)
-        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        return resolveInfo?.activityInfo?.packageName
-    }
+    private fun getDefaultLauncherPackageName(packageManager: PackageManager): String? =
+        packageManager.resolveActivity(
+            Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME),
+            PackageManager.MATCH_DEFAULT_ONLY
+        )?.activityInfo?.packageName
 
     /**
      * Gets the package name of the default dialer app.
@@ -57,10 +50,9 @@ object ImpSystemAppsHelper {
      * @param packageManager The package manager used for resolving the default dialer app.
      * @return The package name of the default dialer app or null if not found.
      */
-    private fun getDefaultDialerPackageName(packageManager: PackageManager): String? {
-        val intent = Intent(Intent.ACTION_DIAL)
-        intent.addCategory(Intent.CATEGORY_DEFAULT)
-        val resolveInfo = packageManager.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        return resolveInfo?.activityInfo?.packageName
-    }
+    private fun getDefaultDialerPackageName(packageManager: PackageManager): String? =
+        packageManager.resolveActivity(
+            Intent(Intent.ACTION_DIAL).addCategory(Intent.CATEGORY_DEFAULT),
+            PackageManager.MATCH_DEFAULT_ONLY
+        )?.activityInfo?.packageName
 }

@@ -35,38 +35,9 @@ object NetworkUsageHelper {
     fun fetchWifiUsageForInterval(
         networkStatsManager: NetworkStatsManager,
         start: Long,
-        end: Long
-    ): HashMap<Int, Long> {
-        val wifiUsageMap = HashMap<Int, Long>()
-
-        try {
-            // Fetch Wi-Fi usage
-            val networkStatsWifi =
-                networkStatsManager.querySummary(ConnectivityManager.TYPE_WIFI, null, start, end)
-            val bucketWifi = NetworkStats.Bucket()
-
-            do {
-                networkStatsWifi.getNextBucket(bucketWifi)
-                val uid = bucketWifi.uid
-                var usage = wifiUsageMap.getOrDefault(uid, 0L)
-                usage += bucketWifi.rxBytes + bucketWifi.txBytes
-                wifiUsageMap[uid] = usage
-            } while (networkStatsWifi.hasNextBucket())
-
-            networkStatsWifi.close()
-        } catch (e: Exception) {
-            Log.e(
-                TAG,
-                "fetchWifiUsageForInterval: Error in fetching Wi-Fi usage for device apps",
-                e
-            )
-        }
-
-        // Convert bytes to KBs and remove entries with no usage
-        wifiUsageMap.replaceAll { _, v -> (v / 1024) }
-        wifiUsageMap.entries.removeIf { entry -> entry.value == 0L }
-        return wifiUsageMap
-    }
+        end: Long,
+    ): Map<Int, Long> =
+        fetchNetworkUsageForInterval(networkStatsManager, ConnectivityManager.TYPE_WIFI, start, end)
 
     /**
      * Fetches mobile data usage statistics for a specified time interval.
@@ -79,36 +50,56 @@ object NetworkUsageHelper {
     fun fetchMobileUsageForInterval(
         networkStatsManager: NetworkStatsManager,
         start: Long,
-        end: Long
-    ): HashMap<Int, Long> {
-        val mobileUsageMap = HashMap<Int, Long>()
+        end: Long,
+    ): Map<Int, Long> =
+        fetchNetworkUsageForInterval(
+            networkStatsManager,
+            ConnectivityManager.TYPE_MOBILE,
+            start,
+            end
+        )
+
+    /**
+     * Fetches network usage statistics for a specified network type over a given time interval.
+     *
+     * @param networkStatsManager The NetworkStatsManager used to query network usage.
+     * @param networkType The type of network (e.g., ConnectivityManager.TYPE_WIFI or TYPE_MOBILE).
+     * @param start The start time of the interval in milliseconds.
+     * @param end The end time of the interval in milliseconds.
+     * @return A map where keys are app UIDs and values are the corresponding data usage in KBs.
+     */
+    private fun fetchNetworkUsageForInterval(
+        networkStatsManager: NetworkStatsManager,
+        networkType: Int,
+        start: Long,
+        end: Long,
+    ): Map<Int, Long> {
+        val usageMap = mutableMapOf<Int, Long>()
+        val networkStats = networkStatsManager.querySummary(networkType, null, start, end)
 
         try {
-            // Fetch mobile data usage
-            val networkStatsMobile =
-                networkStatsManager.querySummary(ConnectivityManager.TYPE_MOBILE, null, start, end)
-            val bucketMobile = NetworkStats.Bucket()
+            val bucket = NetworkStats.Bucket()
 
-            do {
-                networkStatsMobile.getNextBucket(bucketMobile)
-                val uid = bucketMobile.uid
-                var usage = mobileUsageMap.getOrDefault(uid, 0L)
-                usage += bucketMobile.rxBytes + bucketMobile.txBytes
-                mobileUsageMap[uid] = usage
-            } while (networkStatsMobile.hasNextBucket())
+            while (networkStats.hasNextBucket()) {
+                networkStats.getNextBucket(bucket)
+                val uid = bucket.uid
+                usageMap[uid] = usageMap.getOrDefault(uid, 0L) + (bucket.rxBytes + bucket.txBytes)
+            }
 
-            networkStatsMobile.close()
         } catch (e: Exception) {
             Log.e(
                 TAG,
-                "fetchMobileUsageForInterval: Error in fetching mobile usage for device apps",
+                "fetchNetworkUsageForInterval: Error fetching network usage for type $networkType",
                 e
             )
+        } finally {
+            networkStats.close()
         }
 
-        // Convert bytes to KBs and remove entries with no usage
-        mobileUsageMap.replaceAll { _, v -> (v / 1024) }
-        mobileUsageMap.entries.removeIf { entry -> entry.value == 0L }
-        return mobileUsageMap
+        return usageMap
+            .mapValues { it.value / 1024 }  // Convert bytes to KBs
+            .filterValues { it > 0L }       // Remove entries with no usage
     }
+
+
 }

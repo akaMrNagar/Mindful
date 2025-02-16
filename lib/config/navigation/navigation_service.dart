@@ -58,7 +58,7 @@ class NavigationService {
 
     /// Now push the changelog screen if needed
     if (showChangeLogsToo) {
-      await Future.delayed(3.seconds);
+      await Future.delayed(5.seconds);
       await _goToRoute(AppRoutes.changeLogsPath);
     }
   }

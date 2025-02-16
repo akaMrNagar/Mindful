@@ -35,7 +35,6 @@ import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/config/app_constants.dart';
-
 import 'migrations/migrations.dart';
 
 part 'app_database.g.dart';

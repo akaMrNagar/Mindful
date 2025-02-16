@@ -49,11 +49,14 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   // ===================================== APP USAGE =======================================================
   // ==================================================================================================================
 
+
   /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
-  /// Used to load and aggregated 7 days usage of all apps
+  /// Used to load and aggregated 7 days usage of all apps.
   ///
-  /// The result map contains one [UsageModel] for each day of week
-  Future<Map<DateTime, UsageModel>> fetchWeeklyDeviceUsage({
+  /// returns (bool, Map<DateTime, UsageModel>) where the [bool] indicates if the
+  /// database contains any usage records or not and [Map<DateTime, UsageModel>]
+  /// contains one [UsageModel] for each day of week.
+  Future<(bool, Map<DateTime, UsageModel>)> fetchWeeklyDeviceUsage({
     required DateTimeRange weekRange,
   }) async {
     // Initialize the Map with 7 days of the week
@@ -74,7 +77,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
       );
     }
 
-    return usageMap;
+    return (results.isNotEmpty, usageMap);
   }
 
   /// Loads Map of [String] package name and the respective [UsageModel] for the given date
