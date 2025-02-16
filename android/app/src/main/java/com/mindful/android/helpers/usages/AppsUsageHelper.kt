@@ -4,6 +4,7 @@ import android.app.usage.NetworkStats
 import android.app.usage.NetworkStatsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import com.mindful.android.utils.AppConstants.REMOVED_PACKAGE
 import com.mindful.android.utils.AppConstants.TETHERING_PACKAGE
@@ -28,7 +29,6 @@ object AppsUsageHelper {
             throw IllegalArgumentException("Either start or end time is null")
         }
         Thread {
-            val appsUsageMapList: MutableList<Map<String, Any>> = ArrayList()
 
             // Fetch usages for the date
             val usageStatsManager =
@@ -54,38 +54,39 @@ object AppsUsageHelper {
                 end = endMsEpoch
             )
 
-            // Fetch package info of installed apps on device
             val packageManager = context.packageManager
+
+            // Fetch set of all launchable apps
+            val launchableApps = packageManager.queryIntentActivities(
+                Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
+                0
+            ).map { it.activityInfo.packageName }.toSet()
+
+            // Fetch package info of installed apps on device
             val installedApps =
-                packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
+                packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
 
-            for (appInfo in installedApps) {
-                val packageName = appInfo.packageName
+            val appsUsageMapList: MutableList<Map<String, Any>> = installedApps
+                .filter { launchableApps.contains(it.packageName) }
+                .mapNotNull { appInfo ->
+                    val packageName = appInfo.packageName
+                    val uid = appInfo.uid
+                    val screenTime = screenUsage.getOrDefault(packageName, 0L)
+                    val mobileData = mobileDataUsage.getOrDefault(uid, 0L)
+                    val wifiData = wifiDataUsage.getOrDefault(uid, 0L)
 
-
-                // Skip if app is not launchable
-                if (packageManager.getLaunchIntentForPackage(packageName) == null)
-                    continue
-
-
-                val uid = appInfo.applicationInfo.uid
-                val screenTime = screenUsage.getOrDefault(packageName, 0L)
-                val mobileData = mobileDataUsage.getOrDefault(uid, 0L)
-                val wifiData = wifiDataUsage.getOrDefault(uid, 0L)
-
-                // Skip if app does not have any usage
-                if (screenTime <= 0L && mobileData <= 0L && wifiData <= 0L)
-                    continue
-
-                appsUsageMapList.add(
-                    getAppInfoMap(
-                        packageName = packageName,
-                        screenTime = screenTime,
-                        mobileData = mobileData,
-                        wifiData = wifiData,
-                    )
-                )
-            }
+                    // Skip if app does not have any usage
+                    if (screenTime <= 0L && mobileData <= 0L && wifiData <= 0L) {
+                        null
+                    } else {
+                        getAppInfoMap(
+                            packageName = packageName,
+                            screenTime = screenTime,
+                            mobileData = mobileData,
+                            wifiData = wifiData,
+                        )
+                    }
+                }.toMutableList()
 
 
             // Add additional apps for network usage
@@ -137,12 +138,11 @@ object AppsUsageHelper {
         screenTime: Long,
         mobileData: Long,
         wifiData: Long,
-    ): Map<String, Any> {
-        return mapOf(
-            KEY_PACKAGE_NAME to packageName,
-            KEY_SCREEN_TIME to screenTime,
-            KEY_MOBILE_DATA to mobileData,
-            KEY_WIFI_DATA to wifiData,
-        );
-    }
+    ): Map<String, Any> = mapOf(
+        KEY_PACKAGE_NAME to packageName,
+        KEY_SCREEN_TIME to screenTime,
+        KEY_MOBILE_DATA to mobileData,
+        KEY_WIFI_DATA to wifiData,
+    );
+
 }

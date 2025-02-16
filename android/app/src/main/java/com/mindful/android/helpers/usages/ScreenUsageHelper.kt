@@ -33,46 +33,38 @@ object ScreenUsageHelper {
     fun fetchUsageForInterval(
         usageStatsManager: UsageStatsManager,
         start: Long,
-        end: Long
-    ): HashMap<String, Long> {
-        val usageMap = HashMap<String, Long>()
+        end: Long,
+    ): Map<String, Long> {
+        val usageMap = mutableMapOf<String, Long>()
+        val lastResumedEvents = mutableMapOf<String, UsageEvents.Event>()
 
         // Load 3 hour earlier events for granularity
         val usageEvents = usageStatsManager.queryEvents(start - (3 * 60 * 60 * 1000), end)
-        val lastResumedEvents: MutableMap<String, UsageEvents.Event> = HashMap()
 
         while (usageEvents.hasNextEvent()) {
+            // Never move this outside the while loop otherwise the usage will be 0
             val event = UsageEvents.Event()
             usageEvents.getNextEvent(event)
 
             val packageName = event.packageName
-            val eventKey = packageName + event.className
             val currentTimeStamp = event.timeStamp
+            val eventKey = packageName + event.className
 
             when (event.eventType) {
                 UsageEvents.Event.ACTIVITY_RESUMED -> lastResumedEvents[eventKey] = event
                 UsageEvents.Event.ACTIVITY_PAUSED, UsageEvents.Event.ACTIVITY_STOPPED -> {
-                    // App stopped between interval
-                    if (currentTimeStamp > start) {
-                        var usageTime = usageMap.getOrDefault(packageName, 0L)
-                        val lastResumedEvent = lastResumedEvents[eventKey]
-
-                        // App has resume event
-                        if (lastResumedEvent != null) {
-                            val resumedTime = lastResumedEvent.timeStamp
-                            usageTime +=
-                                    // App is resumed after start (NORMAL)
-                                if (resumedTime >= start) {
-                                    currentTimeStamp - resumedTime
-                                }
-                                // App is resumed before start but stopped after start (EDGE 1)
-                                else {
-                                    currentTimeStamp - start
-                                }
+                    // If any resume event for the key
+                    lastResumedEvents.remove(eventKey)?.let { lastResumedEvent ->
+                        /// If app is paused or stopped after the start
+                        if (currentTimeStamp > start) {
+                            // MaxOf guarantee that the resume event is after the start
+                            val resumeTimeStamp = maxOf(lastResumedEvent.timeStamp, start)
+                            usageMap[packageName] = usageMap.getOrDefault(
+                                packageName,
+                                0L
+                            ) + (currentTimeStamp - resumeTimeStamp)
                         }
-                        usageMap[packageName] = usageTime
                     }
-                    lastResumedEvents.remove(eventKey)
                 }
 
                 else -> {}
@@ -88,10 +80,9 @@ object ScreenUsageHelper {
                 usageMap[packageName] = usageTime + (end - event.timeStamp)
             }
 
-        // Convert milliseconds to seconds
-        usageMap.replaceAll { _, v -> v / 1000 }
-        usageMap.entries.removeIf { entry -> entry.value == 0L }
         return usageMap
+            .mapValues { it.value / 1000 }  // Convert ms to seconds
+            .filterValues { it > 0L }       // Remove entries with no usage
     }
 
     /**
@@ -100,7 +91,7 @@ object ScreenUsageHelper {
      * @param usageStatsManager The UsageStatsManager used to query screen usage data.
      * @return The total screen usage time of the specified application in seconds.
      */
-    fun fetchAppUsageTodayTillNow(usageStatsManager: UsageStatsManager): HashMap<String, Long> {
+    fun fetchAppUsageTodayTillNow(usageStatsManager: UsageStatsManager): Map<String, Long> {
         val midNightCal = Calendar.getInstance()
         midNightCal[Calendar.HOUR_OF_DAY] = 0
         midNightCal[Calendar.MINUTE] = 0
