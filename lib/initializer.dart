@@ -24,8 +24,8 @@ class Initializer {
   ///
   /// This method should be invoked from [HomeScreen]
   static void initializeSecondaryProviders(WidgetRef ref) {
-    ref.read(focusModeProvider);
     ref.read(restrictionGroupsProvider);
+    ref.read(focusModeProvider);
     ref.read(bedtimeScheduleProvider);
     ref.read(wellBeingProvider);
     debugPrint("Secondary providers initialized.");
