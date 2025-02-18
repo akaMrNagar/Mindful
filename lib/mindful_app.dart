@@ -15,9 +15,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/config/app_themes.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mindful/config/navigation/app_routes_observer.dart';
 import 'package:mindful/config/navigation/navigation_service.dart';
+import 'package:mindful/l10n/generated/app_localizations.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 
 class MindfulApp extends ConsumerWidget {

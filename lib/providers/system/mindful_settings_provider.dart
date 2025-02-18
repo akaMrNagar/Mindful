@@ -15,9 +15,9 @@ import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
+import 'package:mindful/l10n/generated/app_localizations.dart';
 
 /// A Riverpod state notifier provider that manages [MindfulSettings].
 final mindfulSettingsProvider =

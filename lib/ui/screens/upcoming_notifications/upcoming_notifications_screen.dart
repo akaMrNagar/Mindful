@@ -74,7 +74,7 @@ class _UpcomingStateNotificationsScreen
                 ).sliver,
 
                 /// Have value
-                notifications.value != null
+                notifications.valueOrNull != null
 
                     /// Have notifications
                     ? notifications.value!.isNotEmpty
