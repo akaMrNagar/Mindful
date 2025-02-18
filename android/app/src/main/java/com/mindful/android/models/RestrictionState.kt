@@ -1,13 +1,7 @@
 package com.mindful.android.models
 
+import com.mindful.android.enums.RestrictionType
 
-enum class RestrictionType {
-    FocusMode,
-    BedtimeMode,
-    Timer,
-    LaunchCount,
-    ActivePeriod,
-}
 
 data class RestrictionState(
     /** The message regarding the state and applied limit   **/

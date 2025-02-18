@@ -15,6 +15,7 @@
     <string name="toast_enable_notification">Please enable notification</string>
     <string name="toast_blocked_content">Content blocked! going back</string>
     <string name="toast_redirecting">Filtering search results</string>
+    <string name="toast_dnd_utilized_by_feature" comment="Placeholder is the name of feature like Focus mode, Bedtime or more" formatted="true">"%s" is currently using DND mode.</string>
     <string name="service_running_notification_title">Mindful is running</string>
     <string name="shortcut_focus_mode_label">Focus mode</string>
     <string name="shortcut_focus_mode_description">Quickly start a focus session with custom profiles.</string>
@@ -37,9 +38,9 @@
     <string name="app_paused_reason_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
     <string name="app_paused_reason_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
     <string name="app_paused_reason_active_period_over">Access to this app is currently paused because it\'s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
-    <string name="app_paused_reason_group_timer_left" formatted="true">You\'ve been using apps from the “%s” group for a while now. It\'s time to take a step back and concentrate on your tasks, not your screen.</string>
-    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">You\'ve reached the total time limit for the “%s” group today. Take a break and recharge your focus.</string>
-    <string name="app_paused_reason_group_active_period_over" formatted="true">Apps in the “%s” group are currently paused as it\'s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
+    <string name="app_paused_reason_group_timer_left" formatted="true">You\'ve been using apps from the "%s" group for a while now. It\'s time to take a step back and concentrate on your tasks, not your screen.</string>
+    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">You\'ve reached the total time limit for the "%s" group today. Take a break and recharge your focus.</string>
+    <string name="app_paused_reason_group_active_period_over" formatted="true">Apps in the "%s" group are currently paused as it\'s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
     <string name="app_paused_restriction_focus_mode">Focus mode</string>
     <string name="app_paused_restriction_bedtime_mode">Bedtime mode</string>
     <string name="app_paused_restriction_timer">Timer</string>

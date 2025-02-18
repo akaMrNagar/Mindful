@@ -24,6 +24,7 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.mindful.android.R
+import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks
@@ -116,7 +117,11 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             trackerServiceConn.startAndBind()
 
             // Start DND if needed
-            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(context, true)
+            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(
+                context,
+                DndWakeLock.BedtimeMode,
+                true
+            )
             pushAlertNotification(context.getString(R.string.bedtime_started_notification_info))
         }
 
@@ -129,7 +134,11 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             trackerServiceConn.bindService()
 
             // Stop DND if needed
-            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(context, false)
+            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(
+                context,
+                DndWakeLock.BedtimeMode,
+                false
+            )
             pushAlertNotification(context.getString(R.string.bedtime_ended_notification_info))
         }
 

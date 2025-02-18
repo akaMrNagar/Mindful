@@ -15,6 +15,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
+import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.models.UpcomingNotification
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.AppConstants
@@ -33,6 +34,7 @@ object SharedPrefsHelper {
     private const val UNIQUE_PREFS_BOX = "UniquePrefs"
     private const val PREF_KEY_NOTIFICATION_PERMISSION_COUNT = "notificationPermissionCount"
     private const val PREF_KEY_SHORTS_SCREEN_TIME = "shortsScreenTime"
+    private const val PREF_KEY_DND_WAKE_LOCK = "dndWakeLock"
     private const val PREF_KEY_EXCLUDED_APPS = "excludedApps"
 
     private var mListenablePrefs: SharedPreferences? = null
@@ -126,6 +128,25 @@ object SharedPrefsHelper {
 
 
     /**
+     * Get the wake lock set for the dnd to modify it if lock is null else store it.
+     *
+     * @param context The application context.
+     * @param lock   The lock type for dnd.
+     */
+    fun getSetDndWakeLock(context: Context, lock: DndWakeLock?): DndWakeLock {
+        checkAndInitializeUniquePrefs(context)
+        // store it
+        lock?.let {
+            mUniquePrefs!!.edit().putInt(PREF_KEY_DND_WAKE_LOCK, it.ordinal)
+                .apply()
+            return it
+        }
+
+        // fetch it
+        return DndWakeLock.values()[mUniquePrefs!!.getInt(PREF_KEY_DND_WAKE_LOCK, 0)]
+    }
+
+    /**
      * Get the notification permission request count if count is null else store it.
      *
      * @param context The application context.
@@ -133,12 +154,14 @@ object SharedPrefsHelper {
      */
     fun getSetNotificationAskCount(context: Context, count: Int?): Int {
         checkAndInitializeUniquePrefs(context)
-        if (count == null) {
-            return mUniquePrefs!!.getInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, 0)
-        } else {
-            mUniquePrefs!!.edit().putInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, count).apply()
-            return count
+        // store it
+        count?.let {
+            mUniquePrefs!!.edit().putInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, it).apply()
+            return it
         }
+
+        // fetch it
+        return mUniquePrefs!!.getInt(PREF_KEY_NOTIFICATION_PERMISSION_COUNT, 0)
     }
 
 
@@ -168,12 +191,16 @@ object SharedPrefsHelper {
      */
     fun getSetShortsScreenTimeMs(context: Context, screenTime: Long?): Long {
         checkAndInitializeUniquePrefs(context)
-        if (screenTime == null) {
-            return mUniquePrefs!!.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L)
-        } else {
-            mUniquePrefs!!.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, screenTime).apply()
-            return screenTime
+
+        // store it
+        screenTime?.let {
+            mUniquePrefs!!.edit().putLong(PREF_KEY_SHORTS_SCREEN_TIME, it).apply()
+            return it
+
         }
+
+        // fetch it
+        return mUniquePrefs!!.getLong(PREF_KEY_SHORTS_SCREEN_TIME, 0L)
     }
 
 

@@ -9,7 +9,7 @@ import com.mindful.android.helpers.usages.ScreenUsageHelper
 import com.mindful.android.models.AppRestrictions
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.models.RestrictionType
+import com.mindful.android.enums.RestrictionType
 import com.mindful.android.utils.Utils
 
 class RestrictionManager(

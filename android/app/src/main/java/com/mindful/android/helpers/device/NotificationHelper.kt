@@ -22,9 +22,13 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.mindful.android.R
+import com.mindful.android.enums.DndWakeLock
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.ThreadUtils.runOnMainThread
 import com.mindful.android.utils.Utils
 
 /**
@@ -154,23 +158,68 @@ object NotificationHelper {
      * Toggles the Do Not Disturb (DND) mode on or off based on the provided flag.
      *
      * @param context     The application context used to access system services.
+     * @param featureLock     The feature which is requesting to toggle dnd.
      * @param shouldStart If true, enables DND mode; if false, disables it.
      */
-    fun toggleDnd(context: Context, shouldStart: Boolean) {
+    fun toggleDnd(
+        context: Context,
+        featureLock: DndWakeLock,
+        shouldStart: Boolean,
+    ) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Check if permission for DND mode is granted
         if (notificationManager.isNotificationPolicyAccessGranted) {
             if (shouldStart) {
+
+                /// Return if dnd lock is not free
+                val currentLock = SharedPrefsHelper.getSetDndWakeLock(context, null)
+                if (currentLock != DndWakeLock.None && currentLock != featureLock) {
+                    showDndLockToast(context, currentLock)
+                    return
+                }
+
+                /// Otherwise start DND
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
-                Log.d(TAG, "toggleDnd: DND mode started")
+                SharedPrefsHelper.getSetDndWakeLock(context, featureLock)
+                Log.d(TAG, "toggleDnd: DND mode started by $featureLock")
             } else {
+                /// Return if dnd is being utilized by another feature but requested by another feature
+                val currentLock = SharedPrefsHelper.getSetDndWakeLock(context, null)
+                if (currentLock != featureLock) {
+                    showDndLockToast(context, currentLock)
+                    return
+                }
+
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-                Log.d(TAG, "toggleDnd: DND mode stopped")
+                SharedPrefsHelper.getSetDndWakeLock(context, DndWakeLock.None)
+                Log.d(TAG, "toggleDnd: DND mode stopped by $featureLock")
             }
         } else {
             Log.d(TAG, "toggleDnd: Do not have permission to modify DND mode")
+        }
+    }
+
+
+    private fun showDndLockToast(
+        context: Context,
+        currentLock: DndWakeLock,
+    ) {
+        val feature = when (currentLock) {
+            DndWakeLock.FocusMode -> context.getString(R.string.app_paused_restriction_focus_mode)
+            DndWakeLock.BedtimeMode -> context.getString(R.string.app_paused_restriction_bedtime_mode)
+            else -> ""
+        }
+
+        if (feature.isNotEmpty()) {
+            runOnMainThread {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.toast_dnd_utilized_by_feature, feature),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 }
