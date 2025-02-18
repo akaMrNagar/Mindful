@@ -14,23 +14,23 @@ import 'package:mindful/models/app_info.dart';
 
 /// A state notifier provider that manages a map of Package and installed Android application's info.
 final appsInfoProvider =
-    StateNotifierProvider<AppsInfoNotifier, AsyncValue<Map<String, AppInfo>>>(
-  (ref) => AppsInfoNotifier(),
-);
+    AsyncNotifierProvider<AppsInfoNotifier, Map<String, AppInfo>>(() {
+  return AppsInfoNotifier();
+});
 
-class AppsInfoNotifier extends StateNotifier<AsyncValue<Map<String, AppInfo>>> {
-  AppsInfoNotifier() : super(const AsyncLoading()) {
-    refreshAppsInfo();
+class AppsInfoNotifier extends AsyncNotifier<Map<String, AppInfo>> {
+  @override
+  Future<Map<String, AppInfo>> build() async {
+    return await _fetchAppsInfo();
   }
 
-  /// Fetches and updates the state with the latest list of installed Android applications.
-  Future<void> refreshAppsInfo() async {
-    final appsList = await MethodChannelService.instance.fetchDeviceAppsInfo();
+  /// Fetches and updates the list of installed Android applications.
+  Future<void> refreshAppsInfo() async =>
+      state = AsyncData(await _fetchAppsInfo());
 
-    if (mounted) {
-      state = AsyncData(
-        Map.fromEntries(appsList.map((e) => MapEntry(e.packageName, e))),
-      );
-    }
+  /// Fetches installed apps info from the device.
+  Future<Map<String, AppInfo>> _fetchAppsInfo() async {
+    final appsList = await MethodChannelService.instance.fetchDeviceAppsInfo();
+    return Map.fromEntries(appsList.map((e) => MapEntry(e.packageName, e)));
   }
 }

@@ -285,11 +285,12 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
     Confetti.launch(
       context,
       options: ConfettiOptions(
-        particleCount: 50,
+        particleCount: 100,
         scalar: 1.5,
         angle: 60,
         spread: 55,
         startVelocity: 60,
+        gravity: 0.5,
         x: 0,
         y: 1,
         colors: colors,
@@ -300,11 +301,12 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
     Confetti.launch(
       context,
       options: ConfettiOptions(
-        particleCount: 50,
+        particleCount: 100,
         scalar: 1.5,
         angle: 120,
         spread: 55,
         startVelocity: 60,
+        gravity: 0.5,
         x: 1,
         y: 1,
         colors: colors,

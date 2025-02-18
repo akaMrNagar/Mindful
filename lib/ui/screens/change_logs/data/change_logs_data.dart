@@ -64,6 +64,15 @@ class ChangeLogsData {
         "Use pre-configured profiles."
       ],
     ),
+    ChangeLog(
+      icon: FluentIcons.data_pie_20_filled,
+      label: "Usage history",
+      onTap: (ctx) => Navigator.of(ctx).pushNamed(AppRoutes.settingsPath),
+      bulletPoints: const [
+        "Monitor your usage trends over time.",
+        "Customize how long your usage history is stored.",
+      ],
+    ),
     const ChangeLog(
       icon: FluentIcons.open_20_filled,
       label: "App shortcuts",

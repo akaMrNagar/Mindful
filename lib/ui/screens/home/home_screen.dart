@@ -20,7 +20,6 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/initializer.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
@@ -50,13 +49,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        /// Initialize necessary providers and services
-        Initializer.initializeSecondaryProviders(ref);
-        _showDonationDialog();
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => _showDonationDialog());
   }
 
   void _showDonationDialog() async {

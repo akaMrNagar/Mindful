@@ -148,7 +148,7 @@ class TabDashboard extends ConsumerWidget {
             ].animateListWhen(
               when: isAppsLoading,
               effects: DefaultEffects.transitionIn,
-              interval: 75.ms,
+              interval: 50.ms,
             ),
           ),
 
