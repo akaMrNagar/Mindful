@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/l10n/generated/app_localizations.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension ExtBuildContext on BuildContext {
   /// Returns the [AppLocalizations] instance for the current context.

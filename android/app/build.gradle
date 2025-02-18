@@ -61,6 +61,7 @@ android {
             ndk {
                 debugSymbolLevel 'full'
             }
+            resValue "string", "app_name", "Mindful"
             signingConfig = signingConfigs.release
         }
 
