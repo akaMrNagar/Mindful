@@ -15,36 +15,56 @@
     <string name="toast_enable_notification">通知を許可する</string>
     <string name="toast_blocked_content">コンテンツをブロックしました。前の画面に戻ります。</string>
     <string name="toast_redirecting">検索結果を絞り込む</string>
+    <string name="toast_dnd_utilized_by_feature" comment="toast_dnd_utilized_by_feature Placeholder is the name of feature like Focus mode, Bedtime or more">\"%s\" is currently using DND mode.</string>
     <string name="service_running_notification_title">Mindfulは動作中です</string>
-    <string name="usage_widget_description" comment="usage_widget_description usage widget values = usage home widget for android">毎日の使用時間とデータ使用量を確認</string>
+    <string name="shortcut_focus_mode_label">Focus mode</string>
+    <string name="shortcut_focus_mode_description">Quickly start a focus session with custom profiles.</string>
+    <string name="shortcut_upcoming_notifications_label">Batched notifications</string>
+    <string name="shortcut_upcoming_notifications_description">Check upcoming batched notifications.</string>
+    <string name="shortcut_parental_controls_label">Parental controls</string>
+    <string name="shortcut_parental_controls_description">Manage parental controls and security settings</string>
+    <string name="focus_quick_tile_status_active">Active</string>
+    <string name="usage_widget_description">毎日の使用時間とデータ使用量を確認</string>
     <string name="widget_screen_time_label">使用時間</string>
     <string name="widget_mobile_data_label">モバイル</string>
     <string name="widget_wifi_data_label">Wi-Fi</string>
-    <string name="app_blocker_running_notification_info" comment="app_blocker_running_notification_info app blocker service = service for tracking app usage and launched">Mindful がアプリの使用状況の追跡を開始しました。集中力を維持し、デジタル習慣を管理するのに役立ちます。</string>
-    <string name="overlay_permission_denied_notification_title" comment="overlay_permission_denied_notification_title app paused overlay dialog service = dialog shown when pause app is launched">権限がありません</string>
+    <string name="internet_blocker_running_notification_info">集中力を維持するために、Mindful がインターネット接続を管理します。</string>
+    <string name="app_blocker_running_notification_info">Mindful がアプリの使用状況の追跡を開始しました。集中力を維持し、デジタル習慣を管理するのに役立ちます。</string>
+    <string name="overlay_permission_denied_notification_title">権限がありません</string>
     <string name="overlay_permission_denied_notification_info">Mindful に他のアプリの上に重ねて表示する権限を与えるには、通知を選択してください。表示された画面で、Mindful を探し、許可を与えてください。</string>
-    <string name="app_paused_reason_focus_session">集中する時間です！このアプリは一時停止され、あなたが集中力を維持し、記録を最大限に活用できるようサポートします。</string>
-    <string name="app_paused_reason_bedtime">就寝する時間です！心地のよい眠りのため、このアプリは一時停止されました。</string>
-    <string name="app_paused_reason_app_timer_left">そろそろ休憩しませんか？画面から離れて、他のことに目を向けてみましょう。</string>
-    <string name="app_paused_reason_launch_count_out">このアプリの起動回数制限に達しました。少し休憩して、他のことに集中しましょう。</string>
-    <string name="app_paused_reason_active_period_over">設定された時間帯以外は、このアプリは利用できません。今は、他の重要なことに集中しましょう。</string>
-    <string name="app_paused_reason_app_timer_out">このアプリの毎日の使用時間制限に達しました。中注力を維持し、他のことに取り組みましょう。</string>
-    <string name="app_paused_reason_group_timer_left" comment="app_paused_dialog_info_for_group_timer_left restriction groups related dialog infos the placeholder in these will be the name of the associated group">%s グループのアプリの使用時間が長くなっています。集中力を維持するために、少し休憩しましょう。</string>
-    <string name="app_paused_reason_group_active_period_over"> %s グループのアプリは、設定された時間帯以外は利用できません。今は他のことに集中しましょう。</string>
-    <string name="app_paused_reason_group_timer_out">%s グループのアプリは、今日の使用時間制限に達しました。少し休んで、また明日から頑張りましょう。</string>
-    <string name="app_paused_overlay_label_spent_today" comment="app_paused_dialog_progress_spent placeholder in app_paused_dialog_progress_spent will be time formatted string like '4h 13m' for 4 minutes 13 seconds">%s 使用</string>
-    <string name="app_paused_overlay_label_left_today" comment="app_paused_dialog_progress_left placeholder in app_paused_dialog_progress_left will be time formatted string like '4h 13m' for 4 minutes 13 seconds">残りあと %s</string>
-    <string name="app_paused_overlay_button_emergency">緊急時の使用</string>
-    <string name="bedtime_upcoming_notification_info" comment="bedtime_upcoming_notification_info bedtime = scheduled bedtime alert notification">就寝時間は30分後に始まります。今日の活動を締めくくり、明日に備えましょう。</string>
+    <string name="app_paused_reason_focus_session">It\'s focus time! This app is paused to help you stay on track and make the most of your session.</string>
+    <string name="app_paused_reason_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
+    <string name="app_paused_reason_app_timer_left">You\'ve been using this app for a while now. Let\'s shift gears and take a break from the screen and focus on something productive.</string>
+    <string name="app_paused_reason_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
+    <string name="app_paused_reason_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
+    <string name="app_paused_reason_active_period_over">Access to this app is currently paused because it\'s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
+    <string name="app_paused_reason_group_timer_left">You\'ve been using apps from the \"%s\" group for a while now. It\'s time to take a step back and concentrate on your tasks, not your screen.</string>
+    <string name="app_paused_reason_group_timer_out" comment="app_paused_reason_group_timer_out Group name as placeholder">You\'ve reached the total time limit for the \"%s\" group today. Take a break and recharge your focus.</string>
+    <string name="app_paused_reason_group_active_period_over">Apps in the \"%s\" group are currently paused as it\'s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
+    <string name="app_paused_restriction_focus_mode">Focus mode</string>
+    <string name="app_paused_restriction_bedtime_mode">Bedtime mode</string>
+    <string name="app_paused_restriction_timer">Timer</string>
+    <string name="app_paused_restriction_launch_count">Launch count</string>
+    <string name="app_paused_restriction_active_period">Active period</string>
+    <string name="app_paused_overlay_button_emergency">Emergency</string>
+    <string name="app_paused_overlay_label_spent_today">Spent today</string>
+    <string name="app_paused_overlay_label_left_today">Left today</string>
+    <string name="app_paused_overlay_ask_need_more_time">Need a few more minutes?</string>
+    <string name="app_paused_overlay_button_two_minutes">2 minutes</string>
+    <string name="app_paused_overlay_button_five_minutes">5 minutes</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 minutes</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 minutes</string>
+    <string name="app_paused_overlay_button_close_app" comment="app_paused_overlay_button_close_app App name as placeholder. ex: 'Close Instagram'">Close \"%s\"</string>
+    <string name="bedtime_upcoming_notification_info">就寝時間は30分後に始まります。今日の活動を締めくくり、明日に備えましょう。</string>
     <string name="bedtime_started_notification_info">リラックスして、質の高い睡眠を。就寝時間が始まりました。</string>
     <string name="bedtime_ended_notification_info">おはようございます！就寝時間が終了しました。今日も元気に過ごしましょう！</string>
-    <string name="emergency_pause_notification_title" comment="emergency_pause_notification_title emergency pause service = when user uses emergency pass">緊急停止</string>
-    <string name="emergency_pause_notification_info" comment="emergency_pause_notification_info placeholder in emergency_pause_notification_info will be time formatted string like '4:13' for 4 minutes 13 seconds        time will not exceed 5 minutes        Example output: &quot;App blocker will resume after 3:15&quot;">アプリブロッカーは %s 後に再開されます</string>
+    <string name="emergency_pause_notification_title">緊急停止</string>
+    <string name="emergency_pause_notification_info" comment="emergency_pause_notification_info Time string as placeholder. ex: 'App blocker will resume after 3m 15s'">アプリブロッカーは %s 後に再開されます</string>
     <string name="emergency_pause_ended_notification_info">緊急停止が終了し、アプリブロッカーが再開されました。集中を妨げるアプリが再びブロックされ、集中できる状態に戻りました。</string>
-    <string name="focus_session_notification_title" comment="focus_session_notification_title focus session service = service responsible for ongoing focus session">集中記録</string>
-    <string name="focus_session_notification_info" comment="focus_session_notification_info placeholder in focus_session_notification_info will be time formatted string like '1:15:13' for 1 hour 15 minutes 13 seconds        time can be in hours or just minutes either way seconds will be suffixed        Example output: &quot;Focus session will end in 1h 3m 15s&quot;  for 1 hour 3 minutes and 15 seconds        Example output: &quot;Focus session will end in 45m 15s&quot;  for 45 minutes and 15 seconds">あと %s で集中記録が終了します</string>
-    <string name="focus_session_infinite_notification_info">%s の間、集中できました</string>
+    <string name="focus_session_notification_title">集中記録</string>
+    <string name="focus_session_notification_info" comment="focus_session_notification_info Time string as placeholder. ex: 'Focus session will end in 33m 15s'">あと %s で集中記録が終了します</string>
+    <string name="focus_session_infinite_notification_info" comment="focus_session_infinite_notification_info Time string as placeholder. ex: 'You've been focused for 33m 15s'">%s の間、集中できました</string>
     <string name="focus_session_success_notification_info">お疲れ様でした！集中記録が完了しました。これからも素晴らしい集中力を続けていきましょう。</string>
     <string name="focus_session_giveup_notification_info">諦めてしまいましたか？大丈夫、次回はきっと集中できます。どんな努力も無駄にはなりません。諦めずに続けましょう！</string>
-    <string name="internet_blocker_running_notification_info" comment="internet_blocker_running_notification_info internet blocker service = service for blocking specific app's internet">集中力を維持するために、Mindful がインターネット接続を管理します。</string>
+    <string name="notification_schedule_notification_info" comment="notification_schedule_notification_info Number of notifications as placeholder">You have \"%d\" notifications while you were away. They will be cleared automatically after 24 hours.</string>
 </resources>
