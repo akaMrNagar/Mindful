@@ -1,12 +1,8 @@
 package com.mindful.android.services.tracking
 
-import android.os.CountDownTimer
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.utils.CountDownExecutor
-import com.mindful.android.utils.ThreadUtils
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
@@ -21,7 +17,7 @@ class ReminderManager(
     fun cancelReminders() {
         onGoingTimer?.cancel()
         reminderTriggers.clear()
-        Log.d("TAG", "cancelReminders: All reminders cancelled")
+        Log.d(TAG, "cancelReminders: All reminders cancelled")
     }
 
     private fun addNewReminder(futureMinutes: Int) {

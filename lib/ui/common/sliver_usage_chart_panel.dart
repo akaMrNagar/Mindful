@@ -26,6 +26,7 @@ class SliverUsageChartPanel extends StatelessWidget {
     super.key,
     this.chartHeight = 256,
     required this.selectedDay,
+    required this.selectedWeek,
     required this.usageType,
     required this.barChartData,
     required this.onDayOfWeekChanged,
@@ -34,23 +35,18 @@ class SliverUsageChartPanel extends StatelessWidget {
 
   final double chartHeight;
   final DateTime selectedDay;
+  final DateTimeRange selectedWeek;
   final UsageType usageType;
   final Map<DateTime, UsageModel> barChartData;
   final ValueChanged<DateTime> onDayOfWeekChanged;
   final ValueChanged<DateTime> onWeekChanged;
 
-  void _changeDay(int direction) {
-    final newDate = selectedDay.add(direction.days);
+  void _changeWeek(int direction) {
+    final newDate = selectedDay.add((direction * 7).days);
 
-    /// Check if the week is changed
-    /// if old and new date is (1 & 7)[prev week]  OR (7 & 1) [new week]
-    if ((selectedDay.weekday == 1 && newDate.weekday == 7) ||
-        (selectedDay.weekday == 7 && newDate.weekday == 1)) {
-      onWeekChanged(newDate);
-    }
-
-    /// Invoke on day changed anyway
-    onDayOfWeekChanged(newDate);
+    /// Invoke on day and week changed
+    onWeekChanged(newDate);
+    onDayOfWeekChanged(newDate.startOfWeek);
   }
 
   @override
@@ -74,23 +70,23 @@ class SliverUsageChartPanel extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
-              /// Previous day
+              /// Previous week
               IconButton(
                 icon: const Icon(FluentIcons.chevron_left_20_filled),
-                onPressed: () => _changeDay(-1),
+                onPressed: () => _changeWeek(-1),
               ),
 
               const Spacer(),
 
               /// Current day
               StyledText(
-                selectedDay.dateString(context),
+                "${selectedWeek.start.dateStringShort(context)} - ${selectedWeek.end.dateStringShort(context)}",
                 color: Theme.of(context).hintColor,
                 fontSize: 14,
               ),
 
               /// Reset button
-              if (selectedDay.isBefore(dateToday.startOfWeek))
+              if (selectedWeek.end.isBefore(dateToday.startOfWeek))
                 IconButton(
                   iconSize: 18,
                   icon: const Icon(
@@ -104,13 +100,13 @@ class SliverUsageChartPanel extends StatelessWidget {
 
               const Spacer(),
 
-              /// Next day
-              IconButton(
-                icon: const Icon(FluentIcons.chevron_right_20_filled),
-                onPressed: selectedDay.isBefore(dateToday)
-                    ? () => _changeDay(1)
-                    : null,
-              ),
+              /// Next week
+              selectedWeek.end.isBefore(dateToday.endOfWeek)
+                  ? IconButton(
+                      icon: const Icon(FluentIcons.chevron_right_20_filled),
+                      onPressed: () => _changeWeek(1),
+                    )
+                  : 48.hBox,
             ],
           ),
         ),

@@ -115,7 +115,6 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
               Skeletonizer.zone(
                 enabled: dailyFocus.selectedDaysSessions.isLoading,
                 ignorePointers: false,
-                enableSwitchAnimation: false,
                 child: UsageGlanceCard(
                   isPrimary: true,
                   position: ItemPosition.bottom,

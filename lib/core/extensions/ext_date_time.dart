@@ -50,9 +50,14 @@ extension ExtDateTime on DateTime {
   /// Returns the total number of day in the [DateTime]'s month
   int get daysInMonth => endOfMonth.difference(startOfMonth).inDays + 1;
 
-  /// Returns date-only string in a localized format (e.g., 15 August, 2024).
+  /// Returns date-only string in a localized format (e.g., August 15, 2024).
   String dateString(BuildContext context) =>
       DateFormat.yMMMMd(Localizations.localeOf(context).languageCode)
+          .format(this);
+
+  /// Returns date-only string in a localized format (e.g., 15 Feb).
+  String dateStringShort(BuildContext context) =>
+      DateFormat.MMMd(Localizations.localeOf(context).languageCode)
           .format(this);
 
   /// Returns time-only string in a localized format (e.g., 7:15 PM).

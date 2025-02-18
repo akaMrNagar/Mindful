@@ -1,33 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
-import 'package:mindful/providers/focus/focus_mode_provider.dart';
-import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
-import 'package:mindful/providers/restrictions/bedtime_provider.dart';
-import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
-import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
+import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 
-/// Initializer to initialize necessary things post onboarding or pre home screen
+/// Initializer to initialize necessary things.
 class Initializer {
-  /// Initializes all the necessary primary providers.
-  /// These providers don't care about onboarding and permission.
+  /// Initializes all the required services and schedules.
   ///
-  /// This method should be invoked from [SplashScreen]
-  static void initializePrimaryProviders(WidgetRef ref) {
-    ref.read(appsInfoProvider);
-    ref.read(appsRestrictionsProvider);
-    debugPrint("Primary providers initialized.");
-  }
+  /// This method must be called after initializing `DATABASE` and `METHOD CHANNEL`.
+  static Future<void> initializeServicesAndSchedules() async {
+    final startTimeStamp = DateTime.now();
 
-  /// Initializes all the necessary secondary providers
-  /// These providers need onboarding to be done.
-  ///
-  /// This method should be invoked from [HomeScreen]
-  static void initializeSecondaryProviders(WidgetRef ref) {
-    ref.read(restrictionGroupsProvider);
-    ref.read(focusModeProvider);
-    ref.read(bedtimeScheduleProvider);
-    ref.read(wellBeingProvider);
-    debugPrint("Secondary providers initialized.");
+    final dynamicDao = DriftDbService.instance.driftDb.dynamicRecordsDao;
+    final uniqueDao = DriftDbService.instance.driftDb.uniqueRecordsDao;
+
+    /// fetch app restrictions
+    var appRestrictions = await dynamicDao.fetchAppsRestrictions();
+    final internetBlockedApps = appRestrictions
+        .where((e) => !e.canAccessInternet)
+        .map((e) => e.appPackage)
+        .toList();
+
+    /// filter out restrictions
+    appRestrictions.removeWhere(
+      (e) =>
+          e.timerSec <= 0 &&
+          e.periodDurationInMins <= 0 &&
+          e.launchLimit <= 0 &&
+          e.associatedGroupId == null,
+    );
+
+    /// update tracker service
+    await MethodChannelService.instance.updateAppRestrictions(appRestrictions);
+
+    /// update vpn service
+    await MethodChannelService.instance
+        .updateInternetBlockedApps(internetBlockedApps);
+
+    /// Update restriction groups
+    final restrictionGroups = await dynamicDao.fetchRestrictionGroups();
+    await MethodChannelService.instance
+        .updateRestrictionsGroups(restrictionGroups);
+
+    /// Fetch and update bedtime routine
+    final bedtime = await uniqueDao.loadBedtimeSchedule();
+    await MethodChannelService.instance.updateBedtimeSchedule(bedtime);
+
+    /// Fetch and update bedtime wellbeing
+    final wellbeing = await uniqueDao.loadWellBeingSettings();
+    await MethodChannelService.instance.updateWellBeingSettings(wellbeing);
+
+    /// Fetch and update notification batched apps and schedule
+    final notificationSchedules = await dynamicDao.fetchNotificationSchedules();
+    final distractingNotificationApps =
+        (await uniqueDao.loadSharedData()).notificationBatchedApps;
+
+    await MethodChannelService.instance
+        .updateDistractingNotificationApps(distractingNotificationApps);
+    await MethodChannelService.instance.updateNotificationBatchSchedules(
+      notificationSchedules
+          .where((e) => e.isActive)
+          .map((e) => e.time.toMinutes)
+          .toList(),
+    );
+    debugPrint(
+      "All necessary services and schedules are initialized and it took ${DateTime.now().difference(startTimeStamp).inMilliseconds}ms.",
+    );
   }
 }

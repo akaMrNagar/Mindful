@@ -89,6 +89,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
           /// Usage bar chart and selected day changer
           SliverUsageChartPanel(
             selectedDay: _filter.selectedDay,
+            selectedWeek: _filter.selectedWeek,
             usageType: _filter.usageType,
             barChartData: _isLoading
                 ? generateEmptyWeekUsage(_filter.selectedDay)
@@ -99,8 +100,20 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                 () => _filter = _filter.copyWith(selectedWeek: day.weekRange)),
           ),
 
-          ContentSectionHeader(title: context.locale.most_used_apps_heading)
-              .sliver,
+          Row(
+            children: [
+              ContentSectionHeader(
+                title: context.locale.most_used_apps_heading,
+              ),
+
+              const Spacer(),
+
+              /// Current day
+              ContentSectionHeader(
+                title: _filter.selectedDay.dateString(context),
+              ),
+            ],
+          ).sliver,
 
           const BatteryOptimizationTip(),
 

@@ -177,6 +177,7 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                 SliverUsageChartPanel(
                   chartHeight: 212,
                   selectedDay: _filter.selectedDay,
+                  selectedWeek: _filter.selectedWeek,
                   usageType: _filter.usageType,
                   barChartData: weeklyUsages,
                   onDayOfWeekChanged: (day) => setState(

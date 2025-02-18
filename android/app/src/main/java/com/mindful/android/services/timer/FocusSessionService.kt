@@ -18,6 +18,7 @@ import android.os.IBinder
 import android.service.quicksettings.TileService
 import android.util.Log
 import com.mindful.android.R
+import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
@@ -82,7 +83,11 @@ class FocusSessionService : Service() {
             mTrackerServiceConn.startAndBind()
 
             // Toggle DND according to the session configurations
-            if (focusSession.toggleDnd) NotificationHelper.toggleDnd(this, true)
+            if (focusSession.toggleDnd) NotificationHelper.toggleDnd(
+                this,
+                DndWakeLock.FocusMode,
+                true
+            )
 
             mNotificationTimer.startTimer()
 
@@ -152,7 +157,7 @@ class FocusSessionService : Service() {
 
     fun giveUpOrStopFocusSession(isTheSessionSuccessful: Boolean) {
         if (mFocusSession?.toggleDnd == true) {
-            NotificationHelper.toggleDnd(this, false)
+            NotificationHelper.toggleDnd(this, DndWakeLock.FocusMode, false)
         }
 
         mNotificationTimer.forceDisposeTimer(

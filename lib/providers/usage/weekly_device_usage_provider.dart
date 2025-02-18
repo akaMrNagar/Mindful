@@ -56,7 +56,9 @@ class WeeklyDeviceUsageNotifier
       );
     }
 
-    if (mounted) state = cache;
+    if (!mounted) return;
+
+    state = cache;
     if (!haveUsage && isInitialLoad) _populateAppsUsageHistory();
   }
 

@@ -91,7 +91,7 @@ class LaunchTrackingManager(
     }
 
     @WorkerThread
-    private fun findLaunchedApp(interval: Long = TIMER_RATE) {
+    private fun findLaunchedApp(interval: Long = TIMER_RATE * 2) {
         val now = System.currentTimeMillis()
         val usageEvents = usageStatsManager?.queryEvents(now.minus(interval), now)
 

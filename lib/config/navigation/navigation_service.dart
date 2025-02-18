@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/config/navigation/app_routes_observer.dart';
+import 'package:mindful/initializer.dart';
 
 /// A service class responsible for handling deep link and navigation to different routes externally without widget ui.
 class NavigationService {
@@ -37,6 +38,9 @@ class NavigationService {
   /// Should be called from splash screen after authentication if access is protected
   /// or Onboarding Screen after setup
   Future<void> init({required bool showChangeLogsToo}) async {
+    /// Initialize services before going to home screen or targeted screen
+    Initializer.initializeServicesAndSchedules();
+
     /// Listen to changes and handle deep links when their is a valid link either on app startup
     /// or even when app is active.
     _appLinks.uriLinkStream.listen(

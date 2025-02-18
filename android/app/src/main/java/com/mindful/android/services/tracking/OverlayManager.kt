@@ -42,8 +42,8 @@ class OverlayManager(
                 override fun onAnimationRepeat(a: Animation?) {}
 
                 override fun onAnimationEnd(a: Animation?) {
-                    removeOverlay()
                     isDismissingOverlay = false
+                    removeOverlay()
                 }
             }
         )

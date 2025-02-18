@@ -8,6 +8,7 @@ import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/date_time_utils.dart';
+import 'package:mindful/initializer.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking flutter code.
 ///
@@ -75,55 +76,7 @@ class BgExecutorService {
   Future<void> _onBootOrAppUpdate() async {
     await MethodChannelService.instance.init();
     await DriftDbService.instance.init();
-
-    final dynamicDao = DriftDbService.instance.driftDb.dynamicRecordsDao;
-    final uniqueDao = DriftDbService.instance.driftDb.uniqueRecordsDao;
-
-    /// fetch app restrictions
-    var appRestrictions = await dynamicDao.fetchAppsRestrictions();
-    final internetBlockedApps = appRestrictions
-        .where((e) => !e.canAccessInternet)
-        .map((e) => e.appPackage)
-        .toList();
-
-    /// filter out restrictions
-    appRestrictions.removeWhere(
-      (e) =>
-          e.timerSec <= 0 &&
-          e.periodDurationInMins <= 0 &&
-          e.launchLimit <= 0 &&
-          e.associatedGroupId == null,
-    );
-
-    /// update tracker service
-    await MethodChannelService.instance.updateAppRestrictions(appRestrictions);
-
-    /// update vpn service
-    await MethodChannelService.instance
-        .updateInternetBlockedApps(internetBlockedApps);
-
-    /// Update restriction groups
-    final restrictionGroups = await dynamicDao.fetchRestrictionGroups();
-    await MethodChannelService.instance
-        .updateRestrictionsGroups(restrictionGroups);
-
-    /// Fetch and update bedtime routine
-    final bedtime = await uniqueDao.loadBedtimeSchedule();
-    await MethodChannelService.instance.updateBedtimeSchedule(bedtime);
-
-    /// Fetch and update notification batched apps and schedule
-    final notificationSchedules = await dynamicDao.fetchNotificationSchedules();
-    final distractingNotificationApps =
-        (await uniqueDao.loadSharedData()).notificationBatchedApps;
-
-    await MethodChannelService.instance
-        .updateDistractingNotificationApps(distractingNotificationApps);
-    await MethodChannelService.instance.updateNotificationBatchSchedules(
-      notificationSchedules
-          .where((e) => e.isActive)
-          .map((e) => e.time.toMinutes)
-          .toList(),
-    );
+    await Initializer.initializeServicesAndSchedules();
   }
 
   /// This method will be invoked everyday at Midnight 12

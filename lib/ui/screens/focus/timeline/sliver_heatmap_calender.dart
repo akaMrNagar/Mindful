@@ -169,7 +169,7 @@ class SliverHeatMapCalendarState extends State<SliverHeatMapCalendar> {
 
     // Interpolate the color based on the normalized value
     return Color.lerp(
-      Theme.of(context).colorScheme.primaryContainer.withOpacity(0.05),
+      Theme.of(context).colorScheme.primaryContainer.withAlpha(10),
       Theme.of(context).colorScheme.primaryContainer,
       normalizedValue.clamp(0.0, 1.0),
     )!;

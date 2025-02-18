@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.VpnService
 import androidx.activity.result.ActivityResultLauncher
+import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.cancelBedtimeRoutineTasks
@@ -194,7 +195,7 @@ class FgMethodCallHandler(
                 } else {
                     cancelBedtimeRoutineTasks(context)
                     if (bedtimeSettings.shouldStartDnd) {
-                        NotificationHelper.toggleDnd(context, false)
+                        NotificationHelper.toggleDnd(context, DndWakeLock.BedtimeMode, false)
                     }
                 }
                 result.success(true)

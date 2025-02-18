@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.mindful.android.R
-import com.mindful.android.utils.CountDownExecutor
+import com.mindful.android.utils.PreciseCountDownExecutor
 import java.util.concurrent.TimeUnit
 
 /**
@@ -54,10 +54,13 @@ class NotificationTimer(
             .setSmallIcon(R.drawable.ic_mindful)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setContentIntent(ongoingPendingIntent)
             .setContentTitle(title)
 
-    private val countDownExecutor: CountDownExecutor = CountDownExecutor(
+    private val preciseCountDownExecutor: PreciseCountDownExecutor = PreciseCountDownExecutor(
         duration = timerDurationSeconds,
         interval = 1L,
         timeUnit = TimeUnit.SECONDS,
@@ -123,7 +126,7 @@ class NotificationTimer(
      * Start the timer on the basis of provided data.
      */
     fun startTimer() {
-        countDownExecutor.start()
+        preciseCountDownExecutor.start()
     }
 
     /**
@@ -133,7 +136,7 @@ class NotificationTimer(
      */
     fun forceDisposeTimer(reason: String) {
         // Cancel the active timer to stop further ticks.
-        countDownExecutor.cancel()
+        preciseCountDownExecutor.cancel()
 
         // Show the final notification with the provided reason.
         showFinishNotification(reason)

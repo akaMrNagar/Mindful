@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.annotation.MainThread
 import com.mindful.android.R
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.models.RestrictionType
+import com.mindful.android.enums.RestrictionType
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
 
