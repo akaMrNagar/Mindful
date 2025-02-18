@@ -69,8 +69,8 @@ class ChangeLogsData {
       label: "Usage history",
       onTap: (ctx) => Navigator.of(ctx).pushNamed(AppRoutes.settingsPath),
       bulletPoints: const [
-        "Monitor your usage trends over time.",
-        "Customize how long your usage history is stored.",
+        "Monitor usage trends over time.",
+        "Customize how long usage history is stored.",
       ],
     ),
     const ChangeLog(
