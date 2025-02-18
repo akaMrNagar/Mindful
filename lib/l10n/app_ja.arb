@@ -13,7 +13,9 @@
   "permission_grant_step_one": "1. {button_label} を選択してください。",
   "@permission_grant_step_one": {
     "placeholders": {
-      "button_label": {}
+      "button_label": {
+        "type": "String"
+      }
     }
   },
   "permission_grant_step_two": "2. 次の画面で Mindful を選択してください。",
@@ -54,25 +56,37 @@
   "nDays": "{count, plural, =0{0 日} =1{1 日} other{{count} 日}}",
   "@nDays": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
     }
   },
   "nHours": "{count, plural, =0{0 時間} =1{1 時間} other{{count} 時間}}",
   "@nHours": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
     }
   },
   "nMinutes": "{count, plural, =0{0 分} =1{1 分} other{{count} 分}}",
   "@nMinutes": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
     }
   },
   "nSeconds": "{count, plural, =0{0 秒} =1{1 秒} other{{count} 秒}}",
   "@nSeconds": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
     }
   },
   "time_separator_and": "と",
@@ -205,7 +219,10 @@
   "shorts_time_left_from": "残りあと {timeShortString}",
   "@shorts_time_left_from": {
     "placeholders": {
-      "timeShortString": {}
+      "timeShortString": {
+        "type": "String",
+        "example": "1h 23m"
+      }
     }
   },
   "short_content_invincible_mode_info": "ショート動画の毎日の使用制限に達しました。無敵モード中は設定を変更できません。",
@@ -241,7 +258,10 @@
   "remove_website_dialog_info": "{websitehost} のブロックを解除しますか？",
   "@remove_website_dialog_info": {
     "placeholders": {
-      "websitehost": {}
+      "websitehost": {
+        "type": "String",
+        "example": "example.com"
+      }
     }
   },
   "focus_tab_title": "集中記録",
@@ -283,21 +303,30 @@
   "selected_month_productive_time_snack_alert": "選択した月の集中時間は合計 {timeString} です。",
   "@selected_month_productive_time_snack_alert": {
     "placeholders": {
-      "timeString": {}
+      "timeString": {
+        "type": "String",
+        "example": "3 hours and 15 minutes"
+      }
     }
   },
   "selected_month_productive_days_label": "集中できた日数",
   "selected_month_productive_days_snack_alert": "選択した月に集中できた日数は {daysCount} 日です。",
   "@selected_month_productive_days_snack_alert": {
     "placeholders": {
-      "daysCount": {}
+      "daysCount": {
+        "type": "num",
+        "example": "12"
+      }
     }
   },
   "selected_day_focused_time_label": "集中した時間",
   "selected_day_focused_time_snack_alert": "選択した日の集中時間の合計は {timeString} です。",
   "@selected_day_focused_time_snack_alert": {
     "placeholders": {
-      "timeString": {}
+      "timeString": {
+        "type": "String",
+        "example": "3 hours and 15 minutes"
+      }
     }
   },
   "calender_heading": "カレンダー",
@@ -324,7 +353,10 @@
   "active_session_quote_five": "おめでとうございます🎉 \n{durationString} の集中記録を完了しました！\n\nお疲れ様でした！これからも続けていきましょう。",
   "@active_session_quote_five": {
     "placeholders": {
-      "durationString": {}
+      "durationString": {
+        "type": "String",
+        "example": "30 minutes"
+      }
     }
   },
   "restriction_groups_tab_title": "制限グループ",
@@ -340,7 +372,10 @@
   "remove_restriction_group_dialog_info": "{groupName} を制限グループから削除しますか？",
   "@remove_restriction_group_dialog_info": {
     "placeholders": {
-      "groupName": {}
+      "groupName": {
+        "type": "String",
+        "example": "Games"
+      }
     }
   },
   "restriction_group_invalid_limits_snack_alert": "タイマーを設定するか、使用時間帯を制限してください。",
@@ -351,7 +386,10 @@
   "nNotifications": "{count, plural, =0{0 notification} =1{1 notification} other{{count} notifications}}",
   "@nNotifications": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
     }
   },
   "app_info_none_warning": "Couldn't find the app for the given package. Returning to the home screen.",
@@ -359,7 +397,10 @@
   "emergency_dialog_info": "アプリブロッカーを5分間一時停止しますか？残りパスは {leftPassesCount} 回です。すべてのパスを使用すると、アプリは深夜まで、または有効な集中記録が終了するまでブロックされたままになります。",
   "@emergency_dialog_info": {
     "placeholders": {
-      "leftPassesCount": {}
+      "leftPassesCount": {
+        "type": "num",
+        "example": "3"
+      }
     }
   },
   "emergency_dialog_button_use_anyway": "使用する",
@@ -373,7 +414,10 @@
   "app_launch_limit_tile_subtitle": "今日は {count} 回起動しました。",
   "@app_launch_limit_tile_subtitle": {
     "placeholders": {
-      "count": {}
+      "count": {
+        "type": "num",
+        "example": "15"
+      }
     }
   },
   "app_launch_limit_picker_dialog_info": "毎日、アプリを起動できる回数を制限できます。制限回数を超えると、深夜0時までアプリは起動できなくなります。",
@@ -381,8 +425,14 @@
   "app_active_period_tile_subtitle": "{startTime} から {endTime} まで",
   "@app_active_period_tile_subtitle": {
     "placeholders": {
-      "startTime": {},
-      "endTime": {}
+      "startTime": {
+        "type": "String",
+        "example": "10:00pm"
+      },
+      "endTime": {
+        "type": "String",
+        "example": "15"
+      }
     }
   },
   "internet_access_tile_title": "インターネット接続",
@@ -390,20 +440,29 @@
   "internet_access_blocked_snack_alert": "{appName} はインターネットに接続できません。",
   "@internet_access_blocked_snack_alert": {
     "placeholders": {
-      "appName": {}
+      "appName": {
+        "type": "String",
+        "example": "Mindful"
+      }
     }
   },
   "internet_access_unblocked_snack_alert": "{appName} はインターネットに接続できます。",
   "@internet_access_unblocked_snack_alert": {
     "placeholders": {
-      "appName": {}
+      "appName": {
+        "type": "String",
+        "example": "Mindful"
+      }
     }
   },
   "launch_app_tile_title": "アプリの起動",
   "launch_app_tile_subtitle": "{appName} を開く",
   "@launch_app_tile_subtitle": {
     "placeholders": {
-      "appName": {}
+      "appName": {
+        "type": "String",
+        "example": "Mindful"
+      }
     }
   },
   "go_to_app_settings_tile_title": "設定画面へ",
@@ -413,13 +472,19 @@
   "app_excluded_from_stats_snack_alert": "{appName} は使用時間に含まれません。",
   "@app_excluded_from_stats_snack_alert": {
     "placeholders": {
-      "appName": {}
+      "appName": {
+        "type": "String",
+        "example": "Mindful"
+      }
     }
   },
   "app_include_to_stats_snack_alert": "{appName} は使用時間に含まれます。",
   "@app_include_to_stats_snack_alert": {
     "placeholders": {
-      "appName": {}
+      "appName": {
+        "type": "String",
+        "example": "Mindful"
+      }
     }
   },
   "general_tab_title": "全般設定",
