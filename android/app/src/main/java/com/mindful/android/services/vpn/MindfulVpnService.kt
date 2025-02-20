@@ -44,9 +44,9 @@ class MindfulVpnService : VpnService() {
     private var mVpnInterface: ParcelFileDescriptor? = null
     private var mIsServiceRunning = false
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
+        if (intent?.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             startFgService()
             return START_STICKY
         }

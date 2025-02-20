@@ -59,7 +59,8 @@ class MidnightResetReceiver : BroadcastReceiver() {
         params: WorkerParameters,
     ) : Worker(context, params) {
         private val mTrackerServiceConn = SafeServiceConnection(
-            MindfulTrackerService::class.java, context
+            context = context,
+            serviceClass = MindfulTrackerService::class.java,
         )
 
 

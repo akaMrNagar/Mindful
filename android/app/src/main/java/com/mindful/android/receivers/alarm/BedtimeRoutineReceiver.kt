@@ -72,7 +72,8 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             bedtimeSettings.scheduleDays[Utils.zeroIndexedDayOfWeek()]
 
         private val trackerServiceConn = SafeServiceConnection(
-            MindfulTrackerService::class.java, context
+            context = context,
+            serviceClass = MindfulTrackerService::class.java
         )
 
 

@@ -79,8 +79,8 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     }
 
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.action == MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET) {
             shortsPlatformManager.resetShortsScreenTime()
             Log.d(TAG, "onStartCommand: Midnight reset completed")
         }
