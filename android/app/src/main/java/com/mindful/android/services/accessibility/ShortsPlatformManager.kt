@@ -3,6 +3,7 @@ package com.mindful.android.services.accessibility
 import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
+import com.mindful.android.enums.ShortsPlatformFeatures
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
@@ -28,25 +29,40 @@ class ShortsPlatformManager(
         SharedPrefsHelper.getSetShortsScreenTimeMs(context, 0L)
     }
 
-    fun checkAndBlockShortsOnPlatforms(
+    /**
+     * Checks if a blocked short-form content feature is open and applies restrictions.
+     *
+     * @param packageName The package name of the current app in focus.
+     * @param node The root `AccessibilityNodeInfo` of the current screen.
+     * @param settings The user's `WellBeingSettings`, including blocked features and time limits.
+     */
+    fun blockDistraction(
         packageName: String,
         node: AccessibilityNodeInfo,
         settings: WellBeingSettings,
-    ): Boolean? {
-        /// Check if blocking is enabled for package
-        when {
-            packageName.contains(YOUTUBE_CLIENT_PACKAGE_SUFFIX) -> blockingConfigs[YOUTUBE_PACKAGE]
-            else -> blockingConfigs[packageName]
-        }?.let {
-            /// Update shorts screen time if content is open
-            if (it.isContentOpen.invoke(packageName, node)) {
-                updateShortsScreenTime(settings.allowedShortContentTimeMs, it.maxAllowedDuration)
-            }
+    ) {
+        // Use default youtube package for unofficial clients too
+        val resolvedPackage =
+            if (packageName.contains(YOUTUBE_CLIENT_PACKAGE_SUFFIX)) YOUTUBE_PACKAGE
+            else packageName
 
-            return true
+        val blockedFeatures = settings.blockedShortsPlatformFeatures
+
+        /// Check if blocking is enabled for platforms
+        val isFeatureOpen = when (resolvedPackage) {
+            INSTAGRAM_PACKAGE -> isInstagramFeatureOpen(node, blockedFeatures)
+            SNAPCHAT_PACKAGE -> isSnapchatFeatureOpen(node, blockedFeatures)
+            FACEBOOK_PACKAGE -> isFacebookFeatureOpen(node, blockedFeatures)
+            REDDIT_PACKAGE -> isRedditFeatureOpen(node, blockedFeatures)
+            YOUTUBE_PACKAGE -> isYoutubeFeatureOpen(node, blockedFeatures)
+            else -> false
         }
 
-        return null
+        if (isFeatureOpen) {
+            maxAllowedDuration[resolvedPackage]?.let {
+                updateShortsScreenTime(settings.allowedShortContentTimeMs, it)
+            }
+        }
     }
 
     /**
@@ -58,18 +74,22 @@ class ShortsPlatformManager(
      */
     fun checkAndBlockShortsOnBrowser(settings: WellBeingSettings, url: String): Boolean {
         when {
-            settings.blockInstaReels && doesUrlContainsAnyElement(mInstaReelUrls, url) -> true
-            settings.blockYtShorts && doesUrlContainsAnyElement(mYtShortUrls, url) -> true
-            settings.blockFbReels && doesUrlContainsAnyElement(mFbReelUrls, url) -> true
-            settings.blockSnapSpotlight && doesUrlContainsAnyElement(
-                mSnapSpotlightUrls,
-                url
-            ) -> true
+            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.INSTAGRAM_REELS)
+                    && doesUrlContainsAnyElement(mInstaReelUrls, url) -> true
+
+            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.YOUTUBE_SHORTS)
+                    && doesUrlContainsAnyElement(mYtShortUrls, url) -> true
+
+            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.FACEBOOK_REELS)
+                    && doesUrlContainsAnyElement(mFbReelUrls, url) -> true
+
+            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT)
+                    && doesUrlContainsAnyElement(mSnapSpotlightUrls, url) -> true
 
             else -> false
         }.let {
             if (it) {
-                updateShortsScreenTime(settings.allowedShortContentTimeMs, 30 * 1000L)
+                updateShortsScreenTime(settings.allowedShortContentTimeMs)
                 return true
             }
         }
@@ -78,11 +98,14 @@ class ShortsPlatformManager(
     }
 
     /**
-     * Checks the total screen time for short-form content and blocks access if the allowed time has been exceeded.
+     * Updates the total screen time spent on short-form content and blocks access if the allowed time is exceeded.
+     *
+     * @param allowedShortContentTimeMs The maximum time allowed for short-form content.
+     * @param maxAllowedDuration The maximum duration considered for a single short-form content session.
      */
     private fun updateShortsScreenTime(
         allowedShortContentTimeMs: Long,
-        maxAllowedDuration: Long,
+        maxAllowedDuration: Long = 30 * 1000L,
     ) {
         // Check if limit is exhausted
         if (allowedShortContentTimeMs < 0 || shortContentScreenTime > (allowedShortContentTimeMs + SAVING_INTERVAL_MS)) {
@@ -116,120 +139,110 @@ class ShortsPlatformManager(
         // The minimum interval between saving short content's screen time in shared preferences
         private const val SAVING_INTERVAL_MS = (30 * 1000L)
 
-        private data class BlockConfig(
-            val isContentOpen: (String, AccessibilityNodeInfo) -> Boolean,
-            // Max allowed duration for each short content platform (based on the highest short length or duration)
-            // If the interval between two short content block event is <= DURATION then it is considered that user is watching short content
-            val maxAllowedDuration: Long,
-        )
-
-        private val blockingConfigs = mapOf(
-            INSTAGRAM_PACKAGE to BlockConfig(::isInstaReelsOpen, (90 * 1000L)),
-            SNAPCHAT_PACKAGE to BlockConfig(::isSnapchatSpotlightOpen, (60 * 1000L)),
-            FACEBOOK_PACKAGE to BlockConfig(::isFacebookReelsOpen, (90 * 1000L)),
-            REDDIT_PACKAGE to BlockConfig(::isRedditShortsOpen, (60 * 1000L)),
-            YOUTUBE_PACKAGE to BlockConfig(::isYoutubeShortsOpen, (3 * 60 * 1000L)),
+        /**
+         * Max allowed duration for each short content platform (based on the highest short length or duration)
+         * If the interval between two short content block event is <= DURATION then it is considered that user is watching short content
+         **/
+        private val maxAllowedDuration = mapOf(
+            INSTAGRAM_PACKAGE to (90 * 1000L),
+            SNAPCHAT_PACKAGE to (60 * 1000L),
+            FACEBOOK_PACKAGE to (90 * 1000L),
+            REDDIT_PACKAGE to (60 * 1000L),
+            YOUTUBE_PACKAGE to (3 * 60 * 1000L),
         )
 
         // Possible URLs of different short-form content platforms
         private val mInstaReelUrls = listOf("instagram.com/reels/", "m.instagram.com/reels/")
+        //explore
+
         private val mYtShortUrls = listOf("youtube.com/shorts/", "m.youtube.com/shorts/")
         private val mFbReelUrls = listOf("facebook.com/reel/", "m.facebook.com/reel/")
         private val mSnapSpotlightUrls = listOf(
             "snapchat.com/spotlight/",
             "m.snapchat.com/spotlight/",
             "web.snapchat.com/spotlight/"
-        )
+        )// snap/discover
 
         private val mFbNodeIds = listOf("Add a comment…", "कमेंट जोड़ें…")
 
 
         /**
-         * Checks if Instagram Reels is currently open based on accessibility node information.
-         *
-         * @param node The root AccessibilityNodeInfo of the view hierarchy.
-         * @return True if Instagram Reels is open, false otherwise.
+         * Checks if Instagram features (Reels or Search Feed) are open.
          */
-        private fun isInstaReelsOpen(
-            packageName: String,
+        private fun isInstagramFeatureOpen(
             node: AccessibilityNodeInfo,
+            blockedFeatures: Set<ShortsPlatformFeatures>,
         ): Boolean {
-            val nodeId: CharSequence? = node.viewIdResourceName
-            // Check root node
-            if (nodeId != null && nodeId == "com.instagram.android:id/clips_viewer_view_pager") {
-                return true
+            return when {
+                ShortsPlatformFeatures.INSTAGRAM_REELS in blockedFeatures &&
+                        doesNodeByIdExists(node, "com.instagram.android:id/clips_video_container")
+                -> true
+
+                ShortsPlatformFeatures.INSTAGRAM_SEARCH_FEED in blockedFeatures &&
+                        doesNodeByIdExists(node, "com.instagram.android:id/search_results_recycler")
+                -> true
+
+                else -> false
             }
-            return doesNodeByIdExists(node, "com.instagram.android:id/clips_video_container")
         }
 
         /**
-         * Checks if YouTube Shorts is currently open based on accessibility node information.
-         *
-         * @param node              The AccessibilityNodeInfo of the view.
-         * @param clientPackageName The package name of the youtube client which is open.
-         * @return True if YouTube Shorts is open, false otherwise.
+         * Checks if YouTube Shorts is currently open.
          */
-        private fun isYoutubeShortsOpen(
-            clientPackageName: String,
+        private fun isYoutubeFeatureOpen(
             node: AccessibilityNodeInfo,
+            blockedFeatures: Set<ShortsPlatformFeatures>,
         ): Boolean {
-            val nodeId: CharSequence? = node.viewIdResourceName
-            if (nodeId != null
-                && (nodeId == "$clientPackageName:id/reel_progress_bar" || nodeId == "$clientPackageName:id/reel_player_page_container" || nodeId == "$clientPackageName:id/reel_recycler")
-            ) {
-                return true
+            return ShortsPlatformFeatures.YOUTUBE_SHORTS in blockedFeatures &&
+                    doesNodeByIdExists(node, "${node.packageName}:id/reel_player_underlay")
+        }
+
+        /**
+         * Checks if Snapchat Spotlight or Discover is open.
+         */
+        private fun isSnapchatFeatureOpen(
+            node: AccessibilityNodeInfo,
+            blockedFeatures: Set<ShortsPlatformFeatures>,
+        ): Boolean {
+
+            return when {
+                ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT in blockedFeatures &&
+                        doesNodeByIdExists(
+                            node,
+                            "com.snapchat.android:id/spotlight_card_static_thumbnail"
+                        )
+                -> true
+
+                ShortsPlatformFeatures.SNAPCHAT_DISCOVER in blockedFeatures &&
+                        doesNodeByIdExists(node, "com.snapchat.android:id/friend_card_frame")
+                -> true
+
+                else -> false
             }
-            return doesNodeByIdExists(node, "$clientPackageName:id/reel_player_underlay")
         }
 
         /**
-         * Checks if Snapchat Spotlight is currently open based on accessibility node information.
-         *
-         * @param node The AccessibilityNodeInfo of the view.
-         * @return True if Snapchat Spotlight is open, false otherwise.
+         * Checks if Facebook Reels is currently open.
          */
-        private fun isSnapchatSpotlightOpen(
-            packageName: String,
+        private fun isFacebookFeatureOpen(
             node: AccessibilityNodeInfo,
-        ): Boolean {
-            return doesNodeByIdExists(node, "com.snapchat.android:id/spotlight_view_count")
-        }
-
-        /**
-         * Checks if Facebook Reels is currently open based on accessibility node information.
-         *
-         * @param node The AccessibilityNodeInfo of the view.
-         * @return True if Facebook Reels is open, false otherwise.
-         */
-        private fun isFacebookReelsOpen(
-            packageName: String,
-            node: AccessibilityNodeInfo,
+            blockedFeatures: Set<ShortsPlatformFeatures>,
         ): Boolean {
             // TODO: Add more string translated from different languages for the node text
             //  as user may have set different language for facebook app
 
-            if (doesNodeHaveFbCommentText(node)) return true
-
-            for (i in 0 until node.childCount) {
-                val childNode = node.getChild(i) ?: continue
-                if (doesNodeHaveFbCommentText(childNode)) return true
-            }
-
-            return false
+            return ShortsPlatformFeatures.FACEBOOK_REELS in blockedFeatures
+                    && doesNodeHaveFbCommentText(node)
         }
 
         /**
-         * Checks if Reddit Shorts is currently open based on accessibility node information.
-         *
-         * @param node The AccessibilityNodeInfo of the view.
-         * @return True if Reddit Shorts is open, false otherwise.
+         * Checks if Reddit Shorts is open.
          */
-        private fun isRedditShortsOpen(
-            packageName: String,
+        private fun isRedditFeatureOpen(
             node: AccessibilityNodeInfo,
+            blockedFeatures: Set<ShortsPlatformFeatures>,
         ): Boolean {
-            val nodeId: CharSequence? = node.viewIdResourceName
-            return nodeId != null && nodeId == "feed_vertical_pager"
+            return ShortsPlatformFeatures.REDDIT_SHORTS in blockedFeatures && node.viewIdResourceName == "feed_vertical_pager"
         }
 
         /**
@@ -256,8 +269,7 @@ class ShortsPlatformManager(
          * @return `true` if a node with the specified view ID exists, `false` otherwise.
          */
         private fun doesNodeByIdExists(node: AccessibilityNodeInfo, viewId: String): Boolean {
-            val nodes = node.findAccessibilityNodeInfosByViewId(viewId)
-            return nodes != null && nodes.isNotEmpty()
+            return node.findAccessibilityNodeInfosByViewId(viewId).isNotEmpty()
         }
 
         /**
