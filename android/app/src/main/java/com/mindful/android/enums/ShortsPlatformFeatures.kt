@@ -5,10 +5,10 @@ package com.mindful.android.enums
  */
 enum class ShortsPlatformFeatures {
     INSTAGRAM_REELS,
-    INSTAGRAM_SEARCH_FEED,
-    YOUTUBE_SHORTS,
+    INSTAGRAM_EXPLORE,
     SNAPCHAT_SPOTLIGHT,
     SNAPCHAT_DISCOVER,
+    YOUTUBE_SHORTS,
     FACEBOOK_REELS,
     REDDIT_SHORTS,
 }

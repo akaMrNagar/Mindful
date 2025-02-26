@@ -74,17 +74,23 @@ class ShortsPlatformManager(
      */
     fun checkAndBlockShortsOnBrowser(settings: WellBeingSettings, url: String): Boolean {
         when {
-            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.INSTAGRAM_REELS)
+            ShortsPlatformFeatures.INSTAGRAM_REELS in settings.blockedShortsPlatformFeatures
                     && doesUrlContainsAnyElement(mInstaReelUrls, url) -> true
 
-            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.YOUTUBE_SHORTS)
+            ShortsPlatformFeatures.INSTAGRAM_EXPLORE in settings.blockedShortsPlatformFeatures
+                    && doesUrlContainsAnyElement(mInstaExploreUrls, url) -> true
+
+            ShortsPlatformFeatures.YOUTUBE_SHORTS in settings.blockedShortsPlatformFeatures
                     && doesUrlContainsAnyElement(mYtShortUrls, url) -> true
 
-            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.FACEBOOK_REELS)
+            ShortsPlatformFeatures.FACEBOOK_REELS in settings.blockedShortsPlatformFeatures
                     && doesUrlContainsAnyElement(mFbReelUrls, url) -> true
 
-            settings.blockedShortsPlatformFeatures.contains(ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT)
+            ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT in settings.blockedShortsPlatformFeatures
                     && doesUrlContainsAnyElement(mSnapSpotlightUrls, url) -> true
+
+            ShortsPlatformFeatures.SNAPCHAT_DISCOVER in settings.blockedShortsPlatformFeatures
+                    && doesUrlContainsAnyElement(mSnapDiscoverUrls, url) -> true
 
             else -> false
         }.let {
@@ -153,7 +159,7 @@ class ShortsPlatformManager(
 
         // Possible URLs of different short-form content platforms
         private val mInstaReelUrls = listOf("instagram.com/reels/", "m.instagram.com/reels/")
-        //explore
+        private val mInstaExploreUrls = listOf("instagram.com/explore/", "m.instagram.com/explore/")
 
         private val mYtShortUrls = listOf("youtube.com/shorts/", "m.youtube.com/shorts/")
         private val mFbReelUrls = listOf("facebook.com/reel/", "m.facebook.com/reel/")
@@ -161,9 +167,14 @@ class ShortsPlatformManager(
             "snapchat.com/spotlight/",
             "m.snapchat.com/spotlight/",
             "web.snapchat.com/spotlight/"
-        )// snap/discover
+        )
+        private val mSnapDiscoverUrls = listOf(
+            "snapchat.com/discover/",
+            "m.snapchat.com/discover/",
+            "web.snapchat.com/discover/"
+        )
 
-        private val mFbNodeIds = listOf("Add a comment…", "कमेंट जोड़ें…")
+        private val mFbNodeTexts = listOf("Add a comment", "कमेंट जोड़ें…")
 
 
         /**
@@ -178,8 +189,8 @@ class ShortsPlatformManager(
                         doesNodeByIdExists(node, "com.instagram.android:id/clips_video_container")
                 -> true
 
-                ShortsPlatformFeatures.INSTAGRAM_SEARCH_FEED in blockedFeatures &&
-                        doesNodeByIdExists(node, "com.instagram.android:id/search_results_recycler")
+                ShortsPlatformFeatures.INSTAGRAM_EXPLORE in blockedFeatures &&
+                        doesNodeByIdExists(node, "com.instagram.android:id/action_bar_search_edit_text")
                 -> true
 
                 else -> false
@@ -214,7 +225,7 @@ class ShortsPlatformManager(
                 -> true
 
                 ShortsPlatformFeatures.SNAPCHAT_DISCOVER in blockedFeatures &&
-                        doesNodeByIdExists(node, "com.snapchat.android:id/friend_card_frame")
+                        doesNodeByIdExists(node, "com.snapchat.android:id/df_large_story")
                 -> true
 
                 else -> false
@@ -230,9 +241,17 @@ class ShortsPlatformManager(
         ): Boolean {
             // TODO: Add more string translated from different languages for the node text
             //  as user may have set different language for facebook app
+            NodeInfoLogger.logNodeInfoRecursively(node, 0)
 
-            return ShortsPlatformFeatures.FACEBOOK_REELS in blockedFeatures
-                    && doesNodeHaveFbCommentText(node)
+            if (ShortsPlatformFeatures.FACEBOOK_REELS in blockedFeatures) {
+                for (text in mFbNodeTexts) {
+                    if (node.findAccessibilityNodeInfosByText(text).isNotEmpty()) {
+                        return true
+                    }
+                }
+            }
+
+            return false
         }
 
         /**
@@ -270,17 +289,6 @@ class ShortsPlatformManager(
          */
         private fun doesNodeByIdExists(node: AccessibilityNodeInfo, viewId: String): Boolean {
             return node.findAccessibilityNodeInfosByViewId(viewId).isNotEmpty()
-        }
-
-        /**
-         * Checks whether the text of the given AccessibilityNodeInfo matches with one of the facebook comment nodes text.
-         *
-         * @param node The AccessibilityNodeInfo whose text is to be checked.
-         * @return `true` if the node's text matches, `false` otherwise.
-         */
-        private fun doesNodeHaveFbCommentText(node: AccessibilityNodeInfo): Boolean {
-            val nodeText = node.text
-            return nodeText != null && mFbNodeIds.contains(nodeText.toString())
         }
     }
 }

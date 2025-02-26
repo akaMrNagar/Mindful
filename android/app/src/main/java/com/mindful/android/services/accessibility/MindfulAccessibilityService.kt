@@ -235,7 +235,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                 when (feature) {
                     /// Instagram
                     ShortsPlatformFeatures.INSTAGRAM_REELS,
-                    ShortsPlatformFeatures.INSTAGRAM_SEARCH_FEED,
+                    ShortsPlatformFeatures.INSTAGRAM_EXPLORE,
                     -> shortsPlatformPackages.add(INSTAGRAM_PACKAGE)
 
                     // Snapchat

@@ -34,14 +34,7 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
     /**
      * List of blocked short-form features (stored as enum indexes)
      */
-    // FIXME: Remove these features from initialization
-    val blockedShortsPlatformFeatures: Set<ShortsPlatformFeatures> = mutableSetOf(
-        ShortsPlatformFeatures.INSTAGRAM_REELS,
-        ShortsPlatformFeatures.YOUTUBE_SHORTS,
-        ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT,
-        ShortsPlatformFeatures.FACEBOOK_REELS,
-        ShortsPlatformFeatures.REDDIT_SHORTS,
-    )
+    val blockedShortsPlatformFeatures: Set<ShortsPlatformFeatures>
 
     /**
      * List of website hosts that are blocked including custom nsfw websites.
@@ -57,14 +50,13 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
             for (i in 0 until featuresJsonArray.length()) {
                 featuresJsonArray.optInt(i).let {
                     blockedFeatures.add(
-                        ShortsPlatformFeatures.values().elementAt(it)
+                        ShortsPlatformFeatures.values()[i]
                     )
                 }
             }
         }
 
-        // FIXME: uncomment this
-//        this.blockedShortsPlatformFeatures = blockedFeatures
+        this.blockedShortsPlatformFeatures = blockedFeatures
 
 
         val blockedWebsites = mutableSetOf<String>()
