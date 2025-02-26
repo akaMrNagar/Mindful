@@ -22,6 +22,7 @@ dependencies:
   smooth_page_indicator: ^1.2.0+3
   flutter_slidable: ^3.1.2
   dynamic_color: ^1.7.0
+  flutter_svg: ^2.0.17
 
   # Animation
   flutter_animate: ^4.2.0+1
@@ -68,13 +69,14 @@ flutter:
     - assets/illustrations/onboarding_2.png
     - assets/illustrations/onboarding_3.png
     - assets/illustrations/onboarding_4.png
-
-    # Short content platform's icons
-    - assets/icons/instaReels.png
-    - assets/icons/fbReels.png
-    - assets/icons/snapSpotlight.png
-    - assets/icons/ytShorts.png
-    - assets/icons/redditShorts.png
+   
+    # Vector icons
+    - assets/vectors/github.svg
+    - assets/vectors/instagram.svg
+    - assets/vectors/snapchat.svg
+    - assets/vectors/youtube.svg
+    - assets/vectors/facebook.svg
+    - assets/vectors/reddit.svg
 
   # fonts:
   #   - family: Schyler

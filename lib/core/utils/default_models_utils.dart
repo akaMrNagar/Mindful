@@ -43,11 +43,7 @@ const defaultParentalControlsModel = ParentalControls(
 const defaultWellbeingModel = Wellbeing(
   id: 0,
   allowedShortsTimeSec: 30 * 60,
-  blockInstaReels: false,
-  blockYtShorts: false,
-  blockSnapSpotlight: false,
-  blockFbReels: false,
-  blockRedditShorts: false,
+  blockedFeatures: [],
   blockNsfwSites: false,
   blockedWebsites: [],
   nsfwWebsites: [],

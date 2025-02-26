@@ -95,7 +95,7 @@ class ShortsBlockingScreen extends ConsumerWidget {
               /// Quick actions
               SliverShortsQuickActions(
                 haveNecessaryPerms: haveAccessibilityPermission,
-                isModifiable: canModifySettings,
+                isModifiable: canModifySettings && haveAccessibilityPermission,
               ),
 
               const SliverTabsBottomPadding(),

@@ -1175,65 +1175,89 @@ abstract class AppLocalizations {
   /// **'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.'**
   String get short_content_timer_picker_dialog_info;
 
-  /// No description provided for @block_insta_reels_title.
+  /// No description provided for @instagram_features_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Block reels'**
-  String get block_insta_reels_title;
+  /// **'Instagram'**
+  String get instagram_features_tile_title;
 
-  /// No description provided for @block_insta_reels_subtitle.
+  /// No description provided for @instagram_features_tile_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Restrict reels on instagram.'**
-  String get block_insta_reels_subtitle;
+  /// **'Restrict features on instagram.'**
+  String get instagram_features_tile_subtitle;
 
-  /// No description provided for @block_yt_shorts_title.
+  /// No description provided for @instagram_features_block_reels.
   ///
   /// In en, this message translates to:
-  /// **'Block shorts'**
-  String get block_yt_shorts_title;
+  /// **'Restrict reels section.'**
+  String get instagram_features_block_reels;
 
-  /// No description provided for @block_yt_shorts_subtitle.
+  /// No description provided for @instagram_features_block_explore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict explore section.'**
+  String get instagram_features_block_explore;
+
+  /// No description provided for @snapchat_features_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapchat'**
+  String get snapchat_features_tile_title;
+
+  /// No description provided for @snapchat_features_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict features on snapchat.'**
+  String get snapchat_features_tile_subtitle;
+
+  /// No description provided for @snapchat_features_block_spotlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict spotlight section.'**
+  String get snapchat_features_block_spotlight;
+
+  /// No description provided for @snapchat_features_block_discover.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict discover section.'**
+  String get snapchat_features_block_discover;
+
+  /// No description provided for @youtube_features_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Youtube'**
+  String get youtube_features_tile_title;
+
+  /// No description provided for @youtube_features_tile_subtitle.
   ///
   /// In en, this message translates to:
   /// **'Restrict shorts on youtube.'**
-  String get block_yt_shorts_subtitle;
+  String get youtube_features_tile_subtitle;
 
-  /// No description provided for @block_snap_spotlight_title.
+  /// No description provided for @facebook_features_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Block spotlight'**
-  String get block_snap_spotlight_title;
+  /// **'Facebook'**
+  String get facebook_features_tile_title;
 
-  /// No description provided for @block_snap_spotlight_subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Restrict spotlight on snapchat.'**
-  String get block_snap_spotlight_subtitle;
-
-  /// No description provided for @block_fb_reels_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Block reels'**
-  String get block_fb_reels_title;
-
-  /// No description provided for @block_fb_reels_subtitle.
+  /// No description provided for @facebook_features_tile_subtitle.
   ///
   /// In en, this message translates to:
   /// **'Restrict reels on facebook.'**
-  String get block_fb_reels_subtitle;
+  String get facebook_features_tile_subtitle;
 
-  /// No description provided for @block_reddit_shorts_title.
+  /// No description provided for @reddit_features_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Block shorts'**
-  String get block_reddit_shorts_title;
+  /// **'Reddit'**
+  String get reddit_features_tile_title;
 
-  /// No description provided for @block_reddit_shorts_subtitle.
+  /// No description provided for @reddit_features_tile_subtitle.
   ///
   /// In en, this message translates to:
   /// **'Restrict shorts on reddit.'**
-  String get block_reddit_shorts_subtitle;
+  String get reddit_features_tile_subtitle;
 
   /// No description provided for @websites_blocking_tab_title.
   ///

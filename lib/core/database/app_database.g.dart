@@ -4132,56 +4132,17 @@ class $WellbeingTableTable extends WellbeingTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(30 * 60));
-  static const VerificationMeta _blockInstaReelsMeta =
-      const VerificationMeta('blockInstaReels');
+  static const VerificationMeta _blockedFeaturesMeta =
+      const VerificationMeta('blockedFeatures');
   @override
-  late final GeneratedColumn<bool> blockInstaReels = GeneratedColumn<bool>(
-      'block_insta_reels', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_insta_reels" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _blockYtShortsMeta =
-      const VerificationMeta('blockYtShorts');
-  @override
-  late final GeneratedColumn<bool> blockYtShorts = GeneratedColumn<bool>(
-      'block_yt_shorts', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_yt_shorts" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _blockSnapSpotlightMeta =
-      const VerificationMeta('blockSnapSpotlight');
-  @override
-  late final GeneratedColumn<bool> blockSnapSpotlight = GeneratedColumn<bool>(
-      'block_snap_spotlight', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_snap_spotlight" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _blockFbReelsMeta =
-      const VerificationMeta('blockFbReels');
-  @override
-  late final GeneratedColumn<bool> blockFbReels = GeneratedColumn<bool>(
-      'block_fb_reels', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_fb_reels" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _blockRedditShortsMeta =
-      const VerificationMeta('blockRedditShorts');
-  @override
-  late final GeneratedColumn<bool> blockRedditShorts = GeneratedColumn<bool>(
-      'block_reddit_shorts', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("block_reddit_shorts" IN (0, 1))'),
-      defaultValue: const Constant(false));
+  late final GeneratedColumnWithTypeConverter<List<ShortsPlatformFeatures>,
+      String> blockedFeatures = GeneratedColumn<String>(
+          'blocked_features', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue: Constant(jsonEncode([])))
+      .withConverter<List<ShortsPlatformFeatures>>(
+          $WellbeingTableTable.$converterblockedFeatures);
   static const VerificationMeta _blockNsfwSitesMeta =
       const VerificationMeta('blockNsfwSites');
   @override
@@ -4218,11 +4179,7 @@ class $WellbeingTableTable extends WellbeingTable
   List<GeneratedColumn> get $columns => [
         id,
         allowedShortsTimeSec,
-        blockInstaReels,
-        blockYtShorts,
-        blockSnapSpotlight,
-        blockFbReels,
-        blockRedditShorts,
+        blockedFeatures,
         blockNsfwSites,
         blockedWebsites,
         nsfwWebsites
@@ -4246,36 +4203,7 @@ class $WellbeingTableTable extends WellbeingTable
           allowedShortsTimeSec.isAcceptableOrUnknown(
               data['allowed_shorts_time_sec']!, _allowedShortsTimeSecMeta));
     }
-    if (data.containsKey('block_insta_reels')) {
-      context.handle(
-          _blockInstaReelsMeta,
-          blockInstaReels.isAcceptableOrUnknown(
-              data['block_insta_reels']!, _blockInstaReelsMeta));
-    }
-    if (data.containsKey('block_yt_shorts')) {
-      context.handle(
-          _blockYtShortsMeta,
-          blockYtShorts.isAcceptableOrUnknown(
-              data['block_yt_shorts']!, _blockYtShortsMeta));
-    }
-    if (data.containsKey('block_snap_spotlight')) {
-      context.handle(
-          _blockSnapSpotlightMeta,
-          blockSnapSpotlight.isAcceptableOrUnknown(
-              data['block_snap_spotlight']!, _blockSnapSpotlightMeta));
-    }
-    if (data.containsKey('block_fb_reels')) {
-      context.handle(
-          _blockFbReelsMeta,
-          blockFbReels.isAcceptableOrUnknown(
-              data['block_fb_reels']!, _blockFbReelsMeta));
-    }
-    if (data.containsKey('block_reddit_shorts')) {
-      context.handle(
-          _blockRedditShortsMeta,
-          blockRedditShorts.isAcceptableOrUnknown(
-              data['block_reddit_shorts']!, _blockRedditShortsMeta));
-    }
+    context.handle(_blockedFeaturesMeta, const VerificationResult.success());
     if (data.containsKey('block_nsfw_sites')) {
       context.handle(
           _blockNsfwSitesMeta,
@@ -4297,16 +4225,9 @@ class $WellbeingTableTable extends WellbeingTable
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       allowedShortsTimeSec: attachedDatabase.typeMapping.read(
           DriftSqlType.int, data['${effectivePrefix}allowed_shorts_time_sec'])!,
-      blockInstaReels: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}block_insta_reels'])!,
-      blockYtShorts: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}block_yt_shorts'])!,
-      blockSnapSpotlight: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}block_snap_spotlight'])!,
-      blockFbReels: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}block_fb_reels'])!,
-      blockRedditShorts: attachedDatabase.typeMapping.read(
-          DriftSqlType.bool, data['${effectivePrefix}block_reddit_shorts'])!,
+      blockedFeatures: $WellbeingTableTable.$converterblockedFeatures.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}blocked_features'])!),
       blockNsfwSites: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}block_nsfw_sites'])!,
       blockedWebsites: $WellbeingTableTable.$converterblockedWebsites.fromSql(
@@ -4323,6 +4244,9 @@ class $WellbeingTableTable extends WellbeingTable
     return $WellbeingTableTable(attachedDatabase, alias);
   }
 
+  static TypeConverter<List<ShortsPlatformFeatures>, String>
+      $converterblockedFeatures =
+      const ListEnumNamesConverter(ShortsPlatformFeatures.values);
   static TypeConverter<List<String>, String> $converterblockedWebsites =
       const ListStringConverter();
   static TypeConverter<List<String>, String> $converternsfwWebsites =
@@ -4336,20 +4260,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
   /// Allowed time for short content in SECONDS
   final int allowedShortsTimeSec;
 
-  /// Flag denoting if to block instagram reels or not
-  final bool blockInstaReels;
-
-  /// Flag denoting if to block youtube shorts or not
-  final bool blockYtShorts;
-
-  /// Flag denoting if to block snapchat spotlight or not
-  final bool blockSnapSpotlight;
-
-  /// Flag denoting if to block facebook reels or not
-  final bool blockFbReels;
-
-  /// Flag denoting if to block reddit shorts or not
-  final bool blockRedditShorts;
+  /// List of feature which are blocked
+  final List<ShortsPlatformFeatures> blockedFeatures;
 
   /// Flag denoting if the nsfw or adult  websites are blocked or not
   /// i.e if accessibility service is filtering websites or not
@@ -4363,11 +4275,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
   const Wellbeing(
       {required this.id,
       required this.allowedShortsTimeSec,
-      required this.blockInstaReels,
-      required this.blockYtShorts,
-      required this.blockSnapSpotlight,
-      required this.blockFbReels,
-      required this.blockRedditShorts,
+      required this.blockedFeatures,
       required this.blockNsfwSites,
       required this.blockedWebsites,
       required this.nsfwWebsites});
@@ -4376,11 +4284,11 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['allowed_shorts_time_sec'] = Variable<int>(allowedShortsTimeSec);
-    map['block_insta_reels'] = Variable<bool>(blockInstaReels);
-    map['block_yt_shorts'] = Variable<bool>(blockYtShorts);
-    map['block_snap_spotlight'] = Variable<bool>(blockSnapSpotlight);
-    map['block_fb_reels'] = Variable<bool>(blockFbReels);
-    map['block_reddit_shorts'] = Variable<bool>(blockRedditShorts);
+    {
+      map['blocked_features'] = Variable<String>($WellbeingTableTable
+          .$converterblockedFeatures
+          .toSql(blockedFeatures));
+    }
     map['block_nsfw_sites'] = Variable<bool>(blockNsfwSites);
     {
       map['blocked_websites'] = Variable<String>($WellbeingTableTable
@@ -4398,11 +4306,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
     return WellbeingTableCompanion(
       id: Value(id),
       allowedShortsTimeSec: Value(allowedShortsTimeSec),
-      blockInstaReels: Value(blockInstaReels),
-      blockYtShorts: Value(blockYtShorts),
-      blockSnapSpotlight: Value(blockSnapSpotlight),
-      blockFbReels: Value(blockFbReels),
-      blockRedditShorts: Value(blockRedditShorts),
+      blockedFeatures: Value(blockedFeatures),
       blockNsfwSites: Value(blockNsfwSites),
       blockedWebsites: Value(blockedWebsites),
       nsfwWebsites: Value(nsfwWebsites),
@@ -4416,11 +4320,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       id: serializer.fromJson<int>(json['id']),
       allowedShortsTimeSec:
           serializer.fromJson<int>(json['allowedShortsTimeSec']),
-      blockInstaReels: serializer.fromJson<bool>(json['blockInstaReels']),
-      blockYtShorts: serializer.fromJson<bool>(json['blockYtShorts']),
-      blockSnapSpotlight: serializer.fromJson<bool>(json['blockSnapSpotlight']),
-      blockFbReels: serializer.fromJson<bool>(json['blockFbReels']),
-      blockRedditShorts: serializer.fromJson<bool>(json['blockRedditShorts']),
+      blockedFeatures: serializer
+          .fromJson<List<ShortsPlatformFeatures>>(json['blockedFeatures']),
       blockNsfwSites: serializer.fromJson<bool>(json['blockNsfwSites']),
       blockedWebsites:
           serializer.fromJson<List<String>>(json['blockedWebsites']),
@@ -4433,11 +4334,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'allowedShortsTimeSec': serializer.toJson<int>(allowedShortsTimeSec),
-      'blockInstaReels': serializer.toJson<bool>(blockInstaReels),
-      'blockYtShorts': serializer.toJson<bool>(blockYtShorts),
-      'blockSnapSpotlight': serializer.toJson<bool>(blockSnapSpotlight),
-      'blockFbReels': serializer.toJson<bool>(blockFbReels),
-      'blockRedditShorts': serializer.toJson<bool>(blockRedditShorts),
+      'blockedFeatures':
+          serializer.toJson<List<ShortsPlatformFeatures>>(blockedFeatures),
       'blockNsfwSites': serializer.toJson<bool>(blockNsfwSites),
       'blockedWebsites': serializer.toJson<List<String>>(blockedWebsites),
       'nsfwWebsites': serializer.toJson<List<String>>(nsfwWebsites),
@@ -4447,22 +4345,14 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
   Wellbeing copyWith(
           {int? id,
           int? allowedShortsTimeSec,
-          bool? blockInstaReels,
-          bool? blockYtShorts,
-          bool? blockSnapSpotlight,
-          bool? blockFbReels,
-          bool? blockRedditShorts,
+          List<ShortsPlatformFeatures>? blockedFeatures,
           bool? blockNsfwSites,
           List<String>? blockedWebsites,
           List<String>? nsfwWebsites}) =>
       Wellbeing(
         id: id ?? this.id,
         allowedShortsTimeSec: allowedShortsTimeSec ?? this.allowedShortsTimeSec,
-        blockInstaReels: blockInstaReels ?? this.blockInstaReels,
-        blockYtShorts: blockYtShorts ?? this.blockYtShorts,
-        blockSnapSpotlight: blockSnapSpotlight ?? this.blockSnapSpotlight,
-        blockFbReels: blockFbReels ?? this.blockFbReels,
-        blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
+        blockedFeatures: blockedFeatures ?? this.blockedFeatures,
         blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
         blockedWebsites: blockedWebsites ?? this.blockedWebsites,
         nsfwWebsites: nsfwWebsites ?? this.nsfwWebsites,
@@ -4473,21 +4363,9 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       allowedShortsTimeSec: data.allowedShortsTimeSec.present
           ? data.allowedShortsTimeSec.value
           : this.allowedShortsTimeSec,
-      blockInstaReels: data.blockInstaReels.present
-          ? data.blockInstaReels.value
-          : this.blockInstaReels,
-      blockYtShorts: data.blockYtShorts.present
-          ? data.blockYtShorts.value
-          : this.blockYtShorts,
-      blockSnapSpotlight: data.blockSnapSpotlight.present
-          ? data.blockSnapSpotlight.value
-          : this.blockSnapSpotlight,
-      blockFbReels: data.blockFbReels.present
-          ? data.blockFbReels.value
-          : this.blockFbReels,
-      blockRedditShorts: data.blockRedditShorts.present
-          ? data.blockRedditShorts.value
-          : this.blockRedditShorts,
+      blockedFeatures: data.blockedFeatures.present
+          ? data.blockedFeatures.value
+          : this.blockedFeatures,
       blockNsfwSites: data.blockNsfwSites.present
           ? data.blockNsfwSites.value
           : this.blockNsfwSites,
@@ -4505,11 +4383,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
     return (StringBuffer('Wellbeing(')
           ..write('id: $id, ')
           ..write('allowedShortsTimeSec: $allowedShortsTimeSec, ')
-          ..write('blockInstaReels: $blockInstaReels, ')
-          ..write('blockYtShorts: $blockYtShorts, ')
-          ..write('blockSnapSpotlight: $blockSnapSpotlight, ')
-          ..write('blockFbReels: $blockFbReels, ')
-          ..write('blockRedditShorts: $blockRedditShorts, ')
+          ..write('blockedFeatures: $blockedFeatures, ')
           ..write('blockNsfwSites: $blockNsfwSites, ')
           ..write('blockedWebsites: $blockedWebsites, ')
           ..write('nsfwWebsites: $nsfwWebsites')
@@ -4518,28 +4392,15 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      allowedShortsTimeSec,
-      blockInstaReels,
-      blockYtShorts,
-      blockSnapSpotlight,
-      blockFbReels,
-      blockRedditShorts,
-      blockNsfwSites,
-      blockedWebsites,
-      nsfwWebsites);
+  int get hashCode => Object.hash(id, allowedShortsTimeSec, blockedFeatures,
+      blockNsfwSites, blockedWebsites, nsfwWebsites);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Wellbeing &&
           other.id == this.id &&
           other.allowedShortsTimeSec == this.allowedShortsTimeSec &&
-          other.blockInstaReels == this.blockInstaReels &&
-          other.blockYtShorts == this.blockYtShorts &&
-          other.blockSnapSpotlight == this.blockSnapSpotlight &&
-          other.blockFbReels == this.blockFbReels &&
-          other.blockRedditShorts == this.blockRedditShorts &&
+          other.blockedFeatures == this.blockedFeatures &&
           other.blockNsfwSites == this.blockNsfwSites &&
           other.blockedWebsites == this.blockedWebsites &&
           other.nsfwWebsites == this.nsfwWebsites);
@@ -4548,22 +4409,14 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
 class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   final Value<int> id;
   final Value<int> allowedShortsTimeSec;
-  final Value<bool> blockInstaReels;
-  final Value<bool> blockYtShorts;
-  final Value<bool> blockSnapSpotlight;
-  final Value<bool> blockFbReels;
-  final Value<bool> blockRedditShorts;
+  final Value<List<ShortsPlatformFeatures>> blockedFeatures;
   final Value<bool> blockNsfwSites;
   final Value<List<String>> blockedWebsites;
   final Value<List<String>> nsfwWebsites;
   const WellbeingTableCompanion({
     this.id = const Value.absent(),
     this.allowedShortsTimeSec = const Value.absent(),
-    this.blockInstaReels = const Value.absent(),
-    this.blockYtShorts = const Value.absent(),
-    this.blockSnapSpotlight = const Value.absent(),
-    this.blockFbReels = const Value.absent(),
-    this.blockRedditShorts = const Value.absent(),
+    this.blockedFeatures = const Value.absent(),
     this.blockNsfwSites = const Value.absent(),
     this.blockedWebsites = const Value.absent(),
     this.nsfwWebsites = const Value.absent(),
@@ -4571,11 +4424,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   WellbeingTableCompanion.insert({
     this.id = const Value.absent(),
     this.allowedShortsTimeSec = const Value.absent(),
-    this.blockInstaReels = const Value.absent(),
-    this.blockYtShorts = const Value.absent(),
-    this.blockSnapSpotlight = const Value.absent(),
-    this.blockFbReels = const Value.absent(),
-    this.blockRedditShorts = const Value.absent(),
+    this.blockedFeatures = const Value.absent(),
     this.blockNsfwSites = const Value.absent(),
     this.blockedWebsites = const Value.absent(),
     this.nsfwWebsites = const Value.absent(),
@@ -4583,11 +4432,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   static Insertable<Wellbeing> custom({
     Expression<int>? id,
     Expression<int>? allowedShortsTimeSec,
-    Expression<bool>? blockInstaReels,
-    Expression<bool>? blockYtShorts,
-    Expression<bool>? blockSnapSpotlight,
-    Expression<bool>? blockFbReels,
-    Expression<bool>? blockRedditShorts,
+    Expression<String>? blockedFeatures,
     Expression<bool>? blockNsfwSites,
     Expression<String>? blockedWebsites,
     Expression<String>? nsfwWebsites,
@@ -4596,12 +4441,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       if (id != null) 'id': id,
       if (allowedShortsTimeSec != null)
         'allowed_shorts_time_sec': allowedShortsTimeSec,
-      if (blockInstaReels != null) 'block_insta_reels': blockInstaReels,
-      if (blockYtShorts != null) 'block_yt_shorts': blockYtShorts,
-      if (blockSnapSpotlight != null)
-        'block_snap_spotlight': blockSnapSpotlight,
-      if (blockFbReels != null) 'block_fb_reels': blockFbReels,
-      if (blockRedditShorts != null) 'block_reddit_shorts': blockRedditShorts,
+      if (blockedFeatures != null) 'blocked_features': blockedFeatures,
       if (blockNsfwSites != null) 'block_nsfw_sites': blockNsfwSites,
       if (blockedWebsites != null) 'blocked_websites': blockedWebsites,
       if (nsfwWebsites != null) 'nsfw_websites': nsfwWebsites,
@@ -4611,22 +4451,14 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   WellbeingTableCompanion copyWith(
       {Value<int>? id,
       Value<int>? allowedShortsTimeSec,
-      Value<bool>? blockInstaReels,
-      Value<bool>? blockYtShorts,
-      Value<bool>? blockSnapSpotlight,
-      Value<bool>? blockFbReels,
-      Value<bool>? blockRedditShorts,
+      Value<List<ShortsPlatformFeatures>>? blockedFeatures,
       Value<bool>? blockNsfwSites,
       Value<List<String>>? blockedWebsites,
       Value<List<String>>? nsfwWebsites}) {
     return WellbeingTableCompanion(
       id: id ?? this.id,
       allowedShortsTimeSec: allowedShortsTimeSec ?? this.allowedShortsTimeSec,
-      blockInstaReels: blockInstaReels ?? this.blockInstaReels,
-      blockYtShorts: blockYtShorts ?? this.blockYtShorts,
-      blockSnapSpotlight: blockSnapSpotlight ?? this.blockSnapSpotlight,
-      blockFbReels: blockFbReels ?? this.blockFbReels,
-      blockRedditShorts: blockRedditShorts ?? this.blockRedditShorts,
+      blockedFeatures: blockedFeatures ?? this.blockedFeatures,
       blockNsfwSites: blockNsfwSites ?? this.blockNsfwSites,
       blockedWebsites: blockedWebsites ?? this.blockedWebsites,
       nsfwWebsites: nsfwWebsites ?? this.nsfwWebsites,
@@ -4643,20 +4475,10 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
       map['allowed_shorts_time_sec'] =
           Variable<int>(allowedShortsTimeSec.value);
     }
-    if (blockInstaReels.present) {
-      map['block_insta_reels'] = Variable<bool>(blockInstaReels.value);
-    }
-    if (blockYtShorts.present) {
-      map['block_yt_shorts'] = Variable<bool>(blockYtShorts.value);
-    }
-    if (blockSnapSpotlight.present) {
-      map['block_snap_spotlight'] = Variable<bool>(blockSnapSpotlight.value);
-    }
-    if (blockFbReels.present) {
-      map['block_fb_reels'] = Variable<bool>(blockFbReels.value);
-    }
-    if (blockRedditShorts.present) {
-      map['block_reddit_shorts'] = Variable<bool>(blockRedditShorts.value);
+    if (blockedFeatures.present) {
+      map['blocked_features'] = Variable<String>($WellbeingTableTable
+          .$converterblockedFeatures
+          .toSql(blockedFeatures.value));
     }
     if (blockNsfwSites.present) {
       map['block_nsfw_sites'] = Variable<bool>(blockNsfwSites.value);
@@ -4679,11 +4501,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
     return (StringBuffer('WellbeingTableCompanion(')
           ..write('id: $id, ')
           ..write('allowedShortsTimeSec: $allowedShortsTimeSec, ')
-          ..write('blockInstaReels: $blockInstaReels, ')
-          ..write('blockYtShorts: $blockYtShorts, ')
-          ..write('blockSnapSpotlight: $blockSnapSpotlight, ')
-          ..write('blockFbReels: $blockFbReels, ')
-          ..write('blockRedditShorts: $blockRedditShorts, ')
+          ..write('blockedFeatures: $blockedFeatures, ')
           ..write('blockNsfwSites: $blockNsfwSites, ')
           ..write('blockedWebsites: $blockedWebsites, ')
           ..write('nsfwWebsites: $nsfwWebsites')
@@ -7563,11 +7381,7 @@ typedef $$WellbeingTableTableCreateCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
   Value<int> allowedShortsTimeSec,
-  Value<bool> blockInstaReels,
-  Value<bool> blockYtShorts,
-  Value<bool> blockSnapSpotlight,
-  Value<bool> blockFbReels,
-  Value<bool> blockRedditShorts,
+  Value<List<ShortsPlatformFeatures>> blockedFeatures,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
   Value<List<String>> nsfwWebsites,
@@ -7576,11 +7390,7 @@ typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
   Value<int> allowedShortsTimeSec,
-  Value<bool> blockInstaReels,
-  Value<bool> blockYtShorts,
-  Value<bool> blockSnapSpotlight,
-  Value<bool> blockFbReels,
-  Value<bool> blockRedditShorts,
+  Value<List<ShortsPlatformFeatures>> blockedFeatures,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
   Value<List<String>> nsfwWebsites,
@@ -7602,23 +7412,11 @@ class $$WellbeingTableTableFilterComposer
       column: $table.allowedShortsTimeSec,
       builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get blockInstaReels => $composableBuilder(
-      column: $table.blockInstaReels,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get blockYtShorts => $composableBuilder(
-      column: $table.blockYtShorts, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get blockSnapSpotlight => $composableBuilder(
-      column: $table.blockSnapSpotlight,
-      builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get blockFbReels => $composableBuilder(
-      column: $table.blockFbReels, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get blockRedditShorts => $composableBuilder(
-      column: $table.blockRedditShorts,
-      builder: (column) => ColumnFilters(column));
+  ColumnWithTypeConverterFilters<List<ShortsPlatformFeatures>,
+          List<ShortsPlatformFeatures>, String>
+      get blockedFeatures => $composableBuilder(
+          column: $table.blockedFeatures,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get blockNsfwSites => $composableBuilder(
       column: $table.blockNsfwSites,
@@ -7651,24 +7449,8 @@ class $$WellbeingTableTableOrderingComposer
       column: $table.allowedShortsTimeSec,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get blockInstaReels => $composableBuilder(
-      column: $table.blockInstaReels,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get blockYtShorts => $composableBuilder(
-      column: $table.blockYtShorts,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get blockSnapSpotlight => $composableBuilder(
-      column: $table.blockSnapSpotlight,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get blockFbReels => $composableBuilder(
-      column: $table.blockFbReels,
-      builder: (column) => ColumnOrderings(column));
-
-  ColumnOrderings<bool> get blockRedditShorts => $composableBuilder(
-      column: $table.blockRedditShorts,
+  ColumnOrderings<String> get blockedFeatures => $composableBuilder(
+      column: $table.blockedFeatures,
       builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<bool> get blockNsfwSites => $composableBuilder(
@@ -7699,20 +7481,9 @@ class $$WellbeingTableTableAnnotationComposer
   GeneratedColumn<int> get allowedShortsTimeSec => $composableBuilder(
       column: $table.allowedShortsTimeSec, builder: (column) => column);
 
-  GeneratedColumn<bool> get blockInstaReels => $composableBuilder(
-      column: $table.blockInstaReels, builder: (column) => column);
-
-  GeneratedColumn<bool> get blockYtShorts => $composableBuilder(
-      column: $table.blockYtShorts, builder: (column) => column);
-
-  GeneratedColumn<bool> get blockSnapSpotlight => $composableBuilder(
-      column: $table.blockSnapSpotlight, builder: (column) => column);
-
-  GeneratedColumn<bool> get blockFbReels => $composableBuilder(
-      column: $table.blockFbReels, builder: (column) => column);
-
-  GeneratedColumn<bool> get blockRedditShorts => $composableBuilder(
-      column: $table.blockRedditShorts, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<List<ShortsPlatformFeatures>, String>
+      get blockedFeatures => $composableBuilder(
+          column: $table.blockedFeatures, builder: (column) => column);
 
   GeneratedColumn<bool> get blockNsfwSites => $composableBuilder(
       column: $table.blockNsfwSites, builder: (column) => column);
@@ -7752,11 +7523,8 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> allowedShortsTimeSec = const Value.absent(),
-            Value<bool> blockInstaReels = const Value.absent(),
-            Value<bool> blockYtShorts = const Value.absent(),
-            Value<bool> blockSnapSpotlight = const Value.absent(),
-            Value<bool> blockFbReels = const Value.absent(),
-            Value<bool> blockRedditShorts = const Value.absent(),
+            Value<List<ShortsPlatformFeatures>> blockedFeatures =
+                const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
             Value<List<String>> nsfwWebsites = const Value.absent(),
@@ -7764,11 +7532,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
               WellbeingTableCompanion(
             id: id,
             allowedShortsTimeSec: allowedShortsTimeSec,
-            blockInstaReels: blockInstaReels,
-            blockYtShorts: blockYtShorts,
-            blockSnapSpotlight: blockSnapSpotlight,
-            blockFbReels: blockFbReels,
-            blockRedditShorts: blockRedditShorts,
+            blockedFeatures: blockedFeatures,
             blockNsfwSites: blockNsfwSites,
             blockedWebsites: blockedWebsites,
             nsfwWebsites: nsfwWebsites,
@@ -7776,11 +7540,8 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> allowedShortsTimeSec = const Value.absent(),
-            Value<bool> blockInstaReels = const Value.absent(),
-            Value<bool> blockYtShorts = const Value.absent(),
-            Value<bool> blockSnapSpotlight = const Value.absent(),
-            Value<bool> blockFbReels = const Value.absent(),
-            Value<bool> blockRedditShorts = const Value.absent(),
+            Value<List<ShortsPlatformFeatures>> blockedFeatures =
+                const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
             Value<List<String>> nsfwWebsites = const Value.absent(),
@@ -7788,11 +7549,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
               WellbeingTableCompanion.insert(
             id: id,
             allowedShortsTimeSec: allowedShortsTimeSec,
-            blockInstaReels: blockInstaReels,
-            blockYtShorts: blockYtShorts,
-            blockSnapSpotlight: blockSnapSpotlight,
-            blockFbReels: blockFbReels,
-            blockRedditShorts: blockRedditShorts,
+            blockedFeatures: blockedFeatures,
             blockNsfwSites: blockNsfwSites,
             blockedWebsites: blockedWebsites,
             nsfwWebsites: nsfwWebsites,

@@ -613,34 +613,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get short_content_timer_picker_dialog_info => 'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.';
 
   @override
-  String get block_insta_reels_title => 'Block reels';
+  String get instagram_features_tile_title => 'Instagram';
 
   @override
-  String get block_insta_reels_subtitle => 'Restrict reels on instagram.';
+  String get instagram_features_tile_subtitle => 'Restrict features on instagram.';
 
   @override
-  String get block_yt_shorts_title => 'Block shorts';
+  String get instagram_features_block_reels => 'Restrict reels section.';
 
   @override
-  String get block_yt_shorts_subtitle => 'Restrict shorts on youtube.';
+  String get instagram_features_block_explore => 'Restrict explore section.';
 
   @override
-  String get block_snap_spotlight_title => 'Block spotlight';
+  String get snapchat_features_tile_title => 'Snapchat';
 
   @override
-  String get block_snap_spotlight_subtitle => 'Restrict spotlight on snapchat.';
+  String get snapchat_features_tile_subtitle => 'Restrict features on snapchat.';
 
   @override
-  String get block_fb_reels_title => 'Block reels';
+  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
 
   @override
-  String get block_fb_reels_subtitle => 'Restrict reels on facebook.';
+  String get snapchat_features_block_discover => 'Restrict discover section.';
 
   @override
-  String get block_reddit_shorts_title => 'Block shorts';
+  String get youtube_features_tile_title => 'Youtube';
 
   @override
-  String get block_reddit_shorts_subtitle => 'Restrict shorts on reddit.';
+  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+
+  @override
+  String get facebook_features_tile_title => 'Facebook';
+
+  @override
+  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+
+  @override
+  String get reddit_features_tile_title => 'Reddit';
+
+  @override
+  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
 
   @override
   String get websites_blocking_tab_title => 'Websites blocking';

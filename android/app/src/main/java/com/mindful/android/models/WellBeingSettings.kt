@@ -11,6 +11,7 @@
  */
 package com.mindful.android.models
 
+import android.util.Log
 import com.mindful.android.enums.ShortsPlatformFeatures
 import org.json.JSONObject
 
@@ -45,38 +46,29 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
 
         val blockedFeatures = mutableSetOf<ShortsPlatformFeatures>()
         // Deserialize blocked shorts platform features
-        val featuresJsonArray = jsonObject.optJSONArray("blockedShortsPlatformFeatures")
-        if (featuresJsonArray != null) {
-            for (i in 0 until featuresJsonArray.length()) {
-                featuresJsonArray.optInt(i).let {
-                    blockedFeatures.add(
-                        ShortsPlatformFeatures.values()[i]
-                    )
-                }
+        jsonObject.optJSONArray("blockedShortsPlatformFeatures")?.let { featuresArray ->
+            for (i in 0 until featuresArray.length()) {
+                blockedFeatures.add(ShortsPlatformFeatures.values()[featuresArray.getInt(i)])
             }
         }
-
         this.blockedShortsPlatformFeatures = blockedFeatures
 
 
         val blockedWebsites = mutableSetOf<String>()
-
         // Deserialize blocked websites
-        val websitesJsonArray = jsonObject.optJSONArray("blockedWebsites")
-        if (websitesJsonArray != null) {
-            for (i in 0 until websitesJsonArray.length()) {
-                blockedWebsites.add(websitesJsonArray.getString(i))
+        jsonObject.optJSONArray("blockedWebsites")?.let { websitesArray ->
+            for (i in 0 until websitesArray.length()) {
+                blockedWebsites.add(websitesArray.getString(i))
             }
         }
+
 
         // Deserialize nsfw websites
-        val nsfwSitesJsonArray = jsonObject.optJSONArray("nsfwWebsites")
-        if (nsfwSitesJsonArray != null) {
-            for (i in 0 until nsfwSitesJsonArray.length()) {
-                blockedWebsites.add(nsfwSitesJsonArray.getString(i))
+        jsonObject.optJSONArray("nsfwWebsites")?.let { nsfwSitesArray ->
+            for (i in 0 until nsfwSitesArray.length()) {
+                blockedWebsites.add(nsfwSitesArray.getString(i))
             }
         }
-
         this.blockedWebsites = blockedWebsites
     }
 }

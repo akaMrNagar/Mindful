@@ -11,6 +11,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
+import 'package:mindful/core/enums/shorts_platform_features.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
@@ -47,25 +48,13 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
     );
   }
 
-  /// Toggles the block status for Instagram Reels.
-  void switchBlockInstaReels() =>
-      state = state.copyWith(blockInstaReels: !state.blockInstaReels);
-
-  /// Toggles the block status for YouTube Shorts.
-  void switchBlockYtShorts() =>
-      state = state.copyWith(blockYtShorts: !state.blockYtShorts);
-
-  /// Toggles the block status for Snapchat Spotlight.
-  void switchBlockSnapSpotlight() =>
-      state = state.copyWith(blockSnapSpotlight: !state.blockSnapSpotlight);
-
-  /// Toggles the block status for Facebook Reels.
-  void switchBlockFbReels() =>
-      state = state.copyWith(blockFbReels: !state.blockFbReels);
-
-  /// Toggles the block status for Reddit Shorts.
-  void switchBlockRedditShorts() =>
-      state = state.copyWith(blockRedditShorts: !state.blockRedditShorts);
+  /// Adds or removes a website host to the blocked websites list.
+  void insertRemoveBlockedFeature(ShortsPlatformFeatures feature) =>
+      state = state.copyWith(
+        blockedFeatures: state.blockedFeatures.contains(feature)
+            ? [...state.blockedFeatures.where((e) => e != feature)]
+            : [...state.blockedFeatures, feature],
+      );
 
   /// Toggles the block status for NSFW websites.
   void switchBlockNsfwSites() =>

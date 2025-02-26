@@ -12,6 +12,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/enums/shorts_platform_features.dart';
 
 @DataClassName("Wellbeing")
 class WellbeingTable extends Table {
@@ -25,24 +26,12 @@ class WellbeingTable extends Table {
   IntColumn get allowedShortsTimeSec =>
       integer().withDefault(const Constant(30 * 60))();
 
-  /// Flag denoting if to block instagram reels or not
-  BoolColumn get blockInstaReels =>
-      boolean().withDefault(const Constant(false))();
-
-  /// Flag denoting if to block youtube shorts or not
-  BoolColumn get blockYtShorts =>
-      boolean().withDefault(const Constant(false))();
-
-  /// Flag denoting if to block snapchat spotlight or not
-  BoolColumn get blockSnapSpotlight =>
-      boolean().withDefault(const Constant(false))();
-
-  /// Flag denoting if to block facebook reels or not
-  BoolColumn get blockFbReels => boolean().withDefault(const Constant(false))();
-
-  /// Flag denoting if to block reddit shorts or not
-  BoolColumn get blockRedditShorts =>
-      boolean().withDefault(const Constant(false))();
+  /// List of feature which are blocked
+  TextColumn get blockedFeatures => text()
+      .map(const ListEnumNamesConverter<ShortsPlatformFeatures>(
+        ShortsPlatformFeatures.values,
+      ))
+      .withDefault(Constant(jsonEncode([])))();
 
   /// Flag denoting if the nsfw or adult  websites are blocked or not
   /// i.e if accessibility service is filtering websites or not
