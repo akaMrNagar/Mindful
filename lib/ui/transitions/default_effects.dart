@@ -15,19 +15,19 @@ import 'package:mindful/config/app_constants.dart';
 class DefaultEffects {
   static List<Effect> get transitionIn => [
         MoveEffect(
-          duration: AppConstants.defaultAnimDuration * 3,
+          duration: AppConstants.defaultAnimDuration * 2.5,
           curve: AppConstants.defaultCurve,
           begin: const Offset(0, 100),
           end: Offset.zero,
         ),
         ScaleEffect(
-          duration: AppConstants.defaultAnimDuration * 2.5,
+          duration: AppConstants.defaultAnimDuration * 2,
           curve: AppConstants.defaultCurve,
           begin: const Offset(0.85, 0.85),
           end: const Offset(1, 1),
         ),
         FadeEffect(
-          duration: AppConstants.defaultAnimDuration * 3,
+          duration: AppConstants.defaultAnimDuration * 2.5,
           curve: AppConstants.defaultCurve,
           begin: 0,
           end: 1,

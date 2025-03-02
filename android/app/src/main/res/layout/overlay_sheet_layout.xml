@@ -10,7 +10,7 @@
         android:id="@+id/overlay_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/translucent_gradient_bt" />
+        android:background="#f7121418" />
 
     <!-- Bottom Sheet -->
     <LinearLayout
@@ -331,5 +331,4 @@
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
-
 </FrameLayout>

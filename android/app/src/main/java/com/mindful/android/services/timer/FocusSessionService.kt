@@ -41,12 +41,15 @@ class FocusSessionService : Service() {
     private var mFocusSession: FocusSession? = null
 
     override fun onCreate() {
-        mTrackerServiceConn = SafeServiceConnection(MindfulTrackerService::class.java, this)
+        mTrackerServiceConn = SafeServiceConnection(
+            context = this,
+            serviceClass = MindfulTrackerService::class.java
+        )
         super.onCreate()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             return START_STICKY
         }
 

@@ -32,6 +32,11 @@ class ParentalControlsTable extends Table {
   BoolColumn get isInvincibleModeOn =>
       boolean().withDefault(const Constant(false))();
 
+  /// Daily invincible window start time [TimeOfDay] stored as minutes
+  IntColumn get invincibleWindowTime => integer()
+      .map(const TimeOfDayAdapterConverter())
+      .withDefault(const Constant(0))();
+
   /// Flag indicating if apps timer are included in the invincible mode
   ///
   /// If included user cannot modify app timer if it is already ran out

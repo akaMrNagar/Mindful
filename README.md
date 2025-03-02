@@ -84,4 +84,5 @@ Your feedback is invaluable to us! If you have suggestions, encounter issues, or
     
 ### Translation
 
- 1. Japanese by [*Riikun*](https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate)
+ 1. Japanese by [*Riikun*](https://crowdin.com/profile/riikun)
+ 2. Turkish by [*Kerem*](https://crowdin.com/profile/keremk)

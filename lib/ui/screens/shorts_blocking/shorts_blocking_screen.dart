@@ -15,13 +15,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
-import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/providers/usage/shorts_screen_time_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
-import 'package:mindful/ui/common/sliver_primary_action_container.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/permissions/accessibility_permission_card.dart';
@@ -49,15 +47,6 @@ class ShortsBlockingScreen extends ConsumerWidget {
             (allowedShortContentTimeSec - shortsScreenTimeSec),
           );
 
-    final isInvincibleModeRestricted = ref.watch(
-      parentalControlsProvider
-          .select((v) => v.isInvincibleModeOn && v.includeShortsTimer),
-    );
-
-    final canModifySettings = allowedShortContentTimeSec.isNegative ||
-        !isInvincibleModeRestricted ||
-        (isInvincibleModeRestricted && remainingTimeSec > 0);
-
     return ScaffoldShell(
       items: [
         NavbarItem(
@@ -76,26 +65,16 @@ class ShortsBlockingScreen extends ConsumerWidget {
 
               /// Short usage progress bar
               ShortsTimerChart(
-                isModifiable: canModifySettings && haveAccessibilityPermission,
+                haveNecessaryPerms: haveAccessibilityPermission,
                 allowedTimeSec: max(allowedShortContentTimeSec, 0),
                 remainingTimeSec: remainingTimeSec,
               ).sliver,
 
               const AccessibilityPermissionCard(),
 
-              /// Invincible Mode warning
-              SliverPrimaryActionContainer(
-                isVisible: haveAccessibilityPermission && !canModifySettings,
-                margin: const EdgeInsets.symmetric(vertical: 16),
-                icon: FluentIcons.animal_cat_20_regular,
-                title: context.locale.invincible_mode_heading,
-                information: context.locale.short_content_invincible_mode_info,
-              ),
-
               /// Quick actions
               SliverShortsQuickActions(
                 haveNecessaryPerms: haveAccessibilityPermission,
-                isModifiable: canModifySettings,
               ),
 
               const SliverTabsBottomPadding(),

@@ -42,7 +42,7 @@ object NodeInfoLogger {
      * @param level The hierarchical level of the node in the tree, where 0 represents
      * the root node and higher values indicate deeper levels in the hierarchy.
      */
-    private fun logNode(node: AccessibilityNodeInfo?, level: Int) {
+    fun logNode(node: AccessibilityNodeInfo?, level: Int) {
         node?.let {
             Log.d(
                 "Mindful.NodeInfoLogger",

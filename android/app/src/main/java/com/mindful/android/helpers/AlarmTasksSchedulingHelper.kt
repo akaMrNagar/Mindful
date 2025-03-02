@@ -170,7 +170,7 @@ object AlarmTasksSchedulingHelper {
 
         // Let service know
         if (Utils.isServiceRunning(context, MindfulTrackerService::class.java)) {
-            val conn = SafeServiceConnection(MindfulTrackerService::class.java, context)
+            val conn = SafeServiceConnection(context, MindfulTrackerService::class.java)
             conn.setOnConnectedCallback { service ->
                 service.getRestrictionManager.updateBedtimeApps(
                     null

@@ -593,6 +593,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uninstall_window_tile_subtitle => '選択した時間から5分以内であれば、改ざん防止を無効にできます。';
 
   @override
+  String get invincible_window_tile_title => 'Invincible window';
+
+  @override
+  String get invincible_window_tile_subtitle => 'Selected limits can be modified within 10 minutes from the selected time.';
+
+  @override
   String get shorts_blocking_tab_title => 'Shorts blocking';
 
   @override
@@ -607,40 +613,49 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get short_content_invincible_mode_info => 'ショート動画の毎日の使用制限に達しました。無敵モード中は設定を変更できません。';
-
-  @override
   String get short_content_timer_picker_dialog_info => 'ショート動画の毎日の利用時間を制限できます。制限時間に達すると、深夜0時までショート動画は視聴できなくなります。';
 
   @override
-  String get block_insta_reels_title => 'リールをブロック';
+  String get instagram_features_tile_title => 'Instagram';
 
   @override
-  String get block_insta_reels_subtitle => 'Instagramのリール動画を制限する';
+  String get instagram_features_tile_subtitle => 'Restrict features on instagram.';
 
   @override
-  String get block_yt_shorts_title => 'ショートをブロック';
+  String get instagram_features_block_reels => 'Restrict reels section.';
 
   @override
-  String get block_yt_shorts_subtitle => 'YouTubeのショート動画を制限する';
+  String get instagram_features_block_explore => 'Restrict explore section.';
 
   @override
-  String get block_snap_spotlight_title => 'Spotlightをブロック';
+  String get snapchat_features_tile_title => 'Snapchat';
 
   @override
-  String get block_snap_spotlight_subtitle => 'SnapchatのSpotlight動画を制限する';
+  String get snapchat_features_tile_subtitle => 'Restrict features on snapchat.';
 
   @override
-  String get block_fb_reels_title => 'リールをブロック';
+  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
 
   @override
-  String get block_fb_reels_subtitle => 'Facebookのリール動画を制限する';
+  String get snapchat_features_block_discover => 'Restrict discover section.';
 
   @override
-  String get block_reddit_shorts_title => 'Videoをブロック';
+  String get youtube_features_tile_title => 'Youtube';
 
   @override
-  String get block_reddit_shorts_subtitle => 'RedditのVideo動画を制限する';
+  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+
+  @override
+  String get facebook_features_tile_title => 'Facebook';
+
+  @override
+  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+
+  @override
+  String get reddit_features_tile_title => 'Reddit';
+
+  @override
+  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
 
   @override
   String get websites_blocking_tab_title => 'Websites blocking';

@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/restrictions/bedtime_provider.dart';
@@ -34,18 +33,6 @@ class TabBedtime extends ConsumerWidget {
     bool shouldStart,
   ) async {
     final state = ref.read(bedtimeScheduleProvider);
-
-    /// If invincible mode is ON and schedule is ON
-    final isInvincibleModeRestricted = ref.read(parentalControlsProvider
-        .select((v) => v.isInvincibleModeOn && v.includeBedtimeSchedule));
-
-    if (isInvincibleModeRestricted && state.isScheduleOn) {
-      if (DateTime.now()
-          .isBetweenTod(state.scheduleStartTime, state.scheduleEndTime)) {
-        context.showSnackAlert(context.locale.invincible_mode_snack_alert);
-        return;
-      }
-    }
 
     // If none of the days is selected
     if (!state.scheduleDays.contains(true)) {
@@ -68,6 +55,16 @@ class TabBedtime extends ConsumerWidget {
       context.showSnackAlert(
         context.locale.minimum_distracting_apps_snack_alert,
       );
+      return;
+    }
+
+    /// If restricted by invincible mode
+    final isInvincibleRestricted = ref.read(parentalControlsProvider
+            .select((v) => v.isInvincibleModeOn && v.includeBedtimeSchedule)) &&
+        !ref.read(parentalControlsProvider.notifier).isBetweenInvincibleWindow;
+
+    if (isInvincibleRestricted && state.isScheduleOn) {
+      context.showSnackAlert(context.locale.invincible_mode_snack_alert);
       return;
     }
 

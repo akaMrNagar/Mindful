@@ -43,16 +43,28 @@ class FgMethodCallHandler(
 ) : MethodCallHandler {
 
     private val focusServiceConn =
-        SafeServiceConnection(FocusSessionService::class.java, context)
+        SafeServiceConnection(
+            context = context,
+            serviceClass = FocusSessionService::class.java
+        )
 
     private val trackerServiceConn =
-        SafeServiceConnection(MindfulTrackerService::class.java, context)
+        SafeServiceConnection(
+            context = context,
+            serviceClass = MindfulTrackerService::class.java
+        )
 
     private val vpnServiceConn =
-        SafeServiceConnection(MindfulVpnService::class.java, context)
+        SafeServiceConnection(
+            context = context,
+            serviceClass = MindfulVpnService::class.java
+        )
 
     private val notificationServiceConn =
-        SafeServiceConnection(MindfulNotificationListenerService::class.java, context)
+        SafeServiceConnection(
+            context = context,
+            serviceClass = MindfulNotificationListenerService::class.java
+        )
 
 
     init {

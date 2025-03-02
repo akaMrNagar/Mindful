@@ -11,6 +11,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
 
@@ -21,6 +22,18 @@ final parentalControlsProvider =
 );
 
 class ParentalControlsNotifier extends StateNotifier<ParentalControls> {
+  /// Returns `TRUE` if the time now is between the uninstall window otherwise `FALSE`.
+  bool get isBetweenUninstallWindow => DateTime.now().isBetweenTod(
+        state.uninstallWindowTime,
+        TimeOfDayAdapter.fromMinutes(state.uninstallWindowTime.toMinutes + 10),
+      );
+
+  /// Returns `TRUE` if the time now is between the invincible window otherwise `FALSE`.
+  bool get isBetweenInvincibleWindow => DateTime.now().isBetweenTod(
+        state.invincibleWindowTime,
+        TimeOfDayAdapter.fromMinutes(state.invincibleWindowTime.toMinutes + 10),
+      );
+
   ParentalControlsNotifier() : super(defaultParentalControlsModel) {
     init();
   }
@@ -46,6 +59,10 @@ class ParentalControlsNotifier extends StateNotifier<ParentalControls> {
   /// Changes the time of day when uninstall widow starts for 5 minutes.
   void changeUninstallWindowTime(TimeOfDayAdapter time) =>
       state = state.copyWith(uninstallWindowTime: time);
+
+  /// Changes the time of day when invincible widow starts for 5 minutes.
+  void changeInvincibleWindowTime(TimeOfDayAdapter time) =>
+      state = state.copyWith(invincibleWindowTime: time);
 
   void switchInvincibleMode() =>
       state = state.copyWith(isInvincibleModeOn: !state.isInvincibleModeOn);

@@ -29,7 +29,10 @@ class EmergencyPauseService : Service() {
     private lateinit var mTrackerServiceConn: SafeServiceConnection<MindfulTrackerService>
 
     override fun onCreate() {
-        mTrackerServiceConn = SafeServiceConnection(MindfulTrackerService::class.java, this)
+        mTrackerServiceConn = SafeServiceConnection(
+            context = this,
+            serviceClass = MindfulTrackerService::class.java
+        )
         mNotificationTimer = NotificationTimer(
             context = this,
             ongoingPendingIntent = Utils.getPendingIntentForMindfulUri(this),
@@ -55,8 +58,8 @@ class EmergencyPauseService : Service() {
         super.onCreate()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             startEmergencyTimer()
             return START_STICKY
         }

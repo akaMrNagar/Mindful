@@ -11,37 +11,14 @@
  */
 package com.mindful.android.models
 
+import android.util.Log
+import com.mindful.android.enums.ShortsPlatformFeatures
 import org.json.JSONObject
 
 /**
  * Represents the settings related to user well-being in the application.
  */
 data class WellBeingSettings(private val jsonObject: JSONObject) {
-    /**
-     * Flag indicating whether to block Instagram Reels.
-     */
-    val blockInstaReels: Boolean = jsonObject.optBoolean("blockInstaReels", false)
-
-    /**
-     * Flag indicating whether to block YouTube Shorts.
-     */
-    val blockYtShorts: Boolean = jsonObject.optBoolean("blockYtShorts", false)
-
-    /**
-     * Flag indicating whether to block Snapchat Spotlight.
-     */
-    val blockSnapSpotlight: Boolean = jsonObject.optBoolean("blockSnapSpotlight", false)
-
-    /**
-     * Flag indicating whether to block Facebook Reels.
-     */
-    val blockFbReels: Boolean = jsonObject.optBoolean("blockFbReels", false)
-
-    /**
-     * Flag indicating whether to block Reddit Shorts.
-     */
-    val blockRedditShorts: Boolean = jsonObject.optBoolean("blockRedditShorts", false)
-
     /**
      * Flag indicating whether to block NSFW or adult websites.
      * This is used to determine if the accessibility service is filtering websites.
@@ -56,31 +33,42 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
         jsonObject.optInt("allowedShortsTimeSec", 30 * 60) * 1000L
 
     /**
-     * List of website hosts that are blocked.
+     * List of blocked short-form features (stored as enum indexes)
      */
-    val blockedWebsites: MutableList<String>
+    val blockedShortsPlatformFeatures: Set<ShortsPlatformFeatures>
 
+    /**
+     * List of website hosts that are blocked including custom nsfw websites.
+     */
+    val blockedWebsites: Set<String>
 
     init {
-        val allWebsites = mutableListOf<String>()
 
-        // Deserialize blocked websites
-        val websitesJsonArray = jsonObject.optJSONArray("blockedWebsites")
-        if (websitesJsonArray != null) {
-            for (i in 0 until websitesJsonArray.length()) {
-                allWebsites.add(websitesJsonArray.getString(i))
+        val blockedFeatures = mutableSetOf<ShortsPlatformFeatures>()
+        // Deserialize blocked shorts platform features
+        jsonObject.optJSONArray("blockedShortsPlatformFeatures")?.let { featuresArray ->
+            for (i in 0 until featuresArray.length()) {
+                blockedFeatures.add(ShortsPlatformFeatures.values()[featuresArray.getInt(i)])
             }
         }
+        this.blockedShortsPlatformFeatures = blockedFeatures
+
+
+        val blockedWebsites = mutableSetOf<String>()
+        // Deserialize blocked websites
+        jsonObject.optJSONArray("blockedWebsites")?.let { websitesArray ->
+            for (i in 0 until websitesArray.length()) {
+                blockedWebsites.add(websitesArray.getString(i))
+            }
+        }
+
 
         // Deserialize nsfw websites
-        val nsfwSitesJsonArray = jsonObject.optJSONArray("nsfwWebsites")
-        if (nsfwSitesJsonArray != null) {
-            for (i in 0 until nsfwSitesJsonArray.length()) {
-                allWebsites.add(nsfwSitesJsonArray.getString(i))
+        jsonObject.optJSONArray("nsfwWebsites")?.let { nsfwSitesArray ->
+            for (i in 0 until nsfwSitesArray.length()) {
+                blockedWebsites.add(nsfwSitesArray.getString(i))
             }
         }
-
-
-        this.blockedWebsites = allWebsites
+        this.blockedWebsites = blockedWebsites
     }
 }

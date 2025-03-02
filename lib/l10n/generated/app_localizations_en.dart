@@ -518,7 +518,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invincible_mode_tile_title => 'Activate invincible mode';
 
   @override
-  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. Limits reset at midnight, so you\'ll be able to make changes the next day.';
+  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
 
   @override
   String get invincible_mode_snack_alert => 'Due to invincible mode, modifications to restrictions is not allowed.';
@@ -590,7 +590,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uninstall_window_tile_title => 'Uninstall window';
 
   @override
-  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 5 minutes from the selected time.';
+  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 10 minutes from the selected time.';
+
+  @override
+  String get invincible_window_tile_title => 'Invincible window';
+
+  @override
+  String get invincible_window_tile_subtitle => 'Selected limits can be modified within 10 minutes from the selected time.';
 
   @override
   String get shorts_blocking_tab_title => 'Shorts blocking';
@@ -607,40 +613,49 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get short_content_invincible_mode_info => 'You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.';
-
-  @override
   String get short_content_timer_picker_dialog_info => 'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.';
 
   @override
-  String get block_insta_reels_title => 'Block reels';
+  String get instagram_features_tile_title => 'Instagram';
 
   @override
-  String get block_insta_reels_subtitle => 'Restrict reels on instagram.';
+  String get instagram_features_tile_subtitle => 'Restrict features on instagram.';
 
   @override
-  String get block_yt_shorts_title => 'Block shorts';
+  String get instagram_features_block_reels => 'Restrict reels section.';
 
   @override
-  String get block_yt_shorts_subtitle => 'Restrict shorts on youtube.';
+  String get instagram_features_block_explore => 'Restrict explore section.';
 
   @override
-  String get block_snap_spotlight_title => 'Block spotlight';
+  String get snapchat_features_tile_title => 'Snapchat';
 
   @override
-  String get block_snap_spotlight_subtitle => 'Restrict spotlight on snapchat.';
+  String get snapchat_features_tile_subtitle => 'Restrict features on snapchat.';
 
   @override
-  String get block_fb_reels_title => 'Block reels';
+  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
 
   @override
-  String get block_fb_reels_subtitle => 'Restrict reels on facebook.';
+  String get snapchat_features_block_discover => 'Restrict discover section.';
 
   @override
-  String get block_reddit_shorts_title => 'Block shorts';
+  String get youtube_features_tile_title => 'Youtube';
 
   @override
-  String get block_reddit_shorts_subtitle => 'Restrict shorts on reddit.';
+  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+
+  @override
+  String get facebook_features_tile_title => 'Facebook';
+
+  @override
+  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+
+  @override
+  String get reddit_features_tile_title => 'Reddit';
+
+  @override
+  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
 
   @override
   String get websites_blocking_tab_title => 'Websites blocking';

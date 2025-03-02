@@ -36,9 +36,9 @@ class MindfulTrackerService : Service() {
         super.onCreate()
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        if (intent.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
+        if (intent?.action == ServiceBinder.ACTION_START_MINDFUL_SERVICE) {
             startFgService()
             return START_STICKY
         }
@@ -77,7 +77,7 @@ class MindfulTrackerService : Service() {
             /// Cancel previous reminders and dismiss overlay
             reminderManager.cancelReminders()
             overlayManager.dismissOverlay()
-            
+
             /// check current restrictions
             val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
 

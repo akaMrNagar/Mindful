@@ -8,8 +8,8 @@
  *
  */
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
@@ -40,35 +40,45 @@ class SliverTabsBottomPadding extends StatelessWidget {
             6.vBox,
 
             /// Socials
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                /// Github
-                RoundedContainer(
-                  padding: const EdgeInsets.all(6),
-                  child: const Icon(FluentIcons.code_circle_20_filled),
-                  onPressed: () => MethodChannelService.instance
-                      .launchUrl(AppConstants.githubUrl),
-                ),
-                4.hBox,
+            Opacity(
+              opacity: 1,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  /// Github
+                  RoundedContainer(
+                    padding: const EdgeInsets.all(6),
+                    child: SvgPicture.asset(
+                      "assets/vectors/github.svg",
+                      height: 20,
+                      width: 20,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.primary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    onPressed: () => MethodChannelService.instance
+                        .launchUrl(AppConstants.githubUrl),
+                  ),
+                  4.hBox,
 
-                /// Email
-                RoundedContainer(
-                  padding: const EdgeInsets.all(6),
-                  child: const Icon(FluentIcons.mail_read_20_filled),
-                  onPressed: () => MethodChannelService.instance
-                      .launchUrl(AppConstants.supportEmailUrl),
-                ),
-                4.hBox,
-
-                /// Instagram
-                RoundedContainer(
-                  padding: const EdgeInsets.all(6),
-                  child: const Icon(FluentIcons.chat_multiple_20_filled),
-                  onPressed: () => MethodChannelService.instance
-                      .launchUrl(AppConstants.instagramUrl),
-                ),
-              ],
+                  /// Instagram
+                  RoundedContainer(
+                    padding: const EdgeInsets.all(6),
+                    child: SvgPicture.asset(
+                      "assets/vectors/instagram.svg",
+                      height: 18,
+                      width: 18,
+                      colorFilter: ColorFilter.mode(
+                        Theme.of(context).colorScheme.primary,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    onPressed: () => MethodChannelService.instance
+                        .launchUrl(AppConstants.instagramUrl),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

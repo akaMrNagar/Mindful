@@ -250,7 +250,16 @@ class MethodChannelService {
   Future<void> updateWellBeingSettings(Wellbeing wellBeingSettings) async =>
       _methodChannel.invokeMethod(
         'updateWellBeingSettings',
-        jsonEncode(wellBeingSettings),
+        jsonEncode(
+          {
+            "allowedShortsTimeSec": wellBeingSettings.allowedShortsTimeSec,
+            "blockNsfwSites": wellBeingSettings.blockNsfwSites,
+            "blockedShortsPlatformFeatures":
+                wellBeingSettings.blockedFeatures.map((e) => e.index).toList(),
+            "blockedWebsites": wellBeingSettings.blockedWebsites,
+            "nsfwWebsites": wellBeingSettings.blockNsfwSites,
+          },
+        ),
       );
 
   /// Updates the bedtime schedule.

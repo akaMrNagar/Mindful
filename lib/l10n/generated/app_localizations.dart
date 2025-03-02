@@ -7,6 +7,7 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 import 'app_localizations_ja.dart';
+import 'app_localizations_tr.dart';
 
 // ignore_for_file: type=lint
 
@@ -92,7 +93,8 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('ja')
+    Locale('ja'),
+    Locale('tr')
   ];
 
   /// No description provided for @mindful_tagline.
@@ -992,7 +994,7 @@ abstract class AppLocalizations {
   /// No description provided for @invincible_mode_info.
   ///
   /// In en, this message translates to:
-  /// **'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. Limits reset at midnight, so you\'ll be able to make changes the next day.'**
+  /// **'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.'**
   String get invincible_mode_info;
 
   /// No description provided for @invincible_mode_snack_alert.
@@ -1136,8 +1138,20 @@ abstract class AppLocalizations {
   /// No description provided for @uninstall_window_tile_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Tamper protection can be disabled within 5 minutes from the selected time.'**
+  /// **'Tamper protection can be disabled within 10 minutes from the selected time.'**
   String get uninstall_window_tile_subtitle;
+
+  /// No description provided for @invincible_window_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Invincible window'**
+  String get invincible_window_tile_title;
+
+  /// No description provided for @invincible_window_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected limits can be modified within 10 minutes from the selected time.'**
+  String get invincible_window_tile_subtitle;
 
   /// No description provided for @shorts_blocking_tab_title.
   ///
@@ -1163,77 +1177,95 @@ abstract class AppLocalizations {
   /// **'Left from {timeShortString}'**
   String shorts_time_left_from(String timeShortString);
 
-  /// No description provided for @short_content_invincible_mode_info.
-  ///
-  /// In en, this message translates to:
-  /// **'You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.'**
-  String get short_content_invincible_mode_info;
-
   /// No description provided for @short_content_timer_picker_dialog_info.
   ///
   /// In en, this message translates to:
   /// **'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.'**
   String get short_content_timer_picker_dialog_info;
 
-  /// No description provided for @block_insta_reels_title.
+  /// No description provided for @instagram_features_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Block reels'**
-  String get block_insta_reels_title;
+  /// **'Instagram'**
+  String get instagram_features_tile_title;
 
-  /// No description provided for @block_insta_reels_subtitle.
+  /// No description provided for @instagram_features_tile_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Restrict reels on instagram.'**
-  String get block_insta_reels_subtitle;
+  /// **'Restrict features on instagram.'**
+  String get instagram_features_tile_subtitle;
 
-  /// No description provided for @block_yt_shorts_title.
+  /// No description provided for @instagram_features_block_reels.
   ///
   /// In en, this message translates to:
-  /// **'Block shorts'**
-  String get block_yt_shorts_title;
+  /// **'Restrict reels section.'**
+  String get instagram_features_block_reels;
 
-  /// No description provided for @block_yt_shorts_subtitle.
+  /// No description provided for @instagram_features_block_explore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict explore section.'**
+  String get instagram_features_block_explore;
+
+  /// No description provided for @snapchat_features_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Snapchat'**
+  String get snapchat_features_tile_title;
+
+  /// No description provided for @snapchat_features_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict features on snapchat.'**
+  String get snapchat_features_tile_subtitle;
+
+  /// No description provided for @snapchat_features_block_spotlight.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict spotlight section.'**
+  String get snapchat_features_block_spotlight;
+
+  /// No description provided for @snapchat_features_block_discover.
+  ///
+  /// In en, this message translates to:
+  /// **'Restrict discover section.'**
+  String get snapchat_features_block_discover;
+
+  /// No description provided for @youtube_features_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Youtube'**
+  String get youtube_features_tile_title;
+
+  /// No description provided for @youtube_features_tile_subtitle.
   ///
   /// In en, this message translates to:
   /// **'Restrict shorts on youtube.'**
-  String get block_yt_shorts_subtitle;
+  String get youtube_features_tile_subtitle;
 
-  /// No description provided for @block_snap_spotlight_title.
+  /// No description provided for @facebook_features_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Block spotlight'**
-  String get block_snap_spotlight_title;
+  /// **'Facebook'**
+  String get facebook_features_tile_title;
 
-  /// No description provided for @block_snap_spotlight_subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Restrict spotlight on snapchat.'**
-  String get block_snap_spotlight_subtitle;
-
-  /// No description provided for @block_fb_reels_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Block reels'**
-  String get block_fb_reels_title;
-
-  /// No description provided for @block_fb_reels_subtitle.
+  /// No description provided for @facebook_features_tile_subtitle.
   ///
   /// In en, this message translates to:
   /// **'Restrict reels on facebook.'**
-  String get block_fb_reels_subtitle;
+  String get facebook_features_tile_subtitle;
 
-  /// No description provided for @block_reddit_shorts_title.
+  /// No description provided for @reddit_features_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Block shorts'**
-  String get block_reddit_shorts_title;
+  /// **'Reddit'**
+  String get reddit_features_tile_title;
 
-  /// No description provided for @block_reddit_shorts_subtitle.
+  /// No description provided for @reddit_features_tile_subtitle.
   ///
   /// In en, this message translates to:
   /// **'Restrict shorts on reddit.'**
-  String get block_reddit_shorts_subtitle;
+  String get reddit_features_tile_subtitle;
 
   /// No description provided for @websites_blocking_tab_title.
   ///
@@ -2337,7 +2369,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en', 'ja'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en', 'ja', 'tr'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -2350,6 +2382,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   switch (locale.languageCode) {
     case 'en': return AppLocalizationsEn();
     case 'ja': return AppLocalizationsJa();
+    case 'tr': return AppLocalizationsTr();
   }
 
   throw FlutterError(

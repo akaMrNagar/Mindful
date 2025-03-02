@@ -28,23 +28,24 @@ import com.mindful.android.utils.Utils
  * @param <T> The type of Service this class is designed to connect to.</T>
  */
 class SafeServiceConnection<T : Service>(
-    private val serviceClass: Class<T>,
     private val context: Context,
+    private val serviceClass: Class<T>,
 ) : ServiceConnection {
 
     var service: T? = null
     val isActive: Boolean get() = service != null
 
     private var mIsBound = false
-    private var mOnConnectedCallback: ((service: T) -> Unit)? = null;
+    private var mOnServiceConnected: ((service: T) -> Unit)? = null
 
     override fun onServiceConnected(name: ComponentName, binder: IBinder) {
         try {
-            service = (binder as ServiceBinder<T>?)?.service
+            val binderService = (binder as ServiceBinder<T>?)?.service
 
-            if (service != null) {
+            binderService?.let {
+                service = it
                 mIsBound = true
-                mOnConnectedCallback?.invoke(service!!)
+                mOnServiceConnected?.invoke(it)
             }
         } catch (ignored: Exception) {
         }
@@ -125,6 +126,6 @@ class SafeServiceConnection<T : Service>(
      * @param callback The callback to be triggered upon successful connection.
      */
     fun setOnConnectedCallback(callback: ((service: T) -> Unit)) {
-        mOnConnectedCallback = callback
+        mOnServiceConnected = callback
     }
 }

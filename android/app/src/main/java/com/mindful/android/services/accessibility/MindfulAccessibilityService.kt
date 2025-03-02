@@ -12,7 +12,6 @@
 package com.mindful.android.services.accessibility
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
@@ -24,6 +23,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.mindful.android.R
+import com.mindful.android.enums.ShortsPlatformFeatures
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
@@ -45,27 +45,41 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     companion object {
         private const val TAG = "Mindful.MindfulAccessibilityService"
 
+        // Set of desired events which will be processed
+        private val desiredEvents = setOf(
+            AccessibilityEvent.TYPE_WINDOWS_CHANGED,
+            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+            AccessibilityEvent.TYPE_VIEW_SCROLLED
+        )
+
         //  The minimum interval between every Back Action [BACK PRESS] call from service
         private const val BACK_ACTION_INVOKE_INTERVAL_MS = 500L
+
+        // Set of short platform app's packages
+        private val shortsPlatformPackages = mutableSetOf<String>()
+
+        // Set of browser's packages
+        private val browserPackages = mutableSetOf<String>()
     }
 
 
     // Fixed thread pool for parallel event processing
     private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(4)
     private val deviceAppsChangedReceiver: DeviceAppsChangedReceiver =
-        DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceInfo() })
+        DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceConfig() })
 
-    // Short content management
+    // Managers
     private lateinit var shortsPlatformManager: ShortsPlatformManager
-
-    // Browser management
     private lateinit var browserManager: BrowserManager
+    private lateinit var trackingManager: TrackingManager
 
     private var mWellBeingSettings = WellBeingSettings(JSONObject())
     private var lastTimeBackActioned = 0L
 
     override fun onCreate() {
         super.onCreate()
+        trackingManager = TrackingManager(context = this)
+
         shortsPlatformManager = ShortsPlatformManager(
             context = this,
             blockedContentGoBack = this::goBackWithToast
@@ -76,11 +90,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             shortsPlatformManager = shortsPlatformManager,
             blockedContentGoBack = this::goBackWithToast
         )
+
     }
 
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        if (intent.action == MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET) {
             shortsPlatformManager.resetShortsScreenTime()
             Log.d(TAG, "onStartCommand: Midnight reset completed")
         }
@@ -99,22 +114,36 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         filter.addDataScheme("package")
         registerReceiver(deviceAppsChangedReceiver, filter)
 
-        refreshServiceInfo()
+        refreshServiceConfig()
+        trackingManager.stopManualTracking()
         Log.d(TAG, "onCreate: Accessibility service started successfully")
         super.onServiceConnected()
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        // Minimal checks on the main thread
-        if (!shouldBlockContent() || event.eventType != AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED) {
-            return
-        }
-
-        // Offload the main processing to a background thread
         try {
-            if (mExecutorService.isShutdown) return
-            event.source?.let {
-                mExecutorService.submit { processEventInBackground(it.packageName.toString(), it) }
+            // If not desired event or executor is shutdown, then just return
+            if (!desiredEvents.contains(event.eventType) || mExecutorService.isShutdown) return
+
+            // submit event for tracking
+            val packageName = event.packageName.toString()
+            mExecutorService.submit { trackingManager.onNewEvent(packageName) }
+
+            // If no reason to process event then just return
+            if (!shouldBlockContent()) return
+
+            // Determine node source
+            val node = if (packageName == REDDIT_PACKAGE) event.source
+            else rootInActiveWindow ?: event.source
+
+            node?.let {
+                mExecutorService.submit {
+                    processEventInBackground(
+                        packageName,
+                        it,
+                        mWellBeingSettings.copy()
+                    )
+                }
             }
         } catch (ignored: Exception) {
         }
@@ -126,14 +155,19 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * @param packageName The package name of the app generating the event.
      * @param node        The accessibility node representing the UI element currently in focus.
      */
-    private fun processEventInBackground(packageName: String, node: AccessibilityNodeInfo) {
+    private fun processEventInBackground(
+        packageName: String,
+        node: AccessibilityNodeInfo,
+        wellBeingSettings: WellBeingSettings,
+    ) {
         try {
-            // Copy settings for this thread
-            val settings = mWellBeingSettings.copy()
+            when (packageName) {
+                in shortsPlatformPackages ->
+                    shortsPlatformManager.blockDistraction(packageName, node, wellBeingSettings)
 
-            shortsPlatformManager.checkAndBlockShortsOnPlatforms(packageName, node, settings)
-                ?: browserManager.blockDistraction(packageName, node, settings)
-
+                in browserPackages ->
+                    browserManager.blockDistraction(packageName, node, wellBeingSettings)
+            }
 
         } catch (e: Exception) {
             Log.e(
@@ -153,11 +187,8 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * `false` otherwise.
      */
     private fun shouldBlockContent(): Boolean {
-        return mWellBeingSettings.blockedWebsites.isNotEmpty() ||
-                mWellBeingSettings.blockInstaReels ||
-                mWellBeingSettings.blockYtShorts ||
-                mWellBeingSettings.blockSnapSpotlight ||
-                mWellBeingSettings.blockFbReels ||
+        return mWellBeingSettings.blockedShortsPlatformFeatures.isNotEmpty() ||
+                mWellBeingSettings.blockedWebsites.isNotEmpty() ||
                 mWellBeingSettings.blockNsfwSites
     }
 
@@ -187,54 +218,68 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     /**
      * Updates the service info with the latest settings and registered packages.
      */
-    private fun refreshServiceInfo() {
-        try {// Using hashset to avoid duplicates
+    private fun refreshServiceConfig() {
+        try {
+            // Using hashset to avoid duplicates
             val pm = packageManager
-            val allowedPackages = mutableSetOf<String>()
 
             // Fetch installed browser packages
+            browserPackages.clear()
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
             pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL).forEach {
-                allowedPackages.add(it.activityInfo.packageName)
+                browserPackages.add(it.activityInfo.packageName)
             }
 
 
             // For short form content blocking on their native apps
-            if (mWellBeingSettings.blockInstaReels) allowedPackages.add(INSTAGRAM_PACKAGE)
-            if (mWellBeingSettings.blockSnapSpotlight) allowedPackages.add(SNAPCHAT_PACKAGE)
-            if (mWellBeingSettings.blockFbReels) allowedPackages.add(FACEBOOK_PACKAGE)
-            if (mWellBeingSettings.blockRedditShorts) allowedPackages.add(REDDIT_PACKAGE)
+            shortsPlatformPackages.clear()
+            mWellBeingSettings.blockedShortsPlatformFeatures.forEach { feature ->
+                when (feature) {
+                    /// Instagram
+                    ShortsPlatformFeatures.INSTAGRAM_REELS,
+                    ShortsPlatformFeatures.INSTAGRAM_EXPLORE,
+                    -> shortsPlatformPackages.add(INSTAGRAM_PACKAGE)
 
-            if (mWellBeingSettings.blockYtShorts) {
-                // Fetch all the clients available for youtube. It can also include browsers too.
-                val ytIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
-                pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL).forEach {
-                    allowedPackages.add(it.activityInfo.packageName)
+                    // Snapchat
+                    ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT,
+                    ShortsPlatformFeatures.SNAPCHAT_DISCOVER,
+                    -> shortsPlatformPackages.add(SNAPCHAT_PACKAGE)
+
+                    // Facebook
+                    ShortsPlatformFeatures.FACEBOOK_REELS ->
+                        shortsPlatformPackages.add(FACEBOOK_PACKAGE)
+
+                    // Reddit
+                    ShortsPlatformFeatures.REDDIT_SHORTS ->
+                        shortsPlatformPackages.add(REDDIT_PACKAGE)
+
+                    // Youtube
+                    ShortsPlatformFeatures.YOUTUBE_SHORTS -> {
+                        // Add official package
+                        shortsPlatformPackages.add(YOUTUBE_PACKAGE)
+
+                        // Now add other unofficial clients
+                        val ytIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com"))
+                        pm.queryIntentActivities(ytIntent, PackageManager.MATCH_ALL)
+                            .filterNot { browserPackages.contains(it.activityInfo.packageName) }
+                            .forEach {
+                                shortsPlatformPackages.add(it.activityInfo.packageName)
+                            }
+                    }
                 }
-
-                // Regardless of the results add original youtube package.
-                allowedPackages.add(YOUTUBE_PACKAGE)
             }
+
 
             // Load nsfw website domains if needed
             if (mWellBeingSettings.blockNsfwSites) BrowserManager.initializeNsfwDomains()
             else BrowserManager.clearNsfwDomains()
 
-            val info = AccessibilityServiceInfo()
-            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
-            info.flags = AccessibilityServiceInfo.DEFAULT or
-                    AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS or
-                    AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or
-                    AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
-            info.notificationTimeout = 1000
-            info.packageNames = allowedPackages.toTypedArray()
-            serviceInfo = info
-
             Log.d(
-                TAG, "refreshServiceInfo: Accessibility service updated successfully: " +
+                TAG, "refreshServiceConfig: Accessibility service config updated successfully: " +
                         "\n settings: $mWellBeingSettings" +
-                        "\n packages: $allowedPackages"
+                        "\n short platforms: $shortsPlatformPackages" +
+                        "\n browsers: $browserPackages"
             )
         } catch (e: Exception) {
             Log.e(TAG, "refreshServiceInfo: Failed to refresh service info", e)
@@ -247,7 +292,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             if (key == SharedPrefsHelper.PREF_KEY_WELLBEING_SETTINGS) {
                 Log.d(TAG, "OnSharedPrefsChanged: Key changed = $changedKey")
                 mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
-                refreshServiceInfo()
+                refreshServiceConfig()
             }
         }
     }
@@ -257,9 +302,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
     override fun onDestroy() {
         mExecutorService.shutdown()
+        trackingManager.startManualTracking()
+
         // Unregister prefs listener and receiver
         unregisterReceiver(deviceAppsChangedReceiver)
         SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
+
         Log.d(TAG, "onDestroy: Accessibility service destroyed")
         super.onDestroy()
     }

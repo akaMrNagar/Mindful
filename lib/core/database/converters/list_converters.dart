@@ -40,3 +40,23 @@ class ListStringConverter extends TypeConverter<List<String>, String> {
     return json.encode(value.toSet().toList());
   }
 }
+
+class ListEnumNamesConverter<T extends Enum>
+    extends TypeConverter<List<T>, String> {
+  /// All values of the enum [enum.values].
+  final List<T> values;
+
+  /// Constant default constructor.
+  const ListEnumNamesConverter(this.values);
+
+  @override
+  List<T> fromSql(String fromDb) {
+    List<dynamic> jsonList = json.decode(fromDb);
+    return jsonList.map((e) => values.byName(e)).toList();
+  }
+
+  @override
+  String toSql(List<T> value) {
+    return jsonEncode(value.map((e) => e.name).toSet().toList());
+  }
+}

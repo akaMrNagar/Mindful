@@ -44,20 +44,19 @@ class BrowserManager(
 
         // Block websites
         val host = Utils.parseHostNameFromUrl(url)
-        if (settings.blockedWebsites.contains(host) || nsfwDomains.containsKey(host)) {
-            Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
-            blockedContentGoBack()
-            return
-        }
 
-        // Block short form content
-        if (shortsPlatformManager.checkAndBlockShortsOnBrowser(settings, url)) {
-            return
-        }
+        when {
+            settings.blockedWebsites.contains(host) || nsfwDomains.containsKey(host)
+            -> {
+                Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
+                blockedContentGoBack()
+            }
 
-        // Activate safe search if NSFW is blocked
-        if (settings.blockNsfwSites) {
-            applySafeSearch(packageName, url, host)
+            // Block short form content
+            shortsPlatformManager.checkAndBlockShortsOnBrowser(settings, url) -> return
+
+            // Activate safe search if NSFW is blocked
+            settings.blockNsfwSites -> applySafeSearch(packageName, url, host)
         }
     }
 
@@ -70,27 +69,25 @@ class BrowserManager(
      * @param hostDomain     The resolved host name for the provided url.
      */
     private fun applySafeSearch(browserPackage: String, url: String, hostDomain: String) {
-        // For bing, google use &safe=active flag
-        // For brave, duckduckgo switch domain to safe.[SEARCH_ENGINE_DOMAIN]
+        val safeUrl = when {
+            /// Google search
+            !url.contains("safe=active")
+                    && (url.contains("google.com/search?") || url.contains("bing.com/search?"))
+            -> url.replace("/search?", "/search?safe=active&")
 
-        // For GOOGLE and BING search engines
-        if (!url.contains("safe=active") &&
-            (url.contains("google.com/search?") || url.contains("bing.com/search?"))
-        ) {
-            val safeUrl = url.replace("/search?", "/search?safe=active&")
-            redirectUserToUrl(safeUrl, browserPackage)
-        } else if (
-            !hostDomain.contains("safe.") &&
-            (url.contains("search.brave.com/search?") || url.contains("duckduckgo.com/?"))
-        ) {
-            val safeUrl =
-                if (hostDomain.contains("search.brave.com")) url.replace(
-                    "search.brave.com",
-                    "safe.search.brave.com"
-                ) else url.replace("duckduckgo.com", "safe.duckduckgo.com")
+            /// Brave search
+            !hostDomain.contains("safe.") && hostDomain.contains("search.brave.com")
+            -> url.replace("search.brave.com", "safe.search.brave.com")
 
-            redirectUserToUrl(safeUrl, browserPackage)
+            /// DuckDuckGo search
+            !hostDomain.contains("safe.") && hostDomain.contains("duckduckgo.com")
+            -> url.replace("duckduckgo.com", "safe.duckduckgo.com")
+
+            else -> return
         }
+
+        // Redirect user
+        redirectUserToUrl(safeUrl, browserPackage)
     }
 
     /**
@@ -107,9 +104,12 @@ class BrowserManager(
         // Post to the main thread
         ThreadUtils.runOnMainThread {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)))
-            intent.putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage)
-            intent.setPackage(browserPackage)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .apply {
+                    putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage)
+                    setPackage(browserPackage)
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+
             if (intent.resolveActivity(context.packageManager) != null) {
 
                 /// Toast
@@ -158,7 +158,8 @@ class BrowserManager(
             ":id/mozac_browser_toolbar_url_view",  // Firefox
             ":id/url",
             ":id/search",
-            ":id/url_field",
+            ":id/omnibarTextInput", // Duck duck go
+            ":id/url_field", // Opera
             ":id/location_bar_edit_text",
             ":id/addressbarEdit",
             ":id/bro_omnibar_address_title_text",

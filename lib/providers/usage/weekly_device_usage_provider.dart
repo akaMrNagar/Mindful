@@ -59,7 +59,9 @@ class WeeklyDeviceUsageNotifier
     if (!mounted) return;
 
     state = cache;
-    if (!haveUsage && isInitialLoad) _populateAppsUsageHistory();
+    if (!haveUsage && isInitialLoad && dateToday.weekday != 1) {
+      _populateAppsUsageHistory();
+    }
   }
 
   /// Populates the database with app's usage history for last 10 days

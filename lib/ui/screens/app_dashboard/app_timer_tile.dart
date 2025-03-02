@@ -69,12 +69,12 @@ class AppTimerTile extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
-    final isInvincibleModeRestricted = ref.read(
-      parentalControlsProvider
-          .select((v) => v.isInvincibleModeOn && v.includeAppsTimer),
-    );
+    /// If restricted by invincible mode
+    final isInvincibleRestricted = ref.read(parentalControlsProvider
+            .select((v) => v.isInvincibleModeOn && v.includeAppsTimer)) &&
+        !ref.read(parentalControlsProvider.notifier).isBetweenInvincibleWindow;
 
-    if (isInvincibleModeRestricted && isPurged) {
+    if (isInvincibleRestricted && appTimer > 0) {
       context.showSnackAlert(
         context.locale.invincible_mode_snack_alert,
       );

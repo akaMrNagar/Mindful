@@ -38,8 +38,8 @@ class NavigationService {
   /// Should be called from splash screen after authentication if access is protected
   /// or Onboarding Screen after setup
   Future<void> init({required bool showChangeLogsToo}) async {
-    /// Initialize services before going to home screen or targeted screen
-    Initializer.initializeServicesAndSchedules();
+    /// Initialize services after a delay to prevent app from lagging
+    Future.delayed(5.seconds, Initializer.initializeServicesAndSchedules);
 
     /// Listen to changes and handle deep links when their is a valid link either on app startup
     /// or even when app is active.
