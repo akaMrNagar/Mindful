@@ -3039,6 +3039,17 @@ class $ParentalControlsTableTable extends ParentalControlsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_invincible_mode_on" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _invincibleWindowTimeMeta =
+      const VerificationMeta('invincibleWindowTime');
+  @override
+  late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      invincibleWindowTime = GeneratedColumn<int>(
+              'invincible_window_time', aliasedName, false,
+              type: DriftSqlType.int,
+              requiredDuringInsert: false,
+              defaultValue: const Constant(0))
+          .withConverter<TimeOfDayAdapter>(
+              $ParentalControlsTableTable.$converterinvincibleWindowTime);
   static const VerificationMeta _includeAppsTimerMeta =
       const VerificationMeta('includeAppsTimer');
   @override
@@ -3115,6 +3126,7 @@ class $ParentalControlsTableTable extends ParentalControlsTable
         protectedAccess,
         uninstallWindowTime,
         isInvincibleModeOn,
+        invincibleWindowTime,
         includeAppsTimer,
         includeAppsLaunchLimit,
         includeAppsActivePeriod,
@@ -3150,6 +3162,8 @@ class $ParentalControlsTableTable extends ParentalControlsTable
           isInvincibleModeOn.isAcceptableOrUnknown(
               data['is_invincible_mode_on']!, _isInvincibleModeOnMeta));
     }
+    context.handle(
+        _invincibleWindowTimeMeta, const VerificationResult.success());
     if (data.containsKey('include_apps_timer')) {
       context.handle(
           _includeAppsTimerMeta,
@@ -3213,6 +3227,10 @@ class $ParentalControlsTableTable extends ParentalControlsTable
               data['${effectivePrefix}uninstall_window_time'])!),
       isInvincibleModeOn: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}is_invincible_mode_on'])!,
+      invincibleWindowTime: $ParentalControlsTableTable
+          .$converterinvincibleWindowTime
+          .fromSql(attachedDatabase.typeMapping.read(DriftSqlType.int,
+              data['${effectivePrefix}invincible_window_time'])!),
       includeAppsTimer: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}include_apps_timer'])!,
       includeAppsLaunchLimit: attachedDatabase.typeMapping.read(
@@ -3241,6 +3259,8 @@ class $ParentalControlsTableTable extends ParentalControlsTable
 
   static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
       $converteruninstallWindowTime = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
+      $converterinvincibleWindowTime = const TimeOfDayAdapterConverter();
 }
 
 class ParentalControls extends DataClass
@@ -3256,6 +3276,9 @@ class ParentalControls extends DataClass
 
   /// Flag indicating if invincible mode is ON
   final bool isInvincibleModeOn;
+
+  /// Daily invincible window start time [TimeOfDay] stored as minutes
+  final TimeOfDayAdapter invincibleWindowTime;
 
   /// Flag indicating if apps timer are included in the invincible mode
   ///
@@ -3296,6 +3319,7 @@ class ParentalControls extends DataClass
       required this.protectedAccess,
       required this.uninstallWindowTime,
       required this.isInvincibleModeOn,
+      required this.invincibleWindowTime,
       required this.includeAppsTimer,
       required this.includeAppsLaunchLimit,
       required this.includeAppsActivePeriod,
@@ -3314,6 +3338,11 @@ class ParentalControls extends DataClass
           .toSql(uninstallWindowTime));
     }
     map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn);
+    {
+      map['invincible_window_time'] = Variable<int>($ParentalControlsTableTable
+          .$converterinvincibleWindowTime
+          .toSql(invincibleWindowTime));
+    }
     map['include_apps_timer'] = Variable<bool>(includeAppsTimer);
     map['include_apps_launch_limit'] = Variable<bool>(includeAppsLaunchLimit);
     map['include_apps_active_period'] = Variable<bool>(includeAppsActivePeriod);
@@ -3331,6 +3360,7 @@ class ParentalControls extends DataClass
       protectedAccess: Value(protectedAccess),
       uninstallWindowTime: Value(uninstallWindowTime),
       isInvincibleModeOn: Value(isInvincibleModeOn),
+      invincibleWindowTime: Value(invincibleWindowTime),
       includeAppsTimer: Value(includeAppsTimer),
       includeAppsLaunchLimit: Value(includeAppsLaunchLimit),
       includeAppsActivePeriod: Value(includeAppsActivePeriod),
@@ -3351,6 +3381,9 @@ class ParentalControls extends DataClass
           .$converteruninstallWindowTime
           .fromJson(serializer.fromJson<dynamic>(json['uninstallWindowTime'])),
       isInvincibleModeOn: serializer.fromJson<bool>(json['isInvincibleModeOn']),
+      invincibleWindowTime: $ParentalControlsTableTable
+          .$converterinvincibleWindowTime
+          .fromJson(serializer.fromJson<dynamic>(json['invincibleWindowTime'])),
       includeAppsTimer: serializer.fromJson<bool>(json['includeAppsTimer']),
       includeAppsLaunchLimit:
           serializer.fromJson<bool>(json['includeAppsLaunchLimit']),
@@ -3374,6 +3407,9 @@ class ParentalControls extends DataClass
           $ParentalControlsTableTable.$converteruninstallWindowTime
               .toJson(uninstallWindowTime)),
       'isInvincibleModeOn': serializer.toJson<bool>(isInvincibleModeOn),
+      'invincibleWindowTime': serializer.toJson<dynamic>(
+          $ParentalControlsTableTable.$converterinvincibleWindowTime
+              .toJson(invincibleWindowTime)),
       'includeAppsTimer': serializer.toJson<bool>(includeAppsTimer),
       'includeAppsLaunchLimit': serializer.toJson<bool>(includeAppsLaunchLimit),
       'includeAppsActivePeriod':
@@ -3391,6 +3427,7 @@ class ParentalControls extends DataClass
           bool? protectedAccess,
           TimeOfDayAdapter? uninstallWindowTime,
           bool? isInvincibleModeOn,
+          TimeOfDayAdapter? invincibleWindowTime,
           bool? includeAppsTimer,
           bool? includeAppsLaunchLimit,
           bool? includeAppsActivePeriod,
@@ -3403,6 +3440,7 @@ class ParentalControls extends DataClass
         protectedAccess: protectedAccess ?? this.protectedAccess,
         uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
         isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
+        invincibleWindowTime: invincibleWindowTime ?? this.invincibleWindowTime,
         includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
         includeAppsLaunchLimit:
             includeAppsLaunchLimit ?? this.includeAppsLaunchLimit,
@@ -3427,6 +3465,9 @@ class ParentalControls extends DataClass
       isInvincibleModeOn: data.isInvincibleModeOn.present
           ? data.isInvincibleModeOn.value
           : this.isInvincibleModeOn,
+      invincibleWindowTime: data.invincibleWindowTime.present
+          ? data.invincibleWindowTime.value
+          : this.invincibleWindowTime,
       includeAppsTimer: data.includeAppsTimer.present
           ? data.includeAppsTimer.value
           : this.includeAppsTimer,
@@ -3458,6 +3499,7 @@ class ParentalControls extends DataClass
           ..write('protectedAccess: $protectedAccess, ')
           ..write('uninstallWindowTime: $uninstallWindowTime, ')
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
+          ..write('invincibleWindowTime: $invincibleWindowTime, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
           ..write('includeAppsActivePeriod: $includeAppsActivePeriod, ')
@@ -3475,6 +3517,7 @@ class ParentalControls extends DataClass
       protectedAccess,
       uninstallWindowTime,
       isInvincibleModeOn,
+      invincibleWindowTime,
       includeAppsTimer,
       includeAppsLaunchLimit,
       includeAppsActivePeriod,
@@ -3490,6 +3533,7 @@ class ParentalControls extends DataClass
           other.protectedAccess == this.protectedAccess &&
           other.uninstallWindowTime == this.uninstallWindowTime &&
           other.isInvincibleModeOn == this.isInvincibleModeOn &&
+          other.invincibleWindowTime == this.invincibleWindowTime &&
           other.includeAppsTimer == this.includeAppsTimer &&
           other.includeAppsLaunchLimit == this.includeAppsLaunchLimit &&
           other.includeAppsActivePeriod == this.includeAppsActivePeriod &&
@@ -3504,6 +3548,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
   final Value<bool> protectedAccess;
   final Value<TimeOfDayAdapter> uninstallWindowTime;
   final Value<bool> isInvincibleModeOn;
+  final Value<TimeOfDayAdapter> invincibleWindowTime;
   final Value<bool> includeAppsTimer;
   final Value<bool> includeAppsLaunchLimit;
   final Value<bool> includeAppsActivePeriod;
@@ -3516,6 +3561,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
     this.protectedAccess = const Value.absent(),
     this.uninstallWindowTime = const Value.absent(),
     this.isInvincibleModeOn = const Value.absent(),
+    this.invincibleWindowTime = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
     this.includeAppsActivePeriod = const Value.absent(),
@@ -3529,6 +3575,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
     this.protectedAccess = const Value.absent(),
     this.uninstallWindowTime = const Value.absent(),
     this.isInvincibleModeOn = const Value.absent(),
+    this.invincibleWindowTime = const Value.absent(),
     this.includeAppsTimer = const Value.absent(),
     this.includeAppsLaunchLimit = const Value.absent(),
     this.includeAppsActivePeriod = const Value.absent(),
@@ -3542,6 +3589,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
     Expression<bool>? protectedAccess,
     Expression<int>? uninstallWindowTime,
     Expression<bool>? isInvincibleModeOn,
+    Expression<int>? invincibleWindowTime,
     Expression<bool>? includeAppsTimer,
     Expression<bool>? includeAppsLaunchLimit,
     Expression<bool>? includeAppsActivePeriod,
@@ -3557,6 +3605,8 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
         'uninstall_window_time': uninstallWindowTime,
       if (isInvincibleModeOn != null)
         'is_invincible_mode_on': isInvincibleModeOn,
+      if (invincibleWindowTime != null)
+        'invincible_window_time': invincibleWindowTime,
       if (includeAppsTimer != null) 'include_apps_timer': includeAppsTimer,
       if (includeAppsLaunchLimit != null)
         'include_apps_launch_limit': includeAppsLaunchLimit,
@@ -3578,6 +3628,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
       Value<bool>? protectedAccess,
       Value<TimeOfDayAdapter>? uninstallWindowTime,
       Value<bool>? isInvincibleModeOn,
+      Value<TimeOfDayAdapter>? invincibleWindowTime,
       Value<bool>? includeAppsTimer,
       Value<bool>? includeAppsLaunchLimit,
       Value<bool>? includeAppsActivePeriod,
@@ -3590,6 +3641,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
       protectedAccess: protectedAccess ?? this.protectedAccess,
       uninstallWindowTime: uninstallWindowTime ?? this.uninstallWindowTime,
       isInvincibleModeOn: isInvincibleModeOn ?? this.isInvincibleModeOn,
+      invincibleWindowTime: invincibleWindowTime ?? this.invincibleWindowTime,
       includeAppsTimer: includeAppsTimer ?? this.includeAppsTimer,
       includeAppsLaunchLimit:
           includeAppsLaunchLimit ?? this.includeAppsLaunchLimit,
@@ -3620,6 +3672,11 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
     }
     if (isInvincibleModeOn.present) {
       map['is_invincible_mode_on'] = Variable<bool>(isInvincibleModeOn.value);
+    }
+    if (invincibleWindowTime.present) {
+      map['invincible_window_time'] = Variable<int>($ParentalControlsTableTable
+          .$converterinvincibleWindowTime
+          .toSql(invincibleWindowTime.value));
     }
     if (includeAppsTimer.present) {
       map['include_apps_timer'] = Variable<bool>(includeAppsTimer.value);
@@ -3656,6 +3713,7 @@ class ParentalControlsTableCompanion extends UpdateCompanion<ParentalControls> {
           ..write('protectedAccess: $protectedAccess, ')
           ..write('uninstallWindowTime: $uninstallWindowTime, ')
           ..write('isInvincibleModeOn: $isInvincibleModeOn, ')
+          ..write('invincibleWindowTime: $invincibleWindowTime, ')
           ..write('includeAppsTimer: $includeAppsTimer, ')
           ..write('includeAppsLaunchLimit: $includeAppsLaunchLimit, ')
           ..write('includeAppsActivePeriod: $includeAppsActivePeriod, ')
@@ -4246,7 +4304,8 @@ class $WellbeingTableTable extends WellbeingTable
 
   static TypeConverter<List<ShortsPlatformFeatures>, String>
       $converterblockedFeatures =
-      const ListEnumNamesConverter(ShortsPlatformFeatures.values);
+      const ListEnumNamesConverter<ShortsPlatformFeatures>(
+          ShortsPlatformFeatures.values);
   static TypeConverter<List<String>, String> $converterblockedWebsites =
       const ListStringConverter();
   static TypeConverter<List<String>, String> $converternsfwWebsites =
@@ -6879,6 +6938,7 @@ typedef $$ParentalControlsTableTableCreateCompanionBuilder
   Value<bool> protectedAccess,
   Value<TimeOfDayAdapter> uninstallWindowTime,
   Value<bool> isInvincibleModeOn,
+  Value<TimeOfDayAdapter> invincibleWindowTime,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
   Value<bool> includeAppsActivePeriod,
@@ -6893,6 +6953,7 @@ typedef $$ParentalControlsTableTableUpdateCompanionBuilder
   Value<bool> protectedAccess,
   Value<TimeOfDayAdapter> uninstallWindowTime,
   Value<bool> isInvincibleModeOn,
+  Value<TimeOfDayAdapter> invincibleWindowTime,
   Value<bool> includeAppsTimer,
   Value<bool> includeAppsLaunchLimit,
   Value<bool> includeAppsActivePeriod,
@@ -6926,6 +6987,11 @@ class $$ParentalControlsTableTableFilterComposer
   ColumnFilters<bool> get isInvincibleModeOn => $composableBuilder(
       column: $table.isInvincibleModeOn,
       builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<TimeOfDayAdapter, TimeOfDayAdapter, int>
+      get invincibleWindowTime => $composableBuilder(
+          column: $table.invincibleWindowTime,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get includeAppsTimer => $composableBuilder(
       column: $table.includeAppsTimer,
@@ -6980,6 +7046,10 @@ class $$ParentalControlsTableTableOrderingComposer
       column: $table.isInvincibleModeOn,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get invincibleWindowTime => $composableBuilder(
+      column: $table.invincibleWindowTime,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get includeAppsTimer => $composableBuilder(
       column: $table.includeAppsTimer,
       builder: (column) => ColumnOrderings(column));
@@ -7030,6 +7100,10 @@ class $$ParentalControlsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get isInvincibleModeOn => $composableBuilder(
       column: $table.isInvincibleModeOn, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
+      get invincibleWindowTime => $composableBuilder(
+          column: $table.invincibleWindowTime, builder: (column) => column);
 
   GeneratedColumn<bool> get includeAppsTimer => $composableBuilder(
       column: $table.includeAppsTimer, builder: (column) => column);
@@ -7088,6 +7162,7 @@ class $$ParentalControlsTableTableTableManager extends RootTableManager<
             Value<bool> protectedAccess = const Value.absent(),
             Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
             Value<bool> isInvincibleModeOn = const Value.absent(),
+            Value<TimeOfDayAdapter> invincibleWindowTime = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
             Value<bool> includeAppsActivePeriod = const Value.absent(),
@@ -7101,6 +7176,7 @@ class $$ParentalControlsTableTableTableManager extends RootTableManager<
             protectedAccess: protectedAccess,
             uninstallWindowTime: uninstallWindowTime,
             isInvincibleModeOn: isInvincibleModeOn,
+            invincibleWindowTime: invincibleWindowTime,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
             includeAppsActivePeriod: includeAppsActivePeriod,
@@ -7114,6 +7190,7 @@ class $$ParentalControlsTableTableTableManager extends RootTableManager<
             Value<bool> protectedAccess = const Value.absent(),
             Value<TimeOfDayAdapter> uninstallWindowTime = const Value.absent(),
             Value<bool> isInvincibleModeOn = const Value.absent(),
+            Value<TimeOfDayAdapter> invincibleWindowTime = const Value.absent(),
             Value<bool> includeAppsTimer = const Value.absent(),
             Value<bool> includeAppsLaunchLimit = const Value.absent(),
             Value<bool> includeAppsActivePeriod = const Value.absent(),
@@ -7127,6 +7204,7 @@ class $$ParentalControlsTableTableTableManager extends RootTableManager<
             protectedAccess: protectedAccess,
             uninstallWindowTime: uninstallWindowTime,
             isInvincibleModeOn: isInvincibleModeOn,
+            invincibleWindowTime: invincibleWindowTime,
             includeAppsTimer: includeAppsTimer,
             includeAppsLaunchLimit: includeAppsLaunchLimit,
             includeAppsActivePeriod: includeAppsActivePeriod,

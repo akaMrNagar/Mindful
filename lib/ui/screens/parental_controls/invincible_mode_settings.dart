@@ -22,6 +22,7 @@ import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/dialogs/time_picker_dialog.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -83,6 +84,38 @@ class InvincibleModeSettings extends ConsumerWidget {
               ref,
               parentalControls.isInvincibleModeOn,
             ),
+          ),
+        ).sliver,
+
+        /// invincible window
+        DefaultHero(
+          tag: HeroTags.invincibleWindowTileTag,
+          child: DefaultListTile(
+            position: ItemPosition.mid,
+            isPrimary: true,
+            enabled: !parentalControls.isInvincibleModeOn,
+            titleText: context.locale.invincible_window_tile_title,
+            subtitleText: context.locale.invincible_window_tile_subtitle,
+            trailing: StyledText(
+              parentalControls.invincibleWindowTime.format(context),
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              isSubtitle: parentalControls.isInvincibleModeOn,
+            ),
+            onPressed: () async {
+              final pickedTime = await showCustomTimePickerDialog(
+                context: context,
+                heroTag: HeroTags.invincibleWindowTileTag,
+                initialTime: parentalControls.invincibleWindowTime,
+                info: context.locale.invincible_window_tile_title,
+              );
+
+              if (pickedTime != null && context.mounted) {
+                ref
+                    .read(parentalControlsProvider.notifier)
+                    .changeInvincibleWindowTime(pickedTime);
+              }
+            },
           ),
         ).sliver,
 

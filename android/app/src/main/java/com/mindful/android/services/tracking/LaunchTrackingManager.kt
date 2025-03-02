@@ -1,5 +1,6 @@
 package com.mindful.android.services.tracking
 
+import android.accessibilityservice.AccessibilityService
 import android.app.Service.USAGE_STATS_SERVICE
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
@@ -16,6 +17,7 @@ import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTI
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
 import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.Utils
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -72,6 +74,9 @@ class LaunchTrackingManager(
         } else {
             context.registerReceiver(accessibilityReceiver, accessibilityFilter)
         }
+
+        // Check if accessibility is already running
+        isManualTrackingOn = !Utils.isServiceRunning(context, AccessibilityService::class.java)
 
         // Start tracking
         onDeviceUnlocked()

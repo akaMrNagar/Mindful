@@ -518,7 +518,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get invincible_mode_tile_title => 'Activate invincible mode';
 
   @override
-  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. Limits reset at midnight, so you\'ll be able to make changes the next day.';
+  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
 
   @override
   String get invincible_mode_snack_alert => 'Due to invincible mode, modifications to restrictions is not allowed.';
@@ -590,7 +590,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uninstall_window_tile_title => 'Uninstall window';
 
   @override
-  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 5 minutes from the selected time.';
+  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 10 minutes from the selected time.';
+
+  @override
+  String get invincible_window_tile_title => 'Invincible window';
+
+  @override
+  String get invincible_window_tile_subtitle => 'Selected limits can be modified within 10 minutes from the selected time.';
 
   @override
   String get shorts_blocking_tab_title => 'Shorts blocking';
@@ -605,9 +611,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String shorts_time_left_from(String timeShortString) {
     return 'Left from $timeShortString';
   }
-
-  @override
-  String get short_content_invincible_mode_info => 'You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.';
 
   @override
   String get short_content_timer_picker_dialog_info => 'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.';

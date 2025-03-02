@@ -15,6 +15,7 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/enums/shorts_platform_features.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
+import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 
@@ -22,11 +23,9 @@ class SliverShortsQuickActions extends ConsumerWidget {
   const SliverShortsQuickActions({
     super.key,
     required this.haveNecessaryPerms,
-    required this.isModifiable,
   });
 
   final bool haveNecessaryPerms;
-  final bool isModifiable;
 
   void _toggleFeature(
     BuildContext context,
@@ -34,8 +33,15 @@ class SliverShortsQuickActions extends ConsumerWidget {
     List<ShortsPlatformFeatures> blockedFeatures,
     ShortsPlatformFeatures feature,
   ) {
+    final isInvincibleRestricted = ref.read(parentalControlsProvider
+            .select((v) => v.isInvincibleModeOn && v.includeShortsTimer)) &&
+        !ref
+            .read(parentalControlsProvider.notifier)
+            .isBetweenInvincibleWindow &&
+        ref.read(wellBeingProvider.select((v) => v.allowedShortsTimeSec > 0));
+
     /// If restricted by invincible mode
-    if (!isModifiable && blockedFeatures.contains(feature)) {
+    if (isInvincibleRestricted && blockedFeatures.contains(feature)) {
       context.showSnackAlert(context.locale.invincible_mode_snack_alert);
       return;
     }

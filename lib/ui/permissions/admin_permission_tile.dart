@@ -14,7 +14,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -31,8 +30,9 @@ class AdminPermissionTile extends ConsumerWidget {
   ) async {
     if (isAdminEnabled) {
       /// User wants to Disable
-      if (DateTime.now().isBetweenTod(uninstallWindowTime,
-          TimeOfDayAdapter.fromMinutes(uninstallWindowTime.toMinutes + 5))) {
+      if (ref
+          .read(parentalControlsProvider.notifier)
+          .isBetweenUninstallWindow) {
         ref.read(permissionProvider.notifier).disableAdminPermission();
       } else {
         context.showSnackAlert(
@@ -62,8 +62,8 @@ class AdminPermissionTile extends ConsumerWidget {
     final havePermission =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
 
-    final uninstallWindowTime =
-        ref.watch(parentalControlsProvider.select((v) => v.uninstallWindowTime));
+    final uninstallWindowTime = ref
+        .watch(parentalControlsProvider.select((v) => v.uninstallWindowTime));
 
     return DefaultListTile(
       position: ItemPosition.mid,

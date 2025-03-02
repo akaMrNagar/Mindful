@@ -593,6 +593,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uninstall_window_tile_subtitle => '選択した時間から5分以内であれば、改ざん防止を無効にできます。';
 
   @override
+  String get invincible_window_tile_title => 'Invincible window';
+
+  @override
+  String get invincible_window_tile_subtitle => 'Selected limits can be modified within 10 minutes from the selected time.';
+
+  @override
   String get shorts_blocking_tab_title => 'Shorts blocking';
 
   @override
@@ -605,9 +611,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String shorts_time_left_from(String timeShortString) {
     return '残りあと $timeShortString';
   }
-
-  @override
-  String get short_content_invincible_mode_info => 'ショート動画の毎日の使用制限に達しました。無敵モード中は設定を変更できません。';
 
   @override
   String get short_content_timer_picker_dialog_info => 'ショート動画の毎日の利用時間を制限できます。制限時間に達すると、深夜0時までショート動画は視聴できなくなります。';

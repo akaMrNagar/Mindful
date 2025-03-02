@@ -201,7 +201,7 @@
     "parental_controls_tab_title": "Parental controls",
     "invincible_mode_heading": "Invincible mode",
     "invincible_mode_tile_title": "Activate invincible mode",
-    "invincible_mode_info": "When Invincible Mode is on, you won't be able to adjust selected limits after reaching your daily quota. Limits reset at midnight, so you'll be able to make changes the next day.",
+    "invincible_mode_info": "When Invincible Mode is on, you won't be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.",
     "invincible_mode_snack_alert": "Due to invincible mode, modifications to restrictions is not allowed.",
     "invincible_mode_dialog_info": "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
     "invincible_mode_turn_off_snack_alert": "Invincible Mode cannot be turned off as long as this app remains installed on your device.",
@@ -225,7 +225,9 @@
     "tamper_protection_tile_title": "Tamper protection",
     "tamper_protection_tile_subtitle": "Prevent uninstalling and force stopping the app.",
     "uninstall_window_tile_title": "Uninstall window",
-    "uninstall_window_tile_subtitle": "Tamper protection can be disabled within 5 minutes from the selected time.",
+    "uninstall_window_tile_subtitle": "Tamper protection can be disabled within 10 minutes from the selected time.",
+    "invincible_window_tile_title": "Invincible window",
+    "invincible_window_tile_subtitle": "Selected limits can be modified within 10 minutes from the selected time.",
     "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
     "shorts_blocking_tab_title": "Shorts blocking",
     "shorts_blocking_tab_info": "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.",
@@ -239,7 +241,6 @@
             }
         }
     },
-    "short_content_invincible_mode_info": "You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.",
     "short_content_timer_picker_dialog_info": "Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.",
     "instagram_features_tile_title": "Instagram",
     "instagram_features_tile_subtitle": "Restrict features on instagram.",

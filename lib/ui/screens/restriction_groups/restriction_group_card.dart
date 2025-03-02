@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/system/parental_controls_provider.dart';
@@ -181,20 +180,19 @@ class RestrictionGroupCard extends ConsumerWidget {
   }
 
   void _goToEditScreen(BuildContext context, WidgetRef ref, int timeLeft) {
-    final invincibleMode = ref.read(parentalControlsProvider);
+    final controls = ref.read(parentalControlsProvider);
+    final isBetweenWindow =
+        ref.read(parentalControlsProvider.notifier).isBetweenInvincibleWindow;
 
-    final canModifyTimer = !(invincibleMode.isInvincibleModeOn &&
-        invincibleMode.includeGroupsTimer &&
-        group.timerSec > 0 &&
-        timeLeft <= 0);
+    final canModifyTimer = !(controls.isInvincibleModeOn &&
+        controls.includeGroupsTimer &&
+        !isBetweenWindow &&
+        group.timerSec > 0);
 
-    final canModifyActivePeriod = !(invincibleMode.isInvincibleModeOn &&
-        invincibleMode.includeGroupsActivePeriod &&
-        group.periodDurationInMins > 0 &&
-        !DateTime.now().isBetweenTod(
-          group.activePeriodStart,
-          group.activePeriodEnd,
-        ));
+    final canModifyActivePeriod = !(controls.isInvincibleModeOn &&
+        controls.includeGroupsActivePeriod &&
+        !isBetweenWindow &&
+        group.periodDurationInMins > 0);
 
     /// Go to screen
     Navigator.of(context).push(

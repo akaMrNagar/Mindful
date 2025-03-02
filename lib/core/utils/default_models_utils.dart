@@ -31,6 +31,7 @@ const defaultParentalControlsModel = ParentalControls(
   protectedAccess: false,
   uninstallWindowTime: TimeOfDayAdapter.zero(),
   isInvincibleModeOn: false,
+  invincibleWindowTime: TimeOfDayAdapter.zero(),
   includeAppsTimer: true,
   includeAppsLaunchLimit: false,
   includeAppsActivePeriod: false,

@@ -15,7 +15,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
-import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
 import 'package:mindful/config/hero_tags.dart';
@@ -51,14 +50,15 @@ class AppDashboardRestrictions extends ConsumerWidget {
   void _onLaunchCountPressed({
     required BuildContext context,
     required WidgetRef ref,
-    required int launchCount,
     required int launchLimit,
   }) async {
-    final isAppLimitRestricted = ref.read(parentalControlsProvider
-        .select((v) => v.isInvincibleModeOn && v.includeAppsLaunchLimit));
+    /// If restricted by invincible mode
+    final isInvincibleRestricted = ref.read(parentalControlsProvider
+            .select((v) => v.isInvincibleModeOn && v.includeAppsLaunchLimit)) &&
+        !ref.read(parentalControlsProvider.notifier).isBetweenInvincibleWindow;
 
     /// Show snack bar and return if restricted
-    if (isAppLimitRestricted && launchLimit > 0 && launchCount > launchLimit) {
+    if (isInvincibleRestricted && launchLimit > 0) {
       context.showSnackAlert(context.locale.invincible_mode_snack_alert);
       return;
     }
@@ -89,14 +89,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
     final restrictionGroupName = ref.watch(restrictionGroupsProvider
         .select((v) => v[restriction.associatedGroupId]?.groupName));
-
-    final canModifyActivePeriod = !(restriction.periodDurationInMins > 0 &&
-        ref.watch(parentalControlsProvider.select(
-            (v) => v.isInvincibleModeOn && v.includeAppsActivePeriod)) &&
-        !DateTime.now().isBetweenTod(
-          restriction.activePeriodStart,
-          restriction.activePeriodEnd,
-        ));
 
     return MultiSliver(
       children: [
@@ -134,7 +126,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
             onPressed: () => _onLaunchCountPressed(
               context: context,
               ref: ref,
-              launchCount: todaysLaunchCount,
               launchLimit: restriction.launchLimit,
             ),
           ),
@@ -157,12 +148,23 @@ class AppDashboardRestrictions extends ConsumerWidget {
             startTime: restriction.activePeriodStart,
             endTime: restriction.activePeriodEnd,
             isModifiable: () {
-              if (!canModifyActivePeriod) {
+              /// If restricted by invincible mode
+              final isInvincibleRestricted = ref.read(
+                      parentalControlsProvider.select((v) =>
+                          v.isInvincibleModeOn && v.includeAppsActivePeriod)) &&
+                  !ref
+                      .read(parentalControlsProvider.notifier)
+                      .isBetweenInvincibleWindow;
+
+              if (isInvincibleRestricted &&
+                  restriction.periodDurationInMins > 0) {
                 context
                     .showSnackAlert(context.locale.invincible_mode_snack_alert);
+
+                return false;
               }
 
-              return canModifyActivePeriod;
+              return true;
             },
             onTimeChanged: (start, end) =>
                 ref.read(appsRestrictionsProvider.notifier).updateActivePeriod(

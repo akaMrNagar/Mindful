@@ -992,7 +992,7 @@ abstract class AppLocalizations {
   /// No description provided for @invincible_mode_info.
   ///
   /// In en, this message translates to:
-  /// **'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. Limits reset at midnight, so you\'ll be able to make changes the next day.'**
+  /// **'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.'**
   String get invincible_mode_info;
 
   /// No description provided for @invincible_mode_snack_alert.
@@ -1136,8 +1136,20 @@ abstract class AppLocalizations {
   /// No description provided for @uninstall_window_tile_subtitle.
   ///
   /// In en, this message translates to:
-  /// **'Tamper protection can be disabled within 5 minutes from the selected time.'**
+  /// **'Tamper protection can be disabled within 10 minutes from the selected time.'**
   String get uninstall_window_tile_subtitle;
+
+  /// No description provided for @invincible_window_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Invincible window'**
+  String get invincible_window_tile_title;
+
+  /// No description provided for @invincible_window_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Selected limits can be modified within 10 minutes from the selected time.'**
+  String get invincible_window_tile_subtitle;
 
   /// No description provided for @shorts_blocking_tab_title.
   ///
@@ -1162,12 +1174,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left from {timeShortString}'**
   String shorts_time_left_from(String timeShortString);
-
-  /// No description provided for @short_content_invincible_mode_info.
-  ///
-  /// In en, this message translates to:
-  /// **'You have exhausted the daily short content quota time. Due to invincible mode, modifications to settings related to short content are not allowed.'**
-  String get short_content_invincible_mode_info;
 
   /// No description provided for @short_content_timer_picker_dialog_info.
   ///

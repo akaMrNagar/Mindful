@@ -48,7 +48,7 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
     );
   }
 
-  /// Adds or removes a website host to the blocked websites list.
+  /// Adds or removes a feature to/from the blocked features list.
   void insertRemoveBlockedFeature(ShortsPlatformFeatures feature) =>
       state = state.copyWith(
         blockedFeatures: state.blockedFeatures.contains(feature)
