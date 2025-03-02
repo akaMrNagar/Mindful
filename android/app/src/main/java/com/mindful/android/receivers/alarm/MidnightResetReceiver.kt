@@ -18,6 +18,7 @@ import android.util.Log
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
@@ -46,6 +47,7 @@ class MidnightResetReceiver : BroadcastReceiver() {
                 ExistingWorkPolicy.KEEP,
                 OneTimeWorkRequest
                     .Builder(FlutterBgExecutionWorker::class.java)
+                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                     .setInputData(
                         Data.Builder().putString(FLUTTER_TASK_ID, "onMidnightReset")
                             .build()

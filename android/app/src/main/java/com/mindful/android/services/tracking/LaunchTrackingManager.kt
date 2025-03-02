@@ -3,15 +3,19 @@ package com.mindful.android.services.tracking
 import android.app.Service.USAGE_STATS_SERVICE
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.os.Build
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.mindful.android.receivers.DeviceLockUnlockReceiver
+import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
+import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
+import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
+import com.mindful.android.utils.AppConstants
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -25,9 +29,10 @@ class LaunchTrackingManager(
         private const val TAG = "Mindful.LaunchTrackingManager"
 
         // Interval for tracking app launches in milliseconds
-        private const val TIMER_RATE: Long = 500
+        private const val TIMER_RATE: Long = 750
     }
 
+    private val accessibilityReceiver: AccessibilityReceiver = AccessibilityReceiver()
     private val lockUnlockReceiver: DeviceLockUnlockReceiver =
         DeviceLockUnlockReceiver { isUnlocked ->
             if (isUnlocked) onDeviceUnlocked()
@@ -41,14 +46,32 @@ class LaunchTrackingManager(
     private var isTrackingPaused: Boolean = false
 
     private val activeApps: MutableSet<String> = mutableSetOf()
+    private var lastUsageQueryTimestamp = System.currentTimeMillis()
     private var lastLaunchedApp = ""
 
     init {
         // Register lock/unlock receiver
-        val lockUnlockFilter = IntentFilter()
-        lockUnlockFilter.addAction(Intent.ACTION_USER_PRESENT)
-        lockUnlockFilter.addAction(Intent.ACTION_SCREEN_OFF)
+        val lockUnlockFilter = IntentFilter().apply {
+            addAction(Intent.ACTION_USER_PRESENT)
+            addAction(Intent.ACTION_SCREEN_OFF)
+        }
         context.registerReceiver(lockUnlockReceiver, lockUnlockFilter)
+
+        // Register accessibility receiver
+        val accessibilityFilter = IntentFilter().apply {
+            addAction(ACTION_START_MANUAL_TRACKING)
+            addAction(ACTION_NEW_APP_LAUNCHED)
+            addAction(ACTION_STOP_MANUAL_TRACKING)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(
+                accessibilityReceiver,
+                accessibilityFilter,
+                Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            context.registerReceiver(accessibilityReceiver, accessibilityFilter)
+        }
 
         // Start tracking
         onDeviceUnlocked()
@@ -57,17 +80,11 @@ class LaunchTrackingManager(
 
     @MainThread
     private fun onDeviceUnlocked() {
-        // TODO: Use accessibility for tracking if permission is granted to improve battery health.
+        // Start tracking manually only if accessibility is not running
         if (isManualTrackingOn) {
             // First cancel earlier task if already not cancelled
             trackingExecutor?.shutdownNow()
             trackingExecutor = Executors.newScheduledThreadPool(1)
-
-            // Initialize usage states manager
-            if (usageStatsManager == null) {
-                usageStatsManager =
-                    context.getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
-            }
 
             // Schedule new task
             trackingExecutor?.scheduleWithFixedDelay(
@@ -77,7 +94,7 @@ class LaunchTrackingManager(
                 TimeUnit.MILLISECONDS
             )
 
-            Log.d(TAG, "onDeviceUnlocked: Usage tracking started")
+            Log.d(TAG, "onDeviceUnlocked: Manual usage tracking started")
             Thread { broadcastLastAppLaunchEvent() }.start()
         }
     }
@@ -87,13 +104,22 @@ class LaunchTrackingManager(
         trackingExecutor?.shutdownNow()
         trackingExecutor = null
 
-        Log.d(TAG, "onDeviceLocked: Usage tracking stopped")
+        Log.d(TAG, "onDeviceLocked: Manual usage tracking stopped")
     }
 
     @WorkerThread
-    private fun findLaunchedApp(interval: Long = TIMER_RATE * 2) {
+    private fun findLaunchedApp(pastTime: Long = 0) {
+        // Initialize usage states manager
+        if (usageStatsManager == null) {
+            usageStatsManager =
+                context.getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
+        }
+
+
         val now = System.currentTimeMillis()
-        val usageEvents = usageStatsManager?.queryEvents(now.minus(interval), now)
+        val usageEvents =
+            usageStatsManager?.queryEvents(lastUsageQueryTimestamp.minus(pastTime), now)
+        lastUsageQueryTimestamp = now
 
         usageEvents?.let {
             val currentEvent = UsageEvents.Event()
@@ -149,6 +175,30 @@ class LaunchTrackingManager(
 
     fun dispose() {
         context.unregisterReceiver(lockUnlockReceiver)
+        context.unregisterReceiver(accessibilityReceiver)
         onDeviceLocked()
+    }
+
+
+    private inner class AccessibilityReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.action) {
+                ACTION_START_MANUAL_TRACKING -> {
+                    isManualTrackingOn = true
+                    onDeviceUnlocked()
+                }
+
+                ACTION_STOP_MANUAL_TRACKING -> {
+                    isManualTrackingOn = false
+                    onDeviceLocked()
+                }
+
+                ACTION_NEW_APP_LAUNCHED -> intent.getStringExtra(AppConstants.INTENT_EXTRA_PACKAGE_NAME)
+                    ?.let {
+                        Thread { onNewAppLaunched.invoke(it) }.start()
+                    }
+
+            }
+        }
     }
 }

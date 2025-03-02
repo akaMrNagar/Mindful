@@ -12,7 +12,6 @@
 package com.mindful.android.services.accessibility
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.SharedPreferences
@@ -67,19 +66,20 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     // Fixed thread pool for parallel event processing
     private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(4)
     private val deviceAppsChangedReceiver: DeviceAppsChangedReceiver =
-        DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceInfo() })
+        DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceConfig() })
 
-    // Short content management
+    // Managers
     private lateinit var shortsPlatformManager: ShortsPlatformManager
-
-    // Browser management
     private lateinit var browserManager: BrowserManager
+    private lateinit var trackingManager: TrackingManager
 
     private var mWellBeingSettings = WellBeingSettings(JSONObject())
     private var lastTimeBackActioned = 0L
 
     override fun onCreate() {
         super.onCreate()
+        trackingManager = TrackingManager(context = this)
+
         shortsPlatformManager = ShortsPlatformManager(
             context = this,
             blockedContentGoBack = this::goBackWithToast
@@ -90,6 +90,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             shortsPlatformManager = shortsPlatformManager,
             blockedContentGoBack = this::goBackWithToast
         )
+
     }
 
 
@@ -113,7 +114,8 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         filter.addDataScheme("package")
         registerReceiver(deviceAppsChangedReceiver, filter)
 
-        refreshServiceInfo()
+        refreshServiceConfig()
+        trackingManager.stopManualTracking()
         Log.d(TAG, "onCreate: Accessibility service started successfully")
         super.onServiceConnected()
     }
@@ -123,9 +125,9 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             // If not desired event or executor is shutdown, then just return
             if (!desiredEvents.contains(event.eventType) || mExecutorService.isShutdown) return
 
+            // submit event for tracking
             val packageName = event.packageName.toString()
-            // TODO: Send broadcast about app launch
-
+            mExecutorService.submit { trackingManager.onNewEvent(packageName) }
 
             // If no reason to process event then just return
             if (!shouldBlockContent()) return
@@ -216,7 +218,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     /**
      * Updates the service info with the latest settings and registered packages.
      */
-    private fun refreshServiceInfo() {
+    private fun refreshServiceConfig() {
         try {
             // Using hashset to avoid duplicates
             val pm = packageManager
@@ -273,19 +275,8 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             if (mWellBeingSettings.blockNsfwSites) BrowserManager.initializeNsfwDomains()
             else BrowserManager.clearNsfwDomains()
 
-            // Update info
-            serviceInfo = AccessibilityServiceInfo().apply {
-                eventTypes = desiredEvents.reduce { prev, event -> prev or event }
-                feedbackType = AccessibilityServiceInfo.FEEDBACK_ALL_MASK
-                flags = AccessibilityServiceInfo.DEFAULT or
-                        AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS or
-                        AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or
-                        AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
-                notificationTimeout = 500
-            }
-
             Log.d(
-                TAG, "refreshServiceInfo: Accessibility service updated successfully: " +
+                TAG, "refreshServiceConfig: Accessibility service config updated successfully: " +
                         "\n settings: $mWellBeingSettings" +
                         "\n short platforms: $shortsPlatformPackages" +
                         "\n browsers: $browserPackages"
@@ -301,7 +292,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             if (key == SharedPrefsHelper.PREF_KEY_WELLBEING_SETTINGS) {
                 Log.d(TAG, "OnSharedPrefsChanged: Key changed = $changedKey")
                 mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
-                refreshServiceInfo()
+                refreshServiceConfig()
             }
         }
     }
@@ -311,9 +302,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
     override fun onDestroy() {
         mExecutorService.shutdown()
+        trackingManager.startManualTracking()
+
         // Unregister prefs listener and receiver
         unregisterReceiver(deviceAppsChangedReceiver)
         SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
+
         Log.d(TAG, "onDestroy: Accessibility service destroyed")
         super.onDestroy()
     }

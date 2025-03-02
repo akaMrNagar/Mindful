@@ -109,8 +109,11 @@ class FlutterBgExecutionWorker(
     }
 
     private fun dispose() {
-        flutterEngine?.destroy();
-        flutterEngine = null
+        ThreadUtils.runOnMainThread {
+            flutterEngine?.destroy();
+            flutterEngine = null
+        }
+
         latch.countDown()
         Log.d(TAG, "dispose: Stopping worker")
     }

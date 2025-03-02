@@ -22,6 +22,7 @@ object AppConstants {
 
     // Extra intent data
     const val INTENT_EXTRA_IS_SELF_RESTART: String = "com.mindful.android.isSelfRestart"
+    const val INTENT_EXTRA_PACKAGE_NAME: String = "com.mindful.android.packageName"
 
     // Notification IDs
     const val TRACKER_SERVICE_NOTIFICATION_ID: Int = 101

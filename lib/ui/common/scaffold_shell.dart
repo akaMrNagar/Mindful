@@ -132,22 +132,14 @@ class _ScaffoldShellState extends State<ScaffoldShell>
       bottomNavigationBar: _haveMultiTabs ? bottomNavBar() : null,
       body: TabBarView(
         controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: List.generate(
           widget.items.length,
           (i) => NestedScrollView(
             controller: _scrollControllers[i],
             physics: const BouncingScrollPhysics(),
-            headerSliverBuilder: (
-              BuildContext context,
-              bool innerBoxIsScrolled,
-            ) =>
-                [
-              sliverAppBar(
-                _scrollControllers[i],
-                innerBoxIsScrolled,
-              ),
-            ],
+            headerSliverBuilder: (_, innerBoxIsScrolled) =>
+                [sliverAppBar(i, innerBoxIsScrolled)],
 
             /// Provides access to the tab controller to the children in tree
             /// To get =>  TabControllerProvider.of(context)?.controller;
@@ -165,10 +157,12 @@ class _ScaffoldShellState extends State<ScaffoldShell>
   }
 
   Widget sliverAppBar(
-    ScrollController scrollController,
+    int tabIndex,
     bool innerBoxIsScrolled,
   ) {
-    final navItem = widget.items[_selectedTabIndex];
+    final navItem = widget.items[tabIndex];
+    final scrollController = _scrollControllers[tabIndex];
+
     return AnimatedBuilder(
       animation: scrollController,
       builder: (context, constraints) {
@@ -255,7 +249,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
             .map(
               (e) => NavigationDestination(
                 label: e.titleText!,
-                icon: Icon(e.icon).animate(target: 0),
+                icon: Icon(e.icon),
                 selectedIcon: Icon(e.filledIcon).animate().scale(
                       begin: const Offset(0.5, 0.5),
                       end: const Offset(1.05, 1.05),

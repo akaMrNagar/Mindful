@@ -17,4 +17,4 @@
     android:canRequestEnhancedWebAccessibility="true"
     android:canRetrieveWindowContent="true"
     android:description="@string/accessibility_description"
-    android:notificationTimeout="500" />
+    android:notificationTimeout="0" />

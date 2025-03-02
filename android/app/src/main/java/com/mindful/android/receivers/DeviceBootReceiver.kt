@@ -18,6 +18,7 @@ import android.util.Log
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper
 import com.mindful.android.helpers.device.NotificationHelper
@@ -57,6 +58,7 @@ class DeviceBootReceiver : BroadcastReceiver() {
                         TAG, ExistingWorkPolicy.KEEP,
                         OneTimeWorkRequest
                             .Builder(FlutterBgExecutionWorker::class.java)
+                            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                             .setInputData(
                                 Data.Builder().putString(FLUTTER_TASK_ID, "onBootOrAppUpdate")
                                     .build()
