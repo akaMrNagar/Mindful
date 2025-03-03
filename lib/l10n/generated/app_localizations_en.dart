@@ -873,13 +873,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get your_sessions_empty_list_hint => 'No focus sessions recorded for the selected day.';
 
   @override
-  String get focus_session_tile_time_label => 'Time';
-
-  @override
-  String get focus_session_tile_date_label => 'Date';
+  String get focus_session_tile_timestamp_label => 'Timestamp';
 
   @override
   String get focus_session_tile_duration_label => 'Duration';
+
+  @override
+  String get focus_session_tile_reflection_label => 'Reflection';
 
   @override
   String get focus_session_state_active => 'Active';
@@ -915,7 +915,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get active_session_reflection_dialog_title => 'Session reflection';
 
   @override
-  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session?';
+  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
 
   @override
   String get active_session_reflection_dialog_tip => 'Tip: You can always edit this later in the session timeline.';

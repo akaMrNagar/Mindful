@@ -1681,23 +1681,23 @@ abstract class AppLocalizations {
   /// **'No focus sessions recorded for the selected day.'**
   String get your_sessions_empty_list_hint;
 
-  /// No description provided for @focus_session_tile_time_label.
+  /// No description provided for @focus_session_tile_timestamp_label.
   ///
   /// In en, this message translates to:
-  /// **'Time'**
-  String get focus_session_tile_time_label;
-
-  /// No description provided for @focus_session_tile_date_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Date'**
-  String get focus_session_tile_date_label;
+  /// **'Timestamp'**
+  String get focus_session_tile_timestamp_label;
 
   /// No description provided for @focus_session_tile_duration_label.
   ///
   /// In en, this message translates to:
   /// **'Duration'**
   String get focus_session_tile_duration_label;
+
+  /// No description provided for @focus_session_tile_reflection_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Reflection'**
+  String get focus_session_tile_reflection_label;
 
   /// No description provided for @focus_session_state_active.
   ///
@@ -1768,7 +1768,7 @@ abstract class AppLocalizations {
   /// No description provided for @active_session_reflection_dialog_info.
   ///
   /// In en, this message translates to:
-  /// **'Take a moment to reflect on your progress. What\'s your goal for this session?'**
+  /// **'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?'**
   String get active_session_reflection_dialog_info;
 
   /// No description provided for @active_session_reflection_dialog_tip.

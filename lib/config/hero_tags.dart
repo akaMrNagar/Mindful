@@ -72,7 +72,8 @@ class HeroTags {
   static const giveUpOrFinishFocusSessionTag = "activeSession.giveUpOrFinish";
 
   /// Tag used to identify the button for session reflection in active session screen.
-  static const sessionReflectionTag = "activeSession.sessionReflection";
+  static String sessionReflectionTag(int sessionId) =>
+      "activeSession.sessionReflection.$sessionId";
 
   /// Tag used to identify the tile for data reset time in settings.
   static const dataResetTimeTileTag = "settings.general.dataResetTime";

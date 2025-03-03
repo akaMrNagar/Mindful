@@ -166,7 +166,7 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
   }
 
   /// Updates session reflection.
-  void updateFocusReflection(String reflection) async {
+  void updateActiveSessionReflection(String reflection) async {
     if (state.activeSession.value != null) {
       state = state.copyWith(
         activeSession: state.activeSession.valueOrNull?.copyWith(

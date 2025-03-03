@@ -10,6 +10,7 @@
 
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
@@ -69,5 +70,13 @@ class FocusModeNotifier extends StateNotifier<DatedFocusModel> {
       selectedDaysSessions: AsyncData(sessions),
       selectedDaysFocusedTime: todaysFocusedTime,
     );
+  }
+
+  /// Update the session and refresh the timeline
+  void updateSession(FocusSession session) async {
+    await DriftDbService.instance.driftDb.dynamicRecordsDao
+        .updateFocusSessionById(session);
+
+    await refreshTimeline();
   }
 }

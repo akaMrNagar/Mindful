@@ -873,13 +873,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get your_sessions_empty_list_hint => '選択した日は活動記録がありませんでした。';
 
   @override
-  String get focus_session_tile_time_label => '時間';
-
-  @override
-  String get focus_session_tile_date_label => '日付';
+  String get focus_session_tile_timestamp_label => 'Timestamp';
 
   @override
   String get focus_session_tile_duration_label => '継続時間';
+
+  @override
+  String get focus_session_tile_reflection_label => 'Reflection';
 
   @override
   String get focus_session_state_active => '有効';
@@ -915,7 +915,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get active_session_reflection_dialog_title => 'Session reflection';
 
   @override
-  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session?';
+  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
 
   @override
   String get active_session_reflection_dialog_tip => 'Tip: You can always edit this later in the session timeline.';

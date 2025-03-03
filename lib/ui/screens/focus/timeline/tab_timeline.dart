@@ -49,10 +49,10 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
     return DefaultRefreshIndicator(
       onRefresh: () async {
         await ref
-            .read(monthlyFocusProvider(_monthRange).notifier)
+            .read(datedFocusProvider(_selectedDay).notifier)
             .refreshTimeline();
         await ref
-            .read(datedFocusProvider(_selectedDay).notifier)
+            .read(monthlyFocusProvider(_monthRange).notifier)
             .refreshTimeline();
       },
       child: CustomScrollView(

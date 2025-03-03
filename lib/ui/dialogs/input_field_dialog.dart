@@ -142,7 +142,7 @@ Future<String?> showFocusReflectionDialog({
         maxLines: 4,
         title: context.locale.active_session_reflection_dialog_title,
         fieldLabel: "",
-        hintText: "I did this and that...",
+        hintText: "Write your goal or accomplishments...",
         helperText:
             "${context.locale.active_session_reflection_dialog_info}\n\n${context.locale.active_session_reflection_dialog_tip}",
         negativeBtnLabel: context.locale.onboarding_skip_btn_label,

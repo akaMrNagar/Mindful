@@ -160,7 +160,7 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
               _isCompleted || !activeSession.hasValue
                   ? 0.vBox
                   : DefaultHero(
-                      tag: HeroTags.sessionReflectionTag,
+                      tag: HeroTags.sessionReflectionTag(-1),
                       child: IconButton.filledTonal(
                         icon: const Icon(FluentIcons.clipboard_task_20_filled),
                         onPressed: _askAboutFocusReflection,
@@ -337,13 +337,15 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
   void _askAboutFocusReflection() async {
     final reflection = await showFocusReflectionDialog(
       context: context,
-      heroTag: HeroTags.sessionReflectionTag,
+      heroTag: HeroTags.sessionReflectionTag(-1),
       initialText: ref.read(focusModeProvider
               .select((v) => v.activeSession.value?.reflection)) ??
           "",
     );
 
     if (reflection == null) return;
-    ref.read(focusModeProvider.notifier).updateFocusReflection(reflection);
+    ref
+        .read(focusModeProvider.notifier)
+        .updateActiveSessionReflection(reflection);
   }
 }
