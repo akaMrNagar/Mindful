@@ -147,6 +147,38 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     _updateFocusProfileInDb();
   }
 
+  /// Enables or disables enforced mode for session.
+  void setEnforceFocus(bool shouldEnforce) async {
+    state = state.copyWith(
+      focusProfile: state.focusProfile.copyWith(enforceSession: shouldEnforce),
+    );
+
+    _updateFocusProfileInDb();
+  }
+
+  /// Enables or disables mindful app pinning.
+  void setPinMindful(bool shouldPin) async {
+    state = state.copyWith(
+      focusProfile: state.focusProfile.copyWith(pinMindful: shouldPin),
+    );
+
+    _updateFocusProfileInDb();
+  }
+
+  /// Updates session reflection.
+  void updateFocusReflection(String reflection) async {
+    if (state.activeSession.value != null) {
+      state = state.copyWith(
+        activeSession: state.activeSession.valueOrNull?.copyWith(
+          reflection: reflection,
+        ),
+      );
+
+      /// Update session in database
+      await _dynamicDao.updateFocusSessionById(state.activeSession.value!);
+    }
+  }
+
   /// Adds or removes an app from the distracting apps list.
   /// Updates the session service if an active session is present.
   void insertRemoveDistractingApp(String appPackage, bool shouldInsert) async {

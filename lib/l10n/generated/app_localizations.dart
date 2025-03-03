@@ -1417,11 +1417,11 @@ abstract class AppLocalizations {
   /// **'Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.'**
   String get focus_distracting_apps_removal_snack_alert;
 
-  /// No description provided for @focus_session_tile_title.
+  /// No description provided for @focus_profile_tile_title.
   ///
   /// In en, this message translates to:
-  /// **'Focus session'**
-  String get focus_session_tile_title;
+  /// **'Focus profile'**
+  String get focus_profile_tile_title;
 
   /// No description provided for @focus_session_duration_tile_title.
   ///
@@ -1440,6 +1440,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.'**
   String get focus_session_duration_dialog_info;
+
+  /// No description provided for @focus_profile_customization_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile customization'**
+  String get focus_profile_customization_tile_title;
+
+  /// No description provided for @focus_profile_customization_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize settings for the selected profile.'**
+  String get focus_profile_customization_tile_subtitle;
+
+  /// No description provided for @focus_enforce_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Enforce session'**
+  String get focus_enforce_tile_title;
+
+  /// No description provided for @focus_enforce_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Prevents ending a session before time ends.'**
+  String get focus_enforce_tile_subtitle;
+
+  /// No description provided for @focus_pin_app_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin app'**
+  String get focus_pin_app_tile_title;
+
+  /// No description provided for @focus_pin_app_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay within Mindful during the session.'**
+  String get focus_pin_app_tile_subtitle;
 
   /// No description provided for @focus_session_start_fab_button.
   ///
@@ -1722,6 +1758,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hold on! You\'re almost there don\'t give up now! Are you sure you want to end this focus session early? Progress will be lost.'**
   String get active_session_giveup_dialog_info;
+
+  /// No description provided for @active_session_reflection_dialog_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Session reflection'**
+  String get active_session_reflection_dialog_title;
+
+  /// No description provided for @active_session_reflection_dialog_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Take a moment to reflect on your progress. What\'s your goal for this session?'**
+  String get active_session_reflection_dialog_info;
+
+  /// No description provided for @active_session_reflection_dialog_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip: You can always edit this later in the session timeline.'**
+  String get active_session_reflection_dialog_tip;
 
   /// No description provided for @active_session_giveup_snack_alert.
   ///

@@ -83,5 +83,7 @@ const defaultFocusProfileModel = FocusProfile(
   sessionType: SessionType.study,
   sessionDuration: 0,
   shouldStartDnd: false,
+  enforceSession: false,
+  pinMindful: false,
   distractingApps: [],
 );

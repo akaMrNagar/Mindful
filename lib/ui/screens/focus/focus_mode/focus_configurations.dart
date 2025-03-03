@@ -20,6 +20,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/focus/focus_mode_provider.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
+import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/device_dnd_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -52,14 +53,10 @@ class FocusConfigurations extends ConsumerWidget {
     final sessionType =
         ref.watch(focusModeProvider.select((v) => v.focusMode.sessionType));
 
-    final shouldStartDnd = ref
-        .watch(focusModeProvider.select((v) => v.focusProfile.shouldStartDnd));
-
-    final sessionDuration = ref
-        .watch(focusModeProvider.select((v) => v.focusProfile.sessionDuration));
-
     final isSessionActive = ref
         .watch(focusModeProvider.select((v) => v.activeSession.value != null));
+
+    final profile = ref.watch(focusModeProvider.select((v) => v.focusProfile));
 
     return MultiSliver(
       children: [
@@ -71,7 +68,7 @@ class FocusConfigurations extends ConsumerWidget {
         DefaultDropdownTile<SessionType>(
           position: ItemPosition.top,
           enabled: !isSessionActive,
-          titleText: context.locale.focus_session_tile_title,
+          titleText: context.locale.focus_profile_tile_title,
           dialogIcon: FluentIcons.door_tag_20_filled,
           value: sessionType,
           onSelected: ref.read(focusModeProvider.notifier).setSessionType,
@@ -89,8 +86,8 @@ class FocusConfigurations extends ConsumerWidget {
             enabled: !isSessionActive,
             titleText: context.locale.focus_session_duration_tile_title,
             subtitle: StyledText(
-              sessionDuration > 0
-                  ? sessionDuration.seconds.toTimeFull(context)
+              profile.sessionDuration > 0
+                  ? profile.sessionDuration.seconds.toTimeFull(context)
                   : context.locale.focus_session_duration_tile_subtitle,
               fontSize: 14,
               isSubtitle: true,
@@ -98,25 +95,59 @@ class FocusConfigurations extends ConsumerWidget {
             onPressed: () => _pickSessionDuration(
               context,
               ref,
-              sessionDuration,
+              profile.sessionDuration,
             ),
           ),
         ),
 
-        /// Should start dnd
-        DndSwitchTile(
-          enabled: !isSessionActive,
-          switchValue: shouldStartDnd,
-          position: ItemPosition.mid,
-          onPressed: () => ref
-              .read(focusModeProvider.notifier)
-              .setShouldStartDnd(!shouldStartDnd),
-        ).sliver,
-
-        /// Manage Dnd settings
-        const DeviceDndTile(
+        DefaultExpandableListTile(
           position: ItemPosition.bottom,
-        ).sliver,
+          titleText: context.locale.focus_profile_customization_tile_title,
+          subtitleText:
+              context.locale.focus_profile_customization_tile_subtitle,
+          content: Column(
+            children: [
+              /// Enforce focus mode
+              DefaultListTile(
+                position: ItemPosition.mid,
+                enabled: !isSessionActive,
+                switchValue: profile.enforceSession,
+                titleText: context.locale.focus_enforce_tile_title,
+                subtitleText: context.locale.focus_enforce_tile_subtitle,
+                onPressed: () => ref
+                    .read(focusModeProvider.notifier)
+                    .setEnforceFocus(!profile.enforceSession),
+              ),
+
+              /// App pinning
+              DefaultListTile(
+                position: ItemPosition.mid,
+                enabled: !isSessionActive,
+                switchValue: profile.pinMindful,
+                titleText: context.locale.focus_pin_app_tile_title,
+                subtitleText: context.locale.focus_pin_app_tile_subtitle,
+                onPressed: () => ref
+                    .read(focusModeProvider.notifier)
+                    .setPinMindful(!profile.pinMindful),
+              ),
+
+              /// Should start dnd
+              DndSwitchTile(
+                enabled: !isSessionActive,
+                switchValue: profile.shouldStartDnd,
+                position: ItemPosition.mid,
+                onPressed: () => ref
+                    .read(focusModeProvider.notifier)
+                    .setShouldStartDnd(!profile.shouldStartDnd),
+              ),
+
+              /// Manage Dnd settings
+              const DeviceDndTile(
+                position: ItemPosition.bottom,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }

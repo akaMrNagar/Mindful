@@ -34,8 +34,8 @@ class HeroTags {
   static const blockNsfwTileTag = "websitesBlocking.blockNsfwTile";
 
   /// Tag used to identify the FAB for adding a website.
-  static const addDistractingSiteFABTag = "websitesBlocking.addDistractingWebsite";
-
+  static const addDistractingSiteFABTag =
+      "websitesBlocking.addDistractingWebsite";
 
   /// Generates a tag for a website tile based on the provided host name.
   static String websiteTileTag(String host) =>
@@ -70,6 +70,9 @@ class HeroTags {
 
   /// Tag used to identify the button for give up or finish session in active session screen.
   static const giveUpOrFinishFocusSessionTag = "activeSession.giveUpOrFinish";
+
+  /// Tag used to identify the button for session reflection in active session screen.
+  static const sessionReflectionTag = "activeSession.sessionReflection";
 
   /// Tag used to identify the tile for data reset time in settings.
   static const dataResetTimeTileTag = "settings.general.dataResetTime";

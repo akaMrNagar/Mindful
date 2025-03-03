@@ -1688,6 +1688,26 @@ class $FocusProfileTableTable extends FocusProfileTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _enforceSessionMeta =
+      const VerificationMeta('enforceSession');
+  @override
+  late final GeneratedColumn<bool> enforceSession = GeneratedColumn<bool>(
+      'enforce_session', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("enforce_session" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _pinMindfulMeta =
+      const VerificationMeta('pinMindful');
+  @override
+  late final GeneratedColumn<bool> pinMindful = GeneratedColumn<bool>(
+      'pin_mindful', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("pin_mindful" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _shouldStartDndMeta =
       const VerificationMeta('shouldStartDnd');
   @override
@@ -1710,8 +1730,14 @@ class $FocusProfileTableTable extends FocusProfileTable
           .withConverter<List<String>>(
               $FocusProfileTableTable.$converterdistractingApps);
   @override
-  List<GeneratedColumn> get $columns =>
-      [sessionType, sessionDuration, shouldStartDnd, distractingApps];
+  List<GeneratedColumn> get $columns => [
+        sessionType,
+        sessionDuration,
+        enforceSession,
+        pinMindful,
+        shouldStartDnd,
+        distractingApps
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1728,6 +1754,18 @@ class $FocusProfileTableTable extends FocusProfileTable
           _sessionDurationMeta,
           sessionDuration.isAcceptableOrUnknown(
               data['session_duration']!, _sessionDurationMeta));
+    }
+    if (data.containsKey('enforce_session')) {
+      context.handle(
+          _enforceSessionMeta,
+          enforceSession.isAcceptableOrUnknown(
+              data['enforce_session']!, _enforceSessionMeta));
+    }
+    if (data.containsKey('pin_mindful')) {
+      context.handle(
+          _pinMindfulMeta,
+          pinMindful.isAcceptableOrUnknown(
+              data['pin_mindful']!, _pinMindfulMeta));
     }
     if (data.containsKey('should_start_dnd')) {
       context.handle(
@@ -1750,6 +1788,10 @@ class $FocusProfileTableTable extends FocusProfileTable
               .read(DriftSqlType.int, data['${effectivePrefix}session_type'])!),
       sessionDuration: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}session_duration'])!,
+      enforceSession: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}enforce_session'])!,
+      pinMindful: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}pin_mindful'])!,
       shouldStartDnd: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}should_start_dnd'])!,
       distractingApps: $FocusProfileTableTable.$converterdistractingApps
@@ -1776,6 +1818,13 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
   /// Duration in SECONDS for the focus session
   final int sessionDuration;
 
+  /// Flag indicating if to enforce the session or not.
+  /// If 'True' user cannot end session until the time ends.
+  final bool enforceSession;
+
+  /// Flag indicating if to pin to Mindful or not.
+  final bool pinMindful;
+
   /// Flag indicating if to start DND during the focus session
   final bool shouldStartDnd;
 
@@ -1784,6 +1833,8 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
   const FocusProfile(
       {required this.sessionType,
       required this.sessionDuration,
+      required this.enforceSession,
+      required this.pinMindful,
       required this.shouldStartDnd,
       required this.distractingApps});
   @override
@@ -1794,6 +1845,8 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
           $FocusProfileTableTable.$convertersessionType.toSql(sessionType));
     }
     map['session_duration'] = Variable<int>(sessionDuration);
+    map['enforce_session'] = Variable<bool>(enforceSession);
+    map['pin_mindful'] = Variable<bool>(pinMindful);
     map['should_start_dnd'] = Variable<bool>(shouldStartDnd);
     {
       map['distracting_apps'] = Variable<String>($FocusProfileTableTable
@@ -1807,6 +1860,8 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
     return FocusProfileTableCompanion(
       sessionType: Value(sessionType),
       sessionDuration: Value(sessionDuration),
+      enforceSession: Value(enforceSession),
+      pinMindful: Value(pinMindful),
       shouldStartDnd: Value(shouldStartDnd),
       distractingApps: Value(distractingApps),
     );
@@ -1819,6 +1874,8 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
       sessionType: $FocusProfileTableTable.$convertersessionType
           .fromJson(serializer.fromJson<int>(json['sessionType'])),
       sessionDuration: serializer.fromJson<int>(json['sessionDuration']),
+      enforceSession: serializer.fromJson<bool>(json['enforceSession']),
+      pinMindful: serializer.fromJson<bool>(json['pinMindful']),
       shouldStartDnd: serializer.fromJson<bool>(json['shouldStartDnd']),
       distractingApps:
           serializer.fromJson<List<String>>(json['distractingApps']),
@@ -1831,6 +1888,8 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
       'sessionType': serializer.toJson<int>(
           $FocusProfileTableTable.$convertersessionType.toJson(sessionType)),
       'sessionDuration': serializer.toJson<int>(sessionDuration),
+      'enforceSession': serializer.toJson<bool>(enforceSession),
+      'pinMindful': serializer.toJson<bool>(pinMindful),
       'shouldStartDnd': serializer.toJson<bool>(shouldStartDnd),
       'distractingApps': serializer.toJson<List<String>>(distractingApps),
     };
@@ -1839,11 +1898,15 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
   FocusProfile copyWith(
           {SessionType? sessionType,
           int? sessionDuration,
+          bool? enforceSession,
+          bool? pinMindful,
           bool? shouldStartDnd,
           List<String>? distractingApps}) =>
       FocusProfile(
         sessionType: sessionType ?? this.sessionType,
         sessionDuration: sessionDuration ?? this.sessionDuration,
+        enforceSession: enforceSession ?? this.enforceSession,
+        pinMindful: pinMindful ?? this.pinMindful,
         shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
         distractingApps: distractingApps ?? this.distractingApps,
       );
@@ -1854,6 +1917,11 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
       sessionDuration: data.sessionDuration.present
           ? data.sessionDuration.value
           : this.sessionDuration,
+      enforceSession: data.enforceSession.present
+          ? data.enforceSession.value
+          : this.enforceSession,
+      pinMindful:
+          data.pinMindful.present ? data.pinMindful.value : this.pinMindful,
       shouldStartDnd: data.shouldStartDnd.present
           ? data.shouldStartDnd.value
           : this.shouldStartDnd,
@@ -1868,6 +1936,8 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
     return (StringBuffer('FocusProfile(')
           ..write('sessionType: $sessionType, ')
           ..write('sessionDuration: $sessionDuration, ')
+          ..write('enforceSession: $enforceSession, ')
+          ..write('pinMindful: $pinMindful, ')
           ..write('shouldStartDnd: $shouldStartDnd, ')
           ..write('distractingApps: $distractingApps')
           ..write(')'))
@@ -1875,14 +1945,16 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      sessionType, sessionDuration, shouldStartDnd, distractingApps);
+  int get hashCode => Object.hash(sessionType, sessionDuration, enforceSession,
+      pinMindful, shouldStartDnd, distractingApps);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is FocusProfile &&
           other.sessionType == this.sessionType &&
           other.sessionDuration == this.sessionDuration &&
+          other.enforceSession == this.enforceSession &&
+          other.pinMindful == this.pinMindful &&
           other.shouldStartDnd == this.shouldStartDnd &&
           other.distractingApps == this.distractingApps);
 }
@@ -1890,29 +1962,39 @@ class FocusProfile extends DataClass implements Insertable<FocusProfile> {
 class FocusProfileTableCompanion extends UpdateCompanion<FocusProfile> {
   final Value<SessionType> sessionType;
   final Value<int> sessionDuration;
+  final Value<bool> enforceSession;
+  final Value<bool> pinMindful;
   final Value<bool> shouldStartDnd;
   final Value<List<String>> distractingApps;
   const FocusProfileTableCompanion({
     this.sessionType = const Value.absent(),
     this.sessionDuration = const Value.absent(),
+    this.enforceSession = const Value.absent(),
+    this.pinMindful = const Value.absent(),
     this.shouldStartDnd = const Value.absent(),
     this.distractingApps = const Value.absent(),
   });
   FocusProfileTableCompanion.insert({
     this.sessionType = const Value.absent(),
     this.sessionDuration = const Value.absent(),
+    this.enforceSession = const Value.absent(),
+    this.pinMindful = const Value.absent(),
     this.shouldStartDnd = const Value.absent(),
     this.distractingApps = const Value.absent(),
   });
   static Insertable<FocusProfile> custom({
     Expression<int>? sessionType,
     Expression<int>? sessionDuration,
+    Expression<bool>? enforceSession,
+    Expression<bool>? pinMindful,
     Expression<bool>? shouldStartDnd,
     Expression<String>? distractingApps,
   }) {
     return RawValuesInsertable({
       if (sessionType != null) 'session_type': sessionType,
       if (sessionDuration != null) 'session_duration': sessionDuration,
+      if (enforceSession != null) 'enforce_session': enforceSession,
+      if (pinMindful != null) 'pin_mindful': pinMindful,
       if (shouldStartDnd != null) 'should_start_dnd': shouldStartDnd,
       if (distractingApps != null) 'distracting_apps': distractingApps,
     });
@@ -1921,11 +2003,15 @@ class FocusProfileTableCompanion extends UpdateCompanion<FocusProfile> {
   FocusProfileTableCompanion copyWith(
       {Value<SessionType>? sessionType,
       Value<int>? sessionDuration,
+      Value<bool>? enforceSession,
+      Value<bool>? pinMindful,
       Value<bool>? shouldStartDnd,
       Value<List<String>>? distractingApps}) {
     return FocusProfileTableCompanion(
       sessionType: sessionType ?? this.sessionType,
       sessionDuration: sessionDuration ?? this.sessionDuration,
+      enforceSession: enforceSession ?? this.enforceSession,
+      pinMindful: pinMindful ?? this.pinMindful,
       shouldStartDnd: shouldStartDnd ?? this.shouldStartDnd,
       distractingApps: distractingApps ?? this.distractingApps,
     );
@@ -1941,6 +2027,12 @@ class FocusProfileTableCompanion extends UpdateCompanion<FocusProfile> {
     }
     if (sessionDuration.present) {
       map['session_duration'] = Variable<int>(sessionDuration.value);
+    }
+    if (enforceSession.present) {
+      map['enforce_session'] = Variable<bool>(enforceSession.value);
+    }
+    if (pinMindful.present) {
+      map['pin_mindful'] = Variable<bool>(pinMindful.value);
     }
     if (shouldStartDnd.present) {
       map['should_start_dnd'] = Variable<bool>(shouldStartDnd.value);
@@ -1958,6 +2050,8 @@ class FocusProfileTableCompanion extends UpdateCompanion<FocusProfile> {
     return (StringBuffer('FocusProfileTableCompanion(')
           ..write('sessionType: $sessionType, ')
           ..write('sessionDuration: $sessionDuration, ')
+          ..write('enforceSession: $enforceSession, ')
+          ..write('pinMindful: $pinMindful, ')
           ..write('shouldStartDnd: $shouldStartDnd, ')
           ..write('distractingApps: $distractingApps')
           ..write(')'))
@@ -2013,9 +2107,17 @@ class $FocusSessionsTableTable extends FocusSessionsTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _reflectionMeta =
+      const VerificationMeta('reflection');
+  @override
+  late final GeneratedColumn<String> reflection = GeneratedColumn<String>(
+      'reflection', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, type, state, startDateTime, durationSecs];
+      [id, type, state, startDateTime, durationSecs, reflection];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2043,6 +2145,12 @@ class $FocusSessionsTableTable extends FocusSessionsTable
           durationSecs.isAcceptableOrUnknown(
               data['duration_secs']!, _durationSecsMeta));
     }
+    if (data.containsKey('reflection')) {
+      context.handle(
+          _reflectionMeta,
+          reflection.isAcceptableOrUnknown(
+              data['reflection']!, _reflectionMeta));
+    }
     return context;
   }
 
@@ -2064,6 +2172,8 @@ class $FocusSessionsTableTable extends FocusSessionsTable
           DriftSqlType.dateTime, data['${effectivePrefix}start_date_time'])!,
       durationSecs: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}duration_secs'])!,
+      reflection: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}reflection'])!,
     );
   }
 
@@ -2095,12 +2205,17 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
   /// If the session state is [SessionState.failed] then the duration
   /// is considered as the time spent before giveup
   final int durationSecs;
+
+  /// Reflection about the focus session. Means what did the user achieved with the session.
+  /// By default empty string.
+  final String reflection;
   const FocusSession(
       {required this.id,
       required this.type,
       required this.state,
       required this.startDateTime,
-      required this.durationSecs});
+      required this.durationSecs,
+      required this.reflection});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2115,6 +2230,7 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
     }
     map['start_date_time'] = Variable<DateTime>(startDateTime);
     map['duration_secs'] = Variable<int>(durationSecs);
+    map['reflection'] = Variable<String>(reflection);
     return map;
   }
 
@@ -2125,6 +2241,7 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
       state: Value(state),
       startDateTime: Value(startDateTime),
       durationSecs: Value(durationSecs),
+      reflection: Value(reflection),
     );
   }
 
@@ -2139,6 +2256,7 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
           .fromJson(serializer.fromJson<int>(json['state'])),
       startDateTime: serializer.fromJson<DateTime>(json['startDateTime']),
       durationSecs: serializer.fromJson<int>(json['durationSecs']),
+      reflection: serializer.fromJson<String>(json['reflection']),
     );
   }
   @override
@@ -2152,6 +2270,7 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
           .toJson<int>($FocusSessionsTableTable.$converterstate.toJson(state)),
       'startDateTime': serializer.toJson<DateTime>(startDateTime),
       'durationSecs': serializer.toJson<int>(durationSecs),
+      'reflection': serializer.toJson<String>(reflection),
     };
   }
 
@@ -2160,13 +2279,15 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
           SessionType? type,
           SessionState? state,
           DateTime? startDateTime,
-          int? durationSecs}) =>
+          int? durationSecs,
+          String? reflection}) =>
       FocusSession(
         id: id ?? this.id,
         type: type ?? this.type,
         state: state ?? this.state,
         startDateTime: startDateTime ?? this.startDateTime,
         durationSecs: durationSecs ?? this.durationSecs,
+        reflection: reflection ?? this.reflection,
       );
   FocusSession copyWithCompanion(FocusSessionsTableCompanion data) {
     return FocusSession(
@@ -2179,6 +2300,8 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
       durationSecs: data.durationSecs.present
           ? data.durationSecs.value
           : this.durationSecs,
+      reflection:
+          data.reflection.present ? data.reflection.value : this.reflection,
     );
   }
 
@@ -2189,13 +2312,15 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
           ..write('type: $type, ')
           ..write('state: $state, ')
           ..write('startDateTime: $startDateTime, ')
-          ..write('durationSecs: $durationSecs')
+          ..write('durationSecs: $durationSecs, ')
+          ..write('reflection: $reflection')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, type, state, startDateTime, durationSecs);
+  int get hashCode =>
+      Object.hash(id, type, state, startDateTime, durationSecs, reflection);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2204,7 +2329,8 @@ class FocusSession extends DataClass implements Insertable<FocusSession> {
           other.type == this.type &&
           other.state == this.state &&
           other.startDateTime == this.startDateTime &&
-          other.durationSecs == this.durationSecs);
+          other.durationSecs == this.durationSecs &&
+          other.reflection == this.reflection);
 }
 
 class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
@@ -2213,12 +2339,14 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
   final Value<SessionState> state;
   final Value<DateTime> startDateTime;
   final Value<int> durationSecs;
+  final Value<String> reflection;
   const FocusSessionsTableCompanion({
     this.id = const Value.absent(),
     this.type = const Value.absent(),
     this.state = const Value.absent(),
     this.startDateTime = const Value.absent(),
     this.durationSecs = const Value.absent(),
+    this.reflection = const Value.absent(),
   });
   FocusSessionsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2226,6 +2354,7 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
     this.state = const Value.absent(),
     this.startDateTime = const Value.absent(),
     this.durationSecs = const Value.absent(),
+    this.reflection = const Value.absent(),
   });
   static Insertable<FocusSession> custom({
     Expression<int>? id,
@@ -2233,6 +2362,7 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
     Expression<int>? state,
     Expression<DateTime>? startDateTime,
     Expression<int>? durationSecs,
+    Expression<String>? reflection,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2240,6 +2370,7 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
       if (state != null) 'state': state,
       if (startDateTime != null) 'start_date_time': startDateTime,
       if (durationSecs != null) 'duration_secs': durationSecs,
+      if (reflection != null) 'reflection': reflection,
     });
   }
 
@@ -2248,13 +2379,15 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
       Value<SessionType>? type,
       Value<SessionState>? state,
       Value<DateTime>? startDateTime,
-      Value<int>? durationSecs}) {
+      Value<int>? durationSecs,
+      Value<String>? reflection}) {
     return FocusSessionsTableCompanion(
       id: id ?? this.id,
       type: type ?? this.type,
       state: state ?? this.state,
       startDateTime: startDateTime ?? this.startDateTime,
       durationSecs: durationSecs ?? this.durationSecs,
+      reflection: reflection ?? this.reflection,
     );
   }
 
@@ -2278,6 +2411,9 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
     if (durationSecs.present) {
       map['duration_secs'] = Variable<int>(durationSecs.value);
     }
+    if (reflection.present) {
+      map['reflection'] = Variable<String>(reflection.value);
+    }
     return map;
   }
 
@@ -2288,7 +2424,8 @@ class FocusSessionsTableCompanion extends UpdateCompanion<FocusSession> {
           ..write('type: $type, ')
           ..write('state: $state, ')
           ..write('startDateTime: $startDateTime, ')
-          ..write('durationSecs: $durationSecs')
+          ..write('durationSecs: $durationSecs, ')
+          ..write('reflection: $reflection')
           ..write(')'))
         .toString();
   }
@@ -6287,6 +6424,8 @@ typedef $$FocusProfileTableTableCreateCompanionBuilder
     = FocusProfileTableCompanion Function({
   Value<SessionType> sessionType,
   Value<int> sessionDuration,
+  Value<bool> enforceSession,
+  Value<bool> pinMindful,
   Value<bool> shouldStartDnd,
   Value<List<String>> distractingApps,
 });
@@ -6294,6 +6433,8 @@ typedef $$FocusProfileTableTableUpdateCompanionBuilder
     = FocusProfileTableCompanion Function({
   Value<SessionType> sessionType,
   Value<int> sessionDuration,
+  Value<bool> enforceSession,
+  Value<bool> pinMindful,
   Value<bool> shouldStartDnd,
   Value<List<String>> distractingApps,
 });
@@ -6315,6 +6456,13 @@ class $$FocusProfileTableTableFilterComposer
   ColumnFilters<int> get sessionDuration => $composableBuilder(
       column: $table.sessionDuration,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get enforceSession => $composableBuilder(
+      column: $table.enforceSession,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get pinMindful => $composableBuilder(
+      column: $table.pinMindful, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get shouldStartDnd => $composableBuilder(
       column: $table.shouldStartDnd,
@@ -6342,6 +6490,13 @@ class $$FocusProfileTableTableOrderingComposer
       column: $table.sessionDuration,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get enforceSession => $composableBuilder(
+      column: $table.enforceSession,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get pinMindful => $composableBuilder(
+      column: $table.pinMindful, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get shouldStartDnd => $composableBuilder(
       column: $table.shouldStartDnd,
       builder: (column) => ColumnOrderings(column));
@@ -6366,6 +6521,12 @@ class $$FocusProfileTableTableAnnotationComposer
 
   GeneratedColumn<int> get sessionDuration => $composableBuilder(
       column: $table.sessionDuration, builder: (column) => column);
+
+  GeneratedColumn<bool> get enforceSession => $composableBuilder(
+      column: $table.enforceSession, builder: (column) => column);
+
+  GeneratedColumn<bool> get pinMindful => $composableBuilder(
+      column: $table.pinMindful, builder: (column) => column);
 
   GeneratedColumn<bool> get shouldStartDnd => $composableBuilder(
       column: $table.shouldStartDnd, builder: (column) => column);
@@ -6405,24 +6566,32 @@ class $$FocusProfileTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<SessionType> sessionType = const Value.absent(),
             Value<int> sessionDuration = const Value.absent(),
+            Value<bool> enforceSession = const Value.absent(),
+            Value<bool> pinMindful = const Value.absent(),
             Value<bool> shouldStartDnd = const Value.absent(),
             Value<List<String>> distractingApps = const Value.absent(),
           }) =>
               FocusProfileTableCompanion(
             sessionType: sessionType,
             sessionDuration: sessionDuration,
+            enforceSession: enforceSession,
+            pinMindful: pinMindful,
             shouldStartDnd: shouldStartDnd,
             distractingApps: distractingApps,
           ),
           createCompanionCallback: ({
             Value<SessionType> sessionType = const Value.absent(),
             Value<int> sessionDuration = const Value.absent(),
+            Value<bool> enforceSession = const Value.absent(),
+            Value<bool> pinMindful = const Value.absent(),
             Value<bool> shouldStartDnd = const Value.absent(),
             Value<List<String>> distractingApps = const Value.absent(),
           }) =>
               FocusProfileTableCompanion.insert(
             sessionType: sessionType,
             sessionDuration: sessionDuration,
+            enforceSession: enforceSession,
+            pinMindful: pinMindful,
             shouldStartDnd: shouldStartDnd,
             distractingApps: distractingApps,
           ),
@@ -6455,6 +6624,7 @@ typedef $$FocusSessionsTableTableCreateCompanionBuilder
   Value<SessionState> state,
   Value<DateTime> startDateTime,
   Value<int> durationSecs,
+  Value<String> reflection,
 });
 typedef $$FocusSessionsTableTableUpdateCompanionBuilder
     = FocusSessionsTableCompanion Function({
@@ -6463,6 +6633,7 @@ typedef $$FocusSessionsTableTableUpdateCompanionBuilder
   Value<SessionState> state,
   Value<DateTime> startDateTime,
   Value<int> durationSecs,
+  Value<String> reflection,
 });
 
 class $$FocusSessionsTableTableFilterComposer
@@ -6492,6 +6663,9 @@ class $$FocusSessionsTableTableFilterComposer
 
   ColumnFilters<int> get durationSecs => $composableBuilder(
       column: $table.durationSecs, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get reflection => $composableBuilder(
+      column: $table.reflection, builder: (column) => ColumnFilters(column));
 }
 
 class $$FocusSessionsTableTableOrderingComposer
@@ -6519,6 +6693,9 @@ class $$FocusSessionsTableTableOrderingComposer
   ColumnOrderings<int> get durationSecs => $composableBuilder(
       column: $table.durationSecs,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get reflection => $composableBuilder(
+      column: $table.reflection, builder: (column) => ColumnOrderings(column));
 }
 
 class $$FocusSessionsTableTableAnnotationComposer
@@ -6544,6 +6721,9 @@ class $$FocusSessionsTableTableAnnotationComposer
 
   GeneratedColumn<int> get durationSecs => $composableBuilder(
       column: $table.durationSecs, builder: (column) => column);
+
+  GeneratedColumn<String> get reflection => $composableBuilder(
+      column: $table.reflection, builder: (column) => column);
 }
 
 class $$FocusSessionsTableTableTableManager extends RootTableManager<
@@ -6579,6 +6759,7 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             Value<SessionState> state = const Value.absent(),
             Value<DateTime> startDateTime = const Value.absent(),
             Value<int> durationSecs = const Value.absent(),
+            Value<String> reflection = const Value.absent(),
           }) =>
               FocusSessionsTableCompanion(
             id: id,
@@ -6586,6 +6767,7 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             state: state,
             startDateTime: startDateTime,
             durationSecs: durationSecs,
+            reflection: reflection,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -6593,6 +6775,7 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             Value<SessionState> state = const Value.absent(),
             Value<DateTime> startDateTime = const Value.absent(),
             Value<int> durationSecs = const Value.absent(),
+            Value<String> reflection = const Value.absent(),
           }) =>
               FocusSessionsTableCompanion.insert(
             id: id,
@@ -6600,6 +6783,7 @@ class $$FocusSessionsTableTableTableManager extends RootTableManager<
             state: state,
             startDateTime: startDateTime,
             durationSecs: durationSecs,
+            reflection: reflection,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

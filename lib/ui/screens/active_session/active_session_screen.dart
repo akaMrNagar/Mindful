@@ -31,8 +31,10 @@ import 'package:mindful/ui/common/flip_countdown_text.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/dialogs/input_field_dialog.dart';
 import 'package:mindful/ui/screens/active_session/sine_wave.dart';
 import 'package:mindful/ui/screens/active_session/timer_progress_clock.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -141,6 +143,9 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
       _postFrameCallback(activeSession.value != null);
     }
 
+    final enforceSession = ref
+        .watch(focusModeProvider.select((v) => v.focusProfile.enforceSession));
+
     return Skeletonizer.zone(
       enabled: !activeSession.hasValue,
       ignorePointers: false,
@@ -150,9 +155,23 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
           NavbarItem(
             icon: FluentIcons.brain_circuit_20_regular,
             filledIcon: FluentIcons.brain_circuit_20_filled,
+            actions: [
+              /// Goal or reflection
+              _isCompleted || !activeSession.hasValue
+                  ? 0.vBox
+                  : DefaultHero(
+                      tag: HeroTags.sessionReflectionTag,
+                      child: IconButton.filledTonal(
+                        icon: const Icon(FluentIcons.clipboard_task_20_filled),
+                        onPressed: _askAboutFocusReflection,
+                      ),
+                    ),
+            ],
             titleBuilder: (percentage) =>
                 _buildTitle(activeSession.value, percentage),
-            fab: _isCompleted || !activeSession.hasValue
+            fab: _isCompleted ||
+                    !activeSession.hasValue ||
+                    (enforceSession && isFinite)
                 ? const SizedBox.shrink()
                 : DefaultFabButton(
                     heroTag: HeroTags.giveUpOrFinishFocusSessionTag,
@@ -313,5 +332,18 @@ class _ActiveSessionScreenState extends ConsumerState<ActiveSessionScreen> {
       ),
       onFinished: (overlay) => overlay.remove(),
     );
+  }
+
+  void _askAboutFocusReflection() async {
+    final reflection = await showFocusReflectionDialog(
+      context: context,
+      heroTag: HeroTags.sessionReflectionTag,
+      initialText: ref.read(focusModeProvider
+              .select((v) => v.activeSession.value?.reflection)) ??
+          "",
+    );
+
+    if (reflection == null) return;
+    ref.read(focusModeProvider.notifier).updateFocusReflection(reflection);
   }
 }

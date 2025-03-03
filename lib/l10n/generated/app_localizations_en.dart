@@ -735,7 +735,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get focus_distracting_apps_removal_snack_alert => 'Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.';
 
   @override
-  String get focus_session_tile_title => 'Focus session';
+  String get focus_profile_tile_title => 'Focus profile';
 
   @override
   String get focus_session_duration_tile_title => 'Session duration';
@@ -745,6 +745,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get focus_session_duration_dialog_info => 'Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.';
+
+  @override
+  String get focus_profile_customization_tile_title => 'Profile customization';
+
+  @override
+  String get focus_profile_customization_tile_subtitle => 'Customize settings for the selected profile.';
+
+  @override
+  String get focus_enforce_tile_title => 'Enforce session';
+
+  @override
+  String get focus_enforce_tile_subtitle => 'Prevents ending a session before time ends.';
+
+  @override
+  String get focus_pin_app_tile_title => 'Pin app';
+
+  @override
+  String get focus_pin_app_tile_subtitle => 'Stay within Mindful during the session.';
 
   @override
   String get focus_session_start_fab_button => 'Start Session';
@@ -892,6 +910,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get active_session_giveup_dialog_info => 'Hold on! You\'re almost there don\'t give up now! Are you sure you want to end this focus session early? Progress will be lost.';
+
+  @override
+  String get active_session_reflection_dialog_title => 'Session reflection';
+
+  @override
+  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session?';
+
+  @override
+  String get active_session_reflection_dialog_tip => 'Tip: You can always edit this later in the session timeline.';
 
   @override
   String get active_session_giveup_snack_alert => 'You gave up! Don\'t worry, you can do better next time. Every effort counts - just keep going';
