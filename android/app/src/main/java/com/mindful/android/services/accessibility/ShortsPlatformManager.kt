@@ -3,7 +3,7 @@ package com.mindful.android.services.accessibility
 import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
-import com.mindful.android.enums.ShortsPlatformFeatures
+import com.mindful.android.enums.PlatformFeatures
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
@@ -46,7 +46,7 @@ class ShortsPlatformManager(
             if (packageName.contains(YOUTUBE_CLIENT_PACKAGE_SUFFIX)) YOUTUBE_PACKAGE
             else packageName
 
-        val blockedFeatures = settings.blockedShortsPlatformFeatures
+        val blockedFeatures = settings.blockedFeatures
 
         /// Check if blocking is enabled for platforms
         val isFeatureOpen = when (resolvedPackage) {
@@ -74,22 +74,22 @@ class ShortsPlatformManager(
      */
     fun checkAndBlockShortsOnBrowser(settings: WellBeingSettings, url: String): Boolean {
         when {
-            ShortsPlatformFeatures.INSTAGRAM_REELS in settings.blockedShortsPlatformFeatures
+            PlatformFeatures.INSTAGRAM_REELS in settings.blockedFeatures
                     && doesUrlContainsAnyElement(mInstaReelUrls, url) -> true
 
-            ShortsPlatformFeatures.INSTAGRAM_EXPLORE in settings.blockedShortsPlatformFeatures
+            PlatformFeatures.INSTAGRAM_EXPLORE in settings.blockedFeatures
                     && doesUrlContainsAnyElement(mInstaExploreUrls, url) -> true
 
-            ShortsPlatformFeatures.YOUTUBE_SHORTS in settings.blockedShortsPlatformFeatures
+            PlatformFeatures.YOUTUBE_SHORTS in settings.blockedFeatures
                     && doesUrlContainsAnyElement(mYtShortUrls, url) -> true
 
-            ShortsPlatformFeatures.FACEBOOK_REELS in settings.blockedShortsPlatformFeatures
+            PlatformFeatures.FACEBOOK_REELS in settings.blockedFeatures
                     && doesUrlContainsAnyElement(mFbReelUrls, url) -> true
 
-            ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT in settings.blockedShortsPlatformFeatures
+            PlatformFeatures.SNAPCHAT_SPOTLIGHT in settings.blockedFeatures
                     && doesUrlContainsAnyElement(mSnapSpotlightUrls, url) -> true
 
-            ShortsPlatformFeatures.SNAPCHAT_DISCOVER in settings.blockedShortsPlatformFeatures
+            PlatformFeatures.SNAPCHAT_DISCOVER in settings.blockedFeatures
                     && doesUrlContainsAnyElement(mSnapDiscoverUrls, url) -> true
 
             else -> false
@@ -182,14 +182,14 @@ class ShortsPlatformManager(
          */
         private fun isInstagramFeatureOpen(
             node: AccessibilityNodeInfo,
-            blockedFeatures: Set<ShortsPlatformFeatures>,
+            blockedFeatures: Set<PlatformFeatures>,
         ): Boolean {
             return when {
-                ShortsPlatformFeatures.INSTAGRAM_REELS in blockedFeatures &&
+                PlatformFeatures.INSTAGRAM_REELS in blockedFeatures &&
                         doesNodeByIdExists(node, "com.instagram.android:id/clips_video_container")
                 -> true
 
-                ShortsPlatformFeatures.INSTAGRAM_EXPLORE in blockedFeatures &&
+                PlatformFeatures.INSTAGRAM_EXPLORE in blockedFeatures &&
                         doesNodeByIdExists(node, "com.instagram.android:id/action_bar_search_edit_text")
                 -> true
 
@@ -202,9 +202,9 @@ class ShortsPlatformManager(
          */
         private fun isYoutubeFeatureOpen(
             node: AccessibilityNodeInfo,
-            blockedFeatures: Set<ShortsPlatformFeatures>,
+            blockedFeatures: Set<PlatformFeatures>,
         ): Boolean {
-            return ShortsPlatformFeatures.YOUTUBE_SHORTS in blockedFeatures &&
+            return PlatformFeatures.YOUTUBE_SHORTS in blockedFeatures &&
                     doesNodeByIdExists(node, "${node.packageName}:id/reel_player_underlay")
         }
 
@@ -213,18 +213,18 @@ class ShortsPlatformManager(
          */
         private fun isSnapchatFeatureOpen(
             node: AccessibilityNodeInfo,
-            blockedFeatures: Set<ShortsPlatformFeatures>,
+            blockedFeatures: Set<PlatformFeatures>,
         ): Boolean {
 
             return when {
-                ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT in blockedFeatures &&
+                PlatformFeatures.SNAPCHAT_SPOTLIGHT in blockedFeatures &&
                         doesNodeByIdExists(
                             node,
                             "com.snapchat.android:id/spotlight_card_static_thumbnail"
                         )
                 -> true
 
-                ShortsPlatformFeatures.SNAPCHAT_DISCOVER in blockedFeatures &&
+                PlatformFeatures.SNAPCHAT_DISCOVER in blockedFeatures &&
                         doesNodeByIdExists(node, "com.snapchat.android:id/df_large_story")
                 -> true
 
@@ -237,13 +237,12 @@ class ShortsPlatformManager(
          */
         private fun isFacebookFeatureOpen(
             node: AccessibilityNodeInfo,
-            blockedFeatures: Set<ShortsPlatformFeatures>,
+            blockedFeatures: Set<PlatformFeatures>,
         ): Boolean {
             // TODO: Add more string translated from different languages for the node text
             //  as user may have set different language for facebook app
-            NodeInfoLogger.logNodeInfoRecursively(node, 0)
 
-            if (ShortsPlatformFeatures.FACEBOOK_REELS in blockedFeatures) {
+            if (PlatformFeatures.FACEBOOK_REELS in blockedFeatures) {
                 for (text in mFbNodeTexts) {
                     if (node.findAccessibilityNodeInfosByText(text).isNotEmpty()) {
                         return true
@@ -259,9 +258,9 @@ class ShortsPlatformManager(
          */
         private fun isRedditFeatureOpen(
             node: AccessibilityNodeInfo,
-            blockedFeatures: Set<ShortsPlatformFeatures>,
+            blockedFeatures: Set<PlatformFeatures>,
         ): Boolean {
-            return ShortsPlatformFeatures.REDDIT_SHORTS in blockedFeatures && node.viewIdResourceName == "feed_vertical_pager"
+            return PlatformFeatures.REDDIT_SHORTS in blockedFeatures && node.viewIdResourceName == "feed_vertical_pager"
         }
 
         /**

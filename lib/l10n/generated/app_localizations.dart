@@ -1129,6 +1129,12 @@ abstract class AppLocalizations {
   /// **'Prevent uninstalling and force stopping the app.'**
   String get tamper_protection_tile_subtitle;
 
+  /// No description provided for @tamper_protection_confirmation_dialog_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.'**
+  String get tamper_protection_confirmation_dialog_info;
+
   /// No description provided for @uninstall_window_tile_title.
   ///
   /// In en, this message translates to:

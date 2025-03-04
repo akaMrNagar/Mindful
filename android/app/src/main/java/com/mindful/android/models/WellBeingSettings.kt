@@ -11,8 +11,7 @@
  */
 package com.mindful.android.models
 
-import android.util.Log
-import com.mindful.android.enums.ShortsPlatformFeatures
+import com.mindful.android.enums.PlatformFeatures
 import org.json.JSONObject
 
 /**
@@ -33,9 +32,9 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
         jsonObject.optInt("allowedShortsTimeSec", 30 * 60) * 1000L
 
     /**
-     * List of blocked short-form features (stored as enum indexes)
+     * List of blocked platform features (stored as enum indexes)
      */
-    val blockedShortsPlatformFeatures: Set<ShortsPlatformFeatures>
+    val blockedFeatures: Set<PlatformFeatures>
 
     /**
      * List of website hosts that are blocked including custom nsfw websites.
@@ -44,14 +43,14 @@ data class WellBeingSettings(private val jsonObject: JSONObject) {
 
     init {
 
-        val blockedFeatures = mutableSetOf<ShortsPlatformFeatures>()
-        // Deserialize blocked shorts platform features
-        jsonObject.optJSONArray("blockedShortsPlatformFeatures")?.let { featuresArray ->
+        val blockedFeatures = mutableSetOf<PlatformFeatures>()
+        // Deserialize blocked platform features
+        jsonObject.optJSONArray("blockedFeatures")?.let { featuresArray ->
             for (i in 0 until featuresArray.length()) {
-                blockedFeatures.add(ShortsPlatformFeatures.values()[featuresArray.getInt(i)])
+                blockedFeatures.add(PlatformFeatures.values()[featuresArray.getInt(i)])
             }
         }
-        this.blockedShortsPlatformFeatures = blockedFeatures
+        this.blockedFeatures = blockedFeatures
 
 
         val blockedWebsites = mutableSetOf<String>()

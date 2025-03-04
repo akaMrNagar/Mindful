@@ -1,9 +1,9 @@
 package com.mindful.android.enums
 
 /**
- * Enum representing short-form content features
+ * Enum representing platform's features which are used for blocking them
  */
-enum class ShortsPlatformFeatures {
+enum class PlatformFeatures {
     INSTAGRAM_REELS,
     INSTAGRAM_EXPLORE,
     SNAPCHAT_SPOTLIGHT,

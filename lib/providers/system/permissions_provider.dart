@@ -124,71 +124,71 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
 
   /// Requests the notification permission and updates the internal state.
   void askNotificationPermission() async {
+    _askedPermission = PermissionType.notification;
     await MethodChannelService.instance
         .getAndAskNotificationPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.notification;
   }
 
   /// Requests the usage access permission and updates the internal state.
   void askUsageAccessPermission() async {
+    _askedPermission = PermissionType.usageAccess;
     await MethodChannelService.instance
         .getAndAskUsageAccessPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.usageAccess;
   }
 
   /// Requests the display overlay permission and updates the internal state.
   void askDisplayOverlayPermission() async {
+    _askedPermission = PermissionType.displayOverlay;
     await MethodChannelService.instance
         .getAndAskDisplayOverlayPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.displayOverlay;
   }
 
   /// Requests the accessibility permission and updates the internal state.
   void askAccessibilityPermission() async {
+    _askedPermission = PermissionType.accessibility;
     await MethodChannelService.instance
         .getAndAskAccessibilityPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.accessibility;
   }
 
   /// Requests the VPN permission and updates the internal state.
   void askVpnPermission() async {
+    _askedPermission = PermissionType.vpn;
     await MethodChannelService.instance
         .getAndAskVpnPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.vpn;
   }
 
   /// Requests the Do Not Disturb permission and updates the internal state.
   void askDndPermission() async {
+    _askedPermission = PermissionType.doNotDisturb;
     await MethodChannelService.instance
         .getAndAskDndPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.doNotDisturb;
   }
 
   /// Requests the Set Exact Alarm permission and updates the internal state.
   void askExactAlarmPermission() async {
+    _askedPermission = PermissionType.exactAlarm;
     await MethodChannelService.instance
         .getAndAskExactAlarmPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.exactAlarm;
   }
 
   /// Requests the Ignore Battery Optimization permission and updates the internal state.
   void askIgnoreBatteryOptimizationPermission() async {
+    _askedPermission = PermissionType.ignoreOptimization;
     await MethodChannelService.instance
         .getAndAskIgnoreBatteryOptimizationPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.ignoreOptimization;
   }
 
   /// Requests the Admin permission and updates the internal state.
   void askAdminPermission() async {
+    _askedPermission = PermissionType.admin;
     await MethodChannelService.instance
         .getAndAskAdminPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.admin;
   }
 
   /// Request the device to disable admin if already enabled
   void disableAdminPermission() async {
     await MethodChannelService.instance.disableDeviceAdmin();
-    await Future.delayed(400.ms);
+    await Future.delayed(500.ms);
     state = state.copyWith(
       haveAdminPermission:
           await MethodChannelService.instance.getAndAskAdminPermission(),
@@ -197,8 +197,8 @@ class PermissionNotifier extends StateNotifier<PermissionsModel>
 
   /// Requests the Admin permission and updates the internal state.
   void askNotificationAccessPermission() async {
+    _askedPermission = PermissionType.notificationAccess;
     await MethodChannelService.instance
         .getAndAskNotificationAccessPermission(askPermissionToo: true);
-    _askedPermission = PermissionType.notificationAccess;
   }
 }

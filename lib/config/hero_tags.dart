@@ -21,11 +21,14 @@ class HeroTags {
   /// Tag used to identify the invincible mode tile.
   static const invincibleModeTileTag = "parentalControls.invincibleModeTile";
 
-  /// Tag used to identify the tile for selecting uninstall window start time.
-  static const uninstallWindowTileTag = "parentalControls.uninstallWindow";
-
   /// Tag used to identify the tile for selecting invincible window start time.
   static const invincibleWindowTileTag = "parentalControls.invincibleWindow";
+
+  /// Tag used to identify the tile for toggling tamper protection.
+  static const tamperProtectionTileTag = "parentalControls.tamperProtection";
+
+  /// Tag used to identify the tile for selecting uninstall window start time.
+  static const uninstallWindowTileTag = "parentalControls.uninstallWindow";
 
   /// Tag used to identify the short content timer picker.
   static const shortContentTimerPickerTag = "shortsBlocking.shortsTimerPicker";

@@ -23,7 +23,8 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.mindful.android.R
-import com.mindful.android.enums.ShortsPlatformFeatures
+import com.mindful.android.enums.PlatformFeatures
+import com.mindful.android.helpers.device.PermissionsHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
@@ -31,6 +32,7 @@ import com.mindful.android.receivers.alarm.MidnightResetReceiver
 import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
 import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
 import com.mindful.android.utils.AppConstants.REDDIT_PACKAGE
+import com.mindful.android.utils.AppConstants.SETTINGS_PACKAGE
 import com.mindful.android.utils.AppConstants.SNAPCHAT_PACKAGE
 import com.mindful.android.utils.AppConstants.YOUTUBE_PACKAGE
 import com.mindful.android.utils.ThreadUtils
@@ -44,6 +46,11 @@ import java.util.concurrent.Executors
 class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceChangeListener {
     companion object {
         private const val TAG = "Mindful.MindfulAccessibilityService"
+        const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET: String =
+            "com.mindful.android.MindfulAccessibilityService.MIDNIGHT_ACCESSIBILITY_RESET"
+
+        const val ACTION_TAMPER_PROTECTION_CHANGED: String =
+            "com.mindful.android.MindfulAccessibilityService.TAMPER_PROTECTION_CHANGED"
 
         // Set of desired events which will be processed
         private val desiredEvents = setOf(
@@ -55,11 +62,9 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         //  The minimum interval between every Back Action [BACK PRESS] call from service
         private const val BACK_ACTION_INVOKE_INTERVAL_MS = 500L
 
-        // Set of short platform app's packages
-        private val shortsPlatformPackages = mutableSetOf<String>()
-
-        // Set of browser's packages
         private val browserPackages = mutableSetOf<String>()
+        private val shortsPlatformPackages = mutableSetOf<String>()
+        private val devicePlatformPackages = mutableSetOf<String>()
     }
 
 
@@ -71,6 +76,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     // Managers
     private lateinit var shortsPlatformManager: ShortsPlatformManager
     private lateinit var browserManager: BrowserManager
+    private lateinit var deviceFeaturesManager: DeviceFeaturesManager
     private lateinit var trackingManager: TrackingManager
 
     private var mWellBeingSettings = WellBeingSettings(JSONObject())
@@ -79,6 +85,11 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     override fun onCreate() {
         super.onCreate()
         trackingManager = TrackingManager(context = this)
+
+        deviceFeaturesManager = DeviceFeaturesManager(
+            context = this,
+            blockedContentGoBack = this::goBackWithToast
+        )
 
         shortsPlatformManager = ShortsPlatformManager(
             context = this,
@@ -95,9 +106,16 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == MidnightResetReceiver.ACTION_MIDNIGHT_ACCESSIBILITY_RESET) {
-            shortsPlatformManager.resetShortsScreenTime()
-            Log.d(TAG, "onStartCommand: Midnight reset completed")
+        when (intent?.action) {
+            ACTION_MIDNIGHT_ACCESSIBILITY_RESET -> {
+                shortsPlatformManager.resetShortsScreenTime()
+                Log.d(TAG, "onStartCommand: Midnight reset completed")
+            }
+
+            ACTION_TAMPER_PROTECTION_CHANGED -> {
+                Log.d(TAG, "onStartCommand: Tamper protection changed")
+                refreshServiceConfig()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -162,6 +180,9 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     ) {
         try {
             when (packageName) {
+                in devicePlatformPackages ->
+                    deviceFeaturesManager.blockFeatures(packageName, node, wellBeingSettings)
+
                 in shortsPlatformPackages ->
                     shortsPlatformManager.blockDistraction(packageName, node, wellBeingSettings)
 
@@ -187,7 +208,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * `false` otherwise.
      */
     private fun shouldBlockContent(): Boolean {
-        return mWellBeingSettings.blockedShortsPlatformFeatures.isNotEmpty() ||
+        return mWellBeingSettings.blockedFeatures.isNotEmpty() ||
                 mWellBeingSettings.blockedWebsites.isNotEmpty() ||
                 mWellBeingSettings.blockNsfwSites
     }
@@ -221,40 +242,44 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     private fun refreshServiceConfig() {
         try {
             // Using hashset to avoid duplicates
+            browserPackages.clear()
+            devicePlatformPackages.clear()
+            shortsPlatformPackages.clear()
             val pm = packageManager
 
+            // Check admin and add settings to blocked packages
+            if (PermissionsHelper.getAndAskAdminPermission(this, false)) {
+                devicePlatformPackages.add(SETTINGS_PACKAGE)
+            }
+
             // Fetch installed browser packages
-            browserPackages.clear()
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("http://www.google.com"))
             pm.queryIntentActivities(browserIntent, PackageManager.MATCH_ALL).forEach {
                 browserPackages.add(it.activityInfo.packageName)
             }
 
-
-            // For short form content blocking on their native apps
-            shortsPlatformPackages.clear()
-            mWellBeingSettings.blockedShortsPlatformFeatures.forEach { feature ->
+            mWellBeingSettings.blockedFeatures.forEach { feature ->
                 when (feature) {
                     /// Instagram
-                    ShortsPlatformFeatures.INSTAGRAM_REELS,
-                    ShortsPlatformFeatures.INSTAGRAM_EXPLORE,
+                    PlatformFeatures.INSTAGRAM_REELS,
+                    PlatformFeatures.INSTAGRAM_EXPLORE,
                     -> shortsPlatformPackages.add(INSTAGRAM_PACKAGE)
 
                     // Snapchat
-                    ShortsPlatformFeatures.SNAPCHAT_SPOTLIGHT,
-                    ShortsPlatformFeatures.SNAPCHAT_DISCOVER,
+                    PlatformFeatures.SNAPCHAT_SPOTLIGHT,
+                    PlatformFeatures.SNAPCHAT_DISCOVER,
                     -> shortsPlatformPackages.add(SNAPCHAT_PACKAGE)
 
                     // Facebook
-                    ShortsPlatformFeatures.FACEBOOK_REELS ->
+                    PlatformFeatures.FACEBOOK_REELS ->
                         shortsPlatformPackages.add(FACEBOOK_PACKAGE)
 
                     // Reddit
-                    ShortsPlatformFeatures.REDDIT_SHORTS ->
+                    PlatformFeatures.REDDIT_SHORTS ->
                         shortsPlatformPackages.add(REDDIT_PACKAGE)
 
                     // Youtube
-                    ShortsPlatformFeatures.YOUTUBE_SHORTS -> {
+                    PlatformFeatures.YOUTUBE_SHORTS -> {
                         // Add official package
                         shortsPlatformPackages.add(YOUTUBE_PACKAGE)
 
@@ -278,6 +303,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             Log.d(
                 TAG, "refreshServiceConfig: Accessibility service config updated successfully: " +
                         "\n settings: $mWellBeingSettings" +
+                        "\n device platforms: $devicePlatformPackages" +
                         "\n short platforms: $shortsPlatformPackages" +
                         "\n browsers: $browserPackages"
             )

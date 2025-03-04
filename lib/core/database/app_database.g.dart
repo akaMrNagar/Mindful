@@ -4286,14 +4286,14 @@ class $WellbeingTableTable extends WellbeingTable
   static const VerificationMeta _blockedFeaturesMeta =
       const VerificationMeta('blockedFeatures');
   @override
-  late final GeneratedColumnWithTypeConverter<List<ShortsPlatformFeatures>,
-      String> blockedFeatures = GeneratedColumn<String>(
-          'blocked_features', aliasedName, false,
-          type: DriftSqlType.string,
-          requiredDuringInsert: false,
-          defaultValue: Constant(jsonEncode([])))
-      .withConverter<List<ShortsPlatformFeatures>>(
-          $WellbeingTableTable.$converterblockedFeatures);
+  late final GeneratedColumnWithTypeConverter<List<PlatformFeatures>, String>
+      blockedFeatures = GeneratedColumn<String>(
+              'blocked_features', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(jsonEncode([])))
+          .withConverter<List<PlatformFeatures>>(
+              $WellbeingTableTable.$converterblockedFeatures);
   static const VerificationMeta _blockNsfwSitesMeta =
       const VerificationMeta('blockNsfwSites');
   @override
@@ -4395,10 +4395,9 @@ class $WellbeingTableTable extends WellbeingTable
     return $WellbeingTableTable(attachedDatabase, alias);
   }
 
-  static TypeConverter<List<ShortsPlatformFeatures>, String>
+  static TypeConverter<List<PlatformFeatures>, String>
       $converterblockedFeatures =
-      const ListEnumNamesConverter<ShortsPlatformFeatures>(
-          ShortsPlatformFeatures.values);
+      const ListEnumNamesConverter<PlatformFeatures>(PlatformFeatures.values);
   static TypeConverter<List<String>, String> $converterblockedWebsites =
       const ListStringConverter();
   static TypeConverter<List<String>, String> $converternsfwWebsites =
@@ -4413,7 +4412,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
   final int allowedShortsTimeSec;
 
   /// List of feature which are blocked
-  final List<ShortsPlatformFeatures> blockedFeatures;
+  final List<PlatformFeatures> blockedFeatures;
 
   /// Flag denoting if the nsfw or adult  websites are blocked or not
   /// i.e if accessibility service is filtering websites or not
@@ -4472,8 +4471,8 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       id: serializer.fromJson<int>(json['id']),
       allowedShortsTimeSec:
           serializer.fromJson<int>(json['allowedShortsTimeSec']),
-      blockedFeatures: serializer
-          .fromJson<List<ShortsPlatformFeatures>>(json['blockedFeatures']),
+      blockedFeatures:
+          serializer.fromJson<List<PlatformFeatures>>(json['blockedFeatures']),
       blockNsfwSites: serializer.fromJson<bool>(json['blockNsfwSites']),
       blockedWebsites:
           serializer.fromJson<List<String>>(json['blockedWebsites']),
@@ -4487,7 +4486,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
       'id': serializer.toJson<int>(id),
       'allowedShortsTimeSec': serializer.toJson<int>(allowedShortsTimeSec),
       'blockedFeatures':
-          serializer.toJson<List<ShortsPlatformFeatures>>(blockedFeatures),
+          serializer.toJson<List<PlatformFeatures>>(blockedFeatures),
       'blockNsfwSites': serializer.toJson<bool>(blockNsfwSites),
       'blockedWebsites': serializer.toJson<List<String>>(blockedWebsites),
       'nsfwWebsites': serializer.toJson<List<String>>(nsfwWebsites),
@@ -4497,7 +4496,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
   Wellbeing copyWith(
           {int? id,
           int? allowedShortsTimeSec,
-          List<ShortsPlatformFeatures>? blockedFeatures,
+          List<PlatformFeatures>? blockedFeatures,
           bool? blockNsfwSites,
           List<String>? blockedWebsites,
           List<String>? nsfwWebsites}) =>
@@ -4561,7 +4560,7 @@ class Wellbeing extends DataClass implements Insertable<Wellbeing> {
 class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   final Value<int> id;
   final Value<int> allowedShortsTimeSec;
-  final Value<List<ShortsPlatformFeatures>> blockedFeatures;
+  final Value<List<PlatformFeatures>> blockedFeatures;
   final Value<bool> blockNsfwSites;
   final Value<List<String>> blockedWebsites;
   final Value<List<String>> nsfwWebsites;
@@ -4603,7 +4602,7 @@ class WellbeingTableCompanion extends UpdateCompanion<Wellbeing> {
   WellbeingTableCompanion copyWith(
       {Value<int>? id,
       Value<int>? allowedShortsTimeSec,
-      Value<List<ShortsPlatformFeatures>>? blockedFeatures,
+      Value<List<PlatformFeatures>>? blockedFeatures,
       Value<bool>? blockNsfwSites,
       Value<List<String>>? blockedWebsites,
       Value<List<String>>? nsfwWebsites}) {
@@ -7584,7 +7583,7 @@ typedef $$WellbeingTableTableCreateCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
   Value<int> allowedShortsTimeSec,
-  Value<List<ShortsPlatformFeatures>> blockedFeatures,
+  Value<List<PlatformFeatures>> blockedFeatures,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
   Value<List<String>> nsfwWebsites,
@@ -7593,7 +7592,7 @@ typedef $$WellbeingTableTableUpdateCompanionBuilder = WellbeingTableCompanion
     Function({
   Value<int> id,
   Value<int> allowedShortsTimeSec,
-  Value<List<ShortsPlatformFeatures>> blockedFeatures,
+  Value<List<PlatformFeatures>> blockedFeatures,
   Value<bool> blockNsfwSites,
   Value<List<String>> blockedWebsites,
   Value<List<String>> nsfwWebsites,
@@ -7615,8 +7614,8 @@ class $$WellbeingTableTableFilterComposer
       column: $table.allowedShortsTimeSec,
       builder: (column) => ColumnFilters(column));
 
-  ColumnWithTypeConverterFilters<List<ShortsPlatformFeatures>,
-          List<ShortsPlatformFeatures>, String>
+  ColumnWithTypeConverterFilters<List<PlatformFeatures>, List<PlatformFeatures>,
+          String>
       get blockedFeatures => $composableBuilder(
           column: $table.blockedFeatures,
           builder: (column) => ColumnWithTypeConverterFilters(column));
@@ -7684,7 +7683,7 @@ class $$WellbeingTableTableAnnotationComposer
   GeneratedColumn<int> get allowedShortsTimeSec => $composableBuilder(
       column: $table.allowedShortsTimeSec, builder: (column) => column);
 
-  GeneratedColumnWithTypeConverter<List<ShortsPlatformFeatures>, String>
+  GeneratedColumnWithTypeConverter<List<PlatformFeatures>, String>
       get blockedFeatures => $composableBuilder(
           column: $table.blockedFeatures, builder: (column) => column);
 
@@ -7726,7 +7725,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> allowedShortsTimeSec = const Value.absent(),
-            Value<List<ShortsPlatformFeatures>> blockedFeatures =
+            Value<List<PlatformFeatures>> blockedFeatures =
                 const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),
@@ -7743,7 +7742,7 @@ class $$WellbeingTableTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<int> allowedShortsTimeSec = const Value.absent(),
-            Value<List<ShortsPlatformFeatures>> blockedFeatures =
+            Value<List<PlatformFeatures>> blockedFeatures =
                 const Value.absent(),
             Value<bool> blockNsfwSites = const Value.absent(),
             Value<List<String>> blockedWebsites = const Value.absent(),

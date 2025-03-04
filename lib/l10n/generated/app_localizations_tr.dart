@@ -587,6 +587,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get tamper_protection_tile_subtitle => 'Kaldırmayı önleyin ve uygulamayı durdurmaya zorlayın.';
 
   @override
+  String get tamper_protection_confirmation_dialog_info => 'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
+
+  @override
   String get uninstall_window_tile_title => 'Kaldırma penceresi';
 
   @override

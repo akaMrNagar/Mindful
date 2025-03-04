@@ -10,7 +10,7 @@
 
 /// The features of short form content platforms.
 /// Used for blocking them.
-enum ShortsPlatformFeatures {
+enum PlatformFeatures {
   instagramReels,
   instagramExplore,
   snapchatSpotlight,

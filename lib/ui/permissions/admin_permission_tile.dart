@@ -10,14 +10,19 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/dialogs/confirmation_dialog.dart';
+import 'package:mindful/ui/permissions/accessibility_permission_card.dart';
 import 'package:mindful/ui/permissions/permission_sheet.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
 
 class AdminPermissionTile extends ConsumerWidget {
   const AdminPermissionTile({super.key});
@@ -28,6 +33,13 @@ class AdminPermissionTile extends ConsumerWidget {
     bool isAdminEnabled,
     TimeOfDayAdapter uninstallWindowTime,
   ) async {
+    /// Ask accessibility permission if not allowed
+    if (!ref.read(permissionProvider).haveAccessibilityPermission) {
+      const AccessibilityPermissionCard()
+          .showAccessibilityPermissionSheet(context, ref);
+      return;
+    }
+
     if (isAdminEnabled) {
       /// User wants to Disable
       if (ref
@@ -40,6 +52,19 @@ class AdminPermissionTile extends ConsumerWidget {
         );
       }
     } else {
+      /// Confirm
+      final isConfirm = await showConfirmationDialog(
+        context: context,
+        heroTag: HeroTags.tamperProtectionTileTag,
+        icon: FluentIcons.shield_keyhole_20_filled,
+        title: context.locale.tamper_protection_tile_title,
+        info: context.locale.tamper_protection_confirmation_dialog_info,
+        positiveLabel: context.locale.permission_button_grant_permission,
+      );
+
+      await Future.delayed(400.ms);
+      if (!isConfirm || !context.mounted) return;
+
       /// User wants to Enable
       showModalBottomSheet(
         context: context,
@@ -59,23 +84,28 @@ class AdminPermissionTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final havePermission =
+    final haveAdminPermission =
         ref.watch(permissionProvider.select((v) => v.haveAdminPermission));
+    final haveAccessibilityPermission = ref
+        .watch(permissionProvider.select((v) => v.haveAccessibilityPermission));
 
     final uninstallWindowTime = ref
         .watch(parentalControlsProvider.select((v) => v.uninstallWindowTime));
 
-    return DefaultListTile(
-      position: ItemPosition.mid,
-      switchValue: havePermission,
-      leadingIcon: FluentIcons.shield_keyhole_20_regular,
-      titleText: context.locale.tamper_protection_tile_title,
-      subtitleText: context.locale.tamper_protection_tile_subtitle,
-      onPressed: () => _toggleTamperProtection(
-        context,
-        ref,
-        havePermission,
-        uninstallWindowTime,
+    return DefaultHero(
+      tag: HeroTags.tamperProtectionTileTag,
+      child: DefaultListTile(
+        position: ItemPosition.mid,
+        switchValue: haveAdminPermission && haveAccessibilityPermission,
+        leadingIcon: FluentIcons.shield_keyhole_20_regular,
+        titleText: context.locale.tamper_protection_tile_title,
+        subtitleText: context.locale.tamper_protection_tile_subtitle,
+        onPressed: () => _toggleTamperProtection(
+          context,
+          ref,
+          haveAdminPermission,
+          uninstallWindowTime,
+        ),
       ),
     );
   }

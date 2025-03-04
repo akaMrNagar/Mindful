@@ -36,6 +36,7 @@ object AppConstants {
     const val SETTINGS_PACKAGE: String = "com.android.settings"
 
     // Platforms package names
+    const val SYSTEM_SETTINGS_PACKAGE: String = "com.android.settings"
     const val INSTAGRAM_PACKAGE: String = "com.instagram.android"
     const val YOUTUBE_PACKAGE: String = "com.google.android.youtube"
     const val YOUTUBE_CLIENT_PACKAGE_SUFFIX: String = ".android.youtube"

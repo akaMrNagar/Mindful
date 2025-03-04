@@ -28,6 +28,7 @@ import android.util.Log
 import android.widget.Toast
 import com.mindful.android.MainActivity
 import com.mindful.android.R
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.quickTiles.FocusQuickTileService
 import com.mindful.android.utils.AppConstants
@@ -97,6 +98,7 @@ object NewActivitiesLaunchHelper {
             }
         } catch (e: Exception) {
             Log.e(TAG, "disableDeviceAdmin: Failed to deactivate admin", e)
+            SharedPrefsHelper.insertCrashLogToPrefs(context, e)
         }
     }
 

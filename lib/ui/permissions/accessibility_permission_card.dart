@@ -41,12 +41,15 @@ class AccessibilityPermissionCard extends ConsumerWidget {
       ),
       positiveBtn: FilledButton(
         child: Text(context.locale.permission_button_grant_permission),
-        onPressed: () => _showSheet(context, ref),
+        onPressed: () => showAccessibilityPermissionSheet(context, ref),
       ),
     );
   }
 
-  void _showSheet(BuildContext context, WidgetRef ref) {
+  void showAccessibilityPermissionSheet(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

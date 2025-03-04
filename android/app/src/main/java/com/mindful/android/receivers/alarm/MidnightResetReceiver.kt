@@ -26,6 +26,7 @@ import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleMidnightResetTask
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
+import com.mindful.android.services.accessibility.MindfulAccessibilityService.Companion.ACTION_MIDNIGHT_ACCESSIBILITY_RESET
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.Utils
 import com.mindful.android.workers.FlutterBgExecutionWorker
@@ -102,8 +103,5 @@ class MidnightResetReceiver : BroadcastReceiver() {
         private const val TAG = "Mindful.MidnightResetReceiver"
 
         const val ACTION_START_MIDNIGHT_RESET: String = "com.mindful.android.StartMidnightReset"
-
-        const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET: String =
-            "com.mindful.android.MidnightResetReceiver.MIDNIGHT_ACCESSIBILITY_RESET"
     }
 }
