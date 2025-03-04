@@ -13,12 +13,6 @@ Future<void> from5To6(Migrator m, Schema6 schema) async => await runSafe(
           schema.focusProfileTable.enforceSession,
         );
 
-        /// Add pin mindful column to [FocusProfileTable]
-        await m.addColumn(
-          schema.focusProfileTable,
-          schema.focusProfileTable.pinMindful,
-        );
-
         /// Add reflection column to [FocusSessionsTable]
         await m.addColumn(
           schema.focusSessionsTable,

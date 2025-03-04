@@ -759,12 +759,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get focus_enforce_tile_subtitle => 'Prevents ending a session before time ends.';
 
   @override
-  String get focus_pin_app_tile_title => 'Pin app';
-
-  @override
-  String get focus_pin_app_tile_subtitle => 'Stay within Mindful during the session.';
-
-  @override
   String get focus_session_start_fab_button => '記録を開始';
 
   @override

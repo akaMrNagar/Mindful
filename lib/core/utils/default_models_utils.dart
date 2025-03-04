@@ -84,6 +84,5 @@ const defaultFocusProfileModel = FocusProfile(
   sessionDuration: 0,
   shouldStartDnd: false,
   enforceSession: false,
-  pinMindful: false,
   distractingApps: [],
 );

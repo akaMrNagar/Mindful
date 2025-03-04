@@ -1870,7 +1870,6 @@ final class Schema6 extends i0.VersionedSchema {
           _column_27,
           _column_28,
           _column_79,
-          _column_80,
           _column_16,
           _column_17,
         ],
@@ -1889,7 +1888,7 @@ final class Schema6 extends i0.VersionedSchema {
           _column_30,
           _column_31,
           _column_32,
-          _column_81,
+          _column_80,
         ],
         attachedDatabase: database,
       ),
@@ -2041,8 +2040,6 @@ class Shape20 extends i0.VersionedTable {
       columnsByName['session_duration']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<bool> get enforceSession =>
       columnsByName['enforce_session']! as i1.GeneratedColumn<bool>;
-  i1.GeneratedColumn<bool> get pinMindful =>
-      columnsByName['pin_mindful']! as i1.GeneratedColumn<bool>;
   i1.GeneratedColumn<bool> get shouldStartDnd =>
       columnsByName['should_start_dnd']! as i1.GeneratedColumn<bool>;
   i1.GeneratedColumn<String> get distractingApps =>
@@ -2054,12 +2051,6 @@ i1.GeneratedColumn<bool> _column_79(String aliasedName) =>
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("enforce_session" IN (0, 1))'),
-        defaultValue: const Constant(false));
-i1.GeneratedColumn<bool> _column_80(String aliasedName) =>
-    i1.GeneratedColumn<bool>('pin_mindful', aliasedName, false,
-        type: i1.DriftSqlType.bool,
-        defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
-            'CHECK ("pin_mindful" IN (0, 1))'),
         defaultValue: const Constant(false));
 
 class Shape21 extends i0.VersionedTable {
@@ -2078,7 +2069,7 @@ class Shape21 extends i0.VersionedTable {
       columnsByName['reflection']! as i1.GeneratedColumn<String>;
 }
 
-i1.GeneratedColumn<String> _column_81(String aliasedName) =>
+i1.GeneratedColumn<String> _column_80(String aliasedName) =>
     i1.GeneratedColumn<String>('reflection', aliasedName, false,
         type: i1.DriftSqlType.string, defaultValue: const Constant(""));
 i0.MigrationStepWithVersion migrationSteps({

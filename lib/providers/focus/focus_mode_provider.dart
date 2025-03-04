@@ -156,15 +156,6 @@ class FocusModeNotifier extends StateNotifier<FocusModeModel>
     _updateFocusProfileInDb();
   }
 
-  /// Enables or disables mindful app pinning.
-  void setPinMindful(bool shouldPin) async {
-    state = state.copyWith(
-      focusProfile: state.focusProfile.copyWith(pinMindful: shouldPin),
-    );
-
-    _updateFocusProfileInDb();
-  }
-
   /// Updates session reflection.
   void updateActiveSessionReflection(String reflection) async {
     if (state.activeSession.value != null) {

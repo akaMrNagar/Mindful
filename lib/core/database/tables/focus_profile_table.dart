@@ -30,9 +30,6 @@ class FocusProfileTable extends Table {
   BoolColumn get enforceSession =>
       boolean().withDefault(const Constant(false))();
 
-  /// Flag indicating if to pin to Mindful or not.
-  BoolColumn get pinMindful => boolean().withDefault(const Constant(false))();
-
   /// Flag indicating if to start DND during the focus session
   BoolColumn get shouldStartDnd =>
       boolean().withDefault(const Constant(false))();

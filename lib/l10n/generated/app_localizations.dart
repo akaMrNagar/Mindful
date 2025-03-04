@@ -1465,18 +1465,6 @@ abstract class AppLocalizations {
   /// **'Prevents ending a session before time ends.'**
   String get focus_enforce_tile_subtitle;
 
-  /// No description provided for @focus_pin_app_tile_title.
-  ///
-  /// In en, this message translates to:
-  /// **'Pin app'**
-  String get focus_pin_app_tile_title;
-
-  /// No description provided for @focus_pin_app_tile_subtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Stay within Mindful during the session.'**
-  String get focus_pin_app_tile_subtitle;
-
   /// No description provided for @focus_session_start_fab_button.
   ///
   /// In en, this message translates to:

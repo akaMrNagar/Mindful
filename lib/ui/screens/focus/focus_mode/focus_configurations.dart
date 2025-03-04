@@ -119,18 +119,6 @@ class FocusConfigurations extends ConsumerWidget {
                     .setEnforceFocus(!profile.enforceSession),
               ),
 
-              /// App pinning
-              DefaultListTile(
-                position: ItemPosition.mid,
-                enabled: !isSessionActive,
-                switchValue: profile.pinMindful,
-                titleText: context.locale.focus_pin_app_tile_title,
-                subtitleText: context.locale.focus_pin_app_tile_subtitle,
-                onPressed: () => ref
-                    .read(focusModeProvider.notifier)
-                    .setPinMindful(!profile.pinMindful),
-              ),
-
               /// Should start dnd
               DndSwitchTile(
                 enabled: !isSessionActive,
