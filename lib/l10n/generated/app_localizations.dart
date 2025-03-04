@@ -601,6 +601,12 @@ abstract class AppLocalizations {
   /// **'If Mindful stops working unexpectedly, consider granting the \'Ignore Battery Optimization\' permission by going to \'Settings>Advance\' to keep it running in the background.'**
   String get battery_optimization_tip;
 
+  /// No description provided for @accessibility_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.'**
+  String get accessibility_tip;
+
   /// No description provided for @onboarding_skip_btn_label.
   ///
   /// In en, this message translates to:
