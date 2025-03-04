@@ -25,6 +25,11 @@ class FocusProfileTable extends Table {
   /// Duration in SECONDS for the focus session
   IntColumn get sessionDuration => integer().withDefault(const Constant(0))();
 
+  /// Flag indicating if to enforce the session or not.
+  /// If 'True' user cannot end session until the time ends.
+  BoolColumn get enforceSession =>
+      boolean().withDefault(const Constant(false))();
+
   /// Flag indicating if to start DND during the focus session
   BoolColumn get shouldStartDnd =>
       boolean().withDefault(const Constant(false))();

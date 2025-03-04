@@ -735,7 +735,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get focus_distracting_apps_removal_snack_alert => '集中記録が有効な間は、集中を妨げるアプリを削除することはできません。ただし、新しいアプリを追加することはできます。';
 
   @override
-  String get focus_session_tile_title => '集中記録';
+  String get focus_profile_tile_title => 'Focus profile';
 
   @override
   String get focus_session_duration_tile_title => '集中する時間';
@@ -745,6 +745,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get focus_session_duration_dialog_info => '集中したい時間を選択してください。';
+
+  @override
+  String get focus_profile_customization_tile_title => 'Profile customization';
+
+  @override
+  String get focus_profile_customization_tile_subtitle => 'Customize settings for the selected profile.';
+
+  @override
+  String get focus_enforce_tile_title => 'Enforce session';
+
+  @override
+  String get focus_enforce_tile_subtitle => 'Prevents ending a session before time ends.';
 
   @override
   String get focus_session_start_fab_button => '記録を開始';
@@ -855,13 +867,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get your_sessions_empty_list_hint => '選択した日は活動記録がありませんでした。';
 
   @override
-  String get focus_session_tile_time_label => '時間';
-
-  @override
-  String get focus_session_tile_date_label => '日付';
+  String get focus_session_tile_timestamp_label => 'Timestamp';
 
   @override
   String get focus_session_tile_duration_label => '継続時間';
+
+  @override
+  String get focus_session_tile_reflection_label => 'Reflection';
 
   @override
   String get focus_session_state_active => '有効';
@@ -892,6 +904,15 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get active_session_giveup_dialog_info => 'もう少しで目標達成です！本当にこの集中記録を途中で終了しますか？これまでの進捗は失われます。';
+
+  @override
+  String get active_session_reflection_dialog_title => 'Session reflection';
+
+  @override
+  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
+
+  @override
+  String get active_session_reflection_dialog_tip => 'Tip: You can always edit this later in the session timeline.';
 
   @override
   String get active_session_giveup_snack_alert => '諦めてしまいましたか？大丈夫、次回はきっと集中できます。どんな努力も無駄にはなりません。諦めずに続けましょう！';

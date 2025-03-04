@@ -32,4 +32,8 @@ class FocusSessionsTable extends Table {
   /// If the session state is [SessionState.failed] then the duration
   /// is considered as the time spent before giveup
   IntColumn get durationSecs => integer().withDefault(const Constant(0))();
+
+  /// Reflection about the focus session. Means what did the user achieved with the session.
+  /// By default empty string.
+  TextColumn get reflection => text().withDefault(const Constant(""))();
 }

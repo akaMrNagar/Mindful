@@ -735,7 +735,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get focus_distracting_apps_removal_snack_alert => 'Odaklanma Oturumu etkinken dikkat dağıtıcı uygulamalar listesinden uygulama kaldırmaya izin verilmez. Ancak, bu süre zarfında listeye ek uygulamalar ekleyebilirsiniz.';
 
   @override
-  String get focus_session_tile_title => 'Odaklanma oturumu';
+  String get focus_profile_tile_title => 'Focus profile';
 
   @override
   String get focus_session_duration_tile_title => 'Oturum süresi';
@@ -745,6 +745,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get focus_session_duration_dialog_info => 'Lütfen bu odaklanma oturumu için istediğiniz süreyi seçin, ne kadar süre odaklanmış ve dikkatiniz dağılmadan kalmak istediğinizi belirleyin.';
+
+  @override
+  String get focus_profile_customization_tile_title => 'Profile customization';
+
+  @override
+  String get focus_profile_customization_tile_subtitle => 'Customize settings for the selected profile.';
+
+  @override
+  String get focus_enforce_tile_title => 'Enforce session';
+
+  @override
+  String get focus_enforce_tile_subtitle => 'Prevents ending a session before time ends.';
 
   @override
   String get focus_session_start_fab_button => 'Oturumu başlat';
@@ -855,13 +867,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get your_sessions_empty_list_hint => 'Seçilen gün için hiçbir odak oturumu kaydedilmemiştir.';
 
   @override
-  String get focus_session_tile_time_label => 'Saat';
-
-  @override
-  String get focus_session_tile_date_label => 'Tarih';
+  String get focus_session_tile_timestamp_label => 'Timestamp';
 
   @override
   String get focus_session_tile_duration_label => 'Süre';
+
+  @override
+  String get focus_session_tile_reflection_label => 'Reflection';
 
   @override
   String get focus_session_state_active => 'Aktif';
@@ -892,6 +904,15 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get active_session_giveup_dialog_info => 'Bir saniye! Neredeyse tamamladın, şimdi pes etme! Bu odaklanma oturumunu erken bitirmek istediğinden emin misin? İlerleme kaybolacak.';
+
+  @override
+  String get active_session_reflection_dialog_title => 'Session reflection';
+
+  @override
+  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
+
+  @override
+  String get active_session_reflection_dialog_tip => 'Tip: You can always edit this later in the session timeline.';
 
   @override
   String get active_session_giveup_snack_alert => 'Vazgeçtin! Endişelenme, bir dahaki sefere daha iyisini yapabilirsin. Her çaba önemli – sadece devam et';

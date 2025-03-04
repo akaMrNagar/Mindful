@@ -123,12 +123,40 @@ Future<String?> showNotificationScheduleNameDialog({
   );
 }
 
+/// Animates the hero widget to a alert dialog with input field for focus achievement or reflection
+///
+/// Returns the entered text
+Future<String?> showFocusReflectionDialog({
+  required BuildContext context,
+  required Object heroTag,
+  required String initialText,
+}) async {
+  return await Navigator.of(context).push<String>(
+    HeroPageRoute(
+      builder: (context) => _InputFieldDialog(
+        heroTag: heroTag,
+        keyboardType: TextInputType.text,
+        dialogIcon: FluentIcons.clipboard_task_20_filled,
+        initialText: initialText,
+        minLines: 2,
+        maxLines: 4,
+        title: context.locale.active_session_reflection_dialog_title,
+        fieldLabel: "",
+        hintText: "Write your goal or accomplishments...",
+        helperText:
+            "${context.locale.active_session_reflection_dialog_info}\n\n${context.locale.active_session_reflection_dialog_tip}",
+        negativeBtnLabel: context.locale.onboarding_skip_btn_label,
+        positiveBtnLabel: context.locale.update_button,
+      ),
+    ),
+  );
+}
+
 class _InputFieldDialog extends StatefulWidget {
   const _InputFieldDialog({
     required this.heroTag,
     required this.keyboardType,
     required this.dialogIcon,
-    required this.fieldIcon,
     required this.title,
     required this.fieldLabel,
     required this.hintText,
@@ -136,18 +164,23 @@ class _InputFieldDialog extends StatefulWidget {
     required this.positiveBtnLabel,
     required this.negativeBtnLabel,
     this.initialText = "",
+    this.fieldIcon,
     this.moreContent,
+    this.minLines,
+    this.maxLines,
   });
 
   final Object heroTag;
   final TextInputType keyboardType;
   final IconData dialogIcon;
-  final IconData fieldIcon;
+  final IconData? fieldIcon;
   final String title;
   final String fieldLabel;
   final String hintText;
   final String helperText;
   final String initialText;
+  final int? minLines;
+  final int? maxLines;
 
   final String positiveBtnLabel;
   final String negativeBtnLabel;
@@ -211,12 +244,16 @@ class _InputFieldDialogState extends State<_InputFieldDialog> {
                         onSubmitted: (txt) =>
                             Navigator.maybePop(context, txt.trim()),
                         keyboardType: widget.keyboardType,
+                        minLines: widget.minLines,
+                        maxLines: widget.maxLines,
                         decoration: InputDecoration(
                           label: Text(widget.fieldLabel),
                           hintText: widget.hintText,
                           helperText: widget.helperText,
                           helperMaxLines: 10,
-                          prefixIcon: Icon(widget.fieldIcon),
+                          prefixIcon: widget.fieldIcon != null
+                              ? Icon(widget.fieldIcon)
+                              : null,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(18),
                           ),

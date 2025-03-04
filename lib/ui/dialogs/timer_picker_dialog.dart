@@ -74,7 +74,7 @@ Future<int?> showFocusTimerPicker({
   return await Navigator.of(context).push<int?>(
     HeroPageRoute(
       builder: (context) => _DurationPickerDialog(
-        title: context.locale.focus_session_tile_title,
+        title: context.locale.focus_session_duration_tile_title,
         icon: const Icon(FluentIcons.timer_20_regular),
         heroTag: heroTag,
         initialTimeInSec: initialTime,

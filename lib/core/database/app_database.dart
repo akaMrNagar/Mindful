@@ -67,7 +67,7 @@ class AppDatabase extends _$AppDatabase {
   //
   // STEP 3 => Add migration steps to migration strategy
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   // Always use [runSafe()] for upgrades - why?
   // If a user imports a backup from a newer schema when they are on an older
@@ -87,6 +87,7 @@ class AppDatabase extends _$AppDatabase {
               from2To3: from2To3,
               from3To4: from3To4,
               from4To5: from4To5,
+              from5To6: from5To6,
             ),
           );
         },
