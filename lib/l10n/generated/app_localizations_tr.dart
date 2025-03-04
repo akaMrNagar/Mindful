@@ -323,6 +323,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get battery_optimization_tip => 'Mindful beklenmedik bir şekilde çalışmayı durdurursa, arka planda çalışmaya devam etmesi için \'Ayarlar>Gelişmiş\'e giderek \'Pil Optimizasyonunu Yoksay\' iznini vermeyi düşünün.';
 
   @override
+  String get accessibility_tip => 'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.';
+
+  @override
   String get onboarding_skip_btn_label => 'Atla';
 
   @override
@@ -585,6 +588,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get tamper_protection_tile_subtitle => 'Kaldırmayı önleyin ve uygulamayı durdurmaya zorlayın.';
+
+  @override
+  String get tamper_protection_confirmation_dialog_info => 'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
 
   @override
   String get uninstall_window_tile_title => 'Kaldırma penceresi';

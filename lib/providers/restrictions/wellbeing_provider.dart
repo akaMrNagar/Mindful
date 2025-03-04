@@ -11,7 +11,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
-import 'package:mindful/core/enums/shorts_platform_features.dart';
+import 'package:mindful/core/enums/platform_features.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
@@ -49,7 +49,7 @@ class WellBeingNotifier extends StateNotifier<Wellbeing> {
   }
 
   /// Adds or removes a feature to/from the blocked features list.
-  void insertRemoveBlockedFeature(ShortsPlatformFeatures feature) =>
+  void insertRemoveBlockedFeature(PlatformFeatures feature) =>
       state = state.copyWith(
         blockedFeatures: state.blockedFeatures.contains(feature)
             ? [...state.blockedFeatures.where((e) => e != feature)]

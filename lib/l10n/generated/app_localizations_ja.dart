@@ -323,6 +323,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get battery_optimization_tip => 'If Mindful stops working unexpectedly, consider granting the \'Ignore Battery Optimization\' permission by going to \'Settings>Advance\' to keep it running in the background.';
 
   @override
+  String get accessibility_tip => 'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.';
+
+  @override
   String get onboarding_skip_btn_label => 'スキップ';
 
   @override
@@ -585,6 +588,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tamper_protection_tile_subtitle => 'アプリのアンインストールと強制終了を制限する';
+
+  @override
+  String get tamper_protection_confirmation_dialog_info => 'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
 
   @override
   String get uninstall_window_tile_title => 'アンインストール画面';

@@ -12,7 +12,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
-import 'package:mindful/core/enums/shorts_platform_features.dart';
+import 'package:mindful/core/enums/platform_features.dart';
 
 @DataClassName("Wellbeing")
 class WellbeingTable extends Table {
@@ -28,8 +28,8 @@ class WellbeingTable extends Table {
 
   /// List of feature which are blocked
   TextColumn get blockedFeatures => text()
-      .map(const ListEnumNamesConverter<ShortsPlatformFeatures>(
-        ShortsPlatformFeatures.values,
+      .map(const ListEnumNamesConverter<PlatformFeatures>(
+        PlatformFeatures.values,
       ))
       .withDefault(Constant(jsonEncode([])))();
 

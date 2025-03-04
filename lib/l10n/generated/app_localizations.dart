@@ -601,6 +601,12 @@ abstract class AppLocalizations {
   /// **'If Mindful stops working unexpectedly, consider granting the \'Ignore Battery Optimization\' permission by going to \'Settings>Advance\' to keep it running in the background.'**
   String get battery_optimization_tip;
 
+  /// No description provided for @accessibility_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.'**
+  String get accessibility_tip;
+
   /// No description provided for @onboarding_skip_btn_label.
   ///
   /// In en, this message translates to:
@@ -1128,6 +1134,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Prevent uninstalling and force stopping the app.'**
   String get tamper_protection_tile_subtitle;
+
+  /// No description provided for @tamper_protection_confirmation_dialog_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.'**
+  String get tamper_protection_confirmation_dialog_info;
 
   /// No description provided for @uninstall_window_tile_title.
   ///
