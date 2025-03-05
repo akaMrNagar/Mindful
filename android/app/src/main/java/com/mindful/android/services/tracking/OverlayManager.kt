@@ -18,6 +18,7 @@ import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.utils.ThreadUtils
+import java.util.Stack
 
 class OverlayManager(
     private val context: Context,
@@ -25,20 +26,15 @@ class OverlayManager(
     private val windowManager: WindowManager =
         context.getSystemService(WINDOW_SERVICE) as WindowManager
 
-    private var overlay: View? = null
-    private var isDismissingOverlay: Boolean = false
+    private var overlays: Stack<View> = Stack()
+
 
     init {
         fadeOutAnim.setAnimationListener(
             object : Animation.AnimationListener {
-                override fun onAnimationStart(a: Animation?) {
-                    isDismissingOverlay = true
-                }
-
+                override fun onAnimationStart(a: Animation?) {}
                 override fun onAnimationRepeat(a: Animation?) {}
-
                 override fun onAnimationEnd(a: Animation?) {
-                    isDismissingOverlay = false
                     removeOverlay()
                 }
             }
@@ -47,22 +43,16 @@ class OverlayManager(
 
     /// Animate out the overlay
     fun dismissOverlay() {
-        /// Skip if already animating to dismiss
-        if (isDismissingOverlay) {
-            return
-        }
-
+        if (overlays.isEmpty()) return
         ThreadUtils.runOnMainThread {
-            animateOverlay(animateIn = false)
+            animateOverlay(overlay = overlays.peek(), animateIn = false)
         }
     }
 
-    /// Remove overlay after animating out
+    /// Remove overlay instantly
     private fun removeOverlay() {
-        overlay?.let {
-            windowManager.removeView(it)
-            overlay = null
-        }
+        if (overlays.isEmpty()) return
+        windowManager.removeView(overlays.pop())
     }
 
 
@@ -71,8 +61,10 @@ class OverlayManager(
         restrictionState: RestrictionState,
         addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
     ) {
-        Log.d(TAG, "showOverlay: Showing overlay for $packageName")
+        // Return if overlay is not null
+        if (overlays.isNotEmpty()) return
 
+        Log.d(TAG, "showOverlay: Showing overlay for $packageName")
         ThreadUtils.runOnMainThread {
             // Notify, stop and return if don't have overlay permission
             if (!Settings.canDrawOverlays(context)) {
@@ -85,7 +77,7 @@ class OverlayManager(
             }
 
             // Build overlay
-            overlay = OverlayBuilder.buildOverlay(
+            val overlay = OverlayBuilder.buildOverlay(
                 context,
                 packageName,
                 restrictionState,
@@ -111,7 +103,7 @@ class OverlayManager(
 
             // TODO: Fix the deprecated logic
             // Full screen edge to edge view
-            overlay?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            overlay.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
 
@@ -119,16 +111,15 @@ class OverlayManager(
             // Add the overlay view to the window
             layoutParams.gravity = Gravity.TOP or Gravity.START
             windowManager.addView(overlay, layoutParams)
-            overlay?.rotation = 0f
-            overlay?.findViewById<FrameLayout>(R.id.overlay_root)?.rotation = 0f
+            overlays.push(overlay)
 
             // Animate the overlay
-            animateOverlay(animateIn = true)
+            animateOverlay(overlay = overlay, animateIn = true)
         }
     }
 
-    private fun animateOverlay(animateIn: Boolean) {
-        overlay?.let { view ->
+    private fun animateOverlay(overlay: View, animateIn: Boolean) {
+        overlay.let { view ->
             // Find the layers within overlay view
             val bgLayer = view.findViewById<View>(R.id.overlay_background)
             val sheetLayer = view.findViewById<LinearLayout>(R.id.overlay_sheet)

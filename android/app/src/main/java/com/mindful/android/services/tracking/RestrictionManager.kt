@@ -205,16 +205,16 @@ class RestrictionManager(
 
         /// Check for app timer
         if (restriction.timerSec > 0) {
-            val screenTime: Long = screenUsage[restriction.appPackage] ?: 0
+            val screenTimeSec: Long = screenUsage[restriction.appPackage] ?: 0
 
             /// App timer ran out
-            if (screenTime >= restriction.timerSec) {
+            if (screenTimeSec >= restriction.timerSec) {
                 Log.d(TAG, "evaluateScreenTimeLimit: App's timer is over")
                 val state = RestrictionState(
                     message = context.getString(R.string.app_paused_reason_app_timer_out),
                     type = RestrictionType.Timer,
                     expirationFutureMs = -1L,
-                    usedScreenTime = screenTime,
+                    usedScreenTime = screenTimeSec,
                     totalScreenTimer = restriction.timerSec.toLong(),
                 )
 
@@ -222,13 +222,13 @@ class RestrictionManager(
                 return state
             } else {
                 /// App timer left so add expiration timestamp
-                val leftAppLimitMs = (restriction.timerSec - screenTime) * 1000L
+                val leftAppLimitMs = (restriction.timerSec - screenTimeSec) * 1000L
                 futureStates.add(
                     RestrictionState(
                         message = context.getString(R.string.app_paused_reason_app_timer_left),
                         type = RestrictionType.Timer,
                         expirationFutureMs = leftAppLimitMs,
-                        usedScreenTime = screenTime,
+                        usedScreenTime = screenTimeSec,
                         totalScreenTimer = restriction.timerSec.toLong(),
                     )
                 )
@@ -244,10 +244,10 @@ class RestrictionManager(
             }
 
             if (group.timerSec > 0) {
-                val groupScreenTime = group.distractingApps.sumOf { screenUsage[it] ?: 0 }
+                val groupScreenTimeSec = group.distractingApps.sumOf { screenUsage[it] ?: 0 }
 
                 /// group timer ran out
-                if (groupScreenTime >= group.timerSec) {
+                if (groupScreenTimeSec >= group.timerSec) {
                     Log.d(TAG, "evaluateScreenTimeLimit: App's timer is over")
                     val state = RestrictionState(
                         message = context.getString(
@@ -256,7 +256,7 @@ class RestrictionManager(
                         ),
                         type = RestrictionType.Timer,
                         expirationFutureMs = -1L,
-                        usedScreenTime = groupScreenTime,
+                        usedScreenTime = groupScreenTimeSec,
                         totalScreenTimer = group.timerSec.toLong(),
                     )
 
@@ -264,7 +264,7 @@ class RestrictionManager(
                     return state
                 } else {
                     /// group timer left so add expiration timestamp
-                    val leftAppLimitMs = (group.timerSec - groupScreenTime) * 1000L
+                    val leftAppLimitMs = (group.timerSec - groupScreenTimeSec) * 1000L
                     futureStates.add(
                         RestrictionState(
                             message = context.getString(
@@ -273,7 +273,7 @@ class RestrictionManager(
                             ),
                             type = RestrictionType.Timer,
                             expirationFutureMs = leftAppLimitMs,
-                            usedScreenTime = groupScreenTime,
+                            usedScreenTime = groupScreenTimeSec,
                             totalScreenTimer = group.timerSec.toLong(),
                         )
                     )
