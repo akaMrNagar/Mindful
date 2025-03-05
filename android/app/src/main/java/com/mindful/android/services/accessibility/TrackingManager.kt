@@ -27,13 +27,9 @@ class TrackingManager(
 
     @WorkerThread
     fun onNewEvent(packageName: String) {
-        if (lastActiveApp != packageName) {
+        if (lastActiveApp != packageName && !ignoredPackages.contains(packageName)) {
             lastActiveApp = packageName
-
-            // only send broadcast if packages are not ignored
-            if (!ignoredPackages.contains(packageName)) {
-                broadcastEvent(ACTION_NEW_APP_LAUNCHED)
-            }
+            broadcastEvent(ACTION_NEW_APP_LAUNCHED)
         }
     }
 

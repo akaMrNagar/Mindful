@@ -1,6 +1,5 @@
 package com.mindful.android.services.tracking
 
-import android.accessibilityservice.AccessibilityService
 import android.app.Service.USAGE_STATS_SERVICE
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
@@ -13,6 +12,7 @@ import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.mindful.android.receivers.DeviceLockUnlockReceiver
+import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
@@ -75,8 +75,6 @@ class LaunchTrackingManager(
             context.registerReceiver(accessibilityReceiver, accessibilityFilter)
         }
 
-        // Check if accessibility is already running
-        isManualTrackingOn = !Utils.isServiceRunning(context, AccessibilityService::class.java)
 
         // Start tracking
         onDeviceUnlocked()
@@ -85,6 +83,10 @@ class LaunchTrackingManager(
 
     @MainThread
     private fun onDeviceUnlocked() {
+        // Check if accessibility is already running
+        isManualTrackingOn =
+            !Utils.isServiceRunning(context, MindfulAccessibilityService::class.java)
+
         // Start tracking manually only if accessibility is not running
         if (isManualTrackingOn) {
             // First cancel earlier task if already not cancelled
@@ -100,8 +102,9 @@ class LaunchTrackingManager(
             )
 
             Log.d(TAG, "onDeviceUnlocked: Manual usage tracking started")
-            Thread { broadcastLastAppLaunchEvent() }.start()
         }
+
+        Thread { broadcastLastAppLaunchEvent() }.start()
     }
 
     @MainThread
@@ -109,6 +112,8 @@ class LaunchTrackingManager(
         trackingExecutor?.shutdownNow()
         trackingExecutor = null
 
+        // To cancel reminders and remove overlay
+        onNewAppLaunched.invoke("com.android.systemui")
         Log.d(TAG, "onDeviceLocked: Manual usage tracking stopped")
     }
 
@@ -200,7 +205,10 @@ class LaunchTrackingManager(
 
                 ACTION_NEW_APP_LAUNCHED -> intent.getStringExtra(AppConstants.INTENT_EXTRA_PACKAGE_NAME)
                     ?.let {
-                        Thread { onNewAppLaunched.invoke(it) }.start()
+                        Thread {
+                            lastLaunchedApp = it
+                            broadcastLastAppLaunchEvent()
+                        }.start()
                     }
 
             }

@@ -30,10 +30,7 @@ class ReminderManager(
         state: RestrictionState,
     ) {
         // If it is a timer restricted state
-        if (state.usedScreenTime > 0
-            && state.totalScreenTimer > 0
-            && ((state.totalScreenTimer - state.usedScreenTime) > 120)
-        ) {
+        if ((state.totalScreenTimer - state.usedScreenTime) > 120) {
             reminderTriggers.add(1)
         }
 
@@ -48,9 +45,8 @@ class ReminderManager(
 
                 Log.d(
                     TAG,
-                    "onTick: $spentMins Minute ticked with reminders: $reminderTriggers"
+                    "onTick: Elapsed $spentMins minutes with reminders: $reminderTriggers"
                 )
-
 
                 if (reminderTriggers.contains(spentMins)) {
                     reminderTriggers.remove(spentMins)

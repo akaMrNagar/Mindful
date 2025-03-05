@@ -33,13 +33,13 @@ class DeviceLockUnlockReceiver(
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_USER_PRESENT -> {
-                onDeviceLockChanged.invoke(true)
                 Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE")
+                onDeviceLockChanged.invoke(true)
             }
 
             Intent.ACTION_SCREEN_OFF -> {
-                onDeviceLockChanged.invoke(false)
                 Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE")
+                onDeviceLockChanged.invoke(false)
             }
         }
     }

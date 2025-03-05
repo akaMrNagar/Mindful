@@ -64,7 +64,7 @@ class MindfulTrackerService : Service() {
 
     fun onMidnightReset() {
         restrictionManager.resetCache()
-        overlayManager.dismissOverlay()
+//        overlayManager.dismissOverlay()
 //        reminderManager.cancelReminders()
     }
 
@@ -72,14 +72,13 @@ class MindfulTrackerService : Service() {
     @WorkerThread
     private fun onNewAppLaunch(packageName: String) {
         try {
-            Log.d(TAG, "onNewAppLaunch: $packageName launched")
 
             /// Cancel previous reminders and dismiss overlay
             reminderManager.cancelReminders()
             overlayManager.dismissOverlay()
 
             /// check current restrictions
-            val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
+        val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
 
             Log.d(TAG, "onNewAppLaunch: $packageName's evaluated state $currentOrFutureState")
             currentOrFutureState?.let {

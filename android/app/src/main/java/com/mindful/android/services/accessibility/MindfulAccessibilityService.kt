@@ -28,7 +28,6 @@ import com.mindful.android.helpers.device.PermissionsHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
-import com.mindful.android.receivers.alarm.MidnightResetReceiver
 import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
 import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
 import com.mindful.android.utils.AppConstants.REDDIT_PACKAGE
