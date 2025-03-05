@@ -521,7 +521,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get invincible_mode_tile_title => 'Değiştirilemez modu aktifleştir';
 
   @override
-  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
+  String get invincible_mode_info => 'Değiştirilemez Mod açıkken, günlük kotanıza ulaştıktan sonra seçilen limitleri ayarlayamazsınız. Ancak, seçilen 10 dakikalık değiştirilemez pencere içinde değişiklik yapabilirsiniz.';
 
   @override
   String get invincible_mode_snack_alert => 'Değiştirilemez mod nedeniyle, kısıtlamalarda değişiklik yapılmasına izin verilmez.';
@@ -596,13 +596,13 @@ class AppLocalizationsTr extends AppLocalizations {
   String get uninstall_window_tile_title => 'Kaldırma penceresi';
 
   @override
-  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 10 minutes from the selected time.';
+  String get uninstall_window_tile_subtitle => 'Kurcalama koruması seçilen zamandan itibaren 10 dakika içinde devre dışı bırakılabilir.';
 
   @override
-  String get invincible_window_tile_title => 'Invincible window';
+  String get invincible_window_tile_title => 'Değiştirilemez mod';
 
   @override
-  String get invincible_window_tile_subtitle => 'Selected limits can be modified within 10 minutes from the selected time.';
+  String get invincible_window_tile_subtitle => 'Seçilen limitler, seçilen saatten itibaren 10 dakika içinde değiştirilebilir.';
 
   @override
   String get shorts_blocking_tab_title => 'Kısa video engellendi';
@@ -625,43 +625,43 @@ class AppLocalizationsTr extends AppLocalizations {
   String get instagram_features_tile_title => 'Instagram';
 
   @override
-  String get instagram_features_tile_subtitle => 'Restrict features on instagram.';
+  String get instagram_features_tile_subtitle => 'Instagram\'daki içeriği kısıtlayın.';
 
   @override
-  String get instagram_features_block_reels => 'Restrict reels section.';
+  String get instagram_features_block_reels => 'Reels bölümünü kısıtlayın.';
 
   @override
-  String get instagram_features_block_explore => 'Restrict explore section.';
+  String get instagram_features_block_explore => 'Keşfet bölümünü kısıtlayın.';
 
   @override
   String get snapchat_features_tile_title => 'Snapchat';
 
   @override
-  String get snapchat_features_tile_subtitle => 'Restrict features on snapchat.';
+  String get snapchat_features_tile_subtitle => 'Snapchat\'teki içeriği kısıtlayın.';
 
   @override
-  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
+  String get snapchat_features_block_spotlight => 'Spotlight bölümünü kısıtlayın.';
 
   @override
-  String get snapchat_features_block_discover => 'Restrict discover section.';
+  String get snapchat_features_block_discover => 'Keşfet bölümünü kısıtlayın.';
 
   @override
-  String get youtube_features_tile_title => 'Youtube';
+  String get youtube_features_tile_title => 'YouTube';
 
   @override
-  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+  String get youtube_features_tile_subtitle => 'Youtube\'daki kısa içeriği kısıtla.';
 
   @override
   String get facebook_features_tile_title => 'Facebook';
 
   @override
-  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+  String get facebook_features_tile_subtitle => 'Facebook\'ta reelsları kısıtla.';
 
   @override
   String get reddit_features_tile_title => 'Reddit';
 
   @override
-  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
+  String get reddit_features_tile_subtitle => 'Reddit\'teki kısa videoları kısıtla.';
 
   @override
   String get websites_blocking_tab_title => 'Website engelleyici';
