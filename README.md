@@ -58,6 +58,8 @@ Enjoy a distraction-free experience without any ads. Mindful works entirely offl
 
 Mindful is a Free and Open Source Software (FOSS) that took months of dedicated, restless work to develop. If you find this app helpful, please consider making a donation to support our efforts and ensure continued development. Your generosity will help us keep improving and maintaining Mindful for everyone.
 
+_Note: Drop your socials along with your donation to get recognized as a supporter._
+
 <a href="https://buymeacoffee.com/akamrnagar"><img src="docs/assets/donation/bmc_qr.png" height="184" ></a>
 &emsp;
 <a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>

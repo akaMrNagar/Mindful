@@ -61,11 +61,13 @@ part 'app_database.g.dart';
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
 
-  // STEP 1 => generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
+  // STEP 1 => rebuild api => dart run build_runner build -d
   //
-  // STEP 2 => generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
+  // STEP 2 => generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
   //
-  // STEP 3 => Add migration steps to migration strategy
+  // STEP 3 => generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
+  //
+  // STEP 4 => Add migration steps to migration strategy
   @override
   int get schemaVersion => 6;
 

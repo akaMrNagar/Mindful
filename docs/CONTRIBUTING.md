@@ -1,3 +1,24 @@
+
+# 🙏 **Acknowledgements & Disclaimer**  
+
+First off, thank you for even considering contributing to **Mindful**. This project exists because of passionate people like you who believe in something bigger than themselves.  
+
+### **Before you contribute**  
+I just want to be upfront about a few things:  
+- Any contributions you make - whether it’s code, ideas, or assets `become part of Mindful`. You won’t own the rights to them, but your impact will live on in every user who benefits from your work.  
+- `Mindful will always be free and open-source.` No hidden paywalls, no selling out. Just a tool to help people take control of their screen time.  
+- I don’t make much from this project, and as much as I’d love to share donations, they just don’t exist in any meaningful way. What I `can` do is give `credit` where it’s due. If there’s a way to acknowledge your work, I’ll make sure it happens.  
+- I might update these terms down the road, not to take anything away from you, but to protect the project and keep it `truly open and free`  
+
+### **If this doesn’t sit right with You**  
+I get it. If you’re not comfortable with these terms, _**please don’t feel discouraged**_. You can still open an issue or request a feature, and I’ll do my best to bring your idea to life. Your voice still matters.  
+
+And just so you know `Mindful will never be abandoned.` As long as I’m around, I’ll keep improving it. That’s my promise.  
+
+Thank you for being here. <br> You matter more than you know 💙
+
+---
+
 # 📝 How to contribute
 
 ### 1. Open an Issue:
