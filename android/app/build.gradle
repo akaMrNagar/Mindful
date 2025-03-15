@@ -48,10 +48,18 @@ android {
     signingConfigs {
         release {
             if (System.getenv("KEYSTORE_FILE") != null) {
+                println "RELEASE KEY FROM ENV VARIABLES IS BEING USED!"
                 storeFile file(System.getenv("KEYSTORE_FILE"))
                 storePassword System.getenv("STORE_PASSWORD")
                 keyAlias System.getenv("KEY_ALIAS")
                 keyPassword System.getenv("KEY_PASSWORD")
+            } 
+            else {
+                println "DEBUG KEYSTORE IS BEING USED!"
+                storeFile file(System.getProperty("user.home") + "/.android/debug.keystore")
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
             }
         }
     }
@@ -68,13 +76,13 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue "string", "app_name", "Mindful Debug"
-            signingConfig = signingConfigs.release ?: signingConfigs.debug
+            signingConfig = signingConfigs.release
         }
 
         profile {
             applicationIdSuffix ".profile"
             resValue "string", "app_name", "Mindful Profile"
-            signingConfig = signingConfigs.release ?: signingConfigs.debug
+            signingConfig = signingConfigs.release
         }
     }
     buildFeatures {
