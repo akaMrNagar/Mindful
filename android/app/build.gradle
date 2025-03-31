@@ -62,19 +62,30 @@ android {
                 debugSymbolLevel 'full'
             }
             resValue "string", "app_name", "Mindful"
-            signingConfig = signingConfigs.release
+            signingConfig signingConfigs.release
+            
+            // If you see "SigningConfig 'release' is missing required property 'storeFile'",  
+            // it means your release keystore is not set up due to missing environment variables.  
+            // To fix this locally, either:  
+            // 1. Use `signingConfig signingConfigs.debug` (but DO NOT commit this change).  
+            // 2. Set the following environment variables to keep signing secure:  
+            //    - KEYSTORE_FILE  
+            //    - STORE_PASSWORD  
+            //    - KEY_ALIAS  
+            //    - KEY_PASSWORD  
+            // Avoid pushing any local changes to this Gradle file, as it may break CI/CD.  
         }
 
         debug {
             applicationIdSuffix ".debug"
             resValue "string", "app_name", "Mindful Debug"
-            signingConfig = signingConfigs.release ?: signingConfigs.debug
+            signingConfig System.getenv("KEYSTORE_FILE") != null ? signingConfigs.release : signingConfigs.debug
         }
 
         profile {
             applicationIdSuffix ".profile"
             resValue "string", "app_name", "Mindful Profile"
-            signingConfig = signingConfigs.release ?: signingConfigs.debug
+            signingConfig System.getenv("KEYSTORE_FILE") != null ? signingConfigs.release : signingConfigs.debug
         }
     }
     buildFeatures {
