@@ -88,3 +88,4 @@ Your feedback is invaluable to us! If you have suggestions, encounter issues, or
 
  1. Japanese by [*Riikun*](https://crowdin.com/profile/riikun)
  2. Turkish by [*Kerem*](https://crowdin.com/profile/keremk)
+ 3. Chinese (Simplified) by [*Jihuayu*](https://crowdin.com/profile/jihuayu)

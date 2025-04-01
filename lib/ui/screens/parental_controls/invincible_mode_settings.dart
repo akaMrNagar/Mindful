@@ -93,16 +93,23 @@ class InvincibleModeSettings extends ConsumerWidget {
           child: DefaultListTile(
             position: ItemPosition.mid,
             isPrimary: true,
-            enabled: !parentalControls.isInvincibleModeOn,
             titleText: context.locale.invincible_window_tile_title,
             subtitleText: context.locale.invincible_window_tile_subtitle,
             trailing: StyledText(
               parentalControls.invincibleWindowTime.format(context),
               fontSize: 14,
               fontWeight: FontWeight.bold,
-              isSubtitle: parentalControls.isInvincibleModeOn,
             ),
             onPressed: () async {
+              /// Check if between the specified window
+              if (!ref
+                  .read(parentalControlsProvider.notifier)
+                  .isBetweenInvincibleWindow) {
+                context
+                    .showSnackAlert(context.locale.invincible_mode_snack_alert);
+                return;
+              }
+
               final pickedTime = await showCustomTimePickerDialog(
                 context: context,
                 heroTag: HeroTags.invincibleWindowTileTag,

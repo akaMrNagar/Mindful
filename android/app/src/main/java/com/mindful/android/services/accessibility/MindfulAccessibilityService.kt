@@ -58,9 +58,6 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             AccessibilityEvent.TYPE_VIEW_SCROLLED
         )
 
-        //  The minimum interval between every Back Action [BACK PRESS] call from service
-        private const val BACK_ACTION_INVOKE_INTERVAL_MS = 500L
-
         private val browserPackages = mutableSetOf<String>()
         private val shortsPlatformPackages = mutableSetOf<String>()
         private val devicePlatformPackages = mutableSetOf<String>()
@@ -79,28 +76,34 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     private lateinit var trackingManager: TrackingManager
 
     private var mWellBeingSettings = WellBeingSettings(JSONObject())
-    private var lastTimeBackActioned = 0L
 
     override fun onCreate() {
         super.onCreate()
         trackingManager = TrackingManager(context = this)
-
         deviceFeaturesManager = DeviceFeaturesManager(
             context = this,
             blockedContentGoBack = this::goBackWithToast
         )
-
         shortsPlatformManager = ShortsPlatformManager(
             context = this,
             blockedContentGoBack = this::goBackWithToast
         )
-
         browserManager = BrowserManager(
             context = this,
             shortsPlatformManager = shortsPlatformManager,
             blockedContentGoBack = this::goBackWithToast
         )
 
+        // Register shared prefs listener and load data
+        SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, true, this)
+        mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
+
+        // Register listener for install and uninstall events
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
+        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
+        filter.addDataScheme("package")
+        registerReceiver(deviceAppsChangedReceiver, filter)
     }
 
 
@@ -120,16 +123,6 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     }
 
     override fun onServiceConnected() {
-        // Register shared prefs listener and load data
-        SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, true, this)
-        mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
-
-        // Register listener for install and uninstall events
-        val filter = IntentFilter()
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        filter.addDataScheme("package")
-        registerReceiver(deviceAppsChangedReceiver, filter)
 
         refreshServiceConfig()
         trackingManager.stopManualTracking()
@@ -217,21 +210,16 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * Performs the back action and shows a toast message indicating that the content is blocked.
      */
     private fun goBackWithToast() {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - lastTimeBackActioned >= BACK_ACTION_INVOKE_INTERVAL_MS) {
-            lastTimeBackActioned = currentTime
+        ThreadUtils.runOnMainThread {
+            // Perform the back action (can be done on background thread)
+            performGlobalAction(GLOBAL_ACTION_BACK)
 
-            ThreadUtils.runOnMainThread {
-                // Perform the back action (can be done on background thread)
-                performGlobalAction(GLOBAL_ACTION_BACK)
-
-                // Post Toast to main thread
-                Toast.makeText(
-                    this@MindfulAccessibilityService,
-                    getString(R.string.toast_blocked_content),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
+            // Post Toast to main thread
+            Toast.makeText(
+                this@MindfulAccessibilityService,
+                getString(R.string.toast_blocked_content),
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -326,12 +314,16 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     }
 
     override fun onDestroy() {
-        mExecutorService.shutdown()
-        trackingManager.startManualTracking()
+        try {
+            mExecutorService.shutdownNow()
+            trackingManager.startManualTracking()
 
-        // Unregister prefs listener and receiver
-        unregisterReceiver(deviceAppsChangedReceiver)
-        SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
+            // Unregister prefs listener and receiver
+            unregisterReceiver(deviceAppsChangedReceiver)
+            SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
+        } catch (e: Exception) {
+            // ignored
+        }
 
         Log.d(TAG, "onDestroy: Accessibility service destroyed")
         super.onDestroy()

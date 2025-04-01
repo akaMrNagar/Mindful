@@ -419,7 +419,7 @@ class FgMethodCallHandler(
             }
 
             "parseHostFromUrl" -> {
-                result.success(Utils.parseHostNameFromUrl(call.arguments() ?: ""))
+                result.success(Utils.parseHostNameFromUrl(call.arguments() ?: "") ?: "")
             }
 
             else -> result.notImplemented()

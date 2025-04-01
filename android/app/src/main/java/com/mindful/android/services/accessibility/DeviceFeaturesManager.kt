@@ -46,18 +46,22 @@ class DeviceFeaturesManager(
             context: Context,
             node: AccessibilityNodeInfo,
         ): Boolean {
+            val appName: String = context.getString(R.string.app_name)
+
             // Check for Admin section
             val isAdminSectionOpen =
                 node.findAccessibilityNodeInfosByViewId("com.android.settings:id/admin_name")
-                    .firstOrNull()?.text == context.getString(R.string.app_name)
+                    .firstOrNull()?.text == appName
 
 
             // Check for Accessibility section
             val isAccessibilitySectionOpen =
-                node.findAccessibilityNodeInfosByText(context.getString(R.string.app_name))
+                node.findAccessibilityNodeInfosByText(context.getString(R.string.accessibility_description))
                     .isNotEmpty() &&
-                        node.findAccessibilityNodeInfosByText(context.getString(R.string.accessibility_description))
-                            .isNotEmpty()
+                        node.findAccessibilityNodeInfosByText(appName)
+                            .any { it.text == appName }
+
+
 
             return (isAdminSectionOpen || isAccessibilitySectionOpen) &&
                     PermissionsHelper.getAndAskAdminPermission(context, false)

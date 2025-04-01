@@ -12,11 +12,12 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.view.animation.OvershootInterpolator
 import android.view.animation.TranslateAnimation
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.utils.Extensions.safePeek
+import com.mindful.android.utils.Extensions.safePop
 import com.mindful.android.utils.ThreadUtils
 import java.util.Stack
 
@@ -43,16 +44,18 @@ class OverlayManager(
 
     /// Animate out the overlay
     fun dismissOverlay() {
-        if (overlays.isEmpty()) return
-        ThreadUtils.runOnMainThread {
-            animateOverlay(overlay = overlays.peek(), animateIn = false)
+        overlays.safePeek()?.let {
+            ThreadUtils.runOnMainThread {
+                animateOverlay(overlay = it, animateIn = false)
+            }
         }
     }
 
     /// Remove overlay instantly
     private fun removeOverlay() {
-        if (overlays.isEmpty()) return
-        windowManager.removeView(overlays.pop())
+        overlays.safePop()?.let {
+            windowManager.removeView(it)
+        }
     }
 
 

@@ -31,8 +31,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _activePeriodStartMeta =
-      const VerificationMeta('activePeriodStart');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodStart = GeneratedColumn<int>(
@@ -42,8 +40,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
               defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $AppRestrictionTableTable.$converteractivePeriodStart);
-  static const VerificationMeta _activePeriodEndMeta =
-      const VerificationMeta('activePeriodEnd');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodEnd = GeneratedColumn<int>(
@@ -118,8 +114,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           launchLimit.isAcceptableOrUnknown(
               data['launch_limit']!, _launchLimitMeta));
     }
-    context.handle(_activePeriodStartMeta, const VerificationResult.success());
-    context.handle(_activePeriodEndMeta, const VerificationResult.success());
     if (data.containsKey('period_duration_in_mins')) {
       context.handle(
           _periodDurationInMinsMeta,
@@ -522,8 +516,6 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _scheduleStartTimeMeta =
-      const VerificationMeta('scheduleStartTime');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       scheduleStartTime = GeneratedColumn<int>(
@@ -533,8 +525,6 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
               defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $BedtimeScheduleTableTable.$converterscheduleStartTime);
-  static const VerificationMeta _scheduleEndTimeMeta =
-      const VerificationMeta('scheduleEndTime');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       scheduleEndTime = GeneratedColumn<int>(
@@ -552,8 +542,6 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _scheduleDaysMeta =
-      const VerificationMeta('scheduleDays');
   @override
   late final GeneratedColumnWithTypeConverter<List<bool>, String> scheduleDays =
       GeneratedColumn<String>('schedule_days', aliasedName, false,
@@ -583,8 +571,6 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("should_start_dnd" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _distractingAppsMeta =
-      const VerificationMeta('distractingApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       distractingApps = GeneratedColumn<String>(
@@ -618,15 +604,12 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_scheduleStartTimeMeta, const VerificationResult.success());
-    context.handle(_scheduleEndTimeMeta, const VerificationResult.success());
     if (data.containsKey('schedule_duration_in_mins')) {
       context.handle(
           _scheduleDurationInMinsMeta,
           scheduleDurationInMins.isAcceptableOrUnknown(
               data['schedule_duration_in_mins']!, _scheduleDurationInMinsMeta));
     }
-    context.handle(_scheduleDaysMeta, const VerificationResult.success());
     if (data.containsKey('is_schedule_on')) {
       context.handle(
           _isScheduleOnMeta,
@@ -639,7 +622,6 @@ class $BedtimeScheduleTableTable extends BedtimeScheduleTable
           shouldStartDnd.isAcceptableOrUnknown(
               data['should_start_dnd']!, _shouldStartDndMeta));
     }
-    context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1346,8 +1328,6 @@ class $FocusModeTableTable extends FocusModeTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _sessionTypeMeta =
-      const VerificationMeta('sessionType');
   @override
   late final GeneratedColumnWithTypeConverter<SessionType, int> sessionType =
       GeneratedColumn<int>('session_type', aliasedName, false,
@@ -1396,7 +1376,6 @@ class $FocusModeTableTable extends FocusModeTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_sessionTypeMeta, const VerificationResult.success());
     if (data.containsKey('longest_streak')) {
       context.handle(
           _longestStreakMeta,
@@ -1672,8 +1651,6 @@ class $FocusProfileTableTable extends FocusProfileTable
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $FocusProfileTableTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _sessionTypeMeta =
-      const VerificationMeta('sessionType');
   @override
   late final GeneratedColumnWithTypeConverter<SessionType, int> sessionType =
       GeneratedColumn<int>('session_type', aliasedName, false,
@@ -1708,8 +1685,6 @@ class $FocusProfileTableTable extends FocusProfileTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("should_start_dnd" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _distractingAppsMeta =
-      const VerificationMeta('distractingApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       distractingApps = GeneratedColumn<String>(
@@ -1737,7 +1712,6 @@ class $FocusProfileTableTable extends FocusProfileTable
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    context.handle(_sessionTypeMeta, const VerificationResult.success());
     if (data.containsKey('session_duration')) {
       context.handle(
           _sessionDurationMeta,
@@ -1756,7 +1730,6 @@ class $FocusProfileTableTable extends FocusProfileTable
           shouldStartDnd.isAcceptableOrUnknown(
               data['should_start_dnd']!, _shouldStartDndMeta));
     }
-    context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2030,7 +2003,6 @@ class $FocusSessionsTableTable extends FocusSessionsTable
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<SessionType, int> type =
       GeneratedColumn<int>('type', aliasedName, false,
@@ -2038,7 +2010,6 @@ class $FocusSessionsTableTable extends FocusSessionsTable
               requiredDuringInsert: false,
               defaultValue: const Constant(0))
           .withConverter<SessionType>($FocusSessionsTableTable.$convertertype);
-  static const VerificationMeta _stateMeta = const VerificationMeta('state');
   @override
   late final GeneratedColumnWithTypeConverter<SessionState, int> state =
       GeneratedColumn<int>('state', aliasedName, false,
@@ -2087,8 +2058,6 @@ class $FocusSessionsTableTable extends FocusSessionsTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_typeMeta, const VerificationResult.success());
-    context.handle(_stateMeta, const VerificationResult.success());
     if (data.containsKey('start_date_time')) {
       context.handle(
           _startDateTimeMeta,
@@ -2400,8 +2369,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _themeModeMeta =
-      const VerificationMeta('themeMode');
   @override
   late final GeneratedColumnWithTypeConverter<AppThemeMode, int> themeMode =
       GeneratedColumn<int>('theme_mode', aliasedName, false,
@@ -2454,8 +2421,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("use_dynamic_colors" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _defaultHomeTabMeta =
-      const VerificationMeta('defaultHomeTab');
   @override
   late final GeneratedColumnWithTypeConverter<DefaultHomeTab, int>
       defaultHomeTab = GeneratedColumn<int>(
@@ -2536,7 +2501,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_themeModeMeta, const VerificationResult.success());
     if (data.containsKey('accent_color')) {
       context.handle(
           _accentColorMeta,
@@ -2565,7 +2529,6 @@ class $MindfulSettingsTableTable extends MindfulSettingsTable
           useDynamicColors.isAcceptableOrUnknown(
               data['use_dynamic_colors']!, _useDynamicColorsMeta));
     }
-    context.handle(_defaultHomeTabMeta, const VerificationResult.success());
     if (data.containsKey('usage_history_weeks')) {
       context.handle(
           _usageHistoryWeeksMeta,
@@ -3111,8 +3074,6 @@ class $ParentalControlsTableTable extends ParentalControlsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("protected_access" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _uninstallWindowTimeMeta =
-      const VerificationMeta('uninstallWindowTime');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       uninstallWindowTime = GeneratedColumn<int>(
@@ -3132,8 +3093,6 @@ class $ParentalControlsTableTable extends ParentalControlsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("is_invincible_mode_on" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _invincibleWindowTimeMeta =
-      const VerificationMeta('invincibleWindowTime');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       invincibleWindowTime = GeneratedColumn<int>(
@@ -3247,16 +3206,12 @@ class $ParentalControlsTableTable extends ParentalControlsTable
           protectedAccess.isAcceptableOrUnknown(
               data['protected_access']!, _protectedAccessMeta));
     }
-    context.handle(
-        _uninstallWindowTimeMeta, const VerificationResult.success());
     if (data.containsKey('is_invincible_mode_on')) {
       context.handle(
           _isInvincibleModeOnMeta,
           isInvincibleModeOn.isAcceptableOrUnknown(
               data['is_invincible_mode_on']!, _isInvincibleModeOnMeta));
     }
-    context.handle(
-        _invincibleWindowTimeMeta, const VerificationResult.success());
     if (data.containsKey('include_apps_timer')) {
       context.handle(
           _includeAppsTimerMeta,
@@ -3850,8 +3805,6 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _activePeriodStartMeta =
-      const VerificationMeta('activePeriodStart');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodStart = GeneratedColumn<int>(
@@ -3861,8 +3814,6 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
               defaultValue: const Constant(0))
           .withConverter<TimeOfDayAdapter>(
               $RestrictionGroupsTableTable.$converteractivePeriodStart);
-  static const VerificationMeta _activePeriodEndMeta =
-      const VerificationMeta('activePeriodEnd');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int>
       activePeriodEnd = GeneratedColumn<int>(
@@ -3880,8 +3831,6 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _distractingAppsMeta =
-      const VerificationMeta('distractingApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       distractingApps = GeneratedColumn<String>(
@@ -3922,15 +3871,12 @@ class $RestrictionGroupsTableTable extends RestrictionGroupsTable
       context.handle(_timerSecMeta,
           timerSec.isAcceptableOrUnknown(data['timer_sec']!, _timerSecMeta));
     }
-    context.handle(_activePeriodStartMeta, const VerificationResult.success());
-    context.handle(_activePeriodEndMeta, const VerificationResult.success());
     if (data.containsKey('period_duration_in_mins')) {
       context.handle(
           _periodDurationInMinsMeta,
           periodDurationInMins.isAcceptableOrUnknown(
               data['period_duration_in_mins']!, _periodDurationInMinsMeta));
     }
-    context.handle(_distractingAppsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4283,8 +4229,6 @@ class $WellbeingTableTable extends WellbeingTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(30 * 60));
-  static const VerificationMeta _blockedFeaturesMeta =
-      const VerificationMeta('blockedFeatures');
   @override
   late final GeneratedColumnWithTypeConverter<List<PlatformFeatures>, String>
       blockedFeatures = GeneratedColumn<String>(
@@ -4304,8 +4248,6 @@ class $WellbeingTableTable extends WellbeingTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("block_nsfw_sites" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _blockedWebsitesMeta =
-      const VerificationMeta('blockedWebsites');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       blockedWebsites = GeneratedColumn<String>(
@@ -4315,8 +4257,6 @@ class $WellbeingTableTable extends WellbeingTable
               defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $WellbeingTableTable.$converterblockedWebsites);
-  static const VerificationMeta _nsfwWebsitesMeta =
-      const VerificationMeta('nsfwWebsites');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       nsfwWebsites = GeneratedColumn<String>(
@@ -4354,15 +4294,12 @@ class $WellbeingTableTable extends WellbeingTable
           allowedShortsTimeSec.isAcceptableOrUnknown(
               data['allowed_shorts_time_sec']!, _allowedShortsTimeSecMeta));
     }
-    context.handle(_blockedFeaturesMeta, const VerificationResult.success());
     if (data.containsKey('block_nsfw_sites')) {
       context.handle(
           _blockNsfwSitesMeta,
           blockNsfwSites.isAcceptableOrUnknown(
               data['block_nsfw_sites']!, _blockNsfwSitesMeta));
     }
-    context.handle(_blockedWebsitesMeta, const VerificationResult.success());
-    context.handle(_nsfwWebsitesMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4674,8 +4611,6 @@ class $SharedUniqueDataTableTable extends SharedUniqueDataTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
-  static const VerificationMeta _excludedAppsMeta =
-      const VerificationMeta('excludedApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       excludedApps = GeneratedColumn<String>(
@@ -4685,8 +4620,6 @@ class $SharedUniqueDataTableTable extends SharedUniqueDataTable
               defaultValue: Constant(jsonEncode([])))
           .withConverter<List<String>>(
               $SharedUniqueDataTableTable.$converterexcludedApps);
-  static const VerificationMeta _notificationBatchedAppsMeta =
-      const VerificationMeta('notificationBatchedApps');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       notificationBatchedApps = GeneratedColumn<String>(
@@ -4712,9 +4645,6 @@ class $SharedUniqueDataTableTable extends SharedUniqueDataTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_excludedAppsMeta, const VerificationResult.success());
-    context.handle(
-        _notificationBatchedAppsMeta, const VerificationResult.success());
     return context;
   }
 
@@ -4951,7 +4881,6 @@ class $NotificationScheduleTableTable extends NotificationScheduleTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(""));
-  static const VerificationMeta _timeMeta = const VerificationMeta('time');
   @override
   late final GeneratedColumnWithTypeConverter<TimeOfDayAdapter, int> time =
       GeneratedColumn<int>('time', aliasedName, false,
@@ -4984,7 +4913,6 @@ class $NotificationScheduleTableTable extends NotificationScheduleTable
       context.handle(
           _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
     }
-    context.handle(_timeMeta, const VerificationResult.success());
     return context;
   }
 

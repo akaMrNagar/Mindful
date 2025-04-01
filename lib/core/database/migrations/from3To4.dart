@@ -53,9 +53,6 @@ Future<void> from3To4(Migrator m, Schema4 schema) async => await runSafe(
             settingsRecord?.read<int>('uninstall_window_time') ?? 0;
 
         /// Invincible mode values
-        final bool isInvincibleModeOn =
-            invincibleRecord?.read<bool>('is_invincible_mode_on') ?? false;
-
         final bool includeAppsTimer =
             invincibleRecord?.read<bool>('include_apps_timer') ?? false;
 
@@ -89,7 +86,7 @@ Future<void> from3To4(Migrator m, Schema4 schema) async => await runSafe(
                   protectedAccess: Value(protectedAccess),
                   uninstallWindowTime:
                       Value(TimeOfDayAdapter.fromMinutes(uninstallWindow)),
-                  isInvincibleModeOn: Value(isInvincibleModeOn),
+                  isInvincibleModeOn: const Value(false),
                   includeAppsTimer: Value(includeAppsTimer),
                   includeAppsLaunchLimit: Value(includeAppsLaunchLimit),
                   includeAppsActivePeriod: Value(includeAppsActivePeriod),
