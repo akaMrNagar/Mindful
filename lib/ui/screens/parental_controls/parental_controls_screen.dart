@@ -114,16 +114,25 @@ class ParentalControlsScreen extends ConsumerWidget {
                 tag: HeroTags.uninstallWindowTileTag,
                 child: DefaultListTile(
                   position: ItemPosition.bottom,
-                  enabled: !isAdminEnabled,
                   titleText: context.locale.uninstall_window_tile_title,
                   subtitleText: context.locale.uninstall_window_tile_subtitle,
                   trailing: StyledText(
                     parentalControls.uninstallWindowTime.format(context),
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    isSubtitle: isAdminEnabled,
                   ),
                   onPressed: () async {
+                    /// Check if between the specified window
+                    if (isAdminEnabled &&
+                        !ref
+                            .read(parentalControlsProvider.notifier)
+                            .isBetweenUninstallWindow) {
+                      context.showSnackAlert(
+                        context.locale.permission_admin_snack_alert,
+                      );
+                      return;
+                    }
+
                     final pickedTime = await showCustomTimePickerDialog(
                       context: context,
                       heroTag: HeroTags.uninstallWindowTileTag,
