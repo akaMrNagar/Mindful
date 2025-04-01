@@ -521,7 +521,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get invincible_mode_tile_title => '無敵モードの有効化';
 
   @override
-  String get invincible_mode_info => '無敵モードを有効にすると、設定した制限をその日は変更できなくなります。制限は深夜にリセットされるため、翌日には変更できます。';
+  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
 
   @override
   String get invincible_mode_snack_alert => '無敵モードが有効になっているため、制限は変更できません。';
@@ -596,7 +596,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uninstall_window_tile_title => 'アンインストール画面';
 
   @override
-  String get uninstall_window_tile_subtitle => '選択した時間から5分以内であれば、改ざん防止を無効にできます。';
+  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 10 minutes from the selected time.';
 
   @override
   String get invincible_window_tile_title => 'Invincible window';

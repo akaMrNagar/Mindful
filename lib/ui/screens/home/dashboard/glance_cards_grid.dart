@@ -24,7 +24,7 @@ class GlanceCardsGrid extends StatelessWidget {
     return GridView.count(
       shrinkWrap: true,
       crossAxisCount: 2,
-      childAspectRatio: 2.3,
+      childAspectRatio: MediaQuery.of(context).size.width / 184,
       padding: const EdgeInsets.only(top: 4),
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
