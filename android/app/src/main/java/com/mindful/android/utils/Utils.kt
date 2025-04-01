@@ -23,11 +23,9 @@ import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import android.util.Log
-import com.mindful.android.MainActivity
 import org.jetbrains.annotations.Contract
 import java.io.ByteArrayOutputStream
 import java.net.URI
-import java.net.URISyntaxException
 import java.util.Calendar
 import java.util.Locale
 import kotlin.math.abs
@@ -350,41 +348,40 @@ object Utils {
      * @param url The URL string to parse.
      * @return The host name extracted from the URL.
      */
-    fun parseHostNameFromUrl(url: String): String {
-        val uri: URI
-        var hostName: String? = null
+    fun parseHostNameFromUrl(url: String): String? {
+        // First try using URI class for proper URL parsing
+        runCatching { URI(url).host }
+            .onSuccess { host ->
+                host?.let { originalHost ->
+                    return when {
+                        originalHost.startsWith("mobile.") -> originalHost.substring(7)
+                        originalHost.startsWith("m.") -> originalHost.substring(2)
+                        else -> originalHost
+                    }
+                }
+            }
+            .onFailure { e ->
+                Log.w(
+                    TAG,
+                    "parseHostNameFromUrl: Cannot parse url using URI method, trying fallback",
+                    e
+                )
+            }
 
-        try {
-            uri = URI(url)
-            hostName = uri.host
-        } catch (e: URISyntaxException) {
-            Log.w(
-                TAG,
-                "parseHostNameFromUrl: Cannot parse url using URI method, trying different method",
-                e
-            )
-        }
+        // Fallback manual parsing
+        return buildString {
+            // Remove common prefixes
+            append(url.removePrefix("https://").removePrefix("http://").removePrefix("www."))
 
-        if (hostName != null) return hostName
+            // Handle mobile prefixes
+            when {
+                startsWith("mobile.") -> delete(0, 7)
+                startsWith("m.") -> delete(0, 2)
+            }
 
-        // If host name is still null then reassign with url
-        hostName = url
-
-        // Remove prefix from url
-        hostName = hostName.replace("https://", "").replace("http://", "").replace("www.", "")
-
-        // Some websites use mobile. OR m. prefix
-        if (hostName.contains("mobile.")) {
-            hostName = hostName.substring(7)
-        } else if (hostName.contains("m.") && hostName.indexOf("m.") < 3) {
-            hostName = hostName.substring(2)
-        }
-
-        // If the url still contains / then remove it
-        if (hostName.contains("/")) {
-            return hostName.substring(0, hostName.indexOf("/"))
-        }
-
-        return hostName
+            // Trim everything after first slash
+            val slashIndex = indexOf('/')
+            if (slashIndex > 0) setLength(slashIndex)
+        }.takeIf { it.isNotEmpty() }
     }
 }

@@ -14,7 +14,6 @@ import com.mindful.android.models.WellBeingSettings
 import com.mindful.android.utils.NsfwDomains
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
-import kotlin.math.log
 
 class BrowserManager(
     private val context: Context,
@@ -43,13 +42,13 @@ class BrowserManager(
         url = url.replace("google.com/amp/s/amp.", "")
 
         // Block websites
-        val host = Utils.parseHostNameFromUrl(url)
+        val host = Utils.parseHostNameFromUrl(url) ?: return
 
         when {
             settings.blockedWebsites.contains(host) || nsfwDomains.containsKey(host)
             -> {
                 Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
-                blockedContentGoBack()
+                blockedContentGoBack.invoke()
             }
 
             // Block short form content
@@ -176,6 +175,14 @@ class BrowserManager(
          */
         private fun extractBrowserUrl(node: AccessibilityNodeInfo, packageName: String): String {
             try {
+                // Return if suggestion box is open for chromium based browsers
+                if (node.findAccessibilityNodeInfosByViewId("$packageName:id/omnibox_suggestions_dropdown")
+                        .isNotEmpty()
+                ) {
+                    return ""
+                }
+
+
                 // Find by input field class
                 if (node.className == "android.widget.EditText") {
                     val txtSequence = node.text
