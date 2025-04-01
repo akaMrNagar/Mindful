@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+  ~  *  *
+  ~  *  * This source code is licensed under the GPL-2.0 license license found in the
+  ~  *  * LICENSE file in the root directory of this source tree.
+  ~  *
+  ~  */
+  -->
+<resources>
+    <string name="accessibility_description">Mindful 应用使用无障碍服务来阻止网站和应用中的短内容。它检查 URL 和内容是否在您的黑名单中，并阻止访问以帮助您保持专注。\n\n⚠️注意：您的隐私是我们的首要任务。Mindful 100% 安全，且在离线状态下工作。我们不收集或存储任何个人数据。</string>
+    <string name="admin_description">Mindful 不会收集、存储或传输任何用户数据。作为免费开源软件（FOSS），您可以查看和修改源代码。管理权限仅用于必要的系统操作，以确保应用程序在不损害您的隐私的情况下正常运行。</string>
+    <string name="toast_enable_notification">请启用通知</string>
+    <string name="toast_blocked_content">内容已被阻止！正在返回</string>
+    <string name="toast_redirecting">正在过滤搜索结果</string>
+    <string name="toast_dnd_utilized_by_feature" comment="Placeholder is the name of feature like Focus mode, Bedtime or more" formatted="true">\"%s\" 正在使用免打扰模式。</string>
+    <string name="service_running_notification_title">Mindful 正在运行</string>
+    <string name="shortcut_focus_mode_label">专注模式</string>
+    <string name="shortcut_focus_mode_description">快速开始带有自定义配置文件的专注会话。</string>
+    <string name="shortcut_upcoming_notifications_label">批量通知</string>
+    <string name="shortcut_upcoming_notifications_description">查看即将到来的批量通知。</string>
+    <string name="shortcut_parental_controls_label">家长控制</string>
+    <string name="shortcut_parental_controls_description">管理家长控制和安全设置</string>
+    <string name="focus_quick_tile_status_active">已激活</string>
+    <string name="usage_widget_description">获取每日屏幕和数据使用情况的概览</string>
+    <string name="widget_screen_time_label">屏幕时间</string>
+    <string name="widget_mobile_data_label">移动数据</string>
+    <string name="widget_wifi_data_label">Wi-Fi 数据</string>
+    <string name="internet_blocker_running_notification_info">Mindful 现在正在管理互联网访问，以帮助您保持专注。</string>
+    <string name="app_blocker_running_notification_info">Mindful 现在正在跟踪应用程序使用情况，以帮助您保持专注并管理您的数字习惯。</string>
+    <string name="overlay_permission_denied_notification_title">权限被拒绝</string>
+    <string name="overlay_permission_denied_notification_info">请通过点击通知授予 Mindful 显示叠加层权限。在下一个屏幕上，在应用程序列表中找到 Mindful 并点击允许。</string>
+    <string name="app_paused_reason_focus_session">是专注时间！此应用程序已暂停，以帮助您保持在正轨上并充分利用您的会话。</string>
+    <string name="app_paused_reason_bedtime">是睡眠时间！此应用程序已暂停整晚，以帮助您放松并为一个宁静的睡眠做准备。</string>
+    <string name="app_paused_reason_app_timer_left">您已经使用这个应用程序一段时间了。让我们换个方式，暂时离开屏幕并专注于一些富有成效的事情。</string>
+    <string name="app_paused_reason_app_timer_out">您已经达到每日使用此应用程序的限制。利用这个机会来提升您的生产力。</string>
+    <string name="app_paused_reason_launch_count_out">您已经达到今天对此应用程序的最大启动次数。是时候退一步并重新专注于您的优先事项了。</string>
+    <string name="app_paused_reason_active_period_over">由于当前时间不在您设置的活动时间内，因此暂停访问此应用程序。利用这段时间专注于最重要的事情，并在允许的时间内再次检查。</string>
+    <string name="app_paused_reason_group_timer_left" formatted="true">您已经使用了来自「%s」组的应用程序一段时间了。是时候退一步并专注于您的任务，而不是屏幕。</string>
+    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">您已经达到「%s」组的总时间限制。暂时休息一下并重新充电您的专注力。</string>
+    <string name="app_paused_reason_group_active_period_over" formatted="true">「%s」组中的应用程序目前已暂停，因为当前时间不在您设置的活动时间内。利用这段时间充电或专注于您的任务，并在指定时间内返回。</string>
+    <string name="app_paused_restriction_focus_mode">专注模式</string>
+    <string name="app_paused_restriction_bedtime_mode">睡眠模式</string>
+    <string name="app_paused_restriction_timer">定时器</string>
+    <string name="app_paused_restriction_launch_count">启动次数</string>
+    <string name="app_paused_restriction_active_period">活动时间</string>
+    <string name="app_paused_overlay_button_emergency">紧急</string>
+    <string name="app_paused_overlay_label_spent_today">今天已花费</string>
+    <string name="app_paused_overlay_label_left_today">今天剩余</string>
+    <string name="app_paused_overlay_ask_need_more_time">需要再多几分钟吗？</string>
+    <string name="app_paused_overlay_button_two_minutes">2 分钟</string>
+    <string name="app_paused_overlay_button_five_minutes">5 分钟</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 分钟</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 分钟</string>
+    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">关闭「%s」</string>
+    <string name="bedtime_upcoming_notification_info">睡眠时间将在 30 分钟后开始。利用这段时间收尾并为明天做好准备</string>
+    <string name="bedtime_started_notification_info">是时候放松了。睡眠例行程序已经开始，帮助您放松并为一个宁静的夜晚做准备。</string>
+    <string name="bedtime_ended_notification_info">起床吧！睡眠例行程序已经结束，准备好以充满活力和精神的状态开始新的一天。</string>
+    <string name="emergency_pause_notification_title">紧急暂停</string>
+    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">应用程序阻止器将在「%s」后恢复</string>
+    <string name="emergency_pause_ended_notification_info">紧急暂停已经结束，应用程序阻止器又恢复了。干扰现在被阻止了，保持专注！</string>
+    <string name="focus_session_notification_title">专注会话</string>
+    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">专注会话将在「%s」后结束</string>
+    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">您已经专注了「%s」</string>
+    <string name="focus_session_success_notification_info">恭喜！您成功完成了专注会话。做得好，保持良好的状态！继续努力！</string>
+    <string name="focus_session_giveup_notification_info">您放弃了！别担心，您下次可以做得更好。每一次努力都很重要——只要继续前进</string>
+    <string name="notification_schedule_notification_info" comment="Number of notifications as placeholder" formatted="true">您有「%d」条通知在您离开期间。它们将在 24 小时后自动清除。</string>
+</resources>
