@@ -76,7 +76,7 @@ _Note: Drop your socials along with your donation to get recognized as a support
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us through the following channels : 
 
 * **[GitHub (bug)](https://github.com/akaMrNagar/Mindful/issues/new?&template=bug_report.md)**
-* **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&tem**plate=feature_request.md)**
+* **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&template=feature_request.md)**
 * **[GitHub (vulnerability)](https://github.com/akaMrNagar/Mindful/security/advisories/new)**
 * **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
 
