@@ -360,7 +360,15 @@ class _CreateUpdateRestrictionGroupState
     if (!confirm) return;
 
     /// update associated apps and remove group
-    await _updateAssociatedApps(_group.distractingApps, null);
+    await _updateAssociatedApps(
+      {
+        ..._group.distractingApps,
+
+        /// if user modified the group before removing
+        ...widget.group?.distractingApps ?? [],
+      }.toList(),
+      null,
+    );
     ref.read(restrictionGroupsProvider.notifier).removeGroup(group: _group);
 
     _goBack();

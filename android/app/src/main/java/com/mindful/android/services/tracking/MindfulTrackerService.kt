@@ -78,7 +78,7 @@ class MindfulTrackerService : Service() {
             overlayManager.dismissOverlay()
 
             /// check current restrictions
-        val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
+            val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
 
             Log.d(TAG, "onNewAppLaunch: $packageName's evaluated state $currentOrFutureState")
             currentOrFutureState?.let {
