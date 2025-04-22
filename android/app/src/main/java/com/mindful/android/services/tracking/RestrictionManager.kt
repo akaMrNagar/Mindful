@@ -89,7 +89,6 @@ class RestrictionManager(
 
         // Increment and Check app launch count
         val launchCount = appsLaunchCount.getOrDefault(packageName, 0) + 1
-        appsLaunchCount[packageName] = launchCount
         if ((restriction.launchLimit > 0) && (launchCount > restriction.launchLimit)) {
             val state = RestrictionState(
                 message = context.getString(R.string.app_paused_reason_launch_count_out),
@@ -99,6 +98,7 @@ class RestrictionManager(
             alreadyRestrictedApps[packageName] = state
             return state
         }
+        appsLaunchCount[packageName] = launchCount
 
         val futureStates: MutableSet<RestrictionState> = mutableSetOf()
 

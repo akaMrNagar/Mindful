@@ -102,9 +102,10 @@ class InvincibleModeSettings extends ConsumerWidget {
             ),
             onPressed: () async {
               /// Check if between the specified window
-              if (!ref
-                  .read(parentalControlsProvider.notifier)
-                  .isBetweenInvincibleWindow) {
+              if (parentalControls.isInvincibleModeOn &&
+                  !ref
+                      .read(parentalControlsProvider.notifier)
+                      .isBetweenInvincibleWindow) {
                 context
                     .showSnackAlert(context.locale.invincible_mode_snack_alert);
                 return;
