@@ -9,7 +9,7 @@
  *  *
  *
  */
-package com.mindful.android.utils
+package com.mindful.android
 
 object AppConstants {
     const val FLUTTER_METHOD_CHANNEL_FG: String = "com.mindful.android.methodchannel.fg"

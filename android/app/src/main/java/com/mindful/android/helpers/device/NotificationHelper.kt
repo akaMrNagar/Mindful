@@ -24,12 +24,12 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.ThreadUtils.runOnMainThread
-import com.mindful.android.utils.Utils
 
 /**
  * NotificationHelper provides utility methods for managing notification channels and permissions
@@ -114,7 +114,7 @@ object NotificationHelper {
             .setOngoing(true)
             .setAutoCancel(true)
             .setContentTitle(context.getString(R.string.service_running_notification_title))
-            .setContentIntent(Utils.getPendingIntentForMindfulUri(context))
+            .setContentIntent(AppUtils.getPendingIntentForMindfulUri(context))
             .setContentText(content)
             .build()
     }

@@ -23,6 +23,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
@@ -32,9 +33,9 @@ import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.BedtimeSettings
 import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
-import com.mindful.android.utils.Utils
 import org.json.JSONObject
 
 class BedtimeRoutineReceiver : BroadcastReceiver() {
@@ -69,7 +70,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
         private val jsonBedtimeSettings = inputData.getString(ALARM_EXTRA_JSON) ?: ""
         private val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
         private val canStartRoutineToday: Boolean =
-            bedtimeSettings.scheduleDays[Utils.zeroIndexedDayOfWeek()]
+            bedtimeSettings.scheduleDays[DateTimeUtils.zeroIndexedDayOfWeek()]
 
         private val trackerServiceConn = SafeServiceConnection(
             context = context,
@@ -157,7 +158,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
                     .setOngoing(false)
                     .setOnlyAlertOnce(true)
                     .setContentIntent(
-                        Utils.getPendingIntentForMindfulUri(
+                        AppUtils.getPendingIntentForMindfulUri(
                             context,
                             "com.mindful.android://open/home?tab=3",
                         )

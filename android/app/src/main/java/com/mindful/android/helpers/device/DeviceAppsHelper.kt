@@ -4,12 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.util.Log
-import com.mindful.android.utils.AppConstants.REMOVED_APP_NAME
-import com.mindful.android.utils.AppConstants.REMOVED_PACKAGE
-import com.mindful.android.utils.AppConstants.TETHERING_APP_NAME
-import com.mindful.android.utils.AppConstants.TETHERING_PACKAGE
-import com.mindful.android.utils.Utils
+import com.mindful.android.AppConstants.REMOVED_APP_NAME
+import com.mindful.android.AppConstants.REMOVED_PACKAGE
+import com.mindful.android.AppConstants.TETHERING_APP_NAME
+import com.mindful.android.AppConstants.TETHERING_PACKAGE
+import com.mindful.android.utils.AppUtils
 
 object DeviceAppsHelper {
 
@@ -48,13 +47,13 @@ object DeviceAppsHelper {
                         name = app.loadLabel(packageManager).toString(),
                         packageName = app.packageName,
                         isImpSysApp = impSystemApps.contains(app.packageName),
-                        appIcon = Utils.getEncodedAppIcon(packageManager.getApplicationIcon(app)),
+                        appIcon = AppUtils.getEncodedAppIcon(packageManager.getApplicationIcon(app)),
                     )
                 }.toMutableList()
 
 
             // Get placeholder icon
-            val placeholderIcon = Utils.getEncodedAppIcon(
+            val placeholderIcon = AppUtils.getEncodedAppIcon(
                 packageManager.getApplicationIcon(
                     ApplicationInfo()
                 )

@@ -1,4 +1,4 @@
-package com.mindful.android.utils
+package com.mindful.android.utils.executors
 
 import android.os.Handler
 import android.os.HandlerThread

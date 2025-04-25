@@ -15,15 +15,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
+import com.mindful.android.AppConstants
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.models.UpcomingNotification
 import com.mindful.android.models.WellBeingSettings
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.JsonDeserializer
-import com.mindful.android.utils.Utils
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Calendar
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -216,7 +215,7 @@ object SharedPrefsHelper {
         // Create new object
         val currentLog = JSONObject()
         try {
-            currentLog.put("appVersion", Utils.getAppVersion(context))
+            currentLog.put("appVersion", AppUtils.getAppVersion(context))
             currentLog.put("timeStamp", System.currentTimeMillis())
             currentLog.put("error", exception.toString())
             currentLog.put("stackTrace", Log.getStackTraceString(exception))

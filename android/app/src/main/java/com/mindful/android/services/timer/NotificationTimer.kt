@@ -6,7 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import com.mindful.android.R
-import com.mindful.android.utils.PreciseCountDownExecutor
+import com.mindful.android.utils.executors.PreciseCountDownExecutor
 import java.util.concurrent.TimeUnit
 
 /**

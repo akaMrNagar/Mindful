@@ -15,8 +15,9 @@ import androidx.annotation.MainThread
 import com.mindful.android.R
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
-import com.mindful.android.utils.Utils
 
 object OverlayBuilder {
     @MainThread
@@ -47,7 +48,7 @@ object OverlayBuilder {
             emergencyBtn.setOnClickListener {
                 ThreadUtils.runOnMainThread {
                     context.applicationContext.startActivity(
-                        Utils.getIntentForMindfulUri(
+                        AppUtils.getIntentForMindfulUri(
                             context,
                             "com.mindful.android://open/appDashboard?package=$packageName"
                         )
@@ -93,11 +94,11 @@ object OverlayBuilder {
 
             // limit spent text
             val limitSpentTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_spent)
-            limitSpentTxt.text = Utils.minutesToTimeStr(usedLimitMins)
+            limitSpentTxt.text = DateTimeUtils.minutesToTimeStr(usedLimitMins)
 
             // limit left text
             val limitLeftTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_left)
-            limitLeftTxt.text = Utils.minutesToTimeStr(leftLimitMins)
+            limitLeftTxt.text = DateTimeUtils.minutesToTimeStr(leftLimitMins)
 
             // Wish to use more? options layout
             if (leftLimitMins > 0) {

@@ -17,6 +17,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.mindful.android.AppConstants
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.models.BedtimeSettings
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver
@@ -24,10 +25,9 @@ import com.mindful.android.receivers.alarm.MidnightResetReceiver
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver.NotificationBatchWorker
 import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.DateTimeUtils.todToTodayCal
 import com.mindful.android.utils.JsonDeserializer
 import com.mindful.android.utils.Utils
-import com.mindful.android.utils.Utils.todToTodayCal
 import org.json.JSONObject
 import java.util.Calendar
 import java.util.Date

@@ -1,7 +1,6 @@
 package com.mindful.android.services.quickTiles
 
 import android.annotation.SuppressLint
-import android.app.PendingIntent
 import android.content.ComponentName
 import android.os.Build
 import android.service.quicksettings.Tile
@@ -10,6 +9,7 @@ import android.util.Log
 import com.mindful.android.R
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.timer.FocusSessionService
+import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.Utils
 
 
@@ -40,7 +40,7 @@ class FocusQuickTileService : TileService() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 val uriString = if (isFocusActive) "com.mindful.android://open/activeSession"
                 else "com.mindful.android://open/focus"
-                tile?.activityLaunchForClick = Utils.getPendingIntentForMindfulUri(this, uriString)
+                tile?.activityLaunchForClick = AppUtils.getPendingIntentForMindfulUri(this, uriString)
             }
 
             // Set subtitle on android 10 and above
@@ -74,11 +74,11 @@ class FocusQuickTileService : TileService() {
             
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 startActivityAndCollapse(
-                    Utils.getPendingIntentForMindfulUri(this, uriString)
+                    AppUtils.getPendingIntentForMindfulUri(this, uriString)
                 )
             } else {
                 startActivityAndCollapse(
-                    Utils.getIntentForMindfulUri(this, uriString)
+                    AppUtils.getIntentForMindfulUri(this, uriString)
                 )
             }
         } catch (e: Exception) {

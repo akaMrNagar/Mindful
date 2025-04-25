@@ -31,7 +31,7 @@ import com.mindful.android.R
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.quickTiles.FocusQuickTileService
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.AppConstants
 import io.flutter.plugin.common.MethodChannel
 import java.util.Locale
 

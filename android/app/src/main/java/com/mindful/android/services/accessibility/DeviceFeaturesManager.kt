@@ -1,12 +1,11 @@
 package com.mindful.android.services.accessibility
 
 import android.content.Context
-import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import com.mindful.android.R
 import com.mindful.android.helpers.device.PermissionsHelper
 import com.mindful.android.models.WellBeingSettings
-import com.mindful.android.utils.AppConstants.SYSTEM_SETTINGS_PACKAGE
+import com.mindful.android.AppConstants.SYSTEM_SETTINGS_PACKAGE
 
 class DeviceFeaturesManager(
     private val context: Context,

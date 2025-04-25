@@ -28,6 +28,7 @@ import com.mindful.android.services.timer.EmergencyPauseService
 import com.mindful.android.services.timer.FocusSessionService
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.services.vpn.MindfulVpnService
+import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.JsonDeserializer
 import com.mindful.android.utils.Utils
 import io.flutter.plugin.common.MethodCall
@@ -111,7 +112,7 @@ class FgMethodCallHandler(
             }
 
             "getDeviceInfo" -> {
-                result.success(Utils.getDeviceInfoMap(context))
+                result.success(AppUtils.getDeviceInfoMap(context))
             }
 
             "getDeviceAppsInfo" -> {

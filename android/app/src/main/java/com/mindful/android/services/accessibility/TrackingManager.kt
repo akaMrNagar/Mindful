@@ -5,9 +5,8 @@ import android.content.Intent
 import android.util.Log
 import androidx.annotation.WorkerThread
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
-import com.mindful.android.utils.AppConstants.SYSTEM_UI_PACKAGE
-import com.mindful.android.utils.Debouncer
+import com.mindful.android.AppConstants.SYSTEM_UI_PACKAGE
+import com.mindful.android.utils.executors.Debouncer
 import java.lang.Exception
 
 

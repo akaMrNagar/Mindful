@@ -1,4 +1,4 @@
-package com.mindful.android.utils
+package com.mindful.android.utils.executors
 
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService

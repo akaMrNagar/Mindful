@@ -25,13 +25,12 @@ import android.util.Log
 import android.widget.RemoteViews
 import com.mindful.android.MainActivity
 import com.mindful.android.R
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.helpers.usages.NetworkUsageHelper
 import com.mindful.android.helpers.usages.ScreenUsageHelper
-import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.AggregatedUsage
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
-import com.mindful.android.utils.Utils
 import org.jetbrains.annotations.Contract
 import java.util.Calendar
 
@@ -102,15 +101,15 @@ class DeviceUsageWidget : AppWidgetProvider() {
                 val views = RemoteViews(context.packageName, R.layout.device_usage_widget_layout)
                 views.setTextViewText(
                     R.id.widgetScreenUsage,
-                    Utils.minutesToTimeStr(result.totalScreenUsageMins)
+                    DateTimeUtils.minutesToTimeStr(result.totalScreenUsageMins)
                 )
                 views.setTextViewText(
                     R.id.widgetMobileUsage,
-                    Utils.formatDataMBs(result.totalMobileUsageMBs)
+                    DateTimeUtils.formatDataMBs(result.totalMobileUsageMBs)
                 )
                 views.setTextViewText(
                     R.id.widgetWifiUsage,
-                    Utils.formatDataMBs(result.totalWifiUsageMBs)
+                    DateTimeUtils.formatDataMBs(result.totalWifiUsageMBs)
                 )
 
                 // Called by system. It may be first time so we need to attach onClick listeners

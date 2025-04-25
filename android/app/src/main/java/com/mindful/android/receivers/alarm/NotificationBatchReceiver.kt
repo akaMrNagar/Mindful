@@ -19,7 +19,7 @@ import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.AppConstants
 import org.json.JSONArray
 
 class NotificationBatchReceiver : BroadcastReceiver() {

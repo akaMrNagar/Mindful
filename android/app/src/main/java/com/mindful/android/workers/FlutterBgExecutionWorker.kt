@@ -7,7 +7,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.mindful.android.FgMethodCallHandler
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.AppConstants
 import com.mindful.android.utils.ThreadUtils
 import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine

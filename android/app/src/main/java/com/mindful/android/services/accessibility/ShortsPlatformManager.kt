@@ -6,12 +6,12 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.mindful.android.enums.PlatformFeatures
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.WellBeingSettings
-import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
-import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
-import com.mindful.android.utils.AppConstants.REDDIT_PACKAGE
-import com.mindful.android.utils.AppConstants.SNAPCHAT_PACKAGE
-import com.mindful.android.utils.AppConstants.YOUTUBE_CLIENT_PACKAGE_SUFFIX
-import com.mindful.android.utils.AppConstants.YOUTUBE_PACKAGE
+import com.mindful.android.AppConstants.FACEBOOK_PACKAGE
+import com.mindful.android.AppConstants.INSTAGRAM_PACKAGE
+import com.mindful.android.AppConstants.REDDIT_PACKAGE
+import com.mindful.android.AppConstants.SNAPCHAT_PACKAGE
+import com.mindful.android.AppConstants.YOUTUBE_CLIENT_PACKAGE_SUFFIX
+import com.mindful.android.AppConstants.YOUTUBE_PACKAGE
 import org.jetbrains.annotations.Contract
 
 

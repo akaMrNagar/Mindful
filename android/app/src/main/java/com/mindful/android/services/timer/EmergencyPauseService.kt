@@ -15,14 +15,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.mindful.android.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID
 import com.mindful.android.R
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.utils.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID
-import com.mindful.android.utils.Utils
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.DateTimeUtils
 
 class EmergencyPauseService : Service() {
     private lateinit var mNotificationTimer: NotificationTimer
@@ -35,7 +36,7 @@ class EmergencyPauseService : Service() {
         )
         mNotificationTimer = NotificationTimer(
             context = this,
-            ongoingPendingIntent = Utils.getPendingIntentForMindfulUri(this),
+            ongoingPendingIntent = AppUtils.getPendingIntentForMindfulUri(this),
             title = getString(R.string.emergency_pause_notification_title),
             timerDurationSeconds = DEFAULT_EMERGENCY_PASS_PERIOD_SECONDS,
             notificationId = EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID,
@@ -43,7 +44,7 @@ class EmergencyPauseService : Service() {
             onTicked = { remainingTime ->
                 getString(
                     R.string.emergency_pause_notification_info,
-                    Utils.secondsToTimeStr(remainingTime)
+                    DateTimeUtils.secondsToTimeStr(remainingTime)
                 )
             },
             onFinished = { getString(R.string.emergency_pause_ended_notification_info) },

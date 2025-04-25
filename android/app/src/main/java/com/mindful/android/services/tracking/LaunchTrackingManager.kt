@@ -16,7 +16,7 @@ import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
-import com.mindful.android.utils.AppConstants.SYSTEM_UI_PACKAGE
+import com.mindful.android.AppConstants.SYSTEM_UI_PACKAGE
 import com.mindful.android.utils.Utils
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService

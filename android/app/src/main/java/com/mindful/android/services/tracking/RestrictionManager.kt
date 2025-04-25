@@ -5,12 +5,12 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.util.Log
 import com.mindful.android.R
+import com.mindful.android.enums.RestrictionType
 import com.mindful.android.helpers.usages.ScreenUsageHelper
 import com.mindful.android.models.AppRestrictions
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.enums.RestrictionType
-import com.mindful.android.utils.Utils
+import com.mindful.android.utils.DateTimeUtils
 
 class RestrictionManager(
     private val context: Context,
@@ -154,13 +154,13 @@ class RestrictionManager(
             )
 
             /// Outside active period
-            if (Utils.isTimeOutsideTODs(restriction.activePeriodStart, periodEndTimeMinutes)) {
+            if (DateTimeUtils.isTimeOutsideTODs(restriction.activePeriodStart, periodEndTimeMinutes)) {
                 Log.d(TAG, "evaluateActivePeriodLimit: App's active period is over")
                 return state
             }
             /// Launched between active period calculate expiration time
             else {
-                val willOverInMs = Utils.todDifferenceFromNow(periodEndTimeMinutes)
+                val willOverInMs = DateTimeUtils.todDifferenceFromNow(periodEndTimeMinutes)
                 futureState.add(state.copy(expirationFutureMs = willOverInMs))
             }
         }
@@ -178,7 +178,7 @@ class RestrictionManager(
                     expirationFutureMs = -1L,
                 )
                 /// Outside active period
-                if (Utils.isTimeOutsideTODs(it.activePeriodStart, periodEndTimeMinutes)) {
+                if (DateTimeUtils.isTimeOutsideTODs(it.activePeriodStart, periodEndTimeMinutes)) {
                     Log.d(
                         TAG,
                         "evaluateActivePeriodLimit: ${it.groupName} group's active period is over"
@@ -187,7 +187,7 @@ class RestrictionManager(
                 }
                 /// Launched between active period calculate expiration time
                 else {
-                    val willOverInMs = Utils.todDifferenceFromNow(periodEndTimeMinutes)
+                    val willOverInMs = DateTimeUtils.todDifferenceFromNow(periodEndTimeMinutes)
                     futureState.add(state.copy(expirationFutureMs = willOverInMs))
                 }
             }

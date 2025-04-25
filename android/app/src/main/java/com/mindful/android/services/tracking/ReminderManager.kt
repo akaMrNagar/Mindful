@@ -2,7 +2,7 @@ package com.mindful.android.services.tracking
 
 import android.util.Log
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.utils.PreciseCountDownExecutor
+import com.mindful.android.utils.executors.PreciseCountDownExecutor
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
