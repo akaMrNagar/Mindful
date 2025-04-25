@@ -16,7 +16,7 @@ import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppConstants.SYSTEM_UI_PACKAGE
 import com.mindful.android.utils.Utils
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -104,7 +104,7 @@ class LaunchTrackingManager(
             Log.d(TAG, "onDeviceUnlocked: Manual usage tracking started")
         }
 
-        Thread { broadcastLastAppLaunchEvent() }.start()
+        Thread { invokeNewAppLaunched() }.start()
     }
 
     @MainThread
@@ -113,12 +113,16 @@ class LaunchTrackingManager(
         trackingExecutor = null
 
         // To cancel reminders and remove overlay
-        onNewAppLaunched.invoke("com.android.systemui")
+        onNewAppLaunched.invoke(SYSTEM_UI_PACKAGE)
         Log.d(TAG, "onDeviceLocked: Manual usage tracking stopped")
     }
 
+    /**
+     * Detect if any app is opened using usage states.
+     * @param startTimeStampMs Events starting timestamp in millis since epoch
+     */
     @WorkerThread
-    private fun findLaunchedApp(pastTime: Long = 0) {
+    private fun findLaunchedApp(startTimeStampMs: Long = lastUsageQueryTimestamp) {
         // Initialize usage states manager
         if (usageStatsManager == null) {
             usageStatsManager =
@@ -128,7 +132,7 @@ class LaunchTrackingManager(
 
         val now = System.currentTimeMillis()
         val usageEvents =
-            usageStatsManager?.queryEvents(lastUsageQueryTimestamp.minus(pastTime), now)
+            usageStatsManager?.queryEvents(startTimeStampMs, now)
         lastUsageQueryTimestamp = now
 
         usageEvents?.let {
@@ -149,10 +153,9 @@ class LaunchTrackingManager(
                     else -> {}
                 }
             }
-
             if (activeApps.isNotEmpty() && lastLaunchedApp != activeApps.first()) {
                 lastLaunchedApp = activeApps.first()
-                broadcastLastAppLaunchEvent()
+                invokeNewAppLaunched()
             }
         }
     }
@@ -160,7 +163,7 @@ class LaunchTrackingManager(
     /**
      * Broadcasts an event indicating the last launched app package name.
      */
-    private fun broadcastLastAppLaunchEvent() {
+    private fun invokeNewAppLaunched() {
         if (isTrackingPaused || lastLaunchedApp.isEmpty()) return
         onNewAppLaunched.invoke(lastLaunchedApp)
     }
@@ -172,7 +175,7 @@ class LaunchTrackingManager(
      */
     fun pauseResumeTracking(shouldPause: Boolean) {
         isTrackingPaused = shouldPause
-        if (!shouldPause) broadcastLastAppLaunchEvent()
+        if (!shouldPause) invokeNewAppLaunched()
     }
 
     /**
@@ -180,7 +183,7 @@ class LaunchTrackingManager(
      * Show overlay if that app is marked as distracting bedtime app.
      */
     fun detectActiveAppForBedtime() {
-        findLaunchedApp(6 * 60 * 60 * 1000)
+        findLaunchedApp(lastUsageQueryTimestamp.minus(6 * 60 * 60 * 1000))
     }
 
     fun dispose() {
@@ -203,14 +206,9 @@ class LaunchTrackingManager(
                     onDeviceLocked()
                 }
 
-                ACTION_NEW_APP_LAUNCHED -> intent.getStringExtra(AppConstants.INTENT_EXTRA_PACKAGE_NAME)
-                    ?.let {
-                        Thread {
-                            lastLaunchedApp = it
-                            broadcastLastAppLaunchEvent()
-                        }.start()
-                    }
-
+                ACTION_NEW_APP_LAUNCHED -> Thread {
+                    findLaunchedApp()
+                }.start()
             }
         }
     }

@@ -2,7 +2,7 @@ package com.mindful.android.services.tracking
 
 import android.util.Log
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.utils.CountDownExecutor
+import com.mindful.android.utils.PreciseCountDownExecutor
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
@@ -12,7 +12,7 @@ class ReminderManager(
 ) {
     private val TAG = "Mindful.ReminderManager"
     private val reminderTriggers: HashSet<Int> = HashSet(0)
-    private var onGoingTimer: CountDownExecutor? = null
+    private var onGoingTimer: PreciseCountDownExecutor? = null
 
     fun cancelReminders() {
         onGoingTimer?.cancel()
@@ -36,7 +36,7 @@ class ReminderManager(
 
 
         // Set timer for expiration
-        val executor = CountDownExecutor(
+        val executor = PreciseCountDownExecutor(
             duration = state.expirationFutureMs,
             interval = 60 * 1000L,
             timeUnit = TimeUnit.MILLISECONDS,
@@ -55,7 +55,7 @@ class ReminderManager(
                         restrictionState = state.copy(
                             usedScreenTime = state.usedScreenTime + (spentMins * 60)
                         ),
-                        addReminderDelay = { delayMin -> addNewReminder(delayMin + spentMins) }
+                        addReminderWithDelay = { delayMin -> addNewReminder(delayMin + spentMins) },
                     )
                 }
             },

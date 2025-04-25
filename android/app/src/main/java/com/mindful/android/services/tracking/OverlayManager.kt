@@ -62,12 +62,11 @@ class OverlayManager(
     fun showOverlay(
         packageName: String,
         restrictionState: RestrictionState,
-        addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
+        addReminderWithDelay: ((futureMinutes: Int) -> Unit)? = null,
     ) {
         // Return if overlay is not null
         if (overlays.isNotEmpty()) return
 
-        Log.d(TAG, "showOverlay: Showing overlay for $packageName")
         ThreadUtils.runOnMainThread {
             // Notify, stop and return if don't have overlay permission
             if (!Settings.canDrawOverlays(context)) {
@@ -81,11 +80,13 @@ class OverlayManager(
 
             // Build overlay
             val overlay = OverlayBuilder.buildOverlay(
-                context,
-                packageName,
-                restrictionState,
-                ::dismissOverlay,
-                addReminderDelay,
+                context = context,
+                packageName = packageName,
+                state = restrictionState,
+                removeOverlay = {
+                    dismissOverlay()
+                },
+                addReminderDelay = addReminderWithDelay,
             )
 
             // Set up WindowManager parameters
@@ -113,6 +114,10 @@ class OverlayManager(
 
             // Add the overlay view to the window
             layoutParams.gravity = Gravity.TOP or Gravity.START
+
+            // Return if overlay is not null
+            if (overlays.isNotEmpty()) return@runOnMainThread
+            Log.d(TAG, "showOverlay: Showing overlay for $packageName")
             windowManager.addView(overlay, layoutParams)
             overlays.push(overlay)
 

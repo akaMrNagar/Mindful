@@ -6,6 +6,8 @@ import android.util.Log
 import androidx.annotation.WorkerThread
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppConstants.SYSTEM_UI_PACKAGE
+import com.mindful.android.utils.Debouncer
 import java.lang.Exception
 
 
@@ -19,17 +21,14 @@ class TrackingManager(
         const val ACTION_NEW_APP_LAUNCHED = "com.mindful.android.newAppLaunched"
     }
 
+    private val debouncer: Debouncer = Debouncer(750L)
     private var lastActiveApp: String = ""
-    private val ignoredPackages: Set<String> = setOf(
-        context.packageName,
-        "com.android.systemui",
-    )
 
     @WorkerThread
     fun onNewEvent(packageName: String) {
-        if (lastActiveApp != packageName && !ignoredPackages.contains(packageName)) {
+        if (lastActiveApp != packageName && packageName != SYSTEM_UI_PACKAGE) {
             lastActiveApp = packageName
-            broadcastEvent(ACTION_NEW_APP_LAUNCHED)
+            debouncer.submit { broadcastEvent(ACTION_NEW_APP_LAUNCHED) }
         }
     }
 
@@ -45,7 +44,6 @@ class TrackingManager(
         try {
             val intent = Intent(action).apply {
                 setPackage(context.packageName)
-                putExtra(AppConstants.INTENT_EXTRA_PACKAGE_NAME, lastActiveApp)
             }
             context.sendBroadcast(intent)
         } catch (e: Exception) {
