@@ -23,6 +23,7 @@ import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/focus/dated_focus_provider.dart';
+import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/status_label.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -55,16 +56,16 @@ class SessionCard extends ConsumerWidget {
 
     final stateColor = stateColors[session.state.index];
     final stateLabel = stateLabels[session.state.index];
-    final dateTime = session.startDateTime;
+    final borderRadius =
+        getBorderRadiusFromPosition(position ?? ItemPosition.none);
 
     return DefaultHero(
       tag: HeroTags.sessionReflectionTag(session.id),
       child: RoundedContainer(
-        borderRadius:
-            getBorderRadiusFromPosition(position ?? ItemPosition.none),
+        borderRadius: borderRadius,
+        padding: const EdgeInsets.all(0),
         margin: const EdgeInsets.symmetric(vertical: 2),
-        padding: const EdgeInsets.all(12),
-        color: Theme.of(context).colorScheme.surfaceContainerLow,
+        color: stateColor.withAlpha(20),
         circularRadius: 24,
         onPressed: () async {
           final reflection = await showFocusReflectionDialog(
@@ -78,53 +79,28 @@ class SessionCard extends ConsumerWidget {
               .read(datedFocusProvider(dateToday).notifier)
               .updateSession(session.copyWith(reflection: reflection));
         },
-        child: Row(
+        child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            Expanded(
-              flex: 2,
-              child: Icon(
-                sessionTypeIcons[session.type] ??
-                    FluentIcons.target_arrow_20_regular,
-                size: 40,
-              ),
-            ),
-            // 16.hBox,
-            Expanded(
-              flex: 6,
-              child: Column(
+            DefaultListTile(
+              color: Colors.transparent,
+              leadingIcon: sessionTypeIcons[session.type] ??
+                  FluentIcons.target_arrow_20_regular,
+
+              /// Session type
+              titleText: sessionTypeLabels(context)[session.type] ?? 'Session',
+
+              /// Timestamp
+              subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   StyledText(
-                    sessionTypeLabels(context)[session.type] ?? 'Session',
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  2.vBox,
-
-                  /// Duration
-                  StyledText(
-                    "${context.locale.focus_session_tile_duration_label}: ${session.durationSecs.seconds.toTimeFull(context)}",
+                    session.startDateTime.dateTimeString(context),
                     color: Theme.of(context).hintColor,
                     fontSize: 14,
                   ),
 
-                  /// Time stamp
-                  StyledText(
-                    "${context.locale.focus_session_tile_timestamp_label}: ${dateTime.dateTimeString(context)}",
-                    color: Theme.of(context).hintColor,
-                    fontSize: 14,
-                  ),
-
-                  /// Reflection
-                  if (session.reflection.isNotEmpty)
-                    StyledText(
-                      "${context.locale.focus_session_tile_reflection_label}: ${session.reflection}",
-                      color: Theme.of(context).hintColor,
-                      fontSize: 14,
-                    ),
-
-                  16.vBox,
+                  12.vBox,
 
                   /// State Label
                   StatusLabel(
@@ -133,7 +109,39 @@ class SessionCard extends ConsumerWidget {
                   ),
                 ],
               ),
+
+              /// Duration
+              trailing: StyledText(
+                session.durationSecs.seconds.toTimeShort(context),
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
+
+            /// Reflection
+            if (session.reflection.isNotEmpty)
+              RoundedContainer(
+                color: stateColor.withAlpha(20),
+                margin: const EdgeInsets.all(0),
+                alignment: Alignment.topLeft,
+                padding: const EdgeInsets.all(12),
+                borderRadius: borderRadius.copyWith(
+                  topLeft: Radius.zero,
+                  topRight: Radius.zero,
+                ),
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 64),
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: StyledText(
+                      session.reflection,
+                      color: Theme.of(context).hintColor,
+                      fontSize: 14,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

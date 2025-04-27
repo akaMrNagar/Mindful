@@ -135,11 +135,11 @@ Future<String?> showFocusReflectionDialog({
     HeroPageRoute(
       builder: (context) => _InputFieldDialog(
         heroTag: heroTag,
-        keyboardType: TextInputType.text,
+        keyboardType: TextInputType.multiline,
         dialogIcon: FluentIcons.clipboard_task_20_filled,
         initialText: initialText,
         minLines: 2,
-        maxLines: 4,
+        maxLines: 10,
         title: context.locale.active_session_reflection_dialog_title,
         fieldLabel: "",
         hintText: "Write your goal or accomplishments...",
