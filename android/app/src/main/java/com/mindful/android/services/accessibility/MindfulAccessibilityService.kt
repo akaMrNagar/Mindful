@@ -22,20 +22,19 @@ import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
-import com.mindful.android.R
-import com.mindful.android.enums.PlatformFeatures
-import com.mindful.android.helpers.device.PermissionsHelper
-import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.models.WellBeingSettings
-import com.mindful.android.receivers.DeviceAppsChangedReceiver
 import com.mindful.android.AppConstants.FACEBOOK_PACKAGE
 import com.mindful.android.AppConstants.INSTAGRAM_PACKAGE
 import com.mindful.android.AppConstants.REDDIT_PACKAGE
 import com.mindful.android.AppConstants.SETTINGS_PACKAGE
 import com.mindful.android.AppConstants.SNAPCHAT_PACKAGE
 import com.mindful.android.AppConstants.YOUTUBE_PACKAGE
+import com.mindful.android.R
+import com.mindful.android.enums.PlatformFeatures
+import com.mindful.android.helpers.device.PermissionsHelper
+import com.mindful.android.helpers.storage.SharedPrefsHelper
+import com.mindful.android.models.Wellbeing
+import com.mindful.android.receivers.DeviceAppsChangedReceiver
 import com.mindful.android.utils.ThreadUtils
-import org.json.JSONObject
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -75,7 +74,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     private lateinit var deviceFeaturesManager: DeviceFeaturesManager
     private lateinit var trackingManager: TrackingManager
 
-    private var mWellBeingSettings = WellBeingSettings(JSONObject())
+    private var wellbeing = Wellbeing()
 
     override fun onCreate() {
         super.onCreate()
@@ -96,7 +95,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
         // Register shared prefs listener and load data
         SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, true, this)
-        mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
+        wellbeing = SharedPrefsHelper.getSetWellBeingSettings(this, null)
 
         // Register listener for install and uninstall events
         val filter = IntentFilter()
@@ -151,7 +150,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                     processEventInBackground(
                         packageName,
                         it,
-                        mWellBeingSettings.copy()
+                        wellbeing.copy()
                     )
                 }
             }
@@ -168,18 +167,18 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     private fun processEventInBackground(
         packageName: String,
         node: AccessibilityNodeInfo,
-        wellBeingSettings: WellBeingSettings,
+        wellBeing: Wellbeing,
     ) {
         try {
             when (packageName) {
                 in devicePlatformPackages ->
-                    deviceFeaturesManager.blockFeatures(packageName, node, wellBeingSettings)
+                    deviceFeaturesManager.blockFeatures(packageName, node, wellBeing)
 
                 in shortsPlatformPackages ->
-                    shortsPlatformManager.blockDistraction(packageName, node, wellBeingSettings)
+                    shortsPlatformManager.blockDistraction(packageName, node, wellBeing)
 
                 in browserPackages ->
-                    browserManager.blockDistraction(packageName, node, wellBeingSettings)
+                    browserManager.blockDistraction(packageName, node, wellBeing)
             }
 
         } catch (e: Exception) {
@@ -200,9 +199,10 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * `false` otherwise.
      */
     private fun shouldBlockContent(): Boolean {
-        return mWellBeingSettings.blockedFeatures.isNotEmpty() ||
-                mWellBeingSettings.blockedWebsites.isNotEmpty() ||
-                mWellBeingSettings.blockNsfwSites
+        return wellbeing.blockedFeatures.isNotEmpty() ||
+                wellbeing.blockedWebsites.isNotEmpty() ||
+                wellbeing.nsfwWebsites.isNotEmpty() ||
+                wellbeing.blockNsfwSites
     }
 
 
@@ -245,7 +245,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                 browserPackages.add(it.activityInfo.packageName)
             }
 
-            mWellBeingSettings.blockedFeatures.forEach { feature ->
+            wellbeing.blockedFeatures.forEach { feature ->
                 when (feature) {
                     /// Instagram
                     PlatformFeatures.INSTAGRAM_REELS,
@@ -284,12 +284,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
 
             // Load nsfw website domains if needed
-            if (mWellBeingSettings.blockNsfwSites) BrowserManager.initializeNsfwDomains()
+            if (wellbeing.blockNsfwSites) BrowserManager.initializeNsfwDomains()
             else BrowserManager.clearNsfwDomains()
 
             Log.d(
                 TAG, "refreshServiceConfig: Accessibility service config updated successfully: " +
-                        "\n settings: $mWellBeingSettings" +
+                        "\n settings: $wellbeing" +
                         "\n device platforms: $devicePlatformPackages" +
                         "\n short platforms: $shortsPlatformPackages" +
                         "\n browsers: $browserPackages"
@@ -304,7 +304,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         changedKey?.let { key ->
             if (key == SharedPrefsHelper.PREF_KEY_WELLBEING_SETTINGS) {
                 Log.d(TAG, "OnSharedPrefsChanged: Key changed = $changedKey")
-                mWellBeingSettings = SharedPrefsHelper.getSetWellBeingSettings(this, null)
+                wellbeing = SharedPrefsHelper.getSetWellBeingSettings(this, null)
                 refreshServiceConfig()
             }
         }

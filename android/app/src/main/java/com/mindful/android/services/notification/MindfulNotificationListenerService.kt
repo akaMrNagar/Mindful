@@ -18,7 +18,7 @@ import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.models.UpcomingNotification
+import com.mindful.android.models.Notification
 
 
 class MindfulNotificationListenerService : NotificationListenerService() {
@@ -30,7 +30,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     private val mSocialMediaPackages =
         setOf("com.whatsapp", "com.instagram.android", "com.snapchat.android")
 
-    private var mDistractingApps = HashSet<String>(0)
+    private var mDistractingApps: Set<String> = HashSet(0)
     private var mIsListenerActive = false
 
     override fun onListenerConnected() {
@@ -59,8 +59,8 @@ class MindfulNotificationListenerService : NotificationListenerService() {
             if (sbn.tag == null && mSocialMediaPackages.contains(packageName)) return
 
             // Check if we can store it or not
-            val notification = UpcomingNotification(sbn)
-            if (notification.titleText.isNotBlank() || notification.contentText.isNotBlank()) {
+            val notification = Notification.fromSbn(sbn)
+            if (notification.title.isNotBlank() || notification.content.isNotBlank()) {
                 SharedPrefsHelper.insertNotificationToPrefs(this, notification)
                 Log.d(TAG, "onNotificationPosted: Notification stored from package: $packageName")
             }
@@ -73,7 +73,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     }
 
 
-    fun updateDistractingApps(distractingApps: HashSet<String>) {
+    fun updateDistractingApps(distractingApps: Set<String>) {
         mDistractingApps = distractingApps
         Log.d(TAG, "updateDistractingApps: Distracting apps updated successfully")
     }

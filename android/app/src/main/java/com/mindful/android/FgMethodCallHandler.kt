@@ -19,8 +19,8 @@ import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.device.PermissionsHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.helpers.usages.AppsUsageHelper.getAppsUsageForInterval
-import com.mindful.android.models.AppRestrictions
-import com.mindful.android.models.BedtimeSettings
+import com.mindful.android.models.AppRestriction
+import com.mindful.android.models.BedtimeSchedule
 import com.mindful.android.models.FocusSession
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.services.notification.MindfulNotificationListenerService
@@ -29,12 +29,11 @@ import com.mindful.android.services.timer.FocusSessionService
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.services.vpn.MindfulVpnService
 import com.mindful.android.utils.AppUtils
-import com.mindful.android.utils.JsonDeserializer
+import com.mindful.android.utils.JsonUtils
 import com.mindful.android.utils.Utils
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import org.json.JSONObject
 import java.util.Locale
 
 class FgMethodCallHandler(
@@ -160,7 +159,7 @@ class FgMethodCallHandler(
             // ==============================================================================================================
 
             "updateAppRestrictions" -> {
-                val appRestrictions = JsonDeserializer.jsonStrToAppRestrictionsHashMap(
+                val appRestrictions = JsonUtils.parseAppRestrictionsMap(
                     call.arguments() ?: ""
                 )
                 updateTrackerServiceRestrictions(appRestrictions, null)
@@ -168,7 +167,7 @@ class FgMethodCallHandler(
             }
 
             "updateRestrictionsGroups" -> {
-                val restrictionGroups = JsonDeserializer.jsonStrToRestrictionGroupsHashMap(
+                val restrictionGroups = JsonUtils.parseRestrictionGroupsMap(
                     call.arguments() ?: ""
                 )
                 updateTrackerServiceRestrictions(null, restrictionGroups)
@@ -177,7 +176,7 @@ class FgMethodCallHandler(
 
             "updateInternetBlockedApps" -> {
                 val blockedApps =
-                    JsonDeserializer.jsonStrToStringHashSet(call.arguments() ?: "")
+                    JsonUtils.parseStringSet(call.arguments() ?: "")
                 if (vpnServiceConn.isActive) {
                     vpnServiceConn.service?.updateBlockedApps(blockedApps)
                 } else if (blockedApps.isNotEmpty() && getAndAskVpnPermission(false)) {
@@ -202,7 +201,7 @@ class FgMethodCallHandler(
 
             "updateBedtimeSchedule" -> {
                 val jsonBedtimeSettings = call.arguments() ?: ""
-                val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+                val bedtimeSettings = BedtimeSchedule.fromJson(jsonBedtimeSettings)
                 if (bedtimeSettings.isScheduleOn) {
                     scheduleBedtimeRoutineTasks(context, jsonBedtimeSettings)
                 } else {
@@ -230,7 +229,7 @@ class FgMethodCallHandler(
             }
 
             "updateFocusSession" -> {
-                val focusSession = FocusSession(JSONObject(call.arguments() ?: ""))
+                val focusSession = FocusSession.fromJson(call.arguments() ?: "")
                 if (focusServiceConn.isActive) {
                     focusServiceConn.service?.updateFocusSession(focusSession)
                 } else {
@@ -254,7 +253,7 @@ class FgMethodCallHandler(
 
             "updateDistractingNotificationApps" -> {
                 val distractingApps =
-                    JsonDeserializer.jsonStrToStringHashSet(call.arguments() ?: "")
+                    JsonUtils.parseStringSet(call.arguments() ?: "")
                 if (notificationServiceConn.isActive) {
                     notificationServiceConn.service?.updateDistractingApps(distractingApps)
                 } else if (distractingApps.isNotEmpty()) {
@@ -270,7 +269,8 @@ class FgMethodCallHandler(
 
             "updateNotificationBatchSchedules" -> {
                 val jsonScheduleTods = call.arguments() ?: ""
-                if (jsonScheduleTods.isNotBlank()) {
+                val schedules = JsonUtils.parseIntList(jsonScheduleTods)
+                if (schedules.isNotEmpty()) {
                     scheduleNotificationBatchTask(context, jsonScheduleTods)
                 } else {
                     cancelNotificationBatchTask(context)
@@ -439,7 +439,7 @@ class FgMethodCallHandler(
      * or null if only app-specific restrictions are being updated.
      */
     private fun updateTrackerServiceRestrictions(
-        appRestrictions: HashMap<String, AppRestrictions>?,
+        appRestrictions: HashMap<String, AppRestriction>?,
         restrictionGroups: HashMap<Int, RestrictionGroup>?,
     ) {
         if (trackerServiceConn.isActive) {

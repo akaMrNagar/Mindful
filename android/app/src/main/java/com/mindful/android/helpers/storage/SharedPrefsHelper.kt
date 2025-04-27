@@ -17,10 +17,10 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
 import com.mindful.android.AppConstants
 import com.mindful.android.enums.DndWakeLock
-import com.mindful.android.models.UpcomingNotification
-import com.mindful.android.models.WellBeingSettings
+import com.mindful.android.models.Notification
+import com.mindful.android.models.Wellbeing
 import com.mindful.android.utils.AppUtils
-import com.mindful.android.utils.JsonDeserializer
+import com.mindful.android.utils.JsonUtils
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -108,20 +108,20 @@ object SharedPrefsHelper {
      * Fetches the well-being settings if jsonWellBeingSettings is null else store it's json.
      *
      * @param context               The application context.
-     * @param jsonWellBeingSettings The JSON string of well-being settings.
+     * @param jsonWellBeing The JSON string of well-being settings.
      */
     fun getSetWellBeingSettings(
         context: Context,
-        jsonWellBeingSettings: String?,
-    ): WellBeingSettings {
+        jsonWellBeing: String?,
+    ): Wellbeing {
         checkAndInitializeListenablePrefs(context)
-        if (jsonWellBeingSettings == null) {
+        if (jsonWellBeing == null) {
             val json = mListenablePrefs!!.getString(PREF_KEY_WELLBEING_SETTINGS, "{}")!!
-            return WellBeingSettings(JSONObject(json))
+            return Wellbeing.fromJson(json)
         } else {
-            mListenablePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeingSettings)
+            mListenablePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeing)
                 .apply()
-            return WellBeingSettings(JSONObject(jsonWellBeingSettings))
+            return Wellbeing.fromJson(jsonWellBeing)
         }
     }
 
@@ -170,15 +170,15 @@ object SharedPrefsHelper {
      * @param context          The application context.
      * @param jsonExcludedApps The JSON string of excluded apps.
      */
-    fun getSetExcludedApps(context: Context, jsonExcludedApps: String?): HashSet<String> {
+    fun getSetExcludedApps(context: Context, jsonExcludedApps: String?): Set<String> {
         checkAndInitializeUniquePrefs(context)
         if (jsonExcludedApps == null) {
-            return JsonDeserializer.jsonStrToStringHashSet(
+            return JsonUtils.parseStringSet(
                 mUniquePrefs!!.getString(PREF_KEY_EXCLUDED_APPS, "")
             )
         } else {
             mUniquePrefs!!.edit().putString(PREF_KEY_EXCLUDED_APPS, jsonExcludedApps).apply()
-            return JsonDeserializer.jsonStrToStringHashSet(jsonExcludedApps)
+            return JsonUtils.parseStringSet(jsonExcludedApps)
         }
     }
 
@@ -265,7 +265,7 @@ object SharedPrefsHelper {
      * @param context      The application context used to retrieve app version and store the log.
      * @param notification The notification which will be inserted as map.
      */
-    fun insertNotificationToPrefs(context: Context, notification: UpcomingNotification) {
+    fun insertNotificationToPrefs(context: Context, notification: Notification) {
         checkAndInitializeNotificationBatchPrefs(context)
 
         // Create new json object

@@ -10,7 +10,7 @@ import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.mindful.android.R
-import com.mindful.android.models.WellBeingSettings
+import com.mindful.android.models.Wellbeing
 import com.mindful.android.utils.NsfwDomains
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
@@ -31,7 +31,7 @@ class BrowserManager(
     fun blockDistraction(
         packageName: String,
         node: AccessibilityNodeInfo,
-        settings: WellBeingSettings,
+        wellbeing: Wellbeing,
     ) {
         var url = extractBrowserUrl(node, packageName)
 
@@ -45,17 +45,19 @@ class BrowserManager(
         val host = Utils.parseHostNameFromUrl(url) ?: return
 
         when {
-            settings.blockedWebsites.contains(host) || nsfwDomains.containsKey(host)
+            wellbeing.blockedWebsites.contains(host)
+                    || wellbeing.nsfwWebsites.contains(host)
+                    || nsfwDomains.containsKey(host)
             -> {
                 Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
                 blockedContentGoBack.invoke()
             }
 
             // Block short form content
-            shortsPlatformManager.checkAndBlockShortsOnBrowser(settings, url) -> return
+            shortsPlatformManager.checkAndBlockShortsOnBrowser(wellbeing, url) -> return
 
             // Activate safe search if NSFW is blocked
-            settings.blockNsfwSites -> applySafeSearch(packageName, url, host)
+            wellbeing.blockNsfwSites -> applySafeSearch(packageName, url, host)
         }
     }
 

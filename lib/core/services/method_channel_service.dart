@@ -255,7 +255,7 @@ class MethodChannelService {
             "allowedShortsTimeSec": wellBeingSettings.allowedShortsTimeSec,
             "blockNsfwSites": wellBeingSettings.blockNsfwSites,
             "blockedFeatures":
-                wellBeingSettings.blockedFeatures.map((e) => e.index).toList(),
+                wellBeingSettings.blockedFeatures.map((e) => e.name).toList(),
             "blockedWebsites": wellBeingSettings.blockedWebsites,
             "nsfwWebsites": wellBeingSettings.nsfwWebsites,
           },

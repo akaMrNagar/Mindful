@@ -10,5 +10,20 @@ enum class PlatformFeatures {
     SNAPCHAT_DISCOVER,
     FACEBOOK_REELS,
     REDDIT_SHORTS,
-    YOUTUBE_SHORTS,
+    YOUTUBE_SHORTS;
+
+    companion object {
+        fun fromName(name: String): PlatformFeatures? {
+            return when (name) {
+                "instagramReels" -> INSTAGRAM_REELS
+                "instagramExplore" -> INSTAGRAM_EXPLORE
+                "snapchatSpotlight" -> SNAPCHAT_SPOTLIGHT
+                "snapchatDiscover" -> SNAPCHAT_DISCOVER
+                "facebookReels" -> FACEBOOK_REELS
+                "redditShorts" -> REDDIT_SHORTS
+                "youtubeShorts" -> YOUTUBE_SHORTS
+                else -> null
+            }
+        }
+    }
 }

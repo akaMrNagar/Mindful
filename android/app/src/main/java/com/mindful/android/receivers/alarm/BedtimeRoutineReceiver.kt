@@ -31,12 +31,11 @@ import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.models.BedtimeSettings
+import com.mindful.android.models.BedtimeSchedule
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
-import org.json.JSONObject
 
 class BedtimeRoutineReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -68,9 +67,9 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
         params: WorkerParameters,
     ) : Worker(context, params) {
         private val jsonBedtimeSettings = inputData.getString(ALARM_EXTRA_JSON) ?: ""
-        private val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+        private val bedtimeSchedule = BedtimeSchedule.fromJson(jsonBedtimeSettings)
         private val canStartRoutineToday: Boolean =
-            bedtimeSettings.scheduleDays[DateTimeUtils.zeroIndexedDayOfWeek()]
+            bedtimeSchedule.scheduleDays[DateTimeUtils.zeroIndexedDayOfWeek()]
 
         private val trackerServiceConn = SafeServiceConnection(
             context = context,
@@ -112,14 +111,14 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             if (!canStartRoutineToday) return
             trackerServiceConn.setOnConnectedCallback { service: MindfulTrackerService ->
                 with(service) {
-                    getRestrictionManager.updateBedtimeApps(bedtimeSettings.distractingApps)
+                    getRestrictionManager.updateBedtimeApps(bedtimeSchedule.distractingApps)
                     getLaunchTrackingManager.detectActiveAppForBedtime()
                 }
             }
             trackerServiceConn.startAndBind()
 
             // Start DND if needed
-            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(
+            if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
                 DndWakeLock.BedtimeMode,
                 true
@@ -136,7 +135,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             trackerServiceConn.bindService()
 
             // Stop DND if needed
-            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(
+            if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
                 DndWakeLock.BedtimeMode,
                 false

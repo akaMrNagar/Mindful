@@ -19,16 +19,15 @@ import android.os.Build
 import android.util.Log
 import com.mindful.android.AppConstants
 import com.mindful.android.generics.SafeServiceConnection
-import com.mindful.android.models.BedtimeSettings
+import com.mindful.android.models.BedtimeSchedule
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver
 import com.mindful.android.receivers.alarm.MidnightResetReceiver
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver.NotificationBatchWorker
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.DateTimeUtils.todToTodayCal
-import com.mindful.android.utils.JsonDeserializer
+import com.mindful.android.utils.JsonUtils
 import com.mindful.android.utils.Utils
-import org.json.JSONObject
 import java.util.Calendar
 import java.util.Date
 
@@ -95,13 +94,13 @@ object AlarmTasksSchedulingHelper {
      * @param jsonBedtimeSettings The json string representation of Bedtime settings object used for scheduling.
      */
     fun scheduleBedtimeRoutineTasks(context: Context, jsonBedtimeSettings: String) {
-        val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+        val bedtimeSchedule = BedtimeSchedule.fromJson(jsonBedtimeSettings)
 
         val nowInMs = System.currentTimeMillis()
-        var alertTimeMs = todToTodayCal(bedtimeSettings.startTimeInMins - 30).timeInMillis
-        var startTimeMs = todToTodayCal(bedtimeSettings.startTimeInMins).timeInMillis
+        var alertTimeMs = todToTodayCal(bedtimeSchedule.scheduleStartTime - 30).timeInMillis
+        var startTimeMs = todToTodayCal(bedtimeSchedule.scheduleStartTime).timeInMillis
         var endTimeMs =
-            todToTodayCal(bedtimeSettings.startTimeInMins + bedtimeSettings.totalDurationInMins).timeInMillis
+            todToTodayCal(bedtimeSchedule.scheduleStartTime + bedtimeSchedule.scheduleDurationInMins).timeInMillis
 
         // Bedtime is already ended then reschedule for the next day
         if (endTimeMs < nowInMs) {
@@ -189,7 +188,7 @@ object AlarmTasksSchedulingHelper {
      * @param jsonScheduleTods The json of hashset of integers representing TODs in minutes.
      */
     fun scheduleNotificationBatchTask(context: Context, jsonScheduleTods: String) {
-        val sortedTods = JsonDeserializer.jsonStrToIntegerHashSet(jsonScheduleTods).sorted()
+        val sortedTods = JsonUtils.parseIntList(jsonScheduleTods).toSet().sorted()
         if (sortedTods.isEmpty()) return
 
         val now = System.currentTimeMillis()

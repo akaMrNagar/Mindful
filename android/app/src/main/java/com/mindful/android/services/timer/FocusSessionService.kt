@@ -39,7 +39,7 @@ class FocusSessionService : Service() {
     private lateinit var mNotificationTimer: NotificationTimer
 
 
-    private var mFocusSession: FocusSession? = null
+    private var session: FocusSession? = null
 
     override fun onCreate() {
         mTrackerServiceConn = SafeServiceConnection(
@@ -70,7 +70,7 @@ class FocusSessionService : Service() {
                 return
             }
 
-            mFocusSession = focusSession
+            session = focusSession
             initializeSessionTimer(focusSession)
 
             startForeground(
@@ -160,7 +160,7 @@ class FocusSessionService : Service() {
 
 
     fun giveUpOrStopFocusSession(isTheSessionSuccessful: Boolean) {
-        if (mFocusSession?.toggleDnd == true) {
+        if (session?.toggleDnd == true) {
             NotificationHelper.toggleDnd(this, DndWakeLock.FocusMode, false)
         }
 

@@ -7,7 +7,7 @@ import android.util.Log
 import com.mindful.android.R
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.helpers.usages.ScreenUsageHelper
-import com.mindful.android.models.AppRestrictions
+import com.mindful.android.models.AppRestriction
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.utils.DateTimeUtils
@@ -26,7 +26,7 @@ class RestrictionManager(
                 && restrictionGroups.isEmpty()
 
     // Restrictions
-    private var appsRestrictions = HashMap<String, AppRestrictions>()
+    private var appsRestrictions = HashMap<String, AppRestriction>()
     private var restrictionGroups = HashMap<Int, RestrictionGroup>()
 
     // Focus
@@ -46,7 +46,7 @@ class RestrictionManager(
     }
 
     fun updateRestrictions(
-        appsRestrictionsMap: HashMap<String, AppRestrictions>?,
+        appsRestrictionsMap: HashMap<String, AppRestriction>?,
         restrictionGroupsMap: HashMap<Int, RestrictionGroup>?,
     ) {
         appsRestrictionsMap?.let {
@@ -63,13 +63,13 @@ class RestrictionManager(
         stopIfNoUsage.invoke()
     }
 
-    fun updateFocusedApps(apps: HashSet<String>?) {
+    fun updateFocusedApps(apps: Set<String>?) {
         focusedApps = apps ?: setOf()
         if(apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateFocusedApps: Focus apps updated: $focusedApps")
     }
 
-    fun updateBedtimeApps(apps: HashSet<String>?) {
+    fun updateBedtimeApps(apps: Set<String>?) {
         bedtimeApps = apps ?: setOf()
         if(apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateBedtimeApps: Bedtime apps updated: $bedtimeApps")
@@ -138,7 +138,7 @@ class RestrictionManager(
 
 
     private fun evaluateActivePeriodLimit(
-        restriction: AppRestrictions,
+        restriction: AppRestriction,
         futureState: MutableSet<RestrictionState>,
     ): RestrictionState? {
 
@@ -197,7 +197,7 @@ class RestrictionManager(
     }
 
     private fun evaluateScreenTimeLimit(
-        restriction: AppRestrictions,
+        restriction: AppRestriction,
         futureStates: MutableSet<RestrictionState>,
     ): RestrictionState? {
         // Usage map

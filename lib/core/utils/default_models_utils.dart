@@ -55,7 +55,7 @@ const defaultBedtimeScheduleModel = BedtimeSchedule(
   scheduleStartTime: TimeOfDayAdapter.zero(),
   scheduleEndTime: TimeOfDayAdapter.zero(),
   scheduleDurationInMins: 0,
-  scheduleDays: [false, true, true, true, true, true, false],
+  scheduleDays: [true, true, true, true, true, false, false],
   isScheduleOn: false,
   shouldStartDnd: false,
   distractingApps: [],

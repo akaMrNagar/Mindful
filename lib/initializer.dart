@@ -45,7 +45,7 @@ class Initializer {
     final bedtime = await uniqueDao.loadBedtimeSchedule();
     await MethodChannelService.instance.updateBedtimeSchedule(bedtime);
 
-    /// Fetch and update bedtime wellbeing
+    /// Fetch and update wellbeing
     final wellbeing = await uniqueDao.loadWellBeingSettings();
     await MethodChannelService.instance.updateWellBeingSettings(wellbeing);
 
