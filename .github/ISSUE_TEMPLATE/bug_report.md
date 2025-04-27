@@ -26,7 +26,12 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Additional context**
+Mindful's version -
+Android version -
+Device manufacturer -
+Device OS/ROM -
+
 Add any other context about the problem here.
 
 **Log file**
-You can get the log file from: _**Settings > Advance > Share crash logs**_
+You can get the log file from: _**Settings > Database > Export crash logs**_
