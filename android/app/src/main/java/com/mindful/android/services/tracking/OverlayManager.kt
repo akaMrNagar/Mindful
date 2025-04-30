@@ -16,10 +16,8 @@ import android.widget.LinearLayout
 import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.utils.Extensions.safePeek
-import com.mindful.android.utils.Extensions.safePop
 import com.mindful.android.utils.ThreadUtils
-import java.util.Stack
+import java.util.concurrent.ConcurrentLinkedDeque
 
 class OverlayManager(
     private val context: Context,
@@ -27,7 +25,7 @@ class OverlayManager(
     private val windowManager: WindowManager =
         context.getSystemService(WINDOW_SERVICE) as WindowManager
 
-    private var overlays: Stack<View> = Stack()
+    private var overlays: ConcurrentLinkedDeque<View> = ConcurrentLinkedDeque()
 
 
     init {
@@ -44,7 +42,7 @@ class OverlayManager(
 
     /// Animate out the overlay
     fun dismissOverlay() {
-        overlays.safePeek()?.let {
+        overlays.peek()?.let {
             ThreadUtils.runOnMainThread {
                 animateOverlay(overlay = it, animateIn = false)
             }
@@ -53,7 +51,7 @@ class OverlayManager(
 
     /// Remove overlay instantly
     private fun removeOverlay() {
-        overlays.safePop()?.let {
+        overlays.pop()?.let {
             windowManager.removeView(it)
         }
     }

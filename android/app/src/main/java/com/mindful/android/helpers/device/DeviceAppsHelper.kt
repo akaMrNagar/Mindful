@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import com.mindful.android.AppConstants
 import com.mindful.android.AppConstants.REMOVED_APP_NAME
 import com.mindful.android.AppConstants.REMOVED_PACKAGE
 import com.mindful.android.AppConstants.TETHERING_APP_NAME
@@ -28,6 +29,7 @@ object DeviceAppsHelper {
             // Fetch set of important apps like Dialer, Launcher etc.
             val impSystemApps = ImpSystemAppsHelper.fetchImpApps(packageManager)
             impSystemApps.add(context.packageName)
+            impSystemApps.add(AppConstants.SETTINGS_PACKAGE)
 
             // Fetch set of all launchable apps
             val launchableApps = packageManager.queryIntentActivities(

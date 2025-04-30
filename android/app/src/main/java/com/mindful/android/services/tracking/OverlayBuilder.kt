@@ -15,6 +15,7 @@ import androidx.annotation.MainThread
 import com.mindful.android.R
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
@@ -134,11 +135,20 @@ object OverlayBuilder {
         closeAppBtn.text = context.getString(R.string.app_paused_overlay_button_close_app, appName)
         closeAppBtn.setOnClickListener {
             ThreadUtils.runOnMainThread {
+                /// Go to home
                 val homeIntent = Intent(Intent.ACTION_MAIN)
                 homeIntent.addCategory(Intent.CATEGORY_HOME)
                 homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.applicationContext.startActivity(homeIntent)
+
+                /// Remove overlay
                 removeOverlay.invoke()
+
+                /// Send launch event
+                val intent = Intent(ACTION_NEW_APP_LAUNCHED).apply {
+                    setPackage(context.packageName)
+                }
+                context.sendBroadcast(intent)
             }
         }
 

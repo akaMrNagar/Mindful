@@ -14,6 +14,7 @@ import com.mindful.android.models.Wellbeing
 import com.mindful.android.utils.NsfwDomains
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
+import com.mindful.android.utils.executors.Throttler
 
 class BrowserManager(
     private val context: Context,
@@ -21,6 +22,8 @@ class BrowserManager(
     private val blockedContentGoBack: () -> Unit,
 ) {
     private var mLastRedirectedUrl = ""
+    private val throttler: Throttler = Throttler(1000L)
+
 
     /**
      * Blocks access to websites and short-form content based on current settings.
@@ -88,7 +91,9 @@ class BrowserManager(
         }
 
         // Redirect user
-        redirectUserToUrl(safeUrl, browserPackage)
+        throttler.submit {
+            redirectUserToUrl(safeUrl, browserPackage)
+        }
     }
 
     /**

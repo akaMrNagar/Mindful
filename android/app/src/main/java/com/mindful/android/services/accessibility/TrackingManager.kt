@@ -4,10 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.AppConstants.SYSTEM_UI_PACKAGE
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.executors.Debouncer
-import java.lang.Exception
 
 
 class TrackingManager(
@@ -20,14 +19,16 @@ class TrackingManager(
         const val ACTION_NEW_APP_LAUNCHED = "com.mindful.android.newAppLaunched"
     }
 
-    private val debouncer: Debouncer = Debouncer(750L)
+    private val debouncer: Debouncer = Debouncer(250L)
     private var lastActiveApp: String = ""
 
     @WorkerThread
     fun onNewEvent(packageName: String) {
         if (lastActiveApp != packageName && packageName != SYSTEM_UI_PACKAGE) {
             lastActiveApp = packageName
-            debouncer.submit { broadcastEvent(ACTION_NEW_APP_LAUNCHED) }
+            debouncer.submit {
+                broadcastEvent(ACTION_NEW_APP_LAUNCHED)
+            }
         }
     }
 

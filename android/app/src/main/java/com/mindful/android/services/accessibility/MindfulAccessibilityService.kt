@@ -20,6 +20,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED
+import android.view.accessibility.AccessibilityEvent.TYPE_WINDOWS_CHANGED
+import android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
 import com.mindful.android.AppConstants.FACEBOOK_PACKAGE
@@ -35,6 +38,7 @@ import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.Wellbeing
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
 import com.mindful.android.utils.ThreadUtils
+import com.mindful.android.utils.executors.Throttler
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -52,9 +56,9 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
         // Set of desired events which will be processed
         private val desiredEvents = setOf(
-            AccessibilityEvent.TYPE_WINDOWS_CHANGED,
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
-            AccessibilityEvent.TYPE_VIEW_SCROLLED
+            TYPE_WINDOWS_CHANGED,
+            TYPE_WINDOW_STATE_CHANGED,
+            TYPE_VIEW_SCROLLED
         )
 
         private val browserPackages = mutableSetOf<String>()
@@ -64,7 +68,8 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
 
     // Fixed thread pool for parallel event processing
-    private val mExecutorService: ExecutorService = Executors.newFixedThreadPool(4)
+    private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
+    private val throttler: Throttler = Throttler(250L)
     private val deviceAppsChangedReceiver: DeviceAppsChangedReceiver =
         DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceConfig() })
 
@@ -132,11 +137,13 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         try {
             // If not desired event or executor is shutdown, then just return
-            if (!desiredEvents.contains(event.eventType) || mExecutorService.isShutdown) return
+            if (!desiredEvents.contains(event.eventType) || executorService.isShutdown) return
 
-            // submit event for tracking
+            // submit event for tracking if window or it's state changes
             val packageName = event.packageName.toString()
-            mExecutorService.submit { trackingManager.onNewEvent(packageName) }
+            if (event.eventType != TYPE_VIEW_SCROLLED) {
+                executorService.submit { trackingManager.onNewEvent(packageName) }
+            }
 
             // If no reason to process event then just return
             if (!shouldBlockContent()) return
@@ -146,7 +153,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             else rootInActiveWindow ?: event.source
 
             node?.let {
-                mExecutorService.submit {
+                executorService.submit {
                     processEventInBackground(
                         packageName,
                         it,
@@ -210,16 +217,18 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      * Performs the back action and shows a toast message indicating that the content is blocked.
      */
     private fun goBackWithToast() {
-        ThreadUtils.runOnMainThread {
-            // Perform the back action (can be done on background thread)
-            performGlobalAction(GLOBAL_ACTION_BACK)
+        throttler.submit {
+            ThreadUtils.runOnMainThread {
+                // Perform the back action (can be done on background thread)
+                performGlobalAction(GLOBAL_ACTION_BACK)
 
-            // Post Toast to main thread
-            Toast.makeText(
-                this@MindfulAccessibilityService,
-                getString(R.string.toast_blocked_content),
-                Toast.LENGTH_LONG
-            ).show()
+                // Post Toast to main thread
+                Toast.makeText(
+                    this@MindfulAccessibilityService,
+                    getString(R.string.toast_blocked_content),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
     }
 
@@ -315,7 +324,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
     override fun onDestroy() {
         try {
-            mExecutorService.shutdownNow()
+            executorService.shutdownNow()
             trackingManager.startManualTracking()
 
             // Unregister prefs listener and receiver

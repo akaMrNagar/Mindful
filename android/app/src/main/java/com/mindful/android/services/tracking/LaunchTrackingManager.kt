@@ -11,15 +11,16 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import com.mindful.android.AppConstants.SYSTEM_UI_PACKAGE
 import com.mindful.android.receivers.DeviceLockUnlockReceiver
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
-import com.mindful.android.AppConstants.SYSTEM_UI_PACKAGE
 import com.mindful.android.utils.Utils
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
+import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 
@@ -34,6 +35,7 @@ class LaunchTrackingManager(
         private const val TIMER_RATE: Long = 750
     }
 
+    private val executorService: ScheduledExecutorService = Executors.newScheduledThreadPool(2)
     private val accessibilityReceiver: AccessibilityReceiver = AccessibilityReceiver()
     private val lockUnlockReceiver: DeviceLockUnlockReceiver =
         DeviceLockUnlockReceiver { isUnlocked ->
@@ -41,7 +43,7 @@ class LaunchTrackingManager(
             else onDeviceLocked()
         }
 
-    private var trackingExecutor: ScheduledExecutorService? = null
+    private var periodicTaskHandle: ScheduledFuture<*>? = null
     private var usageStatsManager: UsageStatsManager? = null
 
     private var isManualTrackingOn: Boolean = true
@@ -90,11 +92,10 @@ class LaunchTrackingManager(
         // Start tracking manually only if accessibility is not running
         if (isManualTrackingOn) {
             // First cancel earlier task if already not cancelled
-            trackingExecutor?.shutdownNow()
-            trackingExecutor = Executors.newScheduledThreadPool(1)
+            periodicTaskHandle?.cancel(true)
 
             // Schedule new task
-            trackingExecutor?.scheduleWithFixedDelay(
+            periodicTaskHandle = executorService.scheduleWithFixedDelay(
                 { findLaunchedApp() },
                 0L,
                 TIMER_RATE,
@@ -104,13 +105,13 @@ class LaunchTrackingManager(
             Log.d(TAG, "onDeviceUnlocked: Manual usage tracking started")
         }
 
-        Thread { invokeNewAppLaunched() }.start()
+        executorService.submit { invokeNewAppLaunched() }
     }
 
     @MainThread
     private fun onDeviceLocked() {
-        trackingExecutor?.shutdownNow()
-        trackingExecutor = null
+        periodicTaskHandle?.cancel(true)
+        periodicTaskHandle = null
 
         // To cancel reminders and remove overlay
         onNewAppLaunched.invoke(SYSTEM_UI_PACKAGE)
@@ -129,11 +130,9 @@ class LaunchTrackingManager(
                 context.getSystemService(USAGE_STATS_SERVICE) as UsageStatsManager
         }
 
-
-        val now = System.currentTimeMillis()
+        val timeNow = System.currentTimeMillis()
         val usageEvents =
-            usageStatsManager?.queryEvents(startTimeStampMs, now)
-        lastUsageQueryTimestamp = now
+            usageStatsManager?.queryEvents(startTimeStampMs, timeNow)
 
         usageEvents?.let {
             val currentEvent = UsageEvents.Event()
@@ -153,11 +152,15 @@ class LaunchTrackingManager(
                     else -> {}
                 }
             }
-            if (activeApps.isNotEmpty() && lastLaunchedApp != activeApps.first()) {
-                lastLaunchedApp = activeApps.first()
-                invokeNewAppLaunched()
-            }
         }
+
+        activeApps.lastOrNull()?.let {
+            if (lastLaunchedApp == it) return@let
+
+            lastLaunchedApp = it
+            invokeNewAppLaunched()
+        }
+        lastUsageQueryTimestamp = timeNow
     }
 
     /**
@@ -187,6 +190,8 @@ class LaunchTrackingManager(
     }
 
     fun dispose() {
+        periodicTaskHandle?.cancel(true)
+        executorService.shutdownNow()
         context.unregisterReceiver(lockUnlockReceiver)
         context.unregisterReceiver(accessibilityReceiver)
         onDeviceLocked()
@@ -206,9 +211,9 @@ class LaunchTrackingManager(
                     onDeviceLocked()
                 }
 
-                ACTION_NEW_APP_LAUNCHED -> Thread {
+                ACTION_NEW_APP_LAUNCHED -> executorService.submit {
                     findLaunchedApp()
-                }.start()
+                }
             }
         }
     }
