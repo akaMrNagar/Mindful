@@ -128,6 +128,7 @@ object NotificationHelper {
         val notificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+
         permissionIntent.setData(Uri.parse("package:${context.packageName}"))
         val pendingIntent = PendingIntent.getActivity(
             context.applicationContext,
@@ -135,8 +136,8 @@ object NotificationHelper {
             permissionIntent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        val msg = context.getString(R.string.overlay_permission_denied_notification_info)
 
+        val msg = context.getString(R.string.overlay_permission_denied_notification_info)
         notificationManager.notify(
             AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
             NotificationCompat.Builder(
@@ -149,9 +150,13 @@ object NotificationHelper {
                 .setContentText(msg)
                 .setContentIntent(pendingIntent)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(msg))
+                .addAction(
+                    0, // No icon = text-only button
+                    "Allow",
+                    pendingIntent
+                )
                 .build()
         )
-
     }
 
     /**

@@ -48,11 +48,15 @@ import java.util.concurrent.Executors
 class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceChangeListener {
     companion object {
         private const val TAG = "Mindful.MindfulAccessibilityService"
+
         const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET: String =
             "com.mindful.android.MindfulAccessibilityService.MIDNIGHT_ACCESSIBILITY_RESET"
 
         const val ACTION_TAMPER_PROTECTION_CHANGED: String =
             "com.mindful.android.MindfulAccessibilityService.TAMPER_PROTECTION_CHANGED"
+
+        const val ACTION_PERFORM_HOME_PRESS: String =
+            "com.mindful.android.MindfulAccessibilityService.PERFORM_HOME_PRESS"
 
         // Set of desired events which will be processed
         private val desiredEvents = setOf(
@@ -122,12 +126,16 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                 Log.d(TAG, "onStartCommand: Tamper protection changed")
                 refreshServiceConfig()
             }
+
+            ACTION_PERFORM_HOME_PRESS -> {
+                Log.d(TAG, "onStartCommand: Pressing home button")
+                goBackWithToast(GLOBAL_ACTION_HOME)
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onServiceConnected() {
-
         refreshServiceConfig()
         trackingManager.stopManualTracking()
         Log.d(TAG, "onCreate: Accessibility service started successfully")
@@ -216,11 +224,11 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     /**
      * Performs the back action and shows a toast message indicating that the content is blocked.
      */
-    private fun goBackWithToast() {
+    private fun goBackWithToast(customAction: Int? = null) {
         throttler.submit {
             ThreadUtils.runOnMainThread {
                 // Perform the back action (can be done on background thread)
-                performGlobalAction(GLOBAL_ACTION_BACK)
+                performGlobalAction(customAction ?: GLOBAL_ACTION_BACK)
 
                 // Post Toast to main thread
                 Toast.makeText(

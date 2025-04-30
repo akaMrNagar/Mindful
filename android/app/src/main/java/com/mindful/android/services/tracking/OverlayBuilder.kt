@@ -26,7 +26,7 @@ object OverlayBuilder {
         context: Context,
         packageName: String,
         state: RestrictionState,
-        removeOverlay: () -> Unit,
+        dismissOverlay: () -> Unit,
         addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
     ): View {
         // Inflate the custom layout for the dialog
@@ -54,7 +54,7 @@ object OverlayBuilder {
                             "com.mindful.android://open/appDashboard?package=$packageName"
                         )
                     )
-                    removeOverlay.invoke()
+                    dismissOverlay.invoke()
                 }
             }
         }
@@ -122,7 +122,7 @@ object OverlayBuilder {
                             button.visibility = View.VISIBLE
                             button.setOnClickListener {
                                 callback(reminder)
-                                removeOverlay.invoke()
+                                dismissOverlay.invoke()
                             }
                         }
                     }
@@ -142,7 +142,7 @@ object OverlayBuilder {
                 context.applicationContext.startActivity(homeIntent)
 
                 /// Remove overlay
-                removeOverlay.invoke()
+                dismissOverlay.invoke()
 
                 /// Send launch event
                 val intent = Intent(ACTION_NEW_APP_LAUNCHED).apply {

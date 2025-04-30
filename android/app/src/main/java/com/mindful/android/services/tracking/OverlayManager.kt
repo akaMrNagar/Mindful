@@ -2,6 +2,7 @@ package com.mindful.android.services.tracking
 
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
+import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -16,7 +17,10 @@ import android.widget.LinearLayout
 import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.services.accessibility.MindfulAccessibilityService
+import com.mindful.android.services.accessibility.MindfulAccessibilityService.Companion.ACTION_PERFORM_HOME_PRESS
 import com.mindful.android.utils.ThreadUtils
+import com.mindful.android.utils.Utils
 import java.util.concurrent.ConcurrentLinkedDeque
 
 class OverlayManager(
@@ -68,7 +72,19 @@ class OverlayManager(
         ThreadUtils.runOnMainThread {
             // Notify, stop and return if don't have overlay permission
             if (!Settings.canDrawOverlays(context)) {
+                // Show notification
                 NotificationHelper.pushAskOverlayPermissionNotification(context)
+
+                // Go home if accessibility is running
+                if (Utils.isServiceRunning(context, MindfulAccessibilityService::class.java)) {
+                    val serviceIntent = Intent(
+                        context.applicationContext,
+                        MindfulAccessibilityService::class.java
+                    ).setAction(ACTION_PERFORM_HOME_PRESS)
+
+                    context.startService(serviceIntent)
+                }
+
                 Log.d(
                     TAG,
                     "showOverlay: Display overlay permission denied, returning"
@@ -81,9 +97,7 @@ class OverlayManager(
                 context = context,
                 packageName = packageName,
                 state = restrictionState,
-                removeOverlay = {
-                    dismissOverlay()
-                },
+                dismissOverlay = ::dismissOverlay,
                 addReminderDelay = addReminderWithDelay,
             )
 
