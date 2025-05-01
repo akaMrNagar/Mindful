@@ -39,7 +39,7 @@ class NavigationService {
   /// or Onboarding Screen after setup
   Future<void> init({required bool showChangeLogsToo}) async {
     /// Initialize services after a delay to prevent app from lagging
-    Future.delayed(5.seconds, Initializer.initializeServicesAndSchedules);
+    Future.delayed(10.seconds, Initializer.initializeServicesAndSchedules);
 
     /// Listen to changes and handle deep links when their is a valid link either on app startup
     /// or even when app is active.

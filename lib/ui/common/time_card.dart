@@ -27,6 +27,7 @@ class TimeCard extends StatelessWidget {
     this.icon,
     this.iconColor,
     this.isModifiable,
+    this.iconSize = 32,
     this.enabled = true,
   });
 
@@ -39,6 +40,7 @@ class TimeCard extends StatelessWidget {
   final Color? bgColor;
   final IconData? icon;
   final Color? iconColor;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class TimeCard extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: Icon(
                   icon,
-                  size: 32,
+                  size: iconSize,
                   color: enabled ? iconColor : Theme.of(context).disabledColor,
                 ),
               ),

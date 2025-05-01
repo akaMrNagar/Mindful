@@ -40,45 +40,42 @@ class SliverTabsBottomPadding extends StatelessWidget {
             6.vBox,
 
             /// Socials
-            Opacity(
-              opacity: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  /// Github
-                  RoundedContainer(
-                    padding: const EdgeInsets.all(6),
-                    child: SvgPicture.asset(
-                      "assets/vectors/github.svg",
-                      height: 20,
-                      width: 20,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.primary,
-                        BlendMode.srcIn,
-                      ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                /// Github
+                RoundedContainer(
+                  padding: const EdgeInsets.all(6),
+                  child: SvgPicture.asset(
+                    "assets/vectors/github.svg",
+                    height: 20,
+                    width: 20,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.primary,
+                      BlendMode.srcIn,
                     ),
-                    onPressed: () => MethodChannelService.instance
-                        .launchUrl(AppConstants.githubUrl),
                   ),
-                  4.hBox,
+                  onPressed: () => MethodChannelService.instance
+                      .launchUrl(AppConstants.githubUrl),
+                ),
+                4.hBox,
 
-                  /// Instagram
-                  RoundedContainer(
-                    padding: const EdgeInsets.all(6),
-                    child: SvgPicture.asset(
-                      "assets/vectors/instagram.svg",
-                      height: 18,
-                      width: 18,
-                      colorFilter: ColorFilter.mode(
-                        Theme.of(context).colorScheme.primary,
-                        BlendMode.srcIn,
-                      ),
+                /// Instagram
+                RoundedContainer(
+                  padding: const EdgeInsets.all(6),
+                  child: SvgPicture.asset(
+                    "assets/vectors/instagram.svg",
+                    height: 18,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.primary,
+                      BlendMode.srcIn,
                     ),
-                    onPressed: () => MethodChannelService.instance
-                        .launchUrl(AppConstants.instagramUrl),
                   ),
-                ],
-              ),
+                  onPressed: () => MethodChannelService.instance
+                      .launchUrl(AppConstants.instagramUrl),
+                ),
+              ],
             ),
           ],
         ),
