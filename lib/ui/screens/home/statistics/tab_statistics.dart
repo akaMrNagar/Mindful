@@ -23,8 +23,6 @@ import 'package:mindful/providers/usage/weekly_device_usage_provider.dart';
 import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/providers/apps/filtered_packages_provider.dart';
 import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
-import 'package:mindful/ui/common/accessibility_tip.dart';
-import 'package:mindful/ui/common/battery_optimization_tip.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -116,8 +114,6 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
             ],
           ).sliver,
 
-          const AccessibilityTip(),
-          const BatteryOptimizationTip(),
 
           /// Most used apps list
           SliverAnimatedSwitcher(

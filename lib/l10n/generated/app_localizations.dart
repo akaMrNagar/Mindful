@@ -591,23 +591,161 @@ abstract class AppLocalizations {
   /// **'Mindful will automatically restart once the countdown finishes. Please be patient as changes are applied.'**
   String get app_restart_dialog_info;
 
-  /// No description provided for @tip_container_title.
+  /// No description provided for @accessibility_tip.
   ///
   /// In en, this message translates to:
-  /// **'Tip'**
-  String get tip_container_title;
+  /// **'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.'**
+  String get accessibility_tip;
 
   /// No description provided for @battery_optimization_tip.
   ///
   /// In en, this message translates to:
-  /// **'If Mindful stops working unexpectedly, consider granting the \'Ignore Battery Optimization\' permission by going to \'Settings>Advance\' to keep it running in the background.'**
+  /// **'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.'**
   String get battery_optimization_tip;
 
-  /// No description provided for @accessibility_tip.
+  /// No description provided for @invincible_mode_tip.
   ///
   /// In en, this message translates to:
-  /// **'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.'**
-  String get accessibility_tip;
+  /// **'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.'**
+  String get invincible_mode_tip;
+
+  /// No description provided for @glance_usage_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want insights? Check the Glance section to view your usage patterns and screen time.'**
+  String get glance_usage_tip;
+
+  /// No description provided for @tamper_protection_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.'**
+  String get tamper_protection_tip;
+
+  /// No description provided for @notification_blocking_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to reduce distractions? Use Notification Blocking to silence selected apps.'**
+  String get notification_blocking_tip;
+
+  /// No description provided for @usage_history_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to reflect on your habits? Check Usage History to see past patterns.'**
+  String get usage_history_tip;
+
+  /// No description provided for @focus_mode_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.'**
+  String get focus_mode_tip;
+
+  /// No description provided for @bedtime_reminder_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.'**
+  String get bedtime_reminder_tip;
+
+  /// No description provided for @custom_blocking_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need a custom experience? Create app blocking rules that fit your needs.'**
+  String get custom_blocking_tip;
+
+  /// No description provided for @session_timeline_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to track focus sessions? View timeline to see your focus journey.'**
+  String get session_timeline_tip;
+
+  /// No description provided for @short_content_blocking_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.'**
+  String get short_content_blocking_tip;
+
+  /// No description provided for @parental_controls_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.'**
+  String get parental_controls_tip;
+
+  /// No description provided for @notification_batching_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.'**
+  String get notification_batching_tip;
+
+  /// No description provided for @notification_scheduling_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need to manage notifications? Schedule when you receive notifications for specific apps.'**
+  String get notification_scheduling_tip;
+
+  /// No description provided for @quick_focus_tile_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.'**
+  String get quick_focus_tile_tip;
+
+  /// No description provided for @app_shortcuts_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.'**
+  String get app_shortcuts_tip;
+
+  /// No description provided for @backup_usage_db_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to save your data? Backup your usage database to keep your records safe.'**
+  String get backup_usage_db_tip;
+
+  /// No description provided for @dynamic_material_color_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.'**
+  String get dynamic_material_color_tip;
+
+  /// No description provided for @amoled_dark_theme_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.'**
+  String get amoled_dark_theme_tip;
+
+  /// No description provided for @customize_usage_history_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to keep usage history? Customize how many weeks of data to store in Usage History.'**
+  String get customize_usage_history_tip;
+
+  /// No description provided for @grouped_apps_blocking_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.'**
+  String get grouped_apps_blocking_tip;
+
+  /// No description provided for @websites_blocking_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.'**
+  String get websites_blocking_tip;
+
+  /// No description provided for @data_usage_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.'**
+  String get data_usage_tip;
+
+  /// No description provided for @block_internet_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.'**
+  String get block_internet_tip;
+
+  /// No description provided for @emergency_passes_tip.
+  ///
+  /// In en, this message translates to:
+  /// **'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.'**
+  String get emergency_passes_tip;
 
   /// No description provided for @onboarding_skip_btn_label.
   ///

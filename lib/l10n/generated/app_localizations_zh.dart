@@ -317,13 +317,82 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app_restart_dialog_info => 'Mindful 将在倒计时结束后自动重启。请耐心等待，应用正在应用更改。';
 
   @override
-  String get tip_container_title => '提示';
+  String get accessibility_tip => 'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
 
   @override
   String get battery_optimization_tip => '如果 Mindful 意外停止工作，请考虑通过前往 \'设置>高级\' 授予 \'忽略电池优化\' 权限，以保持其在后台运行。';
 
   @override
-  String get accessibility_tip => 'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.';
+  String get invincible_mode_tip => 'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+
+  @override
+  String get glance_usage_tip => 'Want insights? Check the Glance section to view your usage patterns and screen time.';
+
+  @override
+  String get tamper_protection_tip => 'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+
+  @override
+  String get notification_blocking_tip => 'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+
+  @override
+  String get usage_history_tip => 'Want to reflect on your habits? Check Usage History to see past patterns.';
+
+  @override
+  String get focus_mode_tip => 'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+
+  @override
+  String get bedtime_reminder_tip => 'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+
+  @override
+  String get custom_blocking_tip => 'Need a custom experience? Create app blocking rules that fit your needs.';
+
+  @override
+  String get session_timeline_tip => 'Want to track focus sessions? View timeline to see your focus journey.';
+
+  @override
+  String get short_content_blocking_tip => 'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.';
+
+  @override
+  String get parental_controls_tip => 'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.';
+
+  @override
+  String get notification_batching_tip => 'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.';
+
+  @override
+  String get notification_scheduling_tip => 'Need to manage notifications? Schedule when you receive notifications for specific apps.';
+
+  @override
+  String get quick_focus_tile_tip => 'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.';
+
+  @override
+  String get app_shortcuts_tip => 'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.';
+
+  @override
+  String get backup_usage_db_tip => 'Want to save your data? Backup your usage database to keep your records safe.';
+
+  @override
+  String get dynamic_material_color_tip => 'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.';
+
+  @override
+  String get amoled_dark_theme_tip => 'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
+
+  @override
+  String get customize_usage_history_tip => 'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
+
+  @override
+  String get grouped_apps_blocking_tip => 'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.';
+
+  @override
+  String get websites_blocking_tip => 'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.';
+
+  @override
+  String get data_usage_tip => 'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.';
+
+  @override
+  String get block_internet_tip => 'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.';
+
+  @override
+  String get emergency_passes_tip => 'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.';
 
   @override
   String get onboarding_skip_btn_label => '跳过';
