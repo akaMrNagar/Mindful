@@ -74,28 +74,55 @@ object DateTimeUtils {
     }
 
     /**
+     * Calculated Time Of Day total minutes for the now calender.
+     *
+     * @return Time of Day total minutes for today now.
+     */
+    fun todayCalToTod(): Int {
+        val calendar = Calendar.getInstance()
+        return calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
+    }
+
+    /**
      * Calculated the difference between time now and future tod minutes.
      *
      * @param futureTotalMinutes The total minutes from Time Of Day dart object.
      * @return The difference in MS. If the difference is negative then return 0
      */
     fun todDifferenceFromNow(futureTotalMinutes: Int): Long {
-        val diff = todToTodayCal(futureTotalMinutes).timeInMillis - System.currentTimeMillis()
+        val now = System.currentTimeMillis()
+        val futureCal = todToTodayCal(futureTotalMinutes)
+
+        // If the future time already passed today, move to tomorrow
+        if (futureCal.timeInMillis <= now) {
+            futureCal.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        val diff = futureCal.timeInMillis - now
         return if (diff > 0) diff else 0
     }
 
     /**
-     * Checks if current system time is outside the star and end Time Of Day for today
+     * Checks if current system time is outside the star and end Time Of Day
      *
      * @param startTod The start TOD in minutes
      * @param endTod   The end TOD in minutes
      * @return Boolean indicating if now is outside startTod and endTod
      */
     fun isTimeOutsideTODs(startTod: Int, endTod: Int): Boolean {
-        val now = System.currentTimeMillis()
-        return !(todToTodayCal(startTod).timeInMillis < now && now < todToTodayCal(endTod).timeInMillis)
-    }
+        val nowTod = todayCalToTod()
 
+        // Different days
+        return if (endTod < startTod) {
+            // now=3 is between end=2 start=5 then outside
+            nowTod in endTod until startTod
+        }
+        // Sane day
+        else {
+            // now=3 is not between start=2 end=5 then outside
+            nowTod !in startTod until endTod
+        }
+    }
 
     /**
      * Formats the total screen usage time into a human-readable string.

@@ -23,14 +23,14 @@ data class RestrictionGroup(
     val timerSec: Int = 0,
 
     /**
-     * Time of day (in minutes) from midnight when usage is allowed to start.
+     * Time of day (in minutes) from midnight when the app usage is allowed to start.
      */
     val activePeriodStart: Int = 0,
 
     /**
-     * Total duration (in minutes) of the allowed usage period.
+     * Time of day (in minutes) from midnight when the app usage is blocked.
      */
-    val periodDurationInMins: Int = 0,
+    val activePeriodEnd: Int = 0,
 
     /**
      * Set of app package names associated with this group.
@@ -49,7 +49,7 @@ data class RestrictionGroup(
                 groupName = jsonObject.optString("groupName", "Social"),
                 timerSec = jsonObject.optInt("timerSec", 0),
                 activePeriodStart = jsonObject.optInt("activePeriodStart", 0),
-                periodDurationInMins = jsonObject.optInt("periodDurationInMins", 0),
+                activePeriodEnd = jsonObject.optInt("activePeriodEnd", 0),
                 distractingApps = JsonUtils.parseStringSet(
                     jsonObject.optJSONArray("distractingApps")?.toString()
                 )

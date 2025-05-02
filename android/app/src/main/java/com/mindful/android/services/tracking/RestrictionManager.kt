@@ -65,13 +65,13 @@ class RestrictionManager(
 
     fun updateFocusedApps(apps: Set<String>?) {
         focusedApps = apps ?: setOf()
-        if(apps == null) stopIfNoUsage.invoke()
+        if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateFocusedApps: Focus apps updated: $focusedApps")
     }
 
     fun updateBedtimeApps(apps: Set<String>?) {
         bedtimeApps = apps ?: setOf()
-        if(apps == null) stopIfNoUsage.invoke()
+        if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateBedtimeApps: Bedtime apps updated: $bedtimeApps")
     }
 
@@ -143,10 +143,7 @@ class RestrictionManager(
     ): RestrictionState? {
 
         /// Check app's active period
-        if (restriction.periodDurationInMins > 0) {
-            val periodEndTimeMinutes =
-                restriction.activePeriodStart + restriction.periodDurationInMins
-
+        if (restriction.activePeriodStart != restriction.activePeriodEnd) {
             val state = RestrictionState(
                 message = context.getString(R.string.app_paused_reason_active_period_over),
                 type = RestrictionType.ActivePeriod,
@@ -154,13 +151,17 @@ class RestrictionManager(
             )
 
             /// Outside active period
-            if (DateTimeUtils.isTimeOutsideTODs(restriction.activePeriodStart, periodEndTimeMinutes)) {
+            if (DateTimeUtils.isTimeOutsideTODs(
+                    restriction.activePeriodStart,
+                    restriction.activePeriodEnd
+                )
+            ) {
                 Log.d(TAG, "evaluateActivePeriodLimit: App's active period is over")
                 return state
             }
             /// Launched between active period calculate expiration time
             else {
-                val willOverInMs = DateTimeUtils.todDifferenceFromNow(periodEndTimeMinutes)
+                val willOverInMs = DateTimeUtils.todDifferenceFromNow(restriction.activePeriodEnd)
                 futureState.add(state.copy(expirationFutureMs = willOverInMs))
             }
         }
@@ -168,9 +169,7 @@ class RestrictionManager(
 
         /// Check group's active period
         restrictionGroups[restriction.associatedGroupId]?.let {
-            if (it.periodDurationInMins > 0) {
-                val periodEndTimeMinutes =
-                    it.activePeriodStart + it.periodDurationInMins
+            if (it.activePeriodStart != it.activePeriodEnd) {
 
                 val state = RestrictionState(
                     message = context.getString(R.string.app_paused_reason_active_period_over),
@@ -178,7 +177,7 @@ class RestrictionManager(
                     expirationFutureMs = -1L,
                 )
                 /// Outside active period
-                if (DateTimeUtils.isTimeOutsideTODs(it.activePeriodStart, periodEndTimeMinutes)) {
+                if (DateTimeUtils.isTimeOutsideTODs(it.activePeriodStart, it.activePeriodEnd)) {
                     Log.d(
                         TAG,
                         "evaluateActivePeriodLimit: ${it.groupName} group's active period is over"
@@ -187,7 +186,7 @@ class RestrictionManager(
                 }
                 /// Launched between active period calculate expiration time
                 else {
-                    val willOverInMs = DateTimeUtils.todDifferenceFromNow(periodEndTimeMinutes)
+                    val willOverInMs = DateTimeUtils.todDifferenceFromNow(it.activePeriodEnd)
                     futureState.add(state.copy(expirationFutureMs = willOverInMs))
                 }
             }
