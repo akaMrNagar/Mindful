@@ -28,7 +28,7 @@ class UngroupedNotificationsList extends ConsumerWidget {
     return SliverImplicitlyAnimatedList(
       items: notifications,
       keyBuilder: (e) => "${e.packageName}: ${e.timeStamp}",
-      itemBuilder: (context, notification, position) {
+      itemBuilder: (context, i, notification, position) {
         final appInfo = ref.read(
             appsInfoProvider.select((v) => v.value?[notification.packageName]));
 

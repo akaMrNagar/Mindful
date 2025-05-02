@@ -18,7 +18,6 @@ import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_list.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/providers/usage/todays_apps_usage_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
@@ -42,8 +41,6 @@ class TabDashboard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isUsageLoading =
         ref.watch(todaysAppsUsageProvider.select((v) => v.isLoading));
-    final isAppsLoading =
-        ref.watch(appsInfoProvider.select((v) => v.isLoading));
 
     return DefaultRefreshIndicator(
       onRefresh: () async => ref
@@ -57,6 +54,7 @@ class TabDashboard extends ConsumerWidget {
 
           MultiSliver(
             children: [
+              8.vBox,
               Skeletonizer.zone(
                 enabled: isUsageLoading,
                 enableSwitchAnimation: true,
@@ -146,10 +144,12 @@ class TabDashboard extends ConsumerWidget {
                 onPressed: () => Navigator.of(context)
                     .pushNamed(AppRoutes.websitesBlockingPath),
               ),
-            ].animateListWhen(
-              when: isAppsLoading,
+            ].animateListOnce(
+              ref: ref,
+              uniqueKey: "home.dashboard",
+              delay: 100.ms,
               effects: DefaultEffects.transitionIn,
-              interval: 50.ms,
+              interval: 100.ms,
             ),
           ),
 

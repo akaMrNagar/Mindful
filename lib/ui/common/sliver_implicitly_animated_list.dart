@@ -32,6 +32,7 @@ class SliverImplicitlyAnimatedList<T> extends StatefulWidget {
   final String Function(T item) keyBuilder;
   final Widget Function(
     BuildContext context,
+    int index,
     T item,
     ItemPosition position,
   ) itemBuilder;
@@ -99,6 +100,7 @@ class _SliverImplicitlyAnimatedListState<T>
       ],
       child: widget.itemBuilder(
         context,
+        index,
         widget.items[index],
         getItemPositionInList(index, widget.items.length),
       ),

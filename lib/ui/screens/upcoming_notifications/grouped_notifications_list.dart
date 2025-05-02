@@ -27,7 +27,7 @@ class GroupedNotificationsList extends ConsumerWidget {
     return SliverImplicitlyAnimatedList(
       items: notificationsByApp,
       keyBuilder: (entry) => entry.key,
-      itemBuilder: (context, entry, position) => AppsNotificationsTile(
+      itemBuilder: (context, i, entry, position) => AppsNotificationsTile(
         packageName: entry.key,
         notifications: entry.value,
         position: position,

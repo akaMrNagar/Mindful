@@ -36,7 +36,7 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
             itemExtent: 64,
             items: allWebsites.toList(),
             keyBuilder: (item) => item,
-            itemBuilder: (context, item, position) => WebsiteTile(
+            itemBuilder: (context, i, item, position) => WebsiteTile(
               websitehost: item,
               isRemovable: !nsfwWebsites.contains(item),
               position: position,

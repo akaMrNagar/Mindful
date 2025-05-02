@@ -110,7 +110,7 @@ class _SliverDistractingAppsListState
                     ...unselectedApps,
                   ],
                   keyBuilder: (item) => item,
-                  itemBuilder: (context, packageName, _) {
+                  itemBuilder: (context, i, packageName, _) {
                     /// Fetch app using the package
                     final appInfo =
                         ref.read(appsInfoProvider).value?[packageName];

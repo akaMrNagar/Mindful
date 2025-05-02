@@ -126,7 +126,7 @@ class _TabStatisticsState extends ConsumerState<TabStatistics> {
                     items: filteredApps.value ?? [],
                     animationDurationMultiplier: 1.5,
                     keyBuilder: (item) => item,
-                    itemBuilder: (context, package, itemPosition) =>
+                    itemBuilder: (context, i, package, itemPosition) =>
                         ApplicationTile(
                       packageName: package,
                       usageType: _filter.usageType,

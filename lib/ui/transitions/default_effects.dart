@@ -10,27 +10,26 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/config/app_constants.dart';
 
 class DefaultEffects {
   static List<Effect> get transitionIn => [
+        FadeEffect(
+          duration: 1000.ms,
+          curve: Curves.easeOutSine,
+          begin: 0,
+          end: 1,
+        ),
         MoveEffect(
-          duration: AppConstants.defaultAnimDuration * 2.5,
-          curve: AppConstants.defaultCurve,
+          duration: 750.ms,
+          curve: Curves.easeOutBack,
           begin: const Offset(0, 100),
           end: Offset.zero,
         ),
         ScaleEffect(
-          duration: AppConstants.defaultAnimDuration * 2,
-          curve: AppConstants.defaultCurve,
-          begin: const Offset(0.85, 0.85),
+          duration: 500.ms,
+          curve: Curves.easeOutBack,
+          begin: const Offset(0.8, 0.8),
           end: const Offset(1, 1),
-        ),
-        FadeEffect(
-          duration: AppConstants.defaultAnimDuration * 2.5,
-          curve: AppConstants.defaultCurve,
-          begin: 0,
-          end: 1,
         ),
       ];
 }
