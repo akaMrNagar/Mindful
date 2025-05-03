@@ -50,7 +50,7 @@ class BreathingWidget extends StatelessWidget {
                 height: dimension,
                 width: dimension,
                 circularRadius: circularRadius,
-                color: Theme.of(context).colorScheme.primary.withAlpha(100),
+                color: Theme.of(context).colorScheme.primary.withAlpha(50),
               ),
             ),
           ).animate(

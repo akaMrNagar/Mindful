@@ -533,6 +533,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get show_all_apps_tile_title => 'Tüm uygulamaları göster';
 
   @override
+  String get search_apps_hint => 'Search apps...';
+
+  @override
   String get notifications_tab_title => 'Bildirimler';
 
   @override
@@ -540,6 +543,12 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get batched_apps_tile_title => 'Gruplanmış uygulamalar';
+
+  @override
+  String get store_all_tile_title => 'Store all notifications';
+
+  @override
+  String get store_all_tile_subtitle => 'Save non-batched notifications too.';
 
   @override
   String get schedules_heading => 'Program';
@@ -909,7 +918,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get timeline_tab_title => 'Zaman çizelgesi';
 
   @override
-  String get timeline_tab_info => 'Takvimden bir tarih seçerek odaklanma yolculuğunuzu keşfedin. İlerlemenizi takip edin, başarılarınızı tekrar gözden geçirin ve zorluklardan ders çıkarın.';
+  String get focus_timeline_tab_info => 'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -1048,34 +1057,28 @@ class AppLocalizationsTr extends AppLocalizations {
   String get restriction_group_invalid_limits_snack_alert => 'Bir zamanlayıcı ya da aktif süre sınırı belirleyin.';
 
   @override
-  String get upcoming_notifications_empty_list_hint => 'Bugün hiçbir bildirim gönderilmemiştir.';
+  String get notifications_empty_list_hint => 'No notifications have been batched today.';
 
   @override
-  String get button_segment_grouped_label => 'Gruplandırılmış';
-
-  @override
-  String get button_segment_ungrouped_label => 'Gruplandırılmamış';
+  String get conversations_label => 'Conversations';
 
   @override
   String get last_24_hours_heading => 'Son 24 Saat';
 
   @override
-  String nNotifications(num count) {
-    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
-      locale: localeName,
-      
-    );
-    final String countString = countNumberFormat.format(count);
+  String get notification_timeline_tab_info => 'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
 
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$countString bildirim',
-      one: '1 bildirim',
-      zero: '0 bildirim',
-    );
-    return '$_temp0';
-  }
+  @override
+  String get monthly_label => 'Monthly';
+
+  @override
+  String get daily_label => 'Daily';
+
+  @override
+  String get search_notifications_sheet_info => 'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+
+  @override
+  String get search_notifications_hint => 'Search notifications...';
 
   @override
   String get app_info_none_warning => 'Verilen paket için uygulama bulunamadı. Ana ekrana dönülüyor.';

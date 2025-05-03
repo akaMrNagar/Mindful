@@ -22,6 +22,8 @@ import com.mindful.android.helpers.usages.AppsUsageHelper.getAppsUsageForInterva
 import com.mindful.android.models.AppRestriction
 import com.mindful.android.models.BedtimeSchedule
 import com.mindful.android.models.FocusSession
+import com.mindful.android.models.Notification
+import com.mindful.android.models.NotificationSettings
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.services.notification.MindfulNotificationListenerService
 import com.mindful.android.services.timer.EmergencyPauseService
@@ -137,16 +139,12 @@ class FgMethodCallHandler(
                 )
             }
 
-            "getUpComingNotifications" -> {
-                result.success(SharedPrefsHelper.getSerializedNotificationsJson(context))
-            }
-
             "getShortsScreenTimeMs" -> {
                 result.success(SharedPrefsHelper.getSetShortsScreenTimeMs(context, null))
             }
 
             "getNativeCrashLogs" -> {
-                result.success(SharedPrefsHelper.getCrashLogsArrayString(context))
+                result.success(SharedPrefsHelper.getCrashLogsArrayJsonString(context))
             }
 
             "clearNativeCrashLogs" -> {
@@ -251,16 +249,14 @@ class FgMethodCallHandler(
                 result.success(true)
             }
 
-            "updateDistractingNotificationApps" -> {
-                val distractingApps =
-                    JsonUtils.parseStringSet(call.arguments() ?: "")
+            "updateNotificationSettings" -> {
+                val settings =
+                    NotificationSettings.fromJson(call.arguments() ?: "")
                 if (notificationServiceConn.isActive) {
-                    notificationServiceConn.service?.updateDistractingApps(distractingApps)
-                } else if (distractingApps.isNotEmpty()) {
+                    notificationServiceConn.service?.updateNotificationSettings(settings)
+                } else if (settings.batchedApps.isNotEmpty() || settings.storeNonBatchedToo) {
                     notificationServiceConn.setOnConnectedCallback { service: MindfulNotificationListenerService ->
-                        service.updateDistractingApps(
-                            distractingApps
-                        )
+                        service.updateNotificationSettings(settings)
                     }
                     notificationServiceConn.bindService()
                 }
@@ -386,6 +382,18 @@ class FgMethodCallHandler(
                 NewActivitiesLaunchHelper.openAppWithPackage(
                     context,
                     call.arguments() ?: ""
+                )
+                result.success(true)
+            }
+
+            "openAppWithNotificationThread" -> {
+                val notification = Notification.fromJson(call.arguments() ?: "")
+                NewActivitiesLaunchHelper.openAppWithNotificationThread(
+                    context = context,
+                    notification = notification,
+                    pendingIntent = notificationServiceConn.service?.getPendingIntentForKey(
+                        notification.key
+                    ),
                 )
                 result.success(true)
             }

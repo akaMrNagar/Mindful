@@ -25,19 +25,19 @@ import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
-import 'package:mindful/ui/screens/focus/timeline/session_card.dart';
-import 'package:mindful/ui/screens/focus/timeline/sliver_heatmap_calender.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
+import 'package:mindful/ui/screens/focus/focus_timeline/session_card.dart';
+import 'package:mindful/ui/screens/focus/focus_timeline/sliver_heatmap_calender.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class TabTimeline extends ConsumerStatefulWidget {
-  const TabTimeline({super.key});
+class TabFocusTimeline extends ConsumerStatefulWidget {
+  const TabFocusTimeline({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TabTimelineState();
 }
 
-class _TabTimelineState extends ConsumerState<TabTimeline> {
+class _TabTimelineState extends ConsumerState<TabFocusTimeline> {
   DateTimeRange _monthRange = dateToday.monthRange;
   DateTime _selectedDay = dateToday;
 
@@ -58,78 +58,70 @@ class _TabTimelineState extends ConsumerState<TabTimeline> {
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          StyledText(context.locale.timeline_tab_info).sliver,
+          StyledText(context.locale.focus_timeline_tab_info).sliver,
 
           24.vSliverBox,
 
           /// Productivity stats
-          Column(
+
+          Row(
             children: [
-              Row(
-                children: [
-                  /// Total productive time
-                  Expanded(
-                    child: UsageGlanceCard(
-                      isPrimary: true,
-                      position: ItemPosition.topLeft,
-                      icon: FluentIcons.clock_20_regular,
-                      title: context.locale.focus_monthly_label,
-                      info:
-                          monthlyFocus.totalProductiveTime.toTimeShort(context),
-                      onTap: () => context.showSnackAlert(
-                        context.locale
-                            .selected_month_productive_time_snack_alert(
-                          monthlyFocus.totalProductiveTime.toTimeFull(context),
-                        ),
-                        icon: FluentIcons.clock_20_filled,
-                      ),
-                    ),
-                  ),
-                  4.hBox,
-
-                  /// Productive days
-                  Expanded(
-                    child: UsageGlanceCard(
-                      isPrimary: true,
-                      position: ItemPosition.topRight,
-                      icon: FluentIcons.calendar_day_20_regular,
-                      title:
-                          context.locale.selected_month_productive_days_label,
-                      info: context.locale
-                          .nDays(monthlyFocus.totalProductiveDays),
-                      onTap: () => context.showSnackAlert(
-                        context.locale
-                            .selected_month_productive_days_snack_alert(
-                          monthlyFocus.totalProductiveDays,
-                        ),
-                        icon: FluentIcons.calendar_day_20_filled,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              4.vBox,
-
-              /// Today's total focused time
-              Skeletonizer.zone(
-                enabled: dailyFocus.selectedDaysSessions.isLoading,
-                ignorePointers: false,
+              /// Total productive time
+              Expanded(
                 child: UsageGlanceCard(
                   isPrimary: true,
-                  position: ItemPosition.bottom,
-                  icon: FluentIcons.shifts_day_20_regular,
-                  title: context.locale.selected_day_focused_time_label,
-                  info: dailyFocus.selectedDaysFocusedTime.toTimeFull(context),
+                  position: ItemPosition.topLeft,
+                  icon: FluentIcons.clock_20_regular,
+                  title: context.locale.focus_monthly_label,
+                  info: monthlyFocus.totalProductiveTime.toTimeShort(context),
                   onTap: () => context.showSnackAlert(
-                    context.locale.selected_day_focused_time_snack_alert(
-                      dailyFocus.selectedDaysFocusedTime.toTimeFull(context),
+                    context.locale.selected_month_productive_time_snack_alert(
+                      monthlyFocus.totalProductiveTime.toTimeFull(context),
                     ),
-                    icon: FluentIcons.shifts_day_20_filled,
+                    icon: FluentIcons.clock_20_filled,
+                  ),
+                ),
+              ),
+              4.hBox,
+
+              /// Productive days
+              Expanded(
+                child: UsageGlanceCard(
+                  isPrimary: true,
+                  position: ItemPosition.topRight,
+                  icon: FluentIcons.calendar_day_20_regular,
+                  title: context.locale.selected_month_productive_days_label,
+                  info: context.locale.nDays(monthlyFocus.totalProductiveDays),
+                  onTap: () => context.showSnackAlert(
+                    context.locale.selected_month_productive_days_snack_alert(
+                      monthlyFocus.totalProductiveDays,
+                    ),
+                    icon: FluentIcons.calendar_day_20_filled,
                   ),
                 ),
               ),
             ],
+          ).sliver,
+
+          4.vSliverBox,
+
+          /// Today's total focused time
+          Skeletonizer.zone(
+            enabled: dailyFocus.selectedDaysSessions.isLoading,
+            ignorePointers: false,
+            child: UsageGlanceCard(
+              isPrimary: true,
+              position: ItemPosition.bottom,
+              icon: FluentIcons.shifts_day_20_regular,
+              title: context.locale.selected_day_focused_time_label,
+              info: dailyFocus.selectedDaysFocusedTime.toTimeFull(context),
+              onTap: () => context.showSnackAlert(
+                context.locale.selected_day_focused_time_snack_alert(
+                  dailyFocus.selectedDaysFocusedTime.toTimeFull(context),
+                ),
+                icon: FluentIcons.shifts_day_20_filled,
+              ),
+            ),
           ).sliver,
 
           /// Calender

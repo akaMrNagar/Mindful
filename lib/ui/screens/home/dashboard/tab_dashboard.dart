@@ -106,7 +106,7 @@ class TabDashboard extends ConsumerWidget {
                 titleText: context.locale.apps_blocking_tile_title,
                 subtitleText: context.locale.apps_blocking_tile_subtitle,
                 onPressed: () =>
-                    TabControllerProvider.of(context)?.animateToTab(
+                    TabControllerProvider.maybeOf(context)?.animateToTab(
                   DefaultHomeTab.statistics.index,
                 ),
               ),

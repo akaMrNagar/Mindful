@@ -23,7 +23,6 @@ final defaultMindfulSettingsModel = MindfulSettings(
 const defaultSharedUniqueDataModel = SharedUniqueData(
   id: 0,
   excludedApps: [],
-  notificationBatchedApps: [],
 );
 
 const defaultParentalControlsModel = ParentalControls(
@@ -59,6 +58,12 @@ const defaultBedtimeScheduleModel = BedtimeSchedule(
   isScheduleOn: false,
   shouldStartDnd: false,
   distractingApps: [],
+);
+
+const defaultNotificationSettingsModel = NotificationSettings(
+  id: 0,
+  storeNonBatchedToo: false,
+  batchedApps: [],
 );
 
 const defaultAppRestrictionModel = AppRestriction(

@@ -11,9 +11,12 @@
 import 'package:drift/drift.dart';
 
 @DataClassName("Notification")
-class NotificationTable extends Table {
+class NotificationsTable extends Table {
   /// Unique ID for notification
   IntColumn get id => integer().autoIncrement()();
+
+  /// Unique key of this notification created by system for live link
+  TextColumn get key => text()();
 
   /// Package name of the related app
   TextColumn get packageName => text()();
@@ -27,6 +30,9 @@ class NotificationTable extends Table {
 
   /// The content of the notification
   TextColumn get content => text().withDefault(const Constant(""))();
+
+  /// The category of the notification
+  TextColumn get category => text().withDefault(const Constant(""))();
 
   /// Boolean denoting the status of this notification (Read/Unread)
   BoolColumn get isRead => boolean().withDefault(const Constant(false))();

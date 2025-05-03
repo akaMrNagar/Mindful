@@ -83,43 +83,37 @@ class _ScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: ClipRRect(
-        borderRadius: getBorderRadiusFromPosition(position),
-        child: DefaultSlideToRemove(
-          enabled: enabled,
-          key: Key("${schedule.label}:${schedule.id}"),
-          onDismiss: () => onRemove(schedule),
-          child: DefaultListTile(
-            position: ItemPosition.fit,
-            margin: const EdgeInsets.all(0),
+    return DefaultSlideToRemove(
+      enabled: enabled,
+      position: position,
+      key: Key("${schedule.label}:${schedule.id}"),
+      onDismiss: () => onRemove(schedule),
+      child: DefaultListTile(
+        position: ItemPosition.fit,
+        margin: const EdgeInsets.all(0),
 
-            /// Time
-            leading: TimeCard(
-              label: schedule.label,
-              heroTag: HeroTags.notificationScheduleTimerTileTag(
-                schedule.id,
-              ),
-              enabled: enabled,
-              icon: getIconFromHourOfDay(schedule.time.hour),
-              iconColor: getColorFromHourOfDay(context, schedule.time.hour),
-              initialTime: schedule.time,
-              onChange: (newTime) {
-                if (newTime == schedule.time) return;
-                onUpdate(schedule.copyWith(time: newTime));
-              },
-            ),
-
-            /// Switch
-            trailing: Switch(
-              value: schedule.isActive,
-              onChanged: enabled
-                  ? (isActive) =>
-                      onUpdate(schedule.copyWith(isActive: isActive))
-                  : null,
-            ),
+        /// Time
+        leading: TimeCard(
+          label: schedule.label,
+          heroTag: HeroTags.notificationScheduleTimerTileTag(
+            schedule.id,
           ),
+          enabled: enabled,
+          icon: getIconFromHourOfDay(schedule.time.hour),
+          iconColor: getColorFromHourOfDay(context, schedule.time.hour),
+          initialTime: schedule.time,
+          onChange: (newTime) {
+            if (newTime == schedule.time) return;
+            onUpdate(schedule.copyWith(time: newTime));
+          },
+        ),
+
+        /// Switch
+        trailing: Switch(
+          value: schedule.isActive,
+          onChanged: enabled
+              ? (isActive) => onUpdate(schedule.copyWith(isActive: isActive))
+              : null,
         ),
       ),
     );

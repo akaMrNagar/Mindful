@@ -24,6 +24,8 @@ import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_mode_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
+import 'package:mindful/core/database/tables/notification_settings_table.dart';
+import 'package:mindful/core/database/tables/notifications_table.dart';
 import 'package:mindful/core/database/tables/parental_controls_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/database/tables/notification_schedule_table.dart';
@@ -55,21 +57,27 @@ part 'app_database.g.dart';
     SharedUniqueDataTable,
     NotificationScheduleTable,
     AppUsageTable,
+    NotificationSettingsTable,
+    NotificationsTable,
   ],
   daos: [UniqueRecordsDao, DynamicRecordsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
 
-  // STEP 1 => rebuild api => dart run build_runner build -d
+  // STEP 1 => Modify or create tables
   //
-  // STEP 2 => generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
+  // STEP 2 => Bump up [schemaVersion]
   //
-  // STEP 3 => generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
+  // STEP 3 => Rebuild dart api => dart run build_runner build -d
   //
-  // STEP 4 => Add migration steps to migration strategy
+  // STEP 4 => Generate schema => dart run drift_dev schema dump lib/core/database/app_database.dart lib/core/database/schemas
+  //
+  // STEP 5 => Generate steps => dart run drift_dev schema steps lib/core/database/schemas lib/core/database/schemas/schema_versions.dart
+  //
+  // STEP 6 => Add migration steps to migration strategy by create new file in migrations folder. See previous migrations for help
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   // Always use [runSafe()] for upgrades - why?
   // If a user imports a backup from a newer schema when they are on an older
@@ -90,6 +98,7 @@ class AppDatabase extends _$AppDatabase {
               from3To4: from3To4,
               from4To5: from4To5,
               from5To6: from5To6,
+              from6To7: from6To7,
             ),
           );
         },

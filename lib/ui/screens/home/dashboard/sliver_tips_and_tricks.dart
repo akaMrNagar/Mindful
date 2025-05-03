@@ -34,31 +34,31 @@ class _SliverTipsAndTricksState extends State<SliverTipsAndTricks> {
         /// Home screen
         ctx.locale.glance_usage_tip: (context) {},
         ctx.locale.notification_blocking_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.notifications.index),
         ctx.locale.usage_history_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.statistics.index),
         ctx.locale.bedtime_reminder_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.bedtime.index),
         ctx.locale.custom_blocking_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.statistics.index),
         ctx.locale.notification_batching_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.notifications.index),
         ctx.locale.notification_scheduling_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.notifications.index),
         ctx.locale.data_usage_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.statistics.index),
         ctx.locale.block_internet_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.statistics.index),
         ctx.locale.emergency_passes_tip: (context) =>
-            TabControllerProvider.of(context)
+            TabControllerProvider.maybeOf(context)
                 ?.animateToTab(DefaultHomeTab.bedtime.index),
 
         /// Settings screen

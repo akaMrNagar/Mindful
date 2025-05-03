@@ -51,11 +51,10 @@ class Initializer {
 
     /// Fetch and update notification batched apps and schedule
     final notificationSchedules = await dynamicDao.fetchNotificationSchedules();
-    final distractingNotificationApps =
-        (await uniqueDao.loadSharedData()).notificationBatchedApps;
+    final notificationSettings = await uniqueDao.loadNotificationSettings();
 
     await MethodChannelService.instance
-        .updateDistractingNotificationApps(distractingNotificationApps);
+        .updateNotificationSettings(notificationSettings);
     await MethodChannelService.instance.updateNotificationBatchSchedules(
       notificationSchedules
           .where((e) => e.isActive)

@@ -12,13 +12,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/models/usage_model.dart';
 import 'package:mindful/models/app_info.dart';
 import 'package:mindful/models/device_info_model.dart';
-import 'package:mindful/models/notification_model.dart';
 
 /// This class handles the Flutter method channel and is responsible for invoking native Android Java code.
 ///
@@ -163,29 +162,6 @@ class MethodChannelService {
     return usagesMap;
   }
 
-  /// Retrieves a list of all upcoming notifications and creates list of [NotificationModel] and returns it.
-  Future<List<NotificationModel>> getUpComingNotifications() async {
-    List<NotificationModel> notifications = [];
-
-    try {
-      String jsonString =
-          await _methodChannel.invokeMethod('getUpComingNotifications');
-
-      List<dynamic> notificationMapsList = jsonDecode(jsonString);
-
-      for (var item in notificationMapsList) {
-        if (item is Map) {
-          notifications
-              .add(NotificationModel.fromMap(Map<String, dynamic>.from(item)));
-        }
-      }
-    } catch (e) {
-      debugPrint("MethodChannelService.getUpComingNotifications() Error: $e");
-    }
-
-    return notifications;
-  }
-
   // ===========================================================================================
   // ==================================== SERVICES =============================================
   // ===========================================================================================
@@ -224,15 +200,16 @@ class MethodChannelService {
         jsonEncode(blockedApps),
       );
 
-  /// Safe method to update distracting apps in Notification Listener service.
+  /// Safe method to update settings in Notification Listener service.
   ///
-  /// This method push the updated list to the service if it is already running
-  /// otherwise try to bind to service if list is not empty
-  Future<void> updateDistractingNotificationApps(
-          List<String> distractingApps) async =>
+  /// This method push the updated settings to the service if it is already running
+  /// otherwise try to bind to service if needed
+  Future<void> updateNotificationSettings(
+    NotificationSettings settings,
+  ) async =>
       _methodChannel.invokeMethod(
-        'updateDistractingNotificationApps',
-        jsonEncode(distractingApps),
+        'updateNotificationSettings',
+        jsonEncode(settings),
       );
 
   /// Updates the notification batching schedule.
@@ -425,6 +402,13 @@ class MethodChannelService {
   /// Opens an app with the specified package name.
   Future<bool> openAppWithPackage(String appPackage) async =>
       await _methodChannel.invokeMethod('openAppWithPackage', appPackage);
+
+  /// Opens an app with notification thread.
+  Future<bool> openAppWithNotificationThread(Notification notification) async =>
+      await _methodChannel.invokeMethod(
+        'openAppWithNotificationThread',
+        jsonEncode(notification),
+      );
 
   /// Opens the app settings for the specified app package.
   Future<bool> openAppSettingsForPackage(String appPackage) async =>

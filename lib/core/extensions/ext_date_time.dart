@@ -27,11 +27,18 @@ extension ExtDateTime on DateTime {
         microsecond: 0,
       );
 
-  /// Returns date-only for the start of the month
-  DateTime get startOfMonth => DateTime(year, month, 1);
+  /// Returns date range (start and end) for the last 24 hours.
+  DateTimeRange get last24Hours =>
+      DateTimeRange(start: subtract(24.hours), end: this);
 
-  /// Returns date-only for the end of the month
-  DateTime get endOfMonth => DateTime(year, month + 1, 1).subtract(1.days);
+  /// Returns date-only for the start of the day
+  DateTime get startOfDay => dateOnly;
+
+  /// Returns date-only for the end of the day
+  DateTime get endOfDay => dateOnly.add(24.hours);
+
+  /// Returns date-only range (start and end) for the day
+  DateTimeRange get dayRange => DateTimeRange(start: startOfDay, end: endOfDay);
 
   /// Returns date-only for the start of the week
   DateTime get startOfWeek => dateOnly.subtract((weekday - 1).days);
@@ -42,6 +49,12 @@ extension ExtDateTime on DateTime {
   /// Returns date-only range (start and end) for the week
   DateTimeRange get weekRange =>
       DateTimeRange(start: startOfWeek, end: endOfWeek);
+
+  /// Returns date-only for the start of the month
+  DateTime get startOfMonth => DateTime(year, month, 1);
+
+  /// Returns date-only for the end of the month
+  DateTime get endOfMonth => DateTime(year, month + 1, 1).subtract(1.days);
 
   /// Returns date-only range (start and end) for the month
   DateTimeRange get monthRange =>

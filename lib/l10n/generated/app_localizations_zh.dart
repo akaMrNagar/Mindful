@@ -533,6 +533,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get show_all_apps_tile_title => '显示所有应用';
 
   @override
+  String get search_apps_hint => 'Search apps...';
+
+  @override
   String get notifications_tab_title => '通知';
 
   @override
@@ -540,6 +543,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get batched_apps_tile_title => '批量应用';
+
+  @override
+  String get store_all_tile_title => 'Store all notifications';
+
+  @override
+  String get store_all_tile_subtitle => 'Save non-batched notifications too.';
 
   @override
   String get schedules_heading => '时间表';
@@ -909,7 +918,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get timeline_tab_title => '时间轴';
 
   @override
-  String get timeline_tab_info => '通过选择日历上的日期来探索你的专注之旅。追踪你的进度，回顾你的成功，并从挑战中学习。';
+  String get focus_timeline_tab_info => 'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -1048,34 +1057,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restriction_group_invalid_limits_snack_alert => '请设置定时器或活跃期限制。';
 
   @override
-  String get upcoming_notifications_empty_list_hint => '今天没有批量通知。';
+  String get notifications_empty_list_hint => 'No notifications have been batched today.';
 
   @override
-  String get button_segment_grouped_label => '分组';
-
-  @override
-  String get button_segment_ungrouped_label => '不分组';
+  String get conversations_label => 'Conversations';
 
   @override
   String get last_24_hours_heading => '过去24小时';
 
   @override
-  String nNotifications(num count) {
-    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
-      locale: localeName,
-      
-    );
-    final String countString = countNumberFormat.format(count);
+  String get notification_timeline_tab_info => 'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
 
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$countString 条通知',
-      one: '1 条通知',
-      zero: '0 条通知',
-    );
-    return '$_temp0';
-  }
+  @override
+  String get monthly_label => 'Monthly';
+
+  @override
+  String get daily_label => 'Daily';
+
+  @override
+  String get search_notifications_sheet_info => 'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+
+  @override
+  String get search_notifications_hint => 'Search notifications...';
 
   @override
   String get app_info_none_warning => '无法找到给定包名的应用程序。返回主屏幕。';

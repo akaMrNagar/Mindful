@@ -1023,6 +1023,12 @@ abstract class AppLocalizations {
   /// **'Show all apps'**
   String get show_all_apps_tile_title;
 
+  /// No description provided for @search_apps_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search apps...'**
+  String get search_apps_hint;
+
   /// No description provided for @notifications_tab_title.
   ///
   /// In en, this message translates to:
@@ -1040,6 +1046,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Batched apps'**
   String get batched_apps_tile_title;
+
+  /// No description provided for @store_all_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Store all notifications'**
+  String get store_all_tile_title;
+
+  /// No description provided for @store_all_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save non-batched notifications too.'**
+  String get store_all_tile_subtitle;
 
   /// No description provided for @schedules_heading.
   ///
@@ -1767,11 +1785,11 @@ abstract class AppLocalizations {
   /// **'Timeline'**
   String get timeline_tab_title;
 
-  /// No description provided for @timeline_tab_info.
+  /// No description provided for @focus_timeline_tab_info.
   ///
   /// In en, this message translates to:
   /// **'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.'**
-  String get timeline_tab_info;
+  String get focus_timeline_tab_info;
 
   /// No description provided for @selected_month_productive_time_snack_alert.
   ///
@@ -2025,23 +2043,17 @@ abstract class AppLocalizations {
   /// **'Set either a timer or an active period limit.'**
   String get restriction_group_invalid_limits_snack_alert;
 
-  /// No description provided for @upcoming_notifications_empty_list_hint.
+  /// No description provided for @notifications_empty_list_hint.
   ///
   /// In en, this message translates to:
   /// **'No notifications have been batched today.'**
-  String get upcoming_notifications_empty_list_hint;
+  String get notifications_empty_list_hint;
 
-  /// No description provided for @button_segment_grouped_label.
+  /// No description provided for @conversations_label.
   ///
   /// In en, this message translates to:
-  /// **'Grouped'**
-  String get button_segment_grouped_label;
-
-  /// No description provided for @button_segment_ungrouped_label.
-  ///
-  /// In en, this message translates to:
-  /// **'Un-Grouped'**
-  String get button_segment_ungrouped_label;
+  /// **'Conversations'**
+  String get conversations_label;
 
   /// No description provided for @last_24_hours_heading.
   ///
@@ -2049,11 +2061,35 @@ abstract class AppLocalizations {
   /// **'Last 24 hours'**
   String get last_24_hours_heading;
 
-  /// No description provided for @nNotifications.
+  /// No description provided for @notification_timeline_tab_info.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, =0{0 notification} =1{1 notification} other{{count} notifications}}'**
-  String nNotifications(num count);
+  /// **'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.'**
+  String get notification_timeline_tab_info;
+
+  /// No description provided for @monthly_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get monthly_label;
+
+  /// No description provided for @daily_label.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily'**
+  String get daily_label;
+
+  /// No description provided for @search_notifications_sheet_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.'**
+  String get search_notifications_sheet_info;
+
+  /// No description provided for @search_notifications_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search notifications...'**
+  String get search_notifications_hint;
 
   /// No description provided for @app_info_none_warning.
   ///

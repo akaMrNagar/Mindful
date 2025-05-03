@@ -54,7 +54,7 @@ class DefaultSegmentedButton<T> extends StatelessWidget {
                       color: Theme.of(context).iconTheme.color,
                     )
                   : null,
-              label: Text(e.label),
+              label: e.label != null ? Text(e.label!) : null,
               value: e.value,
             ),
           )
@@ -66,7 +66,7 @@ class DefaultSegmentedButton<T> extends StatelessWidget {
 class SegmentItem<T> {
   const SegmentItem({
     required this.value,
-    required this.label,
+    this.label,
     this.icon,
     this.filledIcon,
   });
@@ -81,5 +81,5 @@ class SegmentItem<T> {
   final IconData? filledIcon;
 
   /// Optional label displayed in the segment.
-  final String label;
+  final String? label;
 }

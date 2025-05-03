@@ -26,12 +26,13 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import com.mindful.android.AppConstants
 import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.helpers.storage.SharedPrefsHelper
+import com.mindful.android.models.Notification
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.quickTiles.FocusQuickTileService
-import com.mindful.android.AppConstants
 import io.flutter.plugin.common.MethodChannel
 import java.util.Locale
 
@@ -267,6 +268,37 @@ object NewActivitiesLaunchHelper {
             Log.e(
                 TAG,
                 "openAppWithPackage:Package not found, Unable to launch app : $appPackage",
+                e
+            )
+        }
+    }
+
+    /**
+     * Opens the specified app using its pending intent and notification.
+     *
+     * @param context    The context to use for launching the activity.
+     * @param pendingIntent The nullable pending intent of notification.
+     * @param notification The notification itself.
+     */
+    fun openAppWithNotificationThread(
+        context: Context,
+        notification: Notification,
+        pendingIntent: PendingIntent?,
+    ) {
+        try {
+            if (pendingIntent != null) {
+                pendingIntent.send()
+                Log.d(TAG, "openAppWithNotificationThread: Pending intent executed")
+            } else {
+                Log.d(TAG, "openAppWithNotificationThread: Null pending intent")
+                context.packageManager.getLaunchIntentForPackage(notification.packageName)?.let {
+                    context.startActivity(it)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(
+                TAG,
+                "openAppWithNotificationThread: Error launching app with notification thread :",
                 e
             )
         }

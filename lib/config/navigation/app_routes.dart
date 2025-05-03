@@ -21,7 +21,7 @@ import 'package:mindful/ui/screens/parental_controls/parental_controls_screen.da
 import 'package:mindful/ui/screens/restriction_groups/restriction_groups_screen.dart';
 import 'package:mindful/ui/screens/settings/settings_screen.dart';
 import 'package:mindful/ui/screens/shorts_blocking/shorts_blocking_screen.dart';
-import 'package:mindful/ui/screens/upcoming_notifications/upcoming_notifications_screen.dart';
+import 'package:mindful/ui/screens/notifications/notifications_screen.dart';
 import 'package:mindful/ui/screens/websites_blocking/websites_blocking_screen.dart';
 import 'package:mindful/ui/splash_screen.dart';
 
@@ -41,7 +41,7 @@ class AppRoutes {
   static const String websitesBlockingPath = '/websitesBlocking';
 
   static const String appDashboardPath = '/appDashboard';
-  static const String upcomingNotificationsPath = '/upcomingNotifications';
+  static const String notificationsPath = '/notifications';
 
   static final Map<String, Widget Function(BuildContext)> routes = {
     /// Root
@@ -78,8 +78,10 @@ class AppRoutes {
     /// Websites blocking screen
     websitesBlockingPath: (context) => const WebsitesBlockingScreen(),
 
-    /// Upcoming notifications list screen
-    upcomingNotificationsPath: (context) => const UpcomingNotificationsScreen(),
+    /// Notifications list screen
+    notificationsPath: (context) => NotificationsScreen(
+          initialTabIndex: context.resolveParam<int>("tab"),
+        ),
 
     /// Focus mode screen
     focusModePath: (context) => FocusScreen(

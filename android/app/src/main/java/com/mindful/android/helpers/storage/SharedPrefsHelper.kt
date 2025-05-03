@@ -15,9 +15,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
-import com.mindful.android.AppConstants
 import com.mindful.android.enums.DndWakeLock
-import com.mindful.android.models.Notification
 import com.mindful.android.models.Wellbeing
 import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.JsonUtils
@@ -44,10 +42,6 @@ object SharedPrefsHelper {
     private const val CRASH_LOG_PREFS_BOX = "CrashLogPrefs"
     private const val PREF_KEY_CRASH_LOGS = "crashLogs"
 
-    private var mNotificationBatchPrefs: SharedPreferences? = null
-    private const val NOTIFICATION_BATCH_PREFS_BOX = "NotificationBatchPrefs"
-    private const val PREF_KEY_UPCOMING_NOTIFICATIONS = "upcomingNotifications"
-
 
     private fun checkAndInitializeUniquePrefs(context: Context) {
         if (mUniquePrefs != null) return
@@ -69,13 +63,6 @@ object SharedPrefsHelper {
         mCrashLogPrefs = context.applicationContext.getSharedPreferences(
             CRASH_LOG_PREFS_BOX,
             Context.MODE_PRIVATE
-        )
-    }
-
-    private fun checkAndInitializeNotificationBatchPrefs(context: Context) {
-        if (mNotificationBatchPrefs != null) return
-        mNotificationBatchPrefs = context.applicationContext.getSharedPreferences(
-            NOTIFICATION_BATCH_PREFS_BOX, Context.MODE_PRIVATE
         )
     }
 
@@ -243,7 +230,7 @@ object SharedPrefsHelper {
      * @param context The application context used to access SharedPreferences.
      * @return A JSON string representing the stored crash logs array.
      */
-    fun getCrashLogsArrayString(context: Context): String {
+    fun getCrashLogsArrayJsonString(context: Context): String {
         checkAndInitializeCrashLogPrefs(context)
         return mCrashLogPrefs!!.getString(PREF_KEY_CRASH_LOGS, "[]")!!
     }
@@ -256,56 +243,5 @@ object SharedPrefsHelper {
     fun clearCrashLogs(context: Context) {
         checkAndInitializeCrashLogPrefs(context)
         mCrashLogPrefs!!.edit().putString(PREF_KEY_CRASH_LOGS, "[]").apply()
-    }
-
-
-    /**
-     * Creates and Inserts a new notification into SharedPreferences based on the passed object.
-     *
-     * @param context      The application context used to retrieve app version and store the log.
-     * @param notification The notification which will be inserted as map.
-     */
-    fun insertNotificationToPrefs(context: Context, notification: Notification) {
-        checkAndInitializeNotificationBatchPrefs(context)
-
-        // Create new json object
-        val currentNotification = JSONObject(notification.toMap())
-
-        // Get existing notifications
-        val notificationsJson =
-            mNotificationBatchPrefs!!.getString(PREF_KEY_UPCOMING_NOTIFICATIONS, "[]")
-        var notificationsArray: JSONArray = JSONArray()
-        try {
-            notificationsArray = JSONArray(notificationsJson)
-
-            // Remove notifications older than 24 hours
-            val last24Time = System.currentTimeMillis() - AppConstants.ONE_DAY_IN_MS
-
-            for (i in 0 until notificationsArray.length()) {
-                val timeStamp = notificationsArray.getJSONObject(i).getLong("timeStamp")
-                if (timeStamp < last24Time) {
-                    notificationsArray.remove(i)
-                }
-            }
-        } catch (e1: Exception) {
-            notificationsArray = JSONArray()
-        }
-
-        // Insert current notification and update prefs
-        notificationsArray.put(currentNotification)
-        mNotificationBatchPrefs!!.edit()
-            .putString(PREF_KEY_UPCOMING_NOTIFICATIONS, notificationsArray.toString()).apply()
-    }
-
-
-    /**
-     * Retrieves the list of notification from SharedPreferences as a JSON Array string.
-     *
-     * @param context The application context used to access SharedPreferences.
-     * @return A JSON string representing the stored notifications array.
-     */
-    fun getSerializedNotificationsJson(context: Context): String {
-        checkAndInitializeNotificationBatchPrefs(context)
-        return mNotificationBatchPrefs!!.getString(PREF_KEY_UPCOMING_NOTIFICATIONS, "[]")!!
     }
 }

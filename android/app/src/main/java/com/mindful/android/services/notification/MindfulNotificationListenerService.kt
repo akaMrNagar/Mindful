@@ -11,14 +11,19 @@
  */
 package com.mindful.android.services.notification
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.mindful.android.generics.ServiceBinder
+import com.mindful.android.helpers.storage.DriftDbHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.Notification
+import com.mindful.android.models.NotificationSettings
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class MindfulNotificationListenerService : NotificationListenerService() {
@@ -26,45 +31,54 @@ class MindfulNotificationListenerService : NotificationListenerService() {
         private const val TAG = "Mindful.MindfulNotificationService"
     }
 
-    private val mBinder = ServiceBinder(this@MindfulNotificationListenerService)
-    private val mSocialMediaPackages =
-        setOf("com.whatsapp", "com.instagram.android", "com.snapchat.android")
+    private val binder = ServiceBinder(this@MindfulNotificationListenerService)
+    private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
 
-    private var mDistractingApps: Set<String> = HashSet(0)
-    private var mIsListenerActive = false
+    private var settings: NotificationSettings = NotificationSettings()
+    private val pendingIntents: MutableMap<String, PendingIntent> = HashMap()
+    private val pendingNotifications: MutableList<Notification> = mutableListOf()
+
+    private var isListenerActive = false
+    private var lastDbInsertTime: Long = 0
+
+    /**
+     *  Returns the pending intent for the provided key if found, otherwise null
+     */
+    fun getPendingIntentForKey(key: String): PendingIntent? {
+        Log.d(TAG, "getPendingIntentForKey: key: $key ,\nIntents:$pendingIntents")
+        return pendingIntents[key]
+    }
 
     override fun onListenerConnected() {
+        isListenerActive = true
+        Log.d(TAG, "onListenerConnected: Notifications listener CONNECTED")
         super.onListenerConnected()
-        mIsListenerActive = true
     }
 
     override fun onListenerDisconnected() {
-        mIsListenerActive = false
+        isListenerActive = false
+        Log.d(TAG, "onListenerConnected: Notifications listener DIS-CONNECTED")
         super.onListenerDisconnected()
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        if (!mIsListenerActive) return
+        if (!isListenerActive) return
         val packageName = sbn.packageName
         try {
-            // Return if the posting app is not marked as distracting
-            if (!mDistractingApps.contains(packageName) || !sbn.isClearable) return
+            /// FIXME: Uncomment it out
+            // If from mindful
+            // if(packageName == this.packageName) return
 
-
-            // Dismiss notification
-            cancelNotification(sbn.key)
-            Log.d(TAG, "onNotificationPosted: Notification dismissed")
-
-            // Return if it is from social media but does not have tag
-            if (sbn.tag == null && mSocialMediaPackages.contains(packageName)) return
-
-            // Check if we can store it or not
-            val notification = Notification.fromSbn(sbn)
-            if (notification.title.isNotBlank() || notification.content.isNotBlank()) {
-                SharedPrefsHelper.insertNotificationToPrefs(this, notification)
-                Log.d(TAG, "onNotificationPosted: Notification stored from package: $packageName")
+            // Dismiss notification if it is from distracting apps
+            if (settings.batchedApps.contains(packageName) && sbn.isClearable) {
+                cancelNotification(sbn.key)
+                Log.d(TAG, "onNotificationPosted: Distracting notification dismissed")
             }
 
+            // Process only if keeping history or it is from distracting apps
+            if (settings.storeNonBatchedToo || settings.batchedApps.contains(packageName)) {
+                executorService.submit { processNotificationInBg(sbn) }
+            }
         } catch (e: Exception) {
             SharedPrefsHelper.insertCrashLogToPrefs(this, e)
             Log.e(TAG, "onNotificationPosted: Something went wrong for package: $packageName", e)
@@ -73,13 +87,50 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     }
 
 
-    fun updateDistractingApps(distractingApps: Set<String>) {
-        mDistractingApps = distractingApps
-        Log.d(TAG, "updateDistractingApps: Distracting apps updated successfully")
+    fun updateNotificationSettings(settings: NotificationSettings) {
+        this.settings = settings
+        Log.d(
+            TAG,
+            "updateNotificationSettings: Notification settings updated successfully: $settings"
+        )
     }
 
+    private fun processNotificationInBg(sbn: StatusBarNotification) {
+        Log.d(TAG, "processNotificationInBg: Processing notification")
+
+        // Create notification and cache
+        val notification = Notification.fromSbn(sbn)
+        pendingIntents[notification.key] = sbn.notification.contentIntent
+        pendingNotifications.add(notification)
+
+
+        // Insert notifications to db if the difference between last insertion is more than 1 minute
+        if ((System.currentTimeMillis() - lastDbInsertTime) >= (60000)) {
+            insertNotificationsToDb()
+        }
+    }
+
+    private fun insertNotificationsToDb() {
+        // Return if no pending notifications
+        if (pendingNotifications.isEmpty()) return
+
+
+        val isSuccess = DriftDbHelper(this).insertNotifications(pendingNotifications)
+        lastDbInsertTime = System.currentTimeMillis()
+
+        // Clear list if inserted successfully
+        if (isSuccess) pendingNotifications.clear()
+    }
+
+
     override fun onBind(intent: Intent): IBinder? {
-        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder
+        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) binder
         else super.onBind(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        insertNotificationsToDb()
+        Log.d(TAG, "onDestroy: Notifications listener DESTROYED")
     }
 }

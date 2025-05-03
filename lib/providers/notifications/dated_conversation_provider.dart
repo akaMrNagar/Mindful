@@ -8,22 +8,23 @@
  *
  */
 
+import 'package:flutter/material.dart' as m;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/models/notification_model.dart';
-import 'package:mindful/providers/notifications/upcoming_notifications_provider.dart';
+import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/providers/notifications/dated_notifications_provider.dart';
 
-/// Holds map of Package and its list of notifications
-final groupedNotificationsProvider = StateNotifierProvider<
+final datedConversationProvider = StateNotifierProvider.family<
     GroupedNotificationsNotifier,
-    AsyncValue<Map<String, List<NotificationModel>>>>(
-  (ref) => GroupedNotificationsNotifier(
-    ref.watch(upcomingNotificationsProvider).value ?? [],
+    AsyncValue<Map<String, List<Notification>>>,
+    m.DateTimeRange>(
+  (ref, range) => GroupedNotificationsNotifier(
+    ref.watch(datedNotificationsProvider(range)).value ?? [],
   ),
 );
 
 class GroupedNotificationsNotifier
-    extends StateNotifier<AsyncValue<Map<String, List<NotificationModel>>>> {
-  final List<NotificationModel> notifications;
+    extends StateNotifier<AsyncValue<Map<String, List<Notification>>>> {
+  final List<Notification> notifications;
 
   GroupedNotificationsNotifier(this.notifications)
       : super(const AsyncLoading()) {
@@ -32,7 +33,7 @@ class GroupedNotificationsNotifier
 
   /// Fetches and updates the state with the latest list of pending notifications.
   Future<bool> _init() async {
-    final Map<String, List<NotificationModel>> mapByPackages = {};
+    final Map<String, List<Notification>> mapByPackages = {};
 
     /// Group by package
     for (var notification in notifications) {
@@ -58,18 +59,17 @@ class GroupedNotificationsNotifier
   }
 
   /// Groups and sorts notifications within a package.
-  List<NotificationModel> _groupAndSortNotifications(
-    List<NotificationModel> notifications,
+  List<Notification> _groupAndSortNotifications(
+    List<Notification> notifications,
   ) {
     /// Merge notifications if they belongs to same conversation
-    final Map<String, NotificationModel> grouped = {};
+    final Map<String, Notification> grouped = {};
 
     for (var notification in notifications) {
       grouped.update(
-        notification.titleText,
+        notification.title,
         (existing) => existing.copyWith(
-          timeStamp: existing.timeStamp,
-          contentText: '${existing.contentText}\n${notification.contentText}',
+          content: '${existing.content}\n${notification.content}',
         ),
         ifAbsent: () => notification,
       );

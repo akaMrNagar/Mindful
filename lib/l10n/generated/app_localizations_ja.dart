@@ -533,6 +533,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get show_all_apps_tile_title => 'すべてのアプリを表示';
 
   @override
+  String get search_apps_hint => 'Search apps...';
+
+  @override
   String get notifications_tab_title => 'Notifications';
 
   @override
@@ -540,6 +543,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get batched_apps_tile_title => 'Batched apps';
+
+  @override
+  String get store_all_tile_title => 'Store all notifications';
+
+  @override
+  String get store_all_tile_subtitle => 'Save non-batched notifications too.';
 
   @override
   String get schedules_heading => 'Schedules';
@@ -909,7 +918,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get timeline_tab_title => '使用履歴';
 
   @override
-  String get timeline_tab_info => 'カレンダーから日付を選択して、あなたの集中力を振り返りましょう。過去の記録から、成功と課題を分析し、さらなる成長が期待できます。';
+  String get focus_timeline_tab_info => 'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -1048,34 +1057,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restriction_group_invalid_limits_snack_alert => 'タイマーを設定するか、使用時間帯を制限してください。';
 
   @override
-  String get upcoming_notifications_empty_list_hint => 'No notifications have been batched today.';
+  String get notifications_empty_list_hint => 'No notifications have been batched today.';
 
   @override
-  String get button_segment_grouped_label => 'Grouped';
-
-  @override
-  String get button_segment_ungrouped_label => 'Un-Grouped';
+  String get conversations_label => 'Conversations';
 
   @override
   String get last_24_hours_heading => 'Last 24 hours';
 
   @override
-  String nNotifications(num count) {
-    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
-      locale: localeName,
-      
-    );
-    final String countString = countNumberFormat.format(count);
+  String get notification_timeline_tab_info => 'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
 
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$countString notifications',
-      one: '1 notification',
-      zero: '0 notification',
-    );
-    return '$_temp0';
-  }
+  @override
+  String get monthly_label => 'Monthly';
+
+  @override
+  String get daily_label => 'Daily';
+
+  @override
+  String get search_notifications_sheet_info => 'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+
+  @override
+  String get search_notifications_hint => 'Search notifications...';
 
   @override
   String get app_info_none_warning => 'Couldn\'t find the app for the given package. Returning to the home screen.';

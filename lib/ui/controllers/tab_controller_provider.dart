@@ -11,7 +11,9 @@ class TabControllerProvider extends InheritedWidget {
     required super.child,
   });
 
-  static TabControllerProvider? of(BuildContext context) {
+  /// Returns the [TabControllerProvider] most closely associated with the given context.
+  /// Returns null if there is no [TabControllerProvider] associated with the given context.
+  static TabControllerProvider? maybeOf(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<TabControllerProvider>();
   }
 

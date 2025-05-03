@@ -11,7 +11,9 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
 class DefaultSlideToRemove extends StatelessWidget {
@@ -21,57 +23,67 @@ class DefaultSlideToRemove extends StatelessWidget {
     required this.onDismiss,
     this.enabled = true,
     this.removable = true,
+    this.position = ItemPosition.none,
+    this.margin = const EdgeInsets.only(top: 4),
   });
 
   final Widget child;
   final bool enabled;
   final bool removable;
+  final ItemPosition position;
+  final EdgeInsetsGeometry margin;
   final VoidCallback onDismiss;
 
   @override
   Widget build(BuildContext context) {
-    return Slidable(
-      key: key,
-      enabled: enabled,
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        children: [
-          CustomSlidableAction(
-            autoClose: true,
-            backgroundColor: removable
-                ? Theme.of(context).colorScheme.error
-                : Theme.of(context).focusColor,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                /// Icon
-                Icon(
-                  removable
-                      ? FluentIcons.delete_20_filled
-                      : FluentIcons.delete_off_20_filled,
-                  color: removable
-                      ? Theme.of(context).colorScheme.onError
-                      : Theme.of(context).disabledColor,
-                  size: removable ? 20 : 24,
-                ),
+    return Padding(
+      padding: margin,
+      child: ClipRRect(
+        borderRadius: getBorderRadiusFromPosition(position),
+        child: Slidable(
+          key: key,
+          enabled: enabled,
+          endActionPane: ActionPane(
+            motion: const DrawerMotion(),
+            children: [
+              CustomSlidableAction(
+                autoClose: true,
+                backgroundColor: removable
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).focusColor,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    /// Icon
+                    Icon(
+                      removable
+                          ? FluentIcons.delete_20_filled
+                          : FluentIcons.delete_off_20_filled,
+                      color: removable
+                          ? Theme.of(context).colorScheme.onError
+                          : Theme.of(context).disabledColor,
+                      size: removable ? 20 : 24,
+                    ),
 
-                /// Text
-                if (removable)
-                  StyledText(
-                    context.locale.dialog_button_remove,
-                    fontSize: 14,
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).colorScheme.onError,
-                  ),
-              ],
-            ),
-            onPressed: (_) => removable ? onDismiss() : null,
+                    /// Text
+                    if (removable)
+                      StyledText(
+                        context.locale.dialog_button_remove,
+                        fontSize: 14,
+                        overflow: TextOverflow.ellipsis,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).colorScheme.onError,
+                      ),
+                  ],
+                ),
+                onPressed: (_) => removable ? onDismiss() : null,
+              ),
+            ],
           ),
-        ],
+          child: child,
+        ),
       ),
-      child: child,
     );
   }
 }

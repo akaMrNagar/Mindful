@@ -10,7 +10,9 @@ class ScrollControllerProvider extends InheritedWidget {
     required super.child,
   });
 
-  static ScrollControllerProvider? of(BuildContext context) {
+  /// Returns the [ScrollController] most closely associated with the given context.
+  /// Returns null if there is no [ScrollController] associated with the given context.
+  static ScrollControllerProvider? maybeOf(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<ScrollControllerProvider>();
   }

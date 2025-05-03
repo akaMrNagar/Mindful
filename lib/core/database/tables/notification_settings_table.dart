@@ -13,16 +13,20 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/converters/list_converters.dart';
 
-@DataClassName("SharedUniqueData")
-class SharedUniqueDataTable extends Table {
-  /// Unique ID for Shared Data
+@DataClassName("NotificationSettings")
+class NotificationSettingsTable extends Table {
+  /// Unique ID for notification config
   IntColumn get id => integer().withDefault(const Constant(0))();
 
   @override
   Set<Column<Object>>? get primaryKey => {id};
 
-  /// List of app's packages which are excluded from the aggregated usage statistics.
-  TextColumn get excludedApps => text()
+  /// Boolean denoting if to store notifications of non-batched apps too.
+  BoolColumn get storeNonBatchedToo =>
+      boolean().withDefault(const Constant(false))();
+
+  /// List of app's packages whose notifications are batched.
+  TextColumn get batchedApps => text()
       .map(const ListStringConverter())
       .withDefault(Constant(jsonEncode([])))();
 }

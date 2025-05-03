@@ -204,10 +204,13 @@
     "wifi_label": "Wifi",
     "most_used_apps_heading": "Most used apps",
     "show_all_apps_tile_title": "Show all apps",
+    "search_apps_hint": "Search apps...",
     "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
     "notifications_tab_title": "Notifications",
     "notifications_tab_info": "Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.",
     "batched_apps_tile_title": "Batched apps",
+    "store_all_tile_title": "Store all notifications",
+    "store_all_tile_subtitle": "Save non-batched notifications too.",
     "schedules_heading": "Schedules",
     "new_schedule_fab_button": "New Schedule",
     "new_schedule_dialog_info": "Enter a name for the notification schedule to help identify it easily.",
@@ -352,7 +355,7 @@
     "focus_session_type_other": "Other",
     "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
     "timeline_tab_title": "Timeline",
-    "timeline_tab_info": "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
+    "focus_timeline_tab_info": "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
     "selected_month_productive_time_snack_alert": "Your total productive time for the selected month is {timeString}.",
     "@selected_month_productive_time_snack_alert": {
         "placeholders": {
@@ -437,20 +440,16 @@
         }
     },
     "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
-    "@----------------------------- UPCOMING NOTIFICATIONS SCREEN -----------------------------": {},
-    "upcoming_notifications_empty_list_hint": "No notifications have been batched today.",
-    "button_segment_grouped_label": "Grouped",
-    "button_segment_ungrouped_label": "Un-Grouped",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_empty_list_hint": "No notifications have been batched today.",
+    "conversations_label": "Conversations",
     "last_24_hours_heading": "Last 24 hours",
-    "nNotifications": "{count, plural, =0{0 notification} =1{1 notification} other{{count} notifications}}",
-    "@nNotifications": {
-        "placeholders": {
-            "count": {
-                "type": "num",
-                "format": "compact"
-            }
-        }
-    },
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TIMELINE TAB -----------------------------": {},
+    "notification_timeline_tab_info": "Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.",
+    "monthly_label": "Monthly",
+    "daily_label": "Daily",
+    "search_notifications_sheet_info": "Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.",
+    "search_notifications_hint": "Search notifications...",
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
     "app_info_none_warning": "Couldn't find the app for the given package. Returning to the home screen.",
     "emergency_fab_button": "Emergency",

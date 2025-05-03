@@ -14,12 +14,12 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleNotificationBatchTask
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.AppConstants
 import org.json.JSONArray
 
 class NotificationBatchReceiver : BroadcastReceiver() {
@@ -45,14 +45,15 @@ class NotificationBatchReceiver : BroadcastReceiver() {
         override fun doWork(): Result {
             try {
                 // Return if no available notifications
-                val jsonStr = SharedPrefsHelper.getSerializedNotificationsJson(context)
-                val notificationsCount = JSONArray(jsonStr).length()
+                /// FIXME: Migrate logic from shared prefs to DRIFT
+//                val jsonStr = SharedPrefsHelper.getSerializedNotificationsJson(context)
+                val notificationsCount = JSONArray("[]").length()
                 if (notificationsCount == 0) return Result.success()
 
                 // Create pending intent
                 val appIntent = Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("com.mindful.android://open/upcomingNotifications")
+                    Uri.parse("com.mindful.android://open/notifications")
                 ).apply {
                     `package` = context.packageName
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
