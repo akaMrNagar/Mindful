@@ -129,60 +129,104 @@ class NotificationBatchReceiver : BroadcastReceiver() {
         private fun pushAllUnreadNotifications(notifications: List<Notification>) {
             try {
                 notificationServiceConn.bindService()
+                val mindfulIntent = AppUtils.getPendingIntentForMindfulUri(
+                    context,
+                    "com.mindful.android://open/notifications"
+                )
                 val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-                /// Push notifications
-                val appsGroup = notifications.groupBy { it.packageName }
+                // Group notifications by app package
+                val appGroupedNotifications = notifications.groupBy { it.packageName }
+                for ((packageName, appNotifications) in appGroupedNotifications) {
+                    val appInfo = context.packageManager.getApplicationInfo(packageName, 0)
+                    val appName = context.packageManager.getApplicationLabel(appInfo).toString()
+                    val appIcon = context.packageManager.getApplicationIcon(appInfo).toBitmap()
+                    val appIntent = runCatching {
+                        PendingIntent.getActivity(
+                            context,
+                            0,
+                            context.packageManager.getLaunchIntentForPackage(packageName),
+                            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                        )
+                    }.getOrNull()
 
-                for ((pkg, packagedNotifs) in appsGroup) {
-                    val threadGroup = packagedNotifs.groupBy { it.key }
+                    // 1. Push messaging-style notifications for each thread
+                    // Group by conversation thread key
+                    val threadGrouped = appNotifications.groupBy { it.key }
+                    for ((threadKey, threadNotifications) in threadGrouped) {
+                        val person = Person.Builder()
+                            .setName(threadNotifications.firstOrNull()?.title ?: "Unknown")
+                            .build()
 
-                    for ((key, threadNotifs) in threadGroup) {
-                        val person = Person.Builder().setName(threadNotifs.first().title).build()
-                        val style = NotificationCompat.MessagingStyle(person)
-                            .setConversationTitle(context.getString(R.string.notification_schedule_batch_title))
-                        threadNotifs.sortedBy { it.timeStamp }
-                            .forEach { style.addMessage(it.content, it.timeStamp, person) }
+                        val messagingStyle = NotificationCompat.MessagingStyle(person)
+                            .setConversationTitle(threadNotifications.firstOrNull()?.title)
+                            .also { message ->
+                                threadNotifications.sortedBy { it.timeStamp }.forEach {
+                                    message.addMessage(it.content, it.timeStamp, person)
+                                }
+                            }
 
                         val pendingIntent =
-                            runCatching {
-                                notificationServiceConn.service?.getPendingIntentForKey(key)
-                                    ?: PendingIntent.getActivity(
-                                        context,
-                                        0,
-                                        context.packageManager.getLaunchIntentForPackage(pkg),
-                                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                                    )
-                            }.getOrNull() ?: AppUtils.getPendingIntentForMindfulUri(
-                                context,
-                                "com.mindful.android://open/notifications"
-                            )
+                            notificationServiceConn.service?.getPendingIntentForKey(threadKey)
+                                ?: appIntent
+                                ?: mindfulIntent
+
                         val notification = NotificationCompat.Builder(
                             context,
                             NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
                         )
                             .setSmallIcon(R.drawable.ic_mindful)
-                            .setGroup(key)
-                            .setStyle(style)
-                            .setLargeIcon(
-                                context.packageManager.getApplicationIcon(pkg)
-                                    .toBitmap()
-                            )
+                            .setLargeIcon(appIcon)
+                            .setContentTitle(appName)
+                            .setGroup(packageName)
+                            .setStyle(messagingStyle)
                             .setAutoCancel(true)
                             .setContentIntent(pendingIntent)
+                            .setWhen(
+                                threadNotifications.lastOrNull()?.timeStamp
+                                    ?: System.currentTimeMillis()
+                            )
                             .build()
 
-                        notificationManager.notify((pkg + key).hashCode(), notification)
+                        notificationManager.notify(
+                            (packageName + threadKey).hashCode(),
+                            notification
+                        )
                     }
+
+                    // 2. App-level group summary notification
+                    val summaryStyle = NotificationCompat.InboxStyle().also { inbox ->
+                        threadGrouped.forEach { (_, threadNotifs) ->
+                            threadNotifs.maxByOrNull { it.timeStamp }?.let {
+                                inbox.addLine("${it.title}: ${it.content}")
+                            }
+                        }
+
+                        inbox.setSummaryText(appName)
+                    }
+
+                    val summaryNotification = NotificationCompat.Builder(
+                        context,
+                        NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
+                    )
+                        .setSmallIcon(R.drawable.ic_mindful)
+                        .setStyle(summaryStyle)
+                        .setGroup(packageName)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
+                        .setGroupSummary(true)
+                        .build()
+
+                    notificationManager.notify(packageName.hashCode(), summaryNotification)
                 }
 
-                // Mark notifications as read
+                // Mark all notifications as read
                 DriftDbHelper(context).markNotificationsAsRead(notifications.mapNotNull { it.id })
+
             } catch (e: Exception) {
                 Log.e(
                     TAG,
-                    "pushAllUnreadNotifications: Failed to push batched unread notification",
+                    "pushAllUnreadNotifications: Failed to push batched unread notifications",
                     e
                 )
                 SharedPrefsHelper.insertCrashLogToPrefs(context, e)

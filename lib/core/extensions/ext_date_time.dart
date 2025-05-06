@@ -83,6 +83,12 @@ extension ExtDateTime on DateTime {
         Localizations.localeOf(context).languageCode,
       ).format(this);
 
+  /// Returns date and time string in a localized format (e.g., 1 Jan 2025, 7:15 PM).
+  String timeDateString(BuildContext context) => DateFormat(
+        'h:mm a, d MMM yyyy ',
+        Localizations.localeOf(context).languageCode,
+      ).format(this);
+
   /// Returns TRUE if the [DateTime] lies between [start] and [end] else false.
   bool isBetween(DateTime start, DateTime end) {
     return isAfter(start) && isBefore(end);

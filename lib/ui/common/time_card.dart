@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -60,6 +61,7 @@ class TimeCard extends StatelessWidget {
                   info: label,
                 );
 
+                await Future.delayed(100.ms);
                 onChange(pickedTime ?? initialTime);
               }
             : null,

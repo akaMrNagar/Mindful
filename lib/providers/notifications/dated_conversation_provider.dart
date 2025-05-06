@@ -11,6 +11,7 @@
 import 'package:flutter/material.dart' as m;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/utils/string_utils.dart';
 import 'package:mindful/providers/notifications/dated_notifications_provider.dart';
 
 final datedConversationProvider = StateNotifierProvider.family<
@@ -67,11 +68,12 @@ class GroupedNotificationsNotifier
 
     for (var notification in notifications) {
       grouped.update(
-        notification.title,
+        notification.key,
         (existing) => existing.copyWith(
-          content: '${notification.content}\n${existing.content}',
+          content: '$dotSpaced${notification.content}\n${existing.content}',
         ),
-        ifAbsent: () => notification,
+        ifAbsent: () =>
+            notification.copyWith(content: "$dotSpaced${notification.content}"),
       );
     }
 

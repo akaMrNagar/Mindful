@@ -65,10 +65,7 @@ class NotificationTile extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              trailing: StyledText(
-                notification.timeStamp.timeString(context),
-                fontWeight: FontWeight.w600,
-              ),
+              trailing: StyledText(notification.timeStamp.timeString(context)),
               subtitle: Row(
                 children: [
                   /// Today's notification indicator
@@ -89,13 +86,12 @@ class NotificationTile extends StatelessWidget {
               ),
             ),
 
-            /// Conversation
+            /// Conversation or content
             Padding(
               padding: const EdgeInsets.all(12).copyWith(top: 0),
               child: StyledText(
                 notification.content,
                 fontSize: 14,
-                color: Theme.of(context).hintColor,
               ),
             ),
           ],

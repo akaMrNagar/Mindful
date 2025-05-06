@@ -68,8 +68,10 @@ class MindfulNotificationListenerService : NotificationListenerService() {
         if (!isListenerActive) return
         val packageName = sbn.packageName
         try {
-            // If from mindful
-            if (packageName == this.packageName || !sbn.isClearable) return
+            // If from mindful or not clearable or group summery
+            val isGroupSummary =
+                sbn.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
+            if (packageName == this.packageName || !sbn.isClearable || isGroupSummary) return
 
             // Dismiss notification if it is from distracting apps
             val isFromBatchedApp = settings.batchedApps.contains(packageName)
@@ -109,7 +111,8 @@ class MindfulNotificationListenerService : NotificationListenerService() {
 
             // Create notification and cache
             val notification = Notification.fromSbn(sbn).copy(isRead = !isFromBatchedApp)
-            if (notification.title.isEmpty()) return
+            if (notification.title.isEmpty() || notification.content.isEmpty()) return
+
             cachedPendingIntents.put(notification.key, sbn.notification.contentIntent)
             pendingNotifications.add(notification)
 
