@@ -11,7 +11,7 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
 import 'package:mindful/core/enums/session_type.dart';
 
 @DataClassName("FocusProfile")
@@ -36,6 +36,6 @@ class FocusProfileTable extends Table {
 
   /// List of app's packages which are selected as distracting apps.
   TextColumn get distractingApps => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
 }

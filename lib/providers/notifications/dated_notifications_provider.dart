@@ -51,7 +51,7 @@ class NotificationsNotifier
   }
 
   Future<void> deleteNotification(Notification notification) async {
-    final deleted = await _dao.deleteNotificationWithId(notification.id);
+    final deleted = await _dao.removeNotificationWithId(notification.id);
     if (deleted > 0) {
       state = AsyncData(
         [...(state.value ?? []).where((e) => e.id != notification.id)],

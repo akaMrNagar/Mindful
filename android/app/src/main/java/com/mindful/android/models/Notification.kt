@@ -3,13 +3,19 @@ package com.mindful.android.models
 import android.app.Notification.EXTRA_BIG_TEXT
 import android.app.Notification.EXTRA_TEXT
 import android.app.Notification.EXTRA_TITLE
+import android.app.Notification.EXTRA_TITLE_BIG
+import android.database.Cursor
 import android.service.notification.StatusBarNotification
+import com.mindful.android.utils.Extensions.getIntOrDefault
+import com.mindful.android.utils.Extensions.getLongOrDefault
+import com.mindful.android.utils.Extensions.getStringOrDefault
 import org.json.JSONObject
 
 /**
  * Represents a notification received from an app.
  */
 data class Notification(
+    val id: Int? = null,
     val key: String = "",
     val packageName: String = "",
     val timeStamp: Long = 0L,
@@ -30,9 +36,12 @@ data class Notification(
                 key = sbn.key,
                 packageName = sbn.packageName,
                 timeStamp = sbn.postTime,
-                title = (extras?.getString(EXTRA_TITLE) ?: "").trim(),
-                content = (extras?.getString(EXTRA_TEXT)
-                    ?: extras?.getString(EXTRA_BIG_TEXT) ?: "").trim(),
+                title = (extras?.getCharSequence(EXTRA_TITLE)?.toString()
+                    ?: extras?.getCharSequence(EXTRA_TITLE_BIG)?.toString()
+                    ?: "").trim(),
+                content = (extras?.getCharSequence(EXTRA_TEXT)?.toString()
+                    ?: extras?.getCharSequence(EXTRA_BIG_TEXT)?.toString()
+                    ?: "").trim(),
                 category = parseNotificationCategory(sbn.notification.category),
                 isRead = false,
             )
@@ -45,13 +54,33 @@ data class Notification(
             val jsonObject = JSONObject(json)
 
             return Notification(
+                id = jsonObject.optInt("id", -1).let { if (it > 0) it else null },
                 key = jsonObject.optString("key", ""),
-                packageName = jsonObject.optString("package_name", ""),
-                timeStamp = jsonObject.optLong("time_stamp", 0),
+                packageName = jsonObject.optString("packageName", ""),
+                timeStamp = jsonObject.optLong("timeStamp", 0),
                 title = jsonObject.optString("title", ""),
                 content = jsonObject.optString("content", ""),
                 category = jsonObject.optString("category", "General"),
-                isRead = jsonObject.optBoolean("is_read", false),
+                isRead = jsonObject.optBoolean("isRead", false),
+            )
+        }
+
+        /**
+         * Parses [Notification] from a Db cursor.
+         */
+        fun fromCursor(cursor: Cursor): Notification {
+            return Notification(
+                id = cursor.getIntOrDefault("id", -1).let { if (it > 0) it else null },
+                key = cursor.getStringOrDefault("key", ""),
+                packageName = cursor.getStringOrDefault("package_name", ""),
+                timeStamp = cursor.getLongOrDefault(
+                    "time_stamp",
+                    0
+                ) * 1000L, // convert seconds to ms
+                title = cursor.getStringOrDefault("title", ""),
+                content = cursor.getStringOrDefault("content", ""),
+                category = cursor.getStringOrDefault("category", "General"),
+                isRead = cursor.getIntOrDefault("is_read", 0) == 1,
             )
         }
 

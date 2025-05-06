@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/enums/recap_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -21,6 +22,7 @@ import 'package:mindful/providers/notifications/dated_notifications_provider.dar
 import 'package:mindful/providers/notifications/notification_settings_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/go_to_badge_icon.dart';
@@ -42,7 +44,7 @@ class TabNotifications extends ConsumerStatefulWidget {
 }
 
 class _TabNotificationsState extends ConsumerState<TabNotifications> {
-  final DateTimeRange last24Hours = DateTime.now().last24Hours;
+  DateTimeRange _last24Hours = DateTime.now().last24Hours;
 
   @override
   Widget build(
@@ -53,14 +55,14 @@ class _TabNotificationsState extends ConsumerState<TabNotifications> {
 
     final settings = ref.watch(notificationSettingsProvider);
 
-    final notificationsCount = ref.watch(datedNotificationsProvider(last24Hours)
-            .select((v) => v.value?.length)) ??
-        0;
+    final notificationsCount = ref.watch(
+        datedNotificationsProvider(_last24Hours)
+            .select((v) => v.value?.length ?? 0));
 
     return DefaultRefreshIndicator(
-      onRefresh: ref
-          .read(datedNotificationsProvider(last24Hours).notifier)
-          .refreshNotifications,
+      onRefresh: () async {
+        if (mounted) setState(() => _last24Hours = DateTime.now().last24Hours);
+      },
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -115,16 +117,79 @@ class _TabNotificationsState extends ConsumerState<TabNotifications> {
           /// Permission card
           const NotificationAccessPermissionCard(),
 
-          /// Unbatched history
+          /// Non-batched history
           DefaultListTile(
             enabled: havePermission,
-            position: ItemPosition.bottom,
+            position: ItemPosition.mid,
             switchValue: settings.storeNonBatchedToo,
             titleText: context.locale.store_all_tile_title,
             subtitleText: context.locale.store_all_tile_subtitle,
             onPressed: ref
                 .read(notificationSettingsProvider.notifier)
                 .toggleStoreNonBatched,
+          ).sliver,
+
+          /// Usage history in weeks
+          DefaultDropdownTile<int>(
+            position: ItemPosition.mid,
+            titleText: context.locale.notification_history_tile_title,
+            dialogIcon: FluentIcons.history_20_filled,
+            value: settings.notificationHistoryWeeks,
+            onSelected: ref
+                .read(notificationSettingsProvider.notifier)
+                .changeNotificationHistoryWeeks,
+            items: [
+              // 15 days = 2 weeks
+              DefaultDropdownItem(
+                label: context.locale.usage_history_15_days,
+                value: 2,
+              ),
+
+              // 1 month = 4 weeks
+              DefaultDropdownItem(
+                label: context.locale.usage_history_1_month,
+                value: 4,
+              ),
+
+              // 3 months = 13 weeks
+              DefaultDropdownItem(
+                label: context.locale.usage_history_3_month,
+                value: 13,
+              ),
+
+              // 6 months = 26 weeks
+              DefaultDropdownItem(
+                label: context.locale.usage_history_6_month,
+                value: 26,
+              ),
+
+              // 1 year = 52 weeks
+              DefaultDropdownItem(
+                label: context.locale.usage_history_1_year,
+                value: 52,
+              ),
+            ],
+          ).sliver,
+
+          /// Batch recap type
+          DefaultDropdownTile<RecapType>(
+            position: ItemPosition.bottom,
+            value: settings.recapType,
+            onSelected:
+                ref.read(notificationSettingsProvider.notifier).setRecapType,
+            titleText: context.locale.batch_recap_dropdown_title,
+            infoText: context.locale.batch_recap_dropdown_info,
+            dialogIcon: FluentIcons.alert_urgent_20_filled,
+            items: [
+              DefaultDropdownItem(
+                label: context.locale.batch_recap_option_summery_only,
+                value: RecapType.summeryOnly,
+              ),
+              DefaultDropdownItem(
+                label: context.locale.batch_recap_option_all_notifications,
+                value: RecapType.allNotifications,
+              ),
+            ],
           ).sliver,
 
           /// Daily Schedules

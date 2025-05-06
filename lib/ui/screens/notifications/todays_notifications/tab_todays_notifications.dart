@@ -18,7 +18,7 @@ class TabTodaysNotifications extends ConsumerStatefulWidget {
 
 class _TabTodaysNotificationsState
     extends ConsumerState<TabTodaysNotifications> {
-  final DateTimeRange last24Hours = DateTime.now().last24Hours;
+  DateTimeRange _last24Hours = DateTime.now().last24Hours;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _TabTodaysNotificationsState
       () {
         if (!mounted) return;
         ref
-            .read(datedNotificationsProvider(last24Hours).notifier)
+            .read(datedNotificationsProvider(_last24Hours).notifier)
             .markNotificationsAsRead();
       },
     );
@@ -39,15 +39,15 @@ class _TabTodaysNotificationsState
   @override
   Widget build(BuildContext context) {
     return DefaultRefreshIndicator(
-      onRefresh: ref
-          .read(datedNotificationsProvider(last24Hours).notifier)
-          .refreshNotifications,
+      onRefresh: () async {
+        if (mounted) setState(() => _last24Hours = DateTime.now().last24Hours);
+      },
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           /// Notifications
           SliverNotificationsList(
-            timeRange: last24Hours,
+            timeRange: _last24Hours,
             header: context.locale.last_24_hours_heading,
           ),
 

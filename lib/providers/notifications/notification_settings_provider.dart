@@ -9,23 +9,26 @@
  */
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
+import 'package:mindful/core/enums/recap_type.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
+import 'package:mindful/models/notification_schedule.dart';
 
 /// A Riverpod state notifier provider that manages [NotificationSettings] related settings.
 final notificationSettingsProvider =
-    StateNotifierProvider<WellBeingNotifier, NotificationSettings>(
-  (ref) => WellBeingNotifier(),
+    StateNotifierProvider<NotificationSettingsNotifier, NotificationSettings>(
+  (ref) => NotificationSettingsNotifier(),
 );
 
 /// This class manages the state of [NotificationConfig]settings.
-class WellBeingNotifier extends StateNotifier<NotificationSettings> {
+class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
   late UniqueRecordsDao _dao;
 
-  WellBeingNotifier() : super(defaultNotificationSettingsModel) {
+  NotificationSettingsNotifier() : super(defaultNotificationSettingsModel) {
     _init();
   }
 
@@ -33,7 +36,6 @@ class WellBeingNotifier extends StateNotifier<NotificationSettings> {
   void _init() async {
     _dao = DriftDbService.instance.driftDb.uniqueRecordsDao;
     state = await _dao.loadNotificationSettings();
-
     await MethodChannelService.instance.updateNotificationSettings(state);
 
     /// Listen to provider and save changes to Isar database and platform service
@@ -46,9 +48,17 @@ class WellBeingNotifier extends StateNotifier<NotificationSettings> {
     );
   }
 
+  /// Set recap type
+  void setRecapType(RecapType recap) =>
+      state = state.copyWith(recapType: recap);
+
   /// Toggle store all notifications
   void toggleStoreNonBatched() =>
       state = state.copyWith(storeNonBatchedToo: !state.storeNonBatchedToo);
+
+  /// Changes the default notification history weeks.
+  void changeNotificationHistoryWeeks(int weeks) =>
+      state = state.copyWith(notificationHistoryWeeks: weeks);
 
   /// Batch or UnBatch app from notification schedule
   void batchUnBatchApp(String appPackage, bool shouldBatch) async =>
@@ -56,5 +66,41 @@ class WellBeingNotifier extends StateNotifier<NotificationSettings> {
         batchedApps: shouldBatch
             ? [...state.batchedApps, appPackage]
             : [...state.batchedApps.where((e) => e != appPackage)],
+      );
+
+  Future<void> createNewSchedule(
+    String scheduleName, [
+    TimeOfDayAdapter? time,
+    bool? isActive,
+  ]) async {
+    final newSchedule = NotificationSchedule(
+      label: scheduleName,
+      time: time ?? TimeOfDayAdapter.now(),
+      isActive: isActive ?? false,
+    );
+
+    /// Update state
+    state = state.copyWith(
+      schedules: state.schedules.toList()
+        ..add(newSchedule)
+        ..sort((a, b) => a.time.compareTo(b.time)),
+    );
+  }
+
+  Future<void> updateSchedule(
+    NotificationSchedule updatedSchedule,
+    int index,
+  ) async =>
+      state = state.copyWith(
+        schedules: state.schedules.toList()
+          ..removeAt(index)
+          ..add(updatedSchedule)
+          ..sort((a, b) => a.time.compareTo(b.time)),
+      );
+
+  Future<void> removeSchedule(int index) async => state = state.copyWith(
+        schedules: state.schedules
+          ..removeAt(index)
+          ..sort((a, b) => a.time.compareTo(b.time)),
       );
 }

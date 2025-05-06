@@ -69,7 +69,7 @@ class GroupedNotificationsNotifier
       grouped.update(
         notification.title,
         (existing) => existing.copyWith(
-          content: '${existing.content}\n${notification.content}',
+          content: '${notification.content}\n${existing.content}',
         ),
         ifAbsent: () => notification,
       );

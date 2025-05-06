@@ -12,6 +12,7 @@
 package com.mindful.android.helpers.device
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.StatusBarManager
@@ -35,6 +36,7 @@ import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.quickTiles.FocusQuickTileService
 import io.flutter.plugin.common.MethodChannel
 import java.util.Locale
+
 
 /**
  * NewActivitiesLaunchHelper provides utility methods to launch various activities and settings screens on Android devices.
@@ -286,21 +288,20 @@ object NewActivitiesLaunchHelper {
         pendingIntent: PendingIntent?,
     ) {
         try {
-            if (pendingIntent != null) {
-                pendingIntent.send()
-                Log.d(TAG, "openAppWithNotificationThread: Pending intent executed")
-            } else {
-                Log.d(TAG, "openAppWithNotificationThread: Null pending intent")
-                context.packageManager.getLaunchIntentForPackage(notification.packageName)?.let {
-                    context.startActivity(it)
+            (pendingIntent ?: throw Exception("Null pending intent")).let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    it.send(
+                        ActivityOptions.makeBasic().setPendingIntentBackgroundActivityStartMode(
+                            ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                        ).toBundle()
+                    )
+                } else {
+                    it.send()
                 }
             }
         } catch (e: Exception) {
-            Log.e(
-                TAG,
-                "openAppWithNotificationThread: Error launching app with notification thread :",
-                e
-            )
+            Log.d(TAG, "openAppWithNotificationThread: Pending intent is null, trying to ope app directly.")
+            openAppWithPackage(context, notification.packageName)
         }
     }
 

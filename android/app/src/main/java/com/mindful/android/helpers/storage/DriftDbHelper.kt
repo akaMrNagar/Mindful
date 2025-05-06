@@ -41,7 +41,7 @@ open class DriftDbHelper(context: Context) {
     }
 
     // Close the database
-    fun closeDatabase() {
+    private fun closeDatabase() {
         db?.close()
         db = null
 
@@ -69,7 +69,7 @@ open class DriftDbHelper(context: Context) {
                 // Convert MsEpoch to SecEpoch
                 values.put("time_stamp", notification.timeStamp / 1000L)
                 values.put("category", notification.category)
-                values.put("is_read", false)
+                values.put("is_read", notification.isRead)
 
                 // Insert the notification into the database
                 db?.insert("notifications_table", null, values)
@@ -84,6 +84,70 @@ open class DriftDbHelper(context: Context) {
         } catch (e: Exception) {
             Log.e(TAG, "insertNotifications: Failed to insert notifications", e)
             return false
+        } finally {
+            if (autoCloseDb) closeDatabase()
+        }
+    }
+
+    fun fetchLast24HourUnreadNotifications(
+        autoCloseDb: Boolean = true,
+    ): List<Notification> {
+        val result = mutableListOf<Notification>()
+        val last24HoursSec = System.currentTimeMillis() / 1000L - 24 * 60 * 60
+
+        try {
+            val cursor = db?.query(
+                "notifications_table",
+                null,
+                "is_read = ? AND time_stamp >= ?",
+                arrayOf("0", last24HoursSec.toString()),
+                null,
+                null,
+                "time_stamp DESC"
+            )
+
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    do {
+                        result.add(Notification.fromCursor(it))
+                    } while (it.moveToNext())
+                }
+            }
+
+            Log.d(TAG, "fetchLast24HourUnreadNotifications: Found ${result.size} notifications")
+        } catch (e: Exception) {
+            Log.e(TAG, "fetchLast24HourUnreadNotifications: Error fetching notifications", e)
+        } finally {
+            if (autoCloseDb) closeDatabase()
+        }
+
+        return result
+    }
+
+    fun markNotificationsAsRead(
+        ids: List<Int>,
+        autoCloseDb: Boolean = true,
+    ) {
+        if (ids.isEmpty()) return
+
+        try {
+            db?.beginTransaction()
+            val values = ContentValues().apply { put("is_read", 1) }
+            ids.forEach { id ->
+                db?.update(
+                    "notifications_table",
+                    values,
+                    "id = ?",
+                    arrayOf(id.toString())
+                )
+            }
+
+            // End transaction and Close db if needed
+            db?.setTransactionSuccessful()
+            db?.endTransaction()
+            Log.d(TAG, "markNotificationsAsRead: Marked ${ids.size} notifications as read")
+        } catch (e: Exception) {
+            Log.e(TAG, "markNotificationsAsRead: Error marking notifications as read", e)
         } finally {
             if (autoCloseDb) closeDatabase()
         }

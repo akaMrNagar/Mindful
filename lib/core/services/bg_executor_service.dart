@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/services/crash_log_service.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/date_time_utils.dart';
@@ -89,18 +90,30 @@ class BgExecutorService {
     final dynamicDao = DriftDbService.instance.driftDb.dynamicRecordsDao;
     final uniqueDao = DriftDbService.instance.driftDb.uniqueRecordsDao;
 
+    /// Load crash logs
+    await CrashLogService.instance.loadLogsFromNativeToDriftDb();
+
     /// Date yesterday
     final dateYesterday = dateToday.subtract(1.days);
 
-    /// Number of day from today till then to keep history
-    final historyDays =
-        (await uniqueDao.loadMindfulSettings()).usageHistoryWeeks * 7;
+    /// ============== Clean older notifications ===============
+    final notificationHistoryDays =
+        (await uniqueDao.loadNotificationSettings()).notificationHistoryWeeks *
+            7;
+    await dynamicDao.removeBatchNotificationsBefore(
+      dateYesterday.subtract(notificationHistoryDays.days),
+    );
+
+    /// ============== Clean older usage and insert fresh ===============
 
     /// Remove usages before the specified history time
-    await dynamicDao
-        .removeBatchAppUsagesBefore(dateYesterday.subtract(historyDays.days));
+    final usageHistoryDays =
+        (await uniqueDao.loadMindfulSettings()).usageHistoryWeeks * 7;
+    await dynamicDao.removeBatchAppUsagesBefore(
+      dateYesterday.subtract(usageHistoryDays.days),
+    );
 
-    /// Fetch usage for yesterday
+    /// Fetch and insert usage for yesterday
     final usages =
         await MethodChannelService.instance.fetchAppsUsageForInterval(
       start: dateYesterday,

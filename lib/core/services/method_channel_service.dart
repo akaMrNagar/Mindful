@@ -200,7 +200,8 @@ class MethodChannelService {
         jsonEncode(blockedApps),
       );
 
-  /// Safe method to update settings in Notification Listener service.
+  /// Safe method to update settings in Notification Listener service if provided.
+  /// Also Updates the notification batching schedule if provided.
   ///
   /// This method push the updated settings to the service if it is already running
   /// otherwise try to bind to service if needed
@@ -210,15 +211,6 @@ class MethodChannelService {
       _methodChannel.invokeMethod(
         'updateNotificationSettings',
         jsonEncode(settings),
-      );
-
-  /// Updates the notification batching schedule.
-  ///
-  /// This method takes a list of [TimeOfDay] as MINUTES
-  Future<bool> updateNotificationBatchSchedules(List<int> todMinutes) async =>
-      await _methodChannel.invokeMethod(
-        'updateNotificationBatchSchedules',
-        jsonEncode(todMinutes),
       );
 
   /// Updates the well-being settings for the foreground service.

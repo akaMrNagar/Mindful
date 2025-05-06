@@ -66,5 +66,5 @@
     <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">您已经专注了「%s」</string>
     <string name="focus_session_success_notification_info">恭喜！您成功完成了专注会话。做得好，保持良好的状态！继续努力！</string>
     <string name="focus_session_giveup_notification_info">您放弃了！别担心，您下次可以做得更好。每一次努力都很重要——只要继续前进</string>
-    <string name="notification_schedule_notification_info" comment="Number of notifications as placeholder" formatted="true">您有「%d」条通知在您离开期间。它们将在 24 小时后自动清除。</string>
+    <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">您有「%d」条通知在您离开期间。它们将在 24 小时后自动清除。</string>
 </resources>

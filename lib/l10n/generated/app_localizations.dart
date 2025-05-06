@@ -1047,6 +1047,36 @@ abstract class AppLocalizations {
   /// **'Batched apps'**
   String get batched_apps_tile_title;
 
+  /// No description provided for @batch_recap_dropdown_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Batch recap type'**
+  String get batch_recap_dropdown_title;
+
+  /// No description provided for @batch_recap_dropdown_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what to push when a schedule triggers — all notifications or just a summary.'**
+  String get batch_recap_dropdown_info;
+
+  /// No description provided for @batch_recap_option_summery_only.
+  ///
+  /// In en, this message translates to:
+  /// **'Summery only'**
+  String get batch_recap_option_summery_only;
+
+  /// No description provided for @batch_recap_option_all_notifications.
+  ///
+  /// In en, this message translates to:
+  /// **'All notifications'**
+  String get batch_recap_option_all_notifications;
+
+  /// No description provided for @notification_history_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification history'**
+  String get notification_history_tile_title;
+
   /// No description provided for @store_all_tile_title.
   ///
   /// In en, this message translates to:

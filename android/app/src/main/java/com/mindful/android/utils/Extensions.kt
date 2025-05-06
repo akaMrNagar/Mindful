@@ -56,6 +56,17 @@ object Extensions {
     }
 
     /**
+     * Retrieves the string value for the specified column or returns `default` if
+     * the column is missing or an error occurs.
+     *
+     * @param column The name of the column to retrieve.
+     * @return The string value of the column or `default`.
+     */
+    fun Cursor.getStringOrDefault(column: String, default: String = ""): String {
+        return runCatching { getString(getColumnIndexOrThrow(column)) }.getOrNull() ?: default
+    }
+
+    /**
      * Retrieves the string value for the specified column or returns `null` if
      * the column is missing or an error occurs.
      *

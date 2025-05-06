@@ -1,8 +1,10 @@
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
+import 'package:mindful/core/enums/recap_type.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/config/app_constants.dart';
+import 'package:mindful/models/notification_schedule.dart';
 
 final defaultMindfulSettingsModel = MindfulSettings(
   id: 0,
@@ -60,10 +62,27 @@ const defaultBedtimeScheduleModel = BedtimeSchedule(
   distractingApps: [],
 );
 
-const defaultNotificationSettingsModel = NotificationSettings(
+NotificationSettings defaultNotificationSettingsModel = NotificationSettings(
   id: 0,
+  recapType: RecapType.summeryOnly,
   storeNonBatchedToo: false,
+  notificationHistoryWeeks: 2,
   batchedApps: [],
+  schedules: const {
+    'Morning': 480,
+    'Afternoon': 720,
+    'Evening': 960,
+    'Night': 1260,
+  }
+      .entries
+      .map(
+        (e) => NotificationSchedule(
+          label: e.key,
+          time: TimeOfDayAdapter.fromMinutes(e.value),
+          isActive: false,
+        ),
+      )
+      .toList(),
 );
 
 const defaultAppRestrictionModel = AppRestriction(

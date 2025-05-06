@@ -67,5 +67,5 @@
     <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">Şu ana kadar \"%s\" süreyle odaklandınız</string>
     <string name="focus_session_success_notification_info">Tebrikler! Odaklanma oturumunuzu başarıyla tamamladınız. Hedefe odaklanmayı başardığınız için harika bir iş çıkardınız! Mükemmel çalışmanıza devam edin!</string>
     <string name="focus_session_giveup_notification_info">Vazgeçtin! Endişelenme, bir dahaki sefere daha iyisini yapabilirsin. Her çaba önemli – sadece devam et</string>
-    <string name="notification_schedule_notification_info" comment="Number of notifications as placeholder" formatted="true">Uzakdayken \"%d\" bildiriminiz birikti. 24 saat sonra otomatik olarak silinecekler.</string>
+    <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">Uzakdayken \"%d\" bildiriminiz birikti. 24 saat sonra otomatik olarak silinecekler.</string>
 </resources>

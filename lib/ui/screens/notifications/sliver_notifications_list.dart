@@ -112,7 +112,7 @@ class _SliverNotificationsList extends ConsumerWidget {
     return notifications.hasValue && appInfo.hasValue
         ? SliverImplicitlyAnimatedList(
             items: notifications.value!,
-            keyBuilder: (e) => "${e.packageName}: ${e.timeStamp}",
+            keyBuilder: (e) => e.id.toString(),
             itemBuilder: (context, i, notification, position) {
               return appInfo.value!.containsKey(notification.packageName)
                   ? NotificationTile(

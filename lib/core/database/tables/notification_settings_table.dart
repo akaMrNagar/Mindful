@@ -11,7 +11,10 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/notification_schedule_list_converter.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
+import 'package:mindful/core/enums/recap_type.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
 
 @DataClassName("NotificationSettings")
 class NotificationSettingsTable extends Table {
@@ -21,12 +24,28 @@ class NotificationSettingsTable extends Table {
   @override
   Set<Column<Object>>? get primaryKey => {id};
 
+  /// Notifications recap type for schedule triggered [RecapType]
+  IntColumn get recapType =>
+      intEnum<RecapType>().withDefault(const Constant(0))();
+
+  /// Maximum number of weeks till the app's notification history will be kept
+  /// Default is 2 weeks.
+  IntColumn get notificationHistoryWeeks =>
+      integer().withDefault(const Constant(2))();
+
   /// Boolean denoting if to store notifications of non-batched apps too.
   BoolColumn get storeNonBatchedToo =>
       boolean().withDefault(const Constant(false))();
 
   /// List of app's packages whose notifications are batched.
   TextColumn get batchedApps => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
+
+  /// List of batching schedules
+  TextColumn get schedules => text()
+      .map(const NotificationScheduleListConverter())
+      .withDefault(Constant(jsonEncode(
+        defaultNotificationSettingsModel.schedules,
+      )))();
 }

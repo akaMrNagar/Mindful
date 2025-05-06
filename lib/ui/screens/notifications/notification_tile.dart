@@ -80,10 +80,10 @@ class NotificationTile extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
 
+                  /// Date
                   StyledText(
                     notification.timeStamp.dateString(context),
                     color: Theme.of(context).hintColor,
-                    fontWeight: FontWeight.w600,
                   ),
                 ],
               ),

@@ -18,7 +18,6 @@ import 'package:mindful/core/database/tables/app_usage_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
-import 'package:mindful/core/database/tables/notification_schedule_table.dart';
 import 'package:mindful/core/database/tables/notifications_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
@@ -38,7 +37,6 @@ part 'dynamic_records_dao.g.dart';
     FocusSessionsTable,
     FocusProfileTable,
     RestrictionGroupsTable,
-    NotificationScheduleTable,
     AppUsageTable,
     NotificationsTable,
   ],
@@ -257,36 +255,6 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Clear all [CrashLogs] objects from the database,
   Future<int> clearCrashLogs() async => delete(crashLogsTable).go();
-
-  // ==================================================================================================================
-  // ===================================== NOTIFICATION SCHEDULES =======================================================
-  // ==================================================================================================================
-
-  /// Loads List of all [NotificationSchedule] objects from the database,
-  Future<List<NotificationSchedule>> fetchNotificationSchedules() async =>
-      (select(notificationScheduleTable)
-            ..orderBy([(e) => OrderingTerm(expression: e.time)]))
-          .get();
-
-  /// Insert or Update a [NotificationSchedule] object to/in the database.
-  Future<NotificationSchedule> insertNotificationSchedule(
-    NotificationScheduleTableCompanion schedule,
-  ) async =>
-      into(notificationScheduleTable).insertReturning(
-        schedule,
-        mode: InsertMode.insertOrReplace,
-      );
-
-  /// Update a [NotificationSchedule] object in the database.
-  Future<void> updateNotificationSchedule(
-    NotificationSchedule schedule,
-  ) async =>
-      update(notificationScheduleTable).replace(schedule);
-
-  /// Removes a [NotificationSchedule] object from the database.
-  Future<void> removeNotificationSchedule(
-          NotificationSchedule schedule) async =>
-      delete(notificationScheduleTable).delete(schedule);
 
   // ==================================================================================================================
   // ===================================== FOCUS PROFILES =============================================================
@@ -524,6 +492,14 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Delete notifications with the provided ID.
   /// Returns number of deleted notifications.
-  Future<int> deleteNotificationWithId(int id) =>
+  Future<int> removeNotificationWithId(int id) =>
       (delete(notificationsTable)..where((tbl) => tbl.id.equals(id))).go();
+
+  /// Removes notifications from the database which have date before the provided date.
+  Future<void> removeBatchNotificationsBefore(DateTime date) async => batch(
+        (batch) => batch.deleteWhere(
+          notificationsTable,
+          (tbl) => tbl.timeStamp.isSmallerThanValue(date),
+        ),
+      );
 }

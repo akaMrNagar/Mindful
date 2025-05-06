@@ -9,20 +9,17 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
-import 'package:mindful/providers/notifications/notification_schedules_provider.dart';
+import 'package:mindful/models/notification_schedule.dart';
+import 'package:mindful/providers/notifications/notification_settings_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_slide_to_remove.dart';
 import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/time_card.dart';
-import 'package:mindful/ui/transitions/default_effects.dart';
 
 class SliverSchedulesList extends ConsumerWidget {
   const SliverSchedulesList({
@@ -32,35 +29,33 @@ class SliverSchedulesList extends ConsumerWidget {
 
   final bool haveNotificationAccessPermission;
 
-  void _updateSchedule(WidgetRef ref, NotificationSchedule updatedSchedule) =>
+  void _updateSchedule(
+    WidgetRef ref,
+    NotificationSchedule updatedSchedule,
+    int index,
+  ) =>
       ref
-          .read(notificationSchedulesProvider.notifier)
-          .updateScheduleById(updatedSchedule);
+          .read(notificationSettingsProvider.notifier)
+          .updateSchedule(updatedSchedule, index);
 
-  void _removeSchedule(WidgetRef ref, NotificationSchedule schedule) => ref
-      .read(notificationSchedulesProvider.notifier)
-      .removeScheduleById(schedule);
+  void _removeSchedule(WidgetRef ref, int index) =>
+      ref.read(notificationSettingsProvider.notifier).removeSchedule(index);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final schedules = ref
-        .watch(notificationSchedulesProvider.select((v) => v.values.toList()));
+    final schedules =
+        ref.watch(notificationSettingsProvider.select((v) => v.schedules));
 
     return SliverImplicitlyAnimatedList<NotificationSchedule>(
       items: schedules,
       animationDelay: AppConstants.defaultAnimDuration * 0.75,
-      keyBuilder: (e) => "${e.label}:${e.id}",
+      keyBuilder: (e) => "${e.label}:${e.time.toMinutes}",
       itemBuilder: (context, i, item, position) => _ScheduleCard(
         schedule: item,
         position: position,
         enabled: haveNotificationAccessPermission,
-        onUpdate: (newSchedule) => _updateSchedule(ref, newSchedule),
-        onRemove: (schedule) => _removeSchedule(ref, schedule),
-      ).animateOnce(
-        ref: ref,
-        uniqueKey: "home.notifications.schedules.${item.id}",
-        delay: (800 + (100 * i)).ms,
-        effects: DefaultEffects.transitionIn,
+        onUpdate: (newSchedule) => _updateSchedule(ref, newSchedule, i),
+        onRemove: (schedule) => _removeSchedule(ref, i),
       ),
     );
   }
@@ -86,7 +81,7 @@ class _ScheduleCard extends StatelessWidget {
     return DefaultSlideToRemove(
       enabled: enabled,
       position: position,
-      key: Key("${schedule.label}:${schedule.id}"),
+      key: Key("${schedule.label}:${schedule.time.toMinutes}"),
       onDismiss: () => onRemove(schedule),
       child: DefaultListTile(
         position: ItemPosition.fit,
@@ -96,7 +91,7 @@ class _ScheduleCard extends StatelessWidget {
         leading: TimeCard(
           label: schedule.label,
           heroTag: HeroTags.notificationScheduleTimerTileTag(
-            schedule.id,
+            schedule.time.toMinutes,
           ),
           enabled: enabled,
           icon: getIconFromHourOfDay(schedule.time.hour),

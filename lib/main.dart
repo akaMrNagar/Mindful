@@ -29,14 +29,9 @@ Future<void> initBgExecutorService() async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  /// Initialize method channel
+  /// Initialize method channel and drift Database
   await MethodChannelService.instance.init();
-
-  /// Initialize drift Database
   await DriftDbService.instance.init();
-
-  /// Initialize local crashlytics
-  await CrashLogService.instance.init();
 
   FlutterError.onError = (errorDetails) {
     CrashLogService.instance.recordCrashError(
@@ -54,7 +49,7 @@ Future<void> main() async {
       error.toString(),
       stack.toString(),
     );
-    return true;
+    return !kDebugMode;
   };
 
   /// Scale app from edge-edge behind system ui

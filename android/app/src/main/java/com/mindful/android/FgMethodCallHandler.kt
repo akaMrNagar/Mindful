@@ -250,8 +250,10 @@ class FgMethodCallHandler(
             }
 
             "updateNotificationSettings" -> {
-                val settings =
-                    NotificationSettings.fromJson(call.arguments() ?: "")
+                val settingsJson = call.arguments() ?: ""
+                val settings = NotificationSettings.fromJson(settingsJson)
+
+                /// Update service
                 if (notificationServiceConn.isActive) {
                     notificationServiceConn.service?.updateNotificationSettings(settings)
                 } else if (settings.batchedApps.isNotEmpty() || settings.storeNonBatchedToo) {
@@ -260,17 +262,14 @@ class FgMethodCallHandler(
                     }
                     notificationServiceConn.bindService()
                 }
-                result.success(true)
-            }
 
-            "updateNotificationBatchSchedules" -> {
-                val jsonScheduleTods = call.arguments() ?: ""
-                val schedules = JsonUtils.parseIntList(jsonScheduleTods)
-                if (schedules.isNotEmpty()) {
-                    scheduleNotificationBatchTask(context, jsonScheduleTods)
+                /// Schedule batches
+                if (settings.schedules.isNotEmpty()) {
+                    scheduleNotificationBatchTask(context, settingsJson)
                 } else {
                     cancelNotificationBatchTask(context)
                 }
+
                 result.success(true)
             }
 

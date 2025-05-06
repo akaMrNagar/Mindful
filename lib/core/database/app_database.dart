@@ -13,7 +13,10 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/bool_list_converter.dart';
+import 'package:mindful/core/database/converters/enum_list_converter.dart';
+import 'package:mindful/core/database/converters/notification_schedule_list_converter.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
 import 'package:mindful/core/database/daos/unique_records_dao.dart';
 import 'package:mindful/core/database/schemas/schema_versions.dart';
@@ -28,16 +31,18 @@ import 'package:mindful/core/database/tables/notification_settings_table.dart';
 import 'package:mindful/core/database/tables/notifications_table.dart';
 import 'package:mindful/core/database/tables/parental_controls_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
-import 'package:mindful/core/database/tables/notification_schedule_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
 import 'package:mindful/core/database/tables/shared_unique_data_table.dart';
 import 'package:mindful/core/database/tables/wellbeing_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
+import 'package:mindful/core/enums/recap_type.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/enums/platform_features.dart';
+import 'package:mindful/core/utils/default_models_utils.dart';
+import 'package:mindful/models/notification_schedule.dart';
 import 'migrations/migrations.dart';
 
 part 'app_database.g.dart';
@@ -55,7 +60,6 @@ part 'app_database.g.dart';
     RestrictionGroupsTable,
     WellbeingTable,
     SharedUniqueDataTable,
-    NotificationScheduleTable,
     AppUsageTable,
     NotificationSettingsTable,
     NotificationsTable,

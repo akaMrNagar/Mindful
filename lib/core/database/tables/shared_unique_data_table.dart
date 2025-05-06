@@ -11,7 +11,7 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
 
 @DataClassName("SharedUniqueData")
 class SharedUniqueDataTable extends Table {
@@ -23,6 +23,6 @@ class SharedUniqueDataTable extends Table {
 
   /// List of app's packages which are excluded from the aggregated usage statistics.
   TextColumn get excludedApps => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
 }

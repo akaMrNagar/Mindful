@@ -545,6 +545,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get batched_apps_tile_title => 'Batched apps';
 
   @override
+  String get batch_recap_dropdown_title => 'Batch recap type';
+
+  @override
+  String get batch_recap_dropdown_info => 'Choose what to push when a schedule triggers — all notifications or just a summary.';
+
+  @override
+  String get batch_recap_option_summery_only => 'Summery only';
+
+  @override
+  String get batch_recap_option_all_notifications => 'All notifications';
+
+  @override
+  String get notification_history_tile_title => 'Notification history';
+
+  @override
   String get store_all_tile_title => 'Store all notifications';
 
   @override
