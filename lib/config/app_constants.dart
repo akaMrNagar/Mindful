@@ -28,7 +28,9 @@ class AppConstants {
 
   /// Urls
   static const githubUrl = "https://github.com/akaMrNagar/Mindful/";
+  static const bmcUrl = "https://buymeacoffee.com/akamrnagar";
   static const instagramUrl = "https://www.instagram.com/lasthopedevelopers/";
+  static const telegramUrl = "https://t.me/fossmindful";
   static const supportEmailUrl = "mailto:help.lasthopedevs@gmail.com";
   static const privacyPolicyUrl = "https://bemindful.vercel.app/privacy";
   static const faqsUrl = "https://bemindful.vercel.app/#faqs";

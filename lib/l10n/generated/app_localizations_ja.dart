@@ -1072,7 +1072,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restriction_group_invalid_limits_snack_alert => 'タイマーを設定するか、使用時間帯を制限してください。';
 
   @override
-  String get notifications_empty_list_hint => 'No notifications have been batched today.';
+  String get notifications_empty_list_hint => 'No notifications have been batched for the day.';
 
   @override
   String get conversations_label => 'Conversations';

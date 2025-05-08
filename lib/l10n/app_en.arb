@@ -446,7 +446,7 @@
     },
     "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
     "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
-    "notifications_empty_list_hint": "No notifications have been batched today.",
+    "notifications_empty_list_hint": "No notifications have been batched for the day.",
     "conversations_label": "Conversations",
     "last_24_hours_heading": "Last 24 hours",
     "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TIMELINE TAB -----------------------------": {},

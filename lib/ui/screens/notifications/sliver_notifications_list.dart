@@ -21,6 +21,7 @@ import 'package:mindful/providers/notifications/dated_notifications_provider.dar
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_segmented_button.dart';
+import 'package:mindful/ui/common/empty_list_indicator.dart';
 import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:mindful/ui/screens/notifications/conversation_tile.dart';
@@ -110,22 +111,26 @@ class _SliverNotificationsList extends ConsumerWidget {
     final appInfo = ref.watch(appsInfoProvider);
 
     return notifications.hasValue && appInfo.hasValue
-        ? SliverImplicitlyAnimatedList(
-            items: notifications.value!,
-            keyBuilder: (e) => e.id.toString(),
-            itemBuilder: (context, i, notification, position) {
-              return appInfo.value!.containsKey(notification.packageName)
-                  ? NotificationTile(
-                      position: position,
-                      leading: ApplicationIcon(
-                        appInfo: appInfo.value![notification.packageName]!,
-                      ),
-                      notification: notification,
-                      onDismissed: onDismissed,
-                    )
-                  : 0.vBox;
-            },
-          )
+        ? notifications.value!.isEmpty
+            ? EmptyListIndicator(
+                info: context.locale.notifications_empty_list_hint,
+              ).sliver
+            : SliverImplicitlyAnimatedList(
+                items: notifications.value!,
+                keyBuilder: (e) => e.id.toString(),
+                itemBuilder: (context, i, notification, position) {
+                  return appInfo.value!.containsKey(notification.packageName)
+                      ? NotificationTile(
+                          position: position,
+                          leading: ApplicationIcon(
+                            appInfo: appInfo.value![notification.packageName]!,
+                          ),
+                          notification: notification,
+                          onDismissed: onDismissed,
+                        )
+                      : 0.vBox;
+                },
+              )
         : const SliverShimmerList(
             includeLeading: true,
             includeSubtitle: true,
@@ -147,19 +152,23 @@ class _SliverConversationList extends ConsumerWidget {
     final appInfo = ref.watch(appsInfoProvider);
 
     return notificationsByApp.hasValue && appInfo.hasValue
-        ? SliverImplicitlyAnimatedList(
-            items: notificationsByApp.value!.entries.toList(),
-            keyBuilder: (entry) => entry.key,
-            itemBuilder: (context, i, entry, position) =>
-                appInfo.value!.containsKey(entry.key)
-                    ? ConversationTile(
-                        appInfo: appInfo.value![entry.key]!,
-                        packageName: entry.key,
-                        conversations: entry.value,
-                        position: position,
-                      )
-                    : 0.vBox,
-          )
+        ? notificationsByApp.value!.isEmpty
+            ? EmptyListIndicator(
+                info: context.locale.notifications_empty_list_hint,
+              ).sliver
+            : SliverImplicitlyAnimatedList(
+                items: notificationsByApp.value!.entries.toList(),
+                keyBuilder: (entry) => entry.key,
+                itemBuilder: (context, i, entry, position) =>
+                    appInfo.value!.containsKey(entry.key)
+                        ? ConversationTile(
+                            appInfo: appInfo.value![entry.key]!,
+                            packageName: entry.key,
+                            conversations: entry.value,
+                            position: position,
+                          )
+                        : 0.vBox,
+              )
         : const SliverShimmerList(
             includeLeading: true,
             includeSubtitle: true,

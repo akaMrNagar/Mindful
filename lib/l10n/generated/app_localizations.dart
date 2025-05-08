@@ -2076,7 +2076,7 @@ abstract class AppLocalizations {
   /// No description provided for @notifications_empty_list_hint.
   ///
   /// In en, this message translates to:
-  /// **'No notifications have been batched today.'**
+  /// **'No notifications have been batched for the day.'**
   String get notifications_empty_list_hint;
 
   /// No description provided for @conversations_label.

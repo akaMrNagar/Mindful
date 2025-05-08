@@ -23,6 +23,7 @@ import 'package:mindful/providers/focus/dated_focus_provider.dart';
 import 'package:mindful/providers/focus/monthly_focus_provider.dart';
 import 'package:mindful/ui/common/default_refresh_indicator.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/empty_list_indicator.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/usage_glance_card.dart';
@@ -151,19 +152,8 @@ class _TabTimelineState extends ConsumerState<TabFocusTimeline> {
                     session: dailyFocus.selectedDaysSessions.value![index],
                   ),
                 )
-              : SizedBox(
-                  height: 256,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(FluentIcons.emoji_sad_20_filled, size: 32),
-                      StyledText(
-                        context.locale.your_sessions_empty_list_hint,
-                        fontSize: 14,
-                        isSubtitle: true,
-                      ),
-                    ],
-                  ),
+              : EmptyListIndicator(
+                  info: context.locale.your_sessions_empty_list_hint,
                 ).sliver,
 
           const SliverTabsBottomPadding(),

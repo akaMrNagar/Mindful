@@ -48,8 +48,8 @@ class SliverTabsBottomPadding extends StatelessWidget {
                   padding: const EdgeInsets.all(6),
                   child: SvgPicture.asset(
                     "assets/vectors/github.svg",
-                    height: 20,
-                    width: 20,
+                    height: 18,
+                    width: 18,
                     colorFilter: ColorFilter.mode(
                       Theme.of(context).colorScheme.primary,
                       BlendMode.srcIn,
@@ -58,9 +58,26 @@ class SliverTabsBottomPadding extends StatelessWidget {
                   onPressed: () => MethodChannelService.instance
                       .launchUrl(AppConstants.githubUrl),
                 ),
+
+                /// BMC
                 4.hBox,
+                RoundedContainer(
+                  padding: const EdgeInsets.all(6),
+                  child: SvgPicture.asset(
+                    "assets/vectors/bmc.svg",
+                    height: 18,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.primary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () => MethodChannelService.instance
+                      .launchUrl(AppConstants.bmcUrl),
+                ),
 
                 /// Instagram
+                4.hBox,
                 RoundedContainer(
                   padding: const EdgeInsets.all(6),
                   child: SvgPicture.asset(
@@ -74,6 +91,23 @@ class SliverTabsBottomPadding extends StatelessWidget {
                   ),
                   onPressed: () => MethodChannelService.instance
                       .launchUrl(AppConstants.instagramUrl),
+                ),
+
+                /// Telegram
+                4.hBox,
+                RoundedContainer(
+                  padding: const EdgeInsets.all(6),
+                  child: SvgPicture.asset(
+                    "assets/vectors/telegram.svg",
+                    height: 18,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).colorScheme.primary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                  onPressed: () => MethodChannelService.instance
+                      .launchUrl(AppConstants.telegramUrl),
                 ),
               ],
             ),

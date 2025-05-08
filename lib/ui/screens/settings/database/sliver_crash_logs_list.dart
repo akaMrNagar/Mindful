@@ -8,7 +8,6 @@
  *
  */
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
@@ -20,6 +19,7 @@ import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
+import 'package:mindful/ui/common/empty_list_indicator.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:mindful/ui/common/status_label.dart';
@@ -39,19 +39,9 @@ class SliverCrashLogsList extends ConsumerWidget {
 
     return logs.hasValue
         ? logs.value!.isEmpty
-            ? SizedBox(
-                height: 256,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(FluentIcons.emoji_laugh_20_filled, size: 32),
-                    StyledText(
-                      context.locale.crash_logs_empty_list_hint,
-                      fontSize: 14,
-                      isSubtitle: true,
-                    ),
-                  ],
-                ),
+            ? EmptyListIndicator(
+                isHappy: true,
+                info: context.locale.crash_logs_empty_list_hint,
               ).sliver
             : SliverList.builder(
                 itemCount: logs.value?.length ?? 0,

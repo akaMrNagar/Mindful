@@ -25,7 +25,6 @@ import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.workers.FlutterBgExecutionWorker
 import com.mindful.android.workers.FlutterBgExecutionWorker.Companion.FLUTTER_TASK_ID
-import java.lang.Exception
 
 /**
  * BroadcastReceiver that listens for device boot and package replacement events

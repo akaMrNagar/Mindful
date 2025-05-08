@@ -1072,7 +1072,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get restriction_group_invalid_limits_snack_alert => 'Set either a timer or an active period limit.';
 
   @override
-  String get notifications_empty_list_hint => 'No notifications have been batched today.';
+  String get notifications_empty_list_hint => 'No notifications have been batched for the day.';
 
   @override
   String get conversations_label => 'Conversations';
