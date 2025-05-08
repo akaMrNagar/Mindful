@@ -30,7 +30,7 @@ class NotificationAccessPermissionCard extends ConsumerWidget {
 
     return SliverPrimaryActionContainer(
       isVisible: !havePermission,
-      radius: getBorderRadiusFromPosition(ItemPosition.bottom),
+      radius: getBorderRadiusFromPosition(ItemPosition.mid),
       margin: const EdgeInsets.only(top: 4),
       icon: FluentIcons.alert_urgent_20_filled,
       title: context.locale.permission_notification_access_title,

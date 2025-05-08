@@ -12,7 +12,8 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/bool_list_converter.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
 
 @DataClassName("BedtimeSchedule")
 class BedtimeScheduleTable extends Table {
@@ -43,7 +44,7 @@ class BedtimeScheduleTable extends Table {
   /// [TRUE] indicates that schedule task will run that day.
   /// [FALSE] indicates that schedule task will skip that day.
   TextColumn get scheduleDays =>
-      text().map(const ListBoolConverter()).withDefault(
+      text().map(const BoolListConverter()).withDefault(
           Constant(jsonEncode([true, true, true, true, true, false, false])))();
 
   /// Boolean denoting the status of the bedtime schedule means
@@ -57,7 +58,7 @@ class BedtimeScheduleTable extends Table {
 
   /// List of app's packages which are selected as distracting apps.
   TextColumn get distractingApps => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
 
   

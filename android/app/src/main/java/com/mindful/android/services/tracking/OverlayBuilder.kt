@@ -15,8 +15,10 @@ import androidx.annotation.MainThread
 import com.mindful.android.R
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.models.RestrictionState
+import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
-import com.mindful.android.utils.Utils
 
 object OverlayBuilder {
     @MainThread
@@ -24,7 +26,7 @@ object OverlayBuilder {
         context: Context,
         packageName: String,
         state: RestrictionState,
-        removeOverlay: () -> Unit,
+        dismissOverlay: () -> Unit,
         addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
     ): View {
         // Inflate the custom layout for the dialog
@@ -47,12 +49,12 @@ object OverlayBuilder {
             emergencyBtn.setOnClickListener {
                 ThreadUtils.runOnMainThread {
                     context.applicationContext.startActivity(
-                        Utils.getIntentForMindfulUri(
+                        AppUtils.getIntentForMindfulUri(
                             context,
                             "com.mindful.android://open/appDashboard?package=$packageName"
                         )
                     )
-                    removeOverlay.invoke()
+                    dismissOverlay.invoke()
                 }
             }
         }
@@ -93,11 +95,11 @@ object OverlayBuilder {
 
             // limit spent text
             val limitSpentTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_spent)
-            limitSpentTxt.text = Utils.minutesToTimeStr(usedLimitMins)
+            limitSpentTxt.text = DateTimeUtils.minutesToTimeStr(usedLimitMins)
 
             // limit left text
             val limitLeftTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_left)
-            limitLeftTxt.text = Utils.minutesToTimeStr(leftLimitMins)
+            limitLeftTxt.text = DateTimeUtils.minutesToTimeStr(leftLimitMins)
 
             // Wish to use more? options layout
             if (leftLimitMins > 0) {
@@ -120,7 +122,7 @@ object OverlayBuilder {
                             button.visibility = View.VISIBLE
                             button.setOnClickListener {
                                 callback(reminder)
-                                removeOverlay.invoke()
+                                dismissOverlay.invoke()
                             }
                         }
                     }
@@ -133,11 +135,20 @@ object OverlayBuilder {
         closeAppBtn.text = context.getString(R.string.app_paused_overlay_button_close_app, appName)
         closeAppBtn.setOnClickListener {
             ThreadUtils.runOnMainThread {
+                /// Go to home
                 val homeIntent = Intent(Intent.ACTION_MAIN)
                 homeIntent.addCategory(Intent.CATEGORY_HOME)
                 homeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.applicationContext.startActivity(homeIntent)
-                removeOverlay.invoke()
+
+                /// Remove overlay
+                dismissOverlay.invoke()
+
+                /// Send launch event
+                val intent = Intent(ACTION_NEW_APP_LAUNCHED).apply {
+                    setPackage(context.packageName)
+                }
+                context.sendBroadcast(intent)
             }
         }
 

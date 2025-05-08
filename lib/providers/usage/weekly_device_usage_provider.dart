@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/date_time_utils.dart';
@@ -39,10 +40,10 @@ class WeeklyDeviceUsageNotifier
 
   WeeklyDeviceUsageNotifier(this.range, this.todaysUsage)
       : super(generateEmptyWeekUsage(range.start)) {
-    refreshUsage(isInitialLoad: true);
+    refreshUsage();
   }
 
-  void refreshUsage({bool isInitialLoad = false}) async {
+  void refreshUsage() async {
     final (haveUsage, cache) = await DriftDbService
         .instance.driftDb.dynamicRecordsDao
         .fetchWeeklyDeviceUsage(weekRange: range);
@@ -59,7 +60,7 @@ class WeeklyDeviceUsageNotifier
     if (!mounted) return;
 
     state = cache;
-    if (!haveUsage && isInitialLoad && dateToday.weekday != 1) {
+    if (!haveUsage && DateTime.now().isBetween(range.start, range.end)) {
       _populateAppsUsageHistory();
     }
   }

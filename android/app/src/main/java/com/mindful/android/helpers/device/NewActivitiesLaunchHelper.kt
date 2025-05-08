@@ -12,6 +12,7 @@
 package com.mindful.android.helpers.device
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.app.StatusBarManager
@@ -26,14 +27,16 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
+import com.mindful.android.AppConstants
 import com.mindful.android.MainActivity
 import com.mindful.android.R
 import com.mindful.android.helpers.storage.SharedPrefsHelper
+import com.mindful.android.models.Notification
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.quickTiles.FocusQuickTileService
-import com.mindful.android.utils.AppConstants
 import io.flutter.plugin.common.MethodChannel
 import java.util.Locale
+
 
 /**
  * NewActivitiesLaunchHelper provides utility methods to launch various activities and settings screens on Android devices.
@@ -269,6 +272,36 @@ object NewActivitiesLaunchHelper {
                 "openAppWithPackage:Package not found, Unable to launch app : $appPackage",
                 e
             )
+        }
+    }
+
+    /**
+     * Opens the specified app using its pending intent and notification.
+     *
+     * @param context    The context to use for launching the activity.
+     * @param pendingIntent The nullable pending intent of notification.
+     * @param notification The notification itself.
+     */
+    fun openAppWithNotificationThread(
+        context: Context,
+        notification: Notification,
+        pendingIntent: PendingIntent?,
+    ) {
+        try {
+            (pendingIntent ?: throw Exception("Null pending intent")).let {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    it.send(
+                        ActivityOptions.makeBasic().setPendingIntentBackgroundActivityStartMode(
+                            ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED
+                        ).toBundle()
+                    )
+                } else {
+                    it.send()
+                }
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "openAppWithNotificationThread: Pending intent is null, trying to ope app directly.")
+            openAppWithPackage(context, notification.packageName)
         }
     }
 

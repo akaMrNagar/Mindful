@@ -45,23 +45,15 @@ class Initializer {
     final bedtime = await uniqueDao.loadBedtimeSchedule();
     await MethodChannelService.instance.updateBedtimeSchedule(bedtime);
 
-    /// Fetch and update bedtime wellbeing
+    /// Fetch and update wellbeing
     final wellbeing = await uniqueDao.loadWellBeingSettings();
     await MethodChannelService.instance.updateWellBeingSettings(wellbeing);
 
-    /// Fetch and update notification batched apps and schedule
-    final notificationSchedules = await dynamicDao.fetchNotificationSchedules();
-    final distractingNotificationApps =
-        (await uniqueDao.loadSharedData()).notificationBatchedApps;
-
+    /// Fetch and update notification settings
+    final notificationSettings = await uniqueDao.loadNotificationSettings();
     await MethodChannelService.instance
-        .updateDistractingNotificationApps(distractingNotificationApps);
-    await MethodChannelService.instance.updateNotificationBatchSchedules(
-      notificationSchedules
-          .where((e) => e.isActive)
-          .map((e) => e.time.toMinutes)
-          .toList(),
-    );
+        .updateNotificationSettings(notificationSettings);
+
     debugPrint(
       "All necessary services and schedules are initialized and it took ${DateTime.now().difference(startTimeStamp).inMilliseconds}ms.",
     );

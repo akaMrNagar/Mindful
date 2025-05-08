@@ -143,29 +143,29 @@ class AppDashboardRestrictions extends ConsumerWidget {
                   restriction.activePeriodEnd.format(context),
                 )
               : context.locale.app_limit_status_not_set,
+          canExpand: () {
+            /// If restricted by invincible mode
+            final isInvincibleRestricted = ref.read(
+                    parentalControlsProvider.select((v) =>
+                        v.isInvincibleModeOn && v.includeAppsActivePeriod)) &&
+                !ref
+                    .read(parentalControlsProvider.notifier)
+                    .isBetweenInvincibleWindow;
+
+            if (isInvincibleRestricted &&
+                restriction.periodDurationInMins > 0) {
+              context
+                  .showSnackAlert(context.locale.invincible_mode_snack_alert);
+
+              return false;
+            }
+
+            return true;
+          },
           content: ActivePeriodTileContent(
             totalDuration: restriction.periodDurationInMins.minutes,
             startTime: restriction.activePeriodStart,
             endTime: restriction.activePeriodEnd,
-            isModifiable: () {
-              /// If restricted by invincible mode
-              final isInvincibleRestricted = ref.read(
-                      parentalControlsProvider.select((v) =>
-                          v.isInvincibleModeOn && v.includeAppsActivePeriod)) &&
-                  !ref
-                      .read(parentalControlsProvider.notifier)
-                      .isBetweenInvincibleWindow;
-
-              if (isInvincibleRestricted &&
-                  restriction.periodDurationInMins > 0) {
-                context
-                    .showSnackAlert(context.locale.invincible_mode_snack_alert);
-
-                return false;
-              }
-
-              return true;
-            },
             onTimeChanged: (start, end) =>
                 ref.read(appsRestrictionsProvider.notifier).updateActivePeriod(
                       appInfo.packageName,

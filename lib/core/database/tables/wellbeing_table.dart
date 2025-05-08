@@ -11,7 +11,8 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/enum_list_converter.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
 import 'package:mindful/core/enums/platform_features.dart';
 
 @DataClassName("Wellbeing")
@@ -28,9 +29,7 @@ class WellbeingTable extends Table {
 
   /// List of feature which are blocked
   TextColumn get blockedFeatures => text()
-      .map(const ListEnumNamesConverter<PlatformFeatures>(
-        PlatformFeatures.values,
-      ))
+      .map(const EnumListConverter<PlatformFeatures>(PlatformFeatures.values))
       .withDefault(Constant(jsonEncode([])))();
 
   /// Flag denoting if the nsfw or adult  websites are blocked or not
@@ -40,11 +39,11 @@ class WellbeingTable extends Table {
 
   /// List of website hosts which are blocked.
   TextColumn get blockedWebsites => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
 
   /// List of website hosts which are nsfw.
   TextColumn get nsfwWebsites => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
 }

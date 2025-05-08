@@ -317,13 +317,82 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app_restart_dialog_info => 'Mindful 将在倒计时结束后自动重启。请耐心等待，应用正在应用更改。';
 
   @override
-  String get tip_container_title => '提示';
+  String get accessibility_tip => 'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
 
   @override
   String get battery_optimization_tip => '如果 Mindful 意外停止工作，请考虑通过前往 \'设置>高级\' 授予 \'忽略电池优化\' 权限，以保持其在后台运行。';
 
   @override
-  String get accessibility_tip => 'Want better battery life and performance? Enable Accessibility permission for Mindful. It uses a smarter, more efficient method to block apps, reducing battery drain.';
+  String get invincible_mode_tip => 'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+
+  @override
+  String get glance_usage_tip => 'Want insights? Check the Glance section to view your usage patterns and screen time.';
+
+  @override
+  String get tamper_protection_tip => 'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+
+  @override
+  String get notification_blocking_tip => 'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+
+  @override
+  String get usage_history_tip => 'Want to reflect on your habits? Check Usage History to see past patterns.';
+
+  @override
+  String get focus_mode_tip => 'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+
+  @override
+  String get bedtime_reminder_tip => 'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+
+  @override
+  String get custom_blocking_tip => 'Need a custom experience? Create app blocking rules that fit your needs.';
+
+  @override
+  String get session_timeline_tip => 'Want to track focus sessions? View timeline to see your focus journey.';
+
+  @override
+  String get short_content_blocking_tip => 'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.';
+
+  @override
+  String get parental_controls_tip => 'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.';
+
+  @override
+  String get notification_batching_tip => 'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.';
+
+  @override
+  String get notification_scheduling_tip => 'Need to manage notifications? Schedule when you receive notifications for specific apps.';
+
+  @override
+  String get quick_focus_tile_tip => 'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.';
+
+  @override
+  String get app_shortcuts_tip => 'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.';
+
+  @override
+  String get backup_usage_db_tip => 'Want to save your data? Backup your usage database to keep your records safe.';
+
+  @override
+  String get dynamic_material_color_tip => 'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.';
+
+  @override
+  String get amoled_dark_theme_tip => 'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
+
+  @override
+  String get customize_usage_history_tip => 'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
+
+  @override
+  String get grouped_apps_blocking_tip => 'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.';
+
+  @override
+  String get websites_blocking_tip => 'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.';
+
+  @override
+  String get data_usage_tip => 'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.';
+
+  @override
+  String get block_internet_tip => 'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.';
+
+  @override
+  String get emergency_passes_tip => 'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.';
 
   @override
   String get onboarding_skip_btn_label => '跳过';
@@ -464,6 +533,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get show_all_apps_tile_title => '显示所有应用';
 
   @override
+  String get search_apps_hint => 'Search apps...';
+
+  @override
   String get notifications_tab_title => '通知';
 
   @override
@@ -471,6 +543,27 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get batched_apps_tile_title => '批量应用';
+
+  @override
+  String get batch_recap_dropdown_title => 'Batch recap type';
+
+  @override
+  String get batch_recap_dropdown_info => 'Choose what to push when a schedule triggers — all notifications or just a summary.';
+
+  @override
+  String get batch_recap_option_summery_only => 'Summery only';
+
+  @override
+  String get batch_recap_option_all_notifications => 'All notifications';
+
+  @override
+  String get notification_history_tile_title => 'Notification history';
+
+  @override
+  String get store_all_tile_title => 'Store all notifications';
+
+  @override
+  String get store_all_tile_subtitle => 'Save non-batched notifications too.';
 
   @override
   String get schedules_heading => '时间表';
@@ -840,7 +933,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get timeline_tab_title => '时间轴';
 
   @override
-  String get timeline_tab_info => '通过选择日历上的日期来探索你的专注之旅。追踪你的进度，回顾你的成功，并从挑战中学习。';
+  String get focus_timeline_tab_info => 'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -979,34 +1072,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restriction_group_invalid_limits_snack_alert => '请设置定时器或活跃期限制。';
 
   @override
-  String get upcoming_notifications_empty_list_hint => '今天没有批量通知。';
+  String get notifications_empty_list_hint => 'No notifications have been batched for the day.';
 
   @override
-  String get button_segment_grouped_label => '分组';
-
-  @override
-  String get button_segment_ungrouped_label => '不分组';
+  String get conversations_label => 'Conversations';
 
   @override
   String get last_24_hours_heading => '过去24小时';
 
   @override
-  String nNotifications(num count) {
-    final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
-      locale: localeName,
-      
-    );
-    final String countString = countNumberFormat.format(count);
+  String get notification_timeline_tab_info => 'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
 
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$countString 条通知',
-      one: '1 条通知',
-      zero: '0 条通知',
-    );
-    return '$_temp0';
-  }
+  @override
+  String get monthly_label => 'Monthly';
+
+  @override
+  String get daily_label => 'Daily';
+
+  @override
+  String get search_notifications_sheet_info => 'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+
+  @override
+  String get search_notifications_hint => 'Search notifications...';
 
   @override
   String get app_info_none_warning => '无法找到给定包名的应用程序。返回主屏幕。';

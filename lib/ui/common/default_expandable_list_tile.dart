@@ -30,6 +30,7 @@ class DefaultExpandableListTile extends StatefulWidget {
     this.subtitleText,
     this.color,
     this.accent,
+    this.canExpand,
     this.position = ItemPosition.none,
     this.enabled = true,
     this.isPrimary = false,
@@ -47,6 +48,7 @@ class DefaultExpandableListTile extends StatefulWidget {
   final Widget content;
   final bool enabled;
   final bool isPrimary;
+  final bool Function()? canExpand;
 
   @override
   State<DefaultExpandableListTile> createState() =>
@@ -85,7 +87,11 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
           position: _isExpanded ? expandedPosition : widget.position,
           enabled: widget.enabled,
           isPrimary: widget.isPrimary,
-          onPressed: () => setState(() => _isExpanded = !_isExpanded),
+          onPressed: () {
+            if (_isExpanded || (widget.canExpand?.call() ?? true)) {
+              setState(() => _isExpanded = !_isExpanded);
+            }
+          },
           trailing: AnimatedRotation(
             duration: AppConstants.defaultAnimDuration,
             turns: _isExpanded ? 0.5 : 1,

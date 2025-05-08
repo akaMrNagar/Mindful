@@ -63,7 +63,7 @@ class DefaultBarChart extends StatelessWidget {
 
     final dataMax = mappedData.fold(0, (p, e) => math.max(p, e));
     // adding one to show bar chart if all values are zeroes
-    final barMaxHeight = (dataMax * 1.17) + 1.0;
+    final barMaxHeight = dataMax + 1;
 
     return Semantics(
       excludeSemantics: true,
@@ -77,7 +77,7 @@ class DefaultBarChart extends StatelessWidget {
               data.length,
               (index) {
                 final isSelected = selectedDay == data.keys.elementAt(index);
-                final toPercentY = mappedData[index] / barMaxHeight * 100;
+                final toPercentY = (mappedData[index] / barMaxHeight) * 100;
                 return BarChartGroupData(
                   groupVertically: true,
                   x: index,
@@ -99,11 +99,11 @@ class DefaultBarChart extends StatelessWidget {
             gridData: FlGridData(
               show: true,
               drawVerticalLine: false,
-              horizontalInterval: 24.9,
+              horizontalInterval: 26,
               getDrawingHorizontalLine: (s) => FlLine(
-                color: Theme.of(context).colorScheme.surfaceContainerHigh,
+                color: Theme.of(context).colorScheme.secondaryContainer,
                 strokeWidth: 0.5,
-                dashArray: [6, 6],
+                dashArray: [8, 8],
               ),
             ),
             borderData: FlBorderData(show: false),
@@ -148,7 +148,7 @@ class DefaultBarChart extends StatelessWidget {
         sideTitles: SideTitles(
           showTitles: true,
           reservedSize: 32,
-          interval: 25,
+          interval: 26,
           getTitlesWidget: (yPos, meta) => FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerRight,

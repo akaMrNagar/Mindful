@@ -9,7 +9,7 @@ import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.AppConstants
 
 class MindfulTrackerService : Service() {
     companion object {
@@ -64,8 +64,8 @@ class MindfulTrackerService : Service() {
 
     fun onMidnightReset() {
         restrictionManager.resetCache()
-//        overlayManager.dismissOverlay()
-//        reminderManager.cancelReminders()
+        overlayManager.dismissOverlay()
+        reminderManager.cancelReminders()
     }
 
 
@@ -78,16 +78,16 @@ class MindfulTrackerService : Service() {
             overlayManager.dismissOverlay()
 
             /// check current restrictions
-        val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
+            val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
 
-            Log.d(TAG, "onNewAppLaunch: $packageName's evaluated state $currentOrFutureState")
+            Log.d(TAG, "onNewAppLaunch: $packageName's evaluated state => $currentOrFutureState")
             currentOrFutureState?.let {
 
                 /// Already restricted
                 if (it.expirationFutureMs <= 0L) {
                     overlayManager.showOverlay(
                         packageName = packageName,
-                        restrictionState = it
+                        restrictionState = it,
                     )
                 }
                 /// Under limit but will be exhausted in some time

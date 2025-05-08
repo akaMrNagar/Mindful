@@ -31,8 +31,6 @@ class SharedDataNotifier extends StateNotifier<SharedUniqueData> {
     state = await dao.loadSharedData();
 
     await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
-    await MethodChannelService.instance
-        .updateDistractingNotificationApps(state.notificationBatchedApps);
 
     /// Run after a delay to avoid database deadlock
     /// Listen to provider and save changes to database
@@ -54,17 +52,5 @@ class SharedDataNotifier extends StateNotifier<SharedUniqueData> {
     );
 
     await MethodChannelService.instance.updateExcludedApps(state.excludedApps);
-  }
-
-  /// Batch or UnBatch app from notification schedule
-  void batchUnBatchApp(String appPackage, bool shouldBatch) async {
-    state = state.copyWith(
-      notificationBatchedApps: shouldBatch
-          ? [...state.notificationBatchedApps, appPackage]
-          : [...state.notificationBatchedApps.where((e) => e != appPackage)],
-    );
-
-    await MethodChannelService.instance
-        .updateDistractingNotificationApps(state.notificationBatchedApps);
   }
 }

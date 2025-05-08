@@ -17,11 +17,11 @@ import android.net.VpnService
 import android.os.IBinder
 import android.os.ParcelFileDescriptor
 import android.util.Log
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.SocketAddress
@@ -188,7 +188,7 @@ class MindfulVpnService : VpnService() {
     /**
      * Updates the list of blocked apps and restarts the VPN service if needed.
      */
-    fun updateBlockedApps(blockedApps: HashSet<String>) {
+    fun updateBlockedApps(blockedApps: Set<String>) {
         mBlockedApps = blockedApps
         Log.d(TAG, "updateBlockedApps: Internet blocked apps updated successfully")
         if (mBlockedApps.isEmpty()) stopAndDisposeService()

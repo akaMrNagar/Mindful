@@ -12,7 +12,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
-import 'package:mindful/core/database/converters/list_converters.dart';
+import 'package:mindful/core/database/converters/string_list_converter.dart';
 
 @DataClassName("RestrictionGroup")
 class RestrictionGroupsTable extends Table {
@@ -43,6 +43,6 @@ class RestrictionGroupsTable extends Table {
 
   /// List of app's packages which are associated with the group.
   TextColumn get distractingApps => text()
-      .map(const ListStringConverter())
+      .map(const StringListConverter())
       .withDefault(Constant(jsonEncode([])))();
 }

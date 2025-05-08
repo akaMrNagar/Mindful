@@ -14,4 +14,6 @@ mixin _$UniqueRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
   $WellbeingTableTable get wellbeingTable => attachedDatabase.wellbeingTable;
   $SharedUniqueDataTableTable get sharedUniqueDataTable =>
       attachedDatabase.sharedUniqueDataTable;
+  $NotificationSettingsTableTable get notificationSettingsTable =>
+      attachedDatabase.notificationSettingsTable;
 }

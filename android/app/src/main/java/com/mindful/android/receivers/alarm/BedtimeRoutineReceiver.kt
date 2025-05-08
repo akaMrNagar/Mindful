@@ -23,21 +23,36 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
-import com.mindful.android.helpers.AlarmTasksSchedulingHelper.ALARM_EXTRA_JSON
 import com.mindful.android.helpers.AlarmTasksSchedulingHelper.scheduleBedtimeRoutineTasks
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.models.BedtimeSettings
+import com.mindful.android.models.BedtimeSchedule
 import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.ThreadUtils
-import com.mindful.android.utils.Utils
-import org.json.JSONObject
 
 class BedtimeRoutineReceiver : BroadcastReceiver() {
+    companion object {
+        private const val TAG = "Mindful.BedtimeRoutineReceiver"
+
+        const val ACTION_ALERT_BEDTIME: String =
+            "com.mindful.android.BedtimeRoutineReceiver.AlertBedtime"
+
+        const val ACTION_START_BEDTIME: String =
+            "com.mindful.android.BedtimeRoutineReceiver.StartBedtime"
+
+        const val ACTION_STOP_BEDTIME: String =
+            "com.mindful.android.BedtimeRoutineReceiver.StopBedtime"
+
+        const val EXTRA_BEDTIME_SETTINGS_JSON =
+            "com.mindful.android.BedtimeRoutineReceiver.bedtimeSettingsJson"
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             ACTION_ALERT_BEDTIME, ACTION_START_BEDTIME, ACTION_STOP_BEDTIME -> {
@@ -50,8 +65,8 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
                             Data.Builder()
                                 .putString("action", intent.action)
                                 .putString(
-                                    ALARM_EXTRA_JSON,
-                                    intent.extras?.getString(ALARM_EXTRA_JSON) ?: ""
+                                    EXTRA_BEDTIME_SETTINGS_JSON,
+                                    intent.extras?.getString(EXTRA_BEDTIME_SETTINGS_JSON) ?: ""
                                 )
                                 .build()
                         )
@@ -66,10 +81,10 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
         private val context: Context,
         params: WorkerParameters,
     ) : Worker(context, params) {
-        private val jsonBedtimeSettings = inputData.getString(ALARM_EXTRA_JSON) ?: ""
-        private val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+        private val jsonBedtimeSettings = inputData.getString(EXTRA_BEDTIME_SETTINGS_JSON) ?: ""
+        private val bedtimeSchedule = BedtimeSchedule.fromJson(jsonBedtimeSettings)
         private val canStartRoutineToday: Boolean =
-            bedtimeSettings.scheduleDays[Utils.zeroIndexedDayOfWeek()]
+            bedtimeSchedule.scheduleDays[DateTimeUtils.zeroIndexedDayOfWeek()]
 
         private val trackerServiceConn = SafeServiceConnection(
             context = context,
@@ -111,14 +126,14 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             if (!canStartRoutineToday) return
             trackerServiceConn.setOnConnectedCallback { service: MindfulTrackerService ->
                 with(service) {
-                    getRestrictionManager.updateBedtimeApps(bedtimeSettings.distractingApps)
+                    getRestrictionManager.updateBedtimeApps(bedtimeSchedule.distractingApps)
                     getLaunchTrackingManager.detectActiveAppForBedtime()
                 }
             }
             trackerServiceConn.startAndBind()
 
             // Start DND if needed
-            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(
+            if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
                 DndWakeLock.BedtimeMode,
                 true
@@ -135,7 +150,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             trackerServiceConn.bindService()
 
             // Stop DND if needed
-            if (bedtimeSettings.shouldStartDnd) NotificationHelper.toggleDnd(
+            if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
                 DndWakeLock.BedtimeMode,
                 false
@@ -157,7 +172,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
                     .setOngoing(false)
                     .setOnlyAlertOnce(true)
                     .setContentIntent(
-                        Utils.getPendingIntentForMindfulUri(
+                        AppUtils.getPendingIntentForMindfulUri(
                             context,
                             "com.mindful.android://open/home?tab=3",
                         )
@@ -170,16 +185,4 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
         }
     }
 
-    companion object {
-        private const val TAG = "Mindful.BedtimeRoutineReceiver"
-
-        const val ACTION_ALERT_BEDTIME: String =
-            "com.mindful.android.BedtimeRoutineReceiver.AlertBedtime"
-
-        const val ACTION_START_BEDTIME: String =
-            "com.mindful.android.BedtimeRoutineReceiver.StartBedtime"
-
-        const val ACTION_STOP_BEDTIME: String =
-            "com.mindful.android.BedtimeRoutineReceiver.StopBedtime"
-    }
 }

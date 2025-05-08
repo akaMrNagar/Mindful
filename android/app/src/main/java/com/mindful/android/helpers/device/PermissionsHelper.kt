@@ -35,7 +35,7 @@ import com.mindful.android.R
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.AppConstants
 import com.mindful.android.utils.Utils
 
 /**

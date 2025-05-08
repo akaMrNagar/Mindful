@@ -15,12 +15,15 @@ import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 
 /// Opens modal bottom sheet with the passed sliver body
+///
+/// [initialSize] should be between 0-1
 Future<void> showDefaultBottomSheet({
   required BuildContext context,
   required Widget sliverBody,
   EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 12),
   Widget? header,
   String? headerTitle,
+  double initialSize = 0.5,
 }) async =>
     showModalBottomSheet(
       context: context,
@@ -35,6 +38,7 @@ Future<void> showDefaultBottomSheet({
       ),
       builder: (sheetContext) => DraggableScrollableSheet(
         expand: false,
+        initialChildSize: initialSize,
         builder: (context, scrollController) => Padding(
           padding: padding,
           child: Column(

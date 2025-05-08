@@ -61,7 +61,8 @@ class ChangeLogsData {
       bulletPoints: const [
         "One tap to focus mode.",
         "Directly open focus mode.",
-        "Use pre-configured profiles."
+        "Use pre-configured profiles.",
+        "Reflect on focus sessions.",
       ],
     ),
     ChangeLog(
@@ -102,6 +103,7 @@ class ChangeLogsData {
           Navigator.of(context).pushNamed(AppRoutes.parentalControlsPath),
       bulletPoints: const [
         "Invincible mode for distractions.",
+        "Prevent restriction changes outside the Invincible window.",
         "Tamper protection for sneaky workarounds.",
         "Biometric lock for added security.",
       ],

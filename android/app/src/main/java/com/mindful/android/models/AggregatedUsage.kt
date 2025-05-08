@@ -14,5 +14,5 @@ package com.mindful.android.models
 data class AggregatedUsage(
     val totalScreenUsageMins: Int,
     val totalMobileUsageMBs: Int,
-    val totalWifiUsageMBs: Int
+    val totalWifiUsageMBs: Int,
 )

@@ -11,14 +11,21 @@
  */
 package com.mindful.android.services.notification
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.mindful.android.generics.ServiceBinder
+import com.mindful.android.generics.SmartCacheBox
+import com.mindful.android.helpers.storage.DriftDbHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.models.UpcomingNotification
+import com.mindful.android.models.Notification
+import com.mindful.android.models.NotificationSettings
+import com.mindful.android.utils.executors.Throttler
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class MindfulNotificationListenerService : NotificationListenerService() {
@@ -26,45 +33,62 @@ class MindfulNotificationListenerService : NotificationListenerService() {
         private const val TAG = "Mindful.MindfulNotificationService"
     }
 
-    private val mBinder = ServiceBinder(this@MindfulNotificationListenerService)
-    private val mSocialMediaPackages =
-        setOf("com.whatsapp", "com.instagram.android", "com.snapchat.android")
+    private val binder = ServiceBinder(this@MindfulNotificationListenerService)
+    private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
 
-    private var mDistractingApps = HashSet<String>(0)
-    private var mIsListenerActive = false
+    private val pendingNotifications: MutableList<Notification> = mutableListOf()
+    private val cachedPendingIntents: SmartCacheBox<String, PendingIntent> = SmartCacheBox(
+        maxSize = 100,
+        maxAgeMs = 24 * 60 * 60 * 1000L // 24 hours
+    )
+
+    private val throttle: Throttler = Throttler(5 * 1000L) // Every 5 seconds
+    private var settings: NotificationSettings = NotificationSettings()
+    private var isListenerActive = false
+
+    /**
+     *  Returns the pending intent for the provided key if found, otherwise null
+     */
+    fun getPendingIntentForKey(key: String): PendingIntent? = cachedPendingIntents.get(key)
+
 
     override fun onListenerConnected() {
+        isListenerActive = true
+        Log.d(TAG, "onListenerConnected: Notifications listener CONNECTED")
         super.onListenerConnected()
-        mIsListenerActive = true
     }
 
     override fun onListenerDisconnected() {
-        mIsListenerActive = false
+        isListenerActive = false
+        Log.d(TAG, "onListenerConnected: Notifications listener DIS-CONNECTED")
         super.onListenerDisconnected()
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
-        if (!mIsListenerActive) return
+        if (!isListenerActive) return
         val packageName = sbn.packageName
         try {
-            // Return if the posting app is not marked as distracting
-            if (!mDistractingApps.contains(packageName) || !sbn.isClearable) return
+            // If from mindful or not clearable or group summery
+            val isGroupSummary =
+                sbn.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
+            if (packageName == this.packageName || !sbn.isClearable || isGroupSummary) return
 
-
-            // Dismiss notification
-            cancelNotification(sbn.key)
-            Log.d(TAG, "onNotificationPosted: Notification dismissed")
-
-            // Return if it is from social media but does not have tag
-            if (sbn.tag == null && mSocialMediaPackages.contains(packageName)) return
-
-            // Check if we can store it or not
-            val notification = UpcomingNotification(sbn)
-            if (notification.titleText.isNotBlank() || notification.contentText.isNotBlank()) {
-                SharedPrefsHelper.insertNotificationToPrefs(this, notification)
-                Log.d(TAG, "onNotificationPosted: Notification stored from package: $packageName")
+            // Dismiss notification if it is from distracting apps
+            val isFromBatchedApp = settings.batchedApps.contains(packageName)
+            if (isFromBatchedApp) {
+                cancelNotification(sbn.key)
+                Log.d(TAG, "onNotificationPosted: Distracting notification dismissed")
             }
 
+            // Process only if keeping history or it is from batched app
+            if (settings.storeNonBatchedToo || isFromBatchedApp) {
+                executorService.submit {
+                    processNotificationInBg(
+                        sbn,
+                        isFromBatchedApp
+                    )
+                }
+            }
         } catch (e: Exception) {
             SharedPrefsHelper.insertCrashLogToPrefs(this, e)
             Log.e(TAG, "onNotificationPosted: Something went wrong for package: $packageName", e)
@@ -73,13 +97,51 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     }
 
 
-    fun updateDistractingApps(distractingApps: HashSet<String>) {
-        mDistractingApps = distractingApps
-        Log.d(TAG, "updateDistractingApps: Distracting apps updated successfully")
+    fun updateNotificationSettings(settings: NotificationSettings) {
+        this.settings = settings
+        Log.d(
+            TAG,
+            "updateNotificationSettings: Notification settings updated successfully: $settings"
+        )
     }
 
+    private fun processNotificationInBg(sbn: StatusBarNotification, isFromBatchedApp: Boolean) {
+        try {
+            Log.d(TAG, "processNotificationInBg: Processing notification")
+
+            // Create notification and cache
+            val notification = Notification.fromSbn(sbn).copy(isRead = !isFromBatchedApp)
+            if (notification.title.isEmpty() || notification.content.isEmpty()) return
+
+            cachedPendingIntents.put(notification.key, sbn.notification.contentIntent)
+            pendingNotifications.add(notification)
+
+            // Insert notifications to db if the difference between last insertion is more than 1 minute
+            throttle.submit { insertNotificationsToDb() }
+        } catch (e: Exception) {
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e)
+            Log.e(TAG, "processNotificationInBg: Failed to process notification", e)
+        }
+    }
+
+    private fun insertNotificationsToDb() {
+        if (pendingNotifications.isEmpty()) return
+        val isSuccess = DriftDbHelper(this).insertNotifications(pendingNotifications)
+
+        // Clear list if inserted successfully
+        if (isSuccess) pendingNotifications.clear()
+    }
+
+
     override fun onBind(intent: Intent): IBinder? {
-        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) mBinder
+        return if (intent.action == ServiceBinder.ACTION_BIND_TO_MINDFUL) binder
         else super.onBind(intent)
+    }
+
+    override fun onDestroy() {
+        insertNotificationsToDb()
+        executorService.shutdown()
+        Log.d(TAG, "onDestroy: Notifications listener DESTROYED")
+        super.onDestroy()
     }
 }

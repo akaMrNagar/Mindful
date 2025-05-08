@@ -43,7 +43,6 @@ class BedtimeScheduleCard extends ConsumerWidget {
         .watch(bedtimeScheduleProvider.select((value) => value.scheduleDays));
 
     return RoundedContainer(
-      height: 224,
       borderRadius: getBorderRadiusFromPosition(ItemPosition.top),
       padding: const EdgeInsets.all(12),
       child: Column(
@@ -61,6 +60,7 @@ class BedtimeScheduleCard extends ConsumerWidget {
           ),
 
           /// Total calculated bedtime duration
+          16.vBox,
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -73,6 +73,7 @@ class BedtimeScheduleCard extends ConsumerWidget {
           ),
 
           /// Schedule selected Days
+          24.vBox,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(
@@ -80,6 +81,8 @@ class BedtimeScheduleCard extends ConsumerWidget {
               (index) => Expanded(
                 child: RoundedContainer(
                   circularRadius: 200,
+                  height: 48,
+                  width: 48,
                   margin: const EdgeInsets.symmetric(horizontal: 2),
                   color: scheduleDays[index]
                       ? isScheduleOn
@@ -91,18 +94,15 @@ class BedtimeScheduleCard extends ConsumerWidget {
                       : () => ref
                           .read(bedtimeScheduleProvider.notifier)
                           .toggleScheduleDay(index),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: StyledText(
-                      AppConstants.daysShort(context)[index],
-                      fontSize: 12,
-                      isSubtitle: isScheduleOn,
-                      textAlign: TextAlign.center,
-                      color: scheduleDays[index]
-                          ? Theme.of(context).colorScheme.surface
-                          : null,
-                    ).centered,
-                  ),
+                  child: StyledText(
+                    AppConstants.daysShort(context)[index],
+                    fontSize: 12,
+                    isSubtitle: isScheduleOn,
+                    textAlign: TextAlign.center,
+                    color: scheduleDays[index]
+                        ? Theme.of(context).colorScheme.surface
+                        : null,
+                  ).centered,
                 ),
               ),
             ),

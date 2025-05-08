@@ -30,26 +30,31 @@
 
 # 💪 Features
 
-### 1. Focus Mode 
-Pause distracting apps and stay productive with session types like Study, Work, or Creative. Choose between countdown or stopwatch modes and track your progress over time.
+### Focus Mode
+Stay on track with session types like Study, Work, or Creative. Use countdown or stopwatch modes, and review your session timeline to track progress and stay consistent.
 
-### 2. Screen Time Management
-Set daily limits on apps, including addictive short-form content like Reels and YouTube Shorts. Group apps together and add shared limits for better control. Struggling with serious addiction? Turn on Invincible Mode for extra discipline.
+### Screen Time Limits
+Set daily usage limits for apps — especially for addictive short content like Reels or Shorts. Group similar apps, add shared limits, and enable Invincible Mode to lock restrictions after they're hit.
 
-### 3. Detailed Statistics
-Track your weekly app usage with insights on time spent and data consumed for each app, helping you stay aware and in control.
+### Detailed Usage Insights
+Check weekly screen time, app usage, and data consumption. Mindful helps you understand your habits so you can take control of your time.
 
-### 4. Internet Blocker
-Block internet access for distracting apps in a single tap. Filter out adult content and create a safe browsing environment. You can also block unwanted apps to stay focused.
+### App & Internet Blocking
+Block distracting apps or cut off internet access with one tap. Filter adult content and create a focused, safe environment for work or study.
 
-### 5. Bedtime Mode
-Unwind effectively by pausing distracting apps and enabling Do Not Disturb during bedtime. Start your mornings fresh as apps automatically unblock and notifications resume.
+### Notification Management
+Batch notifications, schedule delivery, or mute apps during focus time. Keep interruptions low and your attention high.
 
-### 6. Completely Ad-Free & Privacy-Focused
-Enjoy a distraction-free experience without any ads. Mindful works entirely offline, keeping your data secure on your device.
+### Bedtime Mode
+Wind down with paused apps and DND during sleep hours. Wake up to a clean slate — apps resume automatically when the day begins.
 
+### Parental Controls
+Set healthy digital habits for children with tamper-proof restrictions, invincible mode, and optional biometric lock.
 
-> ### ⚠️ Note: *INTERNET* permission
+### Privacy-First & Open Source
+No ads. No tracking. Mindful works completely offline, keeping your data on your device and it's fully open-source, forever.
+
+> [!caution] About internet permission in manifest
 > Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
 
 
@@ -64,11 +69,9 @@ _Note: Drop your socials along with your donation to get recognized as a support
 &emsp;
 <a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>
 
-<a href="https://buymeacoffee.com/akamrnagar"><img src="https://img.shields.io/badge/-Buy%20Me%20A%20Coffee-394379?logo=Buy-Me-A-Coffee&logoColor=ffdd00" height="32"></a>
-&emsp;
-<a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="https://img.shields.io/badge/akamrnagar@upi-394379?logo=zalando&logoColor=f47820" height="32"></a>
-&emsp;
-<a href="https://github.com/sponsors/akaMrNagar"><img src="https://img.shields.io/badge/GitHub%20Sponser-394379?logo=GitHub-Sponsors&logoColor=f92f60" height="32"></a>
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-🖤-ffdd00)](https://www.buymeacoffee.com/akamrnagar)
+[![UPI](https://img.shields.io/badge/akamrnagar@upi-🖤-f47820)](upi://pay?pa=akamrnagar@upi&pn=Pawan%20Nagar&cu=INR$tn=Donation%20for%20Mindful)
+[![Sponsor Me on GitHub](https://img.shields.io/badge/Sponsor%20Me%20on%20GitHub-🖤-db61a2)](https://github.com/sponsors/akamrnagar)
 
 
 # Feedback and Support
@@ -76,7 +79,7 @@ _Note: Drop your socials along with your donation to get recognized as a support
 Your feedback is invaluable to us! If you have suggestions, encounter issues, or simply want to share your thoughts, please reach out to us through the following channels : 
 
 * **[GitHub (bug)](https://github.com/akaMrNagar/Mindful/issues/new?&template=bug_report.md)**
-* **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&tem**plate=feature_request.md)**
+* **[GitHub (enhancement)](https://github.com/akaMrNagar/Mindful/issues/new?&template=feature_request.md)**
 * **[GitHub (vulnerability)](https://github.com/akaMrNagar/Mindful/security/advisories/new)**
 * **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
 

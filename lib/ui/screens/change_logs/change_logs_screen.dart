@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/enums/item_position.dart';
@@ -25,6 +26,7 @@ import 'package:mindful/ui/common/sliver_app_version_info.dart';
 import 'package:mindful/ui/common/sliver_tabs_bottom_padding.dart';
 import 'package:mindful/ui/screens/change_logs/data/change_logs_data.dart';
 import 'package:mindful/ui/screens/change_logs/widgets/change_log_card.dart';
+import 'package:mindful/ui/transitions/default_effects.dart';
 
 class ChangeLogsScreen extends ConsumerStatefulWidget {
   const ChangeLogsScreen({super.key});
@@ -80,7 +82,12 @@ class _ChangeLogsScreenState extends ConsumerState<ChangeLogsScreen> {
               SliverList.separated(
                 itemCount: logs.length,
                 separatorBuilder: (context, index) => logs[index] is String
-                    ? ContentSectionHeader(title: logs[index])
+                    ? ContentSectionHeader(title: logs[index]).animateOnce(
+                        ref: ref,
+                        uniqueKey: "changeLog.versions.$index",
+                        effects: DefaultEffects.transitionIn,
+                        delay: (100 * index).ms,
+                      )
                     : 0.vBox,
                 itemBuilder: (context, index) {
                   final item = logs[index];
@@ -94,6 +101,11 @@ class _ChangeLogsScreenState extends ConsumerState<ChangeLogsScreen> {
                       ? ChangeLogCard(
                           position: position,
                           changeLog: item,
+                        ).animateOnce(
+                          ref: ref,
+                          uniqueKey: "changeLog.logs.$index",
+                          effects: DefaultEffects.transitionIn,
+                          delay: (100 * index).ms,
                         )
                       : 0.vBox;
                 },

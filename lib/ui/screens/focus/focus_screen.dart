@@ -14,7 +14,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/common/scaffold_shell.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/start_session_fab.dart';
 import 'package:mindful/ui/screens/focus/focus_mode/tab_focus.dart';
-import 'package:mindful/ui/screens/focus/timeline/tab_timeline.dart';
+import 'package:mindful/ui/screens/focus/focus_timeline/tab_focus_timeline.dart';
 
 class FocusScreen extends StatelessWidget {
   const FocusScreen({super.key, this.initialTabIndex});
@@ -37,7 +37,7 @@ class FocusScreen extends StatelessWidget {
           icon: FluentIcons.history_20_regular,
           filledIcon: FluentIcons.history_20_filled,
           titleText: context.locale.timeline_tab_title,
-          sliverBody: const TabTimeline(),
+          sliverBody: const TabFocusTimeline(),
         ),
       ],
     );

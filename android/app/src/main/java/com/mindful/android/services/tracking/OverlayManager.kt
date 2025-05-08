@@ -2,6 +2,7 @@ package com.mindful.android.services.tracking
 
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
+import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -16,10 +17,11 @@ import android.widget.LinearLayout
 import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.utils.Extensions.safePeek
-import com.mindful.android.utils.Extensions.safePop
+import com.mindful.android.services.accessibility.MindfulAccessibilityService
+import com.mindful.android.services.accessibility.MindfulAccessibilityService.Companion.ACTION_PERFORM_HOME_PRESS
 import com.mindful.android.utils.ThreadUtils
-import java.util.Stack
+import com.mindful.android.utils.Utils
+import java.util.concurrent.ConcurrentLinkedDeque
 
 class OverlayManager(
     private val context: Context,
@@ -27,7 +29,7 @@ class OverlayManager(
     private val windowManager: WindowManager =
         context.getSystemService(WINDOW_SERVICE) as WindowManager
 
-    private var overlays: Stack<View> = Stack()
+    private var overlays: ConcurrentLinkedDeque<View> = ConcurrentLinkedDeque()
 
 
     init {
@@ -44,7 +46,7 @@ class OverlayManager(
 
     /// Animate out the overlay
     fun dismissOverlay() {
-        overlays.safePeek()?.let {
+        overlays.peek()?.let {
             ThreadUtils.runOnMainThread {
                 animateOverlay(overlay = it, animateIn = false)
             }
@@ -53,7 +55,7 @@ class OverlayManager(
 
     /// Remove overlay instantly
     private fun removeOverlay() {
-        overlays.safePop()?.let {
+        overlays.pop()?.let {
             windowManager.removeView(it)
         }
     }
@@ -62,16 +64,27 @@ class OverlayManager(
     fun showOverlay(
         packageName: String,
         restrictionState: RestrictionState,
-        addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
+        addReminderWithDelay: ((futureMinutes: Int) -> Unit)? = null,
     ) {
         // Return if overlay is not null
         if (overlays.isNotEmpty()) return
 
-        Log.d(TAG, "showOverlay: Showing overlay for $packageName")
         ThreadUtils.runOnMainThread {
             // Notify, stop and return if don't have overlay permission
             if (!Settings.canDrawOverlays(context)) {
+                // Show notification
                 NotificationHelper.pushAskOverlayPermissionNotification(context)
+
+                // Go home if accessibility is running
+                if (Utils.isServiceRunning(context, MindfulAccessibilityService::class.java)) {
+                    val serviceIntent = Intent(
+                        context.applicationContext,
+                        MindfulAccessibilityService::class.java
+                    ).setAction(ACTION_PERFORM_HOME_PRESS)
+
+                    context.startService(serviceIntent)
+                }
+
                 Log.d(
                     TAG,
                     "showOverlay: Display overlay permission denied, returning"
@@ -81,11 +94,11 @@ class OverlayManager(
 
             // Build overlay
             val overlay = OverlayBuilder.buildOverlay(
-                context,
-                packageName,
-                restrictionState,
-                ::dismissOverlay,
-                addReminderDelay,
+                context = context,
+                packageName = packageName,
+                state = restrictionState,
+                dismissOverlay = ::dismissOverlay,
+                addReminderDelay = addReminderWithDelay,
             )
 
             // Set up WindowManager parameters
@@ -113,6 +126,10 @@ class OverlayManager(
 
             // Add the overlay view to the window
             layoutParams.gravity = Gravity.TOP or Gravity.START
+
+            // Return if overlay is not null
+            if (overlays.isNotEmpty()) return@runOnMainThread
+            Log.d(TAG, "showOverlay: Showing overlay for $packageName")
             windowManager.addView(overlay, layoutParams)
             overlays.push(overlay)
 

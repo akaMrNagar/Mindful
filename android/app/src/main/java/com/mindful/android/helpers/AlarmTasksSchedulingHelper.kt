@@ -17,18 +17,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import com.mindful.android.AppConstants
 import com.mindful.android.generics.SafeServiceConnection
-import com.mindful.android.models.BedtimeSettings
+import com.mindful.android.models.BedtimeSchedule
+import com.mindful.android.models.NotificationSettings
 import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver
+import com.mindful.android.receivers.alarm.BedtimeRoutineReceiver.Companion.EXTRA_BEDTIME_SETTINGS_JSON
 import com.mindful.android.receivers.alarm.MidnightResetReceiver
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver
+import com.mindful.android.receivers.alarm.NotificationBatchReceiver.Companion.EXTRA_NOTIFICATION_SETTINGS_JSON
 import com.mindful.android.receivers.alarm.NotificationBatchReceiver.NotificationBatchWorker
 import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.utils.AppConstants
-import com.mindful.android.utils.JsonDeserializer
+import com.mindful.android.utils.DateTimeUtils.todToTodayCal
 import com.mindful.android.utils.Utils
-import com.mindful.android.utils.Utils.todToTodayCal
-import org.json.JSONObject
 import java.util.Calendar
 import java.util.Date
 
@@ -41,7 +42,6 @@ object AlarmTasksSchedulingHelper {
     private const val BEDTIME_ROUTINE_ALARM_ID = 102
     private const val NOTIFICATION_BATCH_ALARM_ID = 103
 
-    const val ALARM_EXTRA_JSON = "com.mindful.android.alarmExtraJson"
 
     /**
      * Schedules the midnight reset task if it is not already scheduled.
@@ -95,13 +95,16 @@ object AlarmTasksSchedulingHelper {
      * @param jsonBedtimeSettings The json string representation of Bedtime settings object used for scheduling.
      */
     fun scheduleBedtimeRoutineTasks(context: Context, jsonBedtimeSettings: String) {
-        val bedtimeSettings = BedtimeSettings(JSONObject(jsonBedtimeSettings))
+        val bedtimeSchedule = BedtimeSchedule.fromJson(jsonBedtimeSettings)
+        val extraMap = mapOf(
+            EXTRA_BEDTIME_SETTINGS_JSON to jsonBedtimeSettings
+        )
 
         val nowInMs = System.currentTimeMillis()
-        var alertTimeMs = todToTodayCal(bedtimeSettings.startTimeInMins - 30).timeInMillis
-        var startTimeMs = todToTodayCal(bedtimeSettings.startTimeInMins).timeInMillis
+        var alertTimeMs = todToTodayCal(bedtimeSchedule.scheduleStartTime - 30).timeInMillis
+        var startTimeMs = todToTodayCal(bedtimeSchedule.scheduleStartTime).timeInMillis
         var endTimeMs =
-            todToTodayCal(bedtimeSettings.startTimeInMins + bedtimeSettings.totalDurationInMins).timeInMillis
+            todToTodayCal(bedtimeSchedule.scheduleStartTime + bedtimeSchedule.scheduleDurationInMins).timeInMillis
 
         // Bedtime is already ended then reschedule for the next day
         if (endTimeMs < nowInMs) {
@@ -118,7 +121,7 @@ object AlarmTasksSchedulingHelper {
                 intentAction = BedtimeRoutineReceiver.ACTION_ALERT_BEDTIME,
                 epochTimeMs = alertTimeMs,
                 requestCode = BEDTIME_ROUTINE_ALARM_ID,
-                extraJson = jsonBedtimeSettings,
+                extraMap = extraMap,
             )
         }
 
@@ -129,7 +132,7 @@ object AlarmTasksSchedulingHelper {
             intentAction = BedtimeRoutineReceiver.ACTION_START_BEDTIME,
             epochTimeMs = startTimeMs,
             requestCode = BEDTIME_ROUTINE_ALARM_ID,
-            extraJson = jsonBedtimeSettings,
+            extraMap = extraMap,
         )
         scheduleOrUpdateExactAlarmTask(
             context = context,
@@ -137,7 +140,7 @@ object AlarmTasksSchedulingHelper {
             intentAction = BedtimeRoutineReceiver.ACTION_STOP_BEDTIME,
             epochTimeMs = endTimeMs,
             requestCode = BEDTIME_ROUTINE_ALARM_ID,
-            extraJson = jsonBedtimeSettings,
+            extraMap = extraMap,
         )
         Log.d(
             TAG, """
@@ -186,18 +189,18 @@ object AlarmTasksSchedulingHelper {
      * Schedules next future possible notification batch.
      *
      * @param context      The application context.
-     * @param jsonScheduleTods The json of hashset of integers representing TODs in minutes.
+     * @param jsonNotificationSettings The json of Notification Settings.
      */
-    fun scheduleNotificationBatchTask(context: Context, jsonScheduleTods: String) {
-        val sortedTods = JsonDeserializer.jsonStrToIntegerHashSet(jsonScheduleTods).sorted()
-        if (sortedTods.isEmpty()) return
+    fun scheduleNotificationBatchTask(context: Context, jsonNotificationSettings: String) {
+        val settings = NotificationSettings.fromJson(jsonNotificationSettings)
+        if (settings.schedules.isEmpty()) return
 
         val now = System.currentTimeMillis()
         var nextAlarmTimeMs: Long? = null
 
         // Find the first future TOD
-        for (tod in sortedTods) {
-            val currentTime = todToTodayCal(tod).timeInMillis
+        for (schedule in settings.schedules) {
+            val currentTime = todToTodayCal(schedule.todMinutes).timeInMillis
             if (currentTime > now) {
                 nextAlarmTimeMs = currentTime
                 break
@@ -206,7 +209,7 @@ object AlarmTasksSchedulingHelper {
 
         // If no future TOD, schedule for the first TOD of the next day
         nextAlarmTimeMs = nextAlarmTimeMs
-            ?: (todToTodayCal(sortedTods[0]).timeInMillis + AppConstants.ONE_DAY_IN_MS)
+            ?: (todToTodayCal(settings.schedules[0].todMinutes).timeInMillis + AppConstants.ONE_DAY_IN_MS)
 
 
         scheduleOrUpdateExactAlarmTask(
@@ -214,8 +217,10 @@ object AlarmTasksSchedulingHelper {
             receiverClass = NotificationBatchReceiver::class.java,
             intentAction = NotificationBatchReceiver.ACTION_PUSH_BATCH,
             requestCode = NOTIFICATION_BATCH_ALARM_ID,
-            extraJson = jsonScheduleTods,
             epochTimeMs = nextAlarmTimeMs,
+            extraMap = mapOf(
+                EXTRA_NOTIFICATION_SETTINGS_JSON to jsonNotificationSettings
+            ),
         )
         Log.d(
             TAG,
@@ -246,7 +251,9 @@ object AlarmTasksSchedulingHelper {
      * @param context       The application context.
      * @param receiverClass The receiver class for the alarm.
      * @param intentAction  The action to be set on the intent.
+     * @param requestCode   A unique identifier for this alarm, used to update or cancel it later.
      * @param epochTimeMs   The time at which the alarm should go off, in milliseconds since epoch.
+     * @param extraMap         An optional map of key-value pairs to be passed as extras in the `Intent`. Value should be serialized json.  Default is `null`.
      */
     private fun scheduleOrUpdateExactAlarmTask(
         context: Context,
@@ -254,11 +261,15 @@ object AlarmTasksSchedulingHelper {
         intentAction: String,
         requestCode: Int,
         epochTimeMs: Long,
-        extraJson: String? = null,
+        extraMap: Map<String, String>? = null,
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context.applicationContext, receiverClass).setAction(intentAction)
-        extraJson?.let { intent.putExtra(ALARM_EXTRA_JSON, it) }
+        extraMap?.let {
+            it.forEach { entry ->
+                intent.putExtra(entry.key, entry.value)
+            }
+        }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,

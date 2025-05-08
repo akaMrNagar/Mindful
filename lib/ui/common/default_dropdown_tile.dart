@@ -27,6 +27,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
     required this.onSelected,
     required this.titleText,
     this.enabled = true,
+    this.infoText,
     this.width,
     this.position,
     this.leadingIcon,
@@ -39,6 +40,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
   final bool enabled;
 
   final String titleText;
+  final String? infoText;
   final double? width;
   final ItemPosition? position;
   final T value;
@@ -70,6 +72,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
             HeroPageRoute(
               builder: (context) => _DropdownMenuDialog<T>(
                 label: titleText,
+                info: infoText,
                 heroTag: heroTag,
                 iconData: dialogIcon,
                 selected: selected,
@@ -90,6 +93,7 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
     required this.heroTag,
     required this.selected,
     required this.label,
+    required this.info,
     required this.iconData,
     required this.onSelected,
     required this.items,
@@ -98,6 +102,7 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
 
   final Object heroTag;
   final String label;
+  final String? info;
   final IconData? iconData;
   final DefaultDropdownItem<T>? selected;
   final Widget Function(T? item)? trailingBuilder;
@@ -136,30 +141,42 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      items.length,
-                      (index) => DefaultListTile(
-                        color:
-                            Theme.of(context).colorScheme.surfaceContainerLow,
-                        position: getItemPositionInList(index, items.length),
-                        leading: IgnorePointer(
-                          child: Radio(
-                            value: items[index].value == selected?.value,
-                            groupValue: true,
-                            splashRadius: 0,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            onChanged: (v) {},
+                    children: [
+                      /// Info
+                      if (info != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 18),
+                          child: StyledText(
+                            info!,
                           ),
                         ),
-                        title: StyledText(items[index].label, fontSize: 14),
-                        trailing: trailingBuilder?.call(items[index].value),
-                        onPressed: () {
-                          Navigator.of(context).maybePop();
-                          onSelected(items[index].value);
-                        },
-                      ),
-                    ),
+
+                      /// Options
+                      ...List.generate(
+                        items.length,
+                        (index) => DefaultListTile(
+                          color:
+                              Theme.of(context).colorScheme.surfaceContainerLow,
+                          position: getItemPositionInList(index, items.length),
+                          leading: IgnorePointer(
+                            child: Radio(
+                              value: items[index].value == selected?.value,
+                              groupValue: true,
+                              splashRadius: 0,
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              onChanged: (v) {},
+                            ),
+                          ),
+                          title: StyledText(items[index].label, fontSize: 14),
+                          trailing: trailingBuilder?.call(items[index].value),
+                          onPressed: () {
+                            Navigator.of(context).maybePop();
+                            onSelected(items[index].value);
+                          },
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),

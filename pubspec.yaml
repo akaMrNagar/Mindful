@@ -72,6 +72,8 @@ flutter:
    
     # Vector icons
     - assets/vectors/github.svg
+    - assets/vectors/bmc.svg
+    - assets/vectors/telegram.svg
     - assets/vectors/instagram.svg
     - assets/vectors/snapchat.svg
     - assets/vectors/youtube.svg

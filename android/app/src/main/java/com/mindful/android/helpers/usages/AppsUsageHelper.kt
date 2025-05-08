@@ -6,8 +6,8 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import com.mindful.android.utils.AppConstants.REMOVED_PACKAGE
-import com.mindful.android.utils.AppConstants.TETHERING_PACKAGE
+import com.mindful.android.AppConstants.REMOVED_PACKAGE
+import com.mindful.android.AppConstants.TETHERING_PACKAGE
 import java.lang.IllegalArgumentException
 
 object AppsUsageHelper {

@@ -17,17 +17,12 @@ Future<void> from2To3(Migrator m, Schema3 schema) async => await runSafe(
         /// Create shared unique data table
         await m.createTable(schema.sharedUniqueDataTable);
 
-        /// Fetch excluded apps from [MindfulSettingsTable]
-        final settings = await m.database
-            .select(schema.mindfulSettingsTable)
-            .getSingleOrNull();
-
         ///  Get the newly created table
         final sharedUniqueDataTable =
             m.database.allTables.whereType<SharedUniqueDataTable>().firstOrNull;
 
         /// Insert excluded apps to [SharedUniqueDataTable]
-        if (settings != null && sharedUniqueDataTable != null) {
+        if (sharedUniqueDataTable != null) {
           /// Get record
           final record = await m.database
               .customSelect(

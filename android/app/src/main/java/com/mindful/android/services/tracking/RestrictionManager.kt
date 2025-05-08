@@ -5,12 +5,12 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.util.Log
 import com.mindful.android.R
+import com.mindful.android.enums.RestrictionType
 import com.mindful.android.helpers.usages.ScreenUsageHelper
-import com.mindful.android.models.AppRestrictions
+import com.mindful.android.models.AppRestriction
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.enums.RestrictionType
-import com.mindful.android.utils.Utils
+import com.mindful.android.utils.DateTimeUtils
 
 class RestrictionManager(
     private val context: Context,
@@ -26,7 +26,7 @@ class RestrictionManager(
                 && restrictionGroups.isEmpty()
 
     // Restrictions
-    private var appsRestrictions = HashMap<String, AppRestrictions>()
+    private var appsRestrictions = HashMap<String, AppRestriction>()
     private var restrictionGroups = HashMap<Int, RestrictionGroup>()
 
     // Focus
@@ -46,7 +46,7 @@ class RestrictionManager(
     }
 
     fun updateRestrictions(
-        appsRestrictionsMap: HashMap<String, AppRestrictions>?,
+        appsRestrictionsMap: HashMap<String, AppRestriction>?,
         restrictionGroupsMap: HashMap<Int, RestrictionGroup>?,
     ) {
         appsRestrictionsMap?.let {
@@ -63,15 +63,15 @@ class RestrictionManager(
         stopIfNoUsage.invoke()
     }
 
-    fun updateFocusedApps(apps: HashSet<String>?) {
+    fun updateFocusedApps(apps: Set<String>?) {
         focusedApps = apps ?: setOf()
-        if(apps == null) stopIfNoUsage.invoke()
+        if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateFocusedApps: Focus apps updated: $focusedApps")
     }
 
-    fun updateBedtimeApps(apps: HashSet<String>?) {
+    fun updateBedtimeApps(apps: Set<String>?) {
         bedtimeApps = apps ?: setOf()
-        if(apps == null) stopIfNoUsage.invoke()
+        if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateBedtimeApps: Bedtime apps updated: $bedtimeApps")
     }
 
@@ -89,7 +89,6 @@ class RestrictionManager(
 
         // Increment and Check app launch count
         val launchCount = appsLaunchCount.getOrDefault(packageName, 0) + 1
-        appsLaunchCount[packageName] = launchCount
         if ((restriction.launchLimit > 0) && (launchCount > restriction.launchLimit)) {
             val state = RestrictionState(
                 message = context.getString(R.string.app_paused_reason_launch_count_out),
@@ -99,6 +98,7 @@ class RestrictionManager(
             alreadyRestrictedApps[packageName] = state
             return state
         }
+        appsLaunchCount[packageName] = launchCount
 
         val futureStates: MutableSet<RestrictionState> = mutableSetOf()
 
@@ -138,15 +138,12 @@ class RestrictionManager(
 
 
     private fun evaluateActivePeriodLimit(
-        restriction: AppRestrictions,
+        restriction: AppRestriction,
         futureState: MutableSet<RestrictionState>,
     ): RestrictionState? {
 
         /// Check app's active period
-        if (restriction.periodDurationInMins > 0) {
-            val periodEndTimeMinutes =
-                restriction.activePeriodStart + restriction.periodDurationInMins
-
+        if (restriction.activePeriodStart != restriction.activePeriodEnd) {
             val state = RestrictionState(
                 message = context.getString(R.string.app_paused_reason_active_period_over),
                 type = RestrictionType.ActivePeriod,
@@ -154,13 +151,17 @@ class RestrictionManager(
             )
 
             /// Outside active period
-            if (Utils.isTimeOutsideTODs(restriction.activePeriodStart, periodEndTimeMinutes)) {
+            if (DateTimeUtils.isTimeOutsideTODs(
+                    restriction.activePeriodStart,
+                    restriction.activePeriodEnd
+                )
+            ) {
                 Log.d(TAG, "evaluateActivePeriodLimit: App's active period is over")
                 return state
             }
             /// Launched between active period calculate expiration time
             else {
-                val willOverInMs = Utils.todDifferenceFromNow(periodEndTimeMinutes)
+                val willOverInMs = DateTimeUtils.todDifferenceFromNow(restriction.activePeriodEnd)
                 futureState.add(state.copy(expirationFutureMs = willOverInMs))
             }
         }
@@ -168,9 +169,7 @@ class RestrictionManager(
 
         /// Check group's active period
         restrictionGroups[restriction.associatedGroupId]?.let {
-            if (it.periodDurationInMins > 0) {
-                val periodEndTimeMinutes =
-                    it.activePeriodStart + it.periodDurationInMins
+            if (it.activePeriodStart != it.activePeriodEnd) {
 
                 val state = RestrictionState(
                     message = context.getString(R.string.app_paused_reason_active_period_over),
@@ -178,7 +177,7 @@ class RestrictionManager(
                     expirationFutureMs = -1L,
                 )
                 /// Outside active period
-                if (Utils.isTimeOutsideTODs(it.activePeriodStart, periodEndTimeMinutes)) {
+                if (DateTimeUtils.isTimeOutsideTODs(it.activePeriodStart, it.activePeriodEnd)) {
                     Log.d(
                         TAG,
                         "evaluateActivePeriodLimit: ${it.groupName} group's active period is over"
@@ -187,7 +186,7 @@ class RestrictionManager(
                 }
                 /// Launched between active period calculate expiration time
                 else {
-                    val willOverInMs = Utils.todDifferenceFromNow(periodEndTimeMinutes)
+                    val willOverInMs = DateTimeUtils.todDifferenceFromNow(it.activePeriodEnd)
                     futureState.add(state.copy(expirationFutureMs = willOverInMs))
                 }
             }
@@ -197,7 +196,7 @@ class RestrictionManager(
     }
 
     private fun evaluateScreenTimeLimit(
-        restriction: AppRestrictions,
+        restriction: AppRestriction,
         futureStates: MutableSet<RestrictionState>,
     ): RestrictionState? {
         // Usage map

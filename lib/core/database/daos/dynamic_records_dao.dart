@@ -9,7 +9,7 @@
  */
 
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as m;
 import 'package:flutter_animate/flutter_animate.dart';
 
 import 'package:mindful/core/database/app_database.dart';
@@ -18,7 +18,7 @@ import 'package:mindful/core/database/tables/app_usage_table.dart';
 import 'package:mindful/core/database/tables/crash_logs_table.dart';
 import 'package:mindful/core/database/tables/focus_profile_table.dart';
 import 'package:mindful/core/database/tables/focus_sessions_table.dart';
-import 'package:mindful/core/database/tables/notification_schedule_table.dart';
+import 'package:mindful/core/database/tables/notifications_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/enums/session_state.dart';
@@ -37,8 +37,8 @@ part 'dynamic_records_dao.g.dart';
     FocusSessionsTable,
     FocusProfileTable,
     RestrictionGroupsTable,
-    NotificationScheduleTable,
     AppUsageTable,
+    NotificationsTable,
   ],
 )
 class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
@@ -49,7 +49,6 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   // ===================================== APP USAGE =======================================================
   // ==================================================================================================================
 
-
   /// Loads Map of [DateTime] and [UsageModel]  aggregated for the given interval
   /// Used to load and aggregated 7 days usage of all apps.
   ///
@@ -57,7 +56,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   /// database contains any usage records or not and [Map<DateTime, UsageModel>]
   /// contains one [UsageModel] for each day of week.
   Future<(bool, Map<DateTime, UsageModel>)> fetchWeeklyDeviceUsage({
-    required DateTimeRange weekRange,
+    required m.DateTimeRange weekRange,
   }) async {
     // Initialize the Map with 7 days of the week
     final usageMap = generateEmptyWeekUsage(weekRange.start);
@@ -103,7 +102,7 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   /// The result map contains one [UsageModel] for each day of week for the given app
   Future<Map<DateTime, UsageModel>> fetchWeeklyAppUsage({
     required String packageName,
-    required DateTimeRange weekRange,
+    required m.DateTimeRange weekRange,
   }) async {
     // Initialize the Map with 7 days of the week
     final usageMap = generateEmptyWeekUsage(weekRange.start);
@@ -256,36 +255,6 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
 
   /// Clear all [CrashLogs] objects from the database,
   Future<int> clearCrashLogs() async => delete(crashLogsTable).go();
-
-  // ==================================================================================================================
-  // ===================================== NOTIFICATION SCHEDULES =======================================================
-  // ==================================================================================================================
-
-  /// Loads List of all [NotificationSchedule] objects from the database,
-  Future<List<NotificationSchedule>> fetchNotificationSchedules() async =>
-      (select(notificationScheduleTable)
-            ..orderBy([(e) => OrderingTerm(expression: e.time)]))
-          .get();
-
-  /// Insert or Update a [NotificationSchedule] object to/in the database.
-  Future<NotificationSchedule> insertNotificationSchedule(
-    NotificationScheduleTableCompanion schedule,
-  ) async =>
-      into(notificationScheduleTable).insertReturning(
-        schedule,
-        mode: InsertMode.insertOrReplace,
-      );
-
-  /// Update a [NotificationSchedule] object in the database.
-  Future<void> updateNotificationSchedule(
-    NotificationSchedule schedule,
-  ) async =>
-      update(notificationScheduleTable).replace(schedule);
-
-  /// Removes a [NotificationSchedule] object from the database.
-  Future<void> removeNotificationSchedule(
-          NotificationSchedule schedule) async =>
-      delete(notificationScheduleTable).delete(schedule);
 
   // ==================================================================================================================
   // ===================================== FOCUS PROFILES =============================================================
@@ -458,4 +427,79 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   //     ),
   //   );
   // }
+
+  // ==================================================================================================================
+  // ===================================== NOTIFICATIONS =============================================================
+  // ==================================================================================================================
+
+  /// Loads all [Notification] objects from the database within the interval.
+  Future<List<Notification>> fetchAllNotificationsForInterval({
+    required m.DateTimeRange range,
+  }) async {
+    final query = select(notificationsTable)
+      ..where((tbl) => tbl.timeStamp.isBetweenValues(range.start, range.end))
+      ..orderBy([
+        (e) => OrderingTerm.desc(e.timeStamp),
+        (e) => OrderingTerm.desc(e.isRead),
+      ]);
+
+    return query.get();
+  }
+
+  /// Loads all [Notification] objects from the database which contains the
+  /// provided query in it's title or content.
+  Future<List<Notification>> searchNotificationsWithQuery({
+    required String query,
+  }) async =>
+      (select(notificationsTable)
+            ..where(
+              (tbl) =>
+                  tbl.title.lower().like('%${query.toLowerCase()}%') |
+                  tbl.content.lower().like('%${query.toLowerCase()}%'),
+            ))
+          .get();
+
+  /// Fetch the count of notifications for the provided interval
+  Future<Map<DateTime, int>> fetchNotificationsCountForInterval(
+    DateTime start,
+    DateTime end,
+  ) async {
+    // Fetch only necessary columns
+    final results = await (selectOnly(notificationsTable)
+          ..where(notificationsTable.timeStamp.isBetweenValues(start, end))
+          ..addColumns([notificationsTable.timeStamp]))
+        .get();
+
+    // Use fold to build the map
+    final countsMap = results.fold<Map<DateTime, int>>({}, (map, row) {
+      final timeStamp = row.read(notificationsTable.timeStamp);
+
+      if (timeStamp != null) {
+        final day = timeStamp.dateOnly;
+        map[day] = (map[day] ?? 0) + 1;
+      }
+
+      return map;
+    });
+
+    return countsMap;
+  }
+
+  /// Mark all notifications with the provided IDs as read.
+  Future<int> markNotificationsAsRead(List<int> ids) =>
+      (update(notificationsTable)..where((tbl) => tbl.id.isIn(ids)))
+          .write(const NotificationsTableCompanion(isRead: Value(true)));
+
+  /// Delete notifications with the provided ID.
+  /// Returns number of deleted notifications.
+  Future<int> removeNotificationWithId(int id) =>
+      (delete(notificationsTable)..where((tbl) => tbl.id.equals(id))).go();
+
+  /// Removes notifications from the database which have date before the provided date.
+  Future<void> removeBatchNotificationsBefore(DateTime date) async => batch(
+        (batch) => batch.deleteWhere(
+          notificationsTable,
+          (tbl) => tbl.timeStamp.isSmallerThanValue(date),
+        ),
+      );
 }

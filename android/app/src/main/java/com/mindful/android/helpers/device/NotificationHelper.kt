@@ -24,12 +24,12 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.utils.AppConstants
+import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.ThreadUtils.runOnMainThread
-import com.mindful.android.utils.Utils
 
 /**
  * NotificationHelper provides utility methods for managing notification channels and permissions
@@ -114,7 +114,7 @@ object NotificationHelper {
             .setOngoing(true)
             .setAutoCancel(true)
             .setContentTitle(context.getString(R.string.service_running_notification_title))
-            .setContentIntent(Utils.getPendingIntentForMindfulUri(context))
+            .setContentIntent(AppUtils.getPendingIntentForMindfulUri(context))
             .setContentText(content)
             .build()
     }
@@ -128,6 +128,7 @@ object NotificationHelper {
         val notificationManager =
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
+
         permissionIntent.setData(Uri.parse("package:${context.packageName}"))
         val pendingIntent = PendingIntent.getActivity(
             context.applicationContext,
@@ -135,8 +136,8 @@ object NotificationHelper {
             permissionIntent,
             PendingIntent.FLAG_IMMUTABLE
         )
-        val msg = context.getString(R.string.overlay_permission_denied_notification_info)
 
+        val msg = context.getString(R.string.overlay_permission_denied_notification_info)
         notificationManager.notify(
             AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
             NotificationCompat.Builder(
@@ -149,9 +150,13 @@ object NotificationHelper {
                 .setContentText(msg)
                 .setContentIntent(pendingIntent)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(msg))
+                .addAction(
+                    0, // No icon = text-only button
+                    "Allow",
+                    pendingIntent
+                )
                 .build()
         )
-
     }
 
     /**

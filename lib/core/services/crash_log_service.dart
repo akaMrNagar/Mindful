@@ -15,6 +15,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
+import 'package:mindful/core/utils/date_time_utils.dart';
 
 /// A service class responsible for logging Crashes in the Isar database.
 class CrashLogService {
@@ -24,15 +25,9 @@ class CrashLogService {
   /// Singleton instance of the [CrashLogService].
   static CrashLogService instance = CrashLogService._();
 
-  /// Initialize crash log service and load and add logs from native side to drift db
-  ///
-  /// Must be called after initializing [MethodChannelService] and [DriftDbService]
-  Future<void> init() async {
-    Future.delayed(3.seconds, loadLogsFromNativeToDriftDb);
-  }
-
   /// Load logs from native side and insert them to drift db then clear them on native side
-  void loadLogsFromNativeToDriftDb() async {
+  /// Must be called after initializing [MethodChannelService] and [DriftDbService]
+  Future<void> loadLogsFromNativeToDriftDb() async {
     try {
       /// Load logs
       final nativeLogs =
@@ -49,7 +44,7 @@ class CrashLogService {
 
       /// Remove logs older than 1 month from db
       await DriftDbService.instance.driftDb.dynamicRecordsDao
-          .removeCrashLogOlderThanDate(DateTime.now().subtract(30.days));
+          .removeCrashLogOlderThanDate(dateToday.subtract(30.days));
     } catch (e) {}
   }
 

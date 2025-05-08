@@ -16,14 +16,11 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
 import com.mindful.android.enums.DndWakeLock
-import com.mindful.android.models.UpcomingNotification
-import com.mindful.android.models.WellBeingSettings
-import com.mindful.android.utils.AppConstants
-import com.mindful.android.utils.JsonDeserializer
-import com.mindful.android.utils.Utils
+import com.mindful.android.models.Wellbeing
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.JsonUtils
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.Calendar
 
 /**
  * Helper class to manage SharedPreferences operations.
@@ -44,10 +41,6 @@ object SharedPrefsHelper {
     private var mCrashLogPrefs: SharedPreferences? = null
     private const val CRASH_LOG_PREFS_BOX = "CrashLogPrefs"
     private const val PREF_KEY_CRASH_LOGS = "crashLogs"
-
-    private var mNotificationBatchPrefs: SharedPreferences? = null
-    private const val NOTIFICATION_BATCH_PREFS_BOX = "NotificationBatchPrefs"
-    private const val PREF_KEY_UPCOMING_NOTIFICATIONS = "upcomingNotifications"
 
 
     private fun checkAndInitializeUniquePrefs(context: Context) {
@@ -70,13 +63,6 @@ object SharedPrefsHelper {
         mCrashLogPrefs = context.applicationContext.getSharedPreferences(
             CRASH_LOG_PREFS_BOX,
             Context.MODE_PRIVATE
-        )
-    }
-
-    private fun checkAndInitializeNotificationBatchPrefs(context: Context) {
-        if (mNotificationBatchPrefs != null) return
-        mNotificationBatchPrefs = context.applicationContext.getSharedPreferences(
-            NOTIFICATION_BATCH_PREFS_BOX, Context.MODE_PRIVATE
         )
     }
 
@@ -109,20 +95,20 @@ object SharedPrefsHelper {
      * Fetches the well-being settings if jsonWellBeingSettings is null else store it's json.
      *
      * @param context               The application context.
-     * @param jsonWellBeingSettings The JSON string of well-being settings.
+     * @param jsonWellBeing The JSON string of well-being settings.
      */
     fun getSetWellBeingSettings(
         context: Context,
-        jsonWellBeingSettings: String?,
-    ): WellBeingSettings {
+        jsonWellBeing: String?,
+    ): Wellbeing {
         checkAndInitializeListenablePrefs(context)
-        if (jsonWellBeingSettings == null) {
+        if (jsonWellBeing == null) {
             val json = mListenablePrefs!!.getString(PREF_KEY_WELLBEING_SETTINGS, "{}")!!
-            return WellBeingSettings(JSONObject(json))
+            return Wellbeing.fromJson(json)
         } else {
-            mListenablePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeingSettings)
+            mListenablePrefs!!.edit().putString(PREF_KEY_WELLBEING_SETTINGS, jsonWellBeing)
                 .apply()
-            return WellBeingSettings(JSONObject(jsonWellBeingSettings))
+            return Wellbeing.fromJson(jsonWellBeing)
         }
     }
 
@@ -171,15 +157,15 @@ object SharedPrefsHelper {
      * @param context          The application context.
      * @param jsonExcludedApps The JSON string of excluded apps.
      */
-    fun getSetExcludedApps(context: Context, jsonExcludedApps: String?): HashSet<String> {
+    fun getSetExcludedApps(context: Context, jsonExcludedApps: String?): Set<String> {
         checkAndInitializeUniquePrefs(context)
         if (jsonExcludedApps == null) {
-            return JsonDeserializer.jsonStrToStringHashSet(
+            return JsonUtils.parseStringSet(
                 mUniquePrefs!!.getString(PREF_KEY_EXCLUDED_APPS, "")
             )
         } else {
             mUniquePrefs!!.edit().putString(PREF_KEY_EXCLUDED_APPS, jsonExcludedApps).apply()
-            return JsonDeserializer.jsonStrToStringHashSet(jsonExcludedApps)
+            return JsonUtils.parseStringSet(jsonExcludedApps)
         }
     }
 
@@ -216,7 +202,7 @@ object SharedPrefsHelper {
         // Create new object
         val currentLog = JSONObject()
         try {
-            currentLog.put("appVersion", Utils.getAppVersion(context))
+            currentLog.put("appVersion", AppUtils.getAppVersion(context))
             currentLog.put("timeStamp", System.currentTimeMillis())
             currentLog.put("error", exception.toString())
             currentLog.put("stackTrace", Log.getStackTraceString(exception))
@@ -244,7 +230,7 @@ object SharedPrefsHelper {
      * @param context The application context used to access SharedPreferences.
      * @return A JSON string representing the stored crash logs array.
      */
-    fun getCrashLogsArrayString(context: Context): String {
+    fun getCrashLogsArrayJsonString(context: Context): String {
         checkAndInitializeCrashLogPrefs(context)
         return mCrashLogPrefs!!.getString(PREF_KEY_CRASH_LOGS, "[]")!!
     }
@@ -257,56 +243,5 @@ object SharedPrefsHelper {
     fun clearCrashLogs(context: Context) {
         checkAndInitializeCrashLogPrefs(context)
         mCrashLogPrefs!!.edit().putString(PREF_KEY_CRASH_LOGS, "[]").apply()
-    }
-
-
-    /**
-     * Creates and Inserts a new notification into SharedPreferences based on the passed object.
-     *
-     * @param context      The application context used to retrieve app version and store the log.
-     * @param notification The notification which will be inserted as map.
-     */
-    fun insertNotificationToPrefs(context: Context, notification: UpcomingNotification) {
-        checkAndInitializeNotificationBatchPrefs(context)
-
-        // Create new json object
-        val currentNotification = JSONObject(notification.toMap())
-
-        // Get existing notifications
-        val notificationsJson =
-            mNotificationBatchPrefs!!.getString(PREF_KEY_UPCOMING_NOTIFICATIONS, "[]")
-        var notificationsArray: JSONArray = JSONArray()
-        try {
-            notificationsArray = JSONArray(notificationsJson)
-
-            // Remove notifications older than 24 hours
-            val last24Time = System.currentTimeMillis() - AppConstants.ONE_DAY_IN_MS
-
-            for (i in 0 until notificationsArray.length()) {
-                val timeStamp = notificationsArray.getJSONObject(i).getLong("timeStamp")
-                if (timeStamp < last24Time) {
-                    notificationsArray.remove(i)
-                }
-            }
-        } catch (e1: Exception) {
-            notificationsArray = JSONArray()
-        }
-
-        // Insert current notification and update prefs
-        notificationsArray.put(currentNotification)
-        mNotificationBatchPrefs!!.edit()
-            .putString(PREF_KEY_UPCOMING_NOTIFICATIONS, notificationsArray.toString()).apply()
-    }
-
-
-    /**
-     * Retrieves the list of notification from SharedPreferences as a JSON Array string.
-     *
-     * @param context The application context used to access SharedPreferences.
-     * @return A JSON string representing the stored notifications array.
-     */
-    fun getSerializedNotificationsJson(context: Context): String {
-        checkAndInitializeNotificationBatchPrefs(context)
-        return mNotificationBatchPrefs!!.getString(PREF_KEY_UPCOMING_NOTIFICATIONS, "[]")!!
     }
 }

@@ -3,15 +3,15 @@ package com.mindful.android.services.accessibility
 import android.content.Context
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
+import com.mindful.android.AppConstants.FACEBOOK_PACKAGE
+import com.mindful.android.AppConstants.INSTAGRAM_PACKAGE
+import com.mindful.android.AppConstants.REDDIT_PACKAGE
+import com.mindful.android.AppConstants.SNAPCHAT_PACKAGE
+import com.mindful.android.AppConstants.YOUTUBE_CLIENT_PACKAGE_SUFFIX
+import com.mindful.android.AppConstants.YOUTUBE_PACKAGE
 import com.mindful.android.enums.PlatformFeatures
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.models.WellBeingSettings
-import com.mindful.android.utils.AppConstants.FACEBOOK_PACKAGE
-import com.mindful.android.utils.AppConstants.INSTAGRAM_PACKAGE
-import com.mindful.android.utils.AppConstants.REDDIT_PACKAGE
-import com.mindful.android.utils.AppConstants.SNAPCHAT_PACKAGE
-import com.mindful.android.utils.AppConstants.YOUTUBE_CLIENT_PACKAGE_SUFFIX
-import com.mindful.android.utils.AppConstants.YOUTUBE_PACKAGE
+import com.mindful.android.models.Wellbeing
 import org.jetbrains.annotations.Contract
 
 
@@ -34,19 +34,19 @@ class ShortsPlatformManager(
      *
      * @param packageName The package name of the current app in focus.
      * @param node The root `AccessibilityNodeInfo` of the current screen.
-     * @param settings The user's `WellBeingSettings`, including blocked features and time limits.
+     * @param wellbeing The user's `WellBeingSettings`, including blocked features and time limits.
      */
     fun blockDistraction(
         packageName: String,
         node: AccessibilityNodeInfo,
-        settings: WellBeingSettings,
+        wellbeing: Wellbeing,
     ) {
         // Use default youtube package for unofficial clients too
         val resolvedPackage =
             if (packageName.contains(YOUTUBE_CLIENT_PACKAGE_SUFFIX)) YOUTUBE_PACKAGE
             else packageName
 
-        val blockedFeatures = settings.blockedFeatures
+        val blockedFeatures = wellbeing.blockedFeatures
 
         /// Check if blocking is enabled for platforms
         val isFeatureOpen = when (resolvedPackage) {
@@ -60,7 +60,7 @@ class ShortsPlatformManager(
 
         if (isFeatureOpen) {
             maxAllowedDuration[resolvedPackage]?.let {
-                updateShortsScreenTime(settings.allowedShortContentTimeMs, it)
+                updateShortsScreenTime(wellbeing.allowedShortsTimeMs, it)
             }
         }
     }
@@ -68,34 +68,34 @@ class ShortsPlatformManager(
     /**
      * Checks if a short-form content website is open in the browser based on WellBeingSettings.
      *
-     * @param settings The WellBeingSettings model indicating which platforms are blocked.
+     * @param wellbeing The WellBeingSettings model indicating which platforms are blocked.
      * @param url      The URL text from the browser.
      * @return True if a blocked short-form content website is open, false otherwise.
      */
-    fun checkAndBlockShortsOnBrowser(settings: WellBeingSettings, url: String): Boolean {
+    fun checkAndBlockShortsOnBrowser(wellbeing: Wellbeing, url: String): Boolean {
         when {
-            PlatformFeatures.INSTAGRAM_REELS in settings.blockedFeatures
+            PlatformFeatures.INSTAGRAM_REELS in wellbeing.blockedFeatures
                     && doesUrlContainsAnyElement(mInstaReelUrls, url) -> true
 
-            PlatformFeatures.INSTAGRAM_EXPLORE in settings.blockedFeatures
+            PlatformFeatures.INSTAGRAM_EXPLORE in wellbeing.blockedFeatures
                     && doesUrlContainsAnyElement(mInstaExploreUrls, url) -> true
 
-            PlatformFeatures.YOUTUBE_SHORTS in settings.blockedFeatures
+            PlatformFeatures.YOUTUBE_SHORTS in wellbeing.blockedFeatures
                     && doesUrlContainsAnyElement(mYtShortUrls, url) -> true
 
-            PlatformFeatures.FACEBOOK_REELS in settings.blockedFeatures
+            PlatformFeatures.FACEBOOK_REELS in wellbeing.blockedFeatures
                     && doesUrlContainsAnyElement(mFbReelUrls, url) -> true
 
-            PlatformFeatures.SNAPCHAT_SPOTLIGHT in settings.blockedFeatures
+            PlatformFeatures.SNAPCHAT_SPOTLIGHT in wellbeing.blockedFeatures
                     && doesUrlContainsAnyElement(mSnapSpotlightUrls, url) -> true
 
-            PlatformFeatures.SNAPCHAT_DISCOVER in settings.blockedFeatures
+            PlatformFeatures.SNAPCHAT_DISCOVER in wellbeing.blockedFeatures
                     && doesUrlContainsAnyElement(mSnapDiscoverUrls, url) -> true
 
             else -> false
         }.let {
             if (it) {
-                updateShortsScreenTime(settings.allowedShortContentTimeMs)
+                updateShortsScreenTime(wellbeing.allowedShortsTimeMs)
                 return true
             }
         }

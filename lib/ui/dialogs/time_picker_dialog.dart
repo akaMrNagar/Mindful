@@ -8,6 +8,7 @@
  *
  */
 
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
@@ -40,7 +41,7 @@ Future<TimeOfDayAdapter?> showCustomTimePickerDialog({
   );
 }
 
-class _CustomTimePickerDialog extends StatelessWidget {
+class _CustomTimePickerDialog extends StatefulWidget {
   const _CustomTimePickerDialog({
     required this.initialTime,
     required this.heroTag,
@@ -52,6 +53,17 @@ class _CustomTimePickerDialog extends StatelessWidget {
   final String info;
 
   @override
+  State<_CustomTimePickerDialog> createState() =>
+      _CustomTimePickerDialogState();
+}
+
+class _CustomTimePickerDialogState extends State<_CustomTimePickerDialog> {
+  bool _use24HourFormat = false;
+
+  void _toggleHourFormat() =>
+      setState(() => _use24HourFormat = !_use24HourFormat);
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
@@ -59,7 +71,7 @@ class _CustomTimePickerDialog extends StatelessWidget {
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: DefaultHero(
-            tag: heroTag,
+            tag: widget.heroTag,
             child: RoundedContainer(
               circularRadius: 24,
               padding: EdgeInsets.zero,
@@ -72,12 +84,45 @@ class _CustomTimePickerDialog extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       backgroundColor: Colors.transparent,
                     ),
-                    child: TimePickerDialog(
-                      helpText: info,
-                      initialTime: initialTime,
-                      initialEntryMode: TimePickerEntryMode.dialOnly,
-                      cancelText: context.locale.dialog_button_cancel,
-                      confirmText: context.locale.dialog_button_set,
+                    child: Stack(
+                      alignment: Alignment.topRight,
+                      children: [
+                        /// Time picker
+                        MediaQuery(
+                          data: MediaQuery.of(context).copyWith(
+                            alwaysUse24HourFormat: _use24HourFormat,
+                          ),
+                          child: TimePickerDialog(
+                            helpText: widget.info,
+                            initialTime: widget.initialTime,
+                            initialEntryMode: TimePickerEntryMode.dialOnly,
+                            cancelText: context.locale.dialog_button_cancel,
+                            confirmText: context.locale.dialog_button_set,
+                          ),
+                        ),
+
+                        /// Hour format toggler
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12, top: 8),
+                          child: _use24HourFormat
+                              ? IconButton.filledTonal(
+                                  iconSize: 32,
+                                  padding: const EdgeInsets.all(0),
+                                  icon: const Icon(
+                                    FluentIcons.access_time_20_filled,
+                                  ),
+                                  onPressed: _toggleHourFormat,
+                                )
+                              : IconButton(
+                                  iconSize: 32,
+                                  padding: const EdgeInsets.all(0),
+                                  icon: const Icon(
+                                    FluentIcons.access_time_20_regular,
+                                  ),
+                                  onPressed: _toggleHourFormat,
+                                ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

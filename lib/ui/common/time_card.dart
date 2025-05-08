@@ -9,6 +9,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
@@ -27,6 +28,7 @@ class TimeCard extends StatelessWidget {
     this.icon,
     this.iconColor,
     this.isModifiable,
+    this.iconSize = 32,
     this.enabled = true,
   });
 
@@ -39,6 +41,7 @@ class TimeCard extends StatelessWidget {
   final Color? bgColor;
   final IconData? icon;
   final Color? iconColor;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,7 @@ class TimeCard extends StatelessWidget {
                   info: label,
                 );
 
+                await Future.delayed(100.ms);
                 onChange(pickedTime ?? initialTime);
               }
             : null,
@@ -69,7 +73,7 @@ class TimeCard extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 16),
                 child: Icon(
                   icon,
-                  size: 32,
+                  size: iconSize,
                   color: enabled ? iconColor : Theme.of(context).disabledColor,
                 ),
               ),

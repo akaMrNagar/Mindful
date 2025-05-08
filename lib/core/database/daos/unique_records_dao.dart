@@ -13,6 +13,7 @@ import 'package:drift/drift.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/tables/bedtime_schedule_table.dart';
 import 'package:mindful/core/database/tables/focus_mode_table.dart';
+import 'package:mindful/core/database/tables/notification_settings_table.dart';
 import 'package:mindful/core/database/tables/parental_controls_table.dart';
 import 'package:mindful/core/database/tables/mindful_settings_table.dart';
 import 'package:mindful/core/database/tables/shared_unique_data_table.dart';
@@ -29,6 +30,7 @@ part 'unique_records_dao.g.dart';
     FocusModeTable,
     WellbeingTable,
     SharedUniqueDataTable,
+    NotificationSettingsTable,
   ],
 )
 class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
@@ -98,4 +100,15 @@ class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
   /// from the database. If none exists, returns default instance.
   Future<Wellbeing> loadWellBeingSettings() async =>
       await select(wellbeingTable).getSingleOrNull() ?? defaultWellbeingModel;
+
+  /// Saves a single [NotificationSettings] object to the database.
+  Future<void> saveNotificationSettings(NotificationSettings settings) async =>
+      into(notificationSettingsTable)
+          .insert(settings, mode: InsertMode.insertOrReplace);
+
+  /// Loads the first (and likely only) [NotificationSettings] object
+  /// from the database. If none exists, returns default instance.
+  Future<NotificationSettings> loadNotificationSettings() async =>
+      await select(notificationSettingsTable).getSingleOrNull() ??
+      defaultNotificationSettingsModel;
 }

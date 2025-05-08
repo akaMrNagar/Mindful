@@ -13,7 +13,7 @@ mixin _$DynamicRecordsDaoMixin on DatabaseAccessor<AppDatabase> {
       attachedDatabase.focusProfileTable;
   $RestrictionGroupsTableTable get restrictionGroupsTable =>
       attachedDatabase.restrictionGroupsTable;
-  $NotificationScheduleTableTable get notificationScheduleTable =>
-      attachedDatabase.notificationScheduleTable;
   $AppUsageTableTable get appUsageTable => attachedDatabase.appUsageTable;
+  $NotificationsTableTable get notificationsTable =>
+      attachedDatabase.notificationsTable;
 }

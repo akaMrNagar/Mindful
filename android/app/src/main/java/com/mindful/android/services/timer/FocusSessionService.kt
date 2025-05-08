@@ -17,6 +17,7 @@ import android.content.Intent
 import android.os.IBinder
 import android.service.quicksettings.TileService
 import android.util.Log
+import com.mindful.android.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
@@ -27,8 +28,8 @@ import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.FocusSession
 import com.mindful.android.services.quickTiles.FocusQuickTileService
 import com.mindful.android.services.tracking.MindfulTrackerService
-import com.mindful.android.utils.AppConstants.FOCUS_SESSION_SERVICE_NOTIFICATION_ID
-import com.mindful.android.utils.Utils
+import com.mindful.android.utils.AppUtils
+import com.mindful.android.utils.DateTimeUtils
 import java.util.Calendar
 import kotlin.math.max
 
@@ -38,7 +39,7 @@ class FocusSessionService : Service() {
     private lateinit var mNotificationTimer: NotificationTimer
 
 
-    private var mFocusSession: FocusSession? = null
+    private var session: FocusSession? = null
 
     override fun onCreate() {
         mTrackerServiceConn = SafeServiceConnection(
@@ -69,7 +70,7 @@ class FocusSessionService : Service() {
                 return
             }
 
-            mFocusSession = focusSession
+            session = focusSession
             initializeSessionTimer(focusSession)
 
             startForeground(
@@ -114,7 +115,7 @@ class FocusSessionService : Service() {
         val timerDuration: Long = if (isFiniteSession) {
             session.durationSecs.toLong()
         } else {
-            val cal = Utils.todToTodayCal(0)
+            val cal = DateTimeUtils.todToTodayCal(0)
             cal.add(Calendar.HOUR, 24)
             cal.timeInMillis / 1000L
         }
@@ -122,11 +123,11 @@ class FocusSessionService : Service() {
 
         mNotificationTimer = NotificationTimer(
             context = this,
-            ongoingPendingIntent = Utils.getPendingIntentForMindfulUri(
+            ongoingPendingIntent = AppUtils.getPendingIntentForMindfulUri(
                 this,
                 "com.mindful.android://open/activeSession"
             ),
-            finishedPendingIntent = Utils.getPendingIntentForMindfulUri(
+            finishedPendingIntent = AppUtils.getPendingIntentForMindfulUri(
                 this,
                 "com.mindful.android://open/focus?tab=1"
             ),
@@ -140,7 +141,7 @@ class FocusSessionService : Service() {
                 getString(
                     if (isFiniteSession) R.string.focus_session_notification_info
                     else R.string.focus_session_infinite_notification_info,
-                    Utils.secondsToTimeStr(remainingTime)
+                    DateTimeUtils.secondsToTimeStr(remainingTime)
                 )
             },
             onFinished = { getString(R.string.focus_session_success_notification_info) },
@@ -159,7 +160,7 @@ class FocusSessionService : Service() {
 
 
     fun giveUpOrStopFocusSession(isTheSessionSuccessful: Boolean) {
-        if (mFocusSession?.toggleDnd == true) {
+        if (session?.toggleDnd == true) {
             NotificationHelper.toggleDnd(this, DndWakeLock.FocusMode, false)
         }
 

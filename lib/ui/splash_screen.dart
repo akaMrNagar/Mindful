@@ -70,7 +70,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   void _goToNextScreen(bool shouldDelay) async {
-    if (shouldDelay) await Future.delayed(100.ms);
+    if (shouldDelay) await Future.delayed(250.ms);
     if (!mounted) return;
 
     if (_haveAllEssentialPermissions && _isOnboardingDone) {
@@ -167,8 +167,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                 : 0.vBox,
 
             /// Make
-            const StyledText("Made with ♥️ in 🇮🇳", fontSize: 14),
-          ].animate(effects: DefaultEffects.transitionIn),
+            const StyledText(
+              "Made with ♥️ in 🇮🇳",
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ].animate(
+            effects: DefaultEffects.transitionIn,
+            delay: 100.ms,
+            interval: 100.ms,
+          ),
         ),
       ),
     );
