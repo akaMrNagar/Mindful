@@ -55,10 +55,10 @@
 - ### 8. Privacy-First & Open Source
     No ads. No tracking. Mindful works completely offline, keeping your data on your device and it's fully open-source, forever.
 
-    > [!WARNING]
-    > ## About internet permission in manifest
-    > 
-    > Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
+> [!IMPORTANT]
+> ## Why _internet_ permission in manifest?
+> 
+> Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
 
 
 
