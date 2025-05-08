@@ -22,6 +22,7 @@
 [![Localized](https://badges.crowdin.net/mindful/localized.svg)](https://crowdin.com/project/mindful)
 
 
+
 ---
 
 | <img src="docs/assets/screenshots/screenshot_1.png"> | <img src="docs/assets/screenshots/screenshot_2.png"> | <img src="docs/assets/screenshots/screenshot_3.png"> | <img src="docs/assets/screenshots/screenshot_4.png"> |
@@ -30,32 +31,34 @@
 
 # 💪 Features
 
-### Focus Mode
-Stay on track with session types like Study, Work, or Creative. Use countdown or stopwatch modes, and review your session timeline to track progress and stay consistent.
+- ### 1. Focus Mode
+    Stay on track with session types like Study, Work, or Creative. Use countdown or stopwatch modes, and review your session timeline to track progress and stay consistent.
 
-### Screen Time Limits
-Set daily usage limits for apps — especially for addictive short content like Reels or Shorts. Group similar apps, add shared limits, and enable Invincible Mode to lock restrictions after they're hit.
+- ### 2. Screen Time Limits
+    Set daily usage limits for apps — especially for addictive short content like Reels or Shorts. Group similar apps, add shared limits, and enable Invincible Mode to lock restrictions after they're hit.
 
-### Detailed Usage Insights
-Check weekly screen time, app usage, and data consumption. Mindful helps you understand your habits so you can take control of your time.
+- ### 3. Detailed Usage Insights
+    Check weekly screen time, app usage, and data consumption. Mindful helps you understand your habits so you can take control of your time.
 
-### App & Internet Blocking
-Block distracting apps or cut off internet access with one tap. Filter adult content and create a focused, safe environment for work or study.
+- ### 4. App & Internet Blocking
+    Block distracting apps or cut off internet access with one tap. Filter adult content and create a focused, safe environment for work or study.
 
-### Notification Management
-Batch notifications, schedule delivery, or mute apps during focus time. Keep interruptions low and your attention high.
+- ### 5. Notification Management
+    Batch notifications, schedule delivery, or mute apps during focus time. Keep interruptions low and your attention high.
 
-### Bedtime Mode
-Wind down with paused apps and DND during sleep hours. Wake up to a clean slate — apps resume automatically when the day begins.
+- ### 6. Bedtime Mode
+    Wind down with paused apps and DND during sleep hours. Wake up to a clean slate — apps resume automatically when the day begins.
 
-### Parental Controls
-Set healthy digital habits for children with tamper-proof restrictions, invincible mode, and optional biometric lock.
+- ### 7. Parental Controls
+    Set healthy digital habits for children with tamper-proof restrictions, invincible mode, and optional biometric lock.
 
-### Privacy-First & Open Source
-No ads. No tracking. Mindful works completely offline, keeping your data on your device and it's fully open-source, forever.
+- ### 8. Privacy-First & Open Source
+    No ads. No tracking. Mindful works completely offline, keeping your data on your device and it's fully open-source, forever.
 
-> [!caution] About internet permission in manifest
-> Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
+    > [!WARNING]
+    > ## About internet permission in manifest
+    > 
+    > Android restricts apps from creating and protecting Local VPN tunnels without network permission. The Local VPN allows Mindful to block internet access for selected apps. This is why you see the network permission in Mindful's manifest. However, rest assured that Mindful does not collect or transmit any user data. You can verify this by checking the network usage in the app or in your device settings. 
 
 
 
@@ -70,7 +73,7 @@ _Note: Drop your socials along with your donation to get recognized as a support
 <a href="https://github.com/akaMrNagar/Mindful?tab=readme-ov-file#donate"><img src="docs/assets/donation/upi_qr.png" height="184" ></a>
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-🖤-ffdd00)](https://www.buymeacoffee.com/akamrnagar)
-[![UPI](https://img.shields.io/badge/akamrnagar@upi-🖤-f47820)](upi://pay?pa=akamrnagar@upi&pn=Pawan%20Nagar&cu=INR$tn=Donation%20for%20Mindful)
+[![UPI](https://img.shields.io/badge/akamrnagar@upi-🖤-f47820)]()
 [![Sponsor Me on GitHub](https://img.shields.io/badge/Sponsor%20Me%20on%20GitHub-🖤-db61a2)](https://github.com/sponsors/akamrnagar)
 
 
