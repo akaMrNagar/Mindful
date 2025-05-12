@@ -68,10 +68,20 @@ object AppUtils {
             val packageManager = context.packageManager
             val packageName = context.packageName
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
+            val versionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageInfo.longVersionCode
+            } else {
+                packageInfo.versionCode
+            }
 
-            return if (packageName.contains(".debug")
-            ) "v" + packageInfo.versionName + "-debug+" + packageInfo.versionCode
-            else "v" + packageInfo.versionName + "+" + packageInfo.versionCode
+            val sb = StringBuilder()
+            sb.append("v")
+            sb.append(packageInfo.versionName)
+            if (packageName.contains(".debug")) sb.append("-debug")
+            sb.append("+")
+            sb.append(versionCode)
+
+            return sb.toString()
         } catch (e: Exception) {
             return "unknown"
         }
