@@ -61,7 +61,7 @@ class TimeCard extends StatelessWidget {
                   info: label,
                 );
 
-                await Future.delayed(100.ms);
+                await Future.delayed(50.ms);
                 onChange(pickedTime ?? initialTime);
               }
             : null,

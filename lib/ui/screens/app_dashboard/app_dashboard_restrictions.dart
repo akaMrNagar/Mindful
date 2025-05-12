@@ -101,6 +101,26 @@ class AppDashboardRestrictions extends ConsumerWidget {
           isPurged: isPurged,
         ).sliver,
 
+        /// Usage reminders
+        SliverAnimatedPaintExtent(
+          duration: 500.ms,
+          child: SliverVisibility(
+            visible: restriction.timerSec > 0,
+            sliver: DefaultListTile(
+              position: ItemPosition.mid,
+              switchValue: restriction.usageReminders,
+              leadingIcon: FluentIcons.dual_screen_closed_alert_20_regular,
+              titleText: context.locale.usage_reminders_tile_title,
+              subtitleText: context.locale.usage_reminders_tile_subtitle,
+              onPressed: () =>
+                  ref.read(appsRestrictionsProvider.notifier).setUsageReminders(
+                        appInfo.packageName,
+                        !restriction.usageReminders,
+                      ),
+            ).sliver,
+          ),
+        ),
+
         /// App launch limit
         DefaultHero(
           tag: HeroTags.appLaunchLimitTileTag(appInfo.packageName),

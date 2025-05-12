@@ -1128,6 +1128,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get app_timer_picker_dialog_info => 'Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.';
 
   @override
+  String get usage_reminders_tile_title => 'Usage reminders';
+
+  @override
+  String get usage_reminders_tile_subtitle => 'Gentle nudges when using timed apps.';
+
+  @override
   String get app_launch_limit_tile_title => 'Launch limit';
 
   @override

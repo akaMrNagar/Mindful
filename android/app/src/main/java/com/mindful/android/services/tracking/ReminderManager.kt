@@ -30,7 +30,7 @@ class ReminderManager(
         state: RestrictionState,
     ) {
         // If it is a timer restricted state
-        if ((state.totalScreenTimer - state.usedScreenTime) > 120) {
+        if (state.showUsageReminders && (state.totalScreenTimer - state.usedScreenTime) > 120) {
             reminderTriggers.add(1)
         }
 

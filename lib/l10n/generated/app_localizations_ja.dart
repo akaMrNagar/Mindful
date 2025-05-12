@@ -1128,6 +1128,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get app_timer_picker_dialog_info => 'このアプリに毎日の使用時間の制限を設定しましょう。制限時間に達すると、アプリは深夜0時まで一時停止します。';
 
   @override
+  String get usage_reminders_tile_title => 'Usage reminders';
+
+  @override
+  String get usage_reminders_tile_subtitle => 'Gentle nudges when using timed apps.';
+
+  @override
   String get app_launch_limit_tile_title => '起動回数の制限';
 
   @override
