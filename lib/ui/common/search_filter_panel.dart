@@ -13,18 +13,24 @@ import 'package:flutter/material.dart';
 import 'package:mindful/core/enums/usage_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/models/usage_filter_model.dart';
-import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/search_bar.dart';
 
 class SearchFilterPanel extends StatelessWidget {
   const SearchFilterPanel({
     super.key,
     required this.filter,
+    required this.isSelectedAll,
     required this.onFilterChanged,
+    required this.onToggleSelectAll,
   });
 
   final UsageFilterModel filter;
   final ValueChanged<UsageFilterModel> onFilterChanged;
+
+  final bool isSelectedAll;
+
+  /// Callback with param `TRUE` to select all and  'FALSE' to deselect all
+  final ValueChanged<bool> onToggleSelectAll;
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +46,19 @@ class SearchFilterPanel extends StatelessWidget {
           ),
         ),
 
+        /// Select/Deselect all
+        IconButton.filledTonal(
+          onPressed: () => onToggleSelectAll(!isSelectedAll),
+          icon: Icon(
+            isSelectedAll
+                ? FluentIcons.select_all_on_20_regular
+                : FluentIcons.select_all_off_20_regular,
+          ),
+        ),
+
         /// Sort by screen time, network usage, alphabetically
-        RoundedContainer(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          padding: const EdgeInsets.all(14),
-          margin: const EdgeInsets.only(left: 4),
-          circularRadius: 40,
-          child: Icon(
+        IconButton.filledTonal(
+          icon: Icon(
             [
               FluentIcons.phone_screen_time_20_regular,
               FluentIcons.earth_20_regular,
@@ -63,12 +75,8 @@ class SearchFilterPanel extends StatelessWidget {
         ),
 
         /// Ascending - Descending
-        RoundedContainer(
-          color: Theme.of(context).colorScheme.secondaryContainer,
-          padding: const EdgeInsets.all(14),
-          margin: const EdgeInsets.only(left: 4),
-          circularRadius: 40,
-          child: Icon(
+        IconButton.filledTonal(
+          icon: Icon(
             filter.reverse
                 ? FluentIcons.arrow_up_20_regular
                 : FluentIcons.arrow_down_20_regular,
