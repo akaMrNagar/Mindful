@@ -106,7 +106,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
             )
             val notification = NotificationCompat.Builder(
                 context,
-                NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
+                NotificationHelper.NOTIFICATION_BATCHING_CHANNEL_ID
             )
                 .setSmallIcon(R.drawable.ic_mindful)
                 .setAutoCancel(true)
@@ -174,12 +174,14 @@ class NotificationBatchReceiver : BroadcastReceiver() {
 
                         val notification = NotificationCompat.Builder(
                             context,
-                            NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
+                            NotificationHelper.CRITICAL_CHANNEL_ID
                         )
                             .setSmallIcon(R.drawable.ic_mindful)
                             .setLargeIcon(appIcon)
                             .setContentTitle(appName)
                             .setGroup(packageName)
+                            .setGroupSummary(false)
+                            .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                             .setStyle(messagingStyle)
                             .setAutoCancel(true)
                             .setContentIntent(pendingIntent)
@@ -208,13 +210,13 @@ class NotificationBatchReceiver : BroadcastReceiver() {
 
                     val summaryNotification = NotificationCompat.Builder(
                         context,
-                        NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
+                        NotificationHelper.NOTIFICATION_BATCHING_CHANNEL_ID
                     )
                         .setSmallIcon(R.drawable.ic_mindful)
                         .setStyle(summaryStyle)
                         .setGroup(packageName)
-                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                         .setGroupSummary(true)
+                        .setAutoCancel(true)
                         .build()
 
                     notificationManager.notify(packageName.hashCode(), summaryNotification)

@@ -40,10 +40,12 @@ object NotificationHelper {
     private const val TAG = "Mindful.NotificationHelper"
 
     // Notification channel IDs
-    const val NOTIFICATION_CRITICAL_CHANNEL_ID: String = "mindful.notification.channel.CRITICAL"
-    const val NOTIFICATION_FOCUS_CHANNEL_ID: String = "mindful.notification.channel.FOCUS"
-    const val NOTIFICATION_BEDTIME_CHANNEL_ID: String = "mindful.notification.channel.BEDTIME"
-    private const val NOTIFICATION_SERVICE_CHANNEL_ID: String =
+    const val CRITICAL_CHANNEL_ID: String = "mindful.notification.channel.CRITICAL"
+    const val FOCUS_CHANNEL_ID: String = "mindful.notification.channel.FOCUS"
+    const val BEDTIME_CHANNEL_ID: String = "mindful.notification.channel.BEDTIME"
+    const val NOTIFICATION_BATCHING_CHANNEL_ID: String =
+        "mindful.notification.channel.NOTIFICATION_BATCHING"
+    private const val SERVICE_CHANNEL_ID: String =
         "mindful.notification.channel.SERVICE"
 
     /**
@@ -56,7 +58,7 @@ object NotificationHelper {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channels
             val criticalChannel = NotificationChannel(
-                NOTIFICATION_CRITICAL_CHANNEL_ID,
+                CRITICAL_CHANNEL_ID,
                 "Critical Alerts",
                 NotificationManager.IMPORTANCE_HIGH
             )
@@ -64,7 +66,7 @@ object NotificationHelper {
                 "These notifications include crucial updates regarding the essential system operations to ensure Mindful runs smoothly."
 
             val focusChannel = NotificationChannel(
-                NOTIFICATION_FOCUS_CHANNEL_ID,
+                FOCUS_CHANNEL_ID,
                 "Focus Sessions",
                 NotificationManager.IMPORTANCE_HIGH
             )
@@ -72,15 +74,23 @@ object NotificationHelper {
                 "These notifications include updates regarding focus sessions to help you stay on track."
 
             val bedtimeChannel = NotificationChannel(
-                NOTIFICATION_BEDTIME_CHANNEL_ID,
+                BEDTIME_CHANNEL_ID,
                 "Bedtime Routine",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             bedtimeChannel.description =
                 "These notifications include updates regarding bedtime routine to help you get a peaceful sleep."
 
+            val notificationBatchingChannel = NotificationChannel(
+                FOCUS_CHANNEL_ID,
+                "Notification Batch",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            notificationBatchingChannel.description =
+                "These notifications include summaries or all batched notifications from your scheduled notification batches."
+
             val serviceChannel = NotificationChannel(
-                NOTIFICATION_SERVICE_CHANNEL_ID,
+                SERVICE_CHANNEL_ID,
                 "Running Services",
                 NotificationManager.IMPORTANCE_LOW
             )
@@ -109,7 +119,7 @@ object NotificationHelper {
      * @return A Notification object representing the foreground service notification.
      */
     fun buildFgServiceNotification(context: Context, content: String?): Notification {
-        return NotificationCompat.Builder(context, NOTIFICATION_SERVICE_CHANNEL_ID)
+        return NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_mindful)
             .setOngoing(true)
             .setAutoCancel(true)
@@ -142,7 +152,7 @@ object NotificationHelper {
             AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
             NotificationCompat.Builder(
                 context,
-                NOTIFICATION_CRITICAL_CHANNEL_ID
+                CRITICAL_CHANNEL_ID
             )
                 .setSmallIcon(R.drawable.ic_mindful)
                 .setAutoCancel(true)

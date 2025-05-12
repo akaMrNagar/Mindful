@@ -120,7 +120,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
                 timerDuration: 5.seconds,
                 title: context.locale.app_restart_dialog_title,
                 info: context.locale.app_restart_dialog_info,
-                icon: FluentIcons.arrow_reset_20_filled,
+                icon: FluentIcons.arrow_repeat_all_20_filled,
                 onCountDownFinish: MethodChannelService.instance.restartApp,
               )
             : await MethodChannelService.instance.restartApp();

@@ -64,13 +64,13 @@ class RestrictionManager(
     }
 
     fun updateFocusedApps(apps: Set<String>?) {
-        focusedApps = apps ?: setOf()
+        focusedApps = apps ?: emptySet()
         if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateFocusedApps: Focus apps updated: $focusedApps")
     }
 
     fun updateBedtimeApps(apps: Set<String>?) {
-        bedtimeApps = apps ?: setOf()
+        bedtimeApps = apps ?: emptySet()
         if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateBedtimeApps: Bedtime apps updated: $bedtimeApps")
     }
