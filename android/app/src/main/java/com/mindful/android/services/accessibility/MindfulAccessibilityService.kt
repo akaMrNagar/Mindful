@@ -149,9 +149,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
             // submit event for tracking if window or it's state changes
             val packageName = event.packageName.toString()
-            if (event.eventType != TYPE_VIEW_SCROLLED) {
-                executorService.submit { trackingManager.onNewEvent(packageName) }
-            }
+            executorService.submit { trackingManager.onNewEvent(packageName) }
 
             // If no reason to process event then just return
             if (!shouldBlockContent()) return
