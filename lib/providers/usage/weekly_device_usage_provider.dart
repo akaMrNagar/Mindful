@@ -71,9 +71,10 @@ class WeeklyDeviceUsageNotifier
 
     final db = DriftDbService.instance.driftDb;
     List<AppUsageTableCompanion> weeksUsageCompanions = [];
+    final initialDate = dateToday.add(1.days); /// Future today midnight (tomorrow)
 
     for (var i = 0; i < 10; i++) {
-      final currentDay = dateToday.subtract(i.days);
+      final currentDay = initialDate.subtract(i.days);
 
       /// Fetch usages for the day
       final usages =
