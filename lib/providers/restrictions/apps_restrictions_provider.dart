@@ -60,6 +60,21 @@ class AppsRestrictionsNotifier
     _updateStateDbAndServices(appPackage, restriction);
   }
 
+  /// Toggles usage reminders for a specific app package if package is not empty.
+  ///
+  /// Anyway call the platform channel service.
+  void setUsageReminders(String appPackage, bool usageReminders) async {
+    final restriction =
+        state[appPackage]?.copyWith(usageReminders: usageReminders) ??
+            defaultAppRestrictionModel.copyWith(
+              appPackage: appPackage,
+              usageReminders: usageReminders,
+            );
+
+    /// Update database and state
+    _updateStateDbAndServices(appPackage, restriction);
+  }
+
   /// Updates the launch limit for a specific app package.
   ///
   /// Anyway updated the platform-specific service.

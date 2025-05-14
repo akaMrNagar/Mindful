@@ -23,7 +23,7 @@ import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
-import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_FOCUS_CHANNEL_ID
+import com.mindful.android.helpers.device.NotificationHelper.FOCUS_CHANNEL_ID
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.FocusSession
 import com.mindful.android.services.quickTiles.FocusQuickTileService
@@ -136,7 +136,7 @@ class FocusSessionService : Service() {
             timerDurationSeconds = timerDuration,
             alreadyElapsedTimeSecond = max(0, elapsedTimeMs / 1000L),
             notificationId = FOCUS_SESSION_SERVICE_NOTIFICATION_ID,
-            notificationChannelId = NOTIFICATION_FOCUS_CHANNEL_ID,
+            notificationChannelId = FOCUS_CHANNEL_ID,
             onTicked = { remainingTime ->
                 getString(
                     if (isFiniteSession) R.string.focus_session_notification_info

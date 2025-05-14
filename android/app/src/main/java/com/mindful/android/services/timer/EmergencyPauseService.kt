@@ -19,7 +19,7 @@ import com.mindful.android.AppConstants.EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID
 import com.mindful.android.R
 import com.mindful.android.generics.SafeServiceConnection
 import com.mindful.android.generics.ServiceBinder
-import com.mindful.android.helpers.device.NotificationHelper.NOTIFICATION_CRITICAL_CHANNEL_ID
+import com.mindful.android.helpers.device.NotificationHelper.CRITICAL_CHANNEL_ID
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.tracking.MindfulTrackerService
 import com.mindful.android.utils.AppUtils
@@ -40,7 +40,7 @@ class EmergencyPauseService : Service() {
             title = getString(R.string.emergency_pause_notification_title),
             timerDurationSeconds = DEFAULT_EMERGENCY_PASS_PERIOD_SECONDS,
             notificationId = EMERGENCY_PAUSE_SERVICE_NOTIFICATION_ID,
-            notificationChannelId = NOTIFICATION_CRITICAL_CHANNEL_ID,
+            notificationChannelId = CRITICAL_CHANNEL_ID,
             onTicked = { remainingTime ->
                 getString(
                     R.string.emergency_pause_notification_info,

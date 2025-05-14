@@ -43,7 +43,7 @@ class DefaultFabButton extends StatelessWidget {
       ),
     ).animate().scale(
           duration: AppConstants.defaultAnimDuration,
-          curve: AppConstants.defaultCurve,
+          curve: Curves.easeOutBack,
         );
   }
 }

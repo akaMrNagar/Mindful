@@ -18,4 +18,7 @@ data class RestrictionState(
 
     /** The timer limit for screen time in SECONDS   **/
     val totalScreenTimer: Long = -1L,
+
+    /** Flag indicating if to show usage reminders or not **/
+    val showUsageReminders: Boolean = false,
 )

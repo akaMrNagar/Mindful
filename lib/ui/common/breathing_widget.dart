@@ -10,7 +10,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 
 class BreathingWidget extends StatelessWidget {
@@ -21,7 +20,7 @@ class BreathingWidget extends StatelessWidget {
     this.layers = 6,
     this.dimension = 296,
     this.circularRadius = 296,
-    this.curve = AppConstants.defaultCurve,
+    this.curve = Curves.easeOutBack,
     this.animateChild = true,
     required this.child,
   });

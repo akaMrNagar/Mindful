@@ -32,9 +32,9 @@ Future<void> showDefaultBottomSheet({
       showDragHandle: true,
       sheetAnimationStyle: AnimationStyle(
         duration: AppConstants.defaultAnimDuration,
-        curve: AppConstants.defaultCurve,
+        curve: Curves.easeOutBack,
         reverseDuration: AppConstants.defaultAnimDuration,
-        reverseCurve: AppConstants.defaultCurve.flipped,
+        reverseCurve: Curves.easeOutBack.flipped,
       ),
       builder: (sheetContext) => DraggableScrollableSheet(
         expand: false,

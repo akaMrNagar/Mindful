@@ -43,7 +43,7 @@ class SliverPrimaryActionContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverAnimatedPaintExtent(
       duration: AppConstants.defaultAnimDuration,
-      curve: AppConstants.defaultCurve,
+      curve: Curves.easeOutBack,
       child: SliverVisibility(
         visible: isVisible,
         sliver: RoundedContainer(

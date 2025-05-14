@@ -110,6 +110,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
             child: AnimatedSize(
               alignment: Alignment.topCenter,
               duration: AppConstants.defaultAnimDuration,
+              reverseDuration: AppConstants.defaultAnimDuration,
               curve: AppConstants.defaultCurve,
               child: _isExpanded
                   ? widget.content

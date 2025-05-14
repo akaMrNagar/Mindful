@@ -49,4 +49,8 @@ class AppRestrictionTable extends Table {
   /// Flag denoting if this app can access internet or not
   BoolColumn get canAccessInternet =>
       boolean().withDefault(const Constant(true))();
+
+  /// Flag denoting if to show usage reminders while using timed app
+  BoolColumn get usageReminders =>
+      boolean().withDefault(const Constant(true))();
 }

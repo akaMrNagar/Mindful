@@ -12,7 +12,6 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/l10n/generated/app_localizations.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
@@ -112,8 +111,8 @@ extension ExtBuildContext on BuildContext {
               ),
             ),
             snackBarAnimationStyle: AnimationStyle(
-              curve: AppConstants.defaultCurve,
-              reverseCurve: AppConstants.defaultCurve.flipped,
+              curve: Curves.easeOutBack,
+              reverseCurve: Curves.easeOutBack.flipped,
               duration: 300.ms,
               reverseDuration: 300.ms,
             ),

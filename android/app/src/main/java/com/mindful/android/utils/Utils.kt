@@ -12,23 +12,13 @@
 package com.mindful.android.utils
 
 import android.app.ActivityManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
-import android.util.Base64
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.os.VibratorManager
 import android.util.Log
-import org.jetbrains.annotations.Contract
-import java.io.ByteArrayOutputStream
 import java.net.URI
-import java.util.Calendar
-import java.util.Locale
-import kotlin.math.abs
 
 /**
  * A utility class containing static helper methods for various common tasks such as
@@ -53,6 +43,29 @@ object Utils {
         }
 
         return false
+    }
+
+    fun vibrateDevice(context: Context, durationMs: Long) {
+        val vibrator: Vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibratorManager =
+                context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibratorManager.defaultVibrator
+        } else {
+            context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        }
+
+        vibrator.cancel()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator.vibrate(
+                VibrationEffect.createOneShot(
+                    durationMs,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
+        } else {
+            vibrator.vibrate(durationMs)
+        }
     }
 
 

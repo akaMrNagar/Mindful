@@ -47,10 +47,29 @@ class SliverDistractingAppsList extends ConsumerStatefulWidget {
 class _SliverDistractingAppsListState
     extends ConsumerState<SliverDistractingAppsList> {
   UsageFilterModel _filter = UsageFilterModel.constant();
+  bool _isSelectedAll = false;
 
   _onFilterChanged(UsageFilterModel filter) {
     if (!mounted) return;
     setState(() => _filter = filter);
+  }
+
+  _onSelectDeselectAll(
+    bool select,
+    Iterable<String> selected,
+    Iterable<String> unselected,
+  ) async {
+    /// Find valid packages
+    final appInfos = ref.read(appsInfoProvider).valueOrNull;
+    final validPackages = (select ? unselected : selected)
+        .where((e) => (appInfos?[e]?.isImpSysApp ?? true) == false);
+
+    /// Select/Deselect them
+    for (var package in validPackages) {
+      widget.onSelectionChanged(package, select);
+    }
+
+    setState(() => _isSelectedAll = select);
   }
 
   @override
@@ -67,6 +86,14 @@ class _SliverDistractingAppsListState
           !widget.distractingApps.contains(e) && !widget.hiddenApps.contains(e),
     );
 
+    final filterPanel = SearchFilterPanel(
+      filter: _filter,
+      isSelectedAll: _isSelectedAll,
+      onFilterChanged: _onFilterChanged,
+      onToggleSelectAll: (v) =>
+          _onSelectDeselectAll(v, selectedApps, unselectedApps),
+    );
+
     return MultiSliver(
       children: [
         /// Search and filter panel
@@ -75,16 +102,10 @@ class _SliverDistractingAppsListState
                 child: Container(
                   color: Theme.of(context).colorScheme.surfaceContainerLow,
                   padding: const EdgeInsets.only(bottom: 8),
-                  child: SearchFilterPanel(
-                    filter: _filter,
-                    onFilterChanged: _onFilterChanged,
-                  ),
+                  child: filterPanel,
                 ),
               )
-            : SearchFilterPanel(
-                filter: _filter,
-                onFilterChanged: _onFilterChanged,
-              ),
+            : filterPanel,
 
         /// Header
         ContentSectionHeader(
@@ -148,7 +169,9 @@ class _SliverDistractingAppsListState
                                   }
 
                                   widget.onSelectionChanged(
-                                      packageName, !isSelected);
+                                    packageName,
+                                    !isSelected,
+                                  );
                                 },
                               )
                             : 0.vBox;

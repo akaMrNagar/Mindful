@@ -64,13 +64,13 @@ class RestrictionManager(
     }
 
     fun updateFocusedApps(apps: Set<String>?) {
-        focusedApps = apps ?: setOf()
+        focusedApps = apps ?: emptySet()
         if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateFocusedApps: Focus apps updated: $focusedApps")
     }
 
     fun updateBedtimeApps(apps: Set<String>?) {
-        bedtimeApps = apps ?: setOf()
+        bedtimeApps = apps ?: emptySet()
         if (apps == null) stopIfNoUsage.invoke()
         Log.d(TAG, "updateBedtimeApps: Bedtime apps updated: $bedtimeApps")
     }
@@ -215,6 +215,7 @@ class RestrictionManager(
                     expirationFutureMs = -1L,
                     usedScreenTime = screenTimeSec,
                     totalScreenTimer = restriction.timerSec.toLong(),
+                    showUsageReminders = restriction.usageReminders,
                 )
 
                 alreadyRestrictedApps[restriction.appPackage] = state
@@ -229,6 +230,7 @@ class RestrictionManager(
                         expirationFutureMs = leftAppLimitMs,
                         usedScreenTime = screenTimeSec,
                         totalScreenTimer = restriction.timerSec.toLong(),
+                        showUsageReminders = restriction.usageReminders,
                     )
                 )
             }
@@ -257,6 +259,7 @@ class RestrictionManager(
                         expirationFutureMs = -1L,
                         usedScreenTime = groupScreenTimeSec,
                         totalScreenTimer = group.timerSec.toLong(),
+                        showUsageReminders = restriction.usageReminders,
                     )
 
                     alreadyRestrictedGroups[group.id] = state
@@ -274,6 +277,7 @@ class RestrictionManager(
                             expirationFutureMs = leftAppLimitMs,
                             usedScreenTime = groupScreenTimeSec,
                             totalScreenTimer = group.timerSec.toLong(),
+                            showUsageReminders = restriction.usageReminders,
                         )
                     )
                 }

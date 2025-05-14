@@ -32,6 +32,11 @@ data class AppRestriction(
     val activePeriodEnd: Int = 0,
 
     /**
+     * Flag denoting if to show usage reminders while using timed app.
+     */
+    val usageReminders: Boolean = true,
+
+    /**
      * ID of the restriction group this app belongs to (nullable).
      */
     val associatedGroupId: Int? = null,
@@ -48,6 +53,7 @@ data class AppRestriction(
                 launchLimit = jsonObject.optInt("launchLimit", 0),
                 activePeriodStart = jsonObject.optInt("activePeriodStart", 0),
                 activePeriodEnd = jsonObject.optInt("activePeriodEnd", 0),
+                usageReminders = jsonObject.optBoolean("usageReminders", true),
                 associatedGroupId = if (jsonObject.isNull("associatedGroupId")) null else jsonObject.optInt(
                     "associatedGroupId"
                 ),

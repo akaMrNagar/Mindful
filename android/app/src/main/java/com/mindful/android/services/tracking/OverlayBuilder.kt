@@ -18,6 +18,7 @@ import com.mindful.android.models.RestrictionState
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.DateTimeUtils
+import com.mindful.android.utils.MindfulQuotes
 import com.mindful.android.utils.ThreadUtils
 
 object OverlayBuilder {
@@ -32,6 +33,20 @@ object OverlayBuilder {
         // Inflate the custom layout for the dialog
         val inflater = LayoutInflater.from(context)
         val sheetView = inflater.inflate(R.layout.overlay_sheet_layout, null)
+
+        // Set quote and author
+        val quoteTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_quote)
+        val quoteAuthorTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_quote_author)
+        val randomQuote = MindfulQuotes.getRandomQuote()
+        quoteTxt.text = buildString {
+            append("\"")
+            append(randomQuote.value)
+            append("\"")
+        }
+        quoteAuthorTxt.text = buildString {
+            append("— ")
+            append(randomQuote.key)
+        }
 
         // Resolve app icon and label
         val (appName, appIcon) = getAppLabelAndIcon(context, packageName)

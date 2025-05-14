@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
@@ -120,7 +121,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
                 timerDuration: 5.seconds,
                 title: context.locale.app_restart_dialog_title,
                 info: context.locale.app_restart_dialog_info,
-                icon: FluentIcons.arrow_reset_20_filled,
+                icon: FluentIcons.arrow_repeat_all_20_filled,
                 onCountDownFinish: MethodChannelService.instance.restartApp,
               )
             : await MethodChannelService.instance.restartApp();
@@ -150,10 +151,16 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
 
       /// export to file
       final dbFileBytes = await dbFile.readAsBytes();
-      final now = DateTime.now();
+      final timeStamp = DateFormat('yyyy-MM-dThh-mm-ss').format(DateTime.now());
+      final dbVersionCode = DriftDbService.instance.driftDb.schemaVersion;
+      final mindfulVersionCode = MethodChannelService
+          .instance.deviceInfo.mindfulVersion
+          .split("+")
+          .lastOrNull;
+
       final resultPath = await FilePicker.platform.saveFile(
         fileName:
-            "Mindful-Backup-${now.year}${now.month}${now.day}-${now.hour}${now.minute}${now.second}.sqlite",
+            "Mindful_v${mindfulVersionCode}_dbv${dbVersionCode}_$timeStamp.sqlite",
         bytes: Uint8List.fromList(dbFileBytes),
       );
 

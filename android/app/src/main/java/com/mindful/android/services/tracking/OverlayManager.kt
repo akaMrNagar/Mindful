@@ -132,6 +132,7 @@ class OverlayManager(
             Log.d(TAG, "showOverlay: Showing overlay for $packageName")
             windowManager.addView(overlay, layoutParams)
             overlays.push(overlay)
+            Utils.vibrateDevice(context, 50L)
 
             // Animate the overlay
             animateOverlay(overlay = overlay, animateIn = true)
@@ -142,12 +143,15 @@ class OverlayManager(
         overlay.let { view ->
             // Find the layers within overlay view
             val bgLayer = view.findViewById<View>(R.id.overlay_background)
+            val quoteLayer = view.findViewById<View>(R.id.overlay_sheet_quote_panel)
             val sheetLayer = view.findViewById<LinearLayout>(R.id.overlay_sheet)
 
             if (animateIn) {
+                quoteLayer.startAnimation(fadeInAnim)
                 bgLayer.startAnimation(fadeInAnim)
                 sheetLayer.startAnimation(slideInAnim)
             } else {
+                quoteLayer.startAnimation(fadeOutAnim)
                 bgLayer.startAnimation(fadeOutAnim)
                 sheetLayer.startAnimation(slideOutAnim)
             }

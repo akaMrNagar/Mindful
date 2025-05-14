@@ -93,6 +93,7 @@ const defaultAppRestrictionModel = AppRestriction(
   activePeriodEnd: TimeOfDayAdapter.zero(),
   periodDurationInMins: 0,
   canAccessInternet: true,
+  usageReminders: true,
 );
 
 final defaultFocusModeModel = FocusMode(

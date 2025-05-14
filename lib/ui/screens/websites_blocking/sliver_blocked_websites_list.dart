@@ -43,7 +43,6 @@ class SliverBlockedWebsitesList extends ConsumerWidget {
             ),
           )
         : EmptyListIndicator(
-            isHappy: true,
             info: context.locale.blocked_websites_empty_list_hint,
           ).sliver;
   }

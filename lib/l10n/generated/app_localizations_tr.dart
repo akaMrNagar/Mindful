@@ -1128,6 +1128,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get app_timer_picker_dialog_info => 'Bu uygulama için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, uygulama gece yarısına kadar duraklatılacaktır.';
 
   @override
+  String get usage_reminders_tile_title => 'Usage reminders';
+
+  @override
+  String get usage_reminders_tile_subtitle => 'Gentle nudges when using timed apps.';
+
+  @override
   String get app_launch_limit_tile_title => 'Başlatma limiti';
 
   @override

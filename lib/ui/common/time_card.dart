@@ -61,7 +61,7 @@ class TimeCard extends StatelessWidget {
                   info: label,
                 );
 
-                await Future.delayed(100.ms);
+                await Future.delayed(50.ms);
                 onChange(pickedTime ?? initialTime);
               }
             : null,
@@ -78,38 +78,40 @@ class TimeCard extends StatelessWidget {
                 ),
               ),
 
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Label
-                StyledText(
-                  label,
-                  isSubtitle: !enabled,
-                ),
-                4.vBox,
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    /// Time in hour and minutes
-                    StyledText(
-                      initialTime.format(context).split(' ').first,
-                      height: 1,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      isSubtitle: !enabled,
-                    ),
-                    4.hBox,
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  /// Label
+                  StyledText(
+                    label,
+                    isSubtitle: !enabled,
+                  ),
+                  4.vBox,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      /// Time in hour and minutes
+                      StyledText(
+                        initialTime.format(context).split(' ').first,
+                        height: 1,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        isSubtitle: !enabled,
+                      ),
+                      4.hBox,
 
-                    /// Time period AM/PM
-                    StyledText(
-                      initialTime.format(context).split(' ').last,
-                      height: 2,
-                      isSubtitle: !enabled,
-                    ),
-                  ],
-                ),
-              ],
+                      /// Time period AM/PM
+                      StyledText(
+                        initialTime.format(context).split(' ').last,
+                        height: 2,
+                        isSubtitle: !enabled,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
         ),

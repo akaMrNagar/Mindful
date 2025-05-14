@@ -2181,6 +2181,18 @@ abstract class AppLocalizations {
   /// **'Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.'**
   String get app_timer_picker_dialog_info;
 
+  /// No description provided for @usage_reminders_tile_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Usage reminders'**
+  String get usage_reminders_tile_title;
+
+  /// No description provided for @usage_reminders_tile_subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gentle nudges when using timed apps.'**
+  String get usage_reminders_tile_subtitle;
+
   /// No description provided for @app_launch_limit_tile_title.
   ///
   /// In en, this message translates to:

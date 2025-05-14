@@ -15,6 +15,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -69,7 +70,7 @@ class _ExportClearCrashLogsState extends ConsumerState<ExportClearCrashLogs> {
                   child: CircularProgressIndicator(strokeCap: StrokeCap.round),
                 )
               : const Icon(FluentIcons.chevron_right_20_regular),
-          onPressed: _shareLogs,
+          onPressed: _exportLogs,
         ).sliver,
 
         /// view
@@ -101,7 +102,7 @@ class _ExportClearCrashLogsState extends ConsumerState<ExportClearCrashLogs> {
     );
   }
 
-  void _shareLogs() async {
+  void _exportLogs() async {
     try {
       setState(() => _isExporting = true);
 
@@ -120,10 +121,10 @@ class _ExportClearCrashLogsState extends ConsumerState<ExportClearCrashLogs> {
       final jsonString = jsonEncode(crashLogMap);
 
       /// Create file and write logs
-      final now = DateTime.now();
+      final timeStamp = DateFormat('yyyy-MM-dThh-mm-ss').format(DateTime.now());
+
       final resultPath = await FilePicker.platform.saveFile(
-        fileName:
-            "Mindful-Logs-${now.year}${now.month}${now.day}-${now.hour}${now.minute}${now.second}.json",
+        fileName: "Mindful_Logs_$timeStamp.json",
         bytes: Uint8List.fromList(utf8.encode(jsonString)),
       );
 

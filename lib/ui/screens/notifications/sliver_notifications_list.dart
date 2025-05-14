@@ -119,16 +119,20 @@ class _SliverNotificationsList extends ConsumerWidget {
                 items: notifications.value!,
                 keyBuilder: (e) => e.id.toString(),
                 itemBuilder: (context, i, notification, position) {
-                  return appInfo.value!.containsKey(notification.packageName)
-                      ? NotificationTile(
-                          position: position,
-                          leading: ApplicationIcon(
+                  return NotificationTile(
+                    position: position,
+                    leading: appInfo.value!
+                            .containsKey(notification.packageName)
+                        ? ApplicationIcon(
                             appInfo: appInfo.value![notification.packageName]!,
+                          )
+                        : const Icon(
+                            FluentIcons.error_circle_20_filled,
+                            size: 36,
                           ),
-                          notification: notification,
-                          onDismissed: onDismissed,
-                        )
-                      : 0.vBox;
+                    notification: notification,
+                    onDismissed: onDismissed,
+                  );
                 },
               )
         : const SliverShimmerList(
@@ -159,16 +163,22 @@ class _SliverConversationList extends ConsumerWidget {
             : SliverImplicitlyAnimatedList(
                 items: notificationsByApp.value!.entries.toList(),
                 keyBuilder: (entry) => entry.key,
-                itemBuilder: (context, i, entry, position) =>
-                    appInfo.value!.containsKey(entry.key)
-                        ? ConversationTile(
+                itemBuilder: (context, i, entry, position) {
+                  return ConversationTile(
+                    appName: appInfo.value![entry.key]?.name ?? entry.key,
+                    leading: appInfo.value!.containsKey(entry.key)
+                        ? ApplicationIcon(
                             appInfo: appInfo.value![entry.key]!,
-                            packageName: entry.key,
-                            conversations: entry.value,
-                            position: position,
                           )
-                        : 0.vBox,
-              )
+                        : const Icon(
+                            FluentIcons.error_circle_20_filled,
+                            size: 36,
+                          ),
+                    packageName: entry.key,
+                    conversations: entry.value,
+                    position: position,
+                  );
+                })
         : const SliverShimmerList(
             includeLeading: true,
             includeSubtitle: true,
