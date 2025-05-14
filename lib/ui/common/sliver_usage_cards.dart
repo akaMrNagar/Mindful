@@ -132,9 +132,9 @@ class SliverUsageCards extends StatelessWidget {
         ),
       ),
     ).animate().scale(
-          begin: const Offset(0.97, 0.97),
+          begin: const Offset(0.95, 0.95),
           end: const Offset(1, 1),
-          curve: AppConstants.defaultCurve,
+          curve: Curves.easeOutBack,
           duration: AppConstants.defaultAnimDuration * 1.5,
         );
   }

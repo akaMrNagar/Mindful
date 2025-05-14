@@ -110,7 +110,7 @@ class _DefaultExpandableListTileState extends State<DefaultExpandableListTile> {
             child: AnimatedSize(
               alignment: Alignment.topCenter,
               duration: AppConstants.defaultAnimDuration,
-              curve: AppConstants.defaultCurve,
+              curve: Curves.easeOutBack,
               child: _isExpanded
                   ? widget.content
                   : const SizedBox.shrink(), // Collapsed state
