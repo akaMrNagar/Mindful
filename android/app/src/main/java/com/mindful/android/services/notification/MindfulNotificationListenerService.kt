@@ -12,6 +12,7 @@
 package com.mindful.android.services.notification
 
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Intent
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
@@ -61,7 +62,13 @@ class MindfulNotificationListenerService : NotificationListenerService() {
     override fun onListenerDisconnected() {
         isListenerActive = false
         Log.d(TAG, "onListenerConnected: Notifications listener DIS-CONNECTED")
+
         super.onListenerDisconnected()
+        // Try to rebind again
+        runCatching {
+            val listener = ComponentName(this, MindfulNotificationListenerService::class.java)
+            requestRebind(listener)
+        }
     }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
