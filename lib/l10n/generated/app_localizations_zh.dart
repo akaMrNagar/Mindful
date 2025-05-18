@@ -1096,6 +1096,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get search_notifications_hint => 'Search notifications...';
 
   @override
+  String get search_notifications_empty_list_hint => 'No notifications found matching your search.';
+
+  @override
   String get app_info_none_warning => '无法找到给定包名的应用程序。返回主屏幕。';
 
   @override

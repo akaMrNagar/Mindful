@@ -63,7 +63,11 @@ class TabBedtime extends ConsumerWidget {
             .select((v) => v.isInvincibleModeOn && v.includeBedtimeSchedule)) &&
         !ref.read(parentalControlsProvider.notifier).isBetweenInvincibleWindow;
 
-    if (isInvincibleRestricted && state.isScheduleOn) {
+    /// If time now is between bedtime schedule
+    final isBetweenSchedule =
+        ref.read(bedtimeScheduleProvider.notifier).isBetweenSchedule;
+
+    if (isInvincibleRestricted && state.isScheduleOn && isBetweenSchedule) {
       context.showSnackAlert(context.locale.invincible_mode_snack_alert);
       return;
     }

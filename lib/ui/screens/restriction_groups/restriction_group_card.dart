@@ -16,6 +16,7 @@ import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/common/time_text_short.dart';
 import 'package:mindful/ui/screens/restriction_groups/create_update_group_screen.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 class RestrictionGroupCard extends ConsumerWidget {
   const RestrictionGroupCard({
@@ -30,17 +31,17 @@ class RestrictionGroupCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final groupedAppsInfo = ref
-            .watch(appsInfoProvider.select((v) => v.value?.values
-                .where((e) => group.distractingApps.contains(e.packageName))))
-            ?.toList() ??
-        [];
-
-    final installedDistractingApps = groupedAppsInfo.map((e) => e.packageName);
+        .watch(appsInfoProvider.select((v) => v.value?.values
+            .where((e) => group.distractingApps.contains(e.packageName))))
+        ?.toList();
+    final installedDistractingApps = groupedAppsInfo?.map((e) => e.packageName);
 
     final timeSpent = ref.watch(
           todaysAppsUsageProvider.select(
             (v) => v.value?.entries
-                .where((e) => installedDistractingApps.contains(e.key))
+                .where(
+                  (e) => installedDistractingApps?.contains(e.key) ?? false,
+                )
                 .fold<int>(
                   0,
                   (t, e) => (t + e.value.screenTime),
@@ -155,22 +156,29 @@ class RestrictionGroupCard extends ConsumerWidget {
             child: Container(
               height: 40,
               color: Theme.of(context).colorScheme.surfaceContainerHigh,
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                itemCount: groupedAppsInfo.length,
-                itemBuilder: (context, index) {
-                  final app = groupedAppsInfo[index];
+              child: Skeletonizer.zone(
+                enableSwitchAnimation: true,
+                enabled: groupedAppsInfo == null,
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  itemCount:
+                      groupedAppsInfo?.length ?? group.distractingApps.length,
+                  itemBuilder: (context, index) {
+                    final appInfo = groupedAppsInfo?.elementAtOrNull(index);
 
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 4),
-                    child: ApplicationIcon(
-                      appInfo: app,
-                      size: 14,
-                    ),
-                  );
-                },
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: appInfo == null
+                          ? const Bone.icon(size: 28)
+                          : ApplicationIcon(
+                              appInfo: appInfo,
+                              size: 14,
+                            ),
+                    );
+                  },
+                ),
               ),
             ),
           ),

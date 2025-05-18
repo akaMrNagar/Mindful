@@ -80,21 +80,21 @@ object DateTimeUtils {
      */
     fun todayCalToTod(): Int {
         val calendar = Calendar.getInstance()
-        return calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
+        return (calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)
     }
 
     /**
      * Calculated the difference between time now and future tod minutes.
      *
-     * @param futureTotalMinutes The total minutes from Time Of Day dart object.
+     * @param futureTod The total minutes from Time Of Day dart object.
      * @return The difference in MS. If the difference is negative then return 0
      */
-    fun todDifferenceFromNow(futureTotalMinutes: Int): Long {
+    fun todDifferenceFromNow(futureTod: Int): Long {
         val now = System.currentTimeMillis()
-        val futureCal = todToTodayCal(futureTotalMinutes)
+        val futureCal = todToTodayCal(futureTod)
 
         // If the future time already passed today, move to tomorrow
-        if (futureCal.timeInMillis <= now) {
+        if (futureTod < todayCalToTod()) {
             futureCal.add(Calendar.DAY_OF_YEAR, 1)
         }
 
@@ -103,7 +103,7 @@ object DateTimeUtils {
     }
 
     /**
-     * Checks if current system time is outside the star and end Time Of Day
+     * Checks if current system time is outside the start and end Time Of Day
      *
      * @param startTod The start TOD in minutes
      * @param endTod   The end TOD in minutes
@@ -117,7 +117,7 @@ object DateTimeUtils {
             // now=3 is between end=2 start=5 then outside
             nowTod in endTod until startTod
         }
-        // Sane day
+        // Same day
         else {
             // now=3 is not between start=2 end=5 then outside
             nowTod !in startTod until endTod

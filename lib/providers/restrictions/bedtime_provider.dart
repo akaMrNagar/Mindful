@@ -11,6 +11,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
@@ -22,6 +23,12 @@ final bedtimeScheduleProvider =
 );
 
 class BedtimeScheduleNotifier extends StateNotifier<BedtimeSchedule> {
+  /// Returns `TRUE` if the time now is between the bedtime schedule otherwise `FALSE`.
+  bool get isBetweenSchedule => DateTime.now().isBetweenTod(
+        state.scheduleStartTime,
+        state.scheduleEndTime,
+      );
+
   BedtimeScheduleNotifier() : super(defaultBedtimeScheduleModel) {
     _init();
   }

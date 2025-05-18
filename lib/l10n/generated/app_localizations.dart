@@ -2121,6 +2121,12 @@ abstract class AppLocalizations {
   /// **'Search notifications...'**
   String get search_notifications_hint;
 
+  /// No description provided for @search_notifications_empty_list_hint.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications found matching your search.'**
+  String get search_notifications_empty_list_hint;
+
   /// No description provided for @app_info_none_warning.
   ///
   /// In en, this message translates to:

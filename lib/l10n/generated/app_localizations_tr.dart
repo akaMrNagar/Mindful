@@ -1096,6 +1096,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get search_notifications_hint => 'Search notifications...';
 
   @override
+  String get search_notifications_empty_list_hint => 'No notifications found matching your search.';
+
+  @override
   String get app_info_none_warning => 'Verilen paket için uygulama bulunamadı. Ana ekrana dönülüyor.';
 
   @override
