@@ -10,6 +10,7 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
@@ -23,6 +24,7 @@ import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/screens/restriction_groups/create_update_group_screen.dart';
 import 'package:mindful/ui/screens/restriction_groups/restriction_group_card.dart';
 import 'package:mindful/ui/screens/restriction_groups/sample_restriction_group.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class RestrictionGroupsScreen extends ConsumerWidget {
   const RestrictionGroupsScreen({super.key});
@@ -56,15 +58,18 @@ class RestrictionGroupsScreen extends ConsumerWidget {
 
               16.vSliverBox,
 
-              groups.isEmpty
-                  ? const SampleRestrictionGroup().sliver
-                  : SliverList.builder(
-                      itemCount: groups.length,
-                      itemBuilder: (context, index) => RestrictionGroupCard(
-                        group: groups[index],
-                        position: getItemPositionInList(index, groups.length),
+              SliverAnimatedSwitcher(
+                duration: 250.ms,
+                child: groups.isEmpty
+                    ? const SampleRestrictionGroup().sliver
+                    : SliverList.builder(
+                        itemCount: groups.length,
+                        itemBuilder: (context, index) => RestrictionGroupCard(
+                          group: groups[index],
+                          position: getItemPositionInList(index, groups.length),
+                        ),
                       ),
-                    ),
+              ),
 
               const SliverTabsBottomPadding(),
             ],

@@ -455,6 +455,7 @@
     "daily_label": "Daily",
     "search_notifications_sheet_info": "Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.",
     "search_notifications_hint": "Search notifications...",
+    "search_notifications_empty_list_hint": "No notifications found matching your search.",
     "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
     "app_info_none_warning": "Couldn't find the app for the given package. Returning to the home screen.",
     "emergency_fab_button": "Emergency",

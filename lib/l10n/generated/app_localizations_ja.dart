@@ -1096,6 +1096,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get search_notifications_hint => 'Search notifications...';
 
   @override
+  String get search_notifications_empty_list_hint => 'No notifications found matching your search.';
+
+  @override
   String get app_info_none_warning => 'Couldn\'t find the app for the given package. Returning to the home screen.';
 
   @override

@@ -25,8 +25,8 @@ class TrackingManager(
     @WorkerThread
     fun onNewEvent(packageName: String) {
         if (lastActiveApp != packageName && packageName != SYSTEM_UI_PACKAGE) {
-            lastActiveApp = packageName
             debouncer.submit {
+                lastActiveApp = packageName
                 broadcastEvent(ACTION_NEW_APP_LAUNCHED)
             }
         }

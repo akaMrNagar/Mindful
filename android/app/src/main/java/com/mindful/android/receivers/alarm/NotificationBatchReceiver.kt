@@ -180,7 +180,6 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                             .setLargeIcon(appIcon)
                             .setContentTitle(appName)
                             .setGroup(packageName)
-                            .setGroupSummary(false)
                             .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                             .setStyle(messagingStyle)
                             .setAutoCancel(true)

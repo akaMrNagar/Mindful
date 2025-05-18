@@ -14,10 +14,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
+import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/providers/apps/apps_info_provider.dart';
 import 'package:mindful/providers/notifications/searched_notification_provider.dart';
 import 'package:mindful/ui/common/application_icon.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
+import 'package:mindful/ui/common/empty_list_indicator.dart';
 import 'package:mindful/ui/common/search_bar.dart';
 import 'package:mindful/ui/common/sliver_implicitly_animated_list.dart';
 import 'package:mindful/ui/common/sliver_shimmer_list.dart';
@@ -88,25 +90,30 @@ class _SearchNotificationStateSheet
         SliverAnimatedSwitcher(
           duration: 500.ms,
           child: notifications.hasValue && appInfo.hasValue
-              ? SliverImplicitlyAnimatedList(
-                  items: notifications.value!,
-                  keyBuilder: (e) => "${e.packageName}: ${e.timeStamp}",
-                  itemBuilder: (context, i, notification, position) {
-                    return appInfo.value!.containsKey(notification.packageName)
-                        ? NotificationTile(
-                            position: position,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHigh,
-                            leading: ApplicationIcon(
-                              appInfo:
-                                  appInfo.value![notification.packageName]!,
-                            ),
-                            notification: notification,
-                          )
-                        : 0.vBox;
-                  },
-                )
+              ? notifications.value!.isEmpty
+                  ? EmptyListIndicator(
+                      info: context.locale.search_notifications_empty_list_hint,
+                    ).sliver
+                  : SliverImplicitlyAnimatedList(
+                      items: notifications.value!,
+                      keyBuilder: (e) => "${e.packageName}: ${e.timeStamp}",
+                      itemBuilder: (context, i, notification, position) {
+                        return appInfo.value!
+                                .containsKey(notification.packageName)
+                            ? NotificationTile(
+                                position: position,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHigh,
+                                leading: ApplicationIcon(
+                                  appInfo:
+                                      appInfo.value![notification.packageName]!,
+                                ),
+                                notification: notification,
+                              )
+                            : 0.vBox;
+                      },
+                    )
               : const SliverShimmerList(
                   includeLeading: true,
                   includeSubtitle: true,
