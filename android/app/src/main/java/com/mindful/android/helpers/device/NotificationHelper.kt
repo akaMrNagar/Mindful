@@ -82,7 +82,7 @@ object NotificationHelper {
                 "These notifications include updates regarding bedtime routine to help you get a peaceful sleep."
 
             val notificationBatchingChannel = NotificationChannel(
-                FOCUS_CHANNEL_ID,
+                NOTIFICATION_BATCHING_CHANNEL_ID,
                 "Notification Batch",
                 NotificationManager.IMPORTANCE_DEFAULT
             )
@@ -105,6 +105,7 @@ object NotificationHelper {
                     criticalChannel,
                     focusChannel,
                     bedtimeChannel,
+                    notificationBatchingChannel,
                     serviceChannel
                 )
             )

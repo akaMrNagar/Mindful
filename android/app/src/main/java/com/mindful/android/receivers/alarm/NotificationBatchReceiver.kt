@@ -212,6 +212,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                         .setStyle(summaryStyle)
                         .setGroup(packageName)
                         .setGroupSummary(true)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                         .setAutoCancel(true)
                         .build()
 
