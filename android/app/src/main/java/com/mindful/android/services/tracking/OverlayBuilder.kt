@@ -15,7 +15,6 @@ import androidx.annotation.MainThread
 import com.mindful.android.R
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.models.RestrictionState
-import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.utils.AppUtils
 import com.mindful.android.utils.DateTimeUtils
 import com.mindful.android.utils.MindfulQuotes
@@ -28,6 +27,7 @@ object OverlayBuilder {
         packageName: String,
         state: RestrictionState,
         dismissOverlay: () -> Unit,
+        cancelReminders: () -> Unit,
         addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
     ): View {
         // Inflate the custom layout for the dialog
@@ -63,12 +63,16 @@ object OverlayBuilder {
             emergencyBtn.visibility = View.VISIBLE
             emergencyBtn.setOnClickListener {
                 ThreadUtils.runOnMainThread {
+                    /// Open mindful
                     context.applicationContext.startActivity(
                         AppUtils.getIntentForMindfulUri(
                             context,
                             "com.mindful.android://open/appDashboard?package=$packageName"
                         )
                     )
+
+                    /// Remove overlay
+                    cancelReminders.invoke()
                     dismissOverlay.invoke()
                 }
             }
@@ -157,13 +161,8 @@ object OverlayBuilder {
                 context.applicationContext.startActivity(homeIntent)
 
                 /// Remove overlay
+                cancelReminders.invoke()
                 dismissOverlay.invoke()
-
-                /// Send launch event
-                val intent = Intent(ACTION_NEW_APP_LAUNCHED).apply {
-                    setPackage(context.packageName)
-                }
-                context.sendBroadcast(intent)
             }
         }
 

@@ -56,6 +56,7 @@ class ReminderManager(
                             usedScreenTime = state.usedScreenTime + (spentMins * 60)
                         ),
                         addReminderWithDelay = { delayMin -> addNewReminder(delayMin + spentMins) },
+                        cancelReminders = { cancelReminders() }
                     )
                 }
             },

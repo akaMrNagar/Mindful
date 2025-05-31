@@ -23,9 +23,9 @@ import android.os.Binder
 class ServiceBinder<T : Service?>(val service: T) : Binder() {
     companion object {
         const val ACTION_START_MINDFUL_SERVICE: String =
-            "com.mindful.android.ServiceBinder.ACTION_START_MINDFUL_SERVICE"
+            "com.mindful.android.action.startMindfulService"
 
         const val ACTION_BIND_TO_MINDFUL: String =
-            "com.mindful.android.ServiceBinder.ACTION_BIND_TO_MINDFUL"
+            "com.mindful.android.action.bindToMindful"
     }
 }

@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.AppConstants
 
 class MindfulTrackerService : Service() {
     companion object {
@@ -32,7 +32,12 @@ class MindfulTrackerService : Service() {
         overlayManager = OverlayManager(this)
         reminderManager = ReminderManager(overlayManager, ::onNewAppLaunch)
         restrictionManager = RestrictionManager(this, ::stopIfNoUsage)
-        launchTrackingManager = LaunchTrackingManager(this, ::onNewAppLaunch)
+        launchTrackingManager = LaunchTrackingManager(
+            context = this,
+            onNewAppLaunched = ::onNewAppLaunch,
+            dismissOverlay = { overlayManager.dismissOverlay() },
+            cancelReminders = { reminderManager.cancelReminders() },
+        )
         super.onCreate()
     }
 
@@ -72,11 +77,6 @@ class MindfulTrackerService : Service() {
     @WorkerThread
     private fun onNewAppLaunch(packageName: String) {
         try {
-
-            /// Cancel previous reminders and dismiss overlay
-            reminderManager.cancelReminders()
-            overlayManager.dismissOverlay()
-
             /// check current restrictions
             val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
 
@@ -88,6 +88,7 @@ class MindfulTrackerService : Service() {
                     overlayManager.showOverlay(
                         packageName = packageName,
                         restrictionState = it,
+                        cancelReminders = { reminderManager.cancelReminders() }
                     )
                 }
                 /// Under limit but will be exhausted in some time

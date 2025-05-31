@@ -43,6 +43,7 @@ class RestrictionManager(
     fun resetCache() {
         alreadyRestrictedApps.clear()
         alreadyRestrictedGroups.clear()
+        appsLaunchCount.clear()
     }
 
     fun updateRestrictions(

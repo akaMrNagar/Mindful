@@ -49,14 +49,11 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     companion object {
         private const val TAG = "Mindful.MindfulAccessibilityService"
 
-        const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET: String =
-            "com.mindful.android.MindfulAccessibilityService.MIDNIGHT_ACCESSIBILITY_RESET"
-
-        const val ACTION_TAMPER_PROTECTION_CHANGED: String =
-            "com.mindful.android.MindfulAccessibilityService.TAMPER_PROTECTION_CHANGED"
-
-        const val ACTION_PERFORM_HOME_PRESS: String =
-            "com.mindful.android.MindfulAccessibilityService.PERFORM_HOME_PRESS"
+        const val ACTION_PERFORM_HOME_PRESS = "com.mindful.android.action.performHomePress"
+        const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET =
+            "com.mindful.android.action.midnightAccessibilityReset"
+        const val ACTION_TAMPER_PROTECTION_CHANGED =
+            "com.mindful.android.action.tamperProtectionChanged"
 
         // Set of desired events which will be processed
         private val desiredEvents = setOf(

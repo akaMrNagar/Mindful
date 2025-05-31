@@ -65,6 +65,7 @@ class OverlayManager(
         packageName: String,
         restrictionState: RestrictionState,
         addReminderWithDelay: ((futureMinutes: Int) -> Unit)? = null,
+        cancelReminders: () -> Unit,
     ) {
         // Return if overlay is not null
         if (overlays.isNotEmpty()) return
@@ -99,6 +100,7 @@ class OverlayManager(
                 state = restrictionState,
                 dismissOverlay = ::dismissOverlay,
                 addReminderDelay = addReminderWithDelay,
+                cancelReminders = cancelReminders,
             )
 
             // Set up WindowManager parameters
