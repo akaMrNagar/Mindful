@@ -43,7 +43,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
         maxAgeMs = 24 * 60 * 60 * 1000L // 24 hours
     )
 
-    private val throttle: Throttler = Throttler(5 * 1000L) // Every 5 seconds
+    private val throttler: Throttler = Throttler(5 * 1000L) // Every 5 seconds
     private var settings: NotificationSettings = NotificationSettings()
     private var isListenerActive = false
 
@@ -120,11 +120,11 @@ class MindfulNotificationListenerService : NotificationListenerService() {
             val notification = Notification.fromSbn(sbn).copy(isRead = !isFromBatchedApp)
             if (notification.title.isEmpty() || notification.content.isEmpty()) return
 
-            cachedPendingIntents.put(notification.key, sbn.notification.contentIntent)
+            sbn.notification.contentIntent?.let { cachedPendingIntents.put(notification.key, it) }
             pendingNotifications.add(notification)
 
             // Insert notifications to db if the difference between last insertion is more than 1 minute
-            throttle.submit { insertNotificationsToDb() }
+            throttler.submit { insertNotificationsToDb() }
         } catch (e: Exception) {
             SharedPrefsHelper.insertCrashLogToPrefs(this, e)
             Log.e(TAG, "processNotificationInBg: Failed to process notification", e)
