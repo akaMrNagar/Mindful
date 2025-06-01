@@ -9,19 +9,15 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-
 [![Featured](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
-[![Supporters](https://img.shields.io/badge/Supporters-👻-black)](docs/SUPPORTERS.md) 
 [![Contribute](https://img.shields.io/badge/Build_&_Contribute-🛠️-black)](docs/CONTRIBUTING.md)
 [![Privacy](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
 [![Verify](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
 [![Faqs](https://img.shields.io/badge/FAQs-🙋-black)](docs/FAQS.md) 
-
-[![GitHub](https://img.shields.io/github/downloads/akamrnagar/mindful/total?logo=github&cacheSeconds=3600)](https://github.com/akamrnagar/mindful/releases/latest)
-[![Google Play](https://img.shields.io/endpoint?color=40bb12&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.mindful.android%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.mindful.android)
-[![Localized](https://badges.crowdin.net/mindful/localized.svg)](https://crowdin.com/project/mindful)
-
-
+[![GitHub](https://img.shields.io/github/downloads/akamrnagar/mindful/total?label=Downloads&logo=github&cacheSeconds=3600)](https://github.com/akamrnagar/mindful/releases/latest)
+[![Google Play](https://img.shields.io/endpoint?color=40bb12&label=Downloads&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.mindful.android%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.mindful.android)
+[![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/fossmindful)
+[![Instagram](https://img.shields.io/badge/Instagram-e7336f?logo=instagram&logoColor=white)](https://instagram.com/lasthopedevelopers)
 
 ---
 
@@ -86,12 +82,42 @@ Your feedback is invaluable to us! If you have suggestions, encounter issues, or
 * **[GitHub (vulnerability)](https://github.com/akaMrNagar/Mindful/security/advisories/new)**
 * **[Write to us via email](mailto:help.lasthopedevs@gmail.com)**
 
+---
+# Translation & Localization
 
-# Contributors
+![Translate](https://img.shields.io/badge/Translate-Crowdin-4cc71e?logo=crowdin)
+[![Localized](https://badges.crowdin.net/mindful/localized.svg)](https://crowdin.com/project/mindful)
 
-    
-### Translation
+A huge thank you to our amazing localization contributors in making Mindful accessible to the world.
 
- 1. Japanese by [*Riikun*](https://crowdin.com/profile/riikun)
- 2. Turkish by [*Kerem*](https://crowdin.com/profile/keremk)
- 3. Chinese (Simplified) by [*Jihuayu*](https://crowdin.com/profile/jihuayu)
+
+[*@michelangelodepascale02*](https://crowdin.com/profile/michelangelodepascale02), 
+[*@mysticxz*](https://crowdin.com/profile/mysticxz), 
+[*@wreckingbang*](https://crowdin.com/profile/wreckingbang), 
+[*@eric*.nevard](https://crowdin.com/profile/eric.nevard), 
+[*@deltridev*](https://crowdin.com/profile/deltridev), 
+[*@luxdev01*](https://crowdin.com/profile/luxdev01), 
+[*@na7m*](https://crowdin.com/profile/na7m), 
+[*@riikun*](https://crowdin.com/profile/riikun), 
+[*@kareemkimo*](https://crowdin.com/profile/kareemkimo), 
+[*@uito*](https://crowdin.com/profile/uito), 
+[*@netobloom*](https://crowdin.com/profile/netobloom), 
+[*@marcmaderhome123*](https://crowdin.com/profile/marcmaderhome123), 
+[*@alpereneryilmaz03*](https://crowdin.com/profile/alpereneryilmaz03), 
+[*@keremk*](https://crowdin.com/profile/keremk), 
+[*@nolhanproduction*](https://crowdin.com/profile/nolhanproduction), 
+[*@lefetrtp*](https://crowdin.com/profile/lefetrtp), 
+[*@ceceayo*](https://crowdin.com/profile/ceceayo), 
+[*@jihuayu*](https://crowdin.com/profile/jihuayu), 
+[*@ngocanh*.tve](https://crowdin.com/profile/ngocanh.tve), 
+[*@vinaooooo*](https://crowdin.com/profile/vinaooooo), 
+[*@nlhm*](https://crowdin.com/profile/nlhm), 
+[*@nevena2ooo*](https://crowdin.com/profile/nevena2ooo), 
+[*@nerisal*](https://crowdin.com/profile/nerisal), 
+[*@andriik*](https://crowdin.com/profile/andriik), 
+[*@mateuszam*](https://crowdin.com/profile/mateuszam), 
+[*@jrodenas*](https://crowdin.com/profile/jrodenas), 
+[*@andre*.fernandes.it](https://crowdin.com/profile/andre.fernandes.it), 
+[*@fireflurry*](https://crowdin.com/profile/fireflurry),
+[*@youquan0914*](https://crowdin.com/profile/youquan0914), 
+[*@e_cllf*](https://crowdin.com/profile/e_cllf).
