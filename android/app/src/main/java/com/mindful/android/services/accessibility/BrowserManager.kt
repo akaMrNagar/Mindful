@@ -12,6 +12,7 @@ import android.widget.Toast
 import com.mindful.android.R
 import com.mindful.android.models.Wellbeing
 import com.mindful.android.utils.NsfwDomains
+import com.mindful.android.utils.NsfwKeywords
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.Utils
 import com.mindful.android.utils.executors.Throttler
@@ -50,7 +51,7 @@ class BrowserManager(
         when {
             wellbeing.blockedWebsites.contains(host)
                     || wellbeing.nsfwWebsites.contains(host)
-                    || nsfwDomains.containsKey(host)
+                    || nsfwDomains[host] ?: false
             -> {
                 Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
                 blockedContentGoBack.invoke()
@@ -73,6 +74,12 @@ class BrowserManager(
      * @param hostDomain     The resolved host name for the provided url.
      */
     private fun applySafeSearch(browserPackage: String, url: String, hostDomain: String) {
+        val query = runCatching { Uri.parse(url) }.getOrNull()
+            ?.getQueryParameter("q")?.lowercase() ?: url
+
+        // Apply safe search if searching maybe nsfw
+        if (NsfwKeywords.keywords.none { query.contains(it) }) return
+
         val safeUrl = when {
             /// Google search
             !url.contains("safe=active")

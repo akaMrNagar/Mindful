@@ -17,7 +17,7 @@ import android.util.Log
 // Note: I have found this list of domains somewhere i didn't know.
 // If your are the owner or the curator of this domains list please let us know about it.
 object NsfwDomains {
-    var dict: MutableMap<String, Boolean> = HashMap()
+    private var dict: MutableMap<String, Boolean> = HashMap()
     var TAG: String = "Mindful.NsfwDomains"
 
     fun init(): Map<String, Boolean> {
