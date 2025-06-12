@@ -127,7 +127,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             // Start DND if needed
             if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
-                DndWakeLock.BedtimeMode,
+                DndWakeLock.BEDTIME_MODE,
                 true
             )
             pushAlertNotification(context.getString(R.string.bedtime_started_notification_info))
@@ -144,7 +144,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             // Stop DND if needed
             if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
-                DndWakeLock.BedtimeMode,
+                DndWakeLock.BEDTIME_MODE,
                 false
             )
             pushAlertNotification(context.getString(R.string.bedtime_ended_notification_info))

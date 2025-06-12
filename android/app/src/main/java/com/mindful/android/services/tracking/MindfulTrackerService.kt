@@ -27,7 +27,6 @@ class MindfulTrackerService : Service() {
     private lateinit var launchTrackingManager: LaunchTrackingManager
     val getLaunchTrackingManager get() = launchTrackingManager
 
-
     override fun onCreate() {
         overlayManager = OverlayManager(this)
         reminderManager = ReminderManager(overlayManager, ::onNewAppLaunch)
@@ -35,7 +34,7 @@ class MindfulTrackerService : Service() {
         launchTrackingManager = LaunchTrackingManager(
             context = this,
             onNewAppLaunched = ::onNewAppLaunch,
-            dismissOverlay = { overlayManager.dismissOverlay() },
+            dismissOverlay = { overlayManager.dismissSheetOverlay() },
             cancelReminders = { reminderManager.cancelReminders() },
         )
         super.onCreate()
@@ -69,26 +68,30 @@ class MindfulTrackerService : Service() {
 
     fun onMidnightReset() {
         restrictionManager.resetCache()
-        overlayManager.dismissOverlay()
-        reminderManager.cancelReminders()
+        overlayManager.dismissSheetOverlay()
+        val reminderAwaiting = reminderManager.cancelReminders()
+
+        // Means app is active but timer is not over and now it is reset so re-launch same event again
+        if (reminderAwaiting) launchTrackingManager.reInvokeLastLaunchEvent()
     }
 
 
     @WorkerThread
     private fun onNewAppLaunch(packageName: String) {
         try {
+            reminderManager.cancelReminders()
+            overlayManager.dismissSheetOverlay()
+
             /// check current restrictions
             val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
-
             Log.d(TAG, "onNewAppLaunch: $packageName's evaluated state => $currentOrFutureState")
-            currentOrFutureState?.let {
 
+            currentOrFutureState?.let {
                 /// Already restricted
-                if (it.expirationFutureMs <= 0L) {
-                    overlayManager.showOverlay(
+                if (it.timeLeftMillis <= 0L) {
+                    overlayManager.showSheetOverlay(
                         packageName = packageName,
                         restrictionState = it,
-                        cancelReminders = { reminderManager.cancelReminders() }
                     )
                 }
                 /// Under limit but will be exhausted in some time
@@ -110,7 +113,7 @@ class MindfulTrackerService : Service() {
             Log.d(TAG, "Service no longer needed, stopping")
             launchTrackingManager.dispose()
             reminderManager.cancelReminders()
-            overlayManager.dismissOverlay()
+            overlayManager.dismissSheetOverlay()
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }

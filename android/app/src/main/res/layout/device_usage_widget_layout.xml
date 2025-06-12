@@ -98,7 +98,7 @@
             android:layout_width="52dp"
             android:layout_height="52dp"
             android:layout_gravity="top|end"
-            android:background="@drawable/circular_button_bg"
+            android:background="@drawable/shape_circular"
             android:contentDescription="@string/app_name"
             android:src="@drawable/ic_refresh"
             tools:ignore="RtlSymmetry" />

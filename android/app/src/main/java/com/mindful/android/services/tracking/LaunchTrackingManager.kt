@@ -3,20 +3,13 @@ package com.mindful.android.services.tracking
 import android.app.Service.USAGE_STATS_SERVICE
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
-import android.os.Build
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import com.mindful.android.receivers.AccessibilityReceiver
 import com.mindful.android.receivers.DeviceLockUnlockReceiver
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
-import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
-import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_START_MANUAL_TRACKING
-import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_STOP_MANUAL_TRACKING
-import com.mindful.android.services.accessibility.TrackingManager.Companion.EXTRA_PACKAGE_NAME
 import com.mindful.android.utils.Utils
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
@@ -38,47 +31,30 @@ class LaunchTrackingManager(
     }
 
     private val executorService: ScheduledExecutorService = Executors.newScheduledThreadPool(2)
-    private val accessibilityReceiver: AccessibilityReceiver = AccessibilityReceiver()
-    private val lockUnlockReceiver: DeviceLockUnlockReceiver =
-        DeviceLockUnlockReceiver { isUnlocked ->
-            if (isUnlocked) onDeviceUnlocked()
-            else onDeviceLocked()
-        }
+    private val lockUnlockReceiver = DeviceLockUnlockReceiver { isUnlocked ->
+        if (isUnlocked) onDeviceUnlocked() else onDeviceLocked()
+    }
+    private val accessibilityReceiver = AccessibilityReceiver(
+        onNewAppLaunched = { executorService.submit { invokeNewAppLaunched(it) } },
+        onServiceStatusChanged = { isActive ->
+            isManualTrackingOn = !isActive
+            if (isActive) onDeviceLocked() else onDeviceUnlocked()
+        },
+    )
 
     private var periodicTaskHandle: ScheduledFuture<*>? = null
     private var usageStatsManager: UsageStatsManager? = null
-
     private var isManualTrackingOn: Boolean = true
     private var isTrackingPaused: Boolean = false
 
-    private val activeApps: MutableSet<String> = mutableSetOf()
     private var lastUsageQueryTimestamp = System.currentTimeMillis()
     private var lastLaunchedApp = ""
+    private var activeApps = mutableListOf<String>()
 
     init {
-        // Register lock/unlock receiver
-        val lockUnlockFilter = IntentFilter().apply {
-            addAction(Intent.ACTION_USER_PRESENT)
-            addAction(Intent.ACTION_SCREEN_OFF)
-        }
-        context.registerReceiver(lockUnlockReceiver, lockUnlockFilter)
-
-        // Register accessibility receiver
-        val accessibilityFilter = IntentFilter().apply {
-            addAction(ACTION_START_MANUAL_TRACKING)
-            addAction(ACTION_NEW_APP_LAUNCHED)
-            addAction(ACTION_STOP_MANUAL_TRACKING)
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.registerReceiver(
-                accessibilityReceiver,
-                accessibilityFilter,
-                Context.RECEIVER_NOT_EXPORTED
-            )
-        } else {
-            context.registerReceiver(accessibilityReceiver, accessibilityFilter)
-        }
-
+        // Register receivers
+        lockUnlockReceiver.register(context)
+        accessibilityReceiver.register(context)
 
         // Start tracking
         onDeviceUnlocked()
@@ -103,11 +79,10 @@ class LaunchTrackingManager(
                 TIMER_RATE,
                 TimeUnit.MILLISECONDS
             )
-
-            Log.d(TAG, "onDeviceUnlocked: Manual usage tracking started")
         }
 
-        executorService.submit { invokeNewAppLaunched() }
+        Log.d(TAG, "onDeviceUnlocked: Usage tracking started (isManual=$isManualTrackingOn)")
+        executorService.submit { invokeNewAppLaunched(lastLaunchedApp) }
     }
 
     @MainThread
@@ -118,7 +93,7 @@ class LaunchTrackingManager(
         // Cancel reminders and remove overlay
         cancelReminders.invoke()
         dismissOverlay.invoke()
-        Log.d(TAG, "onDeviceLocked: Manual usage tracking stopped")
+        Log.d(TAG, "onDeviceLocked: Usage tracking stopped")
     }
 
     /**
@@ -158,21 +133,24 @@ class LaunchTrackingManager(
             }
         }
 
-        activeApps.lastOrNull()?.let {
-            if (lastLaunchedApp == it) return@let
-
-            lastLaunchedApp = it
-            invokeNewAppLaunched()
+        activeApps.firstOrNull()?.let {
+            if (lastLaunchedApp == it) return
+            invokeNewAppLaunched(it)
         }
+        Log.d(TAG, "findLaunchedApp: Opened app:$lastLaunchedApp Active apps: $activeApps ")
     }
 
     /**
-     * Broadcasts an event indicating the last launched app package name.
+     * Check and Invoke method when new app is launched and tracking is not paused.
      */
-    private fun invokeNewAppLaunched() {
-        if (isTrackingPaused || lastLaunchedApp.isEmpty()) return
-        onNewAppLaunched.invoke(lastLaunchedApp)
+    private fun invokeNewAppLaunched(packageName: String) {
+        lastLaunchedApp = packageName
+        if (isTrackingPaused || packageName.isEmpty()) return
+
+        onNewAppLaunched.invoke(packageName)
     }
+
+    fun reInvokeLastLaunchEvent() = invokeNewAppLaunched(lastLaunchedApp)
 
     /**
      * Pauses or resumes app launch tracking.
@@ -181,7 +159,7 @@ class LaunchTrackingManager(
      */
     fun pauseResumeTracking(shouldPause: Boolean) {
         isTrackingPaused = shouldPause
-        if (!shouldPause) invokeNewAppLaunched()
+        if (!shouldPause) invokeNewAppLaunched(lastLaunchedApp)
     }
 
     /**
@@ -193,32 +171,13 @@ class LaunchTrackingManager(
     }
 
     fun dispose() {
+        // Un-Register receivers
+        lockUnlockReceiver.unRegister(context)
+        accessibilityReceiver.unRegister(context)
+
         periodicTaskHandle?.cancel(true)
         executorService.shutdownNow()
-        context.unregisterReceiver(lockUnlockReceiver)
-        context.unregisterReceiver(accessibilityReceiver)
+
         onDeviceLocked()
-    }
-
-
-    private inner class AccessibilityReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            when (intent?.action) {
-                ACTION_START_MANUAL_TRACKING -> {
-                    isManualTrackingOn = true
-                    onDeviceUnlocked()
-                }
-
-                ACTION_STOP_MANUAL_TRACKING -> {
-                    isManualTrackingOn = false
-                    onDeviceLocked()
-                }
-
-                ACTION_NEW_APP_LAUNCHED ->
-                    intent.getStringExtra(EXTRA_PACKAGE_NAME)?.let {
-                        executorService.submit { onNewAppLaunched(it) }
-                    }
-            }
-        }
     }
 }

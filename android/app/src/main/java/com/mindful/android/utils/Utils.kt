@@ -11,8 +11,11 @@
  */
 package com.mindful.android.utils
 
+import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.IntentFilter
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -43,6 +46,22 @@ object Utils {
         }
 
         return false
+    }
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    fun safelyRegisterReceiver(
+        context: Context,
+        receiver: BroadcastReceiver,
+        intentFilter: IntentFilter,
+        exported: Boolean = false,
+    ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val flag = if (exported) Context.RECEIVER_EXPORTED
+            else Context.RECEIVER_NOT_EXPORTED
+            context.registerReceiver(receiver, intentFilter, flag)
+        } else {
+            context.registerReceiver(receiver, intentFilter)
+        }
     }
 
     fun vibrateDevice(context: Context, durationMs: Long) {

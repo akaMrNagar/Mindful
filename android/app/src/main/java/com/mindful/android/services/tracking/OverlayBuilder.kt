@@ -22,17 +22,59 @@ import com.mindful.android.utils.ThreadUtils
 
 object OverlayBuilder {
     @MainThread
-    fun buildOverlay(
+    fun buildToastOverlay(
+        context: Context,
+        packageName: String,
+        screenTimeUsedInMins: Int,
+    ): View {
+        // Inflate the custom layout for the dialog
+        val inflater = LayoutInflater.from(context)
+        val toastView = inflater.inflate(R.layout.toast_overlay_layout, null)
+
+        // Resolve app icon and label
+        val (appName, appIcon) = getAppLabelAndIcon(context, packageName)
+
+        // App infos
+        val appNameTxt = toastView.findViewById<TextView>(R.id.overlay_toast_app_name)
+        val appIconImg = toastView.findViewById<ImageView>(R.id.overlay_toast_app_icon)
+        appNameTxt.text = appName
+        appIconImg.setImageDrawable(appIcon)
+
+        // limit spent text
+        val limitSpentTxt = toastView.findViewById<TextView>(R.id.overlay_toast_screen_time)
+        limitSpentTxt.text = context.getString(
+            R.string.app_screen_time_usage_info,
+            DateTimeUtils.minutesToTimeStr(screenTimeUsedInMins)
+        )
+
+        // Set initial state
+        toastView.alpha = 0f
+
+        // Set click listener
+        toastView.setOnClickListener {
+            // Open mindful
+            context.applicationContext.startActivity(
+                AppUtils.getIntentForMindfulUri(
+                    context,
+                    "com.mindful.android://open/appDashboard?package=$packageName"
+                )
+            )
+        }
+
+        return toastView
+    }
+
+    @MainThread
+    fun buildFullScreenOverlay(
         context: Context,
         packageName: String,
         state: RestrictionState,
         dismissOverlay: () -> Unit,
-        cancelReminders: () -> Unit,
         addReminderDelay: ((futureMinutes: Int) -> Unit)? = null,
     ): View {
         // Inflate the custom layout for the dialog
         val inflater = LayoutInflater.from(context)
-        val sheetView = inflater.inflate(R.layout.overlay_sheet_layout, null)
+        val sheetView = inflater.inflate(R.layout.full_screen_overlay_layout, null)
 
         // Set quote and author
         val quoteTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_quote)
@@ -58,7 +100,7 @@ object OverlayBuilder {
         appIconImg.setImageDrawable(appIcon)
 
         // Emergency button (Visible only if limit is exhausted)
-        if (state.usedScreenTime >= state.totalScreenTimer) {
+        if (state.screenTimeUsed >= state.screenTimeLimit) {
             val emergencyBtn = sheetView.findViewById<Button>(R.id.overlay_sheet_btn_emergency)
             emergencyBtn.visibility = View.VISIBLE
             emergencyBtn.setOnClickListener {
@@ -72,7 +114,6 @@ object OverlayBuilder {
                     )
 
                     /// Remove overlay
-                    cancelReminders.invoke()
                     dismissOverlay.invoke()
                 }
             }
@@ -82,35 +123,37 @@ object OverlayBuilder {
         val limitType = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_type)
         limitType.text = context.getString(
             when (state.type) {
-                RestrictionType.FocusMode -> R.string.app_paused_restriction_focus_mode
-                RestrictionType.BedtimeMode -> R.string.app_paused_restriction_bedtime_mode
-                RestrictionType.Timer -> R.string.app_paused_restriction_timer
-                RestrictionType.LaunchCount -> R.string.app_paused_restriction_launch_count
-                RestrictionType.ActivePeriod -> R.string.app_paused_restriction_active_period
+                RestrictionType.FOCUS -> R.string.app_paused_restriction_focus_mode
+                RestrictionType.BEDTIME -> R.string.app_paused_restriction_bedtime_mode
+                RestrictionType.LAUNCH_COUNT -> R.string.app_paused_restriction_launch_count
+                RestrictionType.APP_TIMER -> R.string.app_paused_restriction_app_timer
+                RestrictionType.APP_ACTIVE_PERIOD -> R.string.app_paused_restriction_app_active_period
+                RestrictionType.GROUP_TIMER -> R.string.app_paused_restriction_group_timer
+                RestrictionType.GROUP_ACTIVE_PERIOD -> R.string.app_paused_restriction_group_active_period
             }
         )
 
         // Limit information
         val limitInfo = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_info)
-        limitInfo.text = state.message
+        limitInfo.text = getRestrictionInfo(context, state)
 
         // Limit progress, and use more layout
-        if (state.totalScreenTimer > 0 && state.usedScreenTime > 0) {
+        if (state.screenTimeLimit > 0 && state.screenTimeUsed > 0) {
             // Make limit parent container visible
             val limitContainer =
                 sheetView.findViewById<LinearLayout>(R.id.overlay_sheet_limit_container)
             limitContainer.visibility = View.VISIBLE
 
             // calculate limit in minutes
-            val usedLimitMins = (state.usedScreenTime / 60).toInt()
-            val totalLimitMins = (state.totalScreenTimer / 60).toInt()
+            val usedLimitMins = (state.screenTimeUsed / 60).toInt()
+            val totalLimitMins = (state.screenTimeLimit / 60).toInt()
             val leftLimitMins = if (usedLimitMins < totalLimitMins) totalLimitMins - usedLimitMins
             else 0
 
             // Progress bar
             val progressBar = sheetView.findViewById<ProgressBar>(R.id.overlay_sheet_limit_progress)
-            progressBar.max = state.totalScreenTimer.toInt()
-            progressBar.setProgress(state.usedScreenTime.toInt(), true)
+            progressBar.max = state.screenTimeLimit.toInt()
+            progressBar.setProgress(state.screenTimeUsed.toInt(), true)
 
             // limit spent text
             val limitSpentTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_limit_spent)
@@ -161,7 +204,6 @@ object OverlayBuilder {
                 context.applicationContext.startActivity(homeIntent)
 
                 /// Remove overlay
-                cancelReminders.invoke()
                 dismissOverlay.invoke()
             }
         }
@@ -170,7 +212,7 @@ object OverlayBuilder {
     }
 
 
-    private fun getAppLabelAndIcon(
+    fun getAppLabelAndIcon(
         context: Context,
         packageName: String,
     ): Pair<String, Drawable> {
@@ -180,5 +222,34 @@ object OverlayBuilder {
         val appIcon = packageManager.getApplicationIcon(info)
 
         return appName to appIcon
+    }
+
+    private fun getRestrictionInfo(context: Context, state: RestrictionState): String {
+        val isLimitExhausted = state.screenTimeUsed >= state.screenTimeLimit
+
+        return when (state.type) {
+            RestrictionType.FOCUS ->
+                context.getString(R.string.app_paused_reason_focus_session)
+
+            RestrictionType.BEDTIME ->
+                context.getString(R.string.app_paused_reason_bedtime)
+
+            RestrictionType.LAUNCH_COUNT ->
+                context.getString(R.string.app_paused_reason_launch_count_out)
+
+            RestrictionType.APP_TIMER ->
+                if (isLimitExhausted) context.getString(R.string.app_paused_reason_app_timer_out)
+                else context.getString(R.string.app_paused_reason_app_timer_left)
+
+            RestrictionType.APP_ACTIVE_PERIOD ->
+                context.getString(R.string.app_paused_reason_app_active_period_over)
+
+            RestrictionType.GROUP_TIMER ->
+                if (isLimitExhausted) context.getString(R.string.app_paused_reason_group_timer_out)
+                else context.getString(R.string.app_paused_reason_group_timer_left)
+
+            RestrictionType.GROUP_ACTIVE_PERIOD ->
+                context.getString(R.string.app_paused_reason_group_active_period_over)
+        }
     }
 }

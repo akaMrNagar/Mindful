@@ -37,15 +37,15 @@
     <string name="app_paused_reason_app_timer_left">You\'ve been using this app for a while now. Let\'s shift gears and take a break from the screen and focus on something productive.</string>
     <string name="app_paused_reason_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
     <string name="app_paused_reason_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
-    <string name="app_paused_reason_active_period_over">Access to this app is currently paused because it\'s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
+    <string name="app_paused_reason_app_active_period_over">Access to this app is currently paused because it\'s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
     <string name="app_paused_reason_group_timer_left">You\'ve been using apps from the \"%s\" group for a while now. It\'s time to take a step back and concentrate on your tasks, not your screen.</string>
     <string name="app_paused_reason_group_timer_out" comment="app_paused_reason_group_timer_out Group name as placeholder">You\'ve reached the total time limit for the \"%s\" group today. Take a break and recharge your focus.</string>
     <string name="app_paused_reason_group_active_period_over">Apps in the \"%s\" group are currently paused as it\'s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
     <string name="app_paused_restriction_focus_mode">Focus mode</string>
     <string name="app_paused_restriction_bedtime_mode">Bedtime mode</string>
-    <string name="app_paused_restriction_timer">Timer</string>
+    <string name="app_paused_restriction_app_timer">Timer</string>
     <string name="app_paused_restriction_launch_count">Launch count</string>
-    <string name="app_paused_restriction_active_period">Active period</string>
+    <string name="app_paused_restriction_app_active_period">Active period</string>
     <string name="app_paused_overlay_button_emergency">Emergency</string>
     <string name="app_paused_overlay_label_spent_today">Spent today</string>
     <string name="app_paused_overlay_label_left_today">Left today</string>

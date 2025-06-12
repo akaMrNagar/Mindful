@@ -39,7 +39,7 @@ class PreciseCountDownExecutor(
             // Convert the time to same unit
             val elapsedTime = timeUnit.convert(elapsedTimeMs, TimeUnit.MILLISECONDS)
 
-            if (elapsedTime <= duration) {
+            if (elapsedTime < duration) {
                 onTick?.invoke(elapsedTime)
                 scheduleNextTick() // Schedule next tick
             } else {

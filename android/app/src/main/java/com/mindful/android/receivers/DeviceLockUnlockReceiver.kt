@@ -14,9 +14,10 @@ package com.mindful.android.receivers
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import androidx.annotation.MainThread
-import androidx.annotation.WorkerThread
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.Utils
 
 /**
@@ -30,15 +31,42 @@ class DeviceLockUnlockReceiver(
         private const val TAG = "Mindful.DeviceLockUnlockReceiver"
     }
 
+    fun register(context: Context) {
+        try {
+            Utils.safelyRegisterReceiver(
+                context = context,
+                receiver = this,
+                exported = true,
+                intentFilter = IntentFilter().apply {
+                    addAction(Intent.ACTION_USER_PRESENT)
+                    addAction(Intent.ACTION_SCREEN_OFF)
+                },
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "register: Failed to register receiver", e)
+            SharedPrefsHelper.insertCrashLogToPrefs(context, e)
+        }
+    }
+
+    fun unRegister(context: Context) {
+        try {
+            context.unregisterReceiver(this)
+        } catch (e: Exception) {
+            Log.e(TAG, "register: Failed to un-register receiver", e)
+            SharedPrefsHelper.insertCrashLogToPrefs(context, e)
+        }
+    }
+
+
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
             Intent.ACTION_USER_PRESENT -> {
-                Log.d(TAG, "onDeviceUnlocked: User UNLOCKED the device and device is ACTIVE")
+                Log.d(TAG, "onReceive: User UNLOCKED the device and device is ACTIVE")
                 onDeviceLockChanged.invoke(true)
             }
 
             Intent.ACTION_SCREEN_OFF -> {
-                Log.d(TAG, "onDeviceLocked: User LOCKED the device and device is INACTIVE")
+                Log.d(TAG, "onReceive: User LOCKED the device and device is INACTIVE")
                 onDeviceLockChanged.invoke(false)
             }
         }

@@ -89,7 +89,7 @@ class FocusSessionService : Service() {
             // Toggle DND according to the session configurations
             if (focusSession.toggleDnd) NotificationHelper.toggleDnd(
                 this,
-                DndWakeLock.FocusMode,
+                DndWakeLock.FOCUS_MODE,
                 true
             )
 
@@ -161,7 +161,7 @@ class FocusSessionService : Service() {
 
     fun giveUpOrStopFocusSession(isTheSessionSuccessful: Boolean) {
         if (session?.toggleDnd == true) {
-            NotificationHelper.toggleDnd(this, DndWakeLock.FocusMode, false)
+            NotificationHelper.toggleDnd(this, DndWakeLock.FOCUS_MODE, false)
         }
 
         mNotificationTimer.forceDisposeTimer(

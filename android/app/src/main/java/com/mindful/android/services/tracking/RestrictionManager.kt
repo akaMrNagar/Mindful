@@ -4,7 +4,6 @@ import android.app.Service.USAGE_STATS_SERVICE
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.util.Log
-import com.mindful.android.R
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.helpers.usages.ScreenUsageHelper
 import com.mindful.android.models.AppRestriction
@@ -91,13 +90,9 @@ class RestrictionManager(
         // Increment and Check app launch count
         val launchCount = appsLaunchCount.getOrDefault(packageName, 0) + 1
         if ((restriction.launchLimit > 0) && (launchCount > restriction.launchLimit)) {
-            val state = RestrictionState(
-                message = context.getString(R.string.app_paused_reason_launch_count_out),
-                type = RestrictionType.LaunchCount,
-                expirationFutureMs = -1L,
-            )
-            alreadyRestrictedApps[packageName] = state
-            return state
+            return RestrictionState(type = RestrictionType.LAUNCH_COUNT).also {
+                alreadyRestrictedApps[packageName] = it
+            }
         }
         appsLaunchCount[packageName] = launchCount
 
@@ -111,7 +106,7 @@ class RestrictionManager(
 
         /// Return the nearest expiration
         if (futureStates.isNotEmpty()) {
-            val nearestFutureState = futureStates.minBy { it.expirationFutureMs }
+            val nearestFutureState = futureStates.minBy { it.timeLeftMillis }
             return nearestFutureState
         } else {
             return null
@@ -121,15 +116,11 @@ class RestrictionManager(
     private fun evaluateIfAlreadyRestricted(packageName: String): RestrictionState? {
         return when {
             focusedApps.contains(packageName) -> RestrictionState(
-                message = context.getString(R.string.app_paused_reason_focus_session),
-                type = RestrictionType.FocusMode,
-                expirationFutureMs = -1L,
+                type = RestrictionType.FOCUS
             )
 
             bedtimeApps.contains(packageName) -> RestrictionState(
-                message = context.getString(R.string.app_paused_reason_bedtime),
-                type = RestrictionType.BedtimeMode,
-                expirationFutureMs = -1L,
+                type = RestrictionType.BEDTIME,
             )
 
             alreadyRestrictedApps.containsKey(packageName) -> alreadyRestrictedApps[packageName]
@@ -145,11 +136,7 @@ class RestrictionManager(
 
         /// Check app's active period
         if (restriction.activePeriodStart != restriction.activePeriodEnd) {
-            val state = RestrictionState(
-                message = context.getString(R.string.app_paused_reason_active_period_over),
-                type = RestrictionType.ActivePeriod,
-                expirationFutureMs = -1L,
-            )
+            val state = RestrictionState(type = RestrictionType.APP_ACTIVE_PERIOD)
 
             /// Outside active period
             if (DateTimeUtils.isTimeOutsideTODs(
@@ -163,7 +150,7 @@ class RestrictionManager(
             /// Launched between active period calculate expiration time
             else {
                 val willOverInMs = DateTimeUtils.todDifferenceFromNow(restriction.activePeriodEnd)
-                futureState.add(state.copy(expirationFutureMs = willOverInMs))
+                futureState.add(state.copy(timeLeftMillis = willOverInMs))
             }
         }
 
@@ -171,12 +158,7 @@ class RestrictionManager(
         /// Check group's active period
         restrictionGroups[restriction.associatedGroupId]?.let {
             if (it.activePeriodStart != it.activePeriodEnd) {
-
-                val state = RestrictionState(
-                    message = context.getString(R.string.app_paused_reason_active_period_over),
-                    type = RestrictionType.ActivePeriod,
-                    expirationFutureMs = -1L,
-                )
+                val state = RestrictionState(type = RestrictionType.GROUP_ACTIVE_PERIOD)
                 /// Outside active period
                 if (DateTimeUtils.isTimeOutsideTODs(it.activePeriodStart, it.activePeriodEnd)) {
                     Log.d(
@@ -188,7 +170,7 @@ class RestrictionManager(
                 /// Launched between active period calculate expiration time
                 else {
                     val willOverInMs = DateTimeUtils.todDifferenceFromNow(it.activePeriodEnd)
-                    futureState.add(state.copy(expirationFutureMs = willOverInMs))
+                    futureState.add(state.copy(timeLeftMillis = willOverInMs))
                 }
             }
         }
@@ -211,12 +193,10 @@ class RestrictionManager(
             if (screenTimeSec >= restriction.timerSec) {
                 Log.d(TAG, "evaluateScreenTimeLimit: App's timer is over")
                 val state = RestrictionState(
-                    message = context.getString(R.string.app_paused_reason_app_timer_out),
-                    type = RestrictionType.Timer,
-                    expirationFutureMs = -1L,
-                    usedScreenTime = screenTimeSec,
-                    totalScreenTimer = restriction.timerSec.toLong(),
-                    showUsageReminders = restriction.usageReminders,
+                    type = RestrictionType.APP_TIMER,
+                    screenTimeUsed = screenTimeSec,
+                    screenTimeLimit = restriction.timerSec.toLong(),
+                    reminderType = restriction.reminderType,
                 )
 
                 alreadyRestrictedApps[restriction.appPackage] = state
@@ -226,12 +206,11 @@ class RestrictionManager(
                 val leftAppLimitMs = (restriction.timerSec - screenTimeSec) * 1000L
                 futureStates.add(
                     RestrictionState(
-                        message = context.getString(R.string.app_paused_reason_app_timer_left),
-                        type = RestrictionType.Timer,
-                        expirationFutureMs = leftAppLimitMs,
-                        usedScreenTime = screenTimeSec,
-                        totalScreenTimer = restriction.timerSec.toLong(),
-                        showUsageReminders = restriction.usageReminders,
+                        type = RestrictionType.APP_TIMER,
+                        timeLeftMillis = leftAppLimitMs,
+                        screenTimeUsed = screenTimeSec,
+                        screenTimeLimit = restriction.timerSec.toLong(),
+                        reminderType = restriction.reminderType,
                     )
                 )
             }
@@ -252,15 +231,10 @@ class RestrictionManager(
                 if (groupScreenTimeSec >= group.timerSec) {
                     Log.d(TAG, "evaluateScreenTimeLimit: App's timer is over")
                     val state = RestrictionState(
-                        message = context.getString(
-                            R.string.app_paused_reason_group_timer_out,
-                            group.groupName
-                        ),
-                        type = RestrictionType.Timer,
-                        expirationFutureMs = -1L,
-                        usedScreenTime = groupScreenTimeSec,
-                        totalScreenTimer = group.timerSec.toLong(),
-                        showUsageReminders = restriction.usageReminders,
+                        type = RestrictionType.GROUP_TIMER,
+                        screenTimeUsed = groupScreenTimeSec,
+                        screenTimeLimit = group.timerSec.toLong(),
+                        reminderType = restriction.reminderType,
                     )
 
                     alreadyRestrictedGroups[group.id] = state
@@ -270,15 +244,11 @@ class RestrictionManager(
                     val leftAppLimitMs = (group.timerSec - groupScreenTimeSec) * 1000L
                     futureStates.add(
                         RestrictionState(
-                            message = context.getString(
-                                R.string.app_paused_reason_group_timer_left,
-                                group.groupName
-                            ),
-                            type = RestrictionType.Timer,
-                            expirationFutureMs = leftAppLimitMs,
-                            usedScreenTime = groupScreenTimeSec,
-                            totalScreenTimer = group.timerSec.toLong(),
-                            showUsageReminders = restriction.usageReminders,
+                            type = RestrictionType.GROUP_TIMER,
+                            timeLeftMillis = leftAppLimitMs,
+                            screenTimeUsed = groupScreenTimeSec,
+                            screenTimeLimit = group.timerSec.toLong(),
+                            reminderType = restriction.reminderType,
                         )
                     )
                 }

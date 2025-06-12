@@ -1,7 +1,7 @@
 package com.mindful.android.enums
 
 enum class DndWakeLock {
-    None,
-    FocusMode,
-    BedtimeMode,
+    NONE,
+    FOCUS_MODE,
+    BEDTIME_MODE,
 }

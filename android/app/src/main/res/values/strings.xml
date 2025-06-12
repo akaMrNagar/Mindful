@@ -15,7 +15,7 @@
     <string name="toast_enable_notification">Please enable notification</string>
     <string name="toast_blocked_content">Content blocked! going back</string>
     <string name="toast_redirecting">Filtering search results</string>
-    <string name="toast_dnd_utilized_by_feature" comment="Placeholder is the name of feature like Focus mode, Bedtime or more" formatted="true">"%s" is currently using DND mode.</string>
+    <string name="toast_dnd_utilized_by_feature" comment="Placeholder is the name of feature like Focus mode, Bedtime or more" formatted="true">%s is currently using DND mode.</string>
     <string name="service_running_notification_title">Mindful is running</string>
     <string name="shortcut_focus_mode_label">Focus mode</string>
     <string name="shortcut_focus_mode_description">Quickly start a focus session with custom profiles.</string>
@@ -34,18 +34,22 @@
     <string name="overlay_permission_denied_notification_info">Please grant display overlay permission to Mindful by clicking on the notification. On the next screen, find Mindful in the list of apps and click on allow.</string>
     <string name="app_paused_reason_focus_session">It\'s focus time! This app is paused to help you stay on track and make the most of your session.</string>
     <string name="app_paused_reason_bedtime">It\'s bedtime! This app is paused for the night to help you unwind and prepare for a peaceful sleep.</string>
+    <string name="app_paused_reason_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
     <string name="app_paused_reason_app_timer_left">You\'ve been using this app for a while now. Let\'s shift gears and take a break from the screen and focus on something productive.</string>
     <string name="app_paused_reason_app_timer_out">You\'ve hit your daily limit on this app. Embrace this opportunity to supercharge your productivity.</string>
-    <string name="app_paused_reason_launch_count_out">You\'ve reached the maximum number of launches for this app today. It\'s time to step away and refocus on your priorities.</string>
-    <string name="app_paused_reason_active_period_over">Access to this app is currently paused because it\'s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
-    <string name="app_paused_reason_group_timer_left" formatted="true">You\'ve been using apps from the "%s" group for a while now. It\'s time to take a step back and concentrate on your tasks, not your screen.</string>
-    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">You\'ve reached the total time limit for the "%s" group today. Take a break and recharge your focus.</string>
-    <string name="app_paused_reason_group_active_period_over" formatted="true">Apps in the "%s" group are currently paused as it\'s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
+    <string name="app_paused_reason_app_active_period_over">Access to this app is currently paused because it\'s outside your set active hours. Take this time to focus on what matters most, and check back during the allowed time.</string>
+    <string name="app_paused_reason_group_timer_left" formatted="true">You\'ve been using apps from the \'%s\' group for a while now. It\'s time to take a step back and concentrate on your tasks, not your screen.</string>
+    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">You\'ve reached the total time limit for the \'%s\' group today. Take a break and recharge your focus.</string>
+    <string name="app_paused_reason_group_active_period_over" formatted="true">Apps in the \'%s\' group are currently paused as it\'s outside your set active hours. Use this opportunity to recharge or focus on your tasks, and return during the designated time.</string>
+
     <string name="app_paused_restriction_focus_mode">Focus mode</string>
     <string name="app_paused_restriction_bedtime_mode">Bedtime mode</string>
-    <string name="app_paused_restriction_timer">Timer</string>
     <string name="app_paused_restriction_launch_count">Launch count</string>
-    <string name="app_paused_restriction_active_period">Active period</string>
+    <string name="app_paused_restriction_app_timer">App timer</string>
+    <string name="app_paused_restriction_app_active_period">App active period</string>
+    <string name="app_paused_restriction_group_timer">Group timer</string>
+    <string name="app_paused_restriction_group_active_period">Group active period</string>
+
     <string name="app_paused_overlay_button_emergency">Emergency</string>
     <string name="app_paused_overlay_label_spent_today">Spent today</string>
     <string name="app_paused_overlay_label_left_today">Left today</string>
@@ -54,19 +58,22 @@
     <string name="app_paused_overlay_button_five_minutes">5 minutes</string>
     <string name="app_paused_overlay_button_ten_minutes">10 minutes</string>
     <string name="app_paused_overlay_button_twenty_minutes">20 minutes</string>
-    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">Close "%s"</string>
+    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">Close %s</string>
+
+    <string name="app_screen_time_usage_info" comment="Time as placeholder. ex: 'Used for 2h 15m'" formatted="true">Used for %s</string>
+
     <string name="bedtime_upcoming_notification_info">Bedtime starts in 30 minutes. Use this time to wrap up and get ready for a fresh start tomorrow</string>
     <string name="bedtime_started_notification_info">It\'s time to wind down. Bedtime routine has started, helping you relax and prepare for a restful night\'s sleep.</string>
     <string name="bedtime_ended_notification_info">Rise and shine! Bedtime routine has ended, get ready to start the day energized and refreshed.</string>
     <string name="emergency_pause_notification_title">Emergency Pause</string>
-    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">App blocker will resume after "%s"</string>
+    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">App blocker will resume after %s</string>
     <string name="emergency_pause_ended_notification_info">Emergency pause is over, and app blocker is back in action. Distractions are now blocked again, stay focused!</string>
     <string name="focus_session_notification_title">Focus Session</string>
-    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">Focus session will end in "%s"</string>
-    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">You\'ve been focused for "%s"</string>
+    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">Focus session will end in %s</string>
+    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">You\'ve been focused for %s</string>
     <string name="focus_session_success_notification_info">Congratulations! You\'ve successfully completed your focus session. Great job staying on track! Keep up the amazing work!</string>
     <string name="focus_session_giveup_notification_info">You gave up! Don\'t worry, you can do better next time. Every effort counts - just keep going</string>
 
     <string name="notification_schedule_batch_title">Unread notifications</string>
-    <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">You have "%d" unread notifications while you were away. They’ll be marked as read after 24 hours.</string>
+    <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">You have %d unread notifications while you were away. They’ll be marked as read after 24 hours.</string>
 </resources>
