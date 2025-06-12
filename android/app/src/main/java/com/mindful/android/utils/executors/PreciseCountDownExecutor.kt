@@ -22,7 +22,6 @@ class PreciseCountDownExecutor(
         // Cancel previous executor and reset
         cancel()
 
-
         handlerThread = HandlerThread("PreciseCountDownThread")
         handlerThread?.start()
         handler = Handler(handlerThread!!.looper)

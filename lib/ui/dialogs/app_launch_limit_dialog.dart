@@ -12,6 +12,7 @@ import 'dart:math';
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
@@ -66,6 +67,8 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
         0,
         (direction.isNegative ? (_launchLimit - 5) : (_launchLimit + 5)),
       );
+
+      _controller.text = _launchLimit.toString();
     });
   }
 
@@ -81,7 +84,8 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
             child: AlertDialog(
               scrollable: true,
               icon: const Icon(FluentIcons.rocket_20_filled),
-              title: StyledText(context.locale.app_launch_limit_tile_title, fontSize: 16),
+              title: StyledText(context.locale.app_launch_limit_tile_title,
+                  fontSize: 16),
               insetPadding: EdgeInsets.zero,
               content: Container(
                 width: MediaQuery.of(context).size.width,
@@ -105,10 +109,29 @@ class _LaunchLimitDialogState extends State<_LaunchLimitDialog> {
                               icon: const Icon(FluentIcons.subtract_20_filled),
                               onPressed: () => _changeLimit(-1),
                             ),
-                            StyledText(
-                              _launchLimit.toString(),
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
+
+                            /// Input field
+                            Expanded(
+                              child: TextField(
+                                maxLength: 4,
+                                controller: _controller,
+                                textAlign: TextAlign.center,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.done,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
+                                onChanged: (value) => _launchLimit =
+                                    int.tryParse(value) ?? _launchLimit,
+                                decoration: const InputDecoration(
+                                  counter: SizedBox.shrink(),
+                                  border: InputBorder.none,
+                                ),
+                              ),
                             ),
                             IconButton.filledTonal(
                               icon: const Icon(FluentIcons.add_20_filled),

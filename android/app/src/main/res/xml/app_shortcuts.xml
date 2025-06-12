@@ -28,14 +28,13 @@
         tools:ignore="UnusedAttribute">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="com.mindful.android://open/upcomingNotifications"
+            android:data="com.mindful.android://open/notifications"
             android:targetClass="com.mindful.android.MainActivity" />
 
         <categories android:name="android.shortcut.static" />
     </shortcut>
 
     <!--  Parental controls shortcut  -->
-    <!--  Upcoming notifications shortcut  -->
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_parental_controls"
