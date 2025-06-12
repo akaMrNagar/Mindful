@@ -55,7 +55,7 @@ class ReminderManager(
                     ReminderType.NONE -> return@PreciseCountDownExecutor
                     ReminderType.TOAST -> onToastReminder(packageName, elapsed, state)
                     ReminderType.NOTIFICATION -> onNotificationReminder(packageName, elapsed, state)
-                    ReminderType.BOTTOM_SHEET -> onFullScreenReminder(packageName, elapsed, state)
+                    ReminderType.MODAL_SHEET -> onFullScreenReminder(packageName, elapsed, state)
                 }
             },
 
@@ -125,7 +125,7 @@ class ReminderManager(
         reminderTriggers.clear()
 
         when (state.reminderType) {
-            ReminderType.BOTTOM_SHEET -> {
+            ReminderType.MODAL_SHEET -> {
                 // Add the first reminder after 1 minute if > 2 mins left
                 if ((state.screenTimeLimit - state.screenTimeUsed) > 120) {
                     reminderTriggers.add(1)

@@ -11,6 +11,7 @@
 import 'package:drift/drift.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
+import 'package:mindful/core/enums/reminder_type.dart';
 
 @DataClassName("AppRestriction")
 class AppRestrictionTable extends Table {
@@ -50,7 +51,7 @@ class AppRestrictionTable extends Table {
   BoolColumn get canAccessInternet =>
       boolean().withDefault(const Constant(true))();
 
-  /// Flag denoting if to show usage reminders while using timed app
-  BoolColumn get usageReminders =>
-      boolean().withDefault(const Constant(true))();
+  /// [ReminderType] Type of reminders to show when using timed app
+  TextColumn get reminderType =>
+      textEnum<ReminderType>().withDefault(Constant(ReminderType.toast.name))();
 }

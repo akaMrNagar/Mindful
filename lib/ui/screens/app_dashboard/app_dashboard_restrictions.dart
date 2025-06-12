@@ -14,6 +14,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/enums/item_position.dart';
+import 'package:mindful/core/enums/reminder_type.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
@@ -24,6 +25,7 @@ import 'package:mindful/providers/system/parental_controls_provider.dart';
 import 'package:mindful/providers/usage/apps_launch_count_provider.dart';
 import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
+import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
@@ -106,17 +108,27 @@ class AppDashboardRestrictions extends ConsumerWidget {
           duration: 500.ms,
           child: SliverVisibility(
             visible: restriction.timerSec > 0,
-            sliver: DefaultListTile(
+            sliver: DefaultDropdownTile<ReminderType>(
+              value: restriction.reminderType,
               position: ItemPosition.mid,
-              switchValue: restriction.usageReminders,
               leadingIcon: FluentIcons.dual_screen_closed_alert_20_regular,
               titleText: context.locale.usage_reminders_tile_title,
-              subtitleText: context.locale.usage_reminders_tile_subtitle,
-              onPressed: () =>
-                  ref.read(appsRestrictionsProvider.notifier).setUsageReminders(
+              dialogIcon: FluentIcons.dual_screen_closed_alert_20_filled,
+              infoText: context.locale.usage_reminders_tile_subtitle,
+              onSelected: (type) =>
+                  ref.read(appsRestrictionsProvider.notifier).setReminderType(
                         appInfo.packageName,
-                        !restriction.usageReminders,
+                        type,
                       ),
+              items: {
+                "None": ReminderType.none,
+                "Toast": ReminderType.toast,
+                "Notification": ReminderType.notification,
+                "Modal Sheet": ReminderType.modalSheet,
+              }
+                  .entries
+                  .map((e) => DefaultDropdownItem(label: e.key, value: e.value))
+                  .toList(),
             ).sliver,
           ),
         ),

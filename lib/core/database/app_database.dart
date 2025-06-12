@@ -37,6 +37,7 @@ import 'package:mindful/core/database/tables/wellbeing_table.dart';
 import 'package:mindful/core/enums/app_theme_mode.dart';
 import 'package:mindful/core/enums/default_home_tab.dart';
 import 'package:mindful/core/enums/recap_type.dart';
+import 'package:mindful/core/enums/reminder_type.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/config/app_constants.dart';
@@ -81,7 +82,7 @@ class AppDatabase extends _$AppDatabase {
   //
   // STEP 6 => Add migration steps to migration strategy by create new file in migrations folder. See previous migrations for help
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   // Always use [runSafe()] for upgrades - why?
   // If a user imports a backup from a newer schema when they are on an older
@@ -104,6 +105,7 @@ class AppDatabase extends _$AppDatabase {
               from5To6: from5To6,
               from6To7: from6To7,
               from7To8: from7To8,
+              from8To9: from8To9,
             ),
           );
         },

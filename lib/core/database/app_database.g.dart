@@ -75,16 +75,15 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("can_access_internet" IN (0, 1))'),
       defaultValue: const Constant(true));
-  static const VerificationMeta _usageRemindersMeta =
-      const VerificationMeta('usageReminders');
   @override
-  late final GeneratedColumn<bool> usageReminders = GeneratedColumn<bool>(
-      'usage_reminders', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("usage_reminders" IN (0, 1))'),
-      defaultValue: const Constant(true));
+  late final GeneratedColumnWithTypeConverter<ReminderType, String>
+      reminderType = GeneratedColumn<String>(
+              'reminder_type', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(ReminderType.toast.name))
+          .withConverter<ReminderType>(
+              $AppRestrictionTableTable.$converterreminderType);
   @override
   List<GeneratedColumn> get $columns => [
         appPackage,
@@ -95,7 +94,7 @@ class $AppRestrictionTableTable extends AppRestrictionTable
         periodDurationInMins,
         associatedGroupId,
         canAccessInternet,
-        usageReminders
+        reminderType
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -143,12 +142,6 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           canAccessInternet.isAcceptableOrUnknown(
               data['can_access_internet']!, _canAccessInternetMeta));
     }
-    if (data.containsKey('usage_reminders')) {
-      context.handle(
-          _usageRemindersMeta,
-          usageReminders.isAcceptableOrUnknown(
-              data['usage_reminders']!, _usageRemindersMeta));
-    }
     return context;
   }
 
@@ -176,8 +169,9 @@ class $AppRestrictionTableTable extends AppRestrictionTable
           DriftSqlType.int, data['${effectivePrefix}associated_group_id']),
       canAccessInternet: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}can_access_internet'])!,
-      usageReminders: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}usage_reminders'])!,
+      reminderType: $AppRestrictionTableTable.$converterreminderType.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}reminder_type'])!),
     );
   }
 
@@ -190,6 +184,9 @@ class $AppRestrictionTableTable extends AppRestrictionTable
       $converteractivePeriodStart = const TimeOfDayAdapterConverter();
   static JsonTypeConverter2<TimeOfDayAdapter, int, dynamic>
       $converteractivePeriodEnd = const TimeOfDayAdapterConverter();
+  static JsonTypeConverter2<ReminderType, String, String>
+      $converterreminderType =
+      const EnumNameConverter<ReminderType>(ReminderType.values);
 }
 
 class AppRestriction extends DataClass implements Insertable<AppRestriction> {
@@ -219,8 +216,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
   /// Flag denoting if this app can access internet or not
   final bool canAccessInternet;
 
-  /// Flag denoting if to show usage reminders while using timed app
-  final bool usageReminders;
+  /// [ReminderType] Type of reminders to show when using timed app
+  final ReminderType reminderType;
   const AppRestriction(
       {required this.appPackage,
       required this.timerSec,
@@ -230,7 +227,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       required this.periodDurationInMins,
       this.associatedGroupId,
       required this.canAccessInternet,
-      required this.usageReminders});
+      required this.reminderType});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -252,7 +249,10 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       map['associated_group_id'] = Variable<int>(associatedGroupId);
     }
     map['can_access_internet'] = Variable<bool>(canAccessInternet);
-    map['usage_reminders'] = Variable<bool>(usageReminders);
+    {
+      map['reminder_type'] = Variable<String>(
+          $AppRestrictionTableTable.$converterreminderType.toSql(reminderType));
+    }
     return map;
   }
 
@@ -268,7 +268,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           ? const Value.absent()
           : Value(associatedGroupId),
       canAccessInternet: Value(canAccessInternet),
-      usageReminders: Value(usageReminders),
+      reminderType: Value(reminderType),
     );
   }
 
@@ -287,7 +287,8 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           serializer.fromJson<int>(json['periodDurationInMins']),
       associatedGroupId: serializer.fromJson<int?>(json['associatedGroupId']),
       canAccessInternet: serializer.fromJson<bool>(json['canAccessInternet']),
-      usageReminders: serializer.fromJson<bool>(json['usageReminders']),
+      reminderType: $AppRestrictionTableTable.$converterreminderType
+          .fromJson(serializer.fromJson<String>(json['reminderType'])),
     );
   }
   @override
@@ -306,7 +307,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       'periodDurationInMins': serializer.toJson<int>(periodDurationInMins),
       'associatedGroupId': serializer.toJson<int?>(associatedGroupId),
       'canAccessInternet': serializer.toJson<bool>(canAccessInternet),
-      'usageReminders': serializer.toJson<bool>(usageReminders),
+      'reminderType': serializer.toJson<String>($AppRestrictionTableTable
+          .$converterreminderType
+          .toJson(reminderType)),
     };
   }
 
@@ -319,7 +322,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           int? periodDurationInMins,
           Value<int?> associatedGroupId = const Value.absent(),
           bool? canAccessInternet,
-          bool? usageReminders}) =>
+          ReminderType? reminderType}) =>
       AppRestriction(
         appPackage: appPackage ?? this.appPackage,
         timerSec: timerSec ?? this.timerSec,
@@ -331,7 +334,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
             ? associatedGroupId.value
             : this.associatedGroupId,
         canAccessInternet: canAccessInternet ?? this.canAccessInternet,
-        usageReminders: usageReminders ?? this.usageReminders,
+        reminderType: reminderType ?? this.reminderType,
       );
   AppRestriction copyWithCompanion(AppRestrictionTableCompanion data) {
     return AppRestriction(
@@ -355,9 +358,9 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       canAccessInternet: data.canAccessInternet.present
           ? data.canAccessInternet.value
           : this.canAccessInternet,
-      usageReminders: data.usageReminders.present
-          ? data.usageReminders.value
-          : this.usageReminders,
+      reminderType: data.reminderType.present
+          ? data.reminderType.value
+          : this.reminderType,
     );
   }
 
@@ -372,7 +375,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           ..write('periodDurationInMins: $periodDurationInMins, ')
           ..write('associatedGroupId: $associatedGroupId, ')
           ..write('canAccessInternet: $canAccessInternet, ')
-          ..write('usageReminders: $usageReminders')
+          ..write('reminderType: $reminderType')
           ..write(')'))
         .toString();
   }
@@ -387,7 +390,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
       periodDurationInMins,
       associatedGroupId,
       canAccessInternet,
-      usageReminders);
+      reminderType);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -400,7 +403,7 @@ class AppRestriction extends DataClass implements Insertable<AppRestriction> {
           other.periodDurationInMins == this.periodDurationInMins &&
           other.associatedGroupId == this.associatedGroupId &&
           other.canAccessInternet == this.canAccessInternet &&
-          other.usageReminders == this.usageReminders);
+          other.reminderType == this.reminderType);
 }
 
 class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
@@ -412,7 +415,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
   final Value<int> periodDurationInMins;
   final Value<int?> associatedGroupId;
   final Value<bool> canAccessInternet;
-  final Value<bool> usageReminders;
+  final Value<ReminderType> reminderType;
   final Value<int> rowid;
   const AppRestrictionTableCompanion({
     this.appPackage = const Value.absent(),
@@ -423,7 +426,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     this.periodDurationInMins = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
     this.canAccessInternet = const Value.absent(),
-    this.usageReminders = const Value.absent(),
+    this.reminderType = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   AppRestrictionTableCompanion.insert({
@@ -435,7 +438,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     this.periodDurationInMins = const Value.absent(),
     this.associatedGroupId = const Value.absent(),
     this.canAccessInternet = const Value.absent(),
-    this.usageReminders = const Value.absent(),
+    this.reminderType = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : appPackage = Value(appPackage);
   static Insertable<AppRestriction> custom({
@@ -447,7 +450,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     Expression<int>? periodDurationInMins,
     Expression<int>? associatedGroupId,
     Expression<bool>? canAccessInternet,
-    Expression<bool>? usageReminders,
+    Expression<String>? reminderType,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -460,7 +463,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
         'period_duration_in_mins': periodDurationInMins,
       if (associatedGroupId != null) 'associated_group_id': associatedGroupId,
       if (canAccessInternet != null) 'can_access_internet': canAccessInternet,
-      if (usageReminders != null) 'usage_reminders': usageReminders,
+      if (reminderType != null) 'reminder_type': reminderType,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -474,7 +477,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       Value<int>? periodDurationInMins,
       Value<int?>? associatedGroupId,
       Value<bool>? canAccessInternet,
-      Value<bool>? usageReminders,
+      Value<ReminderType>? reminderType,
       Value<int>? rowid}) {
     return AppRestrictionTableCompanion(
       appPackage: appPackage ?? this.appPackage,
@@ -485,7 +488,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
       periodDurationInMins: periodDurationInMins ?? this.periodDurationInMins,
       associatedGroupId: associatedGroupId ?? this.associatedGroupId,
       canAccessInternet: canAccessInternet ?? this.canAccessInternet,
-      usageReminders: usageReminders ?? this.usageReminders,
+      reminderType: reminderType ?? this.reminderType,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -522,8 +525,10 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
     if (canAccessInternet.present) {
       map['can_access_internet'] = Variable<bool>(canAccessInternet.value);
     }
-    if (usageReminders.present) {
-      map['usage_reminders'] = Variable<bool>(usageReminders.value);
+    if (reminderType.present) {
+      map['reminder_type'] = Variable<String>($AppRestrictionTableTable
+          .$converterreminderType
+          .toSql(reminderType.value));
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -542,7 +547,7 @@ class AppRestrictionTableCompanion extends UpdateCompanion<AppRestriction> {
           ..write('periodDurationInMins: $periodDurationInMins, ')
           ..write('associatedGroupId: $associatedGroupId, ')
           ..write('canAccessInternet: $canAccessInternet, ')
-          ..write('usageReminders: $usageReminders, ')
+          ..write('reminderType: $reminderType, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6041,7 +6046,7 @@ typedef $$AppRestrictionTableTableCreateCompanionBuilder
   Value<int> periodDurationInMins,
   Value<int?> associatedGroupId,
   Value<bool> canAccessInternet,
-  Value<bool> usageReminders,
+  Value<ReminderType> reminderType,
   Value<int> rowid,
 });
 typedef $$AppRestrictionTableTableUpdateCompanionBuilder
@@ -6054,7 +6059,7 @@ typedef $$AppRestrictionTableTableUpdateCompanionBuilder
   Value<int> periodDurationInMins,
   Value<int?> associatedGroupId,
   Value<bool> canAccessInternet,
-  Value<bool> usageReminders,
+  Value<ReminderType> reminderType,
   Value<int> rowid,
 });
 
@@ -6098,9 +6103,10 @@ class $$AppRestrictionTableTableFilterComposer
       column: $table.canAccessInternet,
       builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<bool> get usageReminders => $composableBuilder(
-      column: $table.usageReminders,
-      builder: (column) => ColumnFilters(column));
+  ColumnWithTypeConverterFilters<ReminderType, ReminderType, String>
+      get reminderType => $composableBuilder(
+          column: $table.reminderType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 }
 
 class $$AppRestrictionTableTableOrderingComposer
@@ -6141,8 +6147,8 @@ class $$AppRestrictionTableTableOrderingComposer
       column: $table.canAccessInternet,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get usageReminders => $composableBuilder(
-      column: $table.usageReminders,
+  ColumnOrderings<String> get reminderType => $composableBuilder(
+      column: $table.reminderType,
       builder: (column) => ColumnOrderings(column));
 }
 
@@ -6181,8 +6187,9 @@ class $$AppRestrictionTableTableAnnotationComposer
   GeneratedColumn<bool> get canAccessInternet => $composableBuilder(
       column: $table.canAccessInternet, builder: (column) => column);
 
-  GeneratedColumn<bool> get usageReminders => $composableBuilder(
-      column: $table.usageReminders, builder: (column) => column);
+  GeneratedColumnWithTypeConverter<ReminderType, String> get reminderType =>
+      $composableBuilder(
+          column: $table.reminderType, builder: (column) => column);
 }
 
 class $$AppRestrictionTableTableTableManager extends RootTableManager<
@@ -6222,7 +6229,7 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             Value<int> periodDurationInMins = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
             Value<bool> canAccessInternet = const Value.absent(),
-            Value<bool> usageReminders = const Value.absent(),
+            Value<ReminderType> reminderType = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion(
@@ -6234,7 +6241,7 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             periodDurationInMins: periodDurationInMins,
             associatedGroupId: associatedGroupId,
             canAccessInternet: canAccessInternet,
-            usageReminders: usageReminders,
+            reminderType: reminderType,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -6246,7 +6253,7 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             Value<int> periodDurationInMins = const Value.absent(),
             Value<int?> associatedGroupId = const Value.absent(),
             Value<bool> canAccessInternet = const Value.absent(),
-            Value<bool> usageReminders = const Value.absent(),
+            Value<ReminderType> reminderType = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               AppRestrictionTableCompanion.insert(
@@ -6258,7 +6265,7 @@ class $$AppRestrictionTableTableTableManager extends RootTableManager<
             periodDurationInMins: periodDurationInMins,
             associatedGroupId: associatedGroupId,
             canAccessInternet: canAccessInternet,
-            usageReminders: usageReminders,
+            reminderType: reminderType,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

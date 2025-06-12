@@ -4,7 +4,7 @@ enum class ReminderType {
     NONE,
     TOAST,
     NOTIFICATION,
-    BOTTOM_SHEET;
+    MODAL_SHEET;
 
     companion object {
         fun fromName(name: String): ReminderType {
@@ -12,7 +12,7 @@ enum class ReminderType {
                 "none" -> NONE
                 "toast" -> TOAST
                 "notification" -> NOTIFICATION
-                "bottomSheet" -> BOTTOM_SHEET
+                "modalSheet" -> MODAL_SHEET
                 else -> NONE
             }
         }
