@@ -78,7 +78,7 @@
             }
         }
     },
-    "nSeconds": "{count, plural, one {}=0{0 segundos} =1{1 segundo} other{{count} segundos}}",
+    "nSeconds": "{count, plural, =0{0 segundos} =1{1 segundo} other{{count} segundos}}",
     "@nSeconds": {
         "placeholders": {
             "count": {

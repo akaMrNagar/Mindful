@@ -55,7 +55,7 @@
     "@----------------------------- DATE AND TIME -----------------------------": {},
     "day_today": "Σήμερα",
     "day_yesterday": "Χθες",
-    "nDays": "{count, plural, one {}=0{0 ημέρα} =1{1 ημέρα} other{{count} ημέρες}}",
+    "nDays": "{count, plural, =0{0 ημέρα} =1{1 ημέρα} other{{count} ημέρες}}",
     "@nDays": {
         "placeholders": {
             "count": {
@@ -64,7 +64,7 @@
             }
         }
     },
-    "nHours": "{count, plural, one {}=0{0 ώρα} =1{1 ώρα} other{{count} ώρες}}",
+    "nHours": "{count, plural, =0{0 ώρα} =1{1 ώρα} other{{count} ώρες}}",
     "@nHours": {
         "placeholders": {
             "count": {
@@ -73,7 +73,7 @@
             }
         }
     },
-    "nMinutes": "{count, plural, one {}=0{0 λεπτό} =1{1 λεπτό} other{{count} λεπτά}}",
+    "nMinutes": "{count, plural,=0{0 λεπτό} =1{1 λεπτό} other{{count} λεπτά}}",
     "@nMinutes": {
         "placeholders": {
             "count": {
@@ -82,7 +82,7 @@
             }
         }
     },
-    "nSeconds": "{count, plural, one {}=0{0 δευτερόλεπτο} =1{1 δευτερόλεπτο} other{{count} δευτερόλεπτα}}",
+    "nSeconds": "{count, plural, =0{0 δευτερόλεπτο} =1{1 δευτερόλεπτο} other{{count} δευτερόλεπτα}}",
     "@nSeconds": {
         "placeholders": {
             "count": {

@@ -54,7 +54,7 @@
     "@----------------------------- DATE AND TIME -----------------------------": {},
     "day_today": "اليوم",
     "day_yesterday": "أمس",
-    "nDays": "{count, plural, zero {} one {{count} أيام} two {{count} أيام} few {{count} أيام} many {{count} أيام}=0{٠ يوم} =1{يوم واحد} other{{count} أيام}}",
+    "nDays": "{count, plural, =0{٠ يوم} =1{يوم واحد} other{{count} أيام}}",
     "@nDays": {
         "placeholders": {
             "count": {
@@ -63,7 +63,7 @@
             }
         }
     },
-    "nHours": "{count, plural, zero {} one {{count} ساعات} two {{count} ساعات} few {{count} ساعات} many {{count} ساعات}=0{٠ ساعة} =1{ساعة واحدة} other{{count} ساعات}}",
+    "nHours": "{count, plural, =0{٠ ساعة} =1{ساعة واحدة} other{{count} ساعات}}",
     "@nHours": {
         "placeholders": {
             "count": {
@@ -72,7 +72,7 @@
             }
         }
     },
-    "nMinutes": "{count, plural, zero {} one {{count} دقائق} two {{count} دقائق} few {{count} دقائق} many {{count} دقائق}=0{٠ دقيقة} =1{دقيقة واحدة} other{{count} دقائق}}",
+    "nMinutes": "{count, plural, =0{٠ دقيقة} =1{دقيقة واحدة} other{{count} دقائق}}",
     "@nMinutes": {
         "placeholders": {
             "count": {
@@ -81,7 +81,7 @@
             }
         }
     },
-    "nSeconds": "{count, plural, zero {} one {{count} ثواني} two {{count} ثواني} few {{count} ثواني} many {{count} ثواني}=0{٩ ثانية} =1{ثانية واحدة} other{{count} ثواني}}",
+    "nSeconds": "{count, plural, =0{٩ ثانية} =1{ثانية واحدة} other{{count} ثواني}}",
     "@nSeconds": {
         "placeholders": {
             "count": {
@@ -147,6 +147,7 @@
     "username_dialog_button_apply": "تطبيق",
     "screen_time_label": "وقت استخدام الشاشة",
     "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
+    "statistics_tab_title": "إحصائيات",
     "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
     "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
     "@----------------------------- PARENTAL CONTROLS SCREEN-----------------------------": {},

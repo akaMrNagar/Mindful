@@ -47,7 +47,7 @@
     "@----------------------------- DATE AND TIME -----------------------------": {},
     "day_today": "Heute",
     "day_yesterday": "Gestern",
-    "nDays": "{count, plural, one {}=0{0 Tage} =1{1 Tag} other{{count} Tage}}",
+    "nDays": "{count, plural, =0{0 Tage} =1{1 Tag} other{{count} Tage}}",
     "@nDays": {
         "placeholders": {
             "count": {
@@ -56,7 +56,7 @@
             }
         }
     },
-    "nHours": "{count, plural, one {}=0{0 Stunden} =1{1 Stunde} other{{count} Stunden}}",
+    "nHours": "{count, plural, =0{0 Stunden} =1{1 Stunde} other{{count} Stunden}}",
     "@nHours": {
         "placeholders": {
             "count": {
@@ -65,7 +65,7 @@
             }
         }
     },
-    "nMinutes": "{count, plural, one {}=0{0 Minuten} =1{1 Minute} other{{count} Minuten}}",
+    "nMinutes": "{count, plural, =0{0 Minuten} =1{1 Minute} other{{count} Minuten}}",
     "@nMinutes": {
         "placeholders": {
             "count": {
@@ -74,7 +74,7 @@
             }
         }
     },
-    "nSeconds": "{count, plural, one {}=0{0 Sekunden} =1{1 Sekunde} other{{count} Sekunden}}",
+    "nSeconds": "{count, plural, =0{0 Sekunden} =1{1 Sekunde} other{{count} Sekunden}}",
     "@nSeconds": {
         "placeholders": {
             "count": {
