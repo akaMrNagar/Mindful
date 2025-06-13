@@ -86,7 +86,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get permission_accessibility_info => 'リール・ショート動画へのアクセス制限や不適切なSNS・ウェブサイトのブロックをするために、ユーザー補助を有効にしてください。';
 
   @override
-  String get permission_accessibility_required => 'Mindful requires accessibility permission to block short content and websites effectively.';
+  String get permission_accessibility_required => 'Mindful がショートコンテンツやウェブサイトを効果的にブロックするには、ユーザー補助の権限が必要です。';
 
   @override
   String get permission_accessibility_device_tile_label => 'Mindful の使用';
@@ -113,7 +113,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get permission_battery_optimization_status_disabled => 'バックグラウンドで動作していません';
 
   @override
-  String get permission_battery_optimization_allow_info => 'Allowing \'Ignore Battery Optimization\' will automatically grant the \'Alarms & Reminders\' permission on some devices.';
+  String get permission_battery_optimization_allow_info => '「バッテリー最適化を無視する」を許可すると、一部のデバイスでは「アラームとリマインダー」の権限が自動的に付与されます。';
 
   @override
   String get permission_vpn_title => 'VPNを作成';
@@ -131,16 +131,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get permission_admin_snack_alert => 'デバイス管理アプリの有効化は、選択した時間帯以外では無効にすることができません。';
 
   @override
-  String get permission_notification_access_title => 'Notification Access';
+  String get permission_notification_access_title => '通知へのアクセス';
 
   @override
-  String get permission_notification_access_info => 'Please grant notification access permission. This will allow Mindful to organize your notifications and deliver them on your schedule.';
+  String get permission_notification_access_info => '通知へのアクセス権限を許可してください。これにより、Mindful が通知を整理し、あなたのスケジュールに合わせて通知を配信できるようになります。';
 
   @override
-  String get permission_notification_access_required => 'Mindful requires notification access to batch and schedule notifications.';
+  String get permission_notification_access_required => 'Mindful が通知をまとめてスケジュール配信するには、通知へのアクセス権限が必要です。';
 
   @override
-  String get permission_notification_access_device_tile_label => 'Allow notification access';
+  String get permission_notification_access_device_tile_label => '通知へのアクセスを許可';
 
   @override
   String get day_today => '今日';
@@ -248,13 +248,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dialog_button_reset => 'リセット';
 
   @override
-  String get dialog_button_infinite => 'Infinite';
+  String get dialog_button_infinite => '無制限';
 
   @override
   String get schedule_start_label => '開始';
 
   @override
   String get schedule_end_label => '終了';
+
+  @override
+  String get exit_without_saving_dialog_info => 'Are you sure you want to exit without saving?';
 
   @override
   String get development_dialog_info => 'Mindfulは現在開発中のため、不具合や未完成の機能がある可能性があります。 問題が発生した場合は、改善のためご報告ください。\n\nご意見ありがとうございます！';
@@ -320,7 +323,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get accessibility_tip => 'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
 
   @override
-  String get battery_optimization_tip => 'If Mindful stops working unexpectedly, consider granting the \'Ignore Battery Optimization\' permission by going to \'Settings>Advance\' to keep it running in the background.';
+  String get battery_optimization_tip => 'Mindful が予期せず停止する場合は、「設定>詳細設定」から「バッテリー最適化を無視する」権限を付与して、バックグラウンドでの動作を継続させることを検討してください。';
 
   @override
   String get invincible_mode_tip => 'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
@@ -428,7 +431,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get dashboard_tab_title => 'ダッシュボード';
 
   @override
-  String get focus_now_fab_button => 'Focus now';
+  String get focus_now_fab_button => '今すぐ集中';
 
   @override
   String get welcome_greetings => 'おかえりなさい';
@@ -446,58 +449,58 @@ class AppLocalizationsJa extends AppLocalizations {
   String get username_dialog_button_apply => '保存';
 
   @override
-  String get glance_tile_title => 'Glance';
+  String get glance_tile_title => '概要';
 
   @override
-  String get glance_tile_subtitle => 'Take a quick glance at your usage.';
+  String get glance_tile_subtitle => '使用状況をひと目で確認できます。';
 
   @override
-  String get parental_controls_tile_subtitle => 'Invincible mode and tamper protection.';
+  String get parental_controls_tile_subtitle => '無敵モードと改ざん防止。';
 
   @override
   String get restrictions_heading => 'アプリの制限';
 
   @override
-  String get apps_blocking_tile_title => 'Apps blocking';
+  String get apps_blocking_tile_title => 'アプリのブロック';
 
   @override
-  String get apps_blocking_tile_subtitle => 'Limit apps in multiple ways.';
+  String get apps_blocking_tile_subtitle => '複数の方法でアプリを制限します。';
 
   @override
-  String get grouped_apps_blocking_tile_title => 'Grouped apps blocking';
+  String get grouped_apps_blocking_tile_title => 'グループアプリのブロック';
 
   @override
-  String get grouped_apps_blocking_tile_subtitle => 'Limit group of apps simultaneously.';
+  String get grouped_apps_blocking_tile_subtitle => '複数のアプリを同時に制限します。';
 
   @override
-  String get shorts_blocking_tile_subtitle => 'Limit short content on multiple platforms.';
+  String get shorts_blocking_tile_subtitle => '複数のプラットフォームでショート動画を制限します。';
 
   @override
-  String get websites_blocking_tile_subtitle => 'Limit adult and custom websites.';
+  String get websites_blocking_tile_subtitle => 'アダルトサイトやカスタムウェブサイトを制限します。';
 
   @override
   String get screen_time_label => '使用時間';
 
   @override
-  String get total_data_label => 'Total data';
+  String get total_data_label => '総データ量';
 
   @override
-  String get mobile_data_label => 'Mobile data';
+  String get mobile_data_label => 'モバイルデータ';
 
   @override
-  String get wifi_data_label => 'Wifi data';
+  String get wifi_data_label => 'Wi-Fiデータ';
 
   @override
-  String get focus_today_label => 'Focus today';
+  String get focus_today_label => '今日の集中';
 
   @override
-  String get focus_weekly_label => 'Focus weekly';
+  String get focus_weekly_label => '週間集中';
 
   @override
-  String get focus_monthly_label => 'Focus monthly';
+  String get focus_monthly_label => '月間集中';
 
   @override
-  String get focus_lifetime_label => 'Focus lifetime';
+  String get focus_lifetime_label => '総集中時間';
 
   @override
   String get longest_streak_label => '最大連続記録';
@@ -536,13 +539,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get search_apps_hint => 'Search apps...';
 
   @override
-  String get notifications_tab_title => 'Notifications';
+  String get notifications_tab_title => '通知';
 
   @override
-  String get notifications_tab_info => 'Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.';
+  String get notifications_tab_info => 'アプリからの通知をまとめて、朝、昼、夕方、夜などのスケジュールを設定します。常に中断されることなく、必要な情報を得られます。';
 
   @override
-  String get batched_apps_tile_title => 'Batched apps';
+  String get batched_apps_tile_title => '通知をまとめるアプリ';
 
   @override
   String get batch_recap_dropdown_title => 'Batch recap type';
@@ -566,16 +569,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get store_all_tile_subtitle => 'Save non-batched notifications too.';
 
   @override
-  String get schedules_heading => 'Schedules';
+  String get schedules_heading => 'スケジュール';
 
   @override
-  String get new_schedule_fab_button => 'New Schedule';
+  String get new_schedule_fab_button => '新しいスケジュール';
 
   @override
-  String get new_schedule_dialog_info => 'Enter a name for the notification schedule to help identify it easily.';
+  String get new_schedule_dialog_info => '通知スケジュールの名前を入力して、簡単に識別できるようにしてください。';
 
   @override
-  String get new_schedule_dialog_field_label => 'Schedule name';
+  String get new_schedule_dialog_field_label => 'スケジュール名';
 
   @override
   String get bedtime_tab_title => '就寝モード';
@@ -605,7 +608,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get bedtime_distracting_apps_modify_snack_alert => '就寝スケジュールが有効になっている間は、集中を妨げるアプリの一覧を変更することはできません。';
 
   @override
-  String get parental_controls_tab_title => 'Parental controls';
+  String get parental_controls_tab_title => 'ペアレンタルコントロール';
 
   @override
   String get invincible_mode_heading => '無敵モード';
@@ -614,7 +617,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get invincible_mode_tile_title => '無敵モードの有効化';
 
   @override
-  String get invincible_mode_info => 'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
+  String get invincible_mode_info => '無敵モードがオンになっている場合、1日の使用量上限に達すると、選択した制限を調整できなくなります。ただし、選択した10分間の無敵ウィンドウ内では変更が可能です。';
 
   @override
   String get invincible_mode_snack_alert => '無敵モードが有効になっているため、制限は変更できません。';
@@ -668,13 +671,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get protected_access_tile_subtitle => 'デバイスロックで Mindful を保護する';
 
   @override
-  String get protected_access_no_lock_snack_alert => 'Please set up a biometric lock on your device first to enable this feature.';
+  String get protected_access_no_lock_snack_alert => 'この機能を有効にするには、まずデバイスに生体認証ロックを設定してください。';
 
   @override
-  String get protected_access_removed_lock_snack_alert => 'Your device lock has been removed. To continue, please set up a new lock.';
+  String get protected_access_removed_lock_snack_alert => 'デバイスロックが解除されました。続行するには、新しいロックを設定してください。';
 
   @override
-  String get protected_access_failed_lock_snack_alert => 'Authentication failed. You need to verify your device lock to proceed.';
+  String get protected_access_failed_lock_snack_alert => '認証に失敗しました。続行するにはデバイスロックの確認が必要です。';
 
   @override
   String get tamper_protection_tile_title => '改ざん防止';
@@ -689,19 +692,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uninstall_window_tile_title => 'アンインストール画面';
 
   @override
-  String get uninstall_window_tile_subtitle => 'Tamper protection can be disabled within 10 minutes from the selected time.';
+  String get uninstall_window_tile_subtitle => '改ざん防止は、選択した時間から10分以内に無効にできます。';
 
   @override
-  String get invincible_window_tile_title => 'Invincible window';
+  String get invincible_window_tile_title => '無敵ウィンドウ';
 
   @override
-  String get invincible_window_tile_subtitle => 'Selected limits can be modified within 10 minutes from the selected time.';
+  String get invincible_window_tile_subtitle => '選択した制限は、指定時間から10分以内に変更できます。';
 
   @override
-  String get shorts_blocking_tab_title => 'Shorts blocking';
+  String get shorts_blocking_tab_title => 'ショート動画ブロック';
 
   @override
-  String get shorts_blocking_tab_info => 'Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.';
+  String get shorts_blocking_tab_info => 'Instagram、YouTube、Snapchat、Facebookなどのプラットフォームやそのウェブサイトで、ショート動画に費やす時間をコントロールできます。';
 
   @override
   String get short_content_heading => 'ショート動画';
@@ -718,49 +721,49 @@ class AppLocalizationsJa extends AppLocalizations {
   String get instagram_features_tile_title => 'Instagram';
 
   @override
-  String get instagram_features_tile_subtitle => 'Restrict features on instagram.';
+  String get instagram_features_tile_subtitle => 'Instagramの機能を制限します。';
 
   @override
-  String get instagram_features_block_reels => 'Restrict reels section.';
+  String get instagram_features_block_reels => 'リールセクションを制限します。';
 
   @override
-  String get instagram_features_block_explore => 'Restrict explore section.';
+  String get instagram_features_block_explore => '探索セクションを制限します。';
 
   @override
   String get snapchat_features_tile_title => 'Snapchat';
 
   @override
-  String get snapchat_features_tile_subtitle => 'Restrict features on snapchat.';
+  String get snapchat_features_tile_subtitle => 'Snapchatの機能を制限します。';
 
   @override
-  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
+  String get snapchat_features_block_spotlight => 'スポットライトセクションを制限します。';
 
   @override
-  String get snapchat_features_block_discover => 'Restrict discover section.';
+  String get snapchat_features_block_discover => 'ディスカバーセクションを制限します。';
 
   @override
-  String get youtube_features_tile_title => 'Youtube';
+  String get youtube_features_tile_title => 'YouTube';
 
   @override
-  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+  String get youtube_features_tile_subtitle => 'YouTubeのショート動画を制限します。';
 
   @override
   String get facebook_features_tile_title => 'Facebook';
 
   @override
-  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+  String get facebook_features_tile_subtitle => 'Facebookのリールを制限します。';
 
   @override
   String get reddit_features_tile_title => 'Reddit';
 
   @override
-  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
+  String get reddit_features_tile_subtitle => 'Redditのショート動画を制限します。';
 
   @override
-  String get websites_blocking_tab_title => 'Websites blocking';
+  String get websites_blocking_tab_title => 'ウェブサイトブロック';
 
   @override
-  String get websites_blocking_tab_info => 'Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.';
+  String get websites_blocking_tab_info => 'アダルトウェブサイトや任意のカスタムサイトをブロックして、より安全で集中できるオンライン環境を作成します。ブラウジングを管理し、気が散らないようにしましょう。';
 
   @override
   String get adult_content_heading => 'アダルトコンテンツ';
@@ -793,10 +796,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get add_website_dialog_info => 'ブロックするウェブサイトのURLを入力してください。';
 
   @override
-  String get add_website_dialog_is_nsfw => 'Is nsfw site?';
+  String get add_website_dialog_is_nsfw => 'アダルトサイトですか？';
 
   @override
-  String get add_website_dialog_nsfw_warning => 'Warning: Nsfw sites cannot be removed once added.';
+  String get add_website_dialog_nsfw_warning => '警告：アダルトサイトは一度追加すると削除できません。';
 
   @override
   String get add_website_dialog_button_block => 'ブロック';
@@ -987,7 +990,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get active_session_tab_title => '記録';
 
   @override
-  String get active_session_none_warning => 'No active session found. Returning to the home screen.';
+  String get active_session_none_warning => '有効な集中記録が見つかりません。ホーム画面に戻ります。';
 
   @override
   String get active_session_dialog_button_keep_pushing => '諦めずに続けましょう';
@@ -1078,7 +1081,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get conversations_label => 'Conversations';
 
   @override
-  String get last_24_hours_heading => 'Last 24 hours';
+  String get last_24_hours_heading => '過去24時間';
 
   @override
   String get notification_timeline_tab_info => 'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
@@ -1099,7 +1102,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get search_notifications_empty_list_hint => 'No notifications found matching your search.';
 
   @override
-  String get app_info_none_warning => 'Couldn\'t find the app for the given package. Returning to the home screen.';
+  String get app_info_none_warning => '指定されたパッケージのアプリが見つかりませんでした。ホーム画面に戻ります。';
 
   @override
   String get emergency_fab_button => '緊急時の使用';
@@ -1244,22 +1247,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get default_home_tab_tile_title => 'ホームタブ';
 
   @override
-  String get usage_history_tile_title => 'Usage history';
+  String get usage_history_tile_title => '使用履歴';
 
   @override
-  String get usage_history_15_days => '15 days';
+  String get usage_history_15_days => '15日間';
 
   @override
-  String get usage_history_1_month => '1 month';
+  String get usage_history_1_month => '1ヶ月間';
 
   @override
-  String get usage_history_3_month => '3 months';
+  String get usage_history_3_month => '3ヶ月間';
 
   @override
-  String get usage_history_6_month => '6 months';
+  String get usage_history_6_month => '6ヶ月間';
 
   @override
-  String get usage_history_1_year => '1 year';
+  String get usage_history_1_year => '1年間';
 
   @override
   String get service_heading => 'サービス';
@@ -1304,13 +1307,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get crash_logs_export_tile_subtitle => 'エラーレポートをJSONファイルで書き出す';
 
   @override
-  String get crash_logs_view_tile_title => 'View logs';
+  String get crash_logs_view_tile_title => 'ログを表示';
 
   @override
-  String get crash_logs_view_tile_subtitle => 'Explore stored crash logs.';
+  String get crash_logs_view_tile_subtitle => '保存されたクラッシュログを確認します。';
 
   @override
-  String get crash_logs_empty_list_hint => 'No crash logged till now.';
+  String get crash_logs_empty_list_hint => '現在までにクラッシュログはありません。';
 
   @override
   String get crash_logs_clear_tile_title => 'ログを削除';
@@ -1331,10 +1334,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get changelog_tile_title => '変更履歴';
 
   @override
-  String get changelog_tile_subtitle => 'Find out what\'s new.';
+  String get changelog_tile_subtitle => '最新の変更点を確認できます。';
 
   @override
-  String get full_changelog_tile_title => 'Full changelog';
+  String get full_changelog_tile_title => '完全な変更履歴';
 
   @override
   String get redirected_to_github_subtitle => 'GitHubに移動';
