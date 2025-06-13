@@ -107,6 +107,7 @@
     "dialog_button_infinite": "Infinito",
     "schedule_start_label": "Comienza",
     "schedule_end_label": "Termina",
+    "exit_without_saving_dialog_info": "¿Estás seguro de que quieres salir sin guardar?",
     "development_dialog_info": "Mindful se encuentra actualmente en desarrollo y puede contener errores funciones incompletas. Si encuentras algún problema, por favor, infórmanos para ayudarnos a mejorar.\n\n¡Gracias por tus comentarios!",
     "development_dialog_button_report_issue": "Reportar problema",
     "development_dialog_button_close": "Cerrar",

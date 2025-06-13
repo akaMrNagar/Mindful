@@ -107,6 +107,7 @@
     "dialog_button_infinite": "无限",
     "schedule_start_label": "开始",
     "schedule_end_label": "结束",
+    "exit_without_saving_dialog_info": "您是否确定您要退出而不保存？",
     "development_dialog_info": "Mindful 目前处于开发阶段，可能存在漏洞或不完整的功能。如果您遇到任何问题，请报告以帮助我们改进。\n\n感谢您的反馈！",
     "development_dialog_button_report_issue": "报告问题",
     "development_dialog_button_close": "关闭",

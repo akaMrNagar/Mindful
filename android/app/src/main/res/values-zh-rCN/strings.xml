@@ -16,6 +16,7 @@
     <string name="toast_enable_notification">请启用通知</string>
     <string name="toast_blocked_content">内容已被阻止！正在返回</string>
     <string name="toast_redirecting">正在过滤搜索结果</string>
+    <string name="toast_dnd_utilized_by_feature" comment="Placeholder is the name of feature like Focus mode, Bedtime or more" formatted="true">%s 正在使用免打扰模式。</string>
     <string name="service_running_notification_title">Mindful 正在运行</string>
     <string name="shortcut_focus_mode_label">专注模式</string>
     <string name="shortcut_focus_mode_description">快速开始带有自定义配置文件的专注会话。</string>
@@ -37,9 +38,17 @@
     <string name="app_paused_reason_launch_count_out">您已经达到今天对此应用程序的最大启动次数。是时候退一步并重新专注于您的优先事项了。</string>
     <string name="app_paused_reason_app_timer_left">您已经使用这个应用程序一段时间了。让我们换个方式，暂时离开屏幕并专注于一些富有成效的事情。</string>
     <string name="app_paused_reason_app_timer_out">您已经达到每日使用此应用程序的限制。利用这个机会来提升您的生产力。</string>
+    <string name="app_paused_reason_app_active_period_over">由于当前时间不在您设置的活动时间内，因此暂停访问此应用程序。利用这段时间专注于最重要的事情，并在允许的时间内再次检查。</string>
+    <string name="app_paused_reason_group_timer_left" formatted="true">您已经使用了来自「%s」组的应用程序一段时间了。是时候退一步并专注于您的任务，而不是屏幕。</string>
+    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">您已经达到「%s」组的总时间限制。暂时休息一下并重新充电您的专注力。</string>
+    <string name="app_paused_reason_group_active_period_over" formatted="true">「%s」组中的应用程序目前已暂停，因为当前时间不在您设置的活动时间内。利用这段时间充电或专注于您的任务，并在指定时间内返回。</string>
     <string name="app_paused_restriction_focus_mode">专注模式</string>
     <string name="app_paused_restriction_bedtime_mode">睡眠模式</string>
     <string name="app_paused_restriction_launch_count">启动次数</string>
+    <string name="app_paused_restriction_app_timer">应用程序定时器</string>
+    <string name="app_paused_restriction_app_active_period">应用活动期间</string>
+    <string name="app_paused_restriction_group_timer">组定时器</string>
+    <string name="app_paused_restriction_group_active_period">组活跃期</string>
     <string name="app_paused_overlay_button_emergency">紧急</string>
     <string name="app_paused_overlay_label_spent_today">今天已花费</string>
     <string name="app_paused_overlay_label_left_today">今天剩余</string>
@@ -48,13 +57,19 @@
     <string name="app_paused_overlay_button_five_minutes">5 分钟</string>
     <string name="app_paused_overlay_button_ten_minutes">10 分钟</string>
     <string name="app_paused_overlay_button_twenty_minutes">20 分钟</string>
+    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">关闭 %s</string>
+    <string name="app_screen_time_usage_info" comment="Time as placeholder. ex: 'Used for 2h 15m'" formatted="true">已使用 时间 %s</string>
     <string name="bedtime_upcoming_notification_info">睡眠时间将在 30 分钟后开始。利用这段时间收尾并为明天做好准备</string>
     <string name="bedtime_started_notification_info">是时候放松了。睡眠例行程序已经开始，帮助您放松并为一个宁静的夜晚做准备。</string>
     <string name="bedtime_ended_notification_info">起床吧！睡眠例行程序已经结束，准备好以充满活力和精神的状态开始新的一天。</string>
     <string name="emergency_pause_notification_title">紧急暂停</string>
+    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">应用程序阻止器将在 %s 后恢复</string>
     <string name="emergency_pause_ended_notification_info">紧急暂停已经结束，应用程序阻止器又恢复了。干扰现在被阻止了，保持专注！</string>
     <string name="focus_session_notification_title">专注会话</string>
+    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">专注会话将在 %s 后结束</string>
+    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">您已经专注了 %s</string>
     <string name="focus_session_success_notification_info">恭喜！您成功完成了专注会话。做得好，保持良好的状态！继续努力！</string>
     <string name="focus_session_giveup_notification_info">您放弃了！别担心，您下次可以做得更好。每一次努力都很重要——只要继续前进</string>
     <string name="notification_schedule_batch_title">未读通知</string>
+    <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">您离开期间有%d条未读通知。这些通知将在 24 小时后被标记为已读。</string>
 </resources>

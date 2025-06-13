@@ -107,6 +107,7 @@
     "dialog_button_infinite": "Необмежено",
     "schedule_start_label": "Початок",
     "schedule_end_label": "Кінець",
+    "exit_without_saving_dialog_info": "Ви впевнені, що бажаєте вийти без збереження?",
     "development_dialog_info": "Mindful перебуває зараз в процесі розробки і може містити помилки чи незакінчені функції. Якщо ви стикаєтесь з будь-якими проблемами, буль ласка, повідомте про них, щоб допомогти нам у покращенні.\n\nДякуємо за ваш відгук!",
     "development_dialog_button_report_issue": "Повідомити про проблему",
     "development_dialog_button_close": "Закрити",
