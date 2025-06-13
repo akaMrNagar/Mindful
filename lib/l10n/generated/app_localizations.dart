@@ -471,6 +471,12 @@ abstract class AppLocalizations {
   /// **'End'**
   String get schedule_end_label;
 
+  /// No description provided for @exit_without_saving_dialog_info.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to exit without saving?'**
+  String get exit_without_saving_dialog_info;
+
   /// No description provided for @development_dialog_info.
   ///
   /// In en, this message translates to:

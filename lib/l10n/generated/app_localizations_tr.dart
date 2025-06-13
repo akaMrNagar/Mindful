@@ -257,6 +257,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get schedule_end_label => 'Bitir';
 
   @override
+  String get exit_without_saving_dialog_info => 'Are you sure you want to exit without saving?';
+
+  @override
   String get development_dialog_info => 'Mindful şu anda geliştirme aşamasındadır ve hatalar veya eksik özellikler içerebilir. Herhangi bir sorunla karşılaşırsanız, lütfen geliştirmemize yardımcı olmak için bunları bildirin.\n\nGeri bildiriminiz için teşekkür ederiz!';
 
   @override

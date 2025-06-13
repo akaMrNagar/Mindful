@@ -257,6 +257,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schedule_end_label => 'End';
 
   @override
+  String get exit_without_saving_dialog_info => 'Are you sure you want to exit without saving?';
+
+  @override
   String get development_dialog_info => 'Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!';
 
   @override

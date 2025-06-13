@@ -92,209 +92,217 @@ class _CreateUpdateRestrictionGroupState
             .map((e) => e.appPackage)))
         .toList();
 
-    return PopScope( 
-      canPop: false,
-      onPopInvokedWithResult: ((didPop, _) {
-        if (didPop) return;
-        _exitChecks();
-      }),
-      child: ScaffoldShell(
-        items: [
-          NavbarItem(
-            icon: FluentIcons.tab_desktop_bottom_20_regular,
-            filledIcon: FluentIcons.tab_desktop_bottom_20_filled,
-            titleText: _group.groupName,
-            fab: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                /// Create OR Update FAB
-                DefaultFabButton(
-                  heroTag: widget.group == null
-                      ? null
-                      : HeroTags.updateRestrictionGroupTag(_group.id),
-                  icon: widget.group == null
-                      ? FluentIcons.add_20_filled
-                      : FluentIcons.arrow_upload_20_filled,
-                  label: widget.group == null
-                      ? context.locale.create_button
-                      : context.locale.update_button,
-                  onPressed: widget.group == null
-                      ? _createNewGroup
-                      : _updateCurrentGroup,
-                ),
-                8.vBox,
+    return PopScope(
+        canPop: false,
+        onPopInvokedWithResult: ((didPop, _) {
+          if (didPop) return;
 
-                /// Delete FAB
-                if (isUpdating)
+          _exitChecks();
+        }),
+        child: ScaffoldShell(
+          items: [
+            NavbarItem(
+              icon: FluentIcons.tab_desktop_bottom_20_regular,
+              filledIcon: FluentIcons.tab_desktop_bottom_20_filled,
+              titleText: _group.groupName,
+              fab: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  /// Create OR Update FAB
                   DefaultFabButton(
-                    heroTag: HeroTags.removeRestrictionGroupTag(_group.id),
-                    icon: FluentIcons.delete_20_filled,
-                    label: context.locale.dialog_button_remove,
-                    onPressed: _deleteCurrentGroup,
+                    heroTag: widget.group == null
+                        ? null
+                        : HeroTags.updateRestrictionGroupTag(_group.id),
+                    icon: widget.group == null
+                        ? FluentIcons.add_20_filled
+                        : FluentIcons.arrow_upload_20_filled,
+                    label: widget.group == null
+                        ? context.locale.create_button
+                        : context.locale.update_button,
+                    onPressed: widget.group == null
+                        ? _createNewGroup
+                        : _updateCurrentGroup,
                   ),
-              ],
-            ),
-            sliverBody: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: [
-                Row(
-                  children: [
-                    /// Time spent
-                    Expanded(
-                      child: UsageGlanceCard(
-                        position: ItemPosition.topLeft,
-                        isPrimary: true,
-                        icon: FluentIcons.phone_20_regular,
-                        title: context.locale.restriction_group_time_spent_label,
-                        info: timeSpent.seconds.toTimeShort(context),
+                  8.vBox,
+
+                  /// Delete FAB
+                  if (isUpdating)
+                    DefaultFabButton(
+                      heroTag: HeroTags.removeRestrictionGroupTag(_group.id),
+                      icon: FluentIcons.delete_20_filled,
+                      label: context.locale.dialog_button_remove,
+                      onPressed: _deleteCurrentGroup,
+                    ),
+                ],
+              ),
+              sliverBody: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  Row(
+                    children: [
+                      /// Time spent
+                      Expanded(
+                        child: UsageGlanceCard(
+                          position: ItemPosition.topLeft,
+                          isPrimary: true,
+                          icon: FluentIcons.phone_20_regular,
+                          title:
+                              context.locale.restriction_group_time_spent_label,
+                          info: timeSpent.seconds.toTimeShort(context),
+                        ),
+                      ),
+                      4.hBox,
+
+                      /// Time left
+                      Expanded(
+                        child: UsageGlanceCard(
+                          position: ItemPosition.topRight,
+                          isPrimary: true,
+                          icon: FluentIcons.phone_screen_time_20_regular,
+                          title:
+                              context.locale.restriction_group_time_left_label,
+                          info: _group.timerSec > 0
+                              ? timeLeft.seconds.toTimeShort(context)
+                              : context.locale.app_limit_status_not_set,
+                        ),
+                      ),
+                    ],
+                  ).sliver,
+
+                  /// Group name
+                  DefaultHero(
+                    tag: HeroTags.restrictionGroupNameTileTag(_group.id),
+                    child: DefaultListTile(
+                      position: ItemPosition.mid,
+                      leadingIcon: FluentIcons.app_title_20_regular,
+                      titleText:
+                          context.locale.restriction_group_name_tile_title,
+                      subtitleText: _group.groupName,
+                      onPressed: () => showGroupNameInputDialog(
+                        context: context,
+                        heroTag:
+                            HeroTags.restrictionGroupNameTileTag(_group.id),
+                        initialText: _group.groupName,
+                      ).then(
+                        (name) {
+                          _group = _group.copyWith(groupName: name);
+                          setState(() {});
+                        },
                       ),
                     ),
-                    4.hBox,
+                  ).sliver,
 
-                    /// Time left
-                    Expanded(
-                      child: UsageGlanceCard(
-                        position: ItemPosition.topRight,
-                        isPrimary: true,
-                        icon: FluentIcons.phone_screen_time_20_regular,
-                        title: context.locale.restriction_group_time_left_label,
-                        info: _group.timerSec > 0
-                            ? timeLeft.seconds.toTimeShort(context)
-                            : context.locale.app_limit_status_not_set,
-                      ),
-                    ),
-                  ],
-                ).sliver,
-
-                /// Group name
-                DefaultHero(
-                  tag: HeroTags.restrictionGroupNameTileTag(_group.id),
-                  child: DefaultListTile(
+                  /// Group active period
+                  DefaultExpandableListTile(
                     position: ItemPosition.mid,
-                    leadingIcon: FluentIcons.app_title_20_regular,
-                    titleText: context.locale.restriction_group_name_tile_title,
-                    subtitleText: _group.groupName,
-                    onPressed: () => showGroupNameInputDialog(
-                      context: context,
-                      heroTag: HeroTags.restrictionGroupNameTileTag(_group.id),
-                      initialText: _group.groupName,
-                    ).then(
-                      (name) {
-                        _group = _group.copyWith(groupName: name);
+                    leadingIcon: FluentIcons.drink_coffee_20_regular,
+                    titleText: context.locale.app_active_period_tile_title,
+                    accent: widget.canUpdateActivePeriod
+                        ? null
+                        : Theme.of(context).colorScheme.error,
+                    subtitleText: _group.periodDurationInMins > 0
+                        ? context.locale.app_active_period_tile_subtitle(
+                            _group.activePeriodStart.format(context),
+                            _group.activePeriodEnd.format(context),
+                          )
+                        : context.locale.app_limit_status_not_set,
+                    content: ActivePeriodTileContent(
+                      totalDuration: _group.periodDurationInMins.minutes,
+                      startTime: _group.activePeriodStart,
+                      endTime: _group.activePeriodEnd,
+                      isModifiable: () {
+                        if (!widget.canUpdateActivePeriod) {
+                          context.showSnackAlert(
+                              context.locale.invincible_mode_snack_alert);
+                        }
+
+                        return widget.canUpdateActivePeriod;
+                      },
+                      onTimeChanged: (start, end) {
+                        _group = _group.copyWith(
+                          activePeriodStart: start,
+                          activePeriodEnd: end,
+                          periodDurationInMins: end.difference(start).inMinutes,
+                        );
+
                         setState(() {});
                       },
                     ),
-                  ),
-                ).sliver,
+                  ).sliver,
 
-                /// Group active period
-                DefaultExpandableListTile(
-                  position: ItemPosition.mid,
-                  leadingIcon: FluentIcons.drink_coffee_20_regular,
-                  titleText: context.locale.app_active_period_tile_title,
-                  accent: widget.canUpdateActivePeriod
-                      ? null
-                      : Theme.of(context).colorScheme.error,
-                  subtitleText: _group.periodDurationInMins > 0
-                      ? context.locale.app_active_period_tile_subtitle(
-                          _group.activePeriodStart.format(context),
-                          _group.activePeriodEnd.format(context),
-                        )
-                      : context.locale.app_limit_status_not_set,
-                  content: ActivePeriodTileContent(
-                    totalDuration: _group.periodDurationInMins.minutes,
-                    startTime: _group.activePeriodStart,
-                    endTime: _group.activePeriodEnd,
-                    isModifiable: () {
-                      if (!widget.canUpdateActivePeriod) {
-                        context.showSnackAlert(
-                            context.locale.invincible_mode_snack_alert);
-                      }
+                  /// Group timer
+                  DefaultHero(
+                    tag: HeroTags.restrictionGroupTimerTileTag(_group.id),
+                    child: DefaultListTile(
+                      position: ItemPosition.bottom,
+                      leadingIcon: FluentIcons.timer_20_regular,
+                      titleText:
+                          context.locale.restriction_group_timer_tile_title,
+                      accent: widget.canUpdateTimer
+                          ? null
+                          : Theme.of(context).colorScheme.error,
+                      subtitleText: _group.timerSec > 0
+                          ? _group.timerSec.seconds
+                              .toTimeFull(context, replaceCommaWithAnd: true)
+                          : context.locale.app_limit_status_not_set,
+                      onPressed: () {
+                        if (!widget.canUpdateTimer) {
+                          context.showSnackAlert(
+                              context.locale.invincible_mode_snack_alert);
+                          return;
+                        }
 
-                      return widget.canUpdateActivePeriod;
-                    },
-                    onTimeChanged: (start, end) {
-                      _group = _group.copyWith(
-                        activePeriodStart: start,
-                        activePeriodEnd: end,
-                        periodDurationInMins: end.difference(start).inMinutes,
-                      );
+                        showRestrictionGroupTimerPicker(
+                          context: context,
+                          groupName: _group.groupName,
+                          initialTime: _group.timerSec,
+                          heroTag:
+                              HeroTags.restrictionGroupTimerTileTag(_group.id),
+                        ).then(
+                          (timer) {
+                            _group = _group.copyWith(timerSec: timer);
+                            setState(() {});
+                          },
+                        );
+                      },
+                    ),
+                  ).sliver,
 
-                      setState(() {});
-                    },
-                  ),
-                ).sliver,
-
-                /// Group timer
-                DefaultHero(
-                  tag: HeroTags.restrictionGroupTimerTileTag(_group.id),
-                  child: DefaultListTile(
-                    position: ItemPosition.bottom,
-                    leadingIcon: FluentIcons.timer_20_regular,
-                    titleText: context.locale.restriction_group_timer_tile_title,
-                    accent: widget.canUpdateTimer
-                        ? null
-                        : Theme.of(context).colorScheme.error,
-                    subtitleText: _group.timerSec > 0
-                        ? _group.timerSec.seconds
-                            .toTimeFull(context, replaceCommaWithAnd: true)
-                        : context.locale.app_limit_status_not_set,
-                    onPressed: () {
-                      if (!widget.canUpdateTimer) {
+                  /// Distracting apps
+                  36.vSliverBox,
+                  SliverDistractingAppsList(
+                    isInsideModalSheet: false,
+                    distractingApps: _group.distractingApps,
+                    hiddenApps: alreadyGroupedApps,
+                    onSelectionChanged: (package, isSelected) {
+                      if (!isSelected &&
+                          (!widget.canUpdateTimer ||
+                              !widget.canUpdateActivePeriod)) {
                         context.showSnackAlert(
                             context.locale.invincible_mode_snack_alert);
                         return;
                       }
 
-                      showRestrictionGroupTimerPicker(
-                        context: context,
-                        groupName: _group.groupName,
-                        initialTime: _group.timerSec,
-                        heroTag: HeroTags.restrictionGroupTimerTileTag(_group.id),
-                      ).then(
-                        (timer) {
-                          _group = _group.copyWith(timerSec: timer);
-                          setState(() {});
-                        },
+                      _group = _group.copyWith(
+                        distractingApps: isSelected
+                            ? [..._group.distractingApps, package]
+                            : [
+                                ..._group.distractingApps
+                                    .where((e) => e != package)
+                              ],
                       );
+
+                      setState(() {});
                     },
                   ),
-                ).sliver,
 
-                /// Distracting apps
-                36.vSliverBox,
-                SliverDistractingAppsList(
-                  isInsideModalSheet: false,
-                  distractingApps: _group.distractingApps,
-                  hiddenApps: alreadyGroupedApps,
-                  onSelectionChanged: (package, isSelected) {
-                    if (!isSelected &&
-                        (!widget.canUpdateTimer ||
-                            !widget.canUpdateActivePeriod)) {
-                      context.showSnackAlert(
-                          context.locale.invincible_mode_snack_alert);
-                      return;
-                    }
-
-                    _group = _group.copyWith(
-                      distractingApps: isSelected
-                          ? [..._group.distractingApps, package]
-                          : [
-                              ..._group.distractingApps.where((e) => e != package)
-                            ],
-                    );
-
-                    setState(() {});
-                  },
-                ),
-
-                const SliverTabsBottomPadding(),
-              ],
-            ),
-          )
-        ],
-      ));
+                  const SliverTabsBottomPadding(),
+                ],
+              ),
+            )
+          ],
+        ));
   }
 
   /// Update associated group ids for apps
@@ -336,18 +344,20 @@ class _CreateUpdateRestrictionGroupState
       final confirm = await showConfirmationDialog(
         context: context,
         heroTag: HeroTags.updateRestrictionGroupTag(_group.id),
-        title: context.locale.dialog_button_save,
-        info: context.locale.exit_without_saving_dialog,
-        icon: FluentIcons.document_save_20_filled,
-        positiveLabel: context.locale.dialog_button_save,
-        negativeLabel: context.locale.dialog_button_no
+        title: context.locale.update_button,
+        info: context.locale.exit_without_saving_dialog_info,
+        icon: FluentIcons.save_sync_20_filled,
+        positiveLabel: context.locale.update_button,
+        negativeLabel: context.locale.onboarding_skip_btn_label,
       );
       if (confirm) _updateCurrentGroup(pop: false);
     }
-    if (mounted) Navigator.pop(context);
+
+    /// Anyway exit
+    _goBack();
   }
 
-  void _updateCurrentGroup({bool pop=true}) async {
+  void _updateCurrentGroup({bool pop = true}) async {
     if (!_checkIfGroupIsValid()) return;
 
     await ref
@@ -415,5 +425,5 @@ class _CreateUpdateRestrictionGroupState
     return true;
   }
 
-  void _goBack() => (mounted) ? Navigator.of(context).maybePop() : {};
+  void _goBack() => (mounted) ? Navigator.of(context).pop() : {};
 }

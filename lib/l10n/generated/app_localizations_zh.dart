@@ -257,6 +257,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get schedule_end_label => '结束';
 
   @override
+  String get exit_without_saving_dialog_info => 'Are you sure you want to exit without saving?';
+
+  @override
   String get development_dialog_info => 'Mindful 目前处于开发阶段，可能存在漏洞或不完整的功能。如果您遇到任何问题，请报告以帮助我们改进。\n\n感谢您的反馈！';
 
   @override
