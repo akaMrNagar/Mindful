@@ -95,55 +95,10 @@ class TabDashboard extends ConsumerWidget {
               ),
 
               /// Restrictions
-              ContentSectionHeader(
-                title: context.locale.restrictions_heading,
-              ),
+              ..._restrictions(context),
 
-              /// Apps blocking
-              DefaultListTile(
-                position: ItemPosition.top,
-                leadingIcon: FluentIcons.app_title_20_regular,
-                titleText: context.locale.apps_blocking_tile_title,
-                subtitleText: context.locale.apps_blocking_tile_subtitle,
-                onPressed: () =>
-                    TabControllerProvider.maybeOf(context)?.animateToTab(
-                  DefaultHomeTab.statistics.index,
-                ),
-              ),
-
-              /// Grouped apps blocking
-              DefaultListTile(
-                position: ItemPosition.mid,
-                leadingIcon: FluentIcons.app_recent_20_regular,
-                titleText: context.locale.grouped_apps_blocking_tile_title,
-                subtitleText:
-                    context.locale.grouped_apps_blocking_tile_subtitle,
-                trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(AppRoutes.restrictionGroupsPath),
-              ),
-
-              /// Shorts restrictions
-              DefaultListTile(
-                position: ItemPosition.mid,
-                leadingIcon: FluentIcons.resize_video_20_regular,
-                titleText: context.locale.shorts_blocking_tab_title,
-                subtitleText: context.locale.shorts_blocking_tile_subtitle,
-                trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(AppRoutes.shortsBlockingPath),
-              ),
-
-              /// Website restrictions
-              DefaultListTile(
-                position: ItemPosition.bottom,
-                leadingIcon: FluentIcons.earth_20_regular,
-                titleText: context.locale.websites_blocking_tab_title,
-                subtitleText: context.locale.websites_blocking_tile_subtitle,
-                trailing: const Icon(FluentIcons.chevron_right_20_regular),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(AppRoutes.websitesBlockingPath),
-              ),
+              /// Productivity
+              ..._productivity(context),
             ].animateListOnce(
               ref: ref,
               uniqueKey: "home.dashboard",
@@ -161,4 +116,99 @@ class TabDashboard extends ConsumerWidget {
       ),
     );
   }
+
+  static List<Widget> _restrictions(BuildContext context) => [
+        /// Restrictions
+        ContentSectionHeader(
+          title: context.locale.restrictions_heading,
+        ),
+
+        /// Apps blocking
+        DefaultListTile(
+          position: ItemPosition.top,
+          leadingIcon: FluentIcons.app_title_20_regular,
+          titleText: context.locale.apps_blocking_tile_title,
+          subtitleText: context.locale.apps_blocking_tile_subtitle,
+          onPressed: () => TabControllerProvider.maybeOf(context)?.animateToTab(
+            DefaultHomeTab.statistics.index,
+          ),
+        ),
+
+        /// Grouped apps blocking
+        DefaultListTile(
+          position: ItemPosition.mid,
+          leadingIcon: FluentIcons.app_recent_20_regular,
+          titleText: context.locale.grouped_apps_blocking_tile_title,
+          subtitleText: context.locale.grouped_apps_blocking_tile_subtitle,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.restrictionGroupsPath),
+        ),
+
+        /// Shorts restrictions
+        DefaultListTile(
+          position: ItemPosition.mid,
+          leadingIcon: FluentIcons.resize_video_20_regular,
+          titleText: context.locale.shorts_blocking_tab_title,
+          subtitleText: context.locale.shorts_blocking_tile_subtitle,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.shortsBlockingPath),
+        ),
+
+        /// Website restrictions
+        DefaultListTile(
+          position: ItemPosition.bottom,
+          leadingIcon: FluentIcons.earth_20_regular,
+          titleText: context.locale.websites_blocking_tab_title,
+          subtitleText: context.locale.websites_blocking_tile_subtitle,
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(AppRoutes.websitesBlockingPath),
+        ),
+      ];
+
+  static List<Widget> _productivity(BuildContext context) => [
+        /// Productivity
+        const ContentSectionHeader(title: "Productivity"),
+
+        /// Habits
+        DefaultListTile(
+          position: ItemPosition.top,
+          leadingIcon: FluentIcons.drink_coffee_20_regular,
+          titleText: "Habits",
+          subtitleText: "Build better habits and track them.",
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => context.showSnackAlert(
+            "Coming soon...",
+            icon: FluentIcons.info_20_filled,
+          ),
+        ),
+
+        /// Tasks and todos
+        DefaultListTile(
+          position: ItemPosition.mid,
+          leadingIcon: FluentIcons.reading_list_20_regular,
+          titleText: "Tasks and todos",
+          subtitleText: "Plan your future with tasks and todos.",
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => context.showSnackAlert(
+            "Coming soon...",
+            icon: FluentIcons.info_20_filled,
+          ),
+        ),
+
+        /// Notes & lists
+        DefaultListTile(
+          position: ItemPosition.bottom,
+          leadingIcon: FluentIcons.note_20_regular,
+          titleText: "Notes and lists",
+          subtitleText: "Capture thoughts, checklists, or ideas.",
+          trailing: const Icon(FluentIcons.chevron_right_20_regular),
+          onPressed: () => context.showSnackAlert(
+            "Coming soon...",
+            icon: FluentIcons.info_20_filled,
+          ),
+        ),
+      ];
 }
