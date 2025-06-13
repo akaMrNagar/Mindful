@@ -30,12 +30,9 @@ import com.mindful.android.utils.AppUtils
 class NotificationBatchReceiver : BroadcastReceiver() {
     companion object {
         private const val TAG = "Mindful.NotificationBatchReceiver"
-
-        const val ACTION_PUSH_BATCH: String =
-            "com.mindful.android.NotificationBatchReceiver.PushBatch"
-
+        const val ACTION_PUSH_BATCH: String = "com.mindful.android.action.PushBatch"
         const val EXTRA_NOTIFICATION_SETTINGS_JSON =
-            "com.mindful.android.NotificationBatchReceiver.notificationSettingsJson"
+            "com.mindful.android.extra.notificationSettingsJson"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -215,6 +212,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                         .setStyle(summaryStyle)
                         .setGroup(packageName)
                         .setGroupSummary(true)
+                        .setGroupAlertBehavior(NotificationCompat.GROUP_ALERT_SUMMARY)
                         .setAutoCancel(true)
                         .build()
 

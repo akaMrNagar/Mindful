@@ -1,6 +1,7 @@
 package com.mindful.android.services.tracking
 
 import android.util.Log
+import com.mindful.android.enums.ReminderType
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.utils.executors.PreciseCountDownExecutor
 import java.util.Date
@@ -11,13 +12,19 @@ class ReminderManager(
     private val onNewAppLaunched: (packageName: String) -> Unit,
 ) {
     private val TAG = "Mindful.ReminderManager"
+    private val triggerInterval = 10L
     private val reminderTriggers: HashSet<Int> = HashSet(0)
-    private var onGoingTimer: PreciseCountDownExecutor? = null
+    private var activeTimer: PreciseCountDownExecutor? = null
 
-    fun cancelReminders() {
-        onGoingTimer?.cancel()
+    fun cancelReminders(): Boolean {
+        val reminderAwaiting = activeTimer != null
+        activeTimer?.cancel()
+        activeTimer = null
         reminderTriggers.clear()
         Log.d(TAG, "cancelReminders: All reminders cancelled")
+
+        /// Return true if have reminder
+        return reminderAwaiting
     }
 
     private fun addNewReminder(futureMinutes: Int) {
@@ -29,50 +36,117 @@ class ReminderManager(
         packageName: String,
         state: RestrictionState,
     ) {
-        // If it is a timer restricted state
-        if (state.showUsageReminders && (state.totalScreenTimer - state.usedScreenTime) > 120) {
-            reminderTriggers.add(1)
-        }
-
+        populateReminderTriggers(state)
+        Log.d(
+            TAG,
+            "scheduleReminders: Used: ${state.screenTimeUsed / 60}  Limit: ${state.screenTimeLimit / 60}  Reminders: $reminderTriggers"
+        )
 
         // Set timer for expiration
-        val executor = PreciseCountDownExecutor(
-            duration = state.expirationFutureMs,
-            interval = 60 * 1000L,
+        activeTimer = PreciseCountDownExecutor(
+            duration = state.timeLeftMillis,
+            interval = 60000L,
             timeUnit = TimeUnit.MILLISECONDS,
-            onTick = { elapsedMs ->
-                val spentMins = (elapsedMs / 60000).toInt()
+            onTick = { elapsedMinutes ->
+                val elapsed = elapsedMinutes.toInt()
+                Log.d(TAG, "onTick: Ticked at $elapsed minute.")
 
-                Log.d(
-                    TAG,
-                    "onTick: Elapsed $spentMins minutes with reminders: $reminderTriggers"
-                )
-
-                if (reminderTriggers.contains(spentMins)) {
-                    reminderTriggers.remove(spentMins)
-                    overlayManager.showOverlay(
-                        packageName = packageName,
-                        restrictionState = state.copy(
-                            usedScreenTime = state.usedScreenTime + (spentMins * 60)
-                        ),
-                        addReminderWithDelay = { delayMin -> addNewReminder(delayMin + spentMins) },
-                    )
+                when (state.reminderType) {
+                    ReminderType.NONE -> return@PreciseCountDownExecutor
+                    ReminderType.TOAST -> onToastReminder(packageName, elapsed, state)
+                    ReminderType.NOTIFICATION -> onNotificationReminder(packageName, elapsed, state)
+                    ReminderType.MODAL_SHEET -> onFullScreenReminder(packageName, elapsed, state)
                 }
             },
 
             onFinish = {
                 Log.d(TAG, "onFinish: Timer finished for $packageName")
-                // Recalculate restriction state
                 onNewAppLaunched.invoke(packageName)
             }
-        )
-        executor.start()
-        onGoingTimer = executor
-
+        ).also { it.start() }
 
         Log.d(
             TAG,
-            "scheduleReminders: Timer scheduled for $packageName till  ${Date(System.currentTimeMillis() + state.expirationFutureMs)} "
+            "scheduleReminders: Timer scheduled for $packageName at ${Date(System.currentTimeMillis() + state.timeLeftMillis)}"
         )
+    }
+
+    private fun onFullScreenReminder(
+        packageName: String,
+        elapsedMinutes: Int,
+        state: RestrictionState,
+    ) {
+        // Add an initial reminder only at the first tick
+        if (elapsedMinutes == 0 && (state.screenTimeLimit - state.screenTimeUsed) > 120) {
+            addNewReminder(1)
+        }
+
+        /// Return if not the desired trigger
+        if (!reminderTriggers.remove(elapsedMinutes)) return
+
+        /// Show overlay
+        val updatedState = state.copy(
+            screenTimeUsed = state.screenTimeUsed + (elapsedMinutes * 60)
+        )
+        overlayManager.showSheetOverlay(
+            packageName = packageName,
+            restrictionState = updatedState,
+            addReminderWithDelay = { delayMin -> addNewReminder(delayMin + elapsedMinutes) },
+        )
+    }
+
+    private fun onToastReminder(
+        packageName: String,
+        elapsedMinutes: Int,
+        state: RestrictionState,
+    ) {
+        val screenTimeUsed = (state.screenTimeUsed / 60) + elapsedMinutes
+
+        // if used screen time is multiple of [trigger interval]
+        if (screenTimeUsed % triggerInterval == 0L) {
+            overlayManager.showToastOverlay(packageName, screenTimeUsed.toInt())
+        }
+    }
+
+    private fun onNotificationReminder(
+        packageName: String,
+        elapsedMinutes: Int,
+        state: RestrictionState,
+    ) {
+        val screenTimeUsed = (state.screenTimeUsed / 60) + elapsedMinutes
+
+        // if used screen time is multiple of [trigger interval]
+        if (screenTimeUsed % triggerInterval == 0L) {
+            overlayManager.showNotification(packageName, screenTimeUsed.toInt())
+        }
+    }
+
+    private fun populateReminderTriggers(state: RestrictionState) {
+        reminderTriggers.clear()
+
+        when (state.reminderType) {
+            ReminderType.MODAL_SHEET -> {
+                // Add the first reminder after 1 minute if > 2 mins left
+                if ((state.screenTimeLimit - state.screenTimeUsed) > 120) {
+                    reminderTriggers.add(1)
+                }
+            }
+
+            ReminderType.TOAST,
+            ReminderType.NOTIFICATION,
+            -> {
+                // Add all multiples of [trigger interval] minutes after current usage
+                val usedMinutes = state.screenTimeUsed / 60
+                val limitMinutes = state.screenTimeLimit / 60
+
+                for (i in usedMinutes..limitMinutes) {
+                    if (i % triggerInterval == 0L) {
+                        reminderTriggers.add(i.toInt())
+                    }
+                }
+            }
+
+            ReminderType.NONE -> return
+        }
     }
 }

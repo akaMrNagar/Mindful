@@ -33,6 +33,11 @@ import com.mindful.android.workers.FlutterBgExecutionWorker
 import com.mindful.android.workers.FlutterBgExecutionWorker.Companion.FLUTTER_TASK_ID
 
 class MidnightResetReceiver : BroadcastReceiver() {
+    companion object {
+        private const val TAG = "Mindful.MidnightResetReceiver"
+        const val ACTION_START_MIDNIGHT_RESET = "com.mindful.android.action.startMidnightReset"
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_START_MIDNIGHT_RESET) {
             /// Enqueue midnight worker for services
@@ -97,11 +102,5 @@ class MidnightResetReceiver : BroadcastReceiver() {
                 scheduleMidnightResetTask(context, false)
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "Mindful.MidnightResetReceiver"
-
-        const val ACTION_START_MIDNIGHT_RESET: String = "com.mindful.android.StartMidnightReset"
     }
 }

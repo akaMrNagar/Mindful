@@ -13,7 +13,6 @@ package com.mindful.android.services.accessibility
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.pm.PackageManager
@@ -49,14 +48,11 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     companion object {
         private const val TAG = "Mindful.MindfulAccessibilityService"
 
-        const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET: String =
-            "com.mindful.android.MindfulAccessibilityService.MIDNIGHT_ACCESSIBILITY_RESET"
-
-        const val ACTION_TAMPER_PROTECTION_CHANGED: String =
-            "com.mindful.android.MindfulAccessibilityService.TAMPER_PROTECTION_CHANGED"
-
-        const val ACTION_PERFORM_HOME_PRESS: String =
-            "com.mindful.android.MindfulAccessibilityService.PERFORM_HOME_PRESS"
+        const val ACTION_PERFORM_HOME_PRESS = "com.mindful.android.action.performHomePress"
+        const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET =
+            "com.mindful.android.action.midnightAccessibilityReset"
+        const val ACTION_TAMPER_PROTECTION_CHANGED =
+            "com.mindful.android.action.tamperProtectionChanged"
 
         // Set of desired events which will be processed
         private val desiredEvents = setOf(
@@ -107,11 +103,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         wellbeing = SharedPrefsHelper.getSetWellBeingSettings(this, null)
 
         // Register listener for install and uninstall events
-        val filter = IntentFilter()
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        filter.addDataScheme("package")
-        registerReceiver(deviceAppsChangedReceiver, filter)
+        deviceAppsChangedReceiver.register(this)
     }
 
 
@@ -147,24 +139,24 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             // If not desired event or executor is shutdown, then just return
             if (!desiredEvents.contains(event.eventType) || executorService.isShutdown) return
 
-            // submit event for tracking if window or it's state changes
-            val packageName = event.packageName.toString()
-            executorService.submit { trackingManager.onNewEvent(packageName) }
-
-            // If no reason to process event then just return
-            if (!shouldBlockContent()) return
-
-            // Determine node source
-            val node = if (packageName == REDDIT_PACKAGE) event.source
+            // Determine package and event source node
+            val eventPackageName = event.packageName.toString()
+            val node = if (eventPackageName == REDDIT_PACKAGE) event.source
             else rootInActiveWindow ?: event.source
 
             node?.let {
                 executorService.submit {
-                    processEventInBackground(
-                        packageName,
-                        it,
-                        wellbeing.copy()
-                    )
+                    // Broadcast event
+                    trackingManager.onNewEvent("${it.packageName}")
+
+                    // Only process if any of the content is blocked
+                    if (shouldBlockContent()) {
+                        processEventInBackground(
+                            eventPackageName,
+                            it,
+                            wellbeing.copy()
+                        )
+                    }
                 }
             }
         } catch (ignored: Exception) {
@@ -334,7 +326,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             trackingManager.startManualTracking()
 
             // Unregister prefs listener and receiver
-            unregisterReceiver(deviceAppsChangedReceiver)
+            deviceAppsChangedReceiver.unRegister(this)
             SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
         } catch (e: Exception) {
             // ignored

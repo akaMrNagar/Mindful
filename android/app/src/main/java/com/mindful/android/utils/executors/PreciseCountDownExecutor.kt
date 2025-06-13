@@ -22,7 +22,6 @@ class PreciseCountDownExecutor(
         // Cancel previous executor and reset
         cancel()
 
-
         handlerThread = HandlerThread("PreciseCountDownThread")
         handlerThread?.start()
         handler = Handler(handlerThread!!.looper)
@@ -39,7 +38,7 @@ class PreciseCountDownExecutor(
             // Convert the time to same unit
             val elapsedTime = timeUnit.convert(elapsedTimeMs, TimeUnit.MILLISECONDS)
 
-            if (elapsedTime <= duration) {
+            if (elapsedTime < duration) {
                 onTick?.invoke(elapsedTime)
                 scheduleNextTick() // Schedule next tick
             } else {

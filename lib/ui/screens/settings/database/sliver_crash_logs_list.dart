@@ -25,7 +25,7 @@ import 'package:mindful/ui/common/sliver_shimmer_list.dart';
 import 'package:mindful/ui/common/status_label.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 
-final _crashLogsProvider = FutureProvider<List<CrashLog>>(
+final _crashLogsProvider = FutureProvider.autoDispose<List<CrashLog>>(
   (ref) async =>
       await DriftDbService.instance.driftDb.dynamicRecordsDao.fetchCrashLogs(),
 );

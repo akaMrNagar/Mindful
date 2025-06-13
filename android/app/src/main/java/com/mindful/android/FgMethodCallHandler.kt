@@ -205,7 +205,7 @@ class FgMethodCallHandler(
                 } else {
                     cancelBedtimeRoutineTasks(context)
                     if (bedtimeSettings.shouldStartDnd) {
-                        NotificationHelper.toggleDnd(context, DndWakeLock.BedtimeMode, false)
+                        NotificationHelper.toggleDnd(context, DndWakeLock.BEDTIME_MODE, false)
                     }
                 }
                 result.success(true)

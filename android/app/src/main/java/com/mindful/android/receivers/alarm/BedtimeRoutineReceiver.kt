@@ -39,18 +39,10 @@ import com.mindful.android.utils.ThreadUtils
 class BedtimeRoutineReceiver : BroadcastReceiver() {
     companion object {
         private const val TAG = "Mindful.BedtimeRoutineReceiver"
-
-        const val ACTION_ALERT_BEDTIME: String =
-            "com.mindful.android.BedtimeRoutineReceiver.AlertBedtime"
-
-        const val ACTION_START_BEDTIME: String =
-            "com.mindful.android.BedtimeRoutineReceiver.StartBedtime"
-
-        const val ACTION_STOP_BEDTIME: String =
-            "com.mindful.android.BedtimeRoutineReceiver.StopBedtime"
-
-        const val EXTRA_BEDTIME_SETTINGS_JSON =
-            "com.mindful.android.BedtimeRoutineReceiver.bedtimeSettingsJson"
+        const val ACTION_ALERT_BEDTIME: String = "com.mindful.android.action.alertBedtime"
+        const val ACTION_START_BEDTIME: String = "com.mindful.android.action.startBedtime"
+        const val ACTION_STOP_BEDTIME: String = "com.mindful.android.action.stopBedtime"
+        const val EXTRA_BEDTIME_SETTINGS_JSON = "com.mindful.android.extra.bedtimeSettingsJson"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -135,7 +127,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             // Start DND if needed
             if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
-                DndWakeLock.BedtimeMode,
+                DndWakeLock.BEDTIME_MODE,
                 true
             )
             pushAlertNotification(context.getString(R.string.bedtime_started_notification_info))
@@ -152,7 +144,7 @@ class BedtimeRoutineReceiver : BroadcastReceiver() {
             // Stop DND if needed
             if (bedtimeSchedule.shouldStartDnd) NotificationHelper.toggleDnd(
                 context,
-                DndWakeLock.BedtimeMode,
+                DndWakeLock.BEDTIME_MODE,
                 false
             )
             pushAlertNotification(context.getString(R.string.bedtime_ended_notification_info))

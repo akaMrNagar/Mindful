@@ -38,15 +38,15 @@
     <string name="app_paused_reason_app_timer_left">Bir süredir bu uygulamayı kullanıyorsunuz. Hadi, hızımızı değiştirelim ve ekrandan bir süreliğine uzaklaşıp verimli bir şeye odaklanalım.</string>
     <string name="app_paused_reason_app_timer_out">Bu uygulamada günlük limitinize ulaştınız. Bu fırsatı, verimliliğinizi artırmak için değerlendirin.</string>
     <string name="app_paused_reason_launch_count_out">Bugün bu uygulama için maksimum açılış sayısına ulaştınız. Şimdi bir adım geri atıp önceliklerinize odaklanma zamanı.</string>
-    <string name="app_paused_reason_active_period_over">Bu uygulamaya erişim şu anda duraklatıldı çünkü belirlediğiniz aktif saatlerin dışında. Bu zamanı en önemli şeylere odaklanarak değerlendirin ve izin verilen saatlerde tekrar kontrol edin.</string>
+    <string name="app_paused_reason_app_active_period_over">Bu uygulamaya erişim şu anda duraklatıldı çünkü belirlediğiniz aktif saatlerin dışında. Bu zamanı en önemli şeylere odaklanarak değerlendirin ve izin verilen saatlerde tekrar kontrol edin.</string>
     <string name="app_paused_reason_group_timer_left" formatted="true">Bir süredir “%s” grubundaki uygulamaları kullanıyorsunuz. Şimdi bir adım geri atıp ekranınıza değil, görevlerinize odaklanma zamanı.</string>
     <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">Bugün “%s” grubundaki toplam zaman limitine ulaştınız. Biraz ara verin ve odaklanmanızı yenileyin.</string>
     <string name="app_paused_reason_group_active_period_over" formatted="true">“%s” grubundaki uygulamalar şu anda duraklatıldı çünkü belirlediğiniz aktif saatlerin dışında. Bu fırsatı, enerji toplamak veya görevlerinize odaklanmak için kullanın ve belirlenen saatte geri dönün.</string>
     <string name="app_paused_restriction_focus_mode">Odak modu</string>
     <string name="app_paused_restriction_bedtime_mode">Uyku zamanı modu</string>
-    <string name="app_paused_restriction_timer">Zamanlayıcı</string>
+    <string name="app_paused_restriction_app_timer">Zamanlayıcı</string>
     <string name="app_paused_restriction_launch_count">Çalıştırma Sayısı</string>
-    <string name="app_paused_restriction_active_period">Aktif dönem</string>
+    <string name="app_paused_restriction_app_active_period">Aktif dönem</string>
     <string name="app_paused_overlay_button_emergency">Acil durum</string>
     <string name="app_paused_overlay_label_spent_today">Bugün harcanan</string>
     <string name="app_paused_overlay_label_left_today">Bugün kalan</string>

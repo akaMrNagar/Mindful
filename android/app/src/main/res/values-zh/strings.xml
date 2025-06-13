@@ -37,15 +37,15 @@
     <string name="app_paused_reason_app_timer_left">您已经使用这个应用程序一段时间了。让我们换个方式，暂时离开屏幕并专注于一些富有成效的事情。</string>
     <string name="app_paused_reason_app_timer_out">您已经达到每日使用此应用程序的限制。利用这个机会来提升您的生产力。</string>
     <string name="app_paused_reason_launch_count_out">您已经达到今天对此应用程序的最大启动次数。是时候退一步并重新专注于您的优先事项了。</string>
-    <string name="app_paused_reason_active_period_over">由于当前时间不在您设置的活动时间内，因此暂停访问此应用程序。利用这段时间专注于最重要的事情，并在允许的时间内再次检查。</string>
+    <string name="app_paused_reason_app_active_period_over">由于当前时间不在您设置的活动时间内，因此暂停访问此应用程序。利用这段时间专注于最重要的事情，并在允许的时间内再次检查。</string>
     <string name="app_paused_reason_group_timer_left" formatted="true">您已经使用了来自「%s」组的应用程序一段时间了。是时候退一步并专注于您的任务，而不是屏幕。</string>
     <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">您已经达到「%s」组的总时间限制。暂时休息一下并重新充电您的专注力。</string>
     <string name="app_paused_reason_group_active_period_over" formatted="true">「%s」组中的应用程序目前已暂停，因为当前时间不在您设置的活动时间内。利用这段时间充电或专注于您的任务，并在指定时间内返回。</string>
     <string name="app_paused_restriction_focus_mode">专注模式</string>
     <string name="app_paused_restriction_bedtime_mode">睡眠模式</string>
-    <string name="app_paused_restriction_timer">定时器</string>
+    <string name="app_paused_restriction_app_timer">定时器</string>
     <string name="app_paused_restriction_launch_count">启动次数</string>
-    <string name="app_paused_restriction_active_period">活动时间</string>
+    <string name="app_paused_restriction_app_active_period">活动时间</string>
     <string name="app_paused_overlay_button_emergency">紧急</string>
     <string name="app_paused_overlay_label_spent_today">今天已花费</string>
     <string name="app_paused_overlay_label_left_today">今天剩余</string>

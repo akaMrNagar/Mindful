@@ -1,5 +1,7 @@
 package com.mindful.android.models
 
+import android.util.Log
+import com.mindful.android.enums.ReminderType
 import org.json.JSONObject
 
 /**
@@ -32,9 +34,9 @@ data class AppRestriction(
     val activePeriodEnd: Int = 0,
 
     /**
-     * Flag denoting if to show usage reminders while using timed app.
+     * Type of usage reminders to show while using timed app.
      */
-    val usageReminders: Boolean = true,
+    val reminderType: ReminderType = ReminderType.NOTIFICATION,
 
     /**
      * ID of the restriction group this app belongs to (nullable).
@@ -53,7 +55,7 @@ data class AppRestriction(
                 launchLimit = jsonObject.optInt("launchLimit", 0),
                 activePeriodStart = jsonObject.optInt("activePeriodStart", 0),
                 activePeriodEnd = jsonObject.optInt("activePeriodEnd", 0),
-                usageReminders = jsonObject.optBoolean("usageReminders", true),
+                reminderType = ReminderType.fromName(jsonObject.optString("reminderType", "toast")),
                 associatedGroupId = if (jsonObject.isNull("associatedGroupId")) null else jsonObject.optInt(
                     "associatedGroupId"
                 ),

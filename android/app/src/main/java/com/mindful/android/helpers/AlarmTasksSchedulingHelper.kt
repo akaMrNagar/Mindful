@@ -172,15 +172,17 @@ object AlarmTasksSchedulingHelper {
         )
 
         // Let service know
-        if (Utils.isServiceRunning(context, MindfulTrackerService::class.java)) {
-            val conn = SafeServiceConnection(context, MindfulTrackerService::class.java)
-            conn.setOnConnectedCallback { service ->
-                service.getRestrictionManager.updateBedtimeApps(
-                    null
-                )
+        runCatching {
+            if (Utils.isServiceRunning(context, MindfulTrackerService::class.java)) {
+                val conn = SafeServiceConnection(context, MindfulTrackerService::class.java)
+                conn.setOnConnectedCallback { service ->
+                    service.getRestrictionManager.updateBedtimeApps(
+                        null
+                    )
+                }
+                conn.bindService()
+                conn.unBindService()
             }
-            conn.bindService()
-            conn.unBindService()
         }
         Log.d(TAG, "cancelBedtimeRoutineTasks: Bedtime routine tasks cancelled successfully")
     }

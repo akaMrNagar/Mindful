@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/database/daos/dynamic_records_dao.dart';
+import 'package:mindful/core/enums/reminder_type.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/default_models_utils.dart';
@@ -60,15 +61,15 @@ class AppsRestrictionsNotifier
     _updateStateDbAndServices(appPackage, restriction);
   }
 
-  /// Toggles usage reminders for a specific app package if package is not empty.
+  /// Set reminder type for a specific app package if package is not empty.
   ///
   /// Anyway call the platform channel service.
-  void setUsageReminders(String appPackage, bool usageReminders) async {
+  void setReminderType(String appPackage, ReminderType reminderType) async {
     final restriction =
-        state[appPackage]?.copyWith(usageReminders: usageReminders) ??
+        state[appPackage]?.copyWith(reminderType: reminderType) ??
             defaultAppRestrictionModel.copyWith(
               appPackage: appPackage,
-              usageReminders: usageReminders,
+              reminderType: reminderType,
             );
 
     /// Update database and state

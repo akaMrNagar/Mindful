@@ -24,7 +24,6 @@ import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.helpers.storage.SharedPrefsHelper
@@ -47,6 +46,7 @@ object NotificationHelper {
         "mindful.notification.channel.NOTIFICATION_BATCHING"
     private const val SERVICE_CHANNEL_ID: String =
         "mindful.notification.channel.SERVICE"
+    const val USAGE_REMINDERS_CHANNEL_ID: String = "mindful.notification.channel.USAGE_REMINDERS"
 
     /**
      * Registers notification channels for the application. This method creates and registers
@@ -61,41 +61,57 @@ object NotificationHelper {
                 CRITICAL_CHANNEL_ID,
                 "Critical Alerts",
                 NotificationManager.IMPORTANCE_HIGH
-            )
-            criticalChannel.description =
-                "These notifications include crucial updates regarding the essential system operations to ensure Mindful runs smoothly."
+            ).apply {
+                description =
+                    "These notifications include crucial updates regarding the essential system operations to ensure Mindful runs smoothly."
+            }
 
             val focusChannel = NotificationChannel(
                 FOCUS_CHANNEL_ID,
                 "Focus Sessions",
                 NotificationManager.IMPORTANCE_HIGH
-            )
-            focusChannel.description =
-                "These notifications include updates regarding focus sessions to help you stay on track."
+            ).apply {
+                description =
+                    "These notifications include updates regarding focus sessions to help you stay on track."
+            }
 
             val bedtimeChannel = NotificationChannel(
                 BEDTIME_CHANNEL_ID,
                 "Bedtime Routine",
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
-            bedtimeChannel.description =
-                "These notifications include updates regarding bedtime routine to help you get a peaceful sleep."
+            ).apply {
+                description =
+                    "These notifications include updates regarding bedtime routine to help you get a peaceful sleep."
+            }
 
             val notificationBatchingChannel = NotificationChannel(
-                FOCUS_CHANNEL_ID,
+                NOTIFICATION_BATCHING_CHANNEL_ID,
                 "Notification Batch",
                 NotificationManager.IMPORTANCE_DEFAULT
-            )
-            notificationBatchingChannel.description =
-                "These notifications include summaries or all batched notifications from your scheduled notification batches."
+            ).apply {
+                description =
+                    "These notifications include summaries or all batched notifications from your scheduled notification batches."
+            }
 
             val serviceChannel = NotificationChannel(
                 SERVICE_CHANNEL_ID,
                 "Running Services",
                 NotificationManager.IMPORTANCE_LOW
-            )
-            serviceChannel.description =
-                "These are non-critical notifications. They can be disabled but are included to comply with Android requirements."
+            ).apply {
+                description =
+                    "These are non-critical notifications. They can be disabled but are included to comply with Android requirements."
+            }
+
+            val usageRemindersChannel = NotificationChannel(
+                USAGE_REMINDERS_CHANNEL_ID,
+                "Usage Reminders",
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
+                setSound(null, null)
+                enableVibration(true)
+                description =
+                    "These notifications include usage reminders for timed apps."
+            }
 
             // Register channels
             val notificationManager =
@@ -105,7 +121,9 @@ object NotificationHelper {
                     criticalChannel,
                     focusChannel,
                     bedtimeChannel,
-                    serviceChannel
+                    notificationBatchingChannel,
+                    serviceChannel,
+                    usageRemindersChannel
                 )
             )
         }
@@ -149,7 +167,7 @@ object NotificationHelper {
 
         val msg = context.getString(R.string.overlay_permission_denied_notification_info)
         notificationManager.notify(
-            AppConstants.OVERLAY_SERVICE_NOTIFICATION_ID,
+            301,
             NotificationCompat.Builder(
                 context,
                 CRITICAL_CHANNEL_ID
@@ -190,7 +208,7 @@ object NotificationHelper {
 
                 /// Return if dnd lock is not free
                 val currentLock = SharedPrefsHelper.getSetDndWakeLock(context, null)
-                if (currentLock != DndWakeLock.None && currentLock != featureLock) {
+                if (currentLock != DndWakeLock.NONE && currentLock != featureLock) {
                     showDndLockToast(context, currentLock)
                     return
                 }
@@ -208,7 +226,7 @@ object NotificationHelper {
                 }
 
                 notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_ALL)
-                SharedPrefsHelper.getSetDndWakeLock(context, DndWakeLock.None)
+                SharedPrefsHelper.getSetDndWakeLock(context, DndWakeLock.NONE)
                 Log.d(TAG, "toggleDnd: DND mode stopped by $featureLock")
             }
         } else {
@@ -222,8 +240,8 @@ object NotificationHelper {
         currentLock: DndWakeLock,
     ) {
         val feature = when (currentLock) {
-            DndWakeLock.FocusMode -> context.getString(R.string.app_paused_restriction_focus_mode)
-            DndWakeLock.BedtimeMode -> context.getString(R.string.app_paused_restriction_bedtime_mode)
+            DndWakeLock.FOCUS_MODE -> context.getString(R.string.app_paused_restriction_focus_mode)
+            DndWakeLock.BEDTIME_MODE -> context.getString(R.string.app_paused_restriction_bedtime_mode)
             else -> ""
         }
 

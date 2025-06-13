@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.WorkerThread
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
-import com.mindful.android.AppConstants
 
 class MindfulTrackerService : Service() {
     companion object {
@@ -27,12 +27,16 @@ class MindfulTrackerService : Service() {
     private lateinit var launchTrackingManager: LaunchTrackingManager
     val getLaunchTrackingManager get() = launchTrackingManager
 
-
     override fun onCreate() {
         overlayManager = OverlayManager(this)
         reminderManager = ReminderManager(overlayManager, ::onNewAppLaunch)
         restrictionManager = RestrictionManager(this, ::stopIfNoUsage)
-        launchTrackingManager = LaunchTrackingManager(this, ::onNewAppLaunch)
+        launchTrackingManager = LaunchTrackingManager(
+            context = this,
+            onNewAppLaunched = ::onNewAppLaunch,
+            dismissOverlay = { overlayManager.dismissSheetOverlay() },
+            cancelReminders = { reminderManager.cancelReminders() },
+        )
         super.onCreate()
     }
 
@@ -64,28 +68,28 @@ class MindfulTrackerService : Service() {
 
     fun onMidnightReset() {
         restrictionManager.resetCache()
-        overlayManager.dismissOverlay()
-        reminderManager.cancelReminders()
+        overlayManager.dismissSheetOverlay()
+        val reminderAwaiting = reminderManager.cancelReminders()
+
+        // Means app is active but timer is not over and now it is reset so re-launch same event again
+        if (reminderAwaiting) launchTrackingManager.reInvokeLastLaunchEvent()
     }
 
 
     @WorkerThread
     private fun onNewAppLaunch(packageName: String) {
         try {
-
-            /// Cancel previous reminders and dismiss overlay
             reminderManager.cancelReminders()
-            overlayManager.dismissOverlay()
+            overlayManager.dismissSheetOverlay()
 
             /// check current restrictions
             val currentOrFutureState = restrictionManager.isAppRestricted(packageName)
-
             Log.d(TAG, "onNewAppLaunch: $packageName's evaluated state => $currentOrFutureState")
-            currentOrFutureState?.let {
 
+            currentOrFutureState?.let {
                 /// Already restricted
-                if (it.expirationFutureMs <= 0L) {
-                    overlayManager.showOverlay(
+                if (it.timeLeftMillis <= 0L) {
+                    overlayManager.showSheetOverlay(
                         packageName = packageName,
                         restrictionState = it,
                     )
@@ -109,7 +113,7 @@ class MindfulTrackerService : Service() {
             Log.d(TAG, "Service no longer needed, stopping")
             launchTrackingManager.dispose()
             reminderManager.cancelReminders()
-            overlayManager.dismissOverlay()
+            overlayManager.dismissSheetOverlay()
             stopForeground(STOP_FOREGROUND_REMOVE)
             stopSelf()
         }
