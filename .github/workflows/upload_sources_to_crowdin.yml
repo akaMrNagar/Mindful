@@ -1,0 +1,19 @@
+name: Upload Sources to Crowdin
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Upload sources to Crowdin
+        uses: crowdin/github-action@v1
+        with:
+          upload_sources: true
+          upload_translations: false
+          download_translations: false
+        env:
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
