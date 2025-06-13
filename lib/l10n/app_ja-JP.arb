@@ -1,0 +1,617 @@
+{
+    "@@locale": "ja",
+    "@----------------------------- SPLASH SCREEN -----------------------------": {},
+    "mindful_tagline": "本当に大切なことに集中しよう",
+    "unlock_button_label": "ロック解除",
+    "@----------------------------- APP PERMISSIONS -----------------------------": {},
+    "permission_status_off": "オフ",
+    "permission_status_allowed": "アクセス可能",
+    "permission_status_not_allowed": "アクセス不可",
+    "permission_button_grant_permission": "アクセスを許可する",
+    "permission_button_agree_and_continue": "同意して続ける",
+    "permission_button_not_now": "後で",
+    "permission_button_help": "ヘルプ",
+    "permission_sheet_privacy_info": "Mindful は100%安全で、オフラインでも動作します。個人情報の収集または保存をすることはありません。",
+    "permission_grant_step_one": "1. {button_label} を選択してください。",
+    "@permission_grant_step_one": {
+        "placeholders": {
+            "button_label": {
+                "type": "String"
+            }
+        }
+    },
+    "permission_grant_step_two": "2. 次の画面で Mindful を選択してください。",
+    "permission_grant_step_three": "3. 下記を参考に、切り替えを選択して有効にしてください。",
+    "permission_notification_title": "通知を受け取る",
+    "permission_alarms_title": "アラームとリマインダー",
+    "permission_alarms_info": "Mindful が就寝スケジュールとアプリタイマーを管理できるように、アラームとリマインダーへのアクセスを許可してください。",
+    "permission_alarms_device_tile_label": "アラームとリマインダーの設定を許可する",
+    "permission_usage_title": "使用状況",
+    "permission_usage_info": "Mindful がアプリの使用状況を把握し、アプリの利用時間を管理できるように、使用状況へのアクセスを許可してください。",
+    "permission_usage_device_tile_label": "使用状況へのアクセス許可",
+    "permission_overlay_title": "他のアプリの上に重ねて表示",
+    "permission_overlay_info": "Mindful が利用時間を超えたアプリを制限できるように、他のアプリの上に重ねて表示を許可してください。",
+    "permission_overlay_device_tile_label": "他のアプリの上に重ねて表示できるようにする",
+    "permission_accessibility_title": "ユーザー補助",
+    "permission_accessibility_info": "リール・ショート動画へのアクセス制限や不適切なSNS・ウェブサイトのブロックをするために、ユーザー補助を有効にしてください。",
+    "permission_accessibility_required": "Mindful がショートコンテンツやウェブサイトを効果的にブロックするには、ユーザー補助の権限が必要です。",
+    "permission_accessibility_device_tile_label": "Mindful の使用",
+    "permission_dnd_title": "サイレントモード",
+    "permission_dnd_info": "サイレントモードを利用すると、Mindful が就寝時間中の通知を自動的に管理し、快適な睡眠をサポートします。",
+    "permission_dnd_tile_title": "サイレントモードを開始",
+    "permission_dnd_tile_subtitle": "サイレントモードを有効にする必要があります。",
+    "permission_battery_optimization_tile_title": "バッテリー最適化を無視する",
+    "permission_battery_optimization_status_enabled": "バックグラウンドで動作中",
+    "permission_battery_optimization_status_disabled": "バックグラウンドで動作していません",
+    "permission_battery_optimization_allow_info": "「バッテリー最適化を無視する」を許可すると、一部のデバイスでは「アラームとリマインダー」の権限が自動的に付与されます。",
+    "permission_vpn_title": "VPNを作成",
+    "permission_vpn_info": "Mindful がアプリのインターネットアクセスを制限するために、仮想プライベートネットワーク（VPN）接続の作成を許可してください。",
+    "permission_admin_title": "デバイス管理アプリの有効化",
+    "permission_admin_info": "デバイス管理アプリの有効化は、アプリが正常に動作し、改ざん防止を維持するために必要な操作のみに使用されます。",
+    "permission_admin_snack_alert": "デバイス管理アプリの有効化は、選択した時間帯以外では無効にすることができません。",
+    "permission_notification_access_title": "通知へのアクセス",
+    "permission_notification_access_info": "通知へのアクセス権限を許可してください。これにより、Mindful が通知を整理し、あなたのスケジュールに合わせて通知を配信できるようになります。",
+    "permission_notification_access_required": "Mindful が通知をまとめてスケジュール配信するには、通知へのアクセス権限が必要です。",
+    "permission_notification_access_device_tile_label": "通知へのアクセスを許可",
+    "@----------------------------- DATE AND TIME -----------------------------": {},
+    "day_today": "今日",
+    "day_yesterday": "昨日",
+    "nDays": "{count, plural, =0{0 日} =1{1 日} other{{count} 日}}",
+    "@nDays": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nHours": "{count, plural, =0{0 時間} =1{1 時間} other{{count} 時間}}",
+    "@nHours": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nMinutes": "{count, plural, =0{0 分} =1{1 分} other{{count} 分}}",
+    "@nMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nSeconds": "{count, plural, =0{0 秒} =1{1 秒} other{{count} 秒}}",
+    "@nSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "time_separator_and": "と",
+    "@time_separator_and": {
+        "description": "Separator used between time like, 10 hours 'and' 15 minutes"
+    },
+    "@----------------------------- SHARED STRINGS -----------------------------": {},
+    "timer_status_active": "有効",
+    "timer_status_paused": "一時停止",
+    "create_button": "作成",
+    "update_button": "更新",
+    "dialog_button_cancel": "キャンセル",
+    "dialog_button_remove": "削除",
+    "dialog_button_set": "設定",
+    "dialog_button_reset": "リセット",
+    "dialog_button_infinite": "無制限",
+    "schedule_start_label": "開始",
+    "schedule_end_label": "終了",
+    "exit_without_saving_dialog_info": "Are you sure you want to exit without saving?",
+    "development_dialog_info": "Mindfulは現在開発中のため、不具合や未完成の機能がある可能性があります。 問題が発生した場合は、改善のためご報告ください。\n\nご意見ありがとうございます！",
+    "development_dialog_button_report_issue": "問題を報告",
+    "development_dialog_button_close": "閉じる",
+    "dnd_settings_tile_title": "サイレントモード設定",
+    "dnd_settings_tile_subtitle": "サイレントモード中のアプリ通知を管理します。",
+    "quick_actions_heading": "簡単操作",
+    "select_distracting_apps_heading": "使用制限するアプリを選択",
+    "your_distracting_apps_heading": "使用制限中のアプリ",
+    "select_more_apps_heading": "さらにアプリを選択",
+    "imp_distracting_apps_snack_alert": "システムアプリは使用制限アプリに追加できません。",
+    "custom_apps_quick_actions_unavailable_warning": "このアプリでは、ネットワークの使用状況のみ確認できます。画面の使用状況と制限機能は現在ご利用いただけません。",
+    "create_group_fab_button": "グループを作成",
+    "active_period_info": "アクセスを許可する時間帯を設定してください。この時間帯以外では、アクセスが制限されます。",
+    "minimum_distracting_apps_snack_alert": "使用制限するアプリを少なくとも1つは選択してください。",
+    "donation_card_title": "開発を支援する",
+    "donation_card_info": "Mindful は、数ヶ月の開発期間を経て、無料で公開しています。このアプリをより多くの人々に届け、改善し続けるために、皆様からの温かいご支援をお待ちしています。",
+    "operation_failed_snack_alert": "エラーが発生し、操作を完了できませんでした。",
+    "donation_card_button_donate": "寄付する",
+    "app_restart_dialog_title": "再起動してください",
+    "app_restart_dialog_info": "カウントダウン終了後、Mindful は自動的に再起動します。変更の適用には少し時間がかかりますので、お待ちください。",
+    "@----------------------------- TIPS -----------------------------": {},
+    "accessibility_tip": "Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.",
+    "battery_optimization_tip": "Mindful が予期せず停止する場合は、「設定>詳細設定」から「バッテリー最適化を無視する」権限を付与して、バックグラウンドでの動作を継続させることを検討してください。",
+    "invincible_mode_tip": "Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.",
+    "glance_usage_tip": "Want insights? Check the Glance section to view your usage patterns and screen time.",
+    "tamper_protection_tip": "Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.",
+    "notification_blocking_tip": "Want to reduce distractions? Use Notification Blocking to silence selected apps.",
+    "usage_history_tip": "Want to reflect on your habits? Check Usage History to see past patterns.",
+    "focus_mode_tip": "Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.",
+    "bedtime_reminder_tip": "Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.",
+    "custom_blocking_tip": "Need a custom experience? Create app blocking rules that fit your needs.",
+    "session_timeline_tip": "Want to track focus sessions? View timeline to see your focus journey.",
+    "short_content_blocking_tip": "Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.",
+    "parental_controls_tip": "Need parental control? Set restrictions for your child's device to ensure a safe experience.",
+    "notification_batching_tip": "Want to reduce distractions? Use Notification Batching to group notifications and check them at once.",
+    "notification_scheduling_tip": "Need to manage notifications? Schedule when you receive notifications for specific apps.",
+    "quick_focus_tile_tip": "Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.",
+    "app_shortcuts_tip": "Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.",
+    "backup_usage_db_tip": "Want to save your data? Backup your usage database to keep your records safe.",
+    "dynamic_material_color_tip": "Want a custom theme? Enable Dynamic Material You color to match your device's theme.",
+    "amoled_dark_theme_tip": "Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.",
+    "customize_usage_history_tip": "Want to keep usage history? Customize how many weeks of data to store in Usage History.",
+    "grouped_apps_blocking_tip": "Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.",
+    "websites_blocking_tip": "Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.",
+    "data_usage_tip": "Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.",
+    "block_internet_tip": "Need to block an app's internet? Cut off internet for specific app from app's dashboard.",
+    "emergency_passes_tip": "Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.",
+    "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
+    "onboarding_skip_btn_label": "スキップ",
+    "onboarding_finish_setup_btn_label": "設定終了",
+    "onboarding_page_one_title": "集中力を持続させる",
+    "onboarding_page_one_info": "Mindful で集中力をマスターしましょう。気が散るアプリやショートコンテンツをブロックし、あなただけの集中時間を作り出します。",
+    "onboarding_page_two_title": "邪魔をブロック",
+    "onboarding_page_two_info": "アプリの使用制限を設定し、自動的にアプリを一時停止し、より健全なデジタル習慣を身につけましょう。サイレントモードを使用して、リラックスして邪魔のない夜を楽しみましょう。",
+    "onboarding_page_three_title": "プライバシー重視",
+    "onboarding_page_three_info": "Mindful は、あなたのプライバシーを最優先に考えています。アプリは100%オープンソースで、オフラインで動作するため、個人情報は一切収集されません。",
+    "onboarding_page_permissions_title": "必要な権限",
+    "onboarding_page_permissions_info": "Mindful が画面の使用時間を追跡・管理し、集中力を高めるために必要な権限は以下のとおりです。",
+    "@----------------------------- HOME SCREEN - DASHBOARD TAB -----------------------------": {},
+    "dashboard_tab_title": "ダッシュボード",
+    "focus_now_fab_button": "今すぐ集中",
+    "welcome_greetings": "おかえりなさい",
+    "username_snack_alert": "ユーザー名を編集するには長押ししてください。",
+    "username_dialog_title": "ユーザー名",
+    "username_dialog_info": "ダッシュボードに表示されるユーザー名を入力してください。",
+    "username_dialog_button_apply": "保存",
+    "glance_tile_title": "概要",
+    "glance_tile_subtitle": "使用状況をひと目で確認できます。",
+    "parental_controls_tile_subtitle": "無敵モードと改ざん防止。",
+    "restrictions_heading": "アプリの制限",
+    "apps_blocking_tile_title": "アプリのブロック",
+    "apps_blocking_tile_subtitle": "複数の方法でアプリを制限します。",
+    "grouped_apps_blocking_tile_title": "グループアプリのブロック",
+    "grouped_apps_blocking_tile_subtitle": "複数のアプリを同時に制限します。",
+    "shorts_blocking_tile_subtitle": "複数のプラットフォームでショート動画を制限します。",
+    "websites_blocking_tile_subtitle": "アダルトサイトやカスタムウェブサイトを制限します。",
+    "screen_time_label": "使用時間",
+    "total_data_label": "総データ量",
+    "mobile_data_label": "モバイルデータ",
+    "wifi_data_label": "Wi-Fiデータ",
+    "focus_today_label": "今日の集中",
+    "focus_weekly_label": "週間集中",
+    "focus_monthly_label": "月間集中",
+    "focus_lifetime_label": "総集中時間",
+    "longest_streak_label": "最大連続記録",
+    "current_streak_label": "現在の連続記録",
+    "successful_sessions_label": "集中できた回数",
+    "failed_sessions_label": "集中できなかった回数",
+    "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
+    "statistics_tab_title": "統計データ",
+    "screen_segment_label": "使用時間",
+    "data_segment_label": "データ使用量",
+    "mobile_label": "モバイル",
+    "wifi_label": "Wi-Fi",
+    "most_used_apps_heading": "よく使うアプリ",
+    "show_all_apps_tile_title": "すべてのアプリを表示",
+    "search_apps_hint": "Search apps...",
+    "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_tab_title": "通知",
+    "notifications_tab_info": "アプリからの通知をまとめて、朝、昼、夕方、夜などのスケジュールを設定します。常に中断されることなく、必要な情報を得られます。",
+    "batched_apps_tile_title": "通知をまとめるアプリ",
+    "batch_recap_dropdown_title": "Batch recap type",
+    "batch_recap_dropdown_info": "Choose what to push when a schedule triggers — all notifications or just a summary.",
+    "batch_recap_option_summery_only": "Summery only",
+    "batch_recap_option_all_notifications": "All notifications",
+    "notification_history_tile_title": "Notification history",
+    "store_all_tile_title": "Store all notifications",
+    "store_all_tile_subtitle": "Save non-batched notifications too.",
+    "schedules_heading": "スケジュール",
+    "new_schedule_fab_button": "新しいスケジュール",
+    "new_schedule_dialog_info": "通知スケジュールの名前を入力して、簡単に識別できるようにしてください。",
+    "new_schedule_dialog_field_label": "スケジュール名",
+    "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
+    "bedtime_tab_title": "就寝モード",
+    "bedtime_tab_info": "時間帯と曜日を選択して、就寝スケジュールを設定しましょう。集中を妨げるアプリをブロックし、サイレントモードを有効にして、穏やかな夜を過ごしましょう。",
+    "schedule_tile_title": "スケジュール",
+    "schedule_tile_subtitle": "毎日のスケジュールを有効または無効にします。",
+    "bedtime_no_days_selected_snack_alert": "曜日を少なくとも1つ選択してください。",
+    "bedtime_minimum_duration_snack_alert": "就寝時間の合計は30分以上である必要があります。",
+    "distracting_apps_tile_title": "集中を妨げるアプリ",
+    "distracting_apps_tile_subtitle": "就寝前の集中を妨げるアプリを選択してください。",
+    "bedtime_distracting_apps_modify_snack_alert": "就寝スケジュールが有効になっている間は、集中を妨げるアプリの一覧を変更することはできません。",
+    "@----------------------------- PARENTAL CONTROLS SCREEN-----------------------------": {},
+    "parental_controls_tab_title": "ペアレンタルコントロール",
+    "invincible_mode_heading": "無敵モード",
+    "invincible_mode_tile_title": "無敵モードの有効化",
+    "invincible_mode_info": "無敵モードがオンになっている場合、1日の使用量上限に達すると、選択した制限を調整できなくなります。ただし、選択した10分間の無敵ウィンドウ内では変更が可能です。",
+    "invincible_mode_snack_alert": "無敵モードが有効になっているため、制限は変更できません。",
+    "invincible_mode_dialog_info": "無敵モードを有効にすると、このアプリをアンインストールするまでオフにできません。本当に有効にしますか？",
+    "invincible_mode_turn_off_snack_alert": "このアプリがデバイスにインストールされている限り、無敵モードをオフにすることはできません。",
+    "invincible_mode_dialog_button_start_anyway": "開始する",
+    "invincible_mode_include_timer_tile_title": "タイマーを含める",
+    "invincible_mode_include_launch_limit_tile_title": "起動回数の制限を含める",
+    "invincible_mode_include_active_period_tile_title": "使用可能な時間を含める",
+    "invincible_mode_app_restrictions_tile_title": "アプリの制限",
+    "invincible_mode_app_restrictions_tile_subtitle": "毎日の制限を超えると、アプリの制限設定を変更できなくなります。",
+    "invincible_mode_group_restrictions_tile_title": "グループの制限",
+    "invincible_mode_group_restrictions_tile_subtitle": "毎日の制限を超えると、グループの制限設定を変更できなくなります。",
+    "invincible_mode_include_shorts_timer_tile_title": "ショート動画タイマーを含める",
+    "invincible_mode_include_shorts_timer_tile_subtitle": "毎日の制限を超えると、ショート動画の制限設定を変更できなくなります。",
+    "invincible_mode_include_bedtime_tile_title": "就寝時間を含める",
+    "invincible_mode_include_bedtime_tile_subtitle": "就寝時間中は制限設定を変更できなくなります。",
+    "protected_access_tile_title": "アクセス保護",
+    "protected_access_tile_subtitle": "デバイスロックで Mindful を保護する",
+    "protected_access_no_lock_snack_alert": "この機能を有効にするには、まずデバイスに生体認証ロックを設定してください。",
+    "protected_access_removed_lock_snack_alert": "デバイスロックが解除されました。続行するには、新しいロックを設定してください。",
+    "protected_access_failed_lock_snack_alert": "認証に失敗しました。続行するにはデバイスロックの確認が必要です。",
+    "tamper_protection_tile_title": "改ざん防止",
+    "tamper_protection_tile_subtitle": "アプリのアンインストールと強制終了を制限する",
+    "tamper_protection_confirmation_dialog_info": "Once enabled, you won't be able to uninstall, force stop, or clear Mindful's data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.",
+    "uninstall_window_tile_title": "アンインストール画面",
+    "uninstall_window_tile_subtitle": "改ざん防止は、選択した時間から10分以内に無効にできます。",
+    "invincible_window_tile_title": "無敵ウィンドウ",
+    "invincible_window_tile_subtitle": "選択した制限は、指定時間から10分以内に変更できます。",
+    "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
+    "shorts_blocking_tab_title": "ショート動画ブロック",
+    "shorts_blocking_tab_info": "Instagram、YouTube、Snapchat、Facebookなどのプラットフォームやそのウェブサイトで、ショート動画に費やす時間をコントロールできます。",
+    "short_content_heading": "ショート動画",
+    "shorts_time_left_from": "残りあと {timeShortString}",
+    "@shorts_time_left_from": {
+        "placeholders": {
+            "timeShortString": {
+                "type": "String",
+                "example": "1h 23m"
+            }
+        }
+    },
+    "short_content_timer_picker_dialog_info": "ショート動画の毎日の利用時間を制限できます。制限時間に達すると、深夜0時までショート動画は視聴できなくなります。",
+    "instagram_features_tile_title": "Instagram",
+    "instagram_features_tile_subtitle": "Instagramの機能を制限します。",
+    "instagram_features_block_reels": "リールセクションを制限します。",
+    "instagram_features_block_explore": "探索セクションを制限します。",
+    "snapchat_features_tile_title": "Snapchat",
+    "snapchat_features_tile_subtitle": "Snapchatの機能を制限します。",
+    "snapchat_features_block_spotlight": "スポットライトセクションを制限します。",
+    "snapchat_features_block_discover": "ディスカバーセクションを制限します。",
+    "youtube_features_tile_title": "YouTube",
+    "youtube_features_tile_subtitle": "YouTubeのショート動画を制限します。",
+    "facebook_features_tile_title": "Facebook",
+    "facebook_features_tile_subtitle": "Restrict reels on facebook.",
+    "reddit_features_tile_title": "Reddit",
+    "reddit_features_tile_subtitle": "Restrict shorts on reddit.",
+    "@----------------------------- WEBSITES BLOCKING SCREEN-----------------------------": {},
+    "websites_blocking_tab_title": "Websites blocking",
+    "websites_blocking_tab_info": "Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.",
+    "adult_content_heading": "アダルトコンテンツ",
+    "block_nsfw_title": "職場閲覧注意をブロック",
+    "block_nsfw_subtitle": "アダルトサイトやポルノサイトの閲覧を制限する",
+    "block_nsfw_dialog_info": "この操作は元に戻せません。アダルトサイトブロッカーを有効にすると、このアプリがデバイスにインストールされている間は、無効にすることができなくなります。",
+    "block_nsfw_dialog_button_block_anyway": "ブロックする",
+    "blocked_websites_heading": "ブロック済みのウェブサイト",
+    "blocked_websites_empty_list_hint": "集中を妨げるウェブサイトをブロックするには、ウェブサイトを追加するボタンを選択してください。",
+    "add_website_fab_button": "ウェブサイトを追加",
+    "add_website_dialog_title": "集中を妨げるウェブサイト",
+    "add_website_dialog_info": "ブロックするウェブサイトのURLを入力してください。",
+    "add_website_dialog_is_nsfw": "Is nsfw site?",
+    "add_website_dialog_nsfw_warning": "Warning: Nsfw sites cannot be removed once added.",
+    "add_website_dialog_button_block": "ブロック",
+    "add_website_already_exist_snack_alert": "このURLは既にブロック済みのウェブサイトに追加されています。",
+    "add_website_invalid_url_snack_alert": "URLが無効です。ホスト名を確認してください。",
+    "remove_website_dialog_title": "ウェブサイトを削除",
+    "remove_website_dialog_info": "{websitehost} のブロックを解除しますか？",
+    "@remove_website_dialog_info": {
+        "placeholders": {
+            "websitehost": {
+                "type": "String",
+                "example": "example.com"
+            }
+        }
+    },
+    "@----------------------------- FOCUS SCREEN - FOCUS TAB -----------------------------": {},
+    "focus_tab_title": "集中記録",
+    "focus_tab_info": "集中力を高めたい時は、新しい集中記録を開始しましょう。タイプを選択し、集中を妨げるアプリを一時停止し、サイレントモードを有効にすることで、邪魔されることなく集中できます。",
+    "active_session_card_title": "有効な記録",
+    "active_session_card_info": "集中記録が開始されています。表示を選択して、現在の進捗状況を確認しましょう。",
+    "active_session_card_view_button": "表示",
+    "focus_distracting_apps_removal_snack_alert": "集中記録が有効な間は、集中を妨げるアプリを削除することはできません。ただし、新しいアプリを追加することはできます。",
+    "focus_profile_tile_title": "Focus profile",
+    "focus_session_duration_tile_title": "集中する時間",
+    "focus_session_duration_tile_subtitle": "停止するまでずっと",
+    "focus_session_duration_dialog_info": "集中したい時間を選択してください。",
+    "focus_profile_customization_tile_title": "Profile customization",
+    "focus_profile_customization_tile_subtitle": "Customize settings for the selected profile.",
+    "focus_enforce_tile_title": "Enforce session",
+    "focus_enforce_tile_subtitle": "Prevents ending a session before time ends.",
+    "focus_session_start_fab_button": "記録を開始",
+    "focus_session_minimum_apps_snack_alert": "集中記録を開始するには、少なくとも1つの集中を妨げるアプリを選択する必要があります。",
+    "focus_session_already_active_snack_alert": "集中記録は既に開始されています。新しい記録を開始する前に、現在の記録を終了するか停止してください。",
+    "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},
+    "focus_session_type_study": "勉強",
+    "focus_session_type_work": "仕事",
+    "focus_session_type_exercise": "エクササイズ",
+    "focus_session_type_meditation": "瞑想",
+    "focus_session_type_creativeWriting": "創作",
+    "focus_session_type_reading": "読書",
+    "focus_session_type_programming": "プログラミング",
+    "focus_session_type_chores": "家事",
+    "focus_session_type_projectPlanning": "プロジェクト計画",
+    "focus_session_type_artAndDesign": "芸術とデザイン",
+    "focus_session_type_languageLearning": "言語学習",
+    "focus_session_type_musicPractice": "音楽練習",
+    "focus_session_type_selfCare": "健康管理",
+    "focus_session_type_brainstorming": "アイデア出し",
+    "focus_session_type_skillDevelopment": "技術",
+    "focus_session_type_research": "調査",
+    "focus_session_type_networking": "交流",
+    "focus_session_type_cooking": "料理",
+    "focus_session_type_sportsTraining": "スポーツ",
+    "focus_session_type_restAndRelaxation": "休憩",
+    "focus_session_type_other": "その他",
+    "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
+    "timeline_tab_title": "使用履歴",
+    "focus_timeline_tab_info": "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
+    "selected_month_productive_time_snack_alert": "選択した月の集中時間は合計 {timeString} です。",
+    "@selected_month_productive_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "selected_month_productive_days_label": "集中できた日数",
+    "selected_month_productive_days_snack_alert": "選択した月に集中できた日数は {daysCount} 日です。",
+    "@selected_month_productive_days_snack_alert": {
+        "placeholders": {
+            "daysCount": {
+                "type": "num",
+                "example": "12"
+            }
+        }
+    },
+    "selected_day_focused_time_label": "集中した時間",
+    "selected_day_focused_time_snack_alert": "選択した日の集中時間の合計は {timeString} です。",
+    "@selected_day_focused_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "calender_heading": "カレンダー",
+    "your_sessions_heading": "活動記録",
+    "your_sessions_empty_list_hint": "選択した日は活動記録がありませんでした。",
+    "focus_session_tile_timestamp_label": "Timestamp",
+    "focus_session_tile_duration_label": "継続時間",
+    "focus_session_tile_reflection_label": "Reflection",
+    "focus_session_state_active": "有効",
+    "focus_session_state_successful": "成功",
+    "focus_session_state_failed": "失敗",
+    "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
+    "active_session_tab_title": "記録",
+    "active_session_none_warning": "No active session found. Returning to the home screen.",
+    "active_session_dialog_button_keep_pushing": "諦めずに続けましょう",
+    "active_session_finish_dialog_title": "終了",
+    "active_session_finish_dialog_info": "集中力が鍛えられています！このまま記録を終了しますか？少しの時間も無駄にせず、目標達成を目指しましょう。",
+    "active_session_giveup_dialog_title": "諦める",
+    "active_session_giveup_dialog_info": "もう少しで目標達成です！本当にこの集中記録を途中で終了しますか？これまでの進捗は失われます。",
+    "active_session_reflection_dialog_title": "Session reflection",
+    "active_session_reflection_dialog_info": "Take a moment to reflect on your progress. What's your goal for this session? What did you accomplish during this session?",
+    "active_session_reflection_dialog_tip": "Tip: You can always edit this later in the session timeline.",
+    "active_session_giveup_snack_alert": "諦めてしまいましたか？大丈夫、次回はきっと集中できます。どんな努力も無駄にはなりません。諦めずに続けましょう！",
+    "active_session_quote_one": "どんな小さな一歩も、目標達成に繋がっています。自信を持って、進み続けましょう。",
+    "active_session_quote_two": "素晴らしい！集中力が持続しています！",
+    "active_session_quote_three": "すごい集中力！この調子で続けましょう！",
+    "active_session_quote_four": "あと少し！最後まで集中力を維持しましょう！",
+    "active_session_quote_five": "おめでとうございます🎉 \n{durationString} の集中記録を完了しました！\n\nお疲れ様でした！これからも続けていきましょう。",
+    "@active_session_quote_five": {
+        "placeholders": {
+            "durationString": {
+                "type": "String",
+                "example": "30 minutes"
+            }
+        }
+    },
+    "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
+    "restriction_groups_tab_title": "制限グループ",
+    "restriction_groups_tab_info": "複数のアプリをまとめて時間制限できます。制限時間に達すると、グループ内のすべてのアプリが一時停止され、集中とバランスを保てます。",
+    "restriction_group_time_spent_label": "今日の使用時間",
+    "restriction_group_time_left_label": "今日の残り時間",
+    "restriction_group_name_tile_title": "グループ名",
+    "restriction_group_name_picker_dialog_info": "制限グループの名前を入力すると、簡単に分類と管理ができます。",
+    "restriction_group_timer_tile_title": "グループのタイマー",
+    "restriction_group_timer_picker_dialog_info": "このグループに毎日の使用時間を制限できます。制限時間に達すると、グループ内のすべてのアプリは深夜0時まで使えなくなります。",
+    "restriction_group_active_period_tile_title": "グループの使用時間帯",
+    "remove_restriction_group_dialog_title": "グループを削除",
+    "remove_restriction_group_dialog_info": "{groupName} を制限グループから削除しますか？",
+    "@remove_restriction_group_dialog_info": {
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Games"
+            }
+        }
+    },
+    "restriction_group_invalid_limits_snack_alert": "タイマーを設定するか、使用時間帯を制限してください。",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_empty_list_hint": "No notifications have been batched for the day.",
+    "conversations_label": "Conversations",
+    "last_24_hours_heading": "Last 24 hours",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TIMELINE TAB -----------------------------": {},
+    "notification_timeline_tab_info": "Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.",
+    "monthly_label": "Monthly",
+    "daily_label": "Daily",
+    "search_notifications_sheet_info": "Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.",
+    "search_notifications_hint": "Search notifications...",
+    "search_notifications_empty_list_hint": "No notifications found matching your search.",
+    "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
+    "app_info_none_warning": "Couldn't find the app for the given package. Returning to the home screen.",
+    "emergency_fab_button": "緊急時の使用",
+    "emergency_dialog_info": "アプリブロッカーを5分間一時停止しますか？残りパスは {leftPassesCount} 回です。すべてのパスを使用すると、アプリは深夜まで、または有効な集中記録が終了するまでブロックされたままになります。",
+    "@emergency_dialog_info": {
+        "placeholders": {
+            "leftPassesCount": {
+                "type": "num",
+                "example": "3"
+            }
+        }
+    },
+    "emergency_dialog_button_use_anyway": "使用する",
+    "emergency_started_snack_alert": "アプリブロッカーは一時停止されました。5分後にブロックが再開されます。",
+    "emergency_already_active_snack_alert": "アプリブロッカーは現在一時停止中、または無効になっています。通知が有効な場合は、残り時間についてお知らせします。",
+    "emergency_no_pass_left_snack_alert": "緊急時パスは残り0回です。ブロックされたアプリは、深夜または集中記録終了まで使用できません。",
+    "app_limit_status_not_set": "未設定",
+    "app_timer_tile_title": "アプリタイマー",
+    "app_timer_picker_dialog_info": "このアプリに毎日の使用時間の制限を設定しましょう。制限時間に達すると、アプリは深夜0時まで一時停止します。",
+    "usage_reminders_tile_title": "Usage reminders",
+    "usage_reminders_tile_subtitle": "Gentle nudges when using timed apps.",
+    "app_launch_limit_tile_title": "起動回数の制限",
+    "app_launch_limit_tile_subtitle": "今日は {count} 回起動しました。",
+    "@app_launch_limit_tile_subtitle": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "example": "15"
+            }
+        }
+    },
+    "app_launch_limit_picker_dialog_info": "毎日、アプリを起動できる回数を制限できます。制限回数を超えると、深夜0時までアプリは起動できなくなります。",
+    "app_active_period_tile_title": "使用可能な時間",
+    "app_active_period_tile_subtitle": "{startTime} から {endTime} まで",
+    "@app_active_period_tile_subtitle": {
+        "placeholders": {
+            "startTime": {
+                "type": "String",
+                "example": "10:00pm"
+            },
+            "endTime": {
+                "type": "String",
+                "example": "15"
+            }
+        }
+    },
+    "internet_access_tile_title": "インターネット接続",
+    "internet_access_tile_subtitle": "オフにすると、アプリのインターネット接続を遮断します。",
+    "internet_access_blocked_snack_alert": "{appName} はインターネットに接続できません。",
+    "@internet_access_blocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "internet_access_unblocked_snack_alert": "{appName} はインターネットに接続できます。",
+    "@internet_access_unblocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "launch_app_tile_title": "アプリの起動",
+    "launch_app_tile_subtitle": "{appName} を開く",
+    "@launch_app_tile_subtitle": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "go_to_app_settings_tile_title": "設定画面へ",
+    "go_to_app_settings_tile_subtitle": "通知や権限、ストレージなどのアプリ設定を管理します。",
+    "include_in_stats_tile_title": "使用時間に含める",
+    "include_in_stats_tile_subtitle": "このアプリを合計使用時間から除外するには、オフにしてください。",
+    "app_excluded_from_stats_snack_alert": "{appName} は使用時間に含まれません。",
+    "@app_excluded_from_stats_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "app_include_to_stats_snack_alert": "{appName} は使用時間に含まれます。",
+    "@app_include_to_stats_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "@----------------------------- SETTINGS SCREEN - GENERAL TAB -----------------------------": {},
+    "general_tab_title": "全般設定",
+    "appearance_heading": "外観",
+    "theme_mode_tile_title": "カラーテーマ",
+    "theme_mode_system_label": "システムに従う",
+    "theme_mode_light_label": "ライトモード",
+    "theme_mode_dark_label": "ダークモード",
+    "material_color_tile_title": "配色",
+    "amoled_dark_tile_title": "AMOLED ダークモード",
+    "amoled_dark_tile_subtitle": "ダークモードより深い黒色を使用",
+    "dynamic_colors_tile_title": "ダイナミックカラー",
+    "dynamic_colors_tile_subtitle": "壁紙に合わせたカラーを使用",
+    "defaults_heading": "基本設定",
+    "app_language_tile_title": "言語設定",
+    "default_home_tab_tile_title": "ホームタブ",
+    "usage_history_tile_title": "Usage history",
+    "usage_history_15_days": "15 days",
+    "usage_history_1_month": "1 month",
+    "usage_history_3_month": "3 months",
+    "usage_history_6_month": "6 months",
+    "usage_history_1_year": "1 year",
+    "service_heading": "サービス",
+    "service_stopping_warning": "Mindfulが予期せず動作を停止した場合は、バッテリーの最適化を無視することを許可し、バックグラウンドで実行できるようにしてください。それでも問題が続く場合は、Mindfulを許可リストに登録して、動作を中断されないようにしてください。",
+    "whitelist_app_tile_title": "Mindful を許可リストに追加",
+    "whitelist_app_tile_subtitle": "Mindfulの自動起動を有効にする",
+    "whitelist_app_unsupported_snack_alert": "このデバイスは自動起動の設定に対応していません。",
+    "@----------------------------- SETTINGS SCREEN - DATABASE TAB -----------------------------": {},
+    "database_tab_title": "データベース",
+    "import_db_tile_title": "データベースを読み込む",
+    "import_db_tile_subtitle": "ファイルからデータベースを読み込む",
+    "export_db_tile_title": "データベースを書き出す",
+    "export_db_tile_subtitle": "データベースをファイルに保存",
+    "crash_logs_heading": "クラッシュログ",
+    "crash_logs_info": "問題が発生した場合は、GitHubにエラーレポートを添付して報告してください。エラーレポートには、デバイスのメーカー、モデル、Androidバージョン、SDKバージョン、クラッシュログなどの情報が含まれており、問題解決に役立ちます。",
+    "crash_logs_export_tile_title": "エラーレポートを保存",
+    "crash_logs_export_tile_subtitle": "エラーレポートをJSONファイルで書き出す",
+    "crash_logs_view_tile_title": "View logs",
+    "crash_logs_view_tile_subtitle": "Explore stored crash logs.",
+    "crash_logs_empty_list_hint": "No crash logged till now.",
+    "crash_logs_clear_tile_title": "ログを削除",
+    "crash_logs_clear_tile_subtitle": "すべてのクラッシュログを削除",
+    "crash_logs_clear_dialog_info": "データベースからすべてのクラッシュログを削除してもよろしいですか？",
+    "crash_logs_clear_dialog_button_clear_anyway": "削除する",
+    "@----------------------------- SETTINGS SCREEN - ABOUT TAB -----------------------------": {},
+    "about_tab_title": "概要",
+    "changelog_tile_title": "変更履歴",
+    "changelog_tile_subtitle": "Find out what's new.",
+    "full_changelog_tile_title": "Full changelog",
+    "redirected_to_github_subtitle": "GitHubに移動",
+    "contribute_heading": "貢献",
+    "github_tile_title": "GitHub",
+    "github_tile_subtitle": "ソースコードを確認",
+    "report_issue_tile_title": "問題を報告",
+    "suggest_idea_tile_title": "アイデアを提案",
+    "write_email_tile_title": "メールでご連絡",
+    "write_email_tile_subtitle": "メールアプリを開く",
+    "privacy_policy_heading": "プライバシーポリシー",
+    "privacy_policy_info": "Mindfulはプライバシー保護に最優先で取り組んでいます。ユーザーデータの収集、保存、または第三者に提供することはありません。アプリは完全にオフラインで動作し、インターネット接続を必要としないため、ユーザーの個人情報はデバイス上で安全に保護されます。無料でオープンソースのソフトウェア（FOSS）であり、完全な透明性とユーザーによるデータの制御を保証します。",
+    "more_details_button": "詳細情報"
+}

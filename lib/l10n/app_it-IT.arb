@@ -1,0 +1,617 @@
+{
+    "@@locale": "it",
+    "@----------------------------- SPLASH SCREEN -----------------------------": {},
+    "mindful_tagline": "Concentrati sulle cose importanti",
+    "unlock_button_label": "Sblocca",
+    "@----------------------------- APP PERMISSIONS -----------------------------": {},
+    "permission_status_off": "Spento",
+    "permission_status_allowed": "Concesso",
+    "permission_status_not_allowed": "Non concesso",
+    "permission_button_grant_permission": "Concedi permesso",
+    "permission_button_agree_and_continue": "Accetta e Continua",
+    "permission_button_not_now": "Non ora",
+    "permission_button_help": "Aiuto?",
+    "permission_sheet_privacy_info": "Mindful è sicura al 100% e funziona offline. Nessun dato personale viene raccolto o conservato.",
+    "permission_grant_step_one": "Premi il pulsante {button_label}.",
+    "@permission_grant_step_one": {
+        "placeholders": {
+            "button_label": {
+                "type": "String"
+            }
+        }
+    },
+    "permission_grant_step_two": "Seleziona Mindful nella prossima schermata.",
+    "permission_grant_step_three": "Premi per abilitare Mindful come mostrato qui.",
+    "permission_notification_title": "Invia Notifiche",
+    "permission_alarms_title": "Sveglie e Promemoria",
+    "permission_alarms_info": "Per favore concedi l'autorizzazione per l'impostazione di avvisi e promemoria. Questo permetterà a Mindful di avviare la programmazione notturna e di resettare i timer delle app ogni giorno a mezzanotte.",
+    "permission_alarms_device_tile_label": "Consenti l'impostazione di sveglie e promemoria",
+    "permission_usage_title": "Accesso ai dati di utilizzo",
+    "permission_usage_info": "Si prega di concedere il permesso di accesso all'uso. Questo consentirà a Mindful di monitorare l'utilizzo delle app e gestire l'accesso a determinate app, garantendo un ambiente digitale più mirato e controllato.",
+    "permission_usage_device_tile_label": "Consenti accesso ai dati di utilizzo",
+    "permission_overlay_title": "Overlay Schermo",
+    "permission_overlay_info": "Please grant display overlay permission. This will allow Mindful to show an overlay when a paused app is opened, helping you stay focused and maintain your schedule.",
+    "permission_overlay_device_tile_label": "Allow display over other apps",
+    "permission_accessibility_title": "Accessibilità",
+    "permission_accessibility_info": "Please grant accessibility permission. This will allow Mindful to restrict access to short-form video content (e.g., Reels, Shorts) within social media apps and browsers, and filter inappropriate websites.",
+    "permission_accessibility_required": "Mindful requires accessibility permission to block short content and websites effectively.",
+    "permission_accessibility_device_tile_label": "Usa Mindful",
+    "permission_dnd_title": "Non disturbare",
+    "permission_dnd_info": "Please grant Do Not Disturb access. This will allow Mindful to start and stop Do Not Disturb mode during the bedtime schedule.",
+    "permission_dnd_tile_title": "Avvia DND",
+    "permission_dnd_tile_subtitle": "Also enable Do Not Disturb mode.",
+    "permission_battery_optimization_tile_title": "Ignora Ottimizzazioni Batteria",
+    "permission_battery_optimization_status_enabled": "Already unrestricted",
+    "permission_battery_optimization_status_disabled": "Disable background restriction",
+    "permission_battery_optimization_allow_info": "Allowing 'Ignore Battery Optimization' will automatically grant the 'Alarms & Reminders' permission on some devices.",
+    "permission_vpn_title": "Crea VPN",
+    "permission_vpn_info": "Please grant permission to create virtual private network (VPN) connection. This will enable Mindful to restrict internet access for designated applications by creating local on device VPN.",
+    "permission_admin_title": "Admin",
+    "permission_admin_info": "Administrative privileges are needed only for essential operations to ensure the app works properly and remains tamper-proof.",
+    "permission_admin_snack_alert": "Tamper protection can only be disabled during the selected time window.",
+    "permission_notification_access_title": "Notification Access",
+    "permission_notification_access_info": "Please grant notification access permission. This will allow Mindful to organize your notifications and deliver them on your schedule.",
+    "permission_notification_access_required": "Mindful requires notification access to batch and schedule notifications.",
+    "permission_notification_access_device_tile_label": "Allow notification access",
+    "@----------------------------- DATE AND TIME -----------------------------": {},
+    "day_today": "Oggi",
+    "day_yesterday": "Ieri",
+    "nDays": "{count, plural, =0{0 day} =1{1 day} other{{count} days}}",
+    "@nDays": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nHours": "{count, plural, =0{0 hour} =1{1 hour} other{{count} hours}}",
+    "@nHours": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nMinutes": "{count, plural, =0{0 minute} =1{1 minute} other{{count} minutes}}",
+    "@nMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nSeconds": "{count, plural, =0{0 second} =1{1 second} other{{count} seconds}}",
+    "@nSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "time_separator_and": "e",
+    "@time_separator_and": {
+        "description": "Separator used between time like, 10 hours 'and' 15 minutes"
+    },
+    "@----------------------------- SHARED STRINGS -----------------------------": {},
+    "timer_status_active": "Active",
+    "timer_status_paused": "Paused",
+    "create_button": "Create",
+    "update_button": "Update",
+    "dialog_button_cancel": "Cancella",
+    "dialog_button_remove": "Remove",
+    "dialog_button_set": "Set",
+    "dialog_button_reset": "Reset",
+    "dialog_button_infinite": "Infinite",
+    "schedule_start_label": "Inizia",
+    "schedule_end_label": "Termina",
+    "exit_without_saving_dialog_info": "Are you sure you want to exit without saving?",
+    "development_dialog_info": "Mindful is currently under development and may have bugs or incomplete features. If you encounter any issues, please report them to help us improve.\n\nThank you for your feedback!",
+    "development_dialog_button_report_issue": "Segnala un problema",
+    "development_dialog_button_close": "Chiudi",
+    "dnd_settings_tile_title": "Do not disturb settings",
+    "dnd_settings_tile_subtitle": "Manage which apps and notifications can reach you in DND.",
+    "quick_actions_heading": "Quick actions",
+    "select_distracting_apps_heading": "Select distracting apps",
+    "your_distracting_apps_heading": "Your distracting apps",
+    "select_more_apps_heading": "Seleziona altre app",
+    "imp_distracting_apps_snack_alert": "Adding important system apps to the list of distracting apps is not permitted.",
+    "custom_apps_quick_actions_unavailable_warning": "Screen usage and restrictions are unavailable for this application. At present, only network usage is accessible",
+    "create_group_fab_button": "Create Group",
+    "active_period_info": "Set a time period during which access will be allowed. Outside of this time frame, access will be restricted.",
+    "minimum_distracting_apps_snack_alert": "Select at least one distracting app.",
+    "donation_card_title": "Support us",
+    "donation_card_info": "Mindful is free and open-source, developed with months of dedication. If it has helped you, your donation would mean the world to us. Every contribution helps us continue improving and maintaining it for everyone.",
+    "operation_failed_snack_alert": "Operation failed, something went wrong!",
+    "donation_card_button_donate": "Dona",
+    "app_restart_dialog_title": "Need restart",
+    "app_restart_dialog_info": "Mindful will automatically restart once the countdown finishes. Please be patient as changes are applied.",
+    "@----------------------------- TIPS -----------------------------": {},
+    "accessibility_tip": "Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.",
+    "battery_optimization_tip": "Mindful not working? Allow 'Ignore Battery Optimization' in Settings to keep it running smoothly.",
+    "invincible_mode_tip": "Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.",
+    "glance_usage_tip": "Want insights? Check the Glance section to view your usage patterns and screen time.",
+    "tamper_protection_tip": "Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.",
+    "notification_blocking_tip": "Want to reduce distractions? Use Notification Blocking to silence selected apps.",
+    "usage_history_tip": "Want to reflect on your habits? Check Usage History to see past patterns.",
+    "focus_mode_tip": "Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.",
+    "bedtime_reminder_tip": "Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.",
+    "custom_blocking_tip": "Need a custom experience? Create app blocking rules that fit your needs.",
+    "session_timeline_tip": "Want to track focus sessions? View timeline to see your focus journey.",
+    "short_content_blocking_tip": "Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.",
+    "parental_controls_tip": "Need parental control? Set restrictions for your child's device to ensure a safe experience.",
+    "notification_batching_tip": "Want to reduce distractions? Use Notification Batching to group notifications and check them at once.",
+    "notification_scheduling_tip": "Need to manage notifications? Schedule when you receive notifications for specific apps.",
+    "quick_focus_tile_tip": "Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.",
+    "app_shortcuts_tip": "Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.",
+    "backup_usage_db_tip": "Want to save your data? Backup your usage database to keep your records safe.",
+    "dynamic_material_color_tip": "Want a custom theme? Enable Dynamic Material You color to match your device's theme.",
+    "amoled_dark_theme_tip": "Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.",
+    "customize_usage_history_tip": "Want to keep usage history? Customize how many weeks of data to store in Usage History.",
+    "grouped_apps_blocking_tip": "Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.",
+    "websites_blocking_tip": "Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.",
+    "data_usage_tip": "Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.",
+    "block_internet_tip": "Need to block an app's internet? Cut off internet for specific app from app's dashboard.",
+    "emergency_passes_tip": "Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.",
+    "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
+    "onboarding_skip_btn_label": "Salta",
+    "onboarding_finish_setup_btn_label": "Termina Setup",
+    "onboarding_page_one_title": "Master Focus.",
+    "onboarding_page_one_info": "Pause distracting apps, block short content, and stay on track with customizable focus sessions. Whether you're working, studying, or relaxing, Mindful helps you stay in control.",
+    "onboarding_page_two_title": "Blocca distrazioni.",
+    "onboarding_page_two_info": "Set usage limits, automatically pause apps, and create healthier digital habits. Use Bedtime Mode to unwind and enjoy a distraction-free night.",
+    "onboarding_page_three_title": "Privacy prima di tutto.",
+    "onboarding_page_three_info": "Mindful is 100% open-source and operates entirely offline. We don't collect or share your personal data — your privacy is guaranteed in every way.",
+    "onboarding_page_permissions_title": "Permessi essenziali.",
+    "onboarding_page_permissions_info": "Mindful requires following essential permissions to track and manage your screen time, helping reduce distractions and improve focus.",
+    "@----------------------------- HOME SCREEN - DASHBOARD TAB -----------------------------": {},
+    "dashboard_tab_title": "Dashboard",
+    "focus_now_fab_button": "Focus now",
+    "welcome_greetings": "Felice di rivederti,",
+    "username_snack_alert": "Premi a lungo per modificare il nome utente.",
+    "username_dialog_title": "Nome utente",
+    "username_dialog_info": "Enter your username which will be displayed on dashboard.",
+    "username_dialog_button_apply": "Applica",
+    "glance_tile_title": "Glance",
+    "glance_tile_subtitle": "Take a quick glance at your usage.",
+    "parental_controls_tile_subtitle": "Invincible mode and tamper protection.",
+    "restrictions_heading": "Restrictions",
+    "apps_blocking_tile_title": "Apps blocking",
+    "apps_blocking_tile_subtitle": "Limit apps in multiple ways.",
+    "grouped_apps_blocking_tile_title": "Grouped apps blocking",
+    "grouped_apps_blocking_tile_subtitle": "Limit group of apps simultaneously.",
+    "shorts_blocking_tile_subtitle": "Limit short content on multiple platforms.",
+    "websites_blocking_tile_subtitle": "Limit adult and custom websites.",
+    "screen_time_label": "Screen time",
+    "total_data_label": "Total data",
+    "mobile_data_label": "Mobile data",
+    "wifi_data_label": "Wifi data",
+    "focus_today_label": "Focus today",
+    "focus_weekly_label": "Focus weekly",
+    "focus_monthly_label": "Focus monthly",
+    "focus_lifetime_label": "Focus lifetime",
+    "longest_streak_label": "Longest streak",
+    "current_streak_label": "Current streak",
+    "successful_sessions_label": "Successful sessions",
+    "failed_sessions_label": "Failed sessions",
+    "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
+    "statistics_tab_title": "Statistiche",
+    "screen_segment_label": "Screen",
+    "data_segment_label": "Dati",
+    "mobile_label": "Dati Mobili",
+    "wifi_label": "Wi-Fi",
+    "most_used_apps_heading": "App più usate",
+    "show_all_apps_tile_title": "Mostra tutte le app",
+    "search_apps_hint": "Search apps...",
+    "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_tab_title": "Notifications",
+    "notifications_tab_info": "Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.",
+    "batched_apps_tile_title": "Batched apps",
+    "batch_recap_dropdown_title": "Batch recap type",
+    "batch_recap_dropdown_info": "Choose what to push when a schedule triggers — all notifications or just a summary.",
+    "batch_recap_option_summery_only": "Summery only",
+    "batch_recap_option_all_notifications": "All notifications",
+    "notification_history_tile_title": "Notification history",
+    "store_all_tile_title": "Store all notifications",
+    "store_all_tile_subtitle": "Save non-batched notifications too.",
+    "schedules_heading": "Schedules",
+    "new_schedule_fab_button": "New Schedule",
+    "new_schedule_dialog_info": "Enter a name for the notification schedule to help identify it easily.",
+    "new_schedule_dialog_field_label": "Schedule name",
+    "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
+    "bedtime_tab_title": "Ora di dormire",
+    "bedtime_tab_info": "Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.",
+    "schedule_tile_title": "Programma",
+    "schedule_tile_subtitle": "Abilita o disabilita la programmazione giornaliera.",
+    "bedtime_no_days_selected_snack_alert": "Seleziona almeno un giorno della settimana.",
+    "bedtime_minimum_duration_snack_alert": "The total bedtime duration must be at least 30 minutes.",
+    "distracting_apps_tile_title": "Distracting apps",
+    "distracting_apps_tile_subtitle": "Select which apps are distracting you from your bedtime routine.",
+    "bedtime_distracting_apps_modify_snack_alert": "Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.",
+    "@----------------------------- PARENTAL CONTROLS SCREEN-----------------------------": {},
+    "parental_controls_tab_title": "Parental controls",
+    "invincible_mode_heading": "Modalità invincibile",
+    "invincible_mode_tile_title": "Attiva modalità invincibile",
+    "invincible_mode_info": "When Invincible Mode is on, you won't be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.",
+    "invincible_mode_snack_alert": "Due to invincible mode, modifications to restrictions is not allowed.",
+    "invincible_mode_dialog_info": "Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.",
+    "invincible_mode_turn_off_snack_alert": "Invincible Mode cannot be turned off as long as this app remains installed on your device.",
+    "invincible_mode_dialog_button_start_anyway": "Start anyway",
+    "invincible_mode_include_timer_tile_title": "Include timer",
+    "invincible_mode_include_launch_limit_tile_title": "Include launch limit",
+    "invincible_mode_include_active_period_tile_title": "Include active period",
+    "invincible_mode_app_restrictions_tile_title": "App restrictions",
+    "invincible_mode_app_restrictions_tile_subtitle": "Prevent changes to the app's selected restrictions once the daily limits are exceeded.",
+    "invincible_mode_group_restrictions_tile_title": "Group restrictions",
+    "invincible_mode_group_restrictions_tile_subtitle": "Prevent changes to the group's selected restrictions once the daily limits are exceeded.",
+    "invincible_mode_include_shorts_timer_tile_title": "Include shorts timer",
+    "invincible_mode_include_shorts_timer_tile_subtitle": "Prevents changes after reaching your daily shorts limit.",
+    "invincible_mode_include_bedtime_tile_title": "Include bedtime",
+    "invincible_mode_include_bedtime_tile_subtitle": "Prevents changes during the active bedtime schedule.",
+    "protected_access_tile_title": "Protected access",
+    "protected_access_tile_subtitle": "Protect Mindful with your device lock.",
+    "protected_access_no_lock_snack_alert": "Please set up a biometric lock on your device first to enable this feature.",
+    "protected_access_removed_lock_snack_alert": "Your device lock has been removed. To continue, please set up a new lock.",
+    "protected_access_failed_lock_snack_alert": "Authentication failed. You need to verify your device lock to proceed.",
+    "tamper_protection_tile_title": "Tamper protection",
+    "tamper_protection_tile_subtitle": "Prevent uninstalling and force stopping the app.",
+    "tamper_protection_confirmation_dialog_info": "Once enabled, you won't be able to uninstall, force stop, or clear Mindful's data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.",
+    "uninstall_window_tile_title": "Uninstall window",
+    "uninstall_window_tile_subtitle": "Tamper protection can be disabled within 10 minutes from the selected time.",
+    "invincible_window_tile_title": "Invincible window",
+    "invincible_window_tile_subtitle": "Selected limits can be modified within 10 minutes from the selected time.",
+    "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
+    "shorts_blocking_tab_title": "Shorts blocking",
+    "shorts_blocking_tab_info": "Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.",
+    "short_content_heading": "Contenuti brevi",
+    "shorts_time_left_from": "Left from {timeShortString}",
+    "@shorts_time_left_from": {
+        "placeholders": {
+            "timeShortString": {
+                "type": "String",
+                "example": "1h 23m"
+            }
+        }
+    },
+    "short_content_timer_picker_dialog_info": "Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.",
+    "instagram_features_tile_title": "Instagram",
+    "instagram_features_tile_subtitle": "Restrict features on instagram.",
+    "instagram_features_block_reels": "Restrict reels section.",
+    "instagram_features_block_explore": "Restrict explore section.",
+    "snapchat_features_tile_title": "Snapchat",
+    "snapchat_features_tile_subtitle": "Restrict features on snapchat.",
+    "snapchat_features_block_spotlight": "Restrict spotlight section.",
+    "snapchat_features_block_discover": "Restrict discover section.",
+    "youtube_features_tile_title": "Youtube",
+    "youtube_features_tile_subtitle": "Restrict shorts on youtube.",
+    "facebook_features_tile_title": "Facebook",
+    "facebook_features_tile_subtitle": "Restrict reels on facebook.",
+    "reddit_features_tile_title": "Reddit",
+    "reddit_features_tile_subtitle": "Restrict shorts on reddit.",
+    "@----------------------------- WEBSITES BLOCKING SCREEN-----------------------------": {},
+    "websites_blocking_tab_title": "Websites blocking",
+    "websites_blocking_tab_info": "Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.",
+    "adult_content_heading": "Contenuti per adulti",
+    "block_nsfw_title": "Blocca NSFW",
+    "block_nsfw_subtitle": "Restrict browsers from opening adult and porn websites.",
+    "block_nsfw_dialog_info": "Are you sure? This action is irreversible. Once adult sites blocker is turned ON, you cannot turn it OFF as long as this app is installed on your device.",
+    "block_nsfw_dialog_button_block_anyway": "Blocca comunque",
+    "blocked_websites_heading": "Siti bloccati",
+    "blocked_websites_empty_list_hint": "Click on '+ Add Website' button to add distracting websites which you wish to block.",
+    "add_website_fab_button": "Aggiungi sito",
+    "add_website_dialog_title": "Distracting website",
+    "add_website_dialog_info": "Inserisci l'indirizzo del sito che vuoi bloccare.",
+    "add_website_dialog_is_nsfw": "Is nsfw site?",
+    "add_website_dialog_nsfw_warning": "Warning: Nsfw sites cannot be removed once added.",
+    "add_website_dialog_button_block": "Blocca",
+    "add_website_already_exist_snack_alert": "The URL has already been added to the list of blocked websites.",
+    "add_website_invalid_url_snack_alert": "Invalid URL! Unable to parse the host name.",
+    "remove_website_dialog_title": "Rimuovi sito",
+    "remove_website_dialog_info": "Are you sure? you want to remove '{websitehost}' from blocked websites.",
+    "@remove_website_dialog_info": {
+        "placeholders": {
+            "websitehost": {
+                "type": "String",
+                "example": "example.com"
+            }
+        }
+    },
+    "@----------------------------- FOCUS SCREEN - FOCUS TAB -----------------------------": {},
+    "focus_tab_title": "Concentrati",
+    "focus_tab_info": "When you need time to focus, start a new session by selecting the type, choosing distracting apps to pause, and enabling Do Not Disturb for uninterrupted concentration.",
+    "active_session_card_title": "Sessione attiva",
+    "active_session_card_info": "You have an active focus session running! Click 'View' to check your progress and see how much time has elapsed.",
+    "active_session_card_view_button": "Visualizza",
+    "focus_distracting_apps_removal_snack_alert": "Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.",
+    "focus_profile_tile_title": "Focus profile",
+    "focus_session_duration_tile_title": "Session duration",
+    "focus_session_duration_tile_subtitle": "Infinite (unless you stop)",
+    "focus_session_duration_dialog_info": "Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.",
+    "focus_profile_customization_tile_title": "Profile customization",
+    "focus_profile_customization_tile_subtitle": "Customize settings for the selected profile.",
+    "focus_enforce_tile_title": "Enforce session",
+    "focus_enforce_tile_subtitle": "Prevents ending a session before time ends.",
+    "focus_session_start_fab_button": "Inizia Sessione",
+    "focus_session_minimum_apps_snack_alert": "Select at least one distracting app to start focus session",
+    "focus_session_already_active_snack_alert": "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
+    "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},
+    "focus_session_type_study": "Studio",
+    "focus_session_type_work": "Lavoro",
+    "focus_session_type_exercise": "Esercizio",
+    "focus_session_type_meditation": "Meditazione",
+    "focus_session_type_creativeWriting": "Scrittura Creativa",
+    "focus_session_type_reading": "Leggere",
+    "focus_session_type_programming": "Programmazione",
+    "focus_session_type_chores": "Compiti",
+    "focus_session_type_projectPlanning": "Programmazione Progetto",
+    "focus_session_type_artAndDesign": "Arte e Design",
+    "focus_session_type_languageLearning": "Apprendimento Linguistico",
+    "focus_session_type_musicPractice": "Pratica Musicale",
+    "focus_session_type_selfCare": "Cura Personale",
+    "focus_session_type_brainstorming": "Brainstorming",
+    "focus_session_type_skillDevelopment": "Skill Development",
+    "focus_session_type_research": "Ricerca",
+    "focus_session_type_networking": "Networking",
+    "focus_session_type_cooking": "Cucinare",
+    "focus_session_type_sportsTraining": "Allenamento Sportivo",
+    "focus_session_type_restAndRelaxation": "Riposo e Rilassamento",
+    "focus_session_type_other": "Altro",
+    "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
+    "timeline_tab_title": "Cronologia",
+    "focus_timeline_tab_info": "Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.",
+    "selected_month_productive_time_snack_alert": "Your total productive time for the selected month is {timeString}.",
+    "@selected_month_productive_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "selected_month_productive_days_label": "Giorni produttivi",
+    "selected_month_productive_days_snack_alert": "Hai avuto un totale di {daysCount} giorni produttivi nel mese selezionato.",
+    "@selected_month_productive_days_snack_alert": {
+        "placeholders": {
+            "daysCount": {
+                "type": "num",
+                "example": "12"
+            }
+        }
+    },
+    "selected_day_focused_time_label": "Tempo concentrato",
+    "selected_day_focused_time_snack_alert": "Il tuo tempo totale di concentrazione per il giorno selezionato è {timeString}.",
+    "@selected_day_focused_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "calender_heading": "Calendario",
+    "your_sessions_heading": "Le tue sessioni",
+    "your_sessions_empty_list_hint": "Nessuna sessione registrata nel giorno selezionato.",
+    "focus_session_tile_timestamp_label": "Timestamp",
+    "focus_session_tile_duration_label": "Durata",
+    "focus_session_tile_reflection_label": "Reflection",
+    "focus_session_state_active": "Attiva",
+    "focus_session_state_successful": "Completato",
+    "focus_session_state_failed": "Fallita",
+    "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
+    "active_session_tab_title": "Sessione",
+    "active_session_none_warning": "Nessuna sessione attiva. Ritorna alla schermata iniziale.",
+    "active_session_dialog_button_keep_pushing": "Continua così",
+    "active_session_finish_dialog_title": "Finito",
+    "active_session_finish_dialog_info": "Resisti! Stai andando forte. Sei sicuro che vuoi interrompere la sessione? Ogni passo ti porta sempre più vicino al tuo obiettivo.",
+    "active_session_giveup_dialog_title": "Arrenditi",
+    "active_session_giveup_dialog_info": "Resisti! Ce l'hai quasi fatta, non ti arrendere adesso! Sei sicuro di voler interrompere prematuramente questa sessione? Tutti i progressi fatti saranno perduti.",
+    "active_session_reflection_dialog_title": "Session reflection",
+    "active_session_reflection_dialog_info": "Take a moment to reflect on your progress. What's your goal for this session? What did you accomplish during this session?",
+    "active_session_reflection_dialog_tip": "Tip: You can always edit this later in the session timeline.",
+    "active_session_giveup_snack_alert": "Ti sei arreso! Non ti preoccupare, puoi fare meglio la prossima volta. Ogni sforzo conta - basta non fermarsi",
+    "active_session_quote_one": "Ogni passo conta, resta forte e non ti fermare",
+    "active_session_quote_two": "Rimani concentrato! Stai facendo dei progressi impressionanti",
+    "active_session_quote_three": "Stai andando forte! Continua così",
+    "active_session_quote_four": "Solo un altro po', stai andando alla grande",
+    "active_session_quote_five": "Congratulazioni! 🎉\nHai completato la tua sessione di concentrazione di {durationString}.\n\nOttimo lavoro - continua così!",
+    "@active_session_quote_five": {
+        "placeholders": {
+            "durationString": {
+                "type": "String",
+                "example": "30 minutes"
+            }
+        }
+    },
+    "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
+    "restriction_groups_tab_title": "Gruppi di limitazioni",
+    "restriction_groups_tab_info": "Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.",
+    "restriction_group_time_spent_label": "Time spent today",
+    "restriction_group_time_left_label": "Time left today",
+    "restriction_group_name_tile_title": "Group name",
+    "restriction_group_name_picker_dialog_info": "Enter a name for the restriction group to help identify and manage it easily.",
+    "restriction_group_timer_tile_title": "Group timer",
+    "restriction_group_timer_picker_dialog_info": "Set a daily time limit for this group. Once your limit is reached, all the apps in this group will be paused until midnight.",
+    "restriction_group_active_period_tile_title": "Group active period",
+    "remove_restriction_group_dialog_title": "Remove group",
+    "remove_restriction_group_dialog_info": "Are you sure? you want to remove '{groupName}' from restriction groups.",
+    "@remove_restriction_group_dialog_info": {
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Games"
+            }
+        }
+    },
+    "restriction_group_invalid_limits_snack_alert": "Set either a timer or an active period limit.",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_empty_list_hint": "No notifications have been batched for the day.",
+    "conversations_label": "Conversations",
+    "last_24_hours_heading": "Last 24 hours",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TIMELINE TAB -----------------------------": {},
+    "notification_timeline_tab_info": "Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.",
+    "monthly_label": "Monthly",
+    "daily_label": "Daily",
+    "search_notifications_sheet_info": "Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.",
+    "search_notifications_hint": "Search notifications...",
+    "search_notifications_empty_list_hint": "No notifications found matching your search.",
+    "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
+    "app_info_none_warning": "Couldn't find the app for the given package. Returning to the home screen.",
+    "emergency_fab_button": "Emergenza",
+    "emergency_dialog_info": "This action will pause the app blocker for next 5 minutes. You have {leftPassesCount} passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?",
+    "@emergency_dialog_info": {
+        "placeholders": {
+            "leftPassesCount": {
+                "type": "num",
+                "example": "3"
+            }
+        }
+    },
+    "emergency_dialog_button_use_anyway": "Usa comunque",
+    "emergency_started_snack_alert": "The app blocker is paused and will resume blocking in 5 minutes.",
+    "emergency_already_active_snack_alert": "The app blocker is currently either paused or inactive. If notifications are enabled, you will receive updates regarding the remaining time.",
+    "emergency_no_pass_left_snack_alert": "You have used all your emergency passes. The blocked apps will stay blocked until midnight, or the active focus session ends.",
+    "app_limit_status_not_set": "Non impostato",
+    "app_timer_tile_title": "Timer app",
+    "app_timer_picker_dialog_info": "Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.",
+    "usage_reminders_tile_title": "Usage reminders",
+    "usage_reminders_tile_subtitle": "Gentle nudges when using timed apps.",
+    "app_launch_limit_tile_title": "Limite di avvii",
+    "app_launch_limit_tile_subtitle": "Launched {count} times today.",
+    "@app_launch_limit_tile_subtitle": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "example": "15"
+            }
+        }
+    },
+    "app_launch_limit_picker_dialog_info": "Set how many times you can open this app each day. Once the limit is reached, it will be paused until midnight.",
+    "app_active_period_tile_title": "Periodo di attività",
+    "app_active_period_tile_subtitle": "From {startTime} to {endTime}",
+    "@app_active_period_tile_subtitle": {
+        "placeholders": {
+            "startTime": {
+                "type": "String",
+                "example": "10:00pm"
+            },
+            "endTime": {
+                "type": "String",
+                "example": "15"
+            }
+        }
+    },
+    "internet_access_tile_title": "Accesso a Internet",
+    "internet_access_tile_subtitle": "Switch off to block app's internet.",
+    "internet_access_blocked_snack_alert": "{appName}'s internet is blocked.",
+    "@internet_access_blocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "internet_access_unblocked_snack_alert": "{appName}'s internet is unblocked.",
+    "@internet_access_unblocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "launch_app_tile_title": "Lancia app",
+    "launch_app_tile_subtitle": "Apri {appName}.",
+    "@launch_app_tile_subtitle": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "go_to_app_settings_tile_title": "Vai alle impostazioni",
+    "go_to_app_settings_tile_subtitle": "Manage app settings like notifications, permissions, storage and more.",
+    "include_in_stats_tile_title": "Include in screen usage",
+    "include_in_stats_tile_subtitle": "Switch off to exclude this app from total screen usage.",
+    "app_excluded_from_stats_snack_alert": "{appName} is excluded from total screen usage.",
+    "@app_excluded_from_stats_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "app_include_to_stats_snack_alert": "{appName} is included to total screen usage.",
+    "@app_include_to_stats_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "@----------------------------- SETTINGS SCREEN - GENERAL TAB -----------------------------": {},
+    "general_tab_title": "General",
+    "appearance_heading": "Appearance",
+    "theme_mode_tile_title": "Theme mode",
+    "theme_mode_system_label": "Sistema",
+    "theme_mode_light_label": "Chiaro",
+    "theme_mode_dark_label": "Scuro",
+    "material_color_tile_title": "Colore Material",
+    "amoled_dark_tile_title": "Scuro AMOLED",
+    "amoled_dark_tile_subtitle": "Use pure black color for the dark theme.",
+    "dynamic_colors_tile_title": "Dynamic colors",
+    "dynamic_colors_tile_subtitle": "Use device colors if supported.",
+    "defaults_heading": "Default",
+    "app_language_tile_title": "Lingua applicazione",
+    "default_home_tab_tile_title": "Home tab",
+    "usage_history_tile_title": "Usage history",
+    "usage_history_15_days": "15 giorni",
+    "usage_history_1_month": "1 mese",
+    "usage_history_3_month": "3 mesi",
+    "usage_history_6_month": "6 mesi",
+    "usage_history_1_year": "1 anno",
+    "service_heading": "Servizio",
+    "service_stopping_warning": "If Mindful stops working unexpectedly, please grant the 'Ignore Battery Optimization' permission to keep it running in the background. If the issue continues, try whitelisting Mindful for uninterrupted performance.",
+    "whitelist_app_tile_title": "Whitelist Mindful",
+    "whitelist_app_tile_subtitle": "Permetti a Mindful di avviarsi automaticamente.",
+    "whitelist_app_unsupported_snack_alert": "Questo dispositivo non supporta la gestione dell'avvio automatico.",
+    "@----------------------------- SETTINGS SCREEN - DATABASE TAB -----------------------------": {},
+    "database_tab_title": "Database",
+    "import_db_tile_title": "Import database",
+    "import_db_tile_subtitle": "Import database from a file.",
+    "export_db_tile_title": "Export database",
+    "export_db_tile_subtitle": "Export database to a file.",
+    "crash_logs_heading": "Report di arresto",
+    "crash_logs_info": "If you encounter any issue, you can report it on GitHub along with the log file. The file will include details such as your device's manufacturer, model, Android version, SDK version, and crash logs. This information will help us identify and resolve the problem more effectively.",
+    "crash_logs_export_tile_title": "Export crash logs",
+    "crash_logs_export_tile_subtitle": "Export crash logs to a json file.",
+    "crash_logs_view_tile_title": "View logs",
+    "crash_logs_view_tile_subtitle": "Explore stored crash logs.",
+    "crash_logs_empty_list_hint": "No crash logged till now.",
+    "crash_logs_clear_tile_title": "Cancella report",
+    "crash_logs_clear_tile_subtitle": "Cancella tutti i report di arresto dal database.",
+    "crash_logs_clear_dialog_info": "Confermi la cancellazione dei report dal database?",
+    "crash_logs_clear_dialog_button_clear_anyway": "Pulisci comunque",
+    "@----------------------------- SETTINGS SCREEN - ABOUT TAB -----------------------------": {},
+    "about_tab_title": "Su di noi",
+    "changelog_tile_title": "Changelog",
+    "changelog_tile_subtitle": "Find out what's new.",
+    "full_changelog_tile_title": "Full changelog",
+    "redirected_to_github_subtitle": "You will be redirected to GitHub.",
+    "contribute_heading": "Contribuisci",
+    "github_tile_title": "GitHub",
+    "github_tile_subtitle": "Esplora il codice sorgente.",
+    "report_issue_tile_title": "Segnala un problema",
+    "suggest_idea_tile_title": "Suggerisci un'idea",
+    "write_email_tile_title": "Scrivici via e-mail",
+    "write_email_tile_subtitle": "Sarai reindirizzato al tuo client mail.",
+    "privacy_policy_heading": "Privacy policy",
+    "privacy_policy_info": "Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.",
+    "more_details_button": "Più dettagli"
+}
