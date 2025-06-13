@@ -5,8 +5,8 @@ base_url: "https://api.crowdin.com"
 preserve_hierarchy: true
 
 files:
-  - source: 'lib/l10n/app_en.arb'
-    translation: 'lib/l10n/app_%two_letters_code%.arb'
+  - source: "lib/l10n/app_en.arb"
+    translation: "lib/l10n/app_%locale%.arb"
 
-  - source: 'android/app/src/main/res/values/strings.xml'
-    translation: 'android/app/src/main/res/values-%two_letters_code%/strings.xml'
+  - source: "android/app/src/main/res/values/strings.xml"
+    translation: "android/app/src/main/res/values-%locale%/strings.xml"
