@@ -89,7 +89,11 @@ class HeroTags {
 
   /// Tag used to identify the remove button in a restriction group card based on the group ID.
   static String removeRestrictionGroupTag(int groupId) =>
-      "restrictionGroupScreen.restrictionGroup.$groupId";
+      "restrictionGroupScreen.removerestrictionGroup.$groupId";
+
+  /// Tag used to identify the update button in a restriction group card based on the group ID.
+  static String updateRestrictionGroupTag(int groupId) =>
+      "restrictionGroupScreen.updaterestrictionGroup.$groupId";
 
   /// Tag used to identify the restriction group name tile based on the group ID.
   static String restrictionGroupNameTileTag(int groupId) =>
