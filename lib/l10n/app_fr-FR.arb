@@ -1,0 +1,337 @@
+{
+    "@@locale": "fr",
+    "@----------------------------- SPLASH SCREEN -----------------------------": {},
+    "mindful_tagline": "Concentrez-vous sur ce qui compte vraiment",
+    "unlock_button_label": "Débloquer",
+    "@----------------------------- APP PERMISSIONS -----------------------------": {},
+    "permission_status_off": "Désactivé",
+    "permission_status_allowed": "Autorisé",
+    "permission_status_not_allowed": "Accès non autorisé",
+    "permission_button_grant_permission": "Donner l'autorisation",
+    "permission_button_agree_and_continue": "Accepter et continuer",
+    "permission_button_not_now": "Pas maintenant",
+    "permission_button_help": "Besoin d'aide ?",
+    "permission_sheet_privacy_info": "Mindful est 100% sécurisé et fonctionne hors ligne. Nous ne collectons ni stockons aucune donnée personnelle.",
+    "permission_grant_step_one": "1. Cliquez sur le bouton {button_label}.",
+    "@permission_grant_step_one": {
+        "placeholders": {
+            "button_label": {
+                "type": "String"
+            }
+        }
+    },
+    "permission_grant_step_two": "2. Sélectionnez Mindful sur l'écran suivant.",
+    "permission_grant_step_three": "3. Cliquez sur le bouton et activez-le comme ci-dessous.",
+    "permission_notification_title": "Envoyer des notifications",
+    "permission_alarms_title": "Alarmes & Rappels",
+    "permission_alarms_info": "Veuillez accorder la permission de régler les alarmes et les rappels. Cela permettra à Mindful de démarrer votre horaire de coucher à l'heure, de réinitialiser les minuteurs de l'application tous les jours à minuit et de vous aider à rester sur la bonne voie.",
+    "permission_alarms_device_tile_label": "Autoriser à définir des alarmes et des rappels",
+    "permission_usage_title": "Accès aux données d'utilisation",
+    "permission_usage_info": "Veuillez accorder l'autorisation d'accès aux données d'utilisation. Cela permettra à Mindful de surveiller l'utilisation des applications et de gérer l'accès à certaines applications, pour un environnement numérique plus contrôlé et propice à la concentration.",
+    "permission_usage_device_tile_label": "Autoriser l'accès aux données d'utilisation",
+    "permission_overlay_title": "Afficher la superposition",
+    "permission_overlay_info": "Veuillez accorder la permission d'afficher la superposition. Cela permettra à Mindful d'afficher une surcouche quand une application en pause est ouverte, ce qui vous aidera à rester concentré et à maintenir votre planning.",
+    "permission_overlay_device_tile_label": "Autoriser la superposition sur d'autres applis",
+    "permission_accessibility_title": "Accessibilité",
+    "permission_accessibility_info": "Veuillez accorder l'autorisation d'accessibilité. Cela permettra à Mindful de restreindre l'accès au contenu vidéo court (ex : Reels, Shorts) dans les applications de réseaux sociaux et les navigateurs, et filtrer les sites Web inappropriés.",
+    "permission_accessibility_device_tile_label": "Utiliser Mindful",
+    "permission_dnd_title": "Ne pas déranger",
+    "permission_dnd_info": "Veuillez autoriser l'accès au mode Ne pas déranger. Cela permettra à Mindful de démarrer et d'arrêter le mode Ne pas déranger pendant l'horaire du sommeil.",
+    "permission_dnd_tile_title": "Lancer Ne pas déranger",
+    "permission_dnd_tile_subtitle": "Activer aussi le mode Ne pas déranger.",
+    "permission_battery_optimization_tile_title": "Désactiver l'optimisation de la batterie",
+    "permission_battery_optimization_status_enabled": "Déjà non restreint",
+    "permission_battery_optimization_status_disabled": "Désactiver la restriction d'arrière-plan",
+    "permission_battery_optimization_allow_info": "Autoriser la désactivation de l'optimisation de la batterie accordera automatiquement la permission 'Alarmes & Rappels' sur certains appareils.",
+    "permission_vpn_title": "Créer un VPN",
+    "permission_vpn_info": "Veuillez accorder la permission de créer une connexion au réseau privé virtuel (VPN). Cela permettra à Mindful de restreindre l'accès à Internet pour les applications désignées en créant un VPN local sur le périphérique.",
+    "permission_admin_title": "Admin",
+    "permission_admin_info": "Les privilèges d'administration ne sont nécessaires que pour les opérations essentielles afin de s'assurer que l'application fonctionne correctement et reste protégée contre les modifications.",
+    "permission_admin_snack_alert": "La protection contre les modifications ne peut être désactivée que dans la plage horaire sélectionnée.",
+    "permission_notification_access_title": "Accès aux notifications",
+    "permission_notification_access_info": "Veuillez accorder l'autorisation d'accès aux notifications. Cela permettra à Mindful d'organiser vos notifications et de les envoyer selon votre planning.",
+    "permission_notification_access_required": "Mindful nécessite un accès aux notifications pour regrouper et planifier les notifications.",
+    "permission_notification_access_device_tile_label": "Autoriser l'accès aux notifications",
+    "@----------------------------- DATE AND TIME -----------------------------": {},
+    "day_today": "Aujourd’hui",
+    "day_yesterday": "Hier",
+    "nDays": "{count, plural, =0{0 jour} =1{1 jour} other{{count} jours}}",
+    "@nDays": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nHours": "{count, plural, =0{0 heure} =1{1 heure} other{{count} heures}}",
+    "@nHours": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nMinutes": "{count, plural, =0{0 minute} =1{1 minute} other{{count} minutes}}",
+    "@nMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nSeconds": "{count, plural, =0{0 seconde} =1{1 seconde} other{{count} secondes}}",
+    "@nSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "time_separator_and": "et",
+    "@time_separator_and": {
+        "description": "Separator used between time like, 10 hours 'and' 15 minutes"
+    },
+    "@----------------------------- SHARED STRINGS -----------------------------": {},
+    "timer_status_active": "Activé",
+    "timer_status_paused": "En pause",
+    "create_button": "Créer",
+    "update_button": "Mettre à jour",
+    "dialog_button_cancel": "Annuler",
+    "dialog_button_remove": "Supprimer",
+    "dialog_button_set": "Définir",
+    "dialog_button_reset": "Réinitialiser",
+    "dialog_button_infinite": "Infini",
+    "schedule_start_label": "Démarrer",
+    "schedule_end_label": "Fin",
+    "development_dialog_info": "Mindful est actuellement en cours de développement et peut avoir des bugs ou des fonctionnalités incomplètes. Si vous rencontrez des problèmes, merci de les signaler pour nous aider à nous améliorer.\n\nMerci pour vos retours !",
+    "development_dialog_button_report_issue": "Signaler un problème",
+    "development_dialog_button_close": "Fermer",
+    "dnd_settings_tile_title": "Paramètres \"Ne pas déranger\"",
+    "dnd_settings_tile_subtitle": "Gérer quelles apps et notifications peuvent vous solliciter dans le mode Ne pas déranger.",
+    "quick_actions_heading": "Actions rapides",
+    "select_distracting_apps_heading": "Sélectionner les apps qui vous distraient",
+    "your_distracting_apps_heading": "Apps qui vous distraient",
+    "select_more_apps_heading": "Sélectionnez plus d'apps",
+    "imp_distracting_apps_snack_alert": "L'ajout d'applications système importantes à la liste des applications qui vous déconcentrent n'est pas autorisé.",
+    "custom_apps_quick_actions_unavailable_warning": "Le temps d'écran et les restrictions ne sont pas disponibles pour cette application. Pour l'instant, seulement la consommation de données est disponible",
+    "create_group_fab_button": "Créer un groupe",
+    "active_period_info": "Définissez une période pendant laquelle l'accès sera autorisé. En dehors de cette période, l'accès sera restreint.",
+    "minimum_distracting_apps_snack_alert": "Sélectionnez au moins une app qui vous distrait.",
+    "donation_card_title": "Soutenez-nous",
+    "donation_card_info": "Mindful est une application gratuite et open-source, développée avec dévouement durant des mois. Si elle vous a aidé, votre don signifierait beaucoup pour nous. Chaque don nous permet de continuer à l'améliorer et la maintenir pour tous.",
+    "operation_failed_snack_alert": "L'opération a échoué, une erreur s'est produite !",
+    "donation_card_button_donate": "Faire un don",
+    "app_restart_dialog_title": "Redémarrage nécessaire",
+    "app_restart_dialog_info": "Mindful redémarrera automatiquement à la fin du compte à rebours. Merci de patienter le temps que les modifications soient appliquées.",
+    "@----------------------------- TIPS -----------------------------": {},
+    "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
+    "onboarding_skip_btn_label": "Passer",
+    "onboarding_finish_setup_btn_label": "Terminer la configuration",
+    "onboarding_page_one_title": "Maitriser votre concentration.",
+    "onboarding_page_two_title": "Bloquer les distractions.",
+    "onboarding_page_two_info": "Définissez des limites d'utilisation, mettez automatiquement en pause les applications et créez des habitudes numériques plus saines. Utilisez le mode temps de sommeil pour vous détendre et profiter d'une nuit sans distraction.",
+    "onboarding_page_three_title": "Confidentialité avant tout.",
+    "onboarding_page_three_info": "Mindful est 100% open-source et fonctionne entièrement hors ligne. Nous ne collectons ni ne partageons pas vos données personnelles — votre vie privée est garantie à tous les niveaux.",
+    "onboarding_page_permissions_title": "Permissions indispensables.",
+    "onboarding_page_permissions_info": "Mindful a besoin des autorisations suivantes pour suivre et gérer votre temps d'écran, vous aider à réduire les distractions et améliorer votre concentration.",
+    "@----------------------------- HOME SCREEN - DASHBOARD TAB -----------------------------": {},
+    "dashboard_tab_title": "Tableau de bord",
+    "welcome_greetings": "Bienvenue à nouveau,",
+    "username_snack_alert": "Appuyez longuement pour modifier le nom d'utilisateur.",
+    "username_dialog_title": "Nom d’utilisateur",
+    "username_dialog_info": "Entrez le nom d'utilisateur qui s'affichera sur le tableau de bord.",
+    "username_dialog_button_apply": "Confirmer",
+    "restrictions_heading": "Restrictions",
+    "screen_time_label": "Temps d'écran",
+    "longest_streak_label": "Plus longue série",
+    "current_streak_label": "Série en cours",
+    "successful_sessions_label": "Sessions réussies",
+    "failed_sessions_label": "Sessions échouées",
+    "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
+    "statistics_tab_title": "Statistiques",
+    "screen_segment_label": "Écran",
+    "data_segment_label": "Données",
+    "mobile_label": "Mobile",
+    "wifi_label": "Wi-Fi",
+    "most_used_apps_heading": "Applications les plus utilisées",
+    "show_all_apps_tile_title": "Afficher toutes les apps",
+    "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "batched_apps_tile_title": "Apps regroupées",
+    "schedules_heading": "Horaires",
+    "new_schedule_fab_button": "Nouvel horaire",
+    "new_schedule_dialog_info": "Entrez un nom pour l'horaire de notification pour l'identifier facilement.",
+    "new_schedule_dialog_field_label": "Nom de l'horaire",
+    "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
+    "bedtime_tab_title": "Dormir",
+    "bedtime_tab_info": "Fixer l'heure du coucher en sélectionnant une période et des jours de la semaine. Choisissez les applications qui vous distraient à bloquer et activer le mode Ne pas déranger pour une nuit paisible.",
+    "schedule_tile_title": "Planifier",
+    "schedule_tile_subtitle": "Activer ou désactiver la planification quotidienne.",
+    "bedtime_no_days_selected_snack_alert": "Sélectionnez au moins un jour de la semaine.",
+    "bedtime_minimum_duration_snack_alert": "La durée totale du temps de sommeil doit être d'au moins 30 min.",
+    "distracting_apps_tile_title": "Apps qui vous distraient",
+    "distracting_apps_tile_subtitle": "Sélectionnez les applications qui vous distraient de votre routine du coucher.",
+    "@----------------------------- PARENTAL CONTROLS SCREEN-----------------------------": {},
+    "invincible_mode_heading": "Mode invincible",
+    "invincible_mode_tile_title": "Activer le mode invincible",
+    "invincible_mode_snack_alert": "En raison du mode invincible, les modifications des restrictions ne sont pas autorisées.",
+    "invincible_mode_dialog_info": "Êtes-vous absolument sûr de vouloir activer le Mode Invincible ? Cette action est irréversible. Une fois que le Mode Invincible est activé, vous ne pouvez pas le désactiver tant que cette application est installée sur votre appareil.",
+    "invincible_mode_turn_off_snack_alert": "Le mode invincible ne peut pas être désactivé tant que cette application reste installée sur votre appareil.",
+    "invincible_mode_dialog_button_start_anyway": "Démarrer quand même",
+    "invincible_mode_include_launch_limit_tile_title": "Inclure la limite de lancement",
+    "invincible_mode_app_restrictions_tile_title": "Restrictions d'applications",
+    "invincible_mode_app_restrictions_tile_subtitle": "Empêcher toute modification des restrictions de l'application sélectionnée une fois les limites quotidiennes dépassées.",
+    "invincible_mode_group_restrictions_tile_title": "Restrictions groupées",
+    "invincible_mode_group_restrictions_tile_subtitle": "Empêcher toute modification des restrictions de du groupe d'applications sélectionné une fois les limites quotidiennes dépassées.",
+    "invincible_mode_include_shorts_timer_tile_title": "Inclure les temps de contenus courts",
+    "invincible_mode_include_shorts_timer_tile_subtitle": "Empêcher toute modification une fois votre limite quotidienne de contenus courts dépassée.",
+    "invincible_mode_include_bedtime_tile_title": "Inclure le temps de sommeil",
+    "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
+    "short_content_heading": "Contenu court",
+    "shorts_time_left_from": "Temps restant sur {timeShortString}",
+    "@shorts_time_left_from": {
+        "placeholders": {
+            "timeShortString": {
+                "type": "String",
+                "example": "1h 23m"
+            }
+        }
+    },
+    "@----------------------------- WEBSITES BLOCKING SCREEN-----------------------------": {},
+    "adult_content_heading": "Contenu pour adultes",
+    "block_nsfw_title": "Bloquer le NSFW",
+    "block_nsfw_subtitle": "Empêcher les navigateurs d'ouvrir des sites pour adultes et pornographiques.",
+    "block_nsfw_dialog_info": "Êtes-vous sûr(e) ? Cette action est irréversible. Une fois que le bloqueur de sites pour adultes est activé, vous ne pouvez pas le désactiver tant que cette application est installée sur votre appareil.",
+    "block_nsfw_dialog_button_block_anyway": "Bloquer quand même",
+    "blocked_websites_heading": "Sites web bloqués",
+    "add_website_fab_button": "Ajouter un site web",
+    "add_website_dialog_title": "Sites web qui vous distraient",
+    "add_website_dialog_info": "Entrez l'Url d'un site web que vous voulez bloquer.",
+    "add_website_dialog_button_block": "Bloquer",
+    "add_website_already_exist_snack_alert": "L'URL a déjà été ajouté à la liste des sites web bloqués.",
+    "add_website_invalid_url_snack_alert": "URL invalide ! Impossible d'analyser le nom d'hôte.",
+    "remove_website_dialog_title": "Retirer le site web",
+    "remove_website_dialog_info": "Êtes-vous sûr(e) ? Vous voulez supprimer '{websitehost}' des sites web bloqués.",
+    "@remove_website_dialog_info": {
+        "placeholders": {
+            "websitehost": {
+                "type": "String",
+                "example": "example.com"
+            }
+        }
+    },
+    "@----------------------------- FOCUS SCREEN - FOCUS TAB -----------------------------": {},
+    "focus_tab_title": "Se concentrer",
+    "focus_tab_info": "Lorsque vous avez besoin de temps pour vous concentrer, démarrez une nouvelle session en sélectionnant le type, en choisissant les applications à mettre en pause, et en activant le mode Ne pas déranger pour une concentration ininterrompue.",
+    "active_session_card_title": "Session active",
+    "active_session_card_info": "Vous avez une session de concentration active en cours ! Cliquez sur 'Voir' pour vérifier votre progression et voir combien de temps s'est écoulé.",
+    "active_session_card_view_button": "Voir",
+    "focus_distracting_apps_removal_snack_alert": "La suppression d'applications de la liste des applications qui vous distraient n'est pas autorisée tant qu'une session de concentration est active. Cependant, vous pouvez toujours ajouter des applications supplémentaires à la liste pendant cette période.",
+    "focus_session_duration_tile_title": "Durée de la session",
+    "focus_session_duration_tile_subtitle": "Infini (jusqu'à ce que vous l'arrêtiez)",
+    "focus_session_duration_dialog_info": "Veuillez sélectionner la durée souhaitée pour cette session de concentration, en déterminant la durée pendant laquelle vous souhaitez rester concentré et sans distraction.",
+    "focus_session_start_fab_button": "Démarrer la session",
+    "focus_session_minimum_apps_snack_alert": "Sélectionnez au moins une application qui vous distrait pour démarrer la session de concentration",
+    "focus_session_already_active_snack_alert": "Vous avez déjà une session de concentration active en cours d'exécution. Veuillez terminer ou arrêter votre session actuelle avant d'en commencer une nouvelle.",
+    "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},
+    "focus_session_type_study": "Étude",
+    "focus_session_type_work": "Travail",
+    "focus_session_type_exercise": "Exercice",
+    "focus_session_type_meditation": "Méditation",
+    "focus_session_type_creativeWriting": "Écriture créative",
+    "focus_session_type_reading": "Lecture",
+    "focus_session_type_programming": "Programmation",
+    "focus_session_type_artAndDesign": "Art et design",
+    "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
+    "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
+    "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
+    "restriction_group_time_spent_label": "Temps passé aujourd'hui",
+    "restriction_group_time_left_label": "Temps restant aujourd'hui",
+    "restriction_group_name_tile_title": "Nom du groupe",
+    "restriction_group_name_picker_dialog_info": "Entrez un nom pour le groupe de restriction afin de l'identifier et de le gérer facilement.",
+    "restriction_group_timer_tile_title": "Minuteur pour le groupe",
+    "restriction_group_timer_picker_dialog_info": "Définissez une limite de temps quotidienne pour ce groupe. Une fois votre limite atteinte, toutes les applications de ce groupe seront suspendues jusqu'à minuit.",
+    "restriction_group_active_period_tile_title": "Période d'activité du groupe",
+    "remove_restriction_group_dialog_title": "Supprimer groupe",
+    "remove_restriction_group_dialog_info": "Êtes-vous sûr ? Vous voulez supprimer '{groupName}' des groupes de restrictions.",
+    "@remove_restriction_group_dialog_info": {
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Games"
+            }
+        }
+    },
+    "restriction_group_invalid_limits_snack_alert": "Définissez une limite de temps ou une limite de période d'activité.",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TIMELINE TAB -----------------------------": {},
+    "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
+    "emergency_fab_button": "Urgence",
+    "emergency_dialog_info": "Cette action mettra en pause le bloqueur de l'application pour les 5 prochaines minutes. Il vous reste {leftPassesCount} délais. Après avoir utilisé tous les délais, l'application restera bloquée jusqu'à minuit, ou la session de concentration active se terminera.\n\nContinuer quand même ?",
+    "@emergency_dialog_info": {
+        "placeholders": {
+            "leftPassesCount": {
+                "type": "num",
+                "example": "3"
+            }
+        }
+    },
+    "emergency_dialog_button_use_anyway": "Utiliser quand même",
+    "emergency_started_snack_alert": "Le bloqueur d'application est suspendu et reprendra le blocage dans 5 minutes.",
+    "emergency_already_active_snack_alert": "Le bloqueur de l'application est actuellement suspendu ou inactif. Si les notifications sont activées, vous recevrez informations concernant le temps restant.",
+    "emergency_no_pass_left_snack_alert": "Vous avez utilisé tous vos délais d'urgence. Les applications bloquées resteront bloquées jusqu'à minuit, ou la session de concentration active se termine.",
+    "app_limit_status_not_set": "Non défini",
+    "app_timer_tile_title": "Minuteur de l'application",
+    "app_timer_picker_dialog_info": "Définissez une limite de temps quotidienne pour cette application. Une fois votre limite atteinte, l'application sera suspendue jusqu'à minuit.",
+    "app_launch_limit_tile_title": "Limite de lancements",
+    "app_launch_limit_tile_subtitle": "Lancé {count} fois aujourd'hui.",
+    "@app_launch_limit_tile_subtitle": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "example": "15"
+            }
+        }
+    },
+    "app_launch_limit_picker_dialog_info": "Définissez combien de fois vous pouvez ouvrir cette application chaque jour. Une fois la limite atteinte, elle sera suspendue jusqu'à minuit.",
+    "app_active_period_tile_title": "Période d'activité",
+    "app_active_period_tile_subtitle": "De {startTime} à {endTime}",
+    "@app_active_period_tile_subtitle": {
+        "placeholders": {
+            "startTime": {
+                "type": "String",
+                "example": "10:00pm"
+            },
+            "endTime": {
+                "type": "String",
+                "example": "15"
+            }
+        }
+    },
+    "internet_access_tile_title": "Accès internet",
+    "internet_access_tile_subtitle": "Désactivez pour bloquer Internet pour l'app.",
+    "internet_access_blocked_snack_alert": "Internet est bloqué pour {appName}.",
+    "@internet_access_blocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "internet_access_unblocked_snack_alert": "Internet est débloqué pour {appName}.",
+    "@internet_access_unblocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "@----------------------------- SETTINGS SCREEN - GENERAL TAB -----------------------------": {},
+    "@----------------------------- SETTINGS SCREEN - DATABASE TAB -----------------------------": {},
+    "@----------------------------- SETTINGS SCREEN - ABOUT TAB -----------------------------": {}
+}

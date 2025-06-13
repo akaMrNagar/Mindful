@@ -1,0 +1,560 @@
+{
+    "@@locale": "el",
+    "@----------------------------- SPLASH SCREEN -----------------------------": {},
+    "mindful_tagline": "Επικεντρωθείτε σε ό,τι έχει πραγματικά σημασία",
+    "unlock_button_label": "Ξεκλείδωμα",
+    "@----------------------------- APP PERMISSIONS -----------------------------": {},
+    "permission_status_off": "Απενεργοποιημένο",
+    "permission_status_allowed": "Επιτρέπεται",
+    "permission_status_not_allowed": "Δεν επιτρέπεται",
+    "permission_button_grant_permission": "Εκχώρηση Άδειας",
+    "permission_button_agree_and_continue": "Αποδοχή & Συνέχεια",
+    "permission_button_not_now": "Αργότερα",
+    "permission_button_help": "Βοήθεια;",
+    "permission_sheet_privacy_info": "Το Mindful είναι 100% ασφαλές και λειτουργεί εκτός σύνδεσης. Δεν συλλέγουμε ή αποθηκεύουμε προσωπικά δεδομένα.",
+    "permission_grant_step_one": "1. Πατήστε το κουμπί {button_label}.",
+    "@permission_grant_step_one": {
+        "placeholders": {
+            "button_label": {
+                "type": "String"
+            }
+        }
+    },
+    "permission_grant_step_two": "2. Επιλέξτε το Mindful στην επόμενη οθόνη.",
+    "permission_grant_step_three": "3. Πατήστε και ενεργοποιήστε το διακόπτη όπως παρακάτω.",
+    "permission_notification_title": "Αποστολή Ειδοποιήσεων",
+    "permission_alarms_title": "Ειδοποιήσεις & Υπενθυμίσεις",
+    "permission_alarms_info": "Παρακαλώ δώσε την άδεια για τον ορισμό ξυπνητηριών και υπενθυμίσεων. Αυτό θα επιτρέψει στο Mindful να ξεκινήσει το πρόγραμμά ύπνου σου στην ώρα του και να επαναφέρει χρονόμετρα εφαρμογών καθημερινά τα μεσάνυχτα και για να σε βοηθήσει να μείνεις στο σωστό δρόμο.",
+    "permission_alarms_device_tile_label": "Να επιτρέπεται η ρύθμιση ξυπνητηριών και υπενθυμίσεων",
+    "permission_usage_title": "Πρόσβαση Χρήσης",
+    "permission_usage_info": "Παρακαλούμε εκχώρησε άδεια πρόσβασης χρήσης. Αυτό θα επιτρέψει στο Mindful να παρακολουθεί τη χρήση εφαρμογών και να διαχειρίζεται την πρόσβαση σε ορισμένες εφαρμογές, εξασφαλίζοντας ένα πιο συγκεντρωμένο και ελεγχόμενο ψηφιακό περιβάλλον.",
+    "permission_usage_device_tile_label": "Να επιτρέπεται η πρόσβαση χρήσης",
+    "permission_overlay_title": "Επικάλυψη Οθόνης",
+    "permission_overlay_info": "Παρακαλώ παραχώρησε δικαιώματα επικάλυψης οθόνης. Αυτό θα επιτρέψει στο Mindful να δείχνει μια επικάλυψη όταν μια εφαρμογή σε παύση είναι ανοιχτή, βοηθώντας σε να παραμείνεις σε συγκέντρωση και να διατηρήσεις το πρόγραμμά σου.",
+    "permission_overlay_device_tile_label": "Επιτρέπεται η εμφάνιση πάνω σ' άλλες εφαρμογές",
+    "permission_accessibility_title": "Προσβασιμότητα",
+    "permission_accessibility_info": "Παρακαλούμε εκχώρησε την άδεια προσβασιμότητας. Αυτό θα επιτρέψει στο Mindful να περιορίσει την πρόσβαση σε περιεχόμενο βίντεο μικρής μορφής (πχ. Reels, Shorts) μέσα από εφαρμογές κοινωνικής δικτύωσης και προγράμματα περιήγησης και να φιλτράρει ακατάλληλες ιστοσελίδες.",
+    "permission_accessibility_required": "Το Mindful απαιτεί δικαιώματα προσβασιμότητας για να μπλοκάρει αποτελεσματικά το σύντομο περιεχόμενο και τις ιστοσελίδες.",
+    "permission_accessibility_device_tile_label": "Χρήση Mindful",
+    "permission_dnd_title": "Μην ενοχλείτε",
+    "permission_dnd_info": "Παρακαλώ χορήγησε πρόσβαση στη λειτουργία \"Μην ενοχλείτε\". Αυτό θα επιτρέψει στο Mindful να ξεκινήσει και να σταματήσει τη λειτουργία \"Μην ενοχλείτε\" κατά τη διάρκεια του χρονοδιαγράμματος ύπνου.",
+    "permission_dnd_tile_title": "Έναρξη DND",
+    "permission_dnd_tile_subtitle": "Ενεργοποίηση και της λειτουργίας Μην ενοχλείτε.",
+    "permission_battery_optimization_tile_title": "Αγνόηση Βελτιστοποίησης Μπαταρίας",
+    "permission_battery_optimization_status_enabled": "Ήδη χωρίς περιορισμούς",
+    "permission_battery_optimization_status_disabled": "Απενεργοποίηση περιορισμού παρασκηνίου",
+    "permission_battery_optimization_allow_info": "Η επιλογή 'Αγνόηση βελτιστοποίησης μπαταρίας' θα παραχωρήσει αυτόματα δικαιώματα 'Ξυπνητήρια & Υπενθυμίσεις' σε ορισμένες συσκευές.",
+    "permission_vpn_title": "Δημιουργία VPN",
+    "permission_vpn_info": "Παρακαλώ παραχώρησε άδεια για τη δημιουργία σύνδεσης εικονικού ιδιωτικού δικτύου (VPN). Αυτό θα επιτρέψει στο Mindful να περιορίσει την πρόσβαση στο διαδίκτυο για καθορισμένες εφαρμογές με τη δημιουργία τοπικών στη συσκευή VPN.",
+    "permission_admin_title": "Διαχειριστής",
+    "permission_admin_info": "Απαιτούνται δικαιώματα διαχειριστή μόνο για βασικές λειτουργίες ώστε να διασφαλίζεται ότι η εφαρμογή λειτουργεί σωστά και παραμένει απαραβίαστη.",
+    "permission_admin_snack_alert": "Η προστασία Παραβίασης μπορεί να απενεργοποιηθεί μόνο κατά τη διάρκεια του επιλεγμένου χρονικού παραθύρου.",
+    "permission_notification_access_title": "Πρόσβαση Ειδοποιήσεων",
+    "permission_notification_access_info": "Παρακαλούμε χορήγησε άδεια πρόσβασης στις ειδοποιήσεις. Αυτό θα επιτρέψει στο Mindful να οργανώσει τις ειδοποιήσεις σου και να τις παραδίδει βάσει του προγράμματός σου.",
+    "permission_notification_access_required": "Το Mindful απαιτεί πρόσβαση στις ειδοποιήσεις για να τις οργανώνει και να τις χρονοπρογραμματίζει.",
+    "permission_notification_access_device_tile_label": "Να επιτρέπεται η πρόσβαση στις ειδοποιήσεις",
+    "@----------------------------- DATE AND TIME -----------------------------": {},
+    "day_today": "Σήμερα",
+    "day_yesterday": "Χθες",
+    "nDays": "{count, plural, one {}=0{0 ημέρα} =1{1 ημέρα} other{{count} ημέρες}}",
+    "@nDays": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nHours": "{count, plural, one {}=0{0 ώρα} =1{1 ώρα} other{{count} ώρες}}",
+    "@nHours": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nMinutes": "{count, plural, one {}=0{0 λεπτό} =1{1 λεπτό} other{{count} λεπτά}}",
+    "@nMinutes": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "nSeconds": "{count, plural, one {}=0{0 δευτερόλεπτο} =1{1 δευτερόλεπτο} other{{count} δευτερόλεπτα}}",
+    "@nSeconds": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "format": "compact"
+            }
+        }
+    },
+    "time_separator_and": "και",
+    "@time_separator_and": {
+        "description": "Separator used between time like, 10 hours 'and' 15 minutes"
+    },
+    "@----------------------------- SHARED STRINGS -----------------------------": {},
+    "timer_status_active": "Ενεργό",
+    "timer_status_paused": "Σε Παύση",
+    "create_button": "Δημιουργία",
+    "update_button": "Ενημέρωση",
+    "dialog_button_cancel": "Ακύρωση",
+    "dialog_button_remove": "Αφαίρεση",
+    "dialog_button_set": "Ορισμός",
+    "dialog_button_reset": "Επαναφορά",
+    "dialog_button_infinite": "Άπειρο",
+    "schedule_start_label": "Έναρξη",
+    "schedule_end_label": "Λήξη",
+    "development_dialog_info": "Το Mindful είναι υπό ανάπτυξη και μπορεί να έχει σφάλματα ή ελλιπή χαρακτηριστικά. Αν αντιμετωπίσεις οποιοδήποτε πρόβλημα, παρακαλούμε να τα αναφέρεις για να μας βοηθήσεις να βελτιωθούμε.\n\nΣε ευχαριστούμε για τα σχόλιά σου!",
+    "development_dialog_button_report_issue": "Αναφορά Ζητήματος",
+    "development_dialog_button_close": "Κλείσιμο",
+    "dnd_settings_tile_title": "Ρυθμίσεις Μην ενοχλείτε",
+    "dnd_settings_tile_subtitle": "Διαχειρίσου ποιες εφαρμογές και ειδοποιήσεις μπορούν να σε φτάσουν στο DND.",
+    "quick_actions_heading": "Γρήγορες ενέργειες",
+    "select_distracting_apps_heading": "Επιλογή ενοχλητικών εφαρμογών",
+    "your_distracting_apps_heading": "Οι εφαρμογές που σε ενοχλούν",
+    "select_more_apps_heading": "Επιλογή περισσότερων εφαρμογών",
+    "imp_distracting_apps_snack_alert": "Δεν επιτρέπεται η προσθήκη σημαντικών εφαρμογών συστήματος στη λίστα των ενοχλητικών εφαρμογών.",
+    "custom_apps_quick_actions_unavailable_warning": "Η χρήση και οι περιορισμοί οθόνης δεν είναι διαθέσιμοι για αυτήν την εφαρμογή. Προς το παρόν, μόνο η χρήση δικτύου είναι προσβάσιμη",
+    "create_group_fab_button": "Δημιουργία Ομάδας",
+    "active_period_info": "Όρισε μια χρονική περίοδο κατά την οποία θα επιτρέπεται η πρόσβαση. Εκτός αυτού του χρονικού πλαισίου, η πρόσβαση θα περιοριστεί.",
+    "minimum_distracting_apps_snack_alert": "Επέλεξε τουλάχιστον μία εφαρμογή που αποσπά την προσοχή.",
+    "donation_card_title": "Υποστήριξέ μας",
+    "donation_card_info": "Το Mindful είναι ελεύθερο και ανοικτού κώδικα, που αναπτύχθηκε με μήνες αφοσίωσης. Αν σ' έχει βοηθήσει, η δωρεά σου θα σήμαινε τα πάντα σε εμάς. Κάθε συνεισφορά μάς βοηθά να συνεχίσουμε να την βελτιώνουμε και να την συντηρούμε για όλους.",
+    "operation_failed_snack_alert": "Η λειτουργία απέτυχε, κάτι πήγε στραβά!",
+    "donation_card_button_donate": "Δωρεά",
+    "app_restart_dialog_title": "Απαιτείται επανεκκίνηση",
+    "app_restart_dialog_info": "Το Mindful θα επανεκκινήσει αυτόματα μόλις ολοκληρωθεί η αντίστροφη μέτρηση. Παρακαλώ να κάνεις υπομονή καθώς εφαρμόζονται αλλαγές.",
+    "@----------------------------- TIPS -----------------------------": {},
+    "@----------------------------- ONBOARDING SCREEN -----------------------------": {},
+    "onboarding_skip_btn_label": "Παράλειψη",
+    "onboarding_finish_setup_btn_label": "Ολοκλήρωση Ρύθμισης",
+    "onboarding_page_one_title": "Κατέκτησε τη Συγκέντρωση.",
+    "onboarding_page_one_info": "Παύση ενοχλητικών εφαρμογών, φραγή σύντομου περιεχομένου και παραμονή στο σωστό δρόμο με προσαρμόσιμες συνεδρίες εστίασης. Είτε εργάζεσαι, διαβάζεις είτε χαλαρώνεις το Mindful σε βοηθά να έχεις τον έλεγχο.",
+    "onboarding_page_two_title": "Αποκλεισμός Περισπασμών.",
+    "onboarding_page_two_info": "Ορισμός ορίων χρήσης, αυτόματη παύση εφαρμογών και δημιουργία πιο υγιεινών ψηφιακών συνηθειών. Χρησιμοποίησε τη λειτουργία ύπνου για να χαλαρώσεις και να απολαύσεις μια νύχτα χωρίς ενοχλήσεις.",
+    "onboarding_page_three_title": "Πρώτα το Απόρρητο.",
+    "onboarding_page_three_info": "Το Mindful είναι 100% ανοικτού κώδικα και λειτουργεί εξ' ολοκλήρου εκτός σύνδεσης. Δεν συλλέγουμε ή κοινοποιούμε τα προσωπικά σου δεδομένα - το απόρρητό σου είναι εγγυημένο με κάθε τρόπο.",
+    "onboarding_page_permissions_title": "Βασικές Άδειες.",
+    "onboarding_page_permissions_info": "Το Mindful απαιτεί τα ακόλουθα απαραίτητα δικαιώματα για να παρακολουθεί και να διαχειρίζεται το χρόνο επί οθόνης σου, βοηθώντας στη μείωση των περισπασμών και στη βελτίωση της συγκέντρωσης.",
+    "@----------------------------- HOME SCREEN - DASHBOARD TAB -----------------------------": {},
+    "dashboard_tab_title": "Επισκόπηση",
+    "focus_now_fab_button": "Εστίαση τώρα",
+    "welcome_greetings": "Καλώς ήρθες και πάλι,",
+    "username_snack_alert": "Πάτα παρατεταμένα για επεξεργασία ονόματος χρήστη.",
+    "username_dialog_title": "Όνομα χρήστη",
+    "username_dialog_info": "Εισήγαγε το όνομα χρήστη σου το οποίο θα εμφανίζεται στην επισκόπηση.",
+    "username_dialog_button_apply": "Εφαρμογή",
+    "glance_tile_title": "Ματιά",
+    "glance_tile_subtitle": "Ρίξε μια γρήγορη ματιά στη χρήση σου.",
+    "parental_controls_tile_subtitle": "Λειτουργία άτρωτου και προστασία από παραβίαση.",
+    "restrictions_heading": "Περιορισμοί",
+    "apps_blocking_tile_title": "Αποκλεισμός εφαρμογών",
+    "apps_blocking_tile_subtitle": "Περιόρισε τις εφαρμογές με πολλούς τρόπους.",
+    "grouped_apps_blocking_tile_title": "Αποκλεισμός ομαδοποιημένων εφαρμογών",
+    "grouped_apps_blocking_tile_subtitle": "Περιορισμός ομάδας εφαρμογών ταυτόχρονα.",
+    "shorts_blocking_tile_subtitle": "Περιορισμός σύντομου περιεχομένου σε πολλαπλές πλατφόρμες.",
+    "websites_blocking_tile_subtitle": "Περιορισμός ενηλίκων και προσαρμοσμένων ιστοσελίδων.",
+    "screen_time_label": "Χρόνος οθόνης",
+    "total_data_label": "Συνολικά δεδομένα",
+    "mobile_data_label": "Δεδομένα κινητής",
+    "wifi_data_label": "Δεδομένα Wifi",
+    "focus_today_label": "Εστίαση σήμερα",
+    "focus_weekly_label": "Εστίαση εβδομαδιαία",
+    "focus_monthly_label": "Εστίαση μηνιαία",
+    "focus_lifetime_label": "Εστίαση συνολικά",
+    "longest_streak_label": "Μεγαλύτερο σερί",
+    "current_streak_label": "Τρέχον σερί",
+    "successful_sessions_label": "Επιτυχείς συνεδρίες",
+    "failed_sessions_label": "Αποτυχημένες συνεδρίες",
+    "@----------------------------- HOME SCREEN - STATISTICS TAB -----------------------------": {},
+    "statistics_tab_title": "Στατιστικά",
+    "screen_segment_label": "Οθόνη",
+    "data_segment_label": "Δεδομένα",
+    "mobile_label": "Κινητή",
+    "wifi_label": "Wifi",
+    "most_used_apps_heading": "Πιο χρησιμοποιούμενες εφαρμογές",
+    "show_all_apps_tile_title": "Εμφάνιση όλων των εφαρμογών",
+    "@----------------------------- HOME SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "notifications_tab_title": "Ειδοποιήσεις",
+    "notifications_tab_info": "Μαζική ειδοποίηση από εφαρμογές και ορίστε προγράμματα όπως πρωί, μεσημέρι, βράδυ και νύχτα. Μείνετε ενημερωμένοι χωρίς συνεχείς διακοπές.",
+    "batched_apps_tile_title": "Εφαρμογές σε παρτίδα",
+    "schedules_heading": "Προγράμματα",
+    "new_schedule_fab_button": "Νέο Πρόγραμμα",
+    "new_schedule_dialog_info": "Εισήγαγε ένα όνομα για το πρόγραμα ειδοποιήσεων για να το αναγνωρίζεις εύκολα.",
+    "new_schedule_dialog_field_label": "Όνομα προγράμματος",
+    "@----------------------------- HOME SCREEN - BEDTIME TAB -----------------------------": {},
+    "bedtime_tab_title": "Ώρα για ύπνο",
+    "bedtime_tab_info": "Ρύθμισε το πρόγραμμα ύπνου σου επιλέγοντας μια χρονική περίοδο και ημέρες της εβδομάδας. Επέλεξε ενοχλητικές εφαρμογές για αποκλεισμό και ενεργοποίηση λειτουργίας \"Μην ενοχλείτε\" (DND) για μια ήρεμη νύχτα.",
+    "schedule_tile_title": "Πρόγραμμα",
+    "schedule_tile_subtitle": "Ενεργοποίηση ή απενεργοποίηση ημερήσιου προγράμματος.",
+    "bedtime_no_days_selected_snack_alert": "Επέλεξε τουλάχιστον μία ημέρα της εβδομάδας.",
+    "bedtime_minimum_duration_snack_alert": "Η συνολική διάρκεια του ύπνου πρέπει να είναι τουλάχιστον 30 λεπτά.",
+    "distracting_apps_tile_title": "Ενοχλητικές εφαρμογές",
+    "distracting_apps_tile_subtitle": "Επέλεξε ποιες εφαρμογές σού αποσπούν την προσοχή από τη ρουτίνα ύπνου σου.",
+    "bedtime_distracting_apps_modify_snack_alert": "Τροποποιήσεις στη λίστα των ενοχλητικών εφαρμογών δεν επιτρέπονται ενώ το χρονοδιάγραμμα ώρα για ύπνο είναι ενεργό.",
+    "@----------------------------- PARENTAL CONTROLS SCREEN-----------------------------": {},
+    "parental_controls_tab_title": "Γονικοί έλεγχοι",
+    "invincible_mode_heading": "Άτρωτη λειτουργία",
+    "invincible_mode_tile_title": "Ενεργοποίηση άτρωτης λειτουργίας",
+    "invincible_mode_info": "Όταν η Άτρωτη Λειτουργία είναι ενεργή, δεν θα μπορείς να προσαρμόσεις τα επιλεγμένα όρια μετά την επίτευξη του ημερήσιου ορίου σου. Ωστόσο, μπορείς να κάνεις αλλαγές μέσα σε ένα επιλεγμένο άτρωτο παράθυρο 10 λεπτών.",
+    "invincible_mode_snack_alert": "Λόγω της άτρωτης λειτουργίας, δεν επιτρέπονται τροποποιήσεις σε περιορισμούς.",
+    "invincible_mode_dialog_info": "Σίγουρα ότι θες να ενεργοποιήσεις την Άτρωτη Λειτουργία; Αυτή η ενέργεια είναι μη αναστρέψιμη. Μόλις ενεργοποιηθεί η Άτρωτη λειτουργία, δεν μπορείς να την απενεργοποιήσεις για όσο διάστημα αυτή η εφαρμογή είναι εγκατεστημένη στη συσκευή σου.",
+    "invincible_mode_turn_off_snack_alert": "Η Άτρωτη Λειτουργία δεν μπορεί να απενεργοποιηθεί για όσο διάστημα αυτή η εφαρμογή παραμένει εγκατεστημένη στη συσκευή σου.",
+    "invincible_mode_dialog_button_start_anyway": "Εκκίνηση οπωσδήποτε",
+    "invincible_mode_include_timer_tile_title": "Συμπερίληψη χρονομέτρου",
+    "invincible_mode_include_launch_limit_tile_title": "Συμπερίληψη ορίου εκκίνησης",
+    "invincible_mode_include_active_period_tile_title": "Συμπερίληψη ενεργής περιόδου",
+    "invincible_mode_app_restrictions_tile_title": "Περιορισμοί εφαρμογών",
+    "invincible_mode_app_restrictions_tile_subtitle": "Αποτροπή αλλαγών στους επιλεγμένους περιορισμούς της εφαρμογής μόλις ξεπεραστούν τα ημερήσια όρια.",
+    "invincible_mode_group_restrictions_tile_title": "Ομαδοποίηση περιορισμών",
+    "invincible_mode_group_restrictions_tile_subtitle": "Αποτροπή αλλαγών στους επιλεγμένους περιορισμούς της ομάδας μόλις ξεπεραστούν τα ημερήσια όρια.",
+    "invincible_mode_include_shorts_timer_tile_title": "Συμπερίληψη χρονομέτρου shorts",
+    "invincible_mode_include_shorts_timer_tile_subtitle": "Αποτρέπει τις αλλαγές μετά την επίτευξη του ημερήσιου ορίου shorts.",
+    "invincible_mode_include_bedtime_tile_title": "Συμπερίληψη ώρας για ύπνο",
+    "invincible_mode_include_bedtime_tile_subtitle": "Αποτρέπει τις αλλαγές κατά τη διάρκεια του ενεργού προγράμματος ώρας για ύπνο.",
+    "protected_access_tile_title": "Προστατευμένη πρόσβαση",
+    "protected_access_tile_subtitle": "Προστάτεψε το Mindful με το κλείδωμα της συσκευής σου.",
+    "protected_access_no_lock_snack_alert": "Παρακαλώ ρύθμισε πρώτα ένα βιομετρικό κλείδωμα στη συσκευή σου για να ενεργοποιήσεις αυτήν τη λειτουργία.",
+    "protected_access_removed_lock_snack_alert": "Το κλείδωμα της συσκευής σου έχει αφαιρεθεί. Για να συνεχίσεις, παρακαλώ ρύθμισε ένα νέο κλείδωμα.",
+    "protected_access_failed_lock_snack_alert": "Η ταυτοποίηση απέτυχε. Πρέπει να επαληθεύσεις το κλείδωμα της συσκευής σου για να συνεχίσεις.",
+    "tamper_protection_tile_title": "Προστασία παραβίασης",
+    "tamper_protection_tile_subtitle": "Αποτροπή απεγκατάστασης και αναγκαστικής διακοπής της εφαρμογής.",
+    "uninstall_window_tile_title": "Παράθυρο απεγκατάστασης",
+    "uninstall_window_tile_subtitle": "Η προστασία παραβίασης μπορεί να απενεργοποιηθεί εντός 10 λεπτών από τον επιλεγμένο χρόνο.",
+    "invincible_window_tile_title": "Παράθυρο άτρωτης",
+    "invincible_window_tile_subtitle": "Τα επιλεγμένα όρια μπορούν να τροποποιηθούν μέσα σε 10 λεπτά από τον επιλεγμένο χρόνο.",
+    "@----------------------------- SHORTS BLOCKING SCREEN-----------------------------": {},
+    "shorts_blocking_tab_title": "Φραγή shorts",
+    "shorts_blocking_tab_info": "Έλεγξε πόσο χρόνο ξοδεύεις σε σύντομο περιεχόμενο σε πλατφόρμες όπως το Instagram, το YouTube, το Snapchat, και το Facebook, συμπεριλαμβανομένων των ιστοσελίδων τους.",
+    "short_content_heading": "Σύντομο περιεχόμενο",
+    "shorts_time_left_from": "Απομένουν από {timeShortString}",
+    "@shorts_time_left_from": {
+        "placeholders": {
+            "timeShortString": {
+                "type": "String",
+                "example": "1h 23m"
+            }
+        }
+    },
+    "short_content_timer_picker_dialog_info": "Όρισε ένα ημερήσιο χρονικό όριο για το σύντομο περιεχόμενο. Μόλις συμπληρωθεί το όριό σου, το σύντομο περιεχόμενο θα τεθεί σε παύση μέχρι τα μεσάνυχτα.",
+    "instagram_features_tile_title": "Instagram",
+    "instagram_features_tile_subtitle": "Περιορισμός χαρακτηριστικών στο instagram.",
+    "instagram_features_block_reels": "Περιορισμός ενότητας reels.",
+    "instagram_features_block_explore": "Περιορισμός ενότητας εξερεύνησης.",
+    "snapchat_features_tile_title": "Snapchat",
+    "snapchat_features_tile_subtitle": "Περιορισμός χαρακτηριστικών στο snapchat.",
+    "snapchat_features_block_spotlight": "Περιορισμός ενότητας spotlight.",
+    "snapchat_features_block_discover": "Περιορισμός ενότητας ανακάλυψης.",
+    "youtube_features_tile_title": "Youtube",
+    "youtube_features_tile_subtitle": "Περιορισμός των shorts στο youtube.",
+    "facebook_features_tile_title": "Facebook",
+    "facebook_features_tile_subtitle": "Περιορισμός των reels στο facebook.",
+    "reddit_features_tile_title": "Reddit",
+    "reddit_features_tile_subtitle": "Περιορισμός shorts στο reddit.",
+    "@----------------------------- WEBSITES BLOCKING SCREEN-----------------------------": {},
+    "websites_blocking_tab_title": "Αποκλεισμός ιστοσελίδων",
+    "websites_blocking_tab_info": "Αποκλεισμός ιστοτόπων ενηλίκων και τυχόν προσαρμοσμένων ιστοτόπων που επιλέγεις για να δημιουργήσεις μια ασφαλέστερη και πιο εστιασμένη online εμπειρία. Πάρε τον έλεγχο της περιήγησής σου και ξέχνα τους περισπασμούς.",
+    "adult_content_heading": "Περιεχόμενο ενηλίκων",
+    "block_nsfw_title": "Αποκλεισμός Nsfw",
+    "block_nsfw_subtitle": "Περιόρισε τους περιηγητές από το άνοιγμα ιστοσελίδων ενηλίκων και πορνό.",
+    "block_nsfw_dialog_info": "Σίγουρα; Αυτή η ενέργεια είναι μη αναστρέψιμη. Μόλις ο αποκλεισμός ιστότοπων ενηλίκων είναι ενεργοποιημένος, δεν μπορείς να τον απενεργοποιήσεις για όσο διάστημα αυτή η εφαρμογή είναι εγκατεστημένη στη συσκευή σου.",
+    "block_nsfw_dialog_button_block_anyway": "Αποκλεισμός ούτως ή άλλως",
+    "blocked_websites_heading": "Αποκλεισμένες ιστοσελίδες",
+    "blocked_websites_empty_list_hint": "Κάνε κλικ στο κουμπί «+ Προσθήκη Ιστοτόπου» για να προσθέσεις ενοχλητικές ιστοσελίδες που θες να μπλοκάρεις.",
+    "add_website_fab_button": "Προσθήκη Ιστοτόπου",
+    "add_website_dialog_title": "Ενοχλητική ιστοσελίδα",
+    "add_website_dialog_info": "Εισήγαγε το url μιας ιστοσελίδας που θες να αποκλείσεις.",
+    "add_website_dialog_is_nsfw": "Είναι nsfw ιστοσελίδα;",
+    "add_website_dialog_nsfw_warning": "Προειδοποίηση: Οι ιστότοποι Nsfw δεν μπορούν να αφαιρεθούν μόλις προστεθούν.",
+    "add_website_dialog_button_block": "Φραγή",
+    "add_website_already_exist_snack_alert": "Το URL έχει ήδη προστεθεί στη λίστα αποκλεισμένων ιστοσελίδων.",
+    "add_website_invalid_url_snack_alert": "Μη έγκυρο URL! Αδυναμία ανάλυσης του ονόματος του κεντρικού υπολογιστή.",
+    "remove_website_dialog_title": "Αφαίρεση ιστοσελίδας",
+    "remove_website_dialog_info": "Σίγουρα; θες να αφαιρέσεις το «{websitehost} από τις αποκλεισμένες ιστοσελίδες.",
+    "@remove_website_dialog_info": {
+        "placeholders": {
+            "websitehost": {
+                "type": "String",
+                "example": "example.com"
+            }
+        }
+    },
+    "@----------------------------- FOCUS SCREEN - FOCUS TAB -----------------------------": {},
+    "focus_tab_title": "Συγκέντρωση",
+    "focus_tab_info": "Όταν χρειάζεσαι χρόνο για να εστιάσεις, ξεκίνα μια νέα συνεδρία επιλέγοντας τον τύπο, τις ενοχλητικές εφαρμογές προς παύση και ενεργοποίησε το «Μην ενοχλείτε» για αδιάλειπτη συγκέντρωση.",
+    "active_session_card_title": "Ενεργή συνεδρία",
+    "active_session_card_info": "Εκτελείται μια ενεργή συνεδρία συγκέντρωσης! Κάνε κλικ στην επιλογή «Προβολή» για να ελέγξεις την πρόοδό σου και να δεις πόσος χρόνος έχει παρέλθει.",
+    "active_session_card_view_button": "Προβολή",
+    "focus_distracting_apps_removal_snack_alert": "Η αφαίρεση εφαρμογών από τη λίστα ενοχλητικών εφαρμογών δεν επιτρέπεται όταν μια συνεδρία εστίασης είναι ενεργή. Ωστόσο, μπορείς να προσθέσεις πρόσθετες εφαρμογές στη λίστα κατά τη διάρκεια αυτής της περιόδου.",
+    "focus_session_duration_tile_title": "Διάρκεια συνεδρίας",
+    "focus_session_duration_tile_subtitle": "Άπειρο (εκτός αν σταματήσεις)",
+    "focus_session_duration_dialog_info": "Παρακαλώ επέλεξε την επιθυμητή διάρκεια για αυτή τη συνεδρία συγκέντρωσης, προσδιορίζοντας το χρονικό διάστημα που επιθυμείς να παραμείνεις σε συγκέντρωση και χωρίς περισπασμούς.",
+    "focus_session_start_fab_button": "Έναρξη Συνεδρίας",
+    "focus_session_minimum_apps_snack_alert": "Επέλεξε τουλάχιστον μία ενοχλητική εφαρμογή για να ξεκινήσει η συνεδρία εστίασης",
+    "focus_session_already_active_snack_alert": "Έχεις ήδη μια ενεργή συνεδρία εστίασης. Παρακαλώ ολοκλήρωσε ή σταμάτα την τρέχουσα συνεδρία σου πριν ξεκίνα μια νέα.",
+    "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},
+    "focus_session_type_study": "Μελέτη",
+    "focus_session_type_work": "Εργασία",
+    "focus_session_type_exercise": "Γυμναστική",
+    "focus_session_type_meditation": "Διαλογισμός",
+    "focus_session_type_creativeWriting": "Δημιουργική Γραφή",
+    "focus_session_type_reading": "Ανάγνωση",
+    "focus_session_type_programming": "Προγραμματισμός",
+    "focus_session_type_chores": "Δουλειές σπιτιού",
+    "focus_session_type_projectPlanning": "Σχεδιασμός Έργου",
+    "focus_session_type_artAndDesign": "Τέχνη και Σχέδιο",
+    "focus_session_type_languageLearning": "Εκμάθηση Γλώσσας",
+    "focus_session_type_musicPractice": "Μουσική Εξάσκηση",
+    "focus_session_type_selfCare": "Αυτοφροντίδα",
+    "focus_session_type_brainstorming": "Γέννηση ιδεών",
+    "focus_session_type_skillDevelopment": "Ανάπτυξη Δεξιότητας",
+    "focus_session_type_research": "Έρευνα",
+    "focus_session_type_networking": "Δικτύωση",
+    "focus_session_type_cooking": "Μαγειρική",
+    "focus_session_type_sportsTraining": "Αθλητική Εκπαίδευση",
+    "focus_session_type_restAndRelaxation": "Ξεκούραση και χαλάρωση",
+    "focus_session_type_other": "Άλλο",
+    "@----------------------------- FOCUS SCREEN - TIMELINE TAB -----------------------------": {},
+    "timeline_tab_title": "Χρονολόγιο",
+    "selected_month_productive_time_snack_alert": "Ο συνολικός παραγωγικός χρόνος σου για τον επιλεγμένο μήνα είναι {timeString}.",
+    "@selected_month_productive_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "selected_month_productive_days_label": "Παραγωγικές ημέρες",
+    "selected_month_productive_days_snack_alert": "Συνολικά έχεις {daysCount} παραγωγικές μέρες τον επιλεγμένο μήνα.",
+    "@selected_month_productive_days_snack_alert": {
+        "placeholders": {
+            "daysCount": {
+                "type": "num",
+                "example": "12"
+            }
+        }
+    },
+    "selected_day_focused_time_label": "Χρόνος εστίασης",
+    "selected_day_focused_time_snack_alert": "Ο συνολικός εστιασμένος χρόνος σου για την επιλεγμένη ημέρα είναι {timeString}.",
+    "@selected_day_focused_time_snack_alert": {
+        "placeholders": {
+            "timeString": {
+                "type": "String",
+                "example": "3 hours and 15 minutes"
+            }
+        }
+    },
+    "calender_heading": "Ημερολόγιο",
+    "your_sessions_heading": "Οι συνεδρίες σου",
+    "your_sessions_empty_list_hint": "Δεν καταγράφηκαν συνεδρίες εστίασης για την επιλεγμένη ημέρα.",
+    "focus_session_tile_duration_label": "Διάρκεια",
+    "focus_session_state_active": "Ενεργή",
+    "focus_session_state_successful": "Επιτυχής",
+    "focus_session_state_failed": "Απέτυχε",
+    "@----------------------------- ACTIVE FOCUS SESSION SCREEN -----------------------------": {},
+    "active_session_tab_title": "Συνεδρία",
+    "active_session_none_warning": "Δεν βρέθηκε καμία ενεργή συνεδρία. Επιστροφή στην αρχική οθόνη.",
+    "active_session_dialog_button_keep_pushing": "Συνέχισε να προσπαθείς",
+    "active_session_finish_dialog_title": "Τέλος",
+    "active_session_finish_dialog_info": "Κράτα γερά! Χτίζεις πολύτιμη συγκέντρωση. Σίγουρα θες να τερματίσεις αυτή τη συνεδρία εστίασης; Κάθε επιπλέον στιγμή μετράει προς τους στόχους σου.",
+    "active_session_giveup_dialog_title": "Τα παρατάω",
+    "active_session_giveup_dialog_info": "Κρατήσου! Σχεδόν τα κατάφερες, μη τα παρατάς τώρα! Σίγουρα θες να τερματίσεις αυτήν την συνεδρία εστίασης νωρίτερα; Η πρόοδος θα χαθεί.",
+    "active_session_giveup_snack_alert": "Τα παράτησες! Μην ανησυχείς, μπορείς να τα πας καλύτερα την επόμενη φορά. Κάθε προσπάθεια μετράει - απλά συνέχισε",
+    "active_session_quote_one": "Κάθε βήμα μετράει, κράτα γερά και συνέχισε",
+    "active_session_quote_two": "Μείνε σε συγκέντρωση! Κάνεις εκπληκτική πρόοδο",
+    "active_session_quote_three": "Τα σπας! Κράτα την ορμή ζωντανή",
+    "active_session_quote_four": "Λίγο ακόμα για να τα καταφέρεις, τα πας φανταστικά",
+    "active_session_quote_five": "Συγχαρητήρια 🎉 \n Ολοκλήρωσες την συνεδρία εστίασης του {durationString}.\n\nΕξαιρετικά, συνέχισε την καταπληκτική δουλειά",
+    "@active_session_quote_five": {
+        "placeholders": {
+            "durationString": {
+                "type": "String",
+                "example": "30 minutes"
+            }
+        }
+    },
+    "@----------------------------- RESTRICTION GROUPS SCREEN -----------------------------": {},
+    "restriction_groups_tab_title": "Ομάδες περιορισμών",
+    "restriction_groups_tab_info": "Όρισε ένα συνδυασμένο χρονικό όριο οθόνης για μια ομάδα εφαρμογών. Μόλις η συνολική χρήση φτάσει το όριό σου, όλες οι εφαρμογές της ομάδας θα διακοπούν για να διατηρήσουν την συγκέντρωση και την ισορροπία.",
+    "restriction_group_time_spent_label": "Χρόνος που πέρασε σήμερα",
+    "restriction_group_time_left_label": "Χρόνος που έμεινε σήμερα",
+    "restriction_group_name_tile_title": "Όνομα ομάδας",
+    "restriction_group_name_picker_dialog_info": "Εισήγαγε ένα όνομα για την ομάδα περιορισμών για να βοηθήσεις στον εντοπισμό και τη διαχείρισή του εύκολα.",
+    "restriction_group_timer_tile_title": "Χρονόμετρο ομάδας",
+    "restriction_group_timer_picker_dialog_info": "Όρισε ένα ημερήσιο χρονικό όριο για αυτήν την ομάδα. Μόλις συμπληρωθεί το όριό σου, όλες οι εφαρμογές αυτής της ομάδας θα διακοπούν μέχρι τα μεσάνυχτα.",
+    "restriction_group_active_period_tile_title": "Ενεργή περίοδος ομάδας",
+    "remove_restriction_group_dialog_title": "Αφαίρεση ομάδας",
+    "remove_restriction_group_dialog_info": "Σίγουρα; θες να αφαιρέσεις το «{groupName}» από τις ομάδες περιορισμού.",
+    "@remove_restriction_group_dialog_info": {
+        "placeholders": {
+            "groupName": {
+                "type": "String",
+                "example": "Games"
+            }
+        }
+    },
+    "restriction_group_invalid_limits_snack_alert": "Όρισε είτε ένα χρονόμετρο είτε ένα όριο ενεργής περιόδου.",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
+    "last_24_hours_heading": "Τελευταίες 24 ώρες",
+    "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TIMELINE TAB -----------------------------": {},
+    "@----------------------------- APPS DASHBOARD SCREEN -----------------------------": {},
+    "app_info_none_warning": "Δεν ήταν δυνατή η εύρεση της εφαρμογής για το συγκεκριμένο πακέτο. Επιστροφή στην αρχική οθόνη.",
+    "emergency_fab_button": "Επείγον",
+    "emergency_dialog_info": "Αυτή η ενέργεια θα διακόψει τον αποκλεισμό εφαρμογών για τα επόμενα 5 λεπτά. Έχεις ακόμη {leftPassesCount} ευκαιρίες. Αφού τις χρησιμοποιήσεις όλες, η εφαρμογή θα παραμείνει αποκλεισμένη μέχρι τα μεσάνυχτα ή η ενεργή συνεδρία εστίασης θα τελειώσει.\n\nΘες ακόμα να συνεχίσεις;",
+    "@emergency_dialog_info": {
+        "placeholders": {
+            "leftPassesCount": {
+                "type": "num",
+                "example": "3"
+            }
+        }
+    },
+    "emergency_dialog_button_use_anyway": "Χρήση ούτως ή άλλως",
+    "emergency_started_snack_alert": "Ο αποκλεισμός εφαρμογών είναι σε παύση και θα συνεχίσει τον αποκλεισμό σε 5 λεπτά.",
+    "emergency_already_active_snack_alert": "Ο αποκλεισμός εφαρμογών είναι προς το παρόν είτε σε παύση είτε ανενεργός. Αν οι ειδοποιήσεις είναι ενεργοποιημένες, θα λαμβάνεις ενημερώσεις σχετικά με το χρόνο που απομένει.",
+    "emergency_no_pass_left_snack_alert": "Έχεις χρησιμοποιήσει όλες τις επείγουσες ευκαιρίες. Οι αποκλεισμένες εφαρμογές θα παραμείνουν αποκλεισμένες μέχρι τα μεσάνυχτα ή η ενεργή συνεδρία εστίασης θα τελειώσει.",
+    "app_limit_status_not_set": "Δεν ορίστηκε",
+    "app_timer_tile_title": "Χρονόμετρο εφαρμογής",
+    "app_timer_picker_dialog_info": "Όρισε ένα ημερήσιο χρονικό όριο για αυτήν την εφαρμογή. Μόλις συμπληρωθεί το όριό σου, η εφαρμογή θα τεθεί σε παύση μέχρι τα μεσάνυχτα.",
+    "app_launch_limit_tile_title": "Όριο εκκίνησης",
+    "app_launch_limit_tile_subtitle": "Άνοιξε {count} φορές σήμερα.",
+    "@app_launch_limit_tile_subtitle": {
+        "placeholders": {
+            "count": {
+                "type": "num",
+                "example": "15"
+            }
+        }
+    },
+    "app_launch_limit_picker_dialog_info": "Όρισε πόσες φορές μπορείς να ανοίξεις αυτήν την εφαρμογή κάθε μέρα. Μόλις συμπληρωθεί το όριο, θα τεθεί σε παύση μέχρι τα μεσάνυχτα.",
+    "app_active_period_tile_title": "Ενεργός περίοδος",
+    "app_active_period_tile_subtitle": "Από {startTime} έως {endTime}",
+    "@app_active_period_tile_subtitle": {
+        "placeholders": {
+            "startTime": {
+                "type": "String",
+                "example": "10:00pm"
+            },
+            "endTime": {
+                "type": "String",
+                "example": "15"
+            }
+        }
+    },
+    "internet_access_tile_title": "Πρόσβαση στο διαδίκτυο",
+    "internet_access_tile_subtitle": "Απενεργοποίησέ το για να αποκλείσεις το διαδίκτυο για την εφαρμογή.",
+    "internet_access_blocked_snack_alert": "Το διαδίκτυο για {appName} είναι αποκλεισμένο.",
+    "@internet_access_blocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "internet_access_unblocked_snack_alert": "Το διαδίκτυο για {appName} δεν είναι αποκλεισμένο.",
+    "@internet_access_unblocked_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "launch_app_tile_title": "Εκκίνηση εφαρμογής",
+    "launch_app_tile_subtitle": "Άνοιγμα {appName}.",
+    "@launch_app_tile_subtitle": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "go_to_app_settings_tile_title": "Μετάβαση στις ρυθμίσεις εφαρμογής",
+    "go_to_app_settings_tile_subtitle": "Διαχειρίσου τις ρυθμίσεις της εφαρμογής όπως ειδοποιήσεις, δικαιώματα, αποθήκευση και άλλα.",
+    "include_in_stats_tile_title": "Συμπερίληψη στη χρήση οθόνης",
+    "include_in_stats_tile_subtitle": "Απενεργοποίησέ το για να εξαιρέσεις αυτή την εφαρμογή από τη συνολική χρήση της οθόνης.",
+    "app_excluded_from_stats_snack_alert": "Η εφαρμογή {appName} εξαιρείται από τη συνολική χρήση οθόνης.",
+    "@app_excluded_from_stats_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "app_include_to_stats_snack_alert": "Η εφαρμογή {appName} περιλαμβάνεται στη συνολική χρήση οθόνης.",
+    "@app_include_to_stats_snack_alert": {
+        "placeholders": {
+            "appName": {
+                "type": "String",
+                "example": "Mindful"
+            }
+        }
+    },
+    "@----------------------------- SETTINGS SCREEN - GENERAL TAB -----------------------------": {},
+    "general_tab_title": "Γενικά",
+    "appearance_heading": "Εμφάνιση",
+    "theme_mode_tile_title": "Θέμα",
+    "theme_mode_system_label": "Σύστημα",
+    "theme_mode_light_label": "Ανοιχτό",
+    "theme_mode_dark_label": "Σκούρο",
+    "material_color_tile_title": "Material χρώμα",
+    "amoled_dark_tile_title": "AMOLED σκούρο",
+    "amoled_dark_tile_subtitle": "Χρήση καθαρού μαύρου χρώματος για το σκούρο θέμα.",
+    "dynamic_colors_tile_title": "Δυναμικά χρώματα",
+    "dynamic_colors_tile_subtitle": "Χρήση χρωμάτων συσκευής εάν υποστηρίζεται.",
+    "defaults_heading": "Προεπιλογές",
+    "app_language_tile_title": "Γλώσσα εφαρμογής",
+    "default_home_tab_tile_title": "Αρχική καρτέλα",
+    "usage_history_tile_title": "Ιστορικό χρήσης",
+    "usage_history_15_days": "15 ημέρες",
+    "usage_history_1_month": "1 μήνας",
+    "usage_history_3_month": "3 μήνες",
+    "usage_history_6_month": "6 μήνες",
+    "usage_history_1_year": "1 έτος",
+    "service_heading": "Υπηρεσία",
+    "service_stopping_warning": "Αν το Mindful σταματήσει να λειτουργεί απροσδόκητα, παρακαλώ παραχώρησε την άδεια «Αγνόηση βελτιστοποίησης μπαταρίας» για να το διατηρήσεις σε λειτουργία στο παρασκήνιο. Εάν το θέμα συνεχιστεί, δοκίμασε να βάλεις το Mindful σε λίστα εξαιρέσεων για αδιάλειπτη απόδοση.",
+    "whitelist_app_tile_title": "Προσθήκη Mindful σε λίστα εξαιρέσεων",
+    "whitelist_app_tile_subtitle": "Επέτρεψε στο Mindful να ξεκινάει αυτόματα.",
+    "whitelist_app_unsupported_snack_alert": "Αυτή η συσκευή δεν υποστηρίζει την αυτόματη διαχείριση εκκίνησης.",
+    "@----------------------------- SETTINGS SCREEN - DATABASE TAB -----------------------------": {},
+    "database_tab_title": "Βάση δεδομένων",
+    "import_db_tile_title": "Εισαγωγή βάσης δεδομένων",
+    "import_db_tile_subtitle": "Εισαγωγή βάσης δεδομένων από ένα αρχείο.",
+    "export_db_tile_title": "Εξαγωγή βάσης δεδομένων",
+    "export_db_tile_subtitle": "Εξαγωγή βάσης δεδομένων σε ένα αρχείο.",
+    "crash_logs_heading": "Καταγραφές σφαλμάτων",
+    "crash_logs_info": "Αν αντιμετωπίσεις οποιοδήποτε πρόβλημα, μπορείς να το αναφέρεις στο GitHub μαζί με το αρχείο καταγραφής. Το αρχείο θα περιλαμβάνει λεπτομέρειες όπως τον κατασκευαστή της συσκευής σου, το μοντέλο, την έκδοση Android, την έκδοση SDK και τα αρχεία καταγραφής σφαλμάτων. Αυτές οι πληροφορίες θα μας βοηθήσουν να εντοπίσουμε και να επιλύσουμε το πρόβλημα πιο αποτελεσματικά.",
+    "crash_logs_export_tile_title": "Εξαγωγή καταγραφών σφαλμάτων",
+    "crash_logs_export_tile_subtitle": "Εξαγωγή αρχείων καταγραφής σφαλμάτων σε αρχείο json.",
+    "crash_logs_view_tile_title": "Προβολή καταγραφών",
+    "crash_logs_view_tile_subtitle": "Εξερεύνηση αποθηκευμένων καταγραφών σφαλμάτων.",
+    "crash_logs_empty_list_hint": "Καμία κατάρρευση δεν καταγράφηκε μέχρι τώρα.",
+    "crash_logs_clear_tile_title": "Εκκαθάριση καταγραφών",
+    "crash_logs_clear_tile_subtitle": "Διαγραφή όλων των αρχείων καταγραφής κατάρρευσης από τη βάση δεδομένων.",
+    "crash_logs_clear_dialog_info": "Σίγουρα θες να καθαρίσεις όλα τα αρχεία καταγραφής κατάρρευσης από τη βάση δεδομένων;",
+    "crash_logs_clear_dialog_button_clear_anyway": "Εκκαθάριση ούτως ή άλλως",
+    "@----------------------------- SETTINGS SCREEN - ABOUT TAB -----------------------------": {},
+    "about_tab_title": "Σχετικά",
+    "changelog_tile_title": "Αρχείο αλλαγών",
+    "changelog_tile_subtitle": "Δες τι άλλαξε.",
+    "full_changelog_tile_title": "Πλήρες αρχείο αλλαγών",
+    "redirected_to_github_subtitle": "Θα μεταφερθείς στο GitHub.",
+    "contribute_heading": "Συνεισφορά",
+    "github_tile_title": "GitHub",
+    "github_tile_subtitle": "Δες τον πηγαίο κώδικα.",
+    "report_issue_tile_title": "Αναφορά ζητήματος",
+    "suggest_idea_tile_title": "Πρότεινε μια ιδέα",
+    "write_email_tile_title": "Γράψε μας μέσω email",
+    "write_email_tile_subtitle": "Θα μεταφερθείς στην εφαρμογή email.",
+    "privacy_policy_heading": "Πολιτική απορρήτου",
+    "privacy_policy_info": "Το Mindful έχει δεσμευτεί για την προστασία του απορρήτου σου. Δεν συλλέγουμε, αποθηκεύουμε ή μεταβιβάζουμε οποιοδήποτε είδος δεδομένων χρήστη. Η εφαρμογή λειτουργεί εξ' ολοκλήρου εκτός σύνδεσης και δεν απαιτεί σύνδεση στο διαδίκτυο, εξασφαλίζοντας ότι τα προσωπικά σου στοιχεία παραμένουν ιδιωτικά και ασφαλή στη συσκευή σου. Ως εφαρμογή Ελεύθερου και Ανοιχτού Κώδικα (FOSS) το Mindful εγγυάται πλήρη διαφάνεια και έλεγχο των δεδομένων των χρηστών.",
+    "more_details_button": "Περισσότερες λεπτομέρειες"
+}

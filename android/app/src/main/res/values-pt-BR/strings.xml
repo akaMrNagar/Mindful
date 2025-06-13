@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+  ~  *  *
+  ~  *  * This source code is licensed under the GPL-2.0 license license found in the
+  ~  *  * LICENSE file in the root directory of this source tree.
+  ~  *
+  ~  */
+  -->
+<resources>
+    <string name="accessibility_description">O aplicativo Mindful usa serviços de acessibilidade para bloquear sites e shorts em aplicativos. Verifica URLs e conteúdo em relação à sua lista de bloqueios e impede o acesso para ajudá-lo a manter o foco. \n\n⚠️Note: Sua privacidade é nossa prioridade. O Mindful é 100% seguro e funciona offline. Não recolhemos nem armazenamos quaisquer dados pessoais. </string>
+    <string name="toast_enable_notification">Por favor, habilite as notificações</string>
+    <string name="toast_blocked_content">Conteúdo bloqueado! Voltando</string>
+    <string name="toast_redirecting">Filtrando resultados de pesquisa</string>
+    <string name="service_running_notification_title">Mindful em execução</string>
+    <string name="usage_widget_description">Obtenha uma visão diária de sua tela e uso de dados</string>
+    <string name="widget_screen_time_label">Tempo de tela</string>
+    <string name="widget_mobile_data_label">Uso de dados móveis</string>
+    <string name="widget_wifi_data_label">Wifi</string>
+    <string name="internet_blocker_running_notification_info">Mindful está gerenciando o acesso à internet para ajudar você a se manter focado.</string>
+    <string name="app_blocker_running_notification_info">Mindful está agora monitorando o uso de aplicativos para ajudá-lo a se manter focado e gerenciar seus hábitos digitais.</string>
+    <string name="overlay_permission_denied_notification_title">Permissão negada</string>
+    <string name="overlay_permission_denied_notification_info">Por favor, conceda permissão de sobreposição de tela para Mindful clicando na notificação. Na próxima tela, encontre Mindful na lista de aplicativos e clique em permitir.</string>
+    <string name="bedtime_started_notification_info">É hora de relaxar. A rotina de dormir começou, ajudando você a relaxar e se preparar para uma noite de sono revigorante.</string>
+    <string name="bedtime_ended_notification_info">Levante-se e brilhe! A rotina de dormir terminou, prepare-se para começar o dia energizado e renovado.</string>
+    <string name="emergency_pause_notification_title">Pausa de emergência</string>
+    <string name="emergency_pause_ended_notification_info">Pausa de emergência acabou, e o bloqueador de apps está de volta. Distrações serão bloqueadas novamente, fique focado!</string>
+    <string name="focus_session_notification_title">Sessão de foco</string>
+    <string name="focus_session_success_notification_info">Parabéns! Você completou com sucesso sua sessão de foco. Ótimo trabalho em manter o foco! Continue com o excelente desempenho!</string>
+    <string name="focus_session_giveup_notification_info">Você desistiu! Não se preocupe, você pode fazer melhor da próxima vez. Cada esforço conta — apenas continue</string>
+</resources>
