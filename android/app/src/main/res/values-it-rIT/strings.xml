@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+  ~  *  *
+  ~  *  * This source code is licensed under the GPL-2.0 license license found in the
+  ~  *  * LICENSE file in the root directory of this source tree.
+  ~  *
+  ~  */
+  -->
+<resources>
+    <string name="accessibility_description">Mindful utilizza i servizi di accessibilità per bloccare siti web e video brevi all\'interno di app (Reels, Shorts,...). Confronta gli URL con una lista di contenuti bloccati e ne impedisce l\'accesso per aiutarti a concentrarti. \n\n ⚠️ Attenzione: la tua privacy è la nostra priorità. Mindful è sicura al 100% e funziona offline. Non raccogliamo e non memorizziamo i tuoi dati personali. </string>
+    <string name="admin_description">Mindful non raccoglie, memorizza o trasmette alcun dato utente. Come Software Libero e Open Source (FOSS), è possibile rivedere e modificare il codice sorgente. I privilegi da amministratore sono necessari solo per le operazioni di sistema essenziali, garantendo le funzioni dell\'applicazione correttamente senza compromettere la vostra privacy.</string>
+    <string name="toast_enable_notification">Per favore, abilita le notifiche</string>
+    <string name="toast_blocked_content">Contenuto bloccato! Torno indietro</string>
+    <string name="toast_redirecting">Filtraggio risultati ricerca</string>
+    <string name="service_running_notification_title">Mindful è in esecuzione</string>
+    <string name="shortcut_focus_mode_label">Modalità concentrazione</string>
+    <string name="shortcut_focus_mode_description">Avvia rapidamente una sessione di concentrazione con profili personalizzati.</string>
+    <string name="shortcut_upcoming_notifications_label">Notifiche raggruppate</string>
+    <string name="shortcut_upcoming_notifications_description">Controlla le prossime notifiche raggruppate.</string>
+    <string name="shortcut_parental_controls_label">Controlli parentali</string>
+    <string name="shortcut_parental_controls_description">Gestisci i controlli parentali e le impostazioni di sicurezza</string>
+    <string name="focus_quick_tile_status_active">Attivo</string>
+    <string name="usage_widget_description">Ottieni un riassunto giornaliero del tuo consumo di dati e del tempo passato davanti allo schermo</string>
+    <string name="widget_screen_time_label">Tempo sullo schermo</string>
+    <string name="widget_mobile_data_label">Rete dati</string>
+    <string name="widget_wifi_data_label">Wi-Fi</string>
+    <string name="internet_blocker_running_notification_info">Mindful gestirà l\'accesso a internet per aiutarti a concentrarti.</string>
+    <string name="app_blocker_running_notification_info">Mindful sta monitorando l\'utilizzo delle app per aiutarti a rimanere concentrato e gestire le tue abitudini digitali.</string>
+    <string name="overlay_permission_denied_notification_title">Permesso non concesso</string>
+    <string name="overlay_permission_denied_notification_info">Concedi l\'autorizzazione \"Mostra sopra altre app\" a Mindful cliccando sulla notifica. Nella schermata successiva, trova Mindful nell\'elenco delle app e clicca su \'Consenti\'.</string>
+    <string name="app_paused_reason_focus_session">È tempo di concentrarsi! Quest\'app è bloccata per aiutarti a rimanere sul pezzo e massimizzare la tua sessione.</string>
+    <string name="app_paused_reason_bedtime">È ora della nanna! Quest\'app è bloccata durante la notte per aiutarti a rilassarti e prepararti per un sonno tranquillo.</string>
+    <string name="app_paused_reason_launch_count_out">Hai raggiunto il numero massimo di avvii per questa app oggi. È il momento di allontanarsi e riconcentrarsi sulle tue priorità.</string>
+    <string name="app_paused_reason_app_timer_left">Stai usando questa app da un bel po\' di tempo. Cambiamo rotta, prendiamoci una pausa dallo schermo e concentriamoci su qualcosa di più produttivo.</string>
+    <string name="app_paused_reason_app_timer_out">Hai raggiunto il limite giornaliero su questa app. Sfrutta questa opportunità per potenziare la tua produttività.</string>
+    <string name="app_paused_restriction_focus_mode">Modalità concentrazione</string>
+    <string name="app_paused_restriction_bedtime_mode">Ora della buonanotte</string>
+    <string name="app_paused_restriction_launch_count">Numero avvii</string>
+    <string name="app_paused_overlay_button_emergency">È un\'emergenza</string>
+    <string name="app_paused_overlay_label_spent_today">Trascorsi oggi</string>
+    <string name="app_paused_overlay_label_left_today">Rimanente oggi</string>
+    <string name="app_paused_overlay_ask_need_more_time">Ti serve qualche altro minuto?</string>
+    <string name="app_paused_overlay_button_two_minutes">2 minuti</string>
+    <string name="app_paused_overlay_button_five_minutes">5 minuti</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 minuti</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 minuti</string>
+    <string name="bedtime_upcoming_notification_info">L\'ora della buonanotte comincia fra 30 minuti. Usa questo tempo per concludere e prepararti al nuovo inizio di domani</string>
+    <string name="bedtime_started_notification_info">È ora di rilassarsi. La routine notturna è iniziata, aiutandoti a distenderti e a prepararti per una notte di sonno riposante.</string>
+    <string name="bedtime_ended_notification_info">Su con la vita! La routine notturna è terminata, preparati a iniziare la giornata pieno di energia e ricaricato.</string>
+    <string name="emergency_pause_notification_title">Pausa di emergenza</string>
+    <string name="emergency_pause_ended_notification_info">La pausa di emergenza è terminata, e il blocco delle app è di nuovo attivo. Le distrazioni sono ora bloccate, resta concentrato!</string>
+    <string name="focus_session_notification_title">Sessione di concentrazione</string>
+    <string name="focus_session_success_notification_info">Congratulazioni! Hai completato con successo la tua sessione di concentrazione. Ottimo lavoro nel mantenere la costanza, continua cosi!</string>
+    <string name="focus_session_giveup_notification_info">Ti sei arreso, ma non preoccuparti. Potrai fare meglio la prossima volta. Ogni sforzo conta: continua ad andare avanti</string>
+</resources>
