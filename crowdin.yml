@@ -10,3 +10,9 @@ files:
 
   - source: "android/app/src/main/res/values/strings.xml"
     translation: "android/app/src/main/res/values-%locale%/strings.xml"
+
+download_options:
+  skip_untranslated_strings: true                    # Only export translated keys
+  export_only_completed_languages: false              # Only include fully translated files
+  export_only_approved: true                        # Set to true if you require reviewer approval
+  export_fallbacks: true                             # Use primary language fallback for dialects
