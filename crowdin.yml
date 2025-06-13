@@ -9,7 +9,7 @@ files:
     translation: "lib/l10n/app_%locale%.arb"
 
   - source: "android/app/src/main/res/values/strings.xml"
-    translation: "android/app/src/main/res/values-%locale%/strings.xml"
+    translation: "android/app/src/main/res/values-%android_code%/strings.xml"
 
 download_options:
   skip_untranslated_strings: true                    # Only export translated keys
