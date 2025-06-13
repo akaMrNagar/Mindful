@@ -33,6 +33,23 @@
     <string name="overlay_permission_denied_notification_title">権限がありません</string>
     <string name="overlay_permission_denied_notification_info">Mindful に他のアプリの上に重ねて表示する権限を与えるには、通知を選択してください。表示された画面で、Mindful を探し、許可を与えてください。</string>
     <string name="app_paused_reason_focus_session">集中時間です！このアプリは、集中を維持し、記録を最大限に活用できるよう一時停止しています。</string>
+    <string name="app_paused_reason_bedtime">就寝する時間です！心地のよい眠りのため、このアプリは一時停止されました。</string>
+    <string name="app_paused_reason_launch_count_out">このアプリの起動回数制限に達しました。少し休憩して、他のことに集中しましょう。</string>
+    <string name="app_paused_reason_app_timer_left">そろそろ休憩しませんか？画面から離れて、他のことに目を向けてみましょう。</string>
+    <string name="app_paused_reason_app_timer_out">このアプリの毎日の使用時間制限に達しました。中注力を維持し、他のことに取り組みましょう。</string>
+    <string name="app_paused_reason_app_active_period_over">設定された時間帯以外は、このアプリは利用できません。今は、他の重要なことに集中しましょう。</string>
+    <string name="app_paused_reason_group_timer_left" formatted="true">しばらく「%s」グループのアプリをお使いですね。少し立ち止まって、画面ではなくタスクに集中しましょう。</string>
+    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">%s グループのアプリは、今日の使用時間制限に達しました。少し休んで、また明日から頑張りましょう。</string>
+    <string name="app_paused_reason_group_active_period_over" formatted="true">「%s」グループのアプリは、設定されたアクティブ時間外のため、現在一時停止されています。この機会にリフレッシュするか、タスクに集中して、指定された時間に戻ってください。</string>
+    <string name="app_paused_restriction_focus_mode">集中モード</string>
+    <string name="app_paused_restriction_bedtime_mode">就寝時モード</string>
+    <string name="app_paused_restriction_launch_count">起動回数</string>
+    <string name="app_paused_restriction_app_timer">アプリタイマー</string>
+    <string name="app_paused_restriction_app_active_period">アプリのアクティブ期間</string>
+    <string name="app_paused_restriction_group_timer">グループのタイマー</string>
+    <string name="app_paused_restriction_group_active_period">グループのアクティブ期間</string>
+    <string name="app_paused_overlay_button_emergency">緊急時の使用</string>
+    <string name="app_paused_overlay_label_left_today">今日去った</string>
     <string name="bedtime_upcoming_notification_info">就寝時間は30分後に始まります。今日の活動を締めくくり、明日に備えましょう。</string>
     <string name="bedtime_started_notification_info">リラックスして、質の高い睡眠を。就寝時間が始まりました。</string>
     <string name="bedtime_ended_notification_info">おはようございます！就寝時間が終了しました。今日も元気に過ごしましょう！</string>
