@@ -443,7 +443,7 @@
             }
         }
     },
-    "restriction_group_invalid_limits_snack_alert": "Да ли си сигуран да желиш да уклониш '{groupName}' из група ограничења?",
+    "restriction_group_invalid_limits_snack_alert": "Подесите тајмер или ограничење активног периода.",
     "@----------------------------- NOTIFICATIONS SCREEN - NOTIFICATIONS TAB -----------------------------": {},
     "notifications_empty_list_hint": "Ниједно обавештење није груписано данас.",
     "conversations_label": "Преписке",
