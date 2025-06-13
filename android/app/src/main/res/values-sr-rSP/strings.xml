@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  *
+  ~  *  * Copyright (c) 2024 Mindful (https://github.com/akaMrNagar/Mindful)
+  ~  *  * Author : Pawan Nagar (https://github.com/akaMrNagar)
+  ~  *  *
+  ~  *  * This source code is licensed under the GPL-2.0 license license found in the
+  ~  *  * LICENSE file in the root directory of this source tree.
+  ~  *
+  ~  */
+  -->
+<resources>
+    <string name="accessibility_description">Апликација Mindful користи услуге приступачности за блокирање веб сајтова и кратког садржаја на апликацијама. Проверава УРЛ-ове и садржај у односу на вашу листу блокираних и спречава приступ како би вам помогла да останете фокусирани.\n\n⚠️Напомена: Ваша приватност нам је приоритет. Mindful је 100% сигурна и ради офлајн. Не прикупљамо нити чувамо било какве личне податке.</string>
+    <string name="admin_description">Mindful не прикупља, не чува и не дели податке корисника. Као слободни и отворени софтвер (FOSS), можете прегледати и изменити изворни код. Административне привилегије су потребне искључиво за основне системске операције, како би апликација правилно функционисала, а да не угрози вашу приватност.</string>
+    <string name="toast_enable_notification">Молимо те да омогућиш обавештења</string>
+    <string name="toast_blocked_content">Садржај је блокиран! Враћам се назад</string>
+    <string name="toast_redirecting">Филтрирање резултата претраге</string>
+    <string name="service_running_notification_title">Mindful ради</string>
+    <string name="shortcut_focus_mode_label">Режим фокуса</string>
+    <string name="shortcut_focus_mode_description">Брзо започни фокус сесију са прилагођеним профилима.</string>
+    <string name="shortcut_upcoming_notifications_label">Груписана обавештења</string>
+    <string name="shortcut_upcoming_notifications_description">Провери предстојећа груписана обавештења.</string>
+    <string name="shortcut_parental_controls_label">Родитељски надзор</string>
+    <string name="shortcut_parental_controls_description">Управљај родитељским контролама и безбедносним подешавањима</string>
+    <string name="focus_quick_tile_status_active">Активан</string>
+    <string name="usage_widget_description">Види дневни преглед коришћења података и времена проведеног испред екрана</string>
+    <string name="widget_screen_time_label">Време испред екрана</string>
+    <string name="widget_mobile_data_label">Мобилни</string>
+    <string name="widget_wifi_data_label">Wi-Fi</string>
+    <string name="internet_blocker_running_notification_info">Mindful сада управља приступом интернету како би ти помогао да останеш фокусиран.</string>
+    <string name="app_blocker_running_notification_info">Mindful сада прати коришћење апликација како би ти помогао да останеш фокусиран и управљаш својим дигиталним навикама.</string>
+    <string name="overlay_permission_denied_notification_title">Дозвола одбијена</string>
+    <string name="overlay_permission_denied_notification_info">Молимо те да одобриш дозволу за приказивање преклапања за апликацију Mindful кликом на обавештење. На следећем екрану, пронађи апликацију Mindful на листи и кликни на \'дозволи\'.</string>
+    <string name="app_paused_reason_focus_session">Време је за фокус! Апликација је паузирана да ти помогне да останеш на правом путу и искористиш своје време на најбољи начин.</string>
+    <string name="app_paused_reason_bedtime">Време је за спавање! Апликација је паузирана за ноћ како би ти помогла да се опустиш и припремиш за миран сан.</string>
+    <string name="app_paused_reason_launch_count_out">Достиго/ла си максималан број покретања ове апликације данас. Време је да се одмориш и поново се фокусираш на своје приоритете.</string>
+    <string name="app_paused_reason_app_timer_left">Већ неко време користиш ову апликацију. Хајде да направимо паузу од екрана и фокусирамо се на нешто продуктивно.</string>
+    <string name="app_paused_reason_app_timer_out">Достиго/ла си дневни лимит за ову апликацију. Искористи ову прилику да побољшаш своју продуктивност.</string>
+    <string name="app_paused_restriction_focus_mode">Режим фокуса</string>
+    <string name="app_paused_restriction_bedtime_mode">Режим за спавање</string>
+    <string name="app_paused_restriction_launch_count">Број покретања</string>
+    <string name="app_paused_overlay_button_emergency">Упозорење</string>
+    <string name="app_paused_overlay_label_spent_today">Проведено данас</string>
+    <string name="app_paused_overlay_label_left_today">Преостало данас</string>
+    <string name="app_paused_overlay_ask_need_more_time">Треба ти још неколико минута?</string>
+    <string name="app_paused_overlay_button_two_minutes">2 минута</string>
+    <string name="app_paused_overlay_button_five_minutes">5 минута</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 минута</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 минута</string>
+    <string name="bedtime_upcoming_notification_info">Време за спавање почиње за 30 минута. Искористи овај период да завршиш све и припремиш се за нови дан сутра</string>
+    <string name="bedtime_started_notification_info">Време је да се опустиш. Рутинска процедура за спавање је почела, помаже ти да се опустиш и припремиш за миран сан.</string>
+    <string name="bedtime_ended_notification_info">Добро јутро! Рутинска процедура за спавање је завршена, време је да започнеш нови дан.</string>
+    <string name="emergency_pause_notification_title">Хитна пауза</string>
+    <string name="emergency_pause_ended_notification_info">Хитна пауза је завршена, а блокатор апликација је поново активиран. Ометања су поново блокирана. Остани фокусиран!</string>
+    <string name="focus_session_notification_title">Фокус сесија</string>
+    <string name="focus_session_success_notification_info">Браво! Успешно си завршио/ла своју сесију фокуса. Одличан посао, остани на правом путу! Супер!</string>
+    <string name="focus_session_giveup_notification_info">Главу горе. Не брини, следећи пут ћеш бити бољи. Сваки напор се рачуна – само настави да радиш на себи</string>
+    <string name="notification_schedule_batch_title">Непрочитана обавештења</string>
+</resources>
