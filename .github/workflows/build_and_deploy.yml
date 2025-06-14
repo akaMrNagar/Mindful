@@ -62,7 +62,7 @@ jobs:
           inAppUpdatePriority: ${{ secrets.UPDATE_PRIORITY }} # Between 0-5 => Higher the number, higher the priority.
           releaseFiles: build/app/outputs/bundle/release/app-release.aab
           mappingFile: build/app/outputs/mapping/release/mapping.txt
-          debugSymbols:  build/app/outputs/symbols/release
+          debugSymbols: build/app/outputs/symbols/release
           track: internal
           status: draft
           # changesNotSentForReview: ${{ secrets.DONT_SEND_CHANGES_FOR_REVIEW }}  # true or false
