@@ -118,10 +118,10 @@ class _DurationPickerDialog extends StatefulWidget {
     required this.info,
     required this.positiveButtonLabel,
     this.actionButtonLabel,
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     this.showActionButton = true,
 
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     this.minuteInterval = 1,
   });
 
