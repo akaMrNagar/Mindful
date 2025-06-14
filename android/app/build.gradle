@@ -26,11 +26,15 @@ android {
 
     namespace "com.mindful.android"
     compileSdkVersion flutter.compileSdkVersion
-    ndkVersion flutter.ndkVersion
+    ndkVersion '27.0.12077973'
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     defaultConfig {
@@ -38,7 +42,6 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         applicationId "com.mindful.android"
         minSdkVersion defaultMinSdkVersion
-        compileSdk 34
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -63,7 +66,7 @@ android {
             }
             resValue "string", "app_name", "Mindful"
             signingConfig signingConfigs.release
-            
+
             // If you see "SigningConfig 'release' is missing required property 'storeFile'",  
             // it means your release keystore is not set up due to missing environment variables.  
             // To fix this locally, either:  
@@ -83,7 +86,8 @@ android {
         }
 
         profile {
-            applicationIdSuffix ".profile"
+            // app_links library is causing error so commenting it out
+            // applicationIdSuffix ".profile"
             resValue "string", "app_name", "Mindful Profile"
             signingConfig System.getenv("KEYSTORE_FILE") != null ? signingConfigs.release : signingConfigs.debug
         }
@@ -98,7 +102,7 @@ flutter {
 }
 
 dependencies {
-    implementation 'androidx.work:work-runtime:2.9.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.work:work-runtime:2.10.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
 }
 
