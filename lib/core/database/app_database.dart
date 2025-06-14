@@ -68,7 +68,7 @@ part 'app_database.g.dart';
   daos: [UniqueRecordsDao, DynamicRecordsDao],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase(QueryExecutor e) : super(e);
+  AppDatabase(super.e);
 
   // STEP 1 => Modify or create tables
   //

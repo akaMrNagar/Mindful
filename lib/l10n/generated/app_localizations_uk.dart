@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -36,7 +36,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get permission_button_help => 'Допомога?';
 
   @override
-  String get permission_sheet_privacy_info => 'Mindful є на 100 % безпечним і працює в автономному режимі. Ми не збираємо або зберігаємо жодні персональні дані.';
+  String get permission_sheet_privacy_info =>
+      'Mindful є на 100 % безпечним і працює в автономному режимі. Ми не збираємо або зберігаємо жодні персональні дані.';
 
   @override
   String permission_grant_step_one(String button_label) {
@@ -44,10 +45,12 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get permission_grant_step_two => '2. Оберіть Mindful на наступному екрані.';
+  String get permission_grant_step_two =>
+      '2. Оберіть Mindful на наступному екрані.';
 
   @override
-  String get permission_grant_step_three => '3. Клацніть та увімкніть перемикач нижче.';
+  String get permission_grant_step_three =>
+      '3. Клацніть та увімкніть перемикач нижче.';
 
   @override
   String get permission_notification_title => 'Відправляти сповіщення';
@@ -56,91 +59,112 @@ class AppLocalizationsUk extends AppLocalizations {
   String get permission_alarms_title => 'Будильники та нагадування';
 
   @override
-  String get permission_alarms_info => 'Будь ласка, дозвольте налаштування будильників та нагадувань. Це надасть можливість Mindful встановлювати ваш режим сну вчасно і щоденно скидати о півночі таймери застосунку, та допомогти вам залишитись на шляху.';
+  String get permission_alarms_info =>
+      'Будь ласка, дозвольте налаштування будильників та нагадувань. Це надасть можливість Mindful встановлювати ваш режим сну вчасно і щоденно скидати о півночі таймери застосунку, та допомогти вам залишитись на шляху.';
 
   @override
-  String get permission_alarms_device_tile_label => 'Дозволити налаштування будильників та нагадувань';
+  String get permission_alarms_device_tile_label =>
+      'Дозволити налаштування будильників та нагадувань';
 
   @override
   String get permission_usage_title => 'Доступ до статистики використання';
 
   @override
-  String get permission_usage_info => 'Будь ласка, дозвольте збирати статистику використання. Це надасть можливість Mindful контролювати використання застосунку та управляти доступом до певних застосунків, забезпечити більш сфокусоване та контрольоване цифрове середовище.';
+  String get permission_usage_info =>
+      'Будь ласка, дозвольте збирати статистику використання. Це надасть можливість Mindful контролювати використання застосунку та управляти доступом до певних застосунків, забезпечити більш сфокусоване та контрольоване цифрове середовище.';
 
   @override
-  String get permission_usage_device_tile_label => 'Дозволити доступ до статистики використання';
+  String get permission_usage_device_tile_label =>
+      'Дозволити доступ до статистики використання';
 
   @override
   String get permission_overlay_title => 'Показ нашарування';
 
   @override
-  String get permission_overlay_info => 'Будь ласка, дозвольте нашарування. Це надасть можливість Mindful показувати нашарування, коли застосунок є на паузі, допомагаючи вам залишатись у фокусі та підтримувати свій графік.';
+  String get permission_overlay_info =>
+      'Будь ласка, дозвольте нашарування. Це надасть можливість Mindful показувати нашарування, коли застосунок є на паузі, допомагаючи вам залишатись у фокусі та підтримувати свій графік.';
 
   @override
-  String get permission_overlay_device_tile_label => 'Дозволити показ поверх інших застосунків';
+  String get permission_overlay_device_tile_label =>
+      'Дозволити показ поверх інших застосунків';
 
   @override
   String get permission_accessibility_title => 'Обмеження доступу';
 
   @override
-  String get permission_accessibility_info => 'Будь ласка, дозвольте обмеження доступу. Це надасть можливість Mindful обмежувати дозвіл до короткого відеоконтенту (наприклад, Reels, Shorts) у застосунках соцмереж і браузерах, та фільтрувати недоречні вебсайти.';
+  String get permission_accessibility_info =>
+      'Будь ласка, дозвольте обмеження доступу. Це надасть можливість Mindful обмежувати дозвіл до короткого відеоконтенту (наприклад, Reels, Shorts) у застосунках соцмереж і браузерах, та фільтрувати недоречні вебсайти.';
 
   @override
-  String get permission_accessibility_required => 'Mindful потребує дозвіл на обмеження доступу для ефективного блокування контенту та вебсайтів.';
+  String get permission_accessibility_required =>
+      'Mindful потребує дозвіл на обмеження доступу для ефективного блокування контенту та вебсайтів.';
 
   @override
-  String get permission_accessibility_device_tile_label => 'Використання Mindful';
+  String get permission_accessibility_device_tile_label =>
+      'Використання Mindful';
 
   @override
   String get permission_dnd_title => 'Не турбувати';
 
   @override
-  String get permission_dnd_info => 'Будь ласка, дозвольте режим \"Не турбувати\". Це надасть можливість Mindful починати та закінчувати режим \"Не турбувати\" протягом режиму сну.';
+  String get permission_dnd_info =>
+      'Будь ласка, дозвольте режим \"Не турбувати\". Це надасть можливість Mindful починати та закінчувати режим \"Не турбувати\" протягом режиму сну.';
 
   @override
   String get permission_dnd_tile_title => 'Запустити режим \"Не турбувати\"';
 
   @override
-  String get permission_dnd_tile_subtitle => 'Також увімкнути режим \"Не турбувати\".';
+  String get permission_dnd_tile_subtitle =>
+      'Також увімкнути режим \"Не турбувати\".';
 
   @override
-  String get permission_battery_optimization_tile_title => 'Ігнорувати оптимізацію батареї';
+  String get permission_battery_optimization_tile_title =>
+      'Ігнорувати оптимізацію батареї';
 
   @override
-  String get permission_battery_optimization_status_enabled => 'Вже без обмежень';
+  String get permission_battery_optimization_status_enabled =>
+      'Вже без обмежень';
 
   @override
-  String get permission_battery_optimization_status_disabled => 'Вимкнути обмеження у фоновому режимі';
+  String get permission_battery_optimization_status_disabled =>
+      'Вимкнути обмеження у фоновому режимі';
 
   @override
-  String get permission_battery_optimization_allow_info => 'Дозвіл «Ігнорування оптимізації батареї» автоматично надасть дозвіл на «Будильники й Нагадування» на деяких пристроях.';
+  String get permission_battery_optimization_allow_info =>
+      'Дозвіл «Ігнорування оптимізації батареї» автоматично надасть дозвіл на «Будильники й Нагадування» на деяких пристроях.';
 
   @override
   String get permission_vpn_title => 'Створити VPN';
 
   @override
-  String get permission_vpn_info => 'Будь ласка, дозвольте створення підключення віртуальної приватної мережі (VPN). Це надасть можливість Mindful обмежити доступ для призначених застосунків, створюючи локальну мережу VPN.';
+  String get permission_vpn_info =>
+      'Будь ласка, дозвольте створення підключення віртуальної приватної мережі (VPN). Це надасть можливість Mindful обмежити доступ для призначених застосунків, створюючи локальну мережу VPN.';
 
   @override
   String get permission_admin_title => 'Адміністратор';
 
   @override
-  String get permission_admin_info => 'Адміністративні права потрібні лише для важливих операцій з метою забезпечення належної роботи застосунку та його захист від несанкціонованого втручання.';
+  String get permission_admin_info =>
+      'Адміністративні права потрібні лише для важливих операцій з метою забезпечення належної роботи застосунку та його захист від несанкціонованого втручання.';
 
   @override
-  String get permission_admin_snack_alert => 'Захист від несанкціонованого доступу може бути відключений тільки протягом обраного проміжку часу.';
+  String get permission_admin_snack_alert =>
+      'Захист від несанкціонованого доступу може бути відключений тільки протягом обраного проміжку часу.';
 
   @override
   String get permission_notification_access_title => 'Доступ до сповіщень';
 
   @override
-  String get permission_notification_access_info => 'Будь ласка, дозвольте сповіщення. Це надасть можливість Mindful організувати сповіщення та надсилати їх за вашим розкладом.';
+  String get permission_notification_access_info =>
+      'Будь ласка, дозвольте сповіщення. Це надасть можливість Mindful організувати сповіщення та надсилати їх за вашим розкладом.';
 
   @override
-  String get permission_notification_access_required => 'Mindful потребує доступ до сповіщень для того, щоб збирати в пакети та планувати сповіщення.';
+  String get permission_notification_access_required =>
+      'Mindful потребує доступ до сповіщень для того, щоб збирати в пакети та планувати сповіщення.';
 
   @override
-  String get permission_notification_access_device_tile_label => 'Дозволити доступ до сповіщень';
+  String get permission_notification_access_device_tile_label =>
+      'Дозволити доступ до сповіщень';
 
   @override
   String get day_today => 'Сьогодні';
@@ -152,7 +176,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String nDays(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -170,7 +193,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String nHours(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -188,7 +210,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String nMinutes(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -206,7 +227,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String nSeconds(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -257,13 +277,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get schedule_end_label => 'Кінець';
 
   @override
-  String get exit_without_saving_dialog_info => 'Ви впевнені, що бажаєте вийти без збереження?';
+  String get exit_without_saving_dialog_info =>
+      'Ви впевнені, що бажаєте вийти без збереження?';
 
   @override
-  String get development_dialog_info => 'Mindful перебуває зараз в процесі розробки і може містити помилки чи незакінчені функції. Якщо ви стикаєтесь з будь-якими проблемами, буль ласка, повідомте про них, щоб допомогти нам у покращенні.\n\nДякуємо за ваш відгук!';
+  String get development_dialog_info =>
+      'Mindful перебуває зараз в процесі розробки і може містити помилки чи незакінчені функції. Якщо ви стикаєтесь з будь-якими проблемами, буль ласка, повідомте про них, щоб допомогти нам у покращенні.\n\nДякуємо за ваш відгук!';
 
   @override
-  String get development_dialog_button_report_issue => 'Повідомити про проблему';
+  String get development_dialog_button_report_issue =>
+      'Повідомити про проблему';
 
   @override
   String get development_dialog_button_close => 'Закрити';
@@ -272,43 +295,52 @@ class AppLocalizationsUk extends AppLocalizations {
   String get dnd_settings_tile_title => 'Налаштування режиму \"Не турбувати\"';
 
   @override
-  String get dnd_settings_tile_subtitle => 'Управління застосунками та сповіщеннями, які можуть з вами зв\'язатися в режимі \"Не турбувати\".';
+  String get dnd_settings_tile_subtitle =>
+      'Управління застосунками та сповіщеннями, які можуть з вами зв\'язатися в режимі \"Не турбувати\".';
 
   @override
   String get quick_actions_heading => 'Швидкі дії';
 
   @override
-  String get select_distracting_apps_heading => 'Оберіть застосунки, що відволікають';
+  String get select_distracting_apps_heading =>
+      'Оберіть застосунки, що відволікають';
 
   @override
-  String get your_distracting_apps_heading => 'Ваші застосунки, що відволікають';
+  String get your_distracting_apps_heading =>
+      'Ваші застосунки, що відволікають';
 
   @override
   String get select_more_apps_heading => 'Оберіть більше застосунків';
 
   @override
-  String get imp_distracting_apps_snack_alert => 'Додавання важливих системних застосунків до списку таких, що відволікають, не допускається.';
+  String get imp_distracting_apps_snack_alert =>
+      'Додавання важливих системних застосунків до списку таких, що відволікають, не допускається.';
 
   @override
-  String get custom_apps_quick_actions_unavailable_warning => 'Використання дисплея та обмеження недоступні для цього застосунку. На даний час, доступне лише використання мережі.';
+  String get custom_apps_quick_actions_unavailable_warning =>
+      'Використання дисплея та обмеження недоступні для цього застосунку. На даний час, доступне лише використання мережі.';
 
   @override
   String get create_group_fab_button => 'Створити групу';
 
   @override
-  String get active_period_info => 'Встановіть часовий період, протягом якого буде дозволений доступ. Поза цим часом доступ буде обмежений.';
+  String get active_period_info =>
+      'Встановіть часовий період, протягом якого буде дозволений доступ. Поза цим часом доступ буде обмежений.';
 
   @override
-  String get minimum_distracting_apps_snack_alert => 'Оберіть принаймні один застосунок, що відволікає.';
+  String get minimum_distracting_apps_snack_alert =>
+      'Оберіть принаймні один застосунок, що відволікає.';
 
   @override
   String get donation_card_title => 'Підтримайте нас';
 
   @override
-  String get donation_card_info => 'Mindful є безплатний та відкритий, розроблений з відданістю протягом місяців. Якщо застосунок вам допоміг, ваша пожертва буде безмежно цінною для нас. Кожен внесок нам допомагає вдосконалювати для підтримувати застосунок для кожного.';
+  String get donation_card_info =>
+      'Mindful є безплатний та відкритий, розроблений з відданістю протягом місяців. Якщо застосунок вам допоміг, ваша пожертва буде безмежно цінною для нас. Кожен внесок нам допомагає вдосконалювати для підтримувати застосунок для кожного.';
 
   @override
-  String get operation_failed_snack_alert => 'Помилка операції, щось пішло не так!';
+  String get operation_failed_snack_alert =>
+      'Помилка операції, щось пішло не так!';
 
   @override
   String get donation_card_button_donate => 'Пожертвувати';
@@ -317,85 +349,112 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_restart_dialog_title => 'Потрібен перезапуск';
 
   @override
-  String get app_restart_dialog_info => 'Mindful буде автоматично перезапущений після завершення зворотного відліку. Будь ласка, будьте терплячі, оскільки будуть застосовані зміни.';
+  String get app_restart_dialog_info =>
+      'Mindful буде автоматично перезапущений після завершення зворотного відліку. Будь ласка, будьте терплячі, оскільки будуть застосовані зміни.';
 
   @override
-  String get accessibility_tip => 'Хочете розумніше, більш зручне для батареї блокування? Надайте дозвіл на спеціальні можливості для Mindful.';
+  String get accessibility_tip =>
+      'Хочете розумніше, більш зручне для батареї блокування? Надайте дозвіл на спеціальні можливості для Mindful.';
 
   @override
-  String get battery_optimization_tip => 'Mindful не працює? Дозвольте \"Ігнорування оптимізації батареї\" в Налаштуваннях, щоб підтримувати безперебійну роботу.';
+  String get battery_optimization_tip =>
+      'Mindful не працює? Дозвольте \"Ігнорування оптимізації батареї\" в Налаштуваннях, щоб підтримувати безперебійну роботу.';
 
   @override
-  String get invincible_mode_tip => 'Обмеження були випадково видалені? Використайте Невразливий режим, щоб заблокувати їх до наступного дня або налаштування вікна.';
+  String get invincible_mode_tip =>
+      'Обмеження були випадково видалені? Використайте Невразливий режим, щоб заблокувати їх до наступного дня або налаштування вікна.';
 
   @override
-  String get glance_usage_tip => 'Хочете більше інформації? Перевірте розділ Перегляд, щоб побачити ваші користувацькі шаблони та екранний час.';
+  String get glance_usage_tip =>
+      'Хочете більше інформації? Перевірте розділ Перегляд, щоб побачити ваші користувацькі шаблони та екранний час.';
 
   @override
-  String get tamper_protection_tip => 'Видалити Mindful? Спершу увімкніть Вікно Видалення для безпечного вимкнення захисту від несанкціонованого доступу.';
+  String get tamper_protection_tip =>
+      'Видалити Mindful? Спершу увімкніть Вікно Видалення для безпечного вимкнення захисту від несанкціонованого доступу.';
 
   @override
-  String get notification_blocking_tip => 'Хочете зменшити відволікання? Використайте Блокування Сповіщень для вимкнути звуки обраних застосунків.';
+  String get notification_blocking_tip =>
+      'Хочете зменшити відволікання? Використайте Блокування Сповіщень для вимкнути звуки обраних застосунків.';
 
   @override
-  String get usage_history_tip => 'Хочете порозмірковувати над вашими звичками? Перевірте історію використання для перегляду минулих шаблонів.';
+  String get usage_history_tip =>
+      'Хочете порозмірковувати над вашими звичками? Перевірте історію використання для перегляду минулих шаблонів.';
 
   @override
-  String get focus_mode_tip => 'Потрібне глибоке фокусування? Увімкніть Режим Фокусу для блокування застосунків та сповіщень під час завдань.';
+  String get focus_mode_tip =>
+      'Потрібне глибоке фокусування? Увімкніть Режим Фокусу для блокування застосунків та сповіщень під час завдань.';
 
   @override
-  String get bedtime_reminder_tip => 'Хочете покращити свій сон? Налаштуйте Нагадування Часу Сну, щоб вчасно лягати спати.';
+  String get bedtime_reminder_tip =>
+      'Хочете покращити свій сон? Налаштуйте Нагадування Часу Сну, щоб вчасно лягати спати.';
 
   @override
-  String get custom_blocking_tip => 'Потребуєте користувальницький досвід? Створіть правила блокування застосунків, що відповідають вашим потребам.';
+  String get custom_blocking_tip =>
+      'Потребуєте користувальницький досвід? Створіть правила блокування застосунків, що відповідають вашим потребам.';
 
   @override
-  String get session_timeline_tip => 'Хочете відстежувати сеанси фокусування? Переглядайте часову шкалу вашого перебування у фокусі.';
+  String get session_timeline_tip =>
+      'Хочете відстежувати сеанси фокусування? Переглядайте часову шкалу вашого перебування у фокусі.';
 
   @override
-  String get short_content_blocking_tip => 'Турбують соцмедіа? Блокуйте короткий контент в Інстаграмі, YouTube та подібне, щоб залишатись у фокусі.';
+  String get short_content_blocking_tip =>
+      'Турбують соцмедіа? Блокуйте короткий контент в Інстаграмі, YouTube та подібне, щоб залишатись у фокусі.';
 
   @override
-  String get parental_controls_tip => 'Потрібен батьківський контроль? Встановіть обмеження для пристрою вашої дитини, щоби забезпечити безпечне користування.';
+  String get parental_controls_tip =>
+      'Потрібен батьківський контроль? Встановіть обмеження для пристрою вашої дитини, щоби забезпечити безпечне користування.';
 
   @override
-  String get notification_batching_tip => 'Хочете зменшити відволікання? Використовуйте Групування Сповіщень для перевірки їх всіх одразу.';
+  String get notification_batching_tip =>
+      'Хочете зменшити відволікання? Використовуйте Групування Сповіщень для перевірки їх всіх одразу.';
 
   @override
-  String get notification_scheduling_tip => 'Потребуєте керувати сповіщеннями? Наплануйте отримання сповіщень від певних застосунків.';
+  String get notification_scheduling_tip =>
+      'Потребуєте керувати сповіщеннями? Наплануйте отримання сповіщень від певних застосунків.';
 
   @override
-  String get quick_focus_tile_tip => 'Потребуєте швидкий доступ до фокусування? Додайте Іконку Швидкого Фокусу для миттєвої активації Режиму Фокусу.';
+  String get quick_focus_tile_tip =>
+      'Потребуєте швидкий доступ до фокусування? Додайте Іконку Швидкого Фокусу для миттєвої активації Режиму Фокусу.';
 
   @override
-  String get app_shortcuts_tip => 'Хочете миттєвий доступ до застосунку? Додайте ярлики довгим натисканням та іконку застосунку для швидких дій.';
+  String get app_shortcuts_tip =>
+      'Хочете миттєвий доступ до застосунку? Додайте ярлики довгим натисканням та іконку застосунку для швидких дій.';
 
   @override
-  String get backup_usage_db_tip => 'Хочете зберегти ваші дані? Скористайтесь резервним копіюванням для збереження ваших записів в безпеці.';
+  String get backup_usage_db_tip =>
+      'Хочете зберегти ваші дані? Скористайтесь резервним копіюванням для збереження ваших записів в безпеці.';
 
   @override
-  String get dynamic_material_color_tip => 'Хочете користувацьку тему? Увімкніть Динамічний Матеріал, щоб колір застосунку збігався з кольором теми застосунку.';
+  String get dynamic_material_color_tip =>
+      'Хочете користувацьку тему? Увімкніть Динамічний Матеріал, щоб колір застосунку збігався з кольором теми застосунку.';
 
   @override
-  String get amoled_dark_theme_tip => 'Хочете заощадити батарею? Використайте темну тему AMOLED для зменшення споживання енергії на OLED-дисплеях.';
+  String get amoled_dark_theme_tip =>
+      'Хочете заощадити батарею? Використайте темну тему AMOLED для зменшення споживання енергії на OLED-дисплеях.';
 
   @override
-  String get customize_usage_history_tip => 'Хочете зберегти історію використання? Налаштуйте, скільки тижнів даних зберігати в Історії Використання.';
+  String get customize_usage_history_tip =>
+      'Хочете зберегти історію використання? Налаштуйте, скільки тижнів даних зберігати в Історії Використання.';
 
   @override
-  String get grouped_apps_blocking_tip => 'Хочете блокувати застосунки разом? Використовуйте Групи Обмежень для об\'єднання та блокування одразу кількох застосунків.';
+  String get grouped_apps_blocking_tip =>
+      'Хочете блокувати застосунки разом? Використовуйте Групи Обмежень для об\'єднання та блокування одразу кількох застосунків.';
 
   @override
-  String get websites_blocking_tip => 'Хочете ясніший досвід перегляду вебсайтів? Блокуйте обрані або небезпечні вебсайти для більш зосередженого часу онлайн.';
+  String get websites_blocking_tip =>
+      'Хочете ясніший досвід перегляду вебсайтів? Блокуйте обрані або небезпечні вебсайти для більш зосередженого часу онлайн.';
 
   @override
-  String get data_usage_tip => 'Хочете відстежувати ваші дані? Слідкуйте за використанням мобільних та Wi-Fi даних для інтернет-споживання.';
+  String get data_usage_tip =>
+      'Хочете відстежувати ваші дані? Слідкуйте за використанням мобільних та Wi-Fi даних для інтернет-споживання.';
 
   @override
-  String get block_internet_tip => 'Потрібно заблокувати інтернет програми? Вимкніть інтернет для окремих застосунків з їх панелі управління.';
+  String get block_internet_tip =>
+      'Потрібно заблокувати інтернет програми? Вимкніть інтернет для окремих застосунків з їх панелі управління.';
 
   @override
-  String get emergency_passes_tip => 'Потрібна перерва? Використайте 3 Екстрені Абонементи для тимчасового розблокування застосунків протягом 5 хвилин.';
+  String get emergency_passes_tip =>
+      'Потрібна перерва? Використайте 3 Екстрені Абонементи для тимчасового розблокування застосунків протягом 5 хвилин.';
 
   @override
   String get onboarding_skip_btn_label => 'Пропустити';
@@ -407,25 +466,29 @@ class AppLocalizationsUk extends AppLocalizations {
   String get onboarding_page_one_title => 'Опануйте Зосередження.';
 
   @override
-  String get onboarding_page_one_info => 'Призупиніть відволікаючі застосунки, блокуйте короткий контент та залишайтесь у фокусі з налаштованими сесіями зосередження. Незалежно від того, чи ви працюєте, навчаєтесь або відпочиваєте, Mindful допомагає вам зберігати контроль.';
+  String get onboarding_page_one_info =>
+      'Призупиніть відволікаючі застосунки, блокуйте короткий контент та залишайтесь у фокусі з налаштованими сесіями зосередження. Незалежно від того, чи ви працюєте, навчаєтесь або відпочиваєте, Mindful допомагає вам зберігати контроль.';
 
   @override
   String get onboarding_page_two_title => 'Блокуйте відволікання.';
 
   @override
-  String get onboarding_page_two_info => 'Встановіть ліміти використання, автоматично призупиняйте застосунки та створіть здоровіші цифрові звички. Використовуйте Режим Сну, щоб розслабитись та насолодитись безтурботною ніччю.';
+  String get onboarding_page_two_info =>
+      'Встановіть ліміти використання, автоматично призупиняйте застосунки та створіть здоровіші цифрові звички. Використовуйте Режим Сну, щоб розслабитись та насолодитись безтурботною ніччю.';
 
   @override
   String get onboarding_page_three_title => 'Конфіденційність понад усе.';
 
   @override
-  String get onboarding_page_three_info => 'Mindful є на 100 % з відкритим вихідним кодом і повністю працює в автономному режимі. Ми не збираємо і не передаємо ваші персональні дані — ваша конфіденційність гарантується будь-яким чином.';
+  String get onboarding_page_three_info =>
+      'Mindful є на 100 % з відкритим вихідним кодом і повністю працює в автономному режимі. Ми не збираємо і не передаємо ваші персональні дані — ваша конфіденційність гарантується будь-яким чином.';
 
   @override
   String get onboarding_page_permissions_title => 'Необхідні дозволи.';
 
   @override
-  String get onboarding_page_permissions_info => 'Mindful вимагає забезпечення необхідних дозволів для відстежування та управління екранним часом, допомагаючи зменшити відволікання та покращити фокусування.';
+  String get onboarding_page_permissions_info =>
+      'Mindful вимагає забезпечення необхідних дозволів для відстежування та управління екранним часом, допомагаючи зменшити відволікання та покращити фокусування.';
 
   @override
   String get dashboard_tab_title => 'Панель управління';
@@ -437,13 +500,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get welcome_greetings => 'З поверненням,';
 
   @override
-  String get username_snack_alert => 'Утримуйте для редагування імені користувача.';
+  String get username_snack_alert =>
+      'Утримуйте для редагування імені користувача.';
 
   @override
   String get username_dialog_title => 'Ім\'я користувача';
 
   @override
-  String get username_dialog_info => 'Введіть ваше ім\'я користувача, яке буде показане на панелі управління.';
+  String get username_dialog_info =>
+      'Введіть ваше ім\'я користувача, яке буде показане на панелі управління.';
 
   @override
   String get username_dialog_button_apply => 'Прийняти';
@@ -452,10 +517,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get glance_tile_title => 'Перегляд';
 
   @override
-  String get glance_tile_subtitle => 'Швидко перегляньте використання вами застосунку';
+  String get glance_tile_subtitle =>
+      'Швидко перегляньте використання вами застосунку';
 
   @override
-  String get parental_controls_tile_subtitle => 'Невразливий режим та захист від несанкціонованого доступу.';
+  String get parental_controls_tile_subtitle =>
+      'Невразливий режим та захист від несанкціонованого доступу.';
 
   @override
   String get restrictions_heading => 'Обмеження';
@@ -464,19 +531,24 @@ class AppLocalizationsUk extends AppLocalizations {
   String get apps_blocking_tile_title => 'Блокування додатків';
 
   @override
-  String get apps_blocking_tile_subtitle => 'Обмежити додатки різними способами.';
+  String get apps_blocking_tile_subtitle =>
+      'Обмежити додатки різними способами.';
 
   @override
-  String get grouped_apps_blocking_tile_title => 'Блокування згрупованих додатків';
+  String get grouped_apps_blocking_tile_title =>
+      'Блокування згрупованих додатків';
 
   @override
-  String get grouped_apps_blocking_tile_subtitle => 'Обмежити групу програм одночасно.';
+  String get grouped_apps_blocking_tile_subtitle =>
+      'Обмежити групу програм одночасно.';
 
   @override
-  String get shorts_blocking_tile_subtitle => 'Обмежити короткий вміст на декількох платформах.';
+  String get shorts_blocking_tile_subtitle =>
+      'Обмежити короткий вміст на декількох платформах.';
 
   @override
-  String get websites_blocking_tile_subtitle => 'Обмежити сайти для дорослих та вибрані сайти.';
+  String get websites_blocking_tile_subtitle =>
+      'Обмежити сайти для дорослих та вибрані сайти.';
 
   @override
   String get screen_time_label => 'Час екрану';
@@ -542,7 +614,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get notifications_tab_title => 'Сповіщення';
 
   @override
-  String get notifications_tab_info => 'Отримуйте зведені сповіщення та встановлюйте розклад, як-от: ранок, обід, вечір або ніч. Будьте в курсі подій без постійних відволікань.';
+  String get notifications_tab_info =>
+      'Отримуйте зведені сповіщення та встановлюйте розклад, як-от: ранок, обід, вечір або ніч. Будьте в курсі подій без постійних відволікань.';
 
   @override
   String get batched_apps_tile_title => 'Програми зі зведенням сповіщень';
@@ -551,7 +624,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get batch_recap_dropdown_title => 'Тип підсумку для зведень';
 
   @override
-  String get batch_recap_dropdown_info => 'Виберіть, що надсилати, коли спрацьовує розклад - всі сповіщення або тільки підсумок.';
+  String get batch_recap_dropdown_info =>
+      'Виберіть, що надсилати, коли спрацьовує розклад - всі сповіщення або тільки підсумок.';
 
   @override
   String get batch_recap_option_summery_only => 'Тільки підсумок';
@@ -566,7 +640,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get store_all_tile_title => 'Зберігати всі сповіщення';
 
   @override
-  String get store_all_tile_subtitle => 'Зберігати не зведені сповіщення також.';
+  String get store_all_tile_subtitle =>
+      'Зберігати не зведені сповіщення також.';
 
   @override
   String get schedules_heading => 'Розклади';
@@ -575,7 +650,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get new_schedule_fab_button => 'Новий Розклад';
 
   @override
-  String get new_schedule_dialog_info => 'Введіть назву для сповіщення, щоб легше його ідентифікувати.';
+  String get new_schedule_dialog_info =>
+      'Введіть назву для сповіщення, щоб легше його ідентифікувати.';
 
   @override
   String get new_schedule_dialog_field_label => 'Назва розкладу';
@@ -584,28 +660,34 @@ class AppLocalizationsUk extends AppLocalizations {
   String get bedtime_tab_title => 'Час сну';
 
   @override
-  String get bedtime_tab_info => 'Встановіть розклад сну, обравши час та дні тижня. Виберіть додатки, які відволікають, щоб заблокувати їх, та ввімкніть режим «Не турбувати» (DND) для спокійного вечора.';
+  String get bedtime_tab_info =>
+      'Встановіть розклад сну, обравши час та дні тижня. Виберіть додатки, які відволікають, щоб заблокувати їх, та ввімкніть режим «Не турбувати» (DND) для спокійного вечора.';
 
   @override
   String get schedule_tile_title => 'Розклад';
 
   @override
-  String get schedule_tile_subtitle => 'Увімкнути або вимкнути щоденний розклад.';
+  String get schedule_tile_subtitle =>
+      'Увімкнути або вимкнути щоденний розклад.';
 
   @override
-  String get bedtime_no_days_selected_snack_alert => 'Виберіть принаймні один день тижня.';
+  String get bedtime_no_days_selected_snack_alert =>
+      'Виберіть принаймні один день тижня.';
 
   @override
-  String get bedtime_minimum_duration_snack_alert => 'Загальна тривалість сну повинна становити щонайменше 30 хвилин.';
+  String get bedtime_minimum_duration_snack_alert =>
+      'Загальна тривалість сну повинна становити щонайменше 30 хвилин.';
 
   @override
   String get distracting_apps_tile_title => 'Додатки, що відволікають';
 
   @override
-  String get distracting_apps_tile_subtitle => 'Виберіть, які програми відволікають вас перед сном.';
+  String get distracting_apps_tile_subtitle =>
+      'Виберіть, які програми відволікають вас перед сном.';
 
   @override
-  String get bedtime_distracting_apps_modify_snack_alert => 'Змінювати список додатків, що відволікають, не дозволяється, поки нічний режим активний.';
+  String get bedtime_distracting_apps_modify_snack_alert =>
+      'Змінювати список додатків, що відволікають, не дозволяється, поки нічний режим активний.';
 
   @override
   String get parental_controls_tab_title => 'Батьківський контроль';
@@ -617,16 +699,20 @@ class AppLocalizationsUk extends AppLocalizations {
   String get invincible_mode_tile_title => 'Активувати захищений режим';
 
   @override
-  String get invincible_mode_info => 'Якщо увімкнуто захищений режим, ви не зможете налаштувати обрані обмеження після досягнення щоденної квоти. Однак, ви можете вносити зміни під час обраного 10-хвилинного проміжку.';
+  String get invincible_mode_info =>
+      'Якщо увімкнуто захищений режим, ви не зможете налаштувати обрані обмеження після досягнення щоденної квоти. Однак, ви можете вносити зміни під час обраного 10-хвилинного проміжку.';
 
   @override
-  String get invincible_mode_snack_alert => 'У зв\'язку з увімкненим захищеним режимом, редагування обмежень не допускається.';
+  String get invincible_mode_snack_alert =>
+      'У зв\'язку з увімкненим захищеним режимом, редагування обмежень не допускається.';
 
   @override
-  String get invincible_mode_dialog_info => 'Ви точно впевнені, що хочете увімкнути Захищений Режим? Ця дія незворотна. Після ввімкнення Захищеного Режиму, його не можна буде вимкнути, допоки цей додаток встановлений на вашому пристрої.';
+  String get invincible_mode_dialog_info =>
+      'Ви точно впевнені, що хочете увімкнути Захищений Режим? Ця дія незворотна. Після ввімкнення Захищеного Режиму, його не можна буде вимкнути, допоки цей додаток встановлений на вашому пристрої.';
 
   @override
-  String get invincible_mode_turn_off_snack_alert => 'Захищений Режим не можна вимкнути, доки цей додаток встановлено на вашому пристрої.';
+  String get invincible_mode_turn_off_snack_alert =>
+      'Захищений Режим не можна вимкнути, доки цей додаток встановлено на вашому пристрої.';
 
   @override
   String get invincible_mode_dialog_button_start_anyway => 'Все одно почати';
@@ -635,76 +721,96 @@ class AppLocalizationsUk extends AppLocalizations {
   String get invincible_mode_include_timer_tile_title => 'Враховувати таймер';
 
   @override
-  String get invincible_mode_include_launch_limit_tile_title => 'Враховувати ліміт запусків';
+  String get invincible_mode_include_launch_limit_tile_title =>
+      'Враховувати ліміт запусків';
 
   @override
-  String get invincible_mode_include_active_period_tile_title => 'Враховувати активний період';
+  String get invincible_mode_include_active_period_tile_title =>
+      'Враховувати активний період';
 
   @override
   String get invincible_mode_app_restrictions_tile_title => 'Обмеження додатку';
 
   @override
-  String get invincible_mode_app_restrictions_tile_subtitle => 'Запобігти змінам обраних обмежень додатку після перевищення денного ліміту.';
+  String get invincible_mode_app_restrictions_tile_subtitle =>
+      'Запобігти змінам обраних обмежень додатку після перевищення денного ліміту.';
 
   @override
-  String get invincible_mode_group_restrictions_tile_title => 'Групові обмеження';
+  String get invincible_mode_group_restrictions_tile_title =>
+      'Групові обмеження';
 
   @override
-  String get invincible_mode_group_restrictions_tile_subtitle => 'Запобігти зміні вибраних обмежень групи після перевищення добових лімітів.';
+  String get invincible_mode_group_restrictions_tile_subtitle =>
+      'Запобігти зміні вибраних обмежень групи після перевищення добових лімітів.';
 
   @override
-  String get invincible_mode_include_shorts_timer_tile_title => 'Додати таймер короткого контенту';
+  String get invincible_mode_include_shorts_timer_tile_title =>
+      'Додати таймер короткого контенту';
 
   @override
-  String get invincible_mode_include_shorts_timer_tile_subtitle => 'Запобігти змінам після досягнення вашого щоденного ліміту короткого контенту.';
+  String get invincible_mode_include_shorts_timer_tile_subtitle =>
+      'Запобігти змінам після досягнення вашого щоденного ліміту короткого контенту.';
 
   @override
-  String get invincible_mode_include_bedtime_tile_title => 'Додати час нічного режиму';
+  String get invincible_mode_include_bedtime_tile_title =>
+      'Додати час нічного режиму';
 
   @override
-  String get invincible_mode_include_bedtime_tile_subtitle => 'Запобігти змінам під час активного режиму сну.';
+  String get invincible_mode_include_bedtime_tile_subtitle =>
+      'Запобігти змінам під час активного режиму сну.';
 
   @override
   String get protected_access_tile_title => 'Захищений доступ';
 
   @override
-  String get protected_access_tile_subtitle => 'Захистіть Mindful за допомогою блокування вашого пристрою.';
+  String get protected_access_tile_subtitle =>
+      'Захистіть Mindful за допомогою блокування вашого пристрою.';
 
   @override
-  String get protected_access_no_lock_snack_alert => 'Щоб увімкнути цю функцію, спочатку налаштуйте біометричний захист на своєму пристрої.';
+  String get protected_access_no_lock_snack_alert =>
+      'Щоб увімкнути цю функцію, спочатку налаштуйте біометричний захист на своєму пристрої.';
 
   @override
-  String get protected_access_removed_lock_snack_alert => 'Блокування пристрою було видалено. Аби продовжити, будь ласка, налаштуйте блокування.';
+  String get protected_access_removed_lock_snack_alert =>
+      'Блокування пристрою було видалено. Аби продовжити, будь ласка, налаштуйте блокування.';
 
   @override
-  String get protected_access_failed_lock_snack_alert => 'Не вдалося пройти автентифікацію. Щоб продовжити, потрібно перевірити блокування пристрою.';
+  String get protected_access_failed_lock_snack_alert =>
+      'Не вдалося пройти автентифікацію. Щоб продовжити, потрібно перевірити блокування пристрою.';
 
   @override
-  String get tamper_protection_tile_title => 'Захист від несанкціонованого доступу';
+  String get tamper_protection_tile_title =>
+      'Захист від несанкціонованого доступу';
 
   @override
-  String get tamper_protection_tile_subtitle => 'Запобігання видаленню та примусовому зупиненню програми.';
+  String get tamper_protection_tile_subtitle =>
+      'Запобігання видаленню та примусовому зупиненню програми.';
 
   @override
-  String get tamper_protection_confirmation_dialog_info => 'Після ввімкнення ви не зможете видалити, примусово зупинити або очистити дані Mindful, окрім як у вибраному вікні видалення. Обхідних шляхів немає.';
+  String get tamper_protection_confirmation_dialog_info =>
+      'Після ввімкнення ви не зможете видалити, примусово зупинити або очистити дані Mindful, окрім як у вибраному вікні видалення. Обхідних шляхів немає.';
 
   @override
   String get uninstall_window_tile_title => 'Вікно видалення';
 
   @override
-  String get uninstall_window_tile_subtitle => 'Захист від несанкціонованого доступу можна вимкнути протягом 10 хвилин від обраного часу.';
+  String get uninstall_window_tile_subtitle =>
+      'Захист від несанкціонованого доступу можна вимкнути протягом 10 хвилин від обраного часу.';
 
   @override
   String get invincible_window_tile_title => 'Вікно незмінного режиму';
 
   @override
-  String get invincible_window_tile_subtitle => 'Вибрані ліміти можна вимкнути протягом 10 хвилин від обраного часу.';
+  String get invincible_window_tile_subtitle =>
+      'Вибрані ліміти можна вимкнути протягом 10 хвилин від обраного часу.';
 
   @override
-  String get shorts_blocking_tab_title => 'Блокування контенту короткого формату';
+  String get shorts_blocking_tab_title =>
+      'Блокування контенту короткого формату';
 
   @override
-  String get shorts_blocking_tab_info => 'Контролюйте, скільки часу ви витрачаєте на перегляд короткого контенту на таких платформах, як Instagram, YouTube, Snapchat і Facebook, включно з їхніми вебсайтами.';
+  String get shorts_blocking_tab_info =>
+      'Контролюйте, скільки часу ви витрачаєте на перегляд короткого контенту на таких платформах, як Instagram, YouTube, Snapchat і Facebook, включно з їхніми вебсайтами.';
 
   @override
   String get short_content_heading => 'Короткий контент';
@@ -715,7 +821,8 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get short_content_timer_picker_dialog_info => 'Встановіть денний ліміт часу для короткого контенту. Коли ліміт буде вичерпано, показ короткого контенту буде призупинено до опівночі.';
+  String get short_content_timer_picker_dialog_info =>
+      'Встановіть денний ліміт часу для короткого контенту. Коли ліміт буде вичерпано, показ короткого контенту буде призупинено до опівночі.';
 
   @override
   String get instagram_features_tile_title => 'Instagram';
@@ -757,13 +864,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get reddit_features_tile_title => 'Reddit';
 
   @override
-  String get reddit_features_tile_subtitle => 'Обмежити короткий контент на Reddit.';
+  String get reddit_features_tile_subtitle =>
+      'Обмежити короткий контент на Reddit.';
 
   @override
   String get websites_blocking_tab_title => 'Блокування сайтів';
 
   @override
-  String get websites_blocking_tab_info => 'Блокуйте сайти для дорослих та будь-які власні сайти, щоб отримати безпечніший та продуктивніший онлайн-досвід. Керуйте онлайн-контентом та зменште фактори, що відволікають.';
+  String get websites_blocking_tab_info =>
+      'Блокуйте сайти для дорослих та будь-які власні сайти, щоб отримати безпечніший та продуктивніший онлайн-досвід. Керуйте онлайн-контентом та зменште фактори, що відволікають.';
 
   @override
   String get adult_content_heading => 'Контент для дорослих';
@@ -772,10 +881,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get block_nsfw_title => 'Блокувати відвертий контент';
 
   @override
-  String get block_nsfw_subtitle => 'Заборонити браузерам відкривати сайти для дорослих і порнографічні сайти.';
+  String get block_nsfw_subtitle =>
+      'Заборонити браузерам відкривати сайти для дорослих і порнографічні сайти.';
 
   @override
-  String get block_nsfw_dialog_info => 'Ви впевнені? Ця дія незворотна. Після того, як блокування для дорослих сайтів буде увімкнено, ви не зможете вимкнути його, поки додаток встановлено на пристрої.';
+  String get block_nsfw_dialog_info =>
+      'Ви впевнені? Ця дія незворотна. Після того, як блокування для дорослих сайтів буде увімкнено, ви не зможете вимкнути його, поки додаток встановлено на пристрої.';
 
   @override
   String get block_nsfw_dialog_button_block_anyway => 'Все одно блокувати';
@@ -784,7 +895,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get blocked_websites_heading => 'Заблоковані сайти';
 
   @override
-  String get blocked_websites_empty_list_hint => 'Натисніть кнопку \"+ Додати вебсайт\", щоб додати вебсайти, що відволікають, які ви бажаєте заблокувати.';
+  String get blocked_websites_empty_list_hint =>
+      'Натисніть кнопку \"+ Додати вебсайт\", щоб додати вебсайти, що відволікають, які ви бажаєте заблокувати.';
 
   @override
   String get add_website_fab_button => 'Додати Вебсайт';
@@ -793,22 +905,26 @@ class AppLocalizationsUk extends AppLocalizations {
   String get add_website_dialog_title => 'Вебсайти, що відволікають';
 
   @override
-  String get add_website_dialog_info => 'Введіть Url-адресу вебсайту, який ви хочете заблокувати.';
+  String get add_website_dialog_info =>
+      'Введіть Url-адресу вебсайту, який ви хочете заблокувати.';
 
   @override
   String get add_website_dialog_is_nsfw => 'Nsfw(з делікатним вмістом) сайт?';
 
   @override
-  String get add_website_dialog_nsfw_warning => 'Увага: Вебсайти з Nsfw(делікатний вміст) не можуть бути видалені після додавання.';
+  String get add_website_dialog_nsfw_warning =>
+      'Увага: Вебсайти з Nsfw(делікатний вміст) не можуть бути видалені після додавання.';
 
   @override
   String get add_website_dialog_button_block => 'Блокувати';
 
   @override
-  String get add_website_already_exist_snack_alert => 'URL-адреса вже була додана до списку заблокованих вебсайтів.';
+  String get add_website_already_exist_snack_alert =>
+      'URL-адреса вже була додана до списку заблокованих вебсайтів.';
 
   @override
-  String get add_website_invalid_url_snack_alert => 'Недійсна URL-адреса! Не вдалося обробити ім\'я хосту.';
+  String get add_website_invalid_url_snack_alert =>
+      'Недійсна URL-адреса! Не вдалося обробити ім\'я хосту.';
 
   @override
   String get remove_website_dialog_title => 'Видалити вебсайт';
@@ -822,19 +938,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get focus_tab_title => 'Концентрація';
 
   @override
-  String get focus_tab_info => 'Коли вам потрібен час, щоб зосередитися, розпочніть новий сеанс, виберіть тип сесії та додатки, що відволікають і увімкніть функцію \"Не турбувати\" для безперервного зосередження.';
+  String get focus_tab_info =>
+      'Коли вам потрібен час, щоб зосередитися, розпочніть новий сеанс, виберіть тип сесії та додатки, що відволікають і увімкніть функцію \"Не турбувати\" для безперервного зосередження.';
 
   @override
   String get active_session_card_title => 'Активні сеанси';
 
   @override
-  String get active_session_card_info => 'У вас є активний сеанс зосередження! Натисніть \"Перегляд\", щоб перевірити ваш прогрес і подивіться, скільки часу минуло.';
+  String get active_session_card_info =>
+      'У вас є активний сеанс зосередження! Натисніть \"Перегляд\", щоб перевірити ваш прогрес і подивіться, скільки часу минуло.';
 
   @override
   String get active_session_card_view_button => 'Перегляд';
 
   @override
-  String get focus_distracting_apps_removal_snack_alert => 'Видалення програм зі списку програм, що відволікають увагу, не дозволяється, поки Сеанс Зосередження активний. Однак ви можете додавати нові програми до списку протягом цього часу.';
+  String get focus_distracting_apps_removal_snack_alert =>
+      'Видалення програм зі списку програм, що відволікають увагу, не дозволяється, поки Сеанс Зосередження активний. Однак ви можете додавати нові програми до списку протягом цього часу.';
 
   @override
   String get focus_profile_tile_title => 'Профіль зосередження';
@@ -843,31 +962,37 @@ class AppLocalizationsUk extends AppLocalizations {
   String get focus_session_duration_tile_title => 'Тривалість сеансу';
 
   @override
-  String get focus_session_duration_tile_subtitle => 'Нескінченний (якщо ви не зупините)';
+  String get focus_session_duration_tile_subtitle =>
+      'Нескінченний (якщо ви не зупините)';
 
   @override
-  String get focus_session_duration_dialog_info => 'Будь ласка, виберіть бажану тривалість для цього сеансу зосередження, визначаючи, скільки часу ви хочете залишатися зосередженим та без відволікань.';
+  String get focus_session_duration_dialog_info =>
+      'Будь ласка, виберіть бажану тривалість для цього сеансу зосередження, визначаючи, скільки часу ви хочете залишатися зосередженим та без відволікань.';
 
   @override
   String get focus_profile_customization_tile_title => 'Налаштування профілю';
 
   @override
-  String get focus_profile_customization_tile_subtitle => 'Налаштування параметрів для вибраного профілю.';
+  String get focus_profile_customization_tile_subtitle =>
+      'Налаштування параметрів для вибраного профілю.';
 
   @override
   String get focus_enforce_tile_title => 'Застосувати сеанс';
 
   @override
-  String get focus_enforce_tile_subtitle => 'Запобігає завершенню сесії до закінчення часу.';
+  String get focus_enforce_tile_subtitle =>
+      'Запобігає завершенню сесії до закінчення часу.';
 
   @override
   String get focus_session_start_fab_button => 'Почати Сеанс';
 
   @override
-  String get focus_session_minimum_apps_snack_alert => 'Виберіть принаймні один додаток, щоб почати сеанс зосередження';
+  String get focus_session_minimum_apps_snack_alert =>
+      'Виберіть принаймні один додаток, щоб почати сеанс зосередження';
 
   @override
-  String get focus_session_already_active_snack_alert => 'У вас вже є активний сеанс зосередження. Будь ласка, закінчіть або припиніть поточний сеанс перед початком нового.';
+  String get focus_session_already_active_snack_alert =>
+      'У вас вже є активний сеанс зосередження. Будь ласка, закінчіть або припиніть поточний сеанс перед початком нового.';
 
   @override
   String get focus_session_type_study => 'Навчання';
@@ -936,7 +1061,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get timeline_tab_title => 'Хронологія';
 
   @override
-  String get focus_timeline_tab_info => 'Досліджуйте свою фокус-подорож, обравши дату в календарі. Відстежуйте свій прогрес, повторюйте успіхи та вчіться на помилках.';
+  String get focus_timeline_tab_info =>
+      'Досліджуйте свою фокус-подорож, обравши дату в календарі. Відстежуйте свій прогрес, повторюйте успіхи та вчіться на помилках.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -966,7 +1092,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get your_sessions_heading => 'Ваші сеанси';
 
   @override
-  String get your_sessions_empty_list_hint => 'Для обраного дня немає збережених сеансів зосередження.';
+  String get your_sessions_empty_list_hint =>
+      'Для обраного дня немає збережених сеансів зосередження.';
 
   @override
   String get focus_session_tile_timestamp_label => 'Час';
@@ -990,7 +1117,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get active_session_tab_title => 'Сеанс';
 
   @override
-  String get active_session_none_warning => 'Активних сеансів не знайдено. Повертаємо вас на головний екран.';
+  String get active_session_none_warning =>
+      'Активних сеансів не знайдено. Повертаємо вас на головний екран.';
 
   @override
   String get active_session_dialog_button_keep_pushing => 'Продовжуйте';
@@ -999,37 +1127,47 @@ class AppLocalizationsUk extends AppLocalizations {
   String get active_session_finish_dialog_title => 'Завершений';
 
   @override
-  String get active_session_finish_dialog_info => 'Не падай духом! Ви створюєте цінний фокус. Ви впевнені, що хочете закінчити цей сеанс зосередження? Кожна додаткова мить важлива для досягнення ваших цілей.';
+  String get active_session_finish_dialog_info =>
+      'Не падай духом! Ви створюєте цінний фокус. Ви впевнені, що хочете закінчити цей сеанс зосередження? Кожна додаткова мить важлива для досягнення ваших цілей.';
 
   @override
   String get active_session_giveup_dialog_title => 'Облишити';
 
   @override
-  String get active_session_giveup_dialog_info => 'Тримайтеся! Не здавайтеся, ви майже закінчили! Ви впевнені, що хочете закінчити цей сеанс зосередження достроково? Прогрес буде втрачено.';
+  String get active_session_giveup_dialog_info =>
+      'Тримайтеся! Не здавайтеся, ви майже закінчили! Ви впевнені, що хочете закінчити цей сеанс зосередження достроково? Прогрес буде втрачено.';
 
   @override
-  String get active_session_reflection_dialog_title => 'Підбиття підсумків сеансу';
+  String get active_session_reflection_dialog_title =>
+      'Підбиття підсумків сеансу';
 
   @override
-  String get active_session_reflection_dialog_info => 'Знайдіть хвилинку, щоб поміркувати про свій прогрес. Яка ваша мета на цю сесію? Чого ви досягли під час цієї сесії?';
+  String get active_session_reflection_dialog_info =>
+      'Знайдіть хвилинку, щоб поміркувати про свій прогрес. Яка ваша мета на цю сесію? Чого ви досягли під час цієї сесії?';
 
   @override
-  String get active_session_reflection_dialog_tip => 'Порада: Ви завжди можете редагувати це пізніше в хронології сенсів.';
+  String get active_session_reflection_dialog_tip =>
+      'Порада: Ви завжди можете редагувати це пізніше в хронології сенсів.';
 
   @override
-  String get active_session_giveup_snack_alert => 'Ви здалися! Не хвилюйтеся, наступного разу у вас вийде краще. Кожне зусилля має значення - просто продовжуйте';
+  String get active_session_giveup_snack_alert =>
+      'Ви здалися! Не хвилюйтеся, наступного разу у вас вийде краще. Кожне зусилля має значення - просто продовжуйте';
 
   @override
-  String get active_session_quote_one => 'Кожен крок має значення, будьте сильними й не зупиняється на досягнутому.';
+  String get active_session_quote_one =>
+      'Кожен крок має значення, будьте сильними й не зупиняється на досягнутому.';
 
   @override
-  String get active_session_quote_two => 'Зосередьтеся! Ви робите дивовижні успіхи';
+  String get active_session_quote_two =>
+      'Зосередьтеся! Ви робите дивовижні успіхи';
 
   @override
-  String get active_session_quote_three => 'У вас чудово виходить. Не втрачайте темп';
+  String get active_session_quote_three =>
+      'У вас чудово виходить. Не втрачайте темп';
 
   @override
-  String get active_session_quote_four => 'Залишилося ще трохи, ви прекрасно справляєтесь';
+  String get active_session_quote_four =>
+      'Залишилося ще трохи, ви прекрасно справляєтесь';
 
   @override
   String active_session_quote_five(String durationString) {
@@ -1040,7 +1178,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get restriction_groups_tab_title => 'Групи обмежень';
 
   @override
-  String get restriction_groups_tab_info => 'Встановіть обмеження часу для групи програм. Після того, як загальна кількість використань досягне ліміту, всі додатки в групі будуть призупинені, щоб допомогти зберегти фокус та баланс.';
+  String get restriction_groups_tab_info =>
+      'Встановіть обмеження часу для групи програм. Після того, як загальна кількість використань досягне ліміту, всі додатки в групі будуть призупинені, щоб допомогти зберегти фокус та баланс.';
 
   @override
   String get restriction_group_time_spent_label => 'Витрачено часу сьогодні';
@@ -1052,16 +1191,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get restriction_group_name_tile_title => 'Назва групи';
 
   @override
-  String get restriction_group_name_picker_dialog_info => 'Введіть назву для групи обмежень, щоб полегшити її ідентифікацію та керування нею.';
+  String get restriction_group_name_picker_dialog_info =>
+      'Введіть назву для групи обмежень, щоб полегшити її ідентифікацію та керування нею.';
 
   @override
   String get restriction_group_timer_tile_title => 'Таймер групи';
 
   @override
-  String get restriction_group_timer_picker_dialog_info => 'Встановіть денний ліміт часу для цієї програми. Як тільки ви досягнете ліміту, програма буде призупинена до опівночі.';
+  String get restriction_group_timer_picker_dialog_info =>
+      'Встановіть денний ліміт часу для цієї програми. Як тільки ви досягнете ліміту, програма буде призупинена до опівночі.';
 
   @override
-  String get restriction_group_active_period_tile_title => 'Активний період групи';
+  String get restriction_group_active_period_tile_title =>
+      'Активний період групи';
 
   @override
   String get remove_restriction_group_dialog_title => 'Видалити групу';
@@ -1072,10 +1214,12 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get restriction_group_invalid_limits_snack_alert => 'Встановіть або таймер, або обмеження активного періоду.';
+  String get restriction_group_invalid_limits_snack_alert =>
+      'Встановіть або таймер, або обмеження активного періоду.';
 
   @override
-  String get notifications_empty_list_hint => 'Немає зведених повідомлень на сьогодні.';
+  String get notifications_empty_list_hint =>
+      'Немає зведених повідомлень на сьогодні.';
 
   @override
   String get conversations_label => 'Чати';
@@ -1084,7 +1228,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get last_24_hours_heading => 'Останні 24 години';
 
   @override
-  String get notification_timeline_tab_info => 'Перегляньте історію сповіщень вибравши дату з календаря. Перегляньте, які програми забирали вашу увагу і поміркуйте над своїми цифровими звичками.';
+  String get notification_timeline_tab_info =>
+      'Перегляньте історію сповіщень вибравши дату з календаря. Перегляньте, які програми забирали вашу увагу і поміркуйте над своїми цифровими звичками.';
 
   @override
   String get monthly_label => 'Щомісяця';
@@ -1093,16 +1238,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get daily_label => 'Щоденно';
 
   @override
-  String get search_notifications_sheet_info => 'Легко знаходьте минулі сповіщення, шукаючи їх заголовок або зміст. Допомагає швидко знайти важливі сповіщення.';
+  String get search_notifications_sheet_info =>
+      'Легко знаходьте минулі сповіщення, шукаючи їх заголовок або зміст. Допомагає швидко знайти важливі сповіщення.';
 
   @override
   String get search_notifications_hint => 'Пошук сповіщень...';
 
   @override
-  String get search_notifications_empty_list_hint => 'Не знайдено сповіщень, що співпадають з вашим запитом.';
+  String get search_notifications_empty_list_hint =>
+      'Не знайдено сповіщень, що співпадають з вашим запитом.';
 
   @override
-  String get app_info_none_warning => 'Не вдалося знайти додаток для даного пакету. Переходимо на домашній екран.';
+  String get app_info_none_warning =>
+      'Не вдалося знайти додаток для даного пакету. Переходимо на домашній екран.';
 
   @override
   String get emergency_fab_button => 'Екстрений доступ';
@@ -1116,13 +1264,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get emergency_dialog_button_use_anyway => 'Все одно використати';
 
   @override
-  String get emergency_started_snack_alert => 'Блокування програм призупинено і він буде відновлено через 5 хвилин.';
+  String get emergency_started_snack_alert =>
+      'Блокування програм призупинено і він буде відновлено через 5 хвилин.';
 
   @override
-  String get emergency_already_active_snack_alert => 'Блокування додатків зараз призупинено або неактивно. Якщо сповіщення увімкнено, ви будете отримувати оновлення щодо часу, що залишився.';
+  String get emergency_already_active_snack_alert =>
+      'Блокування додатків зараз призупинено або неактивно. Якщо сповіщення увімкнено, ви будете отримувати оновлення щодо часу, що залишився.';
 
   @override
-  String get emergency_no_pass_left_snack_alert => 'Ви використали всі свої екстрені пропуски. Заблоковані програми залишатимуться заблокованими до півночі або до завершення активного сеансу зосередження.';
+  String get emergency_no_pass_left_snack_alert =>
+      'Ви використали всі свої екстрені пропуски. Заблоковані програми залишатимуться заблокованими до півночі або до завершення активного сеансу зосередження.';
 
   @override
   String get app_limit_status_not_set => 'Не встановлено';
@@ -1131,13 +1282,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get app_timer_tile_title => 'Таймер додатку';
 
   @override
-  String get app_timer_picker_dialog_info => 'Встановіть денний ліміт часу для цієї програми. Як тільки ви досягнете ліміту, програма буде призупинена до опівночі.';
+  String get app_timer_picker_dialog_info =>
+      'Встановіть денний ліміт часу для цієї програми. Як тільки ви досягнете ліміту, програма буде призупинена до опівночі.';
 
   @override
   String get usage_reminders_tile_title => 'Нагадування про використання';
 
   @override
-  String get usage_reminders_tile_subtitle => 'Ввічливі нагадування під час використання програм з таймером.';
+  String get usage_reminders_tile_subtitle =>
+      'Ввічливі нагадування під час використання програм з таймером.';
 
   @override
   String get app_launch_limit_tile_title => 'Ліміт запуску';
@@ -1148,7 +1301,8 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
-  String get app_launch_limit_picker_dialog_info => 'Вкажіть скільки разів на день ви можете відкривати цей додаток. Після досягнення ліміту додаток буде призупинений до опівночі.';
+  String get app_launch_limit_picker_dialog_info =>
+      'Вкажіть скільки разів на день ви можете відкривати цей додаток. Після досягнення ліміту додаток буде призупинений до опівночі.';
 
   @override
   String get app_active_period_tile_title => 'Активний період';
@@ -1162,7 +1316,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get internet_access_tile_title => 'Доступ до інтернету';
 
   @override
-  String get internet_access_tile_subtitle => 'Вимкніть для блокування інтернету для додатків.';
+  String get internet_access_tile_subtitle =>
+      'Вимкніть для блокування інтернету для додатків.';
 
   @override
   String internet_access_blocked_snack_alert(String appName) {
@@ -1186,13 +1341,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get go_to_app_settings_tile_title => 'Перейти до налаштувань додатку';
 
   @override
-  String get go_to_app_settings_tile_subtitle => 'Керуйте налаштуваннями додатку, такими як: сповіщення, дозволи, зберігання даних та інше.';
+  String get go_to_app_settings_tile_subtitle =>
+      'Керуйте налаштуваннями додатку, такими як: сповіщення, дозволи, зберігання даних та інше.';
 
   @override
   String get include_in_stats_tile_title => 'Включати до часу екрану';
 
   @override
-  String get include_in_stats_tile_subtitle => 'Вимкнути, щоб виключити цю програму з загального часу екрану.';
+  String get include_in_stats_tile_subtitle =>
+      'Вимкнути, щоб виключити цю програму з загального часу екрану.';
 
   @override
   String app_excluded_from_stats_snack_alert(String appName) {
@@ -1229,13 +1386,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get amoled_dark_tile_title => 'Темний AMOLED';
 
   @override
-  String get amoled_dark_tile_subtitle => 'Використовувати чистий чорний колір для темної теми.';
+  String get amoled_dark_tile_subtitle =>
+      'Використовувати чистий чорний колір для темної теми.';
 
   @override
   String get dynamic_colors_tile_title => 'Динамічні кольори';
 
   @override
-  String get dynamic_colors_tile_subtitle => 'Використовувати кольори пристрою, якщо це підтримується.';
+  String get dynamic_colors_tile_subtitle =>
+      'Використовувати кольори пристрою, якщо це підтримується.';
 
   @override
   String get defaults_heading => 'Типові';
@@ -1268,16 +1427,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get service_heading => 'Служба';
 
   @override
-  String get service_stopping_warning => 'Якщо Mindful несподівано перестає працювати, надайте дозвіл \"Ігнорувати оптимізацію заряду батареї\", щоб програма продовжувала працювати у фоновому режимі. Якщо проблема не зникне, спробуйте додати Mindful до білого списку для безперебійної роботи.';
+  String get service_stopping_warning =>
+      'Якщо Mindful несподівано перестає працювати, надайте дозвіл \"Ігнорувати оптимізацію заряду батареї\", щоб програма продовжувала працювати у фоновому режимі. Якщо проблема не зникне, спробуйте додати Mindful до білого списку для безперебійної роботи.';
 
   @override
   String get whitelist_app_tile_title => 'Додати Mindful до білого списку';
 
   @override
-  String get whitelist_app_tile_subtitle => 'Дозволити автоматичний запуск для Mindful.';
+  String get whitelist_app_tile_subtitle =>
+      'Дозволити автоматичний запуск для Mindful.';
 
   @override
-  String get whitelist_app_unsupported_snack_alert => 'Цей пристрій не підтримує керування автоматичним запуском.';
+  String get whitelist_app_unsupported_snack_alert =>
+      'Цей пристрій не підтримує керування автоматичним запуском.';
 
   @override
   String get database_tab_title => 'База даних';
@@ -1298,31 +1460,37 @@ class AppLocalizationsUk extends AppLocalizations {
   String get crash_logs_heading => 'Журнал збоїв';
 
   @override
-  String get crash_logs_info => 'Якщо ви зіткнулися з будь-якою проблемою, ви можете повідомити про неї на GitHub разом із файлом журналу. Файл буде містити такі дані, як виробник вашого пристрою, модель, версія Android, версія SDK та журнали збоїв. Ця інформація допоможе нам виявити й розв\'язати проблему більш ефективно.';
+  String get crash_logs_info =>
+      'Якщо ви зіткнулися з будь-якою проблемою, ви можете повідомити про неї на GitHub разом із файлом журналу. Файл буде містити такі дані, як виробник вашого пристрою, модель, версія Android, версія SDK та журнали збоїв. Ця інформація допоможе нам виявити й розв\'язати проблему більш ефективно.';
 
   @override
   String get crash_logs_export_tile_title => 'Експорт журналу збоїв';
 
   @override
-  String get crash_logs_export_tile_subtitle => 'Експорт журналів збою в json файл.';
+  String get crash_logs_export_tile_subtitle =>
+      'Експорт журналів збою в json файл.';
 
   @override
   String get crash_logs_view_tile_title => 'Перегляд журналу';
 
   @override
-  String get crash_logs_view_tile_subtitle => 'Переглянути збережені звіти про збої.';
+  String get crash_logs_view_tile_subtitle =>
+      'Переглянути збережені звіти про збої.';
 
   @override
-  String get crash_logs_empty_list_hint => 'Поки що не було зафіксовано жодних помилок.';
+  String get crash_logs_empty_list_hint =>
+      'Поки що не було зафіксовано жодних помилок.';
 
   @override
   String get crash_logs_clear_tile_title => 'Очистити журнал';
 
   @override
-  String get crash_logs_clear_tile_subtitle => 'Видалити всі журнали збоїв з бази даних.';
+  String get crash_logs_clear_tile_subtitle =>
+      'Видалити всі журнали збоїв з бази даних.';
 
   @override
-  String get crash_logs_clear_dialog_info => 'Ви впевнені, що хочете очистити всі журнали збоїв з бази даних?';
+  String get crash_logs_clear_dialog_info =>
+      'Ви впевнені, що хочете очистити всі журнали збоїв з бази даних?';
 
   @override
   String get crash_logs_clear_dialog_button_clear_anyway => 'Очистити все одно';
@@ -1340,7 +1508,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get full_changelog_tile_title => 'Повний журнал змін';
 
   @override
-  String get redirected_to_github_subtitle => 'Вас буде перенаправлено на GitHub.';
+  String get redirected_to_github_subtitle =>
+      'Вас буде перенаправлено на GitHub.';
 
   @override
   String get contribute_heading => 'Допомога проєкту';
@@ -1361,13 +1530,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get write_email_tile_title => 'Напишіть нам на електронну пошту';
 
   @override
-  String get write_email_tile_subtitle => 'Вас буде перенаправлено до програми Email.';
+  String get write_email_tile_subtitle =>
+      'Вас буде перенаправлено до програми Email.';
 
   @override
   String get privacy_policy_heading => 'Політика конфіденційності';
 
   @override
-  String get privacy_policy_info => 'Mindful зобов\'язується захищати вашу конфіденційність. Ми не збираємо, не зберігаємо і не передаємо жодних даних користувачів. Додаток працює повністю офлайн і не вимагає підключення до Інтернету, гарантуючи, що ваша особиста інформація залишається приватною і захищеною на вашому пристрої. Як додаток з вільним та відкритим вихідним кодом (FOSS), Mindful гарантує повну прозорість та контроль користувача над своїми даними.';
+  String get privacy_policy_info =>
+      'Mindful зобов\'язується захищати вашу конфіденційність. Ми не збираємо, не зберігаємо і не передаємо жодних даних користувачів. Додаток працює повністю офлайн і не вимагає підключення до Інтернету, гарантуючи, що ваша особиста інформація залишається приватною і захищеною на вашому пристрої. Як додаток з вільним та відкритим вихідним кодом (FOSS), Mindful гарантує повну прозорість та контроль користувача над своїми даними.';
 
   @override
   String get more_details_button => 'Детальніше';

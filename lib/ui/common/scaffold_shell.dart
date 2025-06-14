@@ -10,7 +10,6 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
@@ -67,12 +66,13 @@ class ScaffoldShell extends StatefulWidget {
 
 class _ScaffoldShellState extends State<ScaffoldShell>
     with SingleTickerProviderStateMixin {
-  final ValueNotifier<bool> _isBottomNavVisible = ValueNotifier<bool>(true);
-  final List<ScrollController> _scrollControllers = [];
+  final _isBottomNavVisible = ValueNotifier<bool>(true);
+  final _appBarScrollOffSet = ValueNotifier<double>(0);
   late final TabController _tabController;
 
   late final bool _haveMultiTabs = widget.items.length > 1;
   int _selectedTabIndex = 0;
+  double _wholeScreenScrollOffSet = 0;
 
   @override
   void initState() {
@@ -90,34 +90,17 @@ class _ScaffoldShellState extends State<ScaffoldShell>
 
     _tabController.addListener(() {
       if (mounted) {
-        setState(() => _selectedTabIndex = _tabController.index);
+        setState(() {
+          _selectedTabIndex = _tabController.index;
+          _isBottomNavVisible.value = true;
+        });
       }
     });
-
-    /// Handle scroll controllers
-    /// Initialize ScrollControllers for each tab
-    for (int i = 0; i < widget.items.length; i++) {
-      final controller = ScrollController();
-      controller.addListener(() => _onScrolled(controller));
-      _scrollControllers.add(controller);
-    }
-  }
-
-  /// Listen to scrolling
-  void _onScrolled(ScrollController controller) {
-    if (controller.position.userScrollDirection == ScrollDirection.reverse) {
-      _isBottomNavVisible.value = false;
-    } else {
-      _isBottomNavVisible.value = true;
-    }
   }
 
   @override
   void dispose() {
     _tabController.dispose();
-    for (var e in _scrollControllers) {
-      e.dispose();
-    }
     super.dispose();
   }
 
@@ -135,19 +118,42 @@ class _ScaffoldShellState extends State<ScaffoldShell>
         physics: const BouncingScrollPhysics(),
         children: List.generate(
           widget.items.length,
-          (i) => NestedScrollView(
-            controller: _scrollControllers[i],
-            physics: const BouncingScrollPhysics(),
-            headerSliverBuilder: (_, innerBoxIsScrolled) =>
-                [sliverAppBar(i, innerBoxIsScrolled)],
+          (i) => NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification is ScrollUpdateNotification) {
+                final currentOffset = notification.metrics.pixels;
 
-            /// Provides access to the tab controller to the children in tree
-            /// To get =>  TabControllerProvider.of(context)?.controller;
-            body: TabControllerProvider(
-              controller: _tabController,
-              child: Padding(
-                padding: widget.bodyPadding,
-                child: widget.items[i].sliverBody,
+                /// Show/Hide bottom bar
+                if (currentOffset >= _wholeScreenScrollOffSet + 1) {
+                  _isBottomNavVisible.value = false;
+                } else if (currentOffset <= _wholeScreenScrollOffSet - 1) {
+                  _isBottomNavVisible.value = true;
+                }
+
+                /// Cache offset for whole screen
+                _wholeScreenScrollOffSet = currentOffset == 0
+                    ? _wholeScreenScrollOffSet
+                    : currentOffset;
+
+                /// Cache offset for just the app bar only
+                if (notification.depth == 0) {
+                  _appBarScrollOffSet.value = currentOffset == 0
+                      ? _appBarScrollOffSet.value
+                      : currentOffset;
+                }
+              }
+              return false;
+            },
+            child: NestedScrollView(
+              physics: const BouncingScrollPhysics(),
+              headerSliverBuilder: (_, innerBoxIsScrolled) =>
+                  [sliverAppBar(i, innerBoxIsScrolled)],
+              body: TabControllerProvider(
+                controller: _tabController,
+                child: Padding(
+                  padding: widget.bodyPadding,
+                  child: widget.items[i].sliverBody,
+                ),
               ),
             ),
           ),
@@ -161,19 +167,14 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     bool innerBoxIsScrolled,
   ) {
     final navItem = widget.items[tabIndex];
-    final scrollController = _scrollControllers[tabIndex];
 
     return AnimatedBuilder(
-      animation: scrollController,
+      animation: _appBarScrollOffSet,
       builder: (context, constraints) {
         // Calculate the scroll percentage
-        final offset = scrollController.hasClients
-            ? scrollController.offset.clamp(0.0, widget.appBarExpandedHeight)
-            : 0.0;
-
-        final percentage =
-            (offset / (widget.appBarExpandedHeight - kToolbarHeight))
-                .clamp(0.0, 1.0);
+        final percentage = (_appBarScrollOffSet.value /
+                (widget.appBarExpandedHeight - kToolbarHeight))
+            .clamp(0.0, 1.0);
 
         // Interpolate the color for the AppBar
         final appBarColor = Color.lerp(

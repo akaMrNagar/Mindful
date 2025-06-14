@@ -51,7 +51,7 @@ class _TimerClockPainter extends CustomPainter {
     required this.bgColor,
     required this.notchColor,
     required this.needleColor,
-    // ignore: unused_element
+    // ignore: unused_element_parameter
     this.needleWidth = 6,
   });
 
