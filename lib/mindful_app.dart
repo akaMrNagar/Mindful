@@ -20,11 +20,32 @@ import 'package:mindful/config/navigation/navigation_service.dart';
 import 'package:mindful/l10n/generated/app_localizations.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 
-class MindfulApp extends ConsumerWidget {
+class MindfulApp extends ConsumerStatefulWidget {
   const MindfulApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _MindfulAppState();
+}
+
+class _MindfulAppState extends ConsumerState<MindfulApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    /// Apply transparent color to system ui background
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => SystemChrome.setSystemUIOverlayStyle(
+        const SystemUiOverlayStyle(
+          systemNavigationBarContrastEnforced: true,
+          systemNavigationBarDividerColor: Colors.transparent,
+          systemNavigationBarColor: Colors.transparent,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode =
         ref.watch(mindfulSettingsProvider.select((v) => v.themeMode));
 
@@ -39,15 +60,6 @@ class MindfulApp extends ConsumerWidget {
 
     final useDynamicColors =
         ref.watch(mindfulSettingsProvider.select((v) => v.useDynamicColors));
-
-    /// Apply transparent color to system ui background
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        systemNavigationBarContrastEnforced: true,
-        systemNavigationBarDividerColor: Colors.transparent,
-        systemNavigationBarColor: Colors.transparent,
-      ),
-    );
 
     return DynamicColorBuilder(
       builder: (light, dark) => MaterialApp(

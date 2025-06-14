@@ -58,33 +58,31 @@ class ChangeLogCard extends StatelessWidget {
               if (changeLog.bulletPoints.isNotEmpty) 12.vBox,
 
               /// Bullet points
-              ...changeLog.bulletPoints
-                  .map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Row(
-                        children: [
-                          /// point
-                          RoundedContainer(
-                            height: 8,
-                            width: 8,
-                            color: Theme.of(context).hintColor,
-                          ),
-                          8.hBox,
-
-                          /// text
-                          Expanded(
-                            child: StyledText(
-                              e,
-                              fontSize: 14,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                        ],
+              ...changeLog.bulletPoints.map(
+                (e) => Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Row(
+                    children: [
+                      /// point
+                      RoundedContainer(
+                        height: 8,
+                        width: 8,
+                        color: Theme.of(context).hintColor,
                       ),
-                    ),
-                  )
-                  .toList()
+                      8.hBox,
+
+                      /// text
+                      Expanded(
+                        child: StyledText(
+                          e,
+                          fontSize: 14,
+                          color: Theme.of(context).hintColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
 

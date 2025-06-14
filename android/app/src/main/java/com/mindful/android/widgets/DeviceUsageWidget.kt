@@ -215,7 +215,7 @@ class DeviceUsageWidget : AppWidgetProvider() {
         for (app in deviceApps) {
             // Only include apps which are launchable
             if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
-                val appUid = app.applicationInfo.uid
+                val appUid = app.applicationInfo?.uid
                 mobileUsageKbs = mobileUsageKbs + mobileUsageOneDay.getOrDefault(appUid, 0L)
                 wifiUsageKbs = wifiUsageKbs + wifiUsageOneDay.getOrDefault(appUid, 0L)
 

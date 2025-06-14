@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -36,7 +36,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_button_help => '帮助？';
 
   @override
-  String get permission_sheet_privacy_info => 'Mindful 安全且不使用互联网。我们不收集或存储任何个人数据。';
+  String get permission_sheet_privacy_info =>
+      'Mindful 安全且不使用互联网。我们不收集或存储任何个人数据。';
 
   @override
   String permission_grant_step_one(String button_label) {
@@ -56,7 +57,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_alarms_title => '闹钟和提醒';
 
   @override
-  String get permission_alarms_info => '请授予设置提醒和提醒的权限。 这将使您能够及时启动您的床上时间表，并且每天午夜重置应用程序计时器，并帮助您保持正常状态。';
+  String get permission_alarms_info =>
+      '请授予设置提醒和提醒的权限。 这将使您能够及时启动您的床上时间表，并且每天午夜重置应用程序计时器，并帮助您保持正常状态。';
 
   @override
   String get permission_alarms_device_tile_label => '允许设置闹钟和提醒';
@@ -65,7 +67,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_usage_title => '使用访问';
 
   @override
-  String get permission_usage_info => '请授予使用访问权限。这将允许Mindful监控应用使用情况并管理对某些应用的访问，确保更专注和受控的数字环境。';
+  String get permission_usage_info =>
+      '请授予使用访问权限。这将允许Mindful监控应用使用情况并管理对某些应用的访问，确保更专注和受控的数字环境。';
 
   @override
   String get permission_usage_device_tile_label => '允许使用访问';
@@ -74,7 +77,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_overlay_title => '显示叠加层';
 
   @override
-  String get permission_overlay_info => '请授予显示叠加层权限。这将允许Mindful在暂停的应用打开时显示叠加层，帮助您保持专注并维持您的日程安排。';
+  String get permission_overlay_info =>
+      '请授予显示叠加层权限。这将允许Mindful在暂停的应用打开时显示叠加层，帮助您保持专注并维持您的日程安排。';
 
   @override
   String get permission_overlay_device_tile_label => '允许在其他应用上显示';
@@ -83,7 +87,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_accessibility_title => '无障碍';
 
   @override
-  String get permission_accessibility_info => '请授予无障碍权限。这将允许Mindful限制社交媒体应用和浏览器中的短视频内容（例如Reels、Shorts）访问，并过滤不当网站。';
+  String get permission_accessibility_info =>
+      '请授予无障碍权限。这将允许Mindful限制社交媒体应用和浏览器中的短视频内容（例如Reels、Shorts）访问，并过滤不当网站。';
 
   @override
   String get permission_accessibility_required => 'Mindful需要无障碍权限才能有效阻止短内容和网站。';
@@ -95,7 +100,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_dnd_title => '请勿打扰';
 
   @override
-  String get permission_dnd_info => '请授予请勿打扰访问权限。这将允许Mindful在睡眠时间表期间开始和停止请勿打扰模式。';
+  String get permission_dnd_info =>
+      '请授予请勿打扰访问权限。这将允许Mindful在睡眠时间表期间开始和停止请勿打扰模式。';
 
   @override
   String get permission_dnd_tile_title => '开始DND';
@@ -113,13 +119,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_battery_optimization_status_disabled => '禁用后台限制';
 
   @override
-  String get permission_battery_optimization_allow_info => '允许\'忽略电池优化\'将在某些设备上自动授予\'闹钟和提醒\'权限。';
+  String get permission_battery_optimization_allow_info =>
+      '允许\'忽略电池优化\'将在某些设备上自动授予\'闹钟和提醒\'权限。';
 
   @override
   String get permission_vpn_title => '创建VPN';
 
   @override
-  String get permission_vpn_info => '请授予创建虚拟专用网络（VPN）连接的权限。这将使Mindful能够通过在设备上创建本地VPN来限制指定应用程序的互联网访问。';
+  String get permission_vpn_info =>
+      '请授予创建虚拟专用网络（VPN）连接的权限。这将使Mindful能够通过在设备上创建本地VPN来限制指定应用程序的互联网访问。';
 
   @override
   String get permission_admin_title => '管理员';
@@ -134,10 +142,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get permission_notification_access_title => '通知访问';
 
   @override
-  String get permission_notification_access_info => '请授予通知访问权限。这将允许Mindful组织您的通知并按照您的日程安排进行交付。';
+  String get permission_notification_access_info =>
+      '请授予通知访问权限。这将允许Mindful组织您的通知并按照您的日程安排进行交付。';
 
   @override
-  String get permission_notification_access_required => 'Mindful需要通知访问权限来批量和安排通知。';
+  String get permission_notification_access_required =>
+      'Mindful需要通知访问权限来批量和安排通知。';
 
   @override
   String get permission_notification_access_device_tile_label => '允许通知访问';
@@ -152,7 +162,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String nDays(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -170,7 +179,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String nHours(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -188,7 +196,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String nMinutes(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -206,7 +213,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String nSeconds(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -260,7 +266,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get exit_without_saving_dialog_info => '您是否确定您要退出而不保存？';
 
   @override
-  String get development_dialog_info => 'Mindful 目前处于开发阶段，可能存在漏洞或不完整的功能。如果您遇到任何问题，请报告以帮助我们改进。\n\n感谢您的反馈！';
+  String get development_dialog_info =>
+      'Mindful 目前处于开发阶段，可能存在漏洞或不完整的功能。如果您遇到任何问题，请报告以帮助我们改进。\n\n感谢您的反馈！';
 
   @override
   String get development_dialog_button_report_issue => '报告问题';
@@ -290,7 +297,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get imp_distracting_apps_snack_alert => '不允许将重要系统应用添加到分散注意力的应用列表中。';
 
   @override
-  String get custom_apps_quick_actions_unavailable_warning => '此应用的屏幕使用和限制不可用，目前仅可访问网络使用情况';
+  String get custom_apps_quick_actions_unavailable_warning =>
+      '此应用的屏幕使用和限制不可用，目前仅可访问网络使用情况';
 
   @override
   String get create_group_fab_button => '创建群组';
@@ -305,7 +313,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get donation_card_title => '支持我们';
 
   @override
-  String get donation_card_info => 'Mindful 是免费且开源的，经过数月的奉献开发。如果它对您有帮助，您的捐款将对我们意义重大。每一份贡献都帮助我们继续改进和维护它，以造福所有人。';
+  String get donation_card_info =>
+      'Mindful 是免费且开源的，经过数月的奉献开发。如果它对您有帮助，您的捐款将对我们意义重大。每一份贡献都帮助我们继续改进和维护它，以造福所有人。';
 
   @override
   String get operation_failed_snack_alert => '操作失败，出了问题！';
@@ -323,7 +332,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get accessibility_tip => '需要更智能，更省电的拦截吗？为Mindful启动无障碍权限。';
 
   @override
-  String get battery_optimization_tip => 'Mindful无法运行？在设置中启用“忽略电池优化”以便可以更流畅的运行。';
+  String get battery_optimization_tip =>
+      'Mindful无法运行？在设置中启用“忽略电池优化”以便可以更流畅的运行。';
 
   @override
   String get invincible_mode_tip => '不小心移除了限制？使用隐藏模式锁定它们，直到第二天或调整窗口。';
@@ -353,7 +363,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get session_timeline_tip => '想要追踪专注力过程？查看时间线，了解你的专注历程。';
 
   @override
-  String get short_content_blocking_tip => '社交应用让你分心？屏蔽 Instagram、YouTube 等平台上的短视频，保持专注。';
+  String get short_content_blocking_tip =>
+      '社交应用让你分心？屏蔽 Instagram、YouTube 等平台上的短视频，保持专注。';
 
   @override
   String get parental_controls_tip => '需要家长管理？为孩子的设备设置限制，确保安全使用。';
@@ -383,7 +394,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get customize_usage_history_tip => '想要保留使用记录？自定义使用记录中存储的周数。';
 
   @override
-  String get grouped_apps_blocking_tip => '想要同时屏蔽多个应用？使用“限制组”功能，对应用限制进行分组，即可同时屏蔽多个应用。';
+  String get grouped_apps_blocking_tip =>
+      '想要同时屏蔽多个应用？使用“限制组”功能，对应用限制进行分组，即可同时屏蔽多个应用。';
 
   @override
   String get websites_blocking_tip => '想要更干净的浏览体验？屏蔽自定义或 NSFW 网站，更专注于上网。';
@@ -407,25 +419,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get onboarding_page_one_title => '掌握专注。';
 
   @override
-  String get onboarding_page_one_info => '暂停分散注意力的应用，屏蔽短内容，并通过可定制的专注会话保持在正轨上。不论你是在工作、学习或放松，Mindful都能帮助你保持控制。';
+  String get onboarding_page_one_info =>
+      '暂停分散注意力的应用，屏蔽短内容，并通过可定制的专注会话保持在正轨上。不论你是在工作、学习或放松，Mindful都能帮助你保持控制。';
 
   @override
   String get onboarding_page_two_title => '屏蔽干扰。';
 
   @override
-  String get onboarding_page_two_info => '设置使用限制，自动暂停应用，并创建更健康的数字习惯。使用睡前模式放松并享受无干扰的夜晚。';
+  String get onboarding_page_two_info =>
+      '设置使用限制，自动暂停应用，并创建更健康的数字习惯。使用睡前模式放松并享受无干扰的夜晚。';
 
   @override
   String get onboarding_page_three_title => '以隐私为首要。';
 
   @override
-  String get onboarding_page_three_info => 'Mindful 是 100% 开源的，并且完全离线运行。我们不收集或分享您的个人数据——您的隐私在每个方面都得到保证。';
+  String get onboarding_page_three_info =>
+      'Mindful 是 100% 开源的，并且完全离线运行。我们不收集或分享您的个人数据——您的隐私在每个方面都得到保证。';
 
   @override
   String get onboarding_page_permissions_title => '必要权限。';
 
   @override
-  String get onboarding_page_permissions_info => 'Mindful 需要以下必要权限来跟踪和管理您的屏幕时间，帮助减少干扰并提高专注度。';
+  String get onboarding_page_permissions_info =>
+      'Mindful 需要以下必要权限来跟踪和管理您的屏幕时间，帮助减少干扰并提高专注度。';
 
   @override
   String get dashboard_tab_title => '仪表盘';
@@ -542,7 +558,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get notifications_tab_title => '通知';
 
   @override
-  String get notifications_tab_info => '批量处理来自应用的通知，并设置每天的早晨、中午、下午和晚上的时间表。无需不断打断即可保持更新。';
+  String get notifications_tab_info =>
+      '批量处理来自应用的通知，并设置每天的早晨、中午、下午和晚上的时间表。无需不断打断即可保持更新。';
 
   @override
   String get batched_apps_tile_title => '批量应用';
@@ -584,7 +601,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get bedtime_tab_title => '睡眠时间';
 
   @override
-  String get bedtime_tab_info => '通过选择时间段和一周中的某些天来设置睡眠时间表。选择分散注意力的应用以进行屏蔽，并启用勿扰模式（DND），以便度过一个宁静的夜晚。';
+  String get bedtime_tab_info =>
+      '通过选择时间段和一周中的某些天来设置睡眠时间表。选择分散注意力的应用以进行屏蔽，并启用勿扰模式（DND），以便度过一个宁静的夜晚。';
 
   @override
   String get schedule_tile_title => '时间表';
@@ -605,7 +623,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get distracting_apps_tile_subtitle => '选择哪些应用会干扰你的睡前例行程序。';
 
   @override
-  String get bedtime_distracting_apps_modify_snack_alert => '在睡眠时间表激活时，不允许修改分散注意力的应用列表。';
+  String get bedtime_distracting_apps_modify_snack_alert =>
+      '在睡眠时间表激活时，不允许修改分散注意力的应用列表。';
 
   @override
   String get parental_controls_tab_title => '家长控制';
@@ -617,13 +636,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get invincible_mode_tile_title => '激活无敌模式';
 
   @override
-  String get invincible_mode_info => '当无敌模式开启时，您将无法在达到每日配额后调整选定的限制。然而，您可以在选定的10分钟无敌窗口内进行更改。';
+  String get invincible_mode_info =>
+      '当无敌模式开启时，您将无法在达到每日配额后调整选定的限制。然而，您可以在选定的10分钟无敌窗口内进行更改。';
 
   @override
   String get invincible_mode_snack_alert => '由于无敌模式，限制的修改不被允许。';
 
   @override
-  String get invincible_mode_dialog_info => '您确定要启用无敌模式吗？此操作是不可逆的。一旦无敌模式开启，除非卸载此应用，否则无法关闭。';
+  String get invincible_mode_dialog_info =>
+      '您确定要启用无敌模式吗？此操作是不可逆的。一旦无敌模式开启，除非卸载此应用，否则无法关闭。';
 
   @override
   String get invincible_mode_turn_off_snack_alert => '只要此应用安装在您的设备上，无敌模式就无法关闭。';
@@ -644,25 +665,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get invincible_mode_app_restrictions_tile_title => '应用限制';
 
   @override
-  String get invincible_mode_app_restrictions_tile_subtitle => '防止在每日限制被超过后更改应用的选定限制。';
+  String get invincible_mode_app_restrictions_tile_subtitle =>
+      '防止在每日限制被超过后更改应用的选定限制。';
 
   @override
   String get invincible_mode_group_restrictions_tile_title => '组限制';
 
   @override
-  String get invincible_mode_group_restrictions_tile_subtitle => '防止在每日限制被超过后更改组的选定限制。';
+  String get invincible_mode_group_restrictions_tile_subtitle =>
+      '防止在每日限制被超过后更改组的选定限制。';
 
   @override
   String get invincible_mode_include_shorts_timer_tile_title => '包含短视频计时器';
 
   @override
-  String get invincible_mode_include_shorts_timer_tile_subtitle => '防止在达到每日短视频限制后进行更改。';
+  String get invincible_mode_include_shorts_timer_tile_subtitle =>
+      '防止在达到每日短视频限制后进行更改。';
 
   @override
   String get invincible_mode_include_bedtime_tile_title => '包含睡眠时间';
 
   @override
-  String get invincible_mode_include_bedtime_tile_subtitle => '防止在活跃的睡眠时间表期间进行更改。';
+  String get invincible_mode_include_bedtime_tile_subtitle =>
+      '防止在活跃的睡眠时间表期间进行更改。';
 
   @override
   String get protected_access_tile_title => '受保护访问';
@@ -674,7 +699,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get protected_access_no_lock_snack_alert => '请先在设备上设置生物识别锁以启用此功能。';
 
   @override
-  String get protected_access_removed_lock_snack_alert => '您的设备锁已被移除。为了继续，请设置一个新锁。';
+  String get protected_access_removed_lock_snack_alert =>
+      '您的设备锁已被移除。为了继续，请设置一个新锁。';
 
   @override
   String get protected_access_failed_lock_snack_alert => '身份验证失败。您需要验证设备锁才能继续。';
@@ -686,7 +712,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get tamper_protection_tile_subtitle => '防止卸载和强制停止应用。';
 
   @override
-  String get tamper_protection_confirmation_dialog_info => '一旦启用，您将无法卸载、强制停止或清除 Mindful 的数据，除非在指定的卸载时间段内。没有其他例外。\n\n请自行承担风险。';
+  String get tamper_protection_confirmation_dialog_info =>
+      '一旦启用，您将无法卸载、强制停止或清除 Mindful 的数据，除非在指定的卸载时间段内。没有其他例外。\n\n请自行承担风险。';
 
   @override
   String get uninstall_window_tile_title => '卸载窗口';
@@ -704,7 +731,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shorts_blocking_tab_title => '短视频阻止';
 
   @override
-  String get shorts_blocking_tab_info => '控制您在Instagram、YouTube、Snapchat和Facebook等平台上花费在短内容上的时间，包括它们的网站。';
+  String get shorts_blocking_tab_info =>
+      '控制您在Instagram、YouTube、Snapchat和Facebook等平台上花费在短内容上的时间，包括它们的网站。';
 
   @override
   String get short_content_heading => '短内容';
@@ -715,7 +743,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get short_content_timer_picker_dialog_info => '为短内容设置每日时间限制。一旦达到限制，短内容将在午夜前暂停。';
+  String get short_content_timer_picker_dialog_info =>
+      '为短内容设置每日时间限制。一旦达到限制，短内容将在午夜前暂停。';
 
   @override
   String get instagram_features_tile_title => 'Instagram';
@@ -763,7 +792,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get websites_blocking_tab_title => '网站屏蔽';
 
   @override
-  String get websites_blocking_tab_info => '屏蔽成人网站和自定义网站，以创建更安全、更专注的在线体验。掌控你的浏览，保持无干扰。';
+  String get websites_blocking_tab_info =>
+      '屏蔽成人网站和自定义网站，以创建更安全、更专注的在线体验。掌控你的浏览，保持无干扰。';
 
   @override
   String get adult_content_heading => '成人内容';
@@ -775,7 +805,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get block_nsfw_subtitle => '限制浏览器打开成人和色情网站。';
 
   @override
-  String get block_nsfw_dialog_info => '确定吗？此操作不可逆。只要应用程序安装在设备上，启用成人网站屏蔽后就无法关闭。';
+  String get block_nsfw_dialog_info =>
+      '确定吗？此操作不可逆。只要应用程序安装在设备上，启用成人网站屏蔽后就无法关闭。';
 
   @override
   String get block_nsfw_dialog_button_block_anyway => '仍然屏蔽';
@@ -784,7 +815,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get blocked_websites_heading => '已屏蔽的网站';
 
   @override
-  String get blocked_websites_empty_list_hint => '点击 \'+ 添加网站\' 按钮添加你想屏蔽的分散注意力的网站。';
+  String get blocked_websites_empty_list_hint =>
+      '点击 \'+ 添加网站\' 按钮添加你想屏蔽的分散注意力的网站。';
 
   @override
   String get add_website_fab_button => '添加网站';
@@ -822,19 +854,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focus_tab_title => '专注';
 
   @override
-  String get focus_tab_info => '当你需要专注时，通过选择类型、暂停干扰应用并启用请勿打扰模式来开始新会话，以实现无干扰的专注。';
+  String get focus_tab_info =>
+      '当你需要专注时，通过选择类型、暂停干扰应用并启用请勿打扰模式来开始新会话，以实现无干扰的专注。';
 
   @override
   String get active_session_card_title => '活动会话';
 
   @override
-  String get active_session_card_info => '你有一个正在运行的专注会话！点击“查看”以检查你的进度并查看已过去的时间。';
+  String get active_session_card_info =>
+      '你有一个正在运行的专注会话！点击“查看”以检查你的进度并查看已过去的时间。';
 
   @override
   String get active_session_card_view_button => '查看';
 
   @override
-  String get focus_distracting_apps_removal_snack_alert => '在专注会话活动期间，不允许从干扰应用列表中删除应用程序。但是，你仍然可以在此期间将其他应用程序添加到列表中。';
+  String get focus_distracting_apps_removal_snack_alert =>
+      '在专注会话活动期间，不允许从干扰应用列表中删除应用程序。但是，你仍然可以在此期间将其他应用程序添加到列表中。';
 
   @override
   String get focus_profile_tile_title => '专注类型';
@@ -846,7 +881,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focus_session_duration_tile_subtitle => '无限（除非你停止）';
 
   @override
-  String get focus_session_duration_dialog_info => '请选择此次专注会话的期望时长，以确定你希望保持专注和无干扰的时间长度。';
+  String get focus_session_duration_dialog_info =>
+      '请选择此次专注会话的期望时长，以确定你希望保持专注和无干扰的时间长度。';
 
   @override
   String get focus_profile_customization_tile_title => '类型自定义';
@@ -867,7 +903,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focus_session_minimum_apps_snack_alert => '请至少选择一个干扰应用以开始专注会话';
 
   @override
-  String get focus_session_already_active_snack_alert => '你已经有一个正在运行的专注会话。请在开始新会话之前完成或停止当前会话。';
+  String get focus_session_already_active_snack_alert =>
+      '你已经有一个正在运行的专注会话。请在开始新会话之前完成或停止当前会话。';
 
   @override
   String get focus_session_type_study => '学习';
@@ -936,7 +973,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get timeline_tab_title => '时间轴';
 
   @override
-  String get focus_timeline_tab_info => '从日历中选择日期，探索你的专注之旅。追踪你的进度，回顾你的成功，并从挑战中学习。';
+  String get focus_timeline_tab_info =>
+      '从日历中选择日期，探索你的专注之旅。追踪你的进度，回顾你的成功，并从挑战中学习。';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -999,25 +1037,29 @@ class AppLocalizationsZh extends AppLocalizations {
   String get active_session_finish_dialog_title => '完成';
 
   @override
-  String get active_session_finish_dialog_info => '坚持下去！你正在建立宝贵的专注力。确定要结束这个专注会话吗？每多一刻都能帮助你实现目标。';
+  String get active_session_finish_dialog_info =>
+      '坚持下去！你正在建立宝贵的专注力。确定要结束这个专注会话吗？每多一刻都能帮助你实现目标。';
 
   @override
   String get active_session_giveup_dialog_title => '放弃';
 
   @override
-  String get active_session_giveup_dialog_info => '坚持住！你快成功了，现在不要放弃！确定要提前结束这个专注会话吗？进度将会丢失。';
+  String get active_session_giveup_dialog_info =>
+      '坚持住！你快成功了，现在不要放弃！确定要提前结束这个专注会话吗？进度将会丢失。';
 
   @override
   String get active_session_reflection_dialog_title => '会话反思';
 
   @override
-  String get active_session_reflection_dialog_info => '花一点时间反思一下你的进展。\n你这次会议的目标是什么？你在这次会议中取得了哪些成果？';
+  String get active_session_reflection_dialog_info =>
+      '花一点时间反思一下你的进展。\n你这次会议的目标是什么？你在这次会议中取得了哪些成果？';
 
   @override
   String get active_session_reflection_dialog_tip => '小提示：您可以随时在会话时间线中编辑此内容。';
 
   @override
-  String get active_session_giveup_snack_alert => '你放弃了！别担心，下次你可以做得更好。每一次努力都很重要——继续前进吧';
+  String get active_session_giveup_snack_alert =>
+      '你放弃了！别担心，下次你可以做得更好。每一次努力都很重要——继续前进吧';
 
   @override
   String get active_session_quote_one => '每一步都很重要，坚强地继续前进';
@@ -1040,7 +1082,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restriction_groups_tab_title => '限制组';
 
   @override
-  String get restriction_groups_tab_info => '为一组应用设置综合屏幕使用时间限制。一旦总使用时间达到你的限制，组内所有应用将被暂停，以帮助保持专注和平衡。';
+  String get restriction_groups_tab_info =>
+      '为一组应用设置综合屏幕使用时间限制。一旦总使用时间达到你的限制，组内所有应用将被暂停，以帮助保持专注和平衡。';
 
   @override
   String get restriction_group_time_spent_label => '今日使用时间';
@@ -1052,13 +1095,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restriction_group_name_tile_title => '组名称';
 
   @override
-  String get restriction_group_name_picker_dialog_info => '为限制组输入一个名称，以便于识别和管理。';
+  String get restriction_group_name_picker_dialog_info =>
+      '为限制组输入一个名称，以便于识别和管理。';
 
   @override
   String get restriction_group_timer_tile_title => '组定时器';
 
   @override
-  String get restriction_group_timer_picker_dialog_info => '为该组设置每日时间限制。一旦达到你的限制，组内所有应用将在午夜前暂停。';
+  String get restriction_group_timer_picker_dialog_info =>
+      '为该组设置每日时间限制。一旦达到你的限制，组内所有应用将在午夜前暂停。';
 
   @override
   String get restriction_group_active_period_tile_title => '组活跃期';
@@ -1084,7 +1129,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get last_24_hours_heading => '过去24小时';
 
   @override
-  String get notification_timeline_tab_info => '从日历中选择日期浏览您的通知记录。看看是哪些应用吸引了您的注意力，并反思您的使用习惯。';
+  String get notification_timeline_tab_info =>
+      '从日历中选择日期浏览您的通知记录。看看是哪些应用吸引了您的注意力，并反思您的使用习惯。';
 
   @override
   String get monthly_label => '每月';
@@ -1093,7 +1139,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get daily_label => '每日';
 
   @override
-  String get search_notifications_sheet_info => '使用标题或内容以方便的寻找过往的通知。帮助你快速找到重要的通知。';
+  String get search_notifications_sheet_info =>
+      '使用标题或内容以方便的寻找过往的通知。帮助你快速找到重要的通知。';
 
   @override
   String get search_notifications_hint => '寻找通知……';
@@ -1119,10 +1166,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get emergency_started_snack_alert => '应用程序阻止器已暂停，并将在5分钟后恢复阻止。';
 
   @override
-  String get emergency_already_active_snack_alert => '应用程序阻止器当前处于暂停或非活动状态。如果启用了通知，您将收到有关剩余时间的更新。';
+  String get emergency_already_active_snack_alert =>
+      '应用程序阻止器当前处于暂停或非活动状态。如果启用了通知，您将收到有关剩余时间的更新。';
 
   @override
-  String get emergency_no_pass_left_snack_alert => '您已经使用了所有紧急通行证。被阻止的应用程序将保持阻止状态，直到午夜或当前专注会话结束。';
+  String get emergency_no_pass_left_snack_alert =>
+      '您已经使用了所有紧急通行证。被阻止的应用程序将保持阻止状态，直到午夜或当前专注会话结束。';
 
   @override
   String get app_limit_status_not_set => '未设置';
@@ -1131,7 +1180,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get app_timer_tile_title => '应用程序定时器';
 
   @override
-  String get app_timer_picker_dialog_info => '为此应用程序设置每日时间限制。一旦达到限制，应用程序将暂停，直到午夜。';
+  String get app_timer_picker_dialog_info =>
+      '为此应用程序设置每日时间限制。一旦达到限制，应用程序将暂停，直到午夜。';
 
   @override
   String get usage_reminders_tile_title => '使用提醒';
@@ -1148,7 +1198,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get app_launch_limit_picker_dialog_info => '设置每天可以打开此应用程序的次数。一旦达到限制，应用程序将暂停，直到午夜。';
+  String get app_launch_limit_picker_dialog_info =>
+      '设置每天可以打开此应用程序的次数。一旦达到限制，应用程序将暂停，直到午夜。';
 
   @override
   String get app_active_period_tile_title => '活动周期';
@@ -1268,7 +1319,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get service_heading => '服务';
 
   @override
-  String get service_stopping_warning => '如果 Mindful 意外停止工作，请授予“忽略电池优化”权限以保持后台运行。如果问题持续，请将 Mindful 加入白名单以获得无间断性能。';
+  String get service_stopping_warning =>
+      '如果 Mindful 意外停止工作，请授予“忽略电池优化”权限以保持后台运行。如果问题持续，请将 Mindful 加入白名单以获得无间断性能。';
 
   @override
   String get whitelist_app_tile_title => '将 Mindful 加入白名单';
@@ -1298,7 +1350,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get crash_logs_heading => '崩溃日志';
 
   @override
-  String get crash_logs_info => '若遇到任何问题，您可将日志文件提交至GitHub进行反馈。该文件包含设备制造商、型号、Android版本、SDK版本及崩溃日志等信息，这些数据将帮助我们更有效地定位并解决问题。';
+  String get crash_logs_info =>
+      '若遇到任何问题，您可将日志文件提交至GitHub进行反馈。该文件包含设备制造商、型号、Android版本、SDK版本及崩溃日志等信息，这些数据将帮助我们更有效地定位并解决问题。';
 
   @override
   String get crash_logs_export_tile_title => '导出崩溃日志';
@@ -1367,7 +1420,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get privacy_policy_heading => '隐私政策';
 
   @override
-  String get privacy_policy_info => 'Mindful 致力于保护您的隐私。我们不收集、存储或传输任何类型的用户数据。该应用完全离线运行，不需要互联网连接，确保您的个人信息在您的设备上保持私密和安全。作为免费开源软件 (FOSS) 应用，Mindful 保证对用户数据的完全透明度和用户控制。';
+  String get privacy_policy_info =>
+      'Mindful 致力于保护您的隐私。我们不收集、存储或传输任何类型的用户数据。该应用完全离线运行，不需要互联网连接，确保您的个人信息在您的设备上保持私密和安全。作为免费开源软件 (FOSS) 应用，Mindful 保证对用户数据的完全透明度和用户控制。';
 
   @override
   String get more_details_button => '更多详情';

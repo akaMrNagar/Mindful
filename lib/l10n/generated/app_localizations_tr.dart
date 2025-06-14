@@ -1,5 +1,5 @@
+// ignore: unused_import
 import 'package:intl/intl.dart' as intl;
-
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -36,7 +36,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get permission_button_help => 'Yardım?';
 
   @override
-  String get permission_sheet_privacy_info => 'Mindful 100% güvenli ve çevrimdışı çalışır. Sizin kişisel verileriniz toplamıyor ve depolamıyoruz.';
+  String get permission_sheet_privacy_info =>
+      'Mindful 100% güvenli ve çevrimdışı çalışır. Sizin kişisel verileriniz toplamıyor ve depolamıyoruz.';
 
   @override
   String permission_grant_step_one(String button_label) {
@@ -44,10 +45,12 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get permission_grant_step_two => '2. Sonraki ekranda Mindful\'u seçin.';
+  String get permission_grant_step_two =>
+      '2. Sonraki ekranda Mindful\'u seçin.';
 
   @override
-  String get permission_grant_step_three => '3. Tıklayın ve alttaki gibi dönüştürmeyi açın.';
+  String get permission_grant_step_three =>
+      '3. Tıklayın ve alttaki gibi dönüştürmeyi açın.';
 
   @override
   String get permission_notification_title => 'Bildirimleri gönder';
@@ -56,16 +59,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get permission_alarms_title => 'Alarm & hatırlatıcılar';
 
   @override
-  String get permission_alarms_info => 'Lütfen alarm ve hatırlatıcı için izin verin. Bu sayede Mindful ';
+  String get permission_alarms_info =>
+      'Lütfen alarm ve hatırlatıcı için izin verin. Bu sayede Mindful ';
 
   @override
-  String get permission_alarms_device_tile_label => 'Alarm ve hatırlatıcılara izin verin';
+  String get permission_alarms_device_tile_label =>
+      'Alarm ve hatırlatıcılara izin verin';
 
   @override
   String get permission_usage_title => 'Kullanım erişimi';
 
   @override
-  String get permission_usage_info => 'Lütfen kullanım erişim izni verin. Bu, Mindful\'un uygulama kullanımını izlemesine ve belirli uygulamalara erişimi yönetmesine olanak tanıyarak daha odaklı ve kontrollü bir dijital ortam sağlayacaktır.';
+  String get permission_usage_info =>
+      'Lütfen kullanım erişim izni verin. Bu, Mindful\'un uygulama kullanımını izlemesine ve belirli uygulamalara erişimi yönetmesine olanak tanıyarak daha odaklı ve kontrollü bir dijital ortam sağlayacaktır.';
 
   @override
   String get permission_usage_device_tile_label => 'Kullanım erişimi verin';
@@ -74,73 +80,89 @@ class AppLocalizationsTr extends AppLocalizations {
   String get permission_overlay_title => 'Kaplamayı Görüntüle';
 
   @override
-  String get permission_overlay_info => 'Lütfen diğer uygulamaların üzerinde gösterme izni verin. Bu, Mindful\'un duraklatılmış bir uygulama açıldığında bir kaplama göstermesine izin vererek odaklanmanıza ve programınızı sürdürmenize yardımcı olacaktır.';
+  String get permission_overlay_info =>
+      'Lütfen diğer uygulamaların üzerinde gösterme izni verin. Bu, Mindful\'un duraklatılmış bir uygulama açıldığında bir kaplama göstermesine izin vererek odaklanmanıza ve programınızı sürdürmenize yardımcı olacaktır.';
 
   @override
-  String get permission_overlay_device_tile_label => 'Diğer uygulamaların üzerinde gösterime izin ver';
+  String get permission_overlay_device_tile_label =>
+      'Diğer uygulamaların üzerinde gösterime izin ver';
 
   @override
   String get permission_accessibility_title => 'Erişilebilirlik';
 
   @override
-  String get permission_accessibility_info => 'Lütfen erişilebilirlik izni verin. Bu, Mindful\'un sosyal medya uygulamaları ve tarayıcılarda kısa biçimli video içeriğine (ör. Reels, Shorts) erişimi kısıtlamasına ve uygunsuz web sitelerini filtrelemesine olanak tanıyacaktır.';
+  String get permission_accessibility_info =>
+      'Lütfen erişilebilirlik izni verin. Bu, Mindful\'un sosyal medya uygulamaları ve tarayıcılarda kısa biçimli video içeriğine (ör. Reels, Shorts) erişimi kısıtlamasına ve uygunsuz web sitelerini filtrelemesine olanak tanıyacaktır.';
 
   @override
-  String get permission_accessibility_required => 'Mindful, kısa içerikleri ve internet sitelerini etkili bir şekilde engellemek için erişilebilirlik izni gerektirir.';
+  String get permission_accessibility_required =>
+      'Mindful, kısa içerikleri ve internet sitelerini etkili bir şekilde engellemek için erişilebilirlik izni gerektirir.';
 
   @override
-  String get permission_accessibility_device_tile_label => 'Dikkatliyi kullanın';
+  String get permission_accessibility_device_tile_label =>
+      'Dikkatliyi kullanın';
 
   @override
   String get permission_dnd_title => 'Rahatsız etme';
 
   @override
-  String get permission_dnd_info => 'Lütfen Rahatsız Etmeyin erişimine izin verin. Bu, Mindful\'un yatma zamanı programı sırasında Rahatsız Etmeyin modunu başlatmasına ve durdurmasına izin verecektir.';
+  String get permission_dnd_info =>
+      'Lütfen Rahatsız Etmeyin erişimine izin verin. Bu, Mindful\'un yatma zamanı programı sırasında Rahatsız Etmeyin modunu başlatmasına ve durdurmasına izin verecektir.';
 
   @override
   String get permission_dnd_tile_title => 'Rahatsız etmeyin';
 
   @override
-  String get permission_dnd_tile_subtitle => 'Rahatsız etmeyin moduna izin verin.';
+  String get permission_dnd_tile_subtitle =>
+      'Rahatsız etmeyin moduna izin verin.';
 
   @override
-  String get permission_battery_optimization_tile_title => 'Batarya optimizasyonu devre dışı bırakın';
+  String get permission_battery_optimization_tile_title =>
+      'Batarya optimizasyonu devre dışı bırakın';
 
   @override
   String get permission_battery_optimization_status_enabled => 'Zaten sınırsız';
 
   @override
-  String get permission_battery_optimization_status_disabled => 'Arka plan kısıtlamalarını devre dışı bırak';
+  String get permission_battery_optimization_status_disabled =>
+      'Arka plan kısıtlamalarını devre dışı bırak';
 
   @override
-  String get permission_battery_optimization_allow_info => '\'Pil Optimizasyonunu Yoksay\'a izin vermek, bazı cihazlarda otomatik olarak \'Alarmlar ve Hatırlatıcılar\' iznini verecektir.';
+  String get permission_battery_optimization_allow_info =>
+      '\'Pil Optimizasyonunu Yoksay\'a izin vermek, bazı cihazlarda otomatik olarak \'Alarmlar ve Hatırlatıcılar\' iznini verecektir.';
 
   @override
   String get permission_vpn_title => 'Sanal özel ağ oluştur';
 
   @override
-  String get permission_vpn_info => 'Lütfen sanal özel ağ(VPN) oluşturmaya izin veriniz. Bu sayede Mindful internetizi lokal bir şekilde kısıtlayacaktır.';
+  String get permission_vpn_info =>
+      'Lütfen sanal özel ağ(VPN) oluşturmaya izin veriniz. Bu sayede Mindful internetizi lokal bir şekilde kısıtlayacaktır.';
 
   @override
   String get permission_admin_title => 'Yönetici';
 
   @override
-  String get permission_admin_info => 'Yönetici ayrıcalıkları, uygulamanın düzgün çalışmasını ve kurcalanmaya karşı korumalı kalmasını sağlamak için yalnızca temel işlemler için gereklidir.';
+  String get permission_admin_info =>
+      'Yönetici ayrıcalıkları, uygulamanın düzgün çalışmasını ve kurcalanmaya karşı korumalı kalmasını sağlamak için yalnızca temel işlemler için gereklidir.';
 
   @override
-  String get permission_admin_snack_alert => 'Kurcalama koruması yalnızca seçilen zaman aralığında devre dışı bırakılabilir.';
+  String get permission_admin_snack_alert =>
+      'Kurcalama koruması yalnızca seçilen zaman aralığında devre dışı bırakılabilir.';
 
   @override
   String get permission_notification_access_title => 'Bildirim izni';
 
   @override
-  String get permission_notification_access_info => 'Lütfen bildirim erişim izni verin. Bu, Mindful\'un bildirimlerinizi düzenlemesine ve bunları programınıza göre göndermesine izin verecektir.';
+  String get permission_notification_access_info =>
+      'Lütfen bildirim erişim izni verin. Bu, Mindful\'un bildirimlerinizi düzenlemesine ve bunları programınıza göre göndermesine izin verecektir.';
 
   @override
-  String get permission_notification_access_required => 'Mindful, bildirimleri toplu hale getirmek ve zamanlamak için bildirim erişimi gerektirir.';
+  String get permission_notification_access_required =>
+      'Mindful, bildirimleri toplu hale getirmek ve zamanlamak için bildirim erişimi gerektirir.';
 
   @override
-  String get permission_notification_access_device_tile_label => 'Bildirimlere izin ver';
+  String get permission_notification_access_device_tile_label =>
+      'Bildirimlere izin ver';
 
   @override
   String get day_today => 'Bugün';
@@ -152,7 +174,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String nDays(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -170,7 +191,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String nHours(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -188,7 +208,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String nMinutes(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -206,7 +225,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String nSeconds(num count) {
     final intl.NumberFormat countNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
-      
     );
     final String countString = countNumberFormat.format(count);
 
@@ -257,10 +275,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get schedule_end_label => 'Bitir';
 
   @override
-  String get exit_without_saving_dialog_info => 'Are you sure you want to exit without saving?';
+  String get exit_without_saving_dialog_info =>
+      'Are you sure you want to exit without saving?';
 
   @override
-  String get development_dialog_info => 'Mindful şu anda geliştirme aşamasındadır ve hatalar veya eksik özellikler içerebilir. Herhangi bir sorunla karşılaşırsanız, lütfen geliştirmemize yardımcı olmak için bunları bildirin.\n\nGeri bildiriminiz için teşekkür ederiz!';
+  String get development_dialog_info =>
+      'Mindful şu anda geliştirme aşamasındadır ve hatalar veya eksik özellikler içerebilir. Herhangi bir sorunla karşılaşırsanız, lütfen geliştirmemize yardımcı olmak için bunları bildirin.\n\nGeri bildiriminiz için teşekkür ederiz!';
 
   @override
   String get development_dialog_button_report_issue => 'Sorun Bildir';
@@ -272,43 +292,52 @@ class AppLocalizationsTr extends AppLocalizations {
   String get dnd_settings_tile_title => 'Rahatsız etmeyin ayarları';
 
   @override
-  String get dnd_settings_tile_subtitle => 'DND\'de hangi uygulamaların ve bildirimlerin size ulaşabileceğini yönetin.';
+  String get dnd_settings_tile_subtitle =>
+      'DND\'de hangi uygulamaların ve bildirimlerin size ulaşabileceğini yönetin.';
 
   @override
   String get quick_actions_heading => 'Kısayollar';
 
   @override
-  String get select_distracting_apps_heading => 'Dikkat dağıtan uygulamaları seç';
+  String get select_distracting_apps_heading =>
+      'Dikkat dağıtan uygulamaları seç';
 
   @override
-  String get your_distracting_apps_heading => 'Dikkatinizi dağıtan uygulamalarınız';
+  String get your_distracting_apps_heading =>
+      'Dikkatinizi dağıtan uygulamalarınız';
 
   @override
   String get select_more_apps_heading => 'Daha fazla uygulama seçin';
 
   @override
-  String get imp_distracting_apps_snack_alert => 'Dikkat dağıtıcı uygulamalar listesine önemli sistem uygulamalarının eklenmesine izin verilmez.';
+  String get imp_distracting_apps_snack_alert =>
+      'Dikkat dağıtıcı uygulamalar listesine önemli sistem uygulamalarının eklenmesine izin verilmez.';
 
   @override
-  String get custom_apps_quick_actions_unavailable_warning => 'Ekran süresi ve kısıtlama bu uygulama için kullanılamıyor. Sadece internet kullanımı erişilebilir';
+  String get custom_apps_quick_actions_unavailable_warning =>
+      'Ekran süresi ve kısıtlama bu uygulama için kullanılamıyor. Sadece internet kullanımı erişilebilir';
 
   @override
   String get create_group_fab_button => 'Grup Oluştur';
 
   @override
-  String get active_period_info => 'Erişime izin verilecek bir zaman aralığı belirleyin. Bu zaman diliminin dışında erişim kısıtlanacaktır.';
+  String get active_period_info =>
+      'Erişime izin verilecek bir zaman aralığı belirleyin. Bu zaman diliminin dışında erişim kısıtlanacaktır.';
 
   @override
-  String get minimum_distracting_apps_snack_alert => 'En az bir dikkat dağıtıcı uygulama seçin.';
+  String get minimum_distracting_apps_snack_alert =>
+      'En az bir dikkat dağıtıcı uygulama seçin.';
 
   @override
   String get donation_card_title => 'Bizi destekleyin';
 
   @override
-  String get donation_card_info => 'Mindful ücretsiz ve açık kaynak kodludur, aylar süren özverili çalışmalarla geliştirilmiştir. Eğer size yardımcı olduysa, bağışınız bizim için dünyalara bedeldir. Her katkı, onu herkes için geliştirmeye ve sürdürmeye devam etmemize yardımcı olur.';
+  String get donation_card_info =>
+      'Mindful ücretsiz ve açık kaynak kodludur, aylar süren özverili çalışmalarla geliştirilmiştir. Eğer size yardımcı olduysa, bağışınız bizim için dünyalara bedeldir. Her katkı, onu herkes için geliştirmeye ve sürdürmeye devam etmemize yardımcı olur.';
 
   @override
-  String get operation_failed_snack_alert => 'Operasyon başarısız oldu, bir şeyler ters gitti!';
+  String get operation_failed_snack_alert =>
+      'Operasyon başarısız oldu, bir şeyler ters gitti!';
 
   @override
   String get donation_card_button_donate => 'Bağış';
@@ -317,85 +346,112 @@ class AppLocalizationsTr extends AppLocalizations {
   String get app_restart_dialog_title => 'Yeniden Başlatma Gerekli';
 
   @override
-  String get app_restart_dialog_info => 'Geri sayım bittiğinde Mindful otomatik olarak yeniden başlayacaktır. Değişiklikler uygulanırken lütfen sabırlı olun.';
+  String get app_restart_dialog_info =>
+      'Geri sayım bittiğinde Mindful otomatik olarak yeniden başlayacaktır. Değişiklikler uygulanırken lütfen sabırlı olun.';
 
   @override
-  String get accessibility_tip => 'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
+  String get accessibility_tip =>
+      'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
 
   @override
-  String get battery_optimization_tip => 'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.';
+  String get battery_optimization_tip =>
+      'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.';
 
   @override
-  String get invincible_mode_tip => 'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+  String get invincible_mode_tip =>
+      'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
 
   @override
-  String get glance_usage_tip => 'Want insights? Check the Glance section to view your usage patterns and screen time.';
+  String get glance_usage_tip =>
+      'Want insights? Check the Glance section to view your usage patterns and screen time.';
 
   @override
-  String get tamper_protection_tip => 'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+  String get tamper_protection_tip =>
+      'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
 
   @override
-  String get notification_blocking_tip => 'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+  String get notification_blocking_tip =>
+      'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
 
   @override
-  String get usage_history_tip => 'Want to reflect on your habits? Check Usage History to see past patterns.';
+  String get usage_history_tip =>
+      'Want to reflect on your habits? Check Usage History to see past patterns.';
 
   @override
-  String get focus_mode_tip => 'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+  String get focus_mode_tip =>
+      'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
 
   @override
-  String get bedtime_reminder_tip => 'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+  String get bedtime_reminder_tip =>
+      'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
 
   @override
-  String get custom_blocking_tip => 'Need a custom experience? Create app blocking rules that fit your needs.';
+  String get custom_blocking_tip =>
+      'Need a custom experience? Create app blocking rules that fit your needs.';
 
   @override
-  String get session_timeline_tip => 'Want to track focus sessions? View timeline to see your focus journey.';
+  String get session_timeline_tip =>
+      'Want to track focus sessions? View timeline to see your focus journey.';
 
   @override
-  String get short_content_blocking_tip => 'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.';
+  String get short_content_blocking_tip =>
+      'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.';
 
   @override
-  String get parental_controls_tip => 'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.';
+  String get parental_controls_tip =>
+      'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.';
 
   @override
-  String get notification_batching_tip => 'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.';
+  String get notification_batching_tip =>
+      'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.';
 
   @override
-  String get notification_scheduling_tip => 'Need to manage notifications? Schedule when you receive notifications for specific apps.';
+  String get notification_scheduling_tip =>
+      'Need to manage notifications? Schedule when you receive notifications for specific apps.';
 
   @override
-  String get quick_focus_tile_tip => 'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.';
+  String get quick_focus_tile_tip =>
+      'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.';
 
   @override
-  String get app_shortcuts_tip => 'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.';
+  String get app_shortcuts_tip =>
+      'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.';
 
   @override
-  String get backup_usage_db_tip => 'Want to save your data? Backup your usage database to keep your records safe.';
+  String get backup_usage_db_tip =>
+      'Want to save your data? Backup your usage database to keep your records safe.';
 
   @override
-  String get dynamic_material_color_tip => 'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.';
+  String get dynamic_material_color_tip =>
+      'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.';
 
   @override
-  String get amoled_dark_theme_tip => 'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
+  String get amoled_dark_theme_tip =>
+      'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
 
   @override
-  String get customize_usage_history_tip => 'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
+  String get customize_usage_history_tip =>
+      'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
 
   @override
-  String get grouped_apps_blocking_tip => 'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.';
+  String get grouped_apps_blocking_tip =>
+      'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.';
 
   @override
-  String get websites_blocking_tip => 'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.';
+  String get websites_blocking_tip =>
+      'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.';
 
   @override
-  String get data_usage_tip => 'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.';
+  String get data_usage_tip =>
+      'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.';
 
   @override
-  String get block_internet_tip => 'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.';
+  String get block_internet_tip =>
+      'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.';
 
   @override
-  String get emergency_passes_tip => 'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.';
+  String get emergency_passes_tip =>
+      'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.';
 
   @override
   String get onboarding_skip_btn_label => 'Atla';
@@ -407,25 +463,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get onboarding_page_one_title => 'En iyi odak.';
 
   @override
-  String get onboarding_page_one_info => 'Dikkatinizi dağıtan uygulamaları duraklatın, kısa içerikleri engelleyin ve özelleştirilebilir odaklanma oturumlarıyla yolunuzdan sapmayın. İster çalışıyor, ister ders çalışıyor veya dinleniyor olun, Mindful kontrolü elinizde tutmanıza yardımcı olur.';
+  String get onboarding_page_one_info =>
+      'Dikkatinizi dağıtan uygulamaları duraklatın, kısa içerikleri engelleyin ve özelleştirilebilir odaklanma oturumlarıyla yolunuzdan sapmayın. İster çalışıyor, ister ders çalışıyor veya dinleniyor olun, Mindful kontrolü elinizde tutmanıza yardımcı olur.';
 
   @override
   String get onboarding_page_two_title => 'Dikkat Dağıtıcıları Engelleyin.';
 
   @override
-  String get onboarding_page_two_info => 'Kullanım sınırları belirleyin, uygulamaları otomatik olarak duraklatın ve daha sağlıklı dijital alışkanlıklar oluşturun. Gevşemek ve dikkatinizin dağılmadığı bir gecenin tadını çıkarmak için Yatma Zamanı Modu\'nu kullanın.';
+  String get onboarding_page_two_info =>
+      'Kullanım sınırları belirleyin, uygulamaları otomatik olarak duraklatın ve daha sağlıklı dijital alışkanlıklar oluşturun. Gevşemek ve dikkatinizin dağılmadığı bir gecenin tadını çıkarmak için Yatma Zamanı Modu\'nu kullanın.';
 
   @override
   String get onboarding_page_three_title => 'Öncelik gizlilik.';
 
   @override
-  String get onboarding_page_three_info => 'Mindful 100% açık kaynaklıdır ve tamamen çevrimdışı çalışır. Kişisel verilerinizi toplamıyor veya paylaşmıyoruz — gizliliğiniz her şekilde garanti altındadır.';
+  String get onboarding_page_three_info =>
+      'Mindful 100% açık kaynaklıdır ve tamamen çevrimdışı çalışır. Kişisel verilerinizi toplamıyor veya paylaşmıyoruz — gizliliğiniz her şekilde garanti altındadır.';
 
   @override
   String get onboarding_page_permissions_title => 'Temel İzinler.';
 
   @override
-  String get onboarding_page_permissions_info => 'Mindful, ekran sürenizi takip etmek ve yönetmek için temel izinleri takip etmeyi gerektirir, dikkat dağıtıcı unsurları azaltmaya ve odaklanmayı geliştirmeye yardımcı olur.';
+  String get onboarding_page_permissions_info =>
+      'Mindful, ekran sürenizi takip etmek ve yönetmek için temel izinleri takip etmeyi gerektirir, dikkat dağıtıcı unsurları azaltmaya ve odaklanmayı geliştirmeye yardımcı olur.';
 
   @override
   String get dashboard_tab_title => 'Kontrol Paneli';
@@ -443,7 +503,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get username_dialog_title => 'Kullanıcı adı';
 
   @override
-  String get username_dialog_info => 'Kontrol panelinde görüntülenecek olan kullanıcı adınızı girin.';
+  String get username_dialog_info =>
+      'Kontrol panelinde görüntülenecek olan kullanıcı adınızı girin.';
 
   @override
   String get username_dialog_button_apply => 'Uygula';
@@ -455,7 +516,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get glance_tile_subtitle => 'Kullanımınıza hızlıca bir göz atın.';
 
   @override
-  String get parental_controls_tile_subtitle => 'Değiştirilemez mod ve kurcalamaya karşı koruma.';
+  String get parental_controls_tile_subtitle =>
+      'Değiştirilemez mod ve kurcalamaya karşı koruma.';
 
   @override
   String get restrictions_heading => 'Kısıtlamalar';
@@ -464,19 +526,24 @@ class AppLocalizationsTr extends AppLocalizations {
   String get apps_blocking_tile_title => 'Uygulama engelleme';
 
   @override
-  String get apps_blocking_tile_subtitle => 'Uygulamaları çeşitli şekillerde sınırlandırın.';
+  String get apps_blocking_tile_subtitle =>
+      'Uygulamaları çeşitli şekillerde sınırlandırın.';
 
   @override
-  String get grouped_apps_blocking_tile_title => 'Gruplandırılmış uygulama engelleme';
+  String get grouped_apps_blocking_tile_title =>
+      'Gruplandırılmış uygulama engelleme';
 
   @override
-  String get grouped_apps_blocking_tile_subtitle => 'Uygulama gruplarını aynı anda sınırlandırın.';
+  String get grouped_apps_blocking_tile_subtitle =>
+      'Uygulama gruplarını aynı anda sınırlandırın.';
 
   @override
-  String get shorts_blocking_tile_subtitle => 'Kısa içeriği birden fazla platformda sınırlandırın.';
+  String get shorts_blocking_tile_subtitle =>
+      'Kısa içeriği birden fazla platformda sınırlandırın.';
 
   @override
-  String get websites_blocking_tile_subtitle => 'Yetişkin ve özel web sitelerini sınırlayın.';
+  String get websites_blocking_tile_subtitle =>
+      'Yetişkin ve özel web sitelerini sınırlayın.';
 
   @override
   String get screen_time_label => 'Ekran süresi';
@@ -542,7 +609,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get notifications_tab_title => 'Bildirimler';
 
   @override
-  String get notifications_tab_info => 'Uygulamalardan toplu bildirim alın ve sabah, öğlen, akşam ve gece gibi programlar ayarlayın. Sürekli kesinti olmadan güncel kalın.';
+  String get notifications_tab_info =>
+      'Uygulamalardan toplu bildirim alın ve sabah, öğlen, akşam ve gece gibi programlar ayarlayın. Sürekli kesinti olmadan güncel kalın.';
 
   @override
   String get batched_apps_tile_title => 'Gruplanmış uygulamalar';
@@ -551,7 +619,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get batch_recap_dropdown_title => 'Batch recap type';
 
   @override
-  String get batch_recap_dropdown_info => 'Choose what to push when a schedule triggers — all notifications or just a summary.';
+  String get batch_recap_dropdown_info =>
+      'Choose what to push when a schedule triggers — all notifications or just a summary.';
 
   @override
   String get batch_recap_option_summery_only => 'Summery only';
@@ -575,7 +644,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get new_schedule_fab_button => 'Yeni program';
 
   @override
-  String get new_schedule_dialog_info => 'Kolayca tanımlanmasına yardımcı olmak için bildirim zamanlamasına bir ad girin.';
+  String get new_schedule_dialog_info =>
+      'Kolayca tanımlanmasına yardımcı olmak için bildirim zamanlamasına bir ad girin.';
 
   @override
   String get new_schedule_dialog_field_label => 'Program adı';
@@ -584,28 +654,34 @@ class AppLocalizationsTr extends AppLocalizations {
   String get bedtime_tab_title => 'Uyku vakti';
 
   @override
-  String get bedtime_tab_info => 'Bir zaman aralığı ve haftanın günlerini seçerek yatma zamanı programınızı ayarlayın. Engellenecek dikkat dağıtıcı uygulamaları seçin ve huzurlu bir gece için Rahatsız Etmeyin (DND) modunu etkinleştirin.';
+  String get bedtime_tab_info =>
+      'Bir zaman aralığı ve haftanın günlerini seçerek yatma zamanı programınızı ayarlayın. Engellenecek dikkat dağıtıcı uygulamaları seçin ve huzurlu bir gece için Rahatsız Etmeyin (DND) modunu etkinleştirin.';
 
   @override
   String get schedule_tile_title => 'Program';
 
   @override
-  String get schedule_tile_subtitle => 'Günlük programı etkinleştirme veya devre dışı bırakma.';
+  String get schedule_tile_subtitle =>
+      'Günlük programı etkinleştirme veya devre dışı bırakma.';
 
   @override
-  String get bedtime_no_days_selected_snack_alert => 'Haftanın en az bir gününü seçin.';
+  String get bedtime_no_days_selected_snack_alert =>
+      'Haftanın en az bir gününü seçin.';
 
   @override
-  String get bedtime_minimum_duration_snack_alert => 'Toplam yatma süresi en az 30 dakika olmalıdır.';
+  String get bedtime_minimum_duration_snack_alert =>
+      'Toplam yatma süresi en az 30 dakika olmalıdır.';
 
   @override
   String get distracting_apps_tile_title => 'Dikkat dağıtıcı uygulamalar';
 
   @override
-  String get distracting_apps_tile_subtitle => 'Hangi uygulamaların sizi yatma zamanı rutininizden uzaklaştırdığını seçin.';
+  String get distracting_apps_tile_subtitle =>
+      'Hangi uygulamaların sizi yatma zamanı rutininizden uzaklaştırdığını seçin.';
 
   @override
-  String get bedtime_distracting_apps_modify_snack_alert => 'Yatma zamanı programı aktifken dikkat dağıtıcı uygulamalar listesinde değişiklik yapılmasına izin verilmez.';
+  String get bedtime_distracting_apps_modify_snack_alert =>
+      'Yatma zamanı programı aktifken dikkat dağıtıcı uygulamalar listesinde değişiklik yapılmasına izin verilmez.';
 
   @override
   String get parental_controls_tab_title => 'Ebeveyn Kontrolleri';
@@ -617,16 +693,20 @@ class AppLocalizationsTr extends AppLocalizations {
   String get invincible_mode_tile_title => 'Değiştirilemez modu aktifleştir';
 
   @override
-  String get invincible_mode_info => 'Değiştirilemez Mod açıkken, günlük kotanıza ulaştıktan sonra seçilen limitleri ayarlayamazsınız. Ancak, seçilen 10 dakikalık değiştirilemez pencere içinde değişiklik yapabilirsiniz.';
+  String get invincible_mode_info =>
+      'Değiştirilemez Mod açıkken, günlük kotanıza ulaştıktan sonra seçilen limitleri ayarlayamazsınız. Ancak, seçilen 10 dakikalık değiştirilemez pencere içinde değişiklik yapabilirsiniz.';
 
   @override
-  String get invincible_mode_snack_alert => 'Değiştirilemez mod nedeniyle, kısıtlamalarda değişiklik yapılmasına izin verilmez.';
+  String get invincible_mode_snack_alert =>
+      'Değiştirilemez mod nedeniyle, kısıtlamalarda değişiklik yapılmasına izin verilmez.';
 
   @override
-  String get invincible_mode_dialog_info => 'Değiştirilemez Modu etkinleştirmek istediğinizden kesinlikle emin misiniz? Bu işlem geri döndürülemez. Değiştirilemez Mod bir kez açıldığında, bu uygulama cihazınızda yüklü olduğu sürece kapatamazsınız.';
+  String get invincible_mode_dialog_info =>
+      'Değiştirilemez Modu etkinleştirmek istediğinizden kesinlikle emin misiniz? Bu işlem geri döndürülemez. Değiştirilemez Mod bir kez açıldığında, bu uygulama cihazınızda yüklü olduğu sürece kapatamazsınız.';
 
   @override
-  String get invincible_mode_turn_off_snack_alert => 'Bu uygulama cihazınızda yüklü kaldığı sürece değiştirilemez mod kapatılamaz.';
+  String get invincible_mode_turn_off_snack_alert =>
+      'Bu uygulama cihazınızda yüklü kaldığı sürece değiştirilemez mod kapatılamaz.';
 
   @override
   String get invincible_mode_dialog_button_start_anyway => 'Yine de başlat';
@@ -635,76 +715,95 @@ class AppLocalizationsTr extends AppLocalizations {
   String get invincible_mode_include_timer_tile_title => 'Zamanlayıcı dahil et';
 
   @override
-  String get invincible_mode_include_launch_limit_tile_title => 'Başlatma limitini dahil edin';
+  String get invincible_mode_include_launch_limit_tile_title =>
+      'Başlatma limitini dahil edin';
 
   @override
-  String get invincible_mode_include_active_period_tile_title => 'Aktif dönemi dahil edin';
+  String get invincible_mode_include_active_period_tile_title =>
+      'Aktif dönemi dahil edin';
 
   @override
-  String get invincible_mode_app_restrictions_tile_title => 'Uygulama kısıtlayıcı';
+  String get invincible_mode_app_restrictions_tile_title =>
+      'Uygulama kısıtlayıcı';
 
   @override
-  String get invincible_mode_app_restrictions_tile_subtitle => 'Günlük limitler aşıldığında uygulamanın seçilen kısıtlamalarında değişiklik yapılmasını önleyin.';
+  String get invincible_mode_app_restrictions_tile_subtitle =>
+      'Günlük limitler aşıldığında uygulamanın seçilen kısıtlamalarında değişiklik yapılmasını önleyin.';
 
   @override
-  String get invincible_mode_group_restrictions_tile_title => 'Grup kısıtlamaları';
+  String get invincible_mode_group_restrictions_tile_title =>
+      'Grup kısıtlamaları';
 
   @override
-  String get invincible_mode_group_restrictions_tile_subtitle => 'Günlük limitler aşıldığında grubun seçilen kısıtlamalarında değişiklik yapılmasını önleyin.';
+  String get invincible_mode_group_restrictions_tile_subtitle =>
+      'Günlük limitler aşıldığında grubun seçilen kısıtlamalarında değişiklik yapılmasını önleyin.';
 
   @override
-  String get invincible_mode_include_shorts_timer_tile_title => 'Kısa video zamanlayıcısını dahil edin';
+  String get invincible_mode_include_shorts_timer_tile_title =>
+      'Kısa video zamanlayıcısını dahil edin';
 
   @override
-  String get invincible_mode_include_shorts_timer_tile_subtitle => 'Günlük kısa video limitinize ulaştıktan sonra değişiklik yapılmasını önler.';
+  String get invincible_mode_include_shorts_timer_tile_subtitle =>
+      'Günlük kısa video limitinize ulaştıktan sonra değişiklik yapılmasını önler.';
 
   @override
-  String get invincible_mode_include_bedtime_tile_title => 'Uyku vaktini dahil edin';
+  String get invincible_mode_include_bedtime_tile_title =>
+      'Uyku vaktini dahil edin';
 
   @override
-  String get invincible_mode_include_bedtime_tile_subtitle => 'Aktif uyku vakti programı sırasında değişiklikleri önler.';
+  String get invincible_mode_include_bedtime_tile_subtitle =>
+      'Aktif uyku vakti programı sırasında değişiklikleri önler.';
 
   @override
   String get protected_access_tile_title => 'Korumalı erişim';
 
   @override
-  String get protected_access_tile_subtitle => 'Mindful\'u cihaz kilidinizle koruyun.';
+  String get protected_access_tile_subtitle =>
+      'Mindful\'u cihaz kilidinizle koruyun.';
 
   @override
-  String get protected_access_no_lock_snack_alert => 'Bu özelliği etkinleştirmek için lütfen önce cihazınızda bir biyometrik kilit ayarlayın.';
+  String get protected_access_no_lock_snack_alert =>
+      'Bu özelliği etkinleştirmek için lütfen önce cihazınızda bir biyometrik kilit ayarlayın.';
 
   @override
-  String get protected_access_removed_lock_snack_alert => 'Cihaz kilidiniz kaldırıldı. Devam etmek için lütfen yeni bir kilit ayarlayın.';
+  String get protected_access_removed_lock_snack_alert =>
+      'Cihaz kilidiniz kaldırıldı. Devam etmek için lütfen yeni bir kilit ayarlayın.';
 
   @override
-  String get protected_access_failed_lock_snack_alert => 'Kimlik doğrulama başarısız oldu. Devam etmek için cihaz kilidinizi doğrulamanız gerekiyor.';
+  String get protected_access_failed_lock_snack_alert =>
+      'Kimlik doğrulama başarısız oldu. Devam etmek için cihaz kilidinizi doğrulamanız gerekiyor.';
 
   @override
   String get tamper_protection_tile_title => 'Kurcalama koruması';
 
   @override
-  String get tamper_protection_tile_subtitle => 'Kaldırmayı önleyin ve uygulamayı durdurmaya zorlayın.';
+  String get tamper_protection_tile_subtitle =>
+      'Kaldırmayı önleyin ve uygulamayı durdurmaya zorlayın.';
 
   @override
-  String get tamper_protection_confirmation_dialog_info => 'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
+  String get tamper_protection_confirmation_dialog_info =>
+      'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
 
   @override
   String get uninstall_window_tile_title => 'Kaldırma penceresi';
 
   @override
-  String get uninstall_window_tile_subtitle => 'Kurcalama koruması seçilen zamandan itibaren 10 dakika içinde devre dışı bırakılabilir.';
+  String get uninstall_window_tile_subtitle =>
+      'Kurcalama koruması seçilen zamandan itibaren 10 dakika içinde devre dışı bırakılabilir.';
 
   @override
   String get invincible_window_tile_title => 'Değiştirilemez mod';
 
   @override
-  String get invincible_window_tile_subtitle => 'Seçilen limitler, seçilen saatten itibaren 10 dakika içinde değiştirilebilir.';
+  String get invincible_window_tile_subtitle =>
+      'Seçilen limitler, seçilen saatten itibaren 10 dakika içinde değiştirilebilir.';
 
   @override
   String get shorts_blocking_tab_title => 'Kısa video engelleyici';
 
   @override
-  String get shorts_blocking_tab_info => 'Web siteleri de dahil olmak üzere Instagram, YouTube, Snapchat ve Facebook gibi platformlarda kısa içeriklere ne kadar zaman harcadığınızı kontrol edin.';
+  String get shorts_blocking_tab_info =>
+      'Web siteleri de dahil olmak üzere Instagram, YouTube, Snapchat ve Facebook gibi platformlarda kısa içeriklere ne kadar zaman harcadığınızı kontrol edin.';
 
   @override
   String get short_content_heading => 'Kısa video içeriği';
@@ -715,13 +814,15 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get short_content_timer_picker_dialog_info => 'Kısa içerik için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, kısa içerik gece yarısına kadar duraklatılacaktır.';
+  String get short_content_timer_picker_dialog_info =>
+      'Kısa içerik için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, kısa içerik gece yarısına kadar duraklatılacaktır.';
 
   @override
   String get instagram_features_tile_title => 'Instagram';
 
   @override
-  String get instagram_features_tile_subtitle => 'Instagram\'daki içeriği kısıtlayın.';
+  String get instagram_features_tile_subtitle =>
+      'Instagram\'daki içeriği kısıtlayın.';
 
   @override
   String get instagram_features_block_reels => 'Reels bölümünü kısıtlayın.';
@@ -733,10 +834,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get snapchat_features_tile_title => 'Snapchat';
 
   @override
-  String get snapchat_features_tile_subtitle => 'Snapchat\'teki içeriği kısıtlayın.';
+  String get snapchat_features_tile_subtitle =>
+      'Snapchat\'teki içeriği kısıtlayın.';
 
   @override
-  String get snapchat_features_block_spotlight => 'Spotlight bölümünü kısıtlayın.';
+  String get snapchat_features_block_spotlight =>
+      'Spotlight bölümünü kısıtlayın.';
 
   @override
   String get snapchat_features_block_discover => 'Keşfet bölümünü kısıtlayın.';
@@ -745,25 +848,29 @@ class AppLocalizationsTr extends AppLocalizations {
   String get youtube_features_tile_title => 'YouTube';
 
   @override
-  String get youtube_features_tile_subtitle => 'Youtube\'daki kısa içeriği kısıtla.';
+  String get youtube_features_tile_subtitle =>
+      'Youtube\'daki kısa içeriği kısıtla.';
 
   @override
   String get facebook_features_tile_title => 'Facebook';
 
   @override
-  String get facebook_features_tile_subtitle => 'Facebook\'ta reelsları kısıtla.';
+  String get facebook_features_tile_subtitle =>
+      'Facebook\'ta reelsları kısıtla.';
 
   @override
   String get reddit_features_tile_title => 'Reddit';
 
   @override
-  String get reddit_features_tile_subtitle => 'Reddit\'teki kısa videoları kısıtla.';
+  String get reddit_features_tile_subtitle =>
+      'Reddit\'teki kısa videoları kısıtla.';
 
   @override
   String get websites_blocking_tab_title => 'Website engelleyici';
 
   @override
-  String get websites_blocking_tab_info => 'Daha güvenli ve daha odaklı bir çevrimiçi deneyim oluşturmak için yetişkinlere yönelik web sitelerini ve seçtiğiniz tüm özel siteleri engelleyin. Gezinmenizin sorumluluğunu üstlenin ve dikkatiniz dağılmasın.';
+  String get websites_blocking_tab_info =>
+      'Daha güvenli ve daha odaklı bir çevrimiçi deneyim oluşturmak için yetişkinlere yönelik web sitelerini ve seçtiğiniz tüm özel siteleri engelleyin. Gezinmenizin sorumluluğunu üstlenin ve dikkatiniz dağılmasın.';
 
   @override
   String get adult_content_heading => 'Yetişkin içeriği';
@@ -772,10 +879,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get block_nsfw_title => 'Nsfw içeriği engelle';
 
   @override
-  String get block_nsfw_subtitle => 'Tarayıcıların yetişkin ve porno web sitelerini açmasını kısıtlayın.';
+  String get block_nsfw_subtitle =>
+      'Tarayıcıların yetişkin ve porno web sitelerini açmasını kısıtlayın.';
 
   @override
-  String get block_nsfw_dialog_info => 'Emin misiniz? Bu işlem geri döndürülemez. Yetişkin siteleri engelleyici AÇIK konuma getirildikten sonra, bu uygulama cihazınızda yüklü olduğu sürece KAPALI konuma getiremezsiniz.';
+  String get block_nsfw_dialog_info =>
+      'Emin misiniz? Bu işlem geri döndürülemez. Yetişkin siteleri engelleyici AÇIK konuma getirildikten sonra, bu uygulama cihazınızda yüklü olduğu sürece KAPALI konuma getiremezsiniz.';
 
   @override
   String get block_nsfw_dialog_button_block_anyway => 'Yinede Engelle';
@@ -784,7 +893,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get blocked_websites_heading => 'Engellenen internet siteleri';
 
   @override
-  String get blocked_websites_empty_list_hint => 'Engellemek istediğiniz dikkat dağıtıcı web sitelerini eklemek için \'+ Web Sitesi Ekle\' düğmesine tıklayın.';
+  String get blocked_websites_empty_list_hint =>
+      'Engellemek istediğiniz dikkat dağıtıcı web sitelerini eklemek için \'+ Web Sitesi Ekle\' düğmesine tıklayın.';
 
   @override
   String get add_website_fab_button => 'Site ekle';
@@ -793,22 +903,26 @@ class AppLocalizationsTr extends AppLocalizations {
   String get add_website_dialog_title => 'Dikkat dağıtıcı siteler';
 
   @override
-  String get add_website_dialog_info => 'Engellemek istediğiniz web sitesinin url\'sini girin.';
+  String get add_website_dialog_info =>
+      'Engellemek istediğiniz web sitesinin url\'sini girin.';
 
   @override
   String get add_website_dialog_is_nsfw => 'Nsfw sitesi mi?';
 
   @override
-  String get add_website_dialog_nsfw_warning => 'Uyarı: Nsfw siteleri eklendikten sonra kaldırılamaz.';
+  String get add_website_dialog_nsfw_warning =>
+      'Uyarı: Nsfw siteleri eklendikten sonra kaldırılamaz.';
 
   @override
   String get add_website_dialog_button_block => 'Engelle';
 
   @override
-  String get add_website_already_exist_snack_alert => 'URL zaten engellenen web siteleri listesine eklenmiştir.';
+  String get add_website_already_exist_snack_alert =>
+      'URL zaten engellenen web siteleri listesine eklenmiştir.';
 
   @override
-  String get add_website_invalid_url_snack_alert => 'Geçersiz URL! Sunucu adresi ayrıştırılamıyor.';
+  String get add_website_invalid_url_snack_alert =>
+      'Geçersiz URL! Sunucu adresi ayrıştırılamıyor.';
 
   @override
   String get remove_website_dialog_title => 'Web sitesini kaldırın';
@@ -822,19 +936,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get focus_tab_title => 'Odak';
 
   @override
-  String get focus_tab_info => 'Odaklanmak için zamana ihtiyacınız olduğunda, türü seçerek, duraklatılacak dikkat dağıtıcı uygulamaları seçerek ve kesintisiz konsantrasyon için Rahatsız Etmeyin özelliğini etkinleştirerek yeni bir oturum başlatın.';
+  String get focus_tab_info =>
+      'Odaklanmak için zamana ihtiyacınız olduğunda, türü seçerek, duraklatılacak dikkat dağıtıcı uygulamaları seçerek ve kesintisiz konsantrasyon için Rahatsız Etmeyin özelliğini etkinleştirerek yeni bir oturum başlatın.';
 
   @override
   String get active_session_card_title => 'Aktif oturum';
 
   @override
-  String get active_session_card_info => 'Aktif bir odaklanma oturumunuz devam ediyor! İlerlemenizi kontrol etmek ve ne kadar zaman geçtiğini görmek için \'Görüntüle\'ye tıklayın.';
+  String get active_session_card_info =>
+      'Aktif bir odaklanma oturumunuz devam ediyor! İlerlemenizi kontrol etmek ve ne kadar zaman geçtiğini görmek için \'Görüntüle\'ye tıklayın.';
 
   @override
   String get active_session_card_view_button => 'Görüntüle';
 
   @override
-  String get focus_distracting_apps_removal_snack_alert => 'Odaklanma Oturumu etkinken dikkat dağıtıcı uygulamalar listesinden uygulama kaldırmaya izin verilmez. Ancak, bu süre zarfında listeye ek uygulamalar ekleyebilirsiniz.';
+  String get focus_distracting_apps_removal_snack_alert =>
+      'Odaklanma Oturumu etkinken dikkat dağıtıcı uygulamalar listesinden uygulama kaldırmaya izin verilmez. Ancak, bu süre zarfında listeye ek uygulamalar ekleyebilirsiniz.';
 
   @override
   String get focus_profile_tile_title => 'Focus profile';
@@ -846,28 +963,33 @@ class AppLocalizationsTr extends AppLocalizations {
   String get focus_session_duration_tile_subtitle => 'Sonsuz (durdurana kadar)';
 
   @override
-  String get focus_session_duration_dialog_info => 'Lütfen bu odaklanma oturumu için istediğiniz süreyi seçin, ne kadar süre odaklanmış ve dikkatiniz dağılmadan kalmak istediğinizi belirleyin.';
+  String get focus_session_duration_dialog_info =>
+      'Lütfen bu odaklanma oturumu için istediğiniz süreyi seçin, ne kadar süre odaklanmış ve dikkatiniz dağılmadan kalmak istediğinizi belirleyin.';
 
   @override
   String get focus_profile_customization_tile_title => 'Profile customization';
 
   @override
-  String get focus_profile_customization_tile_subtitle => 'Customize settings for the selected profile.';
+  String get focus_profile_customization_tile_subtitle =>
+      'Customize settings for the selected profile.';
 
   @override
   String get focus_enforce_tile_title => 'Enforce session';
 
   @override
-  String get focus_enforce_tile_subtitle => 'Prevents ending a session before time ends.';
+  String get focus_enforce_tile_subtitle =>
+      'Prevents ending a session before time ends.';
 
   @override
   String get focus_session_start_fab_button => 'Oturumu başlat';
 
   @override
-  String get focus_session_minimum_apps_snack_alert => 'Odaklanma oturumunu başlatmak için en az bir dikkat dağıtıcı uygulama seçin';
+  String get focus_session_minimum_apps_snack_alert =>
+      'Odaklanma oturumunu başlatmak için en az bir dikkat dağıtıcı uygulama seçin';
 
   @override
-  String get focus_session_already_active_snack_alert => 'Halihazırda aktif bir odaklanma oturumunuz var. Lütfen yeni bir oturum başlatmadan önce mevcut oturumunuzu tamamlayın veya durdurun.';
+  String get focus_session_already_active_snack_alert =>
+      'Halihazırda aktif bir odaklanma oturumunuz var. Lütfen yeni bir oturum başlatmadan önce mevcut oturumunuzu tamamlayın veya durdurun.';
 
   @override
   String get focus_session_type_study => 'Ders çalışma';
@@ -936,7 +1058,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get timeline_tab_title => 'Zaman çizelgesi';
 
   @override
-  String get focus_timeline_tab_info => 'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
+  String get focus_timeline_tab_info =>
+      'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -966,7 +1089,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get your_sessions_heading => 'Seanslarınız';
 
   @override
-  String get your_sessions_empty_list_hint => 'Seçilen gün için hiçbir odak oturumu kaydedilmemiştir.';
+  String get your_sessions_empty_list_hint =>
+      'Seçilen gün için hiçbir odak oturumu kaydedilmemiştir.';
 
   @override
   String get focus_session_tile_timestamp_label => 'Timestamp';
@@ -990,7 +1114,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get active_session_tab_title => 'Oturum';
 
   @override
-  String get active_session_none_warning => 'Aktif oturum bulunamadı. Ana ekrana dönülüyor.';
+  String get active_session_none_warning =>
+      'Aktif oturum bulunamadı. Ana ekrana dönülüyor.';
 
   @override
   String get active_session_dialog_button_keep_pushing => 'Oturuma devam et';
@@ -999,37 +1124,45 @@ class AppLocalizationsTr extends AppLocalizations {
   String get active_session_finish_dialog_title => 'Bitir';
 
   @override
-  String get active_session_finish_dialog_info => 'Güçlü kalın! Değerli bir odaklanma oluşturuyorsunuz. Bu odaklanma seansını bitirmek istediğinize emin misiniz? Fazladan her an hedefleriniz için önemlidir.';
+  String get active_session_finish_dialog_info =>
+      'Güçlü kalın! Değerli bir odaklanma oluşturuyorsunuz. Bu odaklanma seansını bitirmek istediğinize emin misiniz? Fazladan her an hedefleriniz için önemlidir.';
 
   @override
   String get active_session_giveup_dialog_title => 'Vazgeç';
 
   @override
-  String get active_session_giveup_dialog_info => 'Bir saniye! Neredeyse tamamladın, şimdi pes etme! Bu odaklanma oturumunu erken bitirmek istediğinden emin misin? İlerleme kaybolacak.';
+  String get active_session_giveup_dialog_info =>
+      'Bir saniye! Neredeyse tamamladın, şimdi pes etme! Bu odaklanma oturumunu erken bitirmek istediğinden emin misin? İlerleme kaybolacak.';
 
   @override
   String get active_session_reflection_dialog_title => 'Session reflection';
 
   @override
-  String get active_session_reflection_dialog_info => 'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
+  String get active_session_reflection_dialog_info =>
+      'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
 
   @override
-  String get active_session_reflection_dialog_tip => 'Tip: You can always edit this later in the session timeline.';
+  String get active_session_reflection_dialog_tip =>
+      'Tip: You can always edit this later in the session timeline.';
 
   @override
-  String get active_session_giveup_snack_alert => 'Vazgeçtin! Endişelenme, bir dahaki sefere daha iyisini yapabilirsin. Her çaba önemli – sadece devam et';
+  String get active_session_giveup_snack_alert =>
+      'Vazgeçtin! Endişelenme, bir dahaki sefere daha iyisini yapabilirsin. Her çaba önemli – sadece devam et';
 
   @override
-  String get active_session_quote_one => 'Her adım önemlidir, güçlü kalın ve devam edin';
+  String get active_session_quote_one =>
+      'Her adım önemlidir, güçlü kalın ve devam edin';
 
   @override
-  String get active_session_quote_two => 'Odaklanmaya devam et! İnanılmaz bir ilerleme kaydediyorsun';
+  String get active_session_quote_two =>
+      'Odaklanmaya devam et! İnanılmaz bir ilerleme kaydediyorsun';
 
   @override
   String get active_session_quote_three => 'Eziyorsun! Momentumu devam ettir';
 
   @override
-  String get active_session_quote_four => 'Sadece biraz daha kaldı, harika gidiyorsun';
+  String get active_session_quote_four =>
+      'Sadece biraz daha kaldı, harika gidiyorsun';
 
   @override
   String active_session_quote_five(String durationString) {
@@ -1040,7 +1173,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get restriction_groups_tab_title => 'Kısıtlama grupları';
 
   @override
-  String get restriction_groups_tab_info => 'Bir grup uygulama için birleşik bir ekran süresi sınırı belirleyin. Toplam kullanım sınırınıza ulaştığında, odaklanmayı ve dengeyi korumaya yardımcı olmak için gruptaki tüm uygulamalar duraklatılacaktır.';
+  String get restriction_groups_tab_info =>
+      'Bir grup uygulama için birleşik bir ekran süresi sınırı belirleyin. Toplam kullanım sınırınıza ulaştığında, odaklanmayı ve dengeyi korumaya yardımcı olmak için gruptaki tüm uygulamalar duraklatılacaktır.';
 
   @override
   String get restriction_group_time_spent_label => 'Bugün harcanan zaman';
@@ -1052,13 +1186,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get restriction_group_name_tile_title => 'Grup adı';
 
   @override
-  String get restriction_group_name_picker_dialog_info => 'Kısıtlama grubunun kolayca tanımlanmasına ve yönetilmesine yardımcı olmak için bir ad girin.';
+  String get restriction_group_name_picker_dialog_info =>
+      'Kısıtlama grubunun kolayca tanımlanmasına ve yönetilmesine yardımcı olmak için bir ad girin.';
 
   @override
   String get restriction_group_timer_tile_title => 'Grup zamanlayıcısı';
 
   @override
-  String get restriction_group_timer_picker_dialog_info => 'Bu grup için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, bu gruptaki tüm uygulamalar gece yarısına kadar duraklatılacaktır.';
+  String get restriction_group_timer_picker_dialog_info =>
+      'Bu grup için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, bu gruptaki tüm uygulamalar gece yarısına kadar duraklatılacaktır.';
 
   @override
   String get restriction_group_active_period_tile_title => 'Grup aktif dönemi';
@@ -1072,10 +1208,12 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get restriction_group_invalid_limits_snack_alert => 'Bir zamanlayıcı ya da aktif süre sınırı belirleyin.';
+  String get restriction_group_invalid_limits_snack_alert =>
+      'Bir zamanlayıcı ya da aktif süre sınırı belirleyin.';
 
   @override
-  String get notifications_empty_list_hint => 'No notifications have been batched for the day.';
+  String get notifications_empty_list_hint =>
+      'No notifications have been batched for the day.';
 
   @override
   String get conversations_label => 'Conversations';
@@ -1084,7 +1222,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get last_24_hours_heading => 'Son 24 Saat';
 
   @override
-  String get notification_timeline_tab_info => 'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
+  String get notification_timeline_tab_info =>
+      'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
 
   @override
   String get monthly_label => 'Monthly';
@@ -1093,16 +1232,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get daily_label => 'Daily';
 
   @override
-  String get search_notifications_sheet_info => 'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+  String get search_notifications_sheet_info =>
+      'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
 
   @override
   String get search_notifications_hint => 'Search notifications...';
 
   @override
-  String get search_notifications_empty_list_hint => 'No notifications found matching your search.';
+  String get search_notifications_empty_list_hint =>
+      'No notifications found matching your search.';
 
   @override
-  String get app_info_none_warning => 'Verilen paket için uygulama bulunamadı. Ana ekrana dönülüyor.';
+  String get app_info_none_warning =>
+      'Verilen paket için uygulama bulunamadı. Ana ekrana dönülüyor.';
 
   @override
   String get emergency_fab_button => 'Acil durum';
@@ -1116,13 +1258,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get emergency_dialog_button_use_anyway => 'Yine de kullan';
 
   @override
-  String get emergency_started_snack_alert => 'Uygulama engelleyici duraklatıldı ve 5 dakika içinde engellemeye devam edecek.';
+  String get emergency_started_snack_alert =>
+      'Uygulama engelleyici duraklatıldı ve 5 dakika içinde engellemeye devam edecek.';
 
   @override
-  String get emergency_already_active_snack_alert => 'Uygulama engelleyici şu anda ya duraklatılmış ya da etkin değil. Bildirimler etkinse, kalan süreyle ilgili güncellemeler alırsınız.';
+  String get emergency_already_active_snack_alert =>
+      'Uygulama engelleyici şu anda ya duraklatılmış ya da etkin değil. Bildirimler etkinse, kalan süreyle ilgili güncellemeler alırsınız.';
 
   @override
-  String get emergency_no_pass_left_snack_alert => 'Tüm acil durum geçişlerinizi kullandınız. Engellenen uygulamalar gece yarısına veya etkin odaklanma oturumu sona erene kadar engellenmiş olarak kalacaktır.';
+  String get emergency_no_pass_left_snack_alert =>
+      'Tüm acil durum geçişlerinizi kullandınız. Engellenen uygulamalar gece yarısına veya etkin odaklanma oturumu sona erene kadar engellenmiş olarak kalacaktır.';
 
   @override
   String get app_limit_status_not_set => 'Belirlenmemiş';
@@ -1131,13 +1276,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get app_timer_tile_title => 'Uygulama zamanlayıcı';
 
   @override
-  String get app_timer_picker_dialog_info => 'Bu uygulama için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, uygulama gece yarısına kadar duraklatılacaktır.';
+  String get app_timer_picker_dialog_info =>
+      'Bu uygulama için günlük bir zaman sınırı belirleyin. Sınırınıza ulaşıldığında, uygulama gece yarısına kadar duraklatılacaktır.';
 
   @override
   String get usage_reminders_tile_title => 'Usage reminders';
 
   @override
-  String get usage_reminders_tile_subtitle => 'Gentle nudges when using timed apps.';
+  String get usage_reminders_tile_subtitle =>
+      'Gentle nudges when using timed apps.';
 
   @override
   String get app_launch_limit_tile_title => 'Başlatma limiti';
@@ -1148,7 +1295,8 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get app_launch_limit_picker_dialog_info => 'Bu uygulamayı her gün kaç kez açabileceğinizi ayarlayın. Sınıra ulaşıldığında, gece yarısına kadar duraklatılacaktır.';
+  String get app_launch_limit_picker_dialog_info =>
+      'Bu uygulamayı her gün kaç kez açabileceğinizi ayarlayın. Sınıra ulaşıldığında, gece yarısına kadar duraklatılacaktır.';
 
   @override
   String get app_active_period_tile_title => 'Aktif dönem';
@@ -1162,7 +1310,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get internet_access_tile_title => 'Internet erişimi';
 
   @override
-  String get internet_access_tile_subtitle => 'Uygulamanın internetini engellemek için kapatın.';
+  String get internet_access_tile_subtitle =>
+      'Uygulamanın internetini engellemek için kapatın.';
 
   @override
   String internet_access_blocked_snack_alert(String appName) {
@@ -1186,13 +1335,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get go_to_app_settings_tile_title => 'Uygulama ayarlarına gidin';
 
   @override
-  String get go_to_app_settings_tile_subtitle => 'Bildirimler, izinler, depolama ve daha fazlası gibi uygulama ayarlarını yönetin.';
+  String get go_to_app_settings_tile_subtitle =>
+      'Bildirimler, izinler, depolama ve daha fazlası gibi uygulama ayarlarını yönetin.';
 
   @override
   String get include_in_stats_tile_title => 'Ekran kullanımına dahil et';
 
   @override
-  String get include_in_stats_tile_subtitle => 'Bu uygulamayı toplam ekran kullanımından hariç tutmak için kapatın.';
+  String get include_in_stats_tile_subtitle =>
+      'Bu uygulamayı toplam ekran kullanımından hariç tutmak için kapatın.';
 
   @override
   String app_excluded_from_stats_snack_alert(String appName) {
@@ -1229,13 +1380,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get amoled_dark_tile_title => 'AMOLED siyah';
 
   @override
-  String get amoled_dark_tile_subtitle => 'Koyu tema için saf siyah rengini kullanın.';
+  String get amoled_dark_tile_subtitle =>
+      'Koyu tema için saf siyah rengini kullanın.';
 
   @override
   String get dynamic_colors_tile_title => 'Dinamik renkler';
 
   @override
-  String get dynamic_colors_tile_subtitle => 'Destekleniyorsa cihaz renklerini kullanın.';
+  String get dynamic_colors_tile_subtitle =>
+      'Destekleniyorsa cihaz renklerini kullanın.';
 
   @override
   String get defaults_heading => 'Varsayılanlar';
@@ -1268,16 +1421,19 @@ class AppLocalizationsTr extends AppLocalizations {
   String get service_heading => 'Servis';
 
   @override
-  String get service_stopping_warning => 'Mindful beklenmedik bir şekilde çalışmayı durdurursa, lütfen arka planda çalışmaya devam etmesi için \'Pil Optimizasyonunu Yoksay\' iznini verin. Sorun devam ederse, kesintisiz performans için Mindful\'u beyaz listeye almayı deneyin.';
+  String get service_stopping_warning =>
+      'Mindful beklenmedik bir şekilde çalışmayı durdurursa, lütfen arka planda çalışmaya devam etmesi için \'Pil Optimizasyonunu Yoksay\' iznini verin. Sorun devam ederse, kesintisiz performans için Mindful\'u beyaz listeye almayı deneyin.';
 
   @override
   String get whitelist_app_tile_title => 'Beyaz Liste Mindful';
 
   @override
-  String get whitelist_app_tile_subtitle => 'Mindfulun otomatik başlatılmasına izin ver.';
+  String get whitelist_app_tile_subtitle =>
+      'Mindfulun otomatik başlatılmasına izin ver.';
 
   @override
-  String get whitelist_app_unsupported_snack_alert => 'Bu cihaz, otomatik başlatma yönetimini desteklemiyor.';
+  String get whitelist_app_unsupported_snack_alert =>
+      'Bu cihaz, otomatik başlatma yönetimini desteklemiyor.';
 
   @override
   String get database_tab_title => 'Veritabanı';
@@ -1298,31 +1454,37 @@ class AppLocalizationsTr extends AppLocalizations {
   String get crash_logs_heading => 'Çökme günlüğü';
 
   @override
-  String get crash_logs_info => 'Herhangi bir sorunla karşılaşırsanız, bunu GitHub üzerinde log dosyasıyla birlikte rapor edebilirsiniz. Dosya, cihazınızın üreticisi, modeli, Android sürümü, SDK sürümü ve çökme günlükleri gibi detayları içerecektir. Bu bilgiler, problemi daha etkili bir şekilde tanımlamamıza ve çözmemize yardımcı olacaktır.';
+  String get crash_logs_info =>
+      'Herhangi bir sorunla karşılaşırsanız, bunu GitHub üzerinde log dosyasıyla birlikte rapor edebilirsiniz. Dosya, cihazınızın üreticisi, modeli, Android sürümü, SDK sürümü ve çökme günlükleri gibi detayları içerecektir. Bu bilgiler, problemi daha etkili bir şekilde tanımlamamıza ve çözmemize yardımcı olacaktır.';
 
   @override
   String get crash_logs_export_tile_title => 'Çökme günlüğünü dışarı aktar';
 
   @override
-  String get crash_logs_export_tile_subtitle => 'Çökme günlüğünü json dosyası olarak dışarı aktar.';
+  String get crash_logs_export_tile_subtitle =>
+      'Çökme günlüğünü json dosyası olarak dışarı aktar.';
 
   @override
   String get crash_logs_view_tile_title => 'Günlüğü görüntüle';
 
   @override
-  String get crash_logs_view_tile_subtitle => 'Saklanan çökme günlüklerini inceleyin.';
+  String get crash_logs_view_tile_subtitle =>
+      'Saklanan çökme günlüklerini inceleyin.';
 
   @override
-  String get crash_logs_empty_list_hint => 'Şu ana kadar hiçbir çökme kaydedilmedi.';
+  String get crash_logs_empty_list_hint =>
+      'Şu ana kadar hiçbir çökme kaydedilmedi.';
 
   @override
   String get crash_logs_clear_tile_title => 'Günlükleri temizle';
 
   @override
-  String get crash_logs_clear_tile_subtitle => 'Tüm çökme raporlarını veritabanından kaldırın.';
+  String get crash_logs_clear_tile_subtitle =>
+      'Tüm çökme raporlarını veritabanından kaldırın.';
 
   @override
-  String get crash_logs_clear_dialog_info => 'Veritabanından tüm çökme günlüklerini silmek istediğinizden emin misiniz?';
+  String get crash_logs_clear_dialog_info =>
+      'Veritabanından tüm çökme günlüklerini silmek istediğinizden emin misiniz?';
 
   @override
   String get crash_logs_clear_dialog_button_clear_anyway => 'Temizle';
@@ -1340,7 +1502,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get full_changelog_tile_title => 'Tam değişiklik notları';
 
   @override
-  String get redirected_to_github_subtitle => 'Şuraya yönlendirileceksiniz: GitHub.';
+  String get redirected_to_github_subtitle =>
+      'Şuraya yönlendirileceksiniz: GitHub.';
 
   @override
   String get contribute_heading => 'Katkıda bulunun';
@@ -1361,13 +1524,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get write_email_tile_title => 'Bize e-posta ile yazın';
 
   @override
-  String get write_email_tile_subtitle => 'E-posta uygulamasına yönlendirileceksiniz.';
+  String get write_email_tile_subtitle =>
+      'E-posta uygulamasına yönlendirileceksiniz.';
 
   @override
   String get privacy_policy_heading => 'Gizlilik politikası';
 
   @override
-  String get privacy_policy_info => 'Mindful, gizliliğinizi korumaya kararlıdır. Herhangi bir kullanıcı verisini toplamaz, depolamaz veya aktarmaz. Uygulama tamamen çevrimdışıdır ve internet bağlantısı gerektirmez, böylece kişisel bilgileriniz cihazınızda özel ve güvenli kalır. Ücretsiz ve Açık Kaynak Yazılım (FOSS) uygulaması olarak, Mindful, verileriniz üzerinde tam şeffaflık ve kullanıcı kontrolü sağlar.';
+  String get privacy_policy_info =>
+      'Mindful, gizliliğinizi korumaya kararlıdır. Herhangi bir kullanıcı verisini toplamaz, depolamaz veya aktarmaz. Uygulama tamamen çevrimdışıdır ve internet bağlantısı gerektirmez, böylece kişisel bilgileriniz cihazınızda özel ve güvenli kalır. Ücretsiz ve Açık Kaynak Yazılım (FOSS) uygulaması olarak, Mindful, verileriniz üzerinde tam şeffaflık ve kullanıcı kontrolü sağlar.';
 
   @override
   String get more_details_button => 'Daha fazla bilgi';

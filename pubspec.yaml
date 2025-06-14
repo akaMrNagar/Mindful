@@ -16,28 +16,28 @@ dependencies:
   # Runtime dependencies
   # UI
   fluentui_system_icons: ^1.1.210
-  fl_chart: ^0.63.0
+  fl_chart: ^1.0.0
   animated_flip_counter: ^0.3.4
-  flutter_confetti: ^0.3.0
+  flutter_confetti: ^0.5.1
   smooth_page_indicator: ^1.2.0+3
-  flutter_slidable: ^3.1.2
+  flutter_slidable: ^4.0.0
   dynamic_color: ^1.7.0
   flutter_svg: ^2.0.17
 
   # Animation
   flutter_animate: ^4.2.0+1
-  skeletonizer: ^1.4.1+1
+  skeletonizer: ^2.0.1
 
   # Database and Storage
   path: ^1.9.0
   path_provider: ^2.1.2
-  file_picker: ^8.0.7
+  file_picker: ^10.2.0
   sqlite3: ^2.4.5
   drift: ^2.18.0
   drift_flutter: ^0.2.0
 
   # Util
-  intl: ^0.19.0
+  intl: any
   sliver_tools: ^0.2.12
   flutter_riverpod: ^2.5.1
   local_auth: ^2.3.0
@@ -50,7 +50,7 @@ dev_dependencies:
   # Development dependencies.
   # Generator =>  dart run build_runner build
   build_runner: ^2.4.11
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
   drift_dev: ^2.18.0
   
 
@@ -61,6 +61,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   assets:
