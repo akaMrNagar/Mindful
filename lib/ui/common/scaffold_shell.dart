@@ -124,7 +124,8 @@ class _ScaffoldShellState extends State<ScaffoldShell>
                 final currentOffset = notification.metrics.pixels;
 
                 /// Show/Hide bottom bar
-                if (currentOffset >= _wholeScreenScrollOffSet + 1) {
+                if (currentOffset >= widget.appBarExpandedHeight &&
+                    (currentOffset >= _wholeScreenScrollOffSet + 1)) {
                   _isBottomNavVisible.value = false;
                 } else if (currentOffset <= _wholeScreenScrollOffSet - 1) {
                   _isBottomNavVisible.value = true;

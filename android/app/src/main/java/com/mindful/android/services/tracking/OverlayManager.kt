@@ -20,6 +20,7 @@ import androidx.core.graphics.drawable.toBitmap
 import com.mindful.android.R
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.device.NotificationHelper.USAGE_REMINDERS_CHANNEL_ID
+import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.models.RestrictionState
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
 import com.mindful.android.services.accessibility.MindfulAccessibilityService.Companion.ACTION_PERFORM_HOME_PRESS
@@ -146,13 +147,22 @@ class OverlayManager(
                 .start()
 
             // Fade-out and remove after delay
-            Handler(Looper.getMainLooper()).postDelayed({
-                toastView.animate()
-                    .alpha(0f)
-                    .setDuration(500)
-                    .withEndAction { runCatching { windowManager.removeView(toastView) } }
-                    .start()
-            }, 5000)
+            runCatching {
+                Handler(Looper.getMainLooper()).let {
+                    it.postDelayed({
+                        toastView.animate()
+                            .alpha(0f)
+                            .setDuration(500)
+                            .withEndAction {
+                                it.postDelayed({ windowManager.removeView(toastView) }, 100L)
+                            }
+                            .start()
+                    }, 5000)
+                }
+            }.getOrElse { e ->
+                Log.e(TAG, "showToastOverlay: Failed to show toast overlay", e)
+                SharedPrefsHelper.insertCrashLogToPrefs(context, e)
+            }
         }
     }
 

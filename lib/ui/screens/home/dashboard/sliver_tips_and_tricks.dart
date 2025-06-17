@@ -27,102 +27,17 @@ class SliverTipsAndTricks extends StatefulWidget {
 }
 
 class _SliverTipsAndTricksState extends State<SliverTipsAndTricks> {
-  Map<String, void Function(BuildContext context)> getAllTips(
-    BuildContext ctx,
-  ) =>
-      {
-        /// Home screen
-        ctx.locale.glance_usage_tip: (context) {},
-        ctx.locale.notification_blocking_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.notifications.index),
-        ctx.locale.usage_history_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.statistics.index),
-        ctx.locale.bedtime_reminder_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.bedtime.index),
-        ctx.locale.custom_blocking_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.statistics.index),
-        ctx.locale.notification_batching_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.notifications.index),
-        ctx.locale.notification_scheduling_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.notifications.index),
-        ctx.locale.data_usage_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.statistics.index),
-        ctx.locale.block_internet_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.statistics.index),
-        ctx.locale.emergency_passes_tip: (context) =>
-            TabControllerProvider.maybeOf(context)
-                ?.animateToTab(DefaultHomeTab.bedtime.index),
-
-        /// Settings screen
-        ctx.locale.backup_usage_db_tip: (context) => Navigator.of(context)
-            .pushNamed(AppRoutes.settingsPath, arguments: {"tab": 1}),
-        ctx.locale.dynamic_material_color_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.settingsPath),
-        ctx.locale.amoled_dark_theme_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.settingsPath),
-        ctx.locale.customize_usage_history_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.settingsPath),
-        ctx.locale.battery_optimization_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.settingsPath),
-
-        /// Parental controls screen
-        ctx.locale.invincible_mode_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.parentalControlsPath),
-        ctx.locale.tamper_protection_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.parentalControlsPath),
-
-        ctx.locale.parental_controls_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.parentalControlsPath),
-
-        /// Focus mode screen
-        ctx.locale.focus_mode_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.focusModePath),
-        ctx.locale.session_timeline_tip: (context) => Navigator.of(context)
-            .pushNamed(AppRoutes.focusModePath, arguments: {"tab": 1}),
-
-        /// Changelogs screen
-        ctx.locale.quick_focus_tile_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.changeLogsPath),
-        ctx.locale.app_shortcuts_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.changeLogsPath),
-
-        /// Shorts blocking screen
-        ctx.locale.accessibility_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.shortsBlockingPath),
-        ctx.locale.short_content_blocking_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.shortsBlockingPath),
-
-        /// Websites blocking screen
-        ctx.locale.websites_blocking_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.websitesBlockingPath),
-
-        /// Restriction groups screen
-        ctx.locale.grouped_apps_blocking_tip: (context) =>
-            Navigator.of(context).pushNamed(AppRoutes.restrictionGroupsPath),
-      };
-
-  final Map<String, void Function(BuildContext context)> _allTips = {};
-  final List<String> _randomTipsKeys = [];
+  List<MapEntry<String, void Function(BuildContext)>> _randomTips = [];
 
   @override
-  void didChangeDependencies() {
-    _allTips
-      ..clear()
-      ..addAll(getAllTips(context));
-
-    _randomTipsKeys
-      ..clear()
-      ..addAll((_allTips.keys.toList()..shuffle()).take(5));
-
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => setState(
+        () => _randomTips =
+            (_buildTips(context).entries.toList()..shuffle()).take(5).toList(),
+      ),
+    );
   }
 
   @override
@@ -130,39 +45,90 @@ class _SliverTipsAndTricksState extends State<SliverTipsAndTricks> {
     return MultiSliver(
       children: [
         const ContentSectionHeader(title: "Tips & Tricks"),
-
-        /// List
         SliverList.builder(
-          itemCount: _randomTipsKeys.length,
+          itemCount: _randomTips.length,
           itemBuilder: (context, index) {
-            final tip = _randomTipsKeys[index];
-            final tipParts = _randomTipsKeys[index].split("?");
+            final tip = _randomTips[index];
 
             return DefaultListTile(
-              onPressed: () => _allTips[tip]?.call(context),
-              accent: Colors.primaries[index % Colors.primaries.length],
-              position: getItemPositionInList(index, _randomTipsKeys.length),
-              leadingIcon: FluentIcons.sparkle_20_filled,
-              title: RichText(
-                text: TextSpan(
-                  text: "${tipParts.first}?",
-                  style: TextStyle(
-                    color: Theme.of(context).iconTheme.color,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  children: [
-                    TextSpan(
-                      text: tipParts.last,
-                      style: const TextStyle(fontWeight: FontWeight.normal),
-                    )
-                  ],
-                ),
+              onPressed: () => tip.value.call(context),
+              position: getItemPositionInList(index, _randomTips.length),
+              leading: Icon(
+                FluentIcons.sparkle_20_filled,
+                color: Colors.primaries[index % Colors.primaries.length],
               ),
+              titleText: tip.key,
             );
           },
         ),
       ],
     );
+  }
+
+  Map<String, void Function(BuildContext)> _buildTips(BuildContext ctx) {
+    void goToSettings({int? tab}) =>
+        Navigator.of(ctx).pushNamed(AppRoutes.settingsPath,
+            arguments: tab != null ? {"tab": tab} : null);
+
+    void goToTab(DefaultHomeTab tab) =>
+        TabControllerProvider.maybeOf(ctx)?.animateToTab(tab.index);
+
+    return {
+      /// Home screen
+      ctx.locale.glance_usage_tip: (_) {},
+      ctx.locale.notification_blocking_tip: (_) =>
+          goToTab(DefaultHomeTab.notifications),
+      ctx.locale.usage_history_tip: (_) => goToTab(DefaultHomeTab.statistics),
+      ctx.locale.bedtime_reminder_tip: (_) => goToTab(DefaultHomeTab.bedtime),
+      ctx.locale.custom_blocking_tip: (_) => goToTab(DefaultHomeTab.statistics),
+      ctx.locale.notification_batching_tip: (_) =>
+          goToTab(DefaultHomeTab.notifications),
+      ctx.locale.notification_scheduling_tip: (_) =>
+          goToTab(DefaultHomeTab.notifications),
+      ctx.locale.data_usage_tip: (_) => goToTab(DefaultHomeTab.statistics),
+      ctx.locale.block_internet_tip: (_) => goToTab(DefaultHomeTab.statistics),
+      ctx.locale.emergency_passes_tip: (_) => goToTab(DefaultHomeTab.bedtime),
+
+      /// Settings screen
+      ctx.locale.backup_usage_db_tip: (_) => goToSettings(tab: 1),
+      ctx.locale.dynamic_material_color_tip: (_) => goToSettings(),
+      ctx.locale.amoled_dark_theme_tip: (_) => goToSettings(),
+      ctx.locale.customize_usage_history_tip: (_) => goToSettings(),
+      ctx.locale.battery_optimization_tip: (_) => goToSettings(),
+
+      /// Parental controls
+      ctx.locale.invincible_mode_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.parentalControlsPath),
+      ctx.locale.tamper_protection_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.parentalControlsPath),
+      ctx.locale.parental_controls_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.parentalControlsPath),
+
+      /// Focus mode
+      ctx.locale.focus_mode_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.focusModePath),
+      ctx.locale.session_timeline_tip: (_) => Navigator.of(ctx)
+          .pushNamed(AppRoutes.focusModePath, arguments: {"tab": 1}),
+
+      /// Changelogs
+      ctx.locale.quick_focus_tile_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.changeLogsPath),
+      ctx.locale.app_shortcuts_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.changeLogsPath),
+
+      /// Shorts blocking
+      ctx.locale.accessibility_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.shortsBlockingPath),
+      ctx.locale.short_content_blocking_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.shortsBlockingPath),
+
+      /// Websites blocking
+      ctx.locale.websites_blocking_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.websitesBlockingPath),
+
+      /// Restriction groups
+      ctx.locale.grouped_apps_blocking_tip: (_) =>
+          Navigator.of(ctx).pushNamed(AppRoutes.restrictionGroupsPath),
+    };
   }
 }
