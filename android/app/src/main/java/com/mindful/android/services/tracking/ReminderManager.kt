@@ -47,15 +47,24 @@ class ReminderManager(
             duration = state.timeLeftMillis,
             interval = 60000L,
             timeUnit = TimeUnit.MILLISECONDS,
-            onTick = { elapsedMinutes ->
-                val elapsed = elapsedMinutes.toInt()
-                Log.d(TAG, "onTick: Ticked at $elapsed minute.")
+            onTick = { elapsedMs ->
+                val elapsedMinutes = (elapsedMs / 60000L).toInt()
+                Log.d(TAG, "onTick: Ticked after $elapsedMinutes minute.")
 
                 when (state.reminderType) {
                     ReminderType.NONE -> return@PreciseCountDownExecutor
-                    ReminderType.TOAST -> onToastReminder(packageName, elapsed, state)
-                    ReminderType.NOTIFICATION -> onNotificationReminder(packageName, elapsed, state)
-                    ReminderType.MODAL_SHEET -> onFullScreenReminder(packageName, elapsed, state)
+                    ReminderType.TOAST -> onToastReminder(packageName, elapsedMinutes, state)
+                    ReminderType.NOTIFICATION -> onNotificationReminder(
+                        packageName,
+                        elapsedMinutes,
+                        state
+                    )
+
+                    ReminderType.MODAL_SHEET -> onFullScreenReminder(
+                        packageName,
+                        elapsedMinutes,
+                        state
+                    )
                 }
             },
 
@@ -100,12 +109,12 @@ class ReminderManager(
         elapsedMinutes: Int,
         state: RestrictionState,
     ) {
-        val screenTimeUsed = (state.screenTimeUsed / 60) + elapsedMinutes
+        /// Return if not the desired trigger
+        val totalElapsedMinutes = ((state.screenTimeUsed / 60) + elapsedMinutes).toInt()
+        if (!reminderTriggers.remove(totalElapsedMinutes)) return
 
-        // if used screen time is multiple of [trigger interval]
-        if (screenTimeUsed % triggerInterval == 0L) {
-            overlayManager.showToastOverlay(packageName, screenTimeUsed.toInt())
-        }
+        Log.d(TAG, "onToastReminder: Showing toast at $totalElapsedMinutes")
+        overlayManager.showToastOverlay(packageName, totalElapsedMinutes)
     }
 
     private fun onNotificationReminder(
@@ -113,12 +122,12 @@ class ReminderManager(
         elapsedMinutes: Int,
         state: RestrictionState,
     ) {
-        val screenTimeUsed = (state.screenTimeUsed / 60) + elapsedMinutes
+        /// Return if not the desired trigger
+        val totalElapsedMinutes = ((state.screenTimeUsed / 60) + elapsedMinutes).toInt()
+        if (!reminderTriggers.remove(totalElapsedMinutes)) return
 
-        // if used screen time is multiple of [trigger interval]
-        if (screenTimeUsed % triggerInterval == 0L) {
-            overlayManager.showNotification(packageName, screenTimeUsed.toInt())
-        }
+        Log.d(TAG, "onNotificationReminder: Showing notification at $totalElapsedMinutes")
+        overlayManager.showNotification(packageName, totalElapsedMinutes)
     }
 
     private fun populateReminderTriggers(state: RestrictionState) {
@@ -134,7 +143,7 @@ class ReminderManager(
 
             ReminderType.TOAST,
             ReminderType.NOTIFICATION,
-            -> {
+                -> {
                 // Add all multiples of [trigger interval] minutes after current usage
                 val usedMinutes = state.screenTimeUsed / 60
                 val limitMinutes = state.screenTimeLimit / 60
