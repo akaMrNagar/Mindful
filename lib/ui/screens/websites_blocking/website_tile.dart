@@ -45,14 +45,14 @@ class WebsiteTile extends ConsumerWidget {
         child: DefaultListTile(
           position: ItemPosition.fit,
           margin: const EdgeInsets.all(0),
-          onPressed: () {
+          onPressed: isRemovable ? () {
             Navigator.of(context).pushNamed(
               AppRoutes.webDashboardPath,
               arguments: {
                 "host": websitehost,
               },
             );
-          },
+          } : null,
           leading: RoundedContainer(
             width: 14,
             height: 14,
