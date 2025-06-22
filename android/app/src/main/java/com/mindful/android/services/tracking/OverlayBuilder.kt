@@ -126,6 +126,8 @@ object OverlayBuilder {
                 RestrictionType.FOCUS -> R.string.app_paused_restriction_focus_mode
                 RestrictionType.BEDTIME -> R.string.app_paused_restriction_bedtime_mode
                 RestrictionType.LAUNCH_COUNT -> R.string.app_paused_restriction_launch_count
+                RestrictionType.WEB_TIMER -> R.string.app_paused_restriction_app_timer
+                RestrictionType.WEB_ACTIVE_PERIOD -> R.string.app_paused_restriction_app_active_period
                 RestrictionType.APP_TIMER -> R.string.app_paused_restriction_app_timer
                 RestrictionType.APP_ACTIVE_PERIOD -> R.string.app_paused_restriction_app_active_period
                 RestrictionType.GROUP_TIMER -> R.string.app_paused_restriction_group_timer
@@ -236,6 +238,13 @@ object OverlayBuilder {
 
             RestrictionType.LAUNCH_COUNT ->
                 context.getString(R.string.app_paused_reason_launch_count_out)
+
+            RestrictionType.WEB_TIMER ->
+                if (isLimitExhausted) context.getString(R.string.app_paused_reason_app_timer_out)
+                else context.getString(R.string.app_paused_reason_app_timer_left)
+
+            RestrictionType.WEB_ACTIVE_PERIOD ->
+                context.getString(R.string.app_paused_reason_app_active_period_over)
 
             RestrictionType.APP_TIMER ->
                 if (isLimitExhausted) context.getString(R.string.app_paused_reason_app_timer_out)

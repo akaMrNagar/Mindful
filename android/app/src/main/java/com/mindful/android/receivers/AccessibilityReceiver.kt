@@ -8,12 +8,15 @@ import android.util.Log
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_ACCESSIBILITY_ACTIVE
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_ACCESSIBILITY_INACTIVE
+import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_WEB_EVENT
 import com.mindful.android.services.accessibility.TrackingManager.Companion.ACTION_NEW_APP_LAUNCHED
 import com.mindful.android.services.accessibility.TrackingManager.Companion.EXTRA_PACKAGE_NAME
+import com.mindful.android.services.accessibility.TrackingManager.Companion.EXTRA_HOST_NAME
 import com.mindful.android.utils.Utils
 
 class AccessibilityReceiver(
     private val onServiceStatusChanged: ((isActive: Boolean) -> Unit)? = null,
+    private val onNewWebEvent: ((host: String) -> Unit)? = null,
     private val onNewAppLaunched: ((packageName: String) -> Unit)? = null,
 
     ) : BroadcastReceiver() {
@@ -28,6 +31,7 @@ class AccessibilityReceiver(
                 IntentFilter().apply {
                     addAction(ACTION_ACCESSIBILITY_ACTIVE)
                     addAction(ACTION_ACCESSIBILITY_INACTIVE)
+                    addAction(ACTION_NEW_WEB_EVENT)
                     addAction(ACTION_NEW_APP_LAUNCHED)
                 },
             )
@@ -51,6 +55,10 @@ class AccessibilityReceiver(
             when (it.action) {
                 ACTION_ACCESSIBILITY_ACTIVE -> onServiceStatusChanged?.invoke(true)
                 ACTION_ACCESSIBILITY_INACTIVE -> onServiceStatusChanged?.invoke(false)
+                ACTION_NEW_WEB_EVENT -> it.getStringExtra(EXTRA_HOST_NAME)
+                    ?.let { host ->
+                        onNewWebEvent?.invoke(host)
+                    }
                 ACTION_NEW_APP_LAUNCHED -> it.getStringExtra(EXTRA_PACKAGE_NAME)
                     ?.let { packageName ->
                         onNewAppLaunched?.invoke(packageName)

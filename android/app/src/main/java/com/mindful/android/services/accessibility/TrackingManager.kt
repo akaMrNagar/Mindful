@@ -15,8 +15,10 @@ class TrackingManager(
     companion object {
         const val ACTION_ACCESSIBILITY_ACTIVE = "com.mindful.android.action.accessibilityActive"
         const val ACTION_ACCESSIBILITY_INACTIVE = "com.mindful.android.action.accessibilityInactive"
+        const val ACTION_NEW_WEB_EVENT = "com.mindful.android.action.newWebEvent"
         const val ACTION_NEW_APP_LAUNCHED = "com.mindful.android.action.newAppLaunched"
         const val EXTRA_PACKAGE_NAME: String = "com.mindful.android.extra.packageName"
+        const val EXTRA_HOST_NAME: String = "com.mindful.android.extra.hostName"
     }
 
     private var lastActiveApp: String = ""
@@ -25,10 +27,12 @@ class TrackingManager(
     fun onNewEvent(packageName: String) {
         if (lastActiveApp != packageName && packageName != SYSTEM_UI_PACKAGE) {
             lastActiveApp = packageName
-            broadcastEvent(ACTION_NEW_APP_LAUNCHED, packageName)
+            broadcastEvent(ACTION_NEW_APP_LAUNCHED, Pair(EXTRA_PACKAGE_NAME, packageName))
         }
     }
 
+    @WorkerThread
+    fun onNewWebEvent(host: String) = broadcastEvent(ACTION_NEW_WEB_EVENT, Pair(EXTRA_HOST_NAME, host))
 
     // Called when accessibility service is stopped
     fun startManualTracking() = broadcastEvent(ACTION_ACCESSIBILITY_INACTIVE)
@@ -37,11 +41,11 @@ class TrackingManager(
     fun stopManualTracking() = broadcastEvent(ACTION_ACCESSIBILITY_ACTIVE)
 
 
-    private fun broadcastEvent(action: String, extraPackage: String? = null) {
+    private fun broadcastEvent(action: String, extraData: Pair<String, String>? = null) {
         try {
             val intent = Intent(action).apply {
                 setPackage(context.packageName)
-                extraPackage?.let { putExtra(EXTRA_PACKAGE_NAME, it) }
+                extraData?.let { putExtra(it.first, it.second) }
             }
             context.sendBroadcast(intent)
         } catch (e: Exception) {

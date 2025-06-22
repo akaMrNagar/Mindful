@@ -19,6 +19,8 @@ import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.device.PermissionsHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.helpers.usages.AppsUsageHelper.getAppsUsageForInterval
+import com.mindful.android.models.TimeTracker
+import com.mindful.android.models.WebRestriction
 import com.mindful.android.models.AppRestriction
 import com.mindful.android.models.BedtimeSchedule
 import com.mindful.android.models.FocusSession
@@ -132,9 +134,26 @@ class FgMethodCallHandler(
                 )
             }
 
+            "getWebTimeSpent" -> {
+                val timeTrackers = trackerServiceConn.service?.getRestrictionManager?.getWebTimeTrackers
+                    ?: mapOf<String, TimeTracker>()
+                val host = call.arguments() ?: ""
+                val timetracker = timeTrackers.getOrDefault(host, TimeTracker())
+                result.success(
+                    timetracker.timeSpent
+                )
+            }
+
             "getAppsLaunchCount" -> {
                 result.success(
                     trackerServiceConn.service?.getRestrictionManager?.getAppsLaunchCount
+                        ?: mapOf<String, Int>()
+                )
+            }
+
+            "getWebLaunchCount" -> {
+                result.success(
+                    trackerServiceConn.service?.getRestrictionManager?.getWebLaunchCount
                         ?: mapOf<String, Int>()
                 )
             }
@@ -155,12 +174,19 @@ class FgMethodCallHandler(
             // ==============================================================================================================
             // ====================================== SERVICES =================================================================
             // ==============================================================================================================
+            "updateWebRestrictions" -> {
+                val webRestrictions = JsonUtils.parseWebRestrictionsMap(
+                    call.arguments() ?: ""
+                )
+                updateTrackerServiceRestrictions(webRestrictions, null, null)
+                result.success(true)
+            }
 
             "updateAppRestrictions" -> {
                 val appRestrictions = JsonUtils.parseAppRestrictionsMap(
                     call.arguments() ?: ""
                 )
-                updateTrackerServiceRestrictions(appRestrictions, null)
+                updateTrackerServiceRestrictions(null, appRestrictions, null)
                 result.success(true)
             }
 
@@ -168,7 +194,7 @@ class FgMethodCallHandler(
                 val restrictionGroups = JsonUtils.parseRestrictionGroupsMap(
                     call.arguments() ?: ""
                 )
-                updateTrackerServiceRestrictions(null, restrictionGroups)
+                updateTrackerServiceRestrictions(null, null, restrictionGroups)
                 result.success(true)
             }
 
@@ -446,17 +472,20 @@ class FgMethodCallHandler(
      * or null if only app-specific restrictions are being updated.
      */
     private fun updateTrackerServiceRestrictions(
+        webRestrictions: HashMap<String, WebRestriction>?,
         appRestrictions: HashMap<String, AppRestriction>?,
         restrictionGroups: HashMap<Int, RestrictionGroup>?,
     ) {
         if (trackerServiceConn.isActive) {
             trackerServiceConn.service?.getRestrictionManager?.updateRestrictions(
+                webRestrictions,
                 appRestrictions,
                 restrictionGroups
             )
         } else if (appRestrictions?.isNotEmpty() == true || restrictionGroups?.isNotEmpty() == true) {
             trackerServiceConn.setOnConnectedCallback { service ->
                 service.getRestrictionManager.updateRestrictions(
+                    webRestrictions,
                     appRestrictions,
                     restrictionGroups
                 )

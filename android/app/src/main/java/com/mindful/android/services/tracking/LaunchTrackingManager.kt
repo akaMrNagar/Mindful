@@ -19,6 +19,7 @@ import java.util.concurrent.TimeUnit
 
 class LaunchTrackingManager(
     private val context: Context,
+    private val onNewWebEvent: (host: String) -> Unit,
     private val onNewAppLaunched: (packageName: String) -> Unit,
     private val dismissOverlay: () -> Unit,
     private val cancelReminders: () -> Unit,
@@ -35,6 +36,7 @@ class LaunchTrackingManager(
         if (isUnlocked) onDeviceUnlocked() else onDeviceLocked()
     }
     private val accessibilityReceiver = AccessibilityReceiver(
+        onNewWebEvent = { executorService.submit { invokeNewWebEvent(it) } },
         onNewAppLaunched = { executorService.submit { invokeNewAppLaunched(it) } },
         onServiceStatusChanged = { isActive ->
             isManualTrackingOn = !isActive
@@ -138,6 +140,14 @@ class LaunchTrackingManager(
             invokeNewAppLaunched(it)
         }
         Log.d(TAG, "findLaunchedApp: Opened app:$lastLaunchedApp Active apps: $activeApps ")
+    }
+
+    /**
+     * Check and Invoke method when new web event and tracking is not paused.
+     */
+    private fun invokeNewWebEvent(host: String) {
+      if (isTrackingPaused) return
+      onNewWebEvent.invoke(host)
     }
 
     /**

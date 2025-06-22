@@ -6,6 +6,8 @@ import android.content.Context
 import android.util.Log
 import com.mindful.android.enums.RestrictionType
 import com.mindful.android.helpers.usages.ScreenUsageHelper
+import com.mindful.android.models.TimeTracker
+import com.mindful.android.models.WebRestriction
 import com.mindful.android.models.AppRestriction
 import com.mindful.android.models.RestrictionGroup
 import com.mindful.android.models.RestrictionState
@@ -24,7 +26,12 @@ class RestrictionManager(
                 && appsRestrictions.isEmpty()
                 && restrictionGroups.isEmpty()
 
+    // TimeTrackes
+    private var webTimeTrackers = HashMap<String, TimeTracker>()
+    val getWebTimeTrackers: HashMap<String, TimeTracker> get() = webTimeTrackers
+
     // Restrictions
+    private var webRestrictions = HashMap<String, WebRestriction>()
     private var appsRestrictions = HashMap<String, AppRestriction>()
     private var restrictionGroups = HashMap<Int, RestrictionGroup>()
 
@@ -33,22 +40,34 @@ class RestrictionManager(
     private var bedtimeApps = setOf<String>()
 
     //  Cache
+    private val webLaunchCount = HashMap<String, Int>(0)
+    val getWebLaunchCount: HashMap<String, Int> get() = webLaunchCount
     private val appsLaunchCount = HashMap<String, Int>(0)
     val getAppsLaunchCount: HashMap<String, Int> get() = appsLaunchCount
 
+    private val alreadyRestrictedWeb = HashMap<String, RestrictionState>(0)
     private val alreadyRestrictedApps = HashMap<String, RestrictionState>(0)
     private val alreadyRestrictedGroups = HashMap<Int, RestrictionState>(0)
 
     fun resetCache() {
+        webTimeTrackers.clear()
+        alreadyRestrictedWeb.clear()
         alreadyRestrictedApps.clear()
         alreadyRestrictedGroups.clear()
         appsLaunchCount.clear()
     }
 
     fun updateRestrictions(
+        webRestrictionsMap: HashMap<String, WebRestriction>?,
         appsRestrictionsMap: HashMap<String, AppRestriction>?,
         restrictionGroupsMap: HashMap<Int, RestrictionGroup>?,
     ) {
+        webRestrictionsMap?.let {
+            webRestrictions = it
+            alreadyRestrictedWeb.clear()
+            Log.d(TAG, "updateRestrictions: Web restrictions updated")
+        }
+
         appsRestrictionsMap?.let {
             appsRestrictions = it
             alreadyRestrictedApps.clear()
@@ -77,12 +96,17 @@ class RestrictionManager(
 
 
     // returns nearest time stamp for rechecking
+    fun isWebRestricted(host: String): RestrictionState? {
+        evaluateIfAlreadyRestricted(host)?.let { return it }
+        val restriction = webRestrictions[host] ?: return null
+        evaluateWebLimits(restriction)?.let { return it }
+        return null
+    }
+
+    // returns nearest time stamp for rechecking
     fun isAppRestricted(packageName: String): RestrictionState? {
         // If already restricted by focus or bedtime or cached
-        val alreadyRestrictedState = evaluateIfAlreadyRestricted(packageName)
-        if (alreadyRestrictedState != null) {
-            return alreadyRestrictedState
-        }
+        evaluateIfAlreadyRestricted(packageName)?.let { return it }
 
         // If no restrictions
         val restriction = appsRestrictions[packageName] ?: return null
@@ -113,17 +137,51 @@ class RestrictionManager(
         }
     }
 
-    private fun evaluateIfAlreadyRestricted(packageName: String): RestrictionState? {
+    private fun evaluateWebLimits(restriction: WebRestriction): RestrictionState? {
+        // Calculate elapsedTime
+        var timeTracker = webTimeTrackers.getOrDefault(restriction.host, TimeTracker())
+        val currentTime: Long = System.currentTimeMillis()
+        var elapsedTime: Long = if (timeTracker.lastTime != 0L) currentTime - timeTracker.lastTime else 0
+        timeTracker.timeSpent += (if (elapsedTime<=timeTracker.maxAllowedInterval) elapsedTime else 0)
+        timeTracker.lastTime = currentTime
+        webTimeTrackers[restriction.host] = timeTracker
+
+        // Check if time limit is reached
+        if (timeTracker.timeSpent >= restriction.timerSec * 1000) {
+            return RestrictionState(type = RestrictionType.WEB_TIMER).also {
+                alreadyRestrictedWeb[restriction.host] = it
+            }
+        }
+
+        // Update launch count
+        var launchCount = webLaunchCount.getOrDefault(restriction.host, 1)
+        if ((restriction.launchLimit > 0) && (launchCount > restriction.launchLimit)) {
+            return RestrictionState(type = RestrictionType.LAUNCH_COUNT).also {
+                alreadyRestrictedWeb[restriction.host] = it
+            }
+        }
+        //  Only update launch count if maxAllowedInterval to avoid scrolling
+        //  being counted as new launches
+        launchCount += (if (elapsedTime>timeTracker.maxAllowedInterval) 1 else 0)
+        webLaunchCount[restriction.host] = launchCount
+
+        return null
+    }
+
+    private fun evaluateIfAlreadyRestricted(key: String): RestrictionState? {
         return when {
-            focusedApps.contains(packageName) -> RestrictionState(
+            focusedApps.contains(key) -> RestrictionState(
                 type = RestrictionType.FOCUS
             )
 
-            bedtimeApps.contains(packageName) -> RestrictionState(
+            bedtimeApps.contains(key) -> RestrictionState(
                 type = RestrictionType.BEDTIME,
             )
 
-            alreadyRestrictedApps.containsKey(packageName) -> alreadyRestrictedApps[packageName]
+            alreadyRestrictedWeb.containsKey(key) -> alreadyRestrictedWeb[key]
+
+            alreadyRestrictedApps.containsKey(key) -> alreadyRestrictedApps[key]
+
             else -> null
         }
     }

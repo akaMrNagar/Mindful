@@ -2,6 +2,7 @@ package com.mindful.android.utils
 
 import android.util.Log
 import com.mindful.android.models.AppRestriction
+import com.mindful.android.models.WebRestriction
 import com.mindful.android.models.RestrictionGroup
 import org.json.JSONArray
 import org.json.JSONException
@@ -89,6 +90,30 @@ object JsonUtils {
         } catch (e: Exception) {
             Log.e(TAG, "parseStringSet: Failed to parse JSON set of Strings", e)
             fallback
+        }
+    }
+
+    /**
+     * Deserializes a JSON string into a HashMap mapping host names to [WebRestriction] objects.
+     *
+     * @param jsonString The JSON string representing a list of WebRestrictions.
+     * @return A HashMap of [WebRestriction] or an empty map if parsing fails.
+     */
+    fun parseWebRestrictionsMap(jsonString: String?): HashMap<String, WebRestriction> {
+        val map = HashMap<String, WebRestriction>()
+        if (jsonString.isNullOrBlank()) return map
+
+        return try {
+            JSONArray(jsonString).let { jsonArray ->
+                for (i in 0 until jsonArray.length()) {
+                    val restriction = WebRestriction.fromJson(jsonArray.getString(i))
+                    map[restriction.host] = restriction
+                }
+                map
+            }
+        } catch (e: JSONException) {
+            Log.e(TAG, "jsonStrToAppRestrictionsHashMap: Failed to parse WebRestrictions", e)
+            map
         }
     }
 

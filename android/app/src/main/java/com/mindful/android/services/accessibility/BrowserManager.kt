@@ -25,6 +25,14 @@ class BrowserManager(
     private var mLastRedirectedUrl = ""
     private val throttler: Throttler = Throttler(1000L)
 
+    fun getHost(packageName: String, node: AccessibilityNodeInfo): String?
+    {
+        var url = extractBrowserUrl(node, packageName)
+        if (url.contains(" ") || !url.contains(".")) return null
+        url = url.replace("google.com/amp/s/amp.", "")
+        val host = Utils.parseHostNameFromUrl(url) ?: return null
+        return host
+    }
 
     /**
      * Blocks access to websites and short-form content based on current settings.
@@ -38,20 +46,10 @@ class BrowserManager(
         wellbeing: Wellbeing,
     ) {
         var url = extractBrowserUrl(node, packageName)
-
-        // Return if url is empty or does not contain dot or have space this basically means its not url
-        if (url.contains(" ") || !url.contains(".")) return
-
-        // Clean google AMP from the url if found (some site can appear in the AMP container with google's amp domain)
-        url = url.replace("google.com/amp/s/amp.", "")
-
-        // Block websites
-        val host = Utils.parseHostNameFromUrl(url) ?: return
+        val host = getHost(packageName, node) ?: return
 
         when {
-            wellbeing.blockedWebsites.contains(host)
-                    || wellbeing.nsfwWebsites.contains(host)
-                    || nsfwDomains[host] ?: false
+            nsfwDomains[host] ?: false
             -> {
                 Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
                 blockedContentGoBack.invoke()
