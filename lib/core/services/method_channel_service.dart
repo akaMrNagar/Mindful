@@ -75,6 +75,17 @@ class MethodChannelService {
   Future<DeviceInfoModel> getDeviceInfo() async => DeviceInfoModel.fromMap(
       await _methodChannel.invokeMapMethod('getDeviceInfo') ?? {});
 
+  /// Gets the time spent of website mapped to their host.
+  Future<int> getWebTimeSpent(String host) async {
+      int time = await _methodChannel.invokeMethod('getWebTimeSpent', host);
+      return time ~/ 1000;
+  }
+
+  /// Gets the launch counts of web mapped to their host.
+  Future<Map<String, int>> getWebLaunchCount() async =>
+      await _methodChannel.invokeMapMethod<String, int>('getWebLaunchCount') ??
+      {};
+
   /// Gets the launch counts of apps mapped to their package name.
   Future<Map<String, int>> getAppsLaunchCount() async =>
       await _methodChannel.invokeMapMethod<String, int>('getAppsLaunchCount') ??
@@ -165,6 +176,18 @@ class MethodChannelService {
   // ===========================================================================================
   // ==================================== SERVICES =============================================
   // ===========================================================================================
+
+  /// Safe method to update web restrictions list in the TRACKER service.
+  ///
+  /// This method push the updated list to the service if it is already running
+  /// otherwise only start service if list is not empty
+  Future<void> updateWebRestrictions(
+    List<WebRestriction> webRestrictions,
+  ) async =>
+      _methodChannel.invokeMethod(
+        'updateWebRestrictions',
+        jsonEncode(webRestrictions),
+      );
 
   /// Safe method to update app restrictions list in the TRACKER service.
   ///

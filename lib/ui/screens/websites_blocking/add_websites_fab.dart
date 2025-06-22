@@ -14,8 +14,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/config/hero_tags.dart';
+import 'package:mindful/providers/restrictions/web_restrictions_provider.dart';
 import 'package:mindful/providers/system/permissions_provider.dart';
-import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
 import 'package:mindful/ui/common/default_fab_button.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/dialogs/input_field_dialog.dart';
@@ -64,21 +64,14 @@ class AddWebsitesFAB extends ConsumerWidget {
 
     if (host.isNotEmpty && host.contains('.') && !host.contains(' ')) {
       /// Check if url is already blocked
-      if (context.mounted &&
-          (ref.read(wellBeingProvider).blockedWebsites.contains(host) ||
-              ref.read(wellBeingProvider).nsfwWebsites.contains(host))) {
+      if (context.mounted && ref.read(webRestrictionsProvider).keys.contains(host)) {
         context.showSnackAlert(
           context.locale.add_website_already_exist_snack_alert,
         );
         return;
       }
 
-      /// Add to blocked sites list
-      isNsfw
-          ? ref.read(wellBeingProvider.notifier).insertNsfwSite(host)
-          : ref
-              .read(wellBeingProvider.notifier)
-              .insertRemoveBlockedSite(host, true);
+      ref.read(webRestrictionsProvider.notifier).addWebsite(host, isNsfw);
     } else if (context.mounted) {
       context.showSnackAlert(
         context.locale.add_website_invalid_url_snack_alert,

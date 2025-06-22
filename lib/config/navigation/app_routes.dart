@@ -14,6 +14,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/ui/onboarding/onboarding_screen.dart';
 import 'package:mindful/ui/screens/active_session/active_session_screen.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_dashboard_screen.dart';
+import 'package:mindful/ui/screens/websites_blocking/web_dashboard_screen.dart';
 import 'package:mindful/ui/screens/change_logs/change_logs_screen.dart';
 import 'package:mindful/ui/screens/focus/focus_screen.dart';
 import 'package:mindful/ui/screens/home/home_screen.dart';
@@ -40,6 +41,7 @@ class AppRoutes {
   static const String shortsBlockingPath = '/shortsBlocking';
   static const String websitesBlockingPath = '/websitesBlocking';
 
+  static const String webDashboardPath = '/webDashboard';
   static const String appDashboardPath = '/appDashboard';
   static const String notificationsPath = '/notifications';
 
@@ -90,6 +92,11 @@ class AppRoutes {
 
     /// Active focus session screen
     activeSessionPath: (context) => const ActiveSessionScreen(),
+
+    /// Web dashboard screen
+    webDashboardPath: (context) => WebDashboardScreen(
+          host: context.resolveParam<String>("host") ?? "",
+        ),
 
     /// App dashboard screen
     appDashboardPath: (context) => AppDashboardScreen(

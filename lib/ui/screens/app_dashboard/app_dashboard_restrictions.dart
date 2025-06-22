@@ -22,7 +22,7 @@ import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/models/app_info.dart';
 import 'package:mindful/providers/restrictions/apps_restrictions_provider.dart';
 import 'package:mindful/providers/system/parental_controls_provider.dart';
-import 'package:mindful/providers/usage/apps_launch_count_provider.dart';
+import 'package:mindful/providers/usage/launch_count_provider.dart';
 import 'package:mindful/providers/restrictions/restriction_groups_provider.dart';
 import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';

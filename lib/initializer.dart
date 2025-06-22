@@ -15,6 +15,8 @@ class Initializer {
 
     /// fetch app restrictions
     var appRestrictions = await dynamicDao.fetchAppsRestrictions();
+    var webRestrictions = await dynamicDao.fetchWebRestrictions();
+
     final internetBlockedApps = appRestrictions
         .where((e) => !e.canAccessInternet)
         .map((e) => e.appPackage)
@@ -31,6 +33,9 @@ class Initializer {
 
     /// update tracker service
     await MethodChannelService.instance.updateAppRestrictions(appRestrictions);
+
+    /// update tracker service
+    await MethodChannelService.instance.updateWebRestrictions(webRestrictions);
 
     /// update vpn service
     await MethodChannelService.instance
