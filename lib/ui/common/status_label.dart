@@ -25,7 +25,7 @@ class StatusLabel extends StatelessWidget {
             vertical: 4,
             horizontal: 8,
           ),
-          color: accentColor.withOpacity(0.15),
+          color: accentColor.withValues(alpha: 0.15),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

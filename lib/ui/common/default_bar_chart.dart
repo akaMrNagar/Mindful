@@ -132,8 +132,8 @@ class DefaultBarChart extends StatelessWidget {
               },
             ),
           ),
-          swapAnimationCurve: Curves.fastEaseInToSlowEaseOut,
-          swapAnimationDuration: AppConstants.defaultAnimDuration * 2,
+          curve: Curves.fastEaseInToSlowEaseOut,
+          duration: AppConstants.defaultAnimDuration * 2,
         ),
       ),
     );
