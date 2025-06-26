@@ -29,7 +29,7 @@ object OverlayBuilder {
     ): View {
         // Inflate the custom layout for the dialog
         val inflater = LayoutInflater.from(context)
-        val toastView = inflater.inflate(R.layout.toast_overlay_layout, null)
+        val toastView = inflater.inflate(R.layout.overlay_toast_layout, null)
 
         // Resolve app icon and label
         val (appName, appIcon) = getAppLabelAndIcon(context, packageName)
@@ -74,7 +74,7 @@ object OverlayBuilder {
     ): View {
         // Inflate the custom layout for the dialog
         val inflater = LayoutInflater.from(context)
-        val sheetView = inflater.inflate(R.layout.full_screen_overlay_layout, null)
+        val sheetView = inflater.inflate(R.layout.overlay_full_screen_layout, null)
 
         // Set quote and author
         val quoteTxt = sheetView.findViewById<TextView>(R.id.overlay_sheet_quote)

@@ -15,6 +15,7 @@ import android.app.usage.NetworkStats
 import android.app.usage.NetworkStatsManager
 import android.net.ConnectivityManager
 import android.util.Log
+import java.util.Calendar
 
 /**
  * NetworkUsageHelper is a utility class responsible for gathering network usage statistics for
@@ -60,6 +61,29 @@ object NetworkUsageHelper {
         )
 
     /**
+     * Fetches network usage statistics for a specified network type for today.
+     *
+     * @param networkStatsManager The NetworkStatsManager used to query network usage.
+     * @param networkType The type of network (e.g., ConnectivityManager.TYPE_WIFI or TYPE_MOBILE).
+     * @return A map where keys are app UIDs and values are the corresponding data usage in KBs.
+     */
+    fun fetchNetworkUsageForTodayTillNow(
+        networkStatsManager: NetworkStatsManager,
+        networkType: Int,
+    ): Map<Int, Long> {
+        val midNightCal = Calendar.getInstance()
+        midNightCal[Calendar.HOUR_OF_DAY] = 0
+        midNightCal[Calendar.MINUTE] = 0
+        midNightCal[Calendar.SECOND] = 0
+        midNightCal[Calendar.MILLISECOND] = 0
+
+        val start = midNightCal.timeInMillis
+        val end = System.currentTimeMillis()
+
+        return fetchNetworkUsageForInterval(networkStatsManager, networkType, start, end)
+    }
+
+    /**
      * Fetches network usage statistics for a specified network type over a given time interval.
      *
      * @param networkStatsManager The NetworkStatsManager used to query network usage.
@@ -83,7 +107,8 @@ object NetworkUsageHelper {
             while (networkStats.hasNextBucket()) {
                 networkStats.getNextBucket(bucket)
                 val uid = bucket.uid
-                usageMap[uid] = usageMap.getOrDefault(uid, 0L) + (bucket.rxBytes + bucket.txBytes)
+                usageMap[uid] =
+                    usageMap.getOrDefault(uid, 0L) + (bucket.rxBytes + bucket.txBytes)
             }
 
         } catch (e: Exception) {

@@ -21,7 +21,10 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
+import org.jetbrains.annotations.Contract
 import java.net.URI
+import java.util.Locale
+import kotlin.math.abs
 
 /**
  * A utility class containing static helper methods for various common tasks such as
@@ -84,6 +87,26 @@ object Utils {
             )
         } else {
             vibrator.vibrate(durationMs)
+        }
+    }
+
+    /**
+     * Formats the total data usage into a human-readable string.
+     * Example: 12.35 GB
+     *
+     * @param totalMBs The total data usage in megabytes (MB).
+     * @return A string representing the formatted data usage.
+     */
+    @Contract(pure = true)
+    fun formatDataMBs(totalMBs: Int): String {
+        val totalMBsAbs = abs(totalMBs)
+
+        if (totalMBsAbs >= 1024) {
+            val gbs = totalMBsAbs / 1024f
+            val formattedGBs = String.format(Locale.getDefault(), "%.2f", gbs)
+            return "${formattedGBs}gb"
+        } else {
+            return "${totalMBsAbs}mb"
         }
     }
 

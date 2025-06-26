@@ -104,7 +104,35 @@
         </activity>
 
         <!-- _________________________________________________________________________________ -->
-        <!-- ________________________________ RECEIVERS _______________________________________ -->
+        <!-- ____________________________ WIDGET PROVIDERS ___________________________________ -->
+        <!-- _________________________________________________________________________________ -->
+        <receiver
+            android:name=".widgets.AggregatedUsageWidgetProvider"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWI-+DGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_aggregated_usage_config" />
+        </receiver>
+        <receiver
+            android:name=".widgets.ScreenUsageWidgetProvider"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_screen_usage_config" />
+        </receiver>
+
+        <!-- _________________________________________________________________________________ -->
+        <!-- ________________________________ RECEIVERS ______________________________________ -->
         <!-- _________________________________________________________________________________ -->
         <receiver
             android:name=".receivers.DeviceAdminReceiver"
@@ -114,23 +142,11 @@
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
                 android:name="android.app.device_admin"
-                android:resource="@xml/device_admin_config" />
+                android:resource="@xml/mindful_admin_config" />
 
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".widgets.DeviceUsageWidget"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/device_usage_widget_info" />
         </receiver>
         <receiver
             android:name=".receivers.DeviceBootReceiver"
@@ -166,6 +182,7 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.service.quicksettings.ACTIVE_TILE"
                 android:value="true" />
@@ -184,7 +201,7 @@
 
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service_config" />
+                android:resource="@xml/mindful_accessibility_config" />
         </service>
         <service
             android:name=".services.notification.MindfulNotificationListenerService"

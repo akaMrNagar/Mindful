@@ -96,6 +96,7 @@ object ScreenUsageHelper {
         midNightCal[Calendar.HOUR_OF_DAY] = 0
         midNightCal[Calendar.MINUTE] = 0
         midNightCal[Calendar.SECOND] = 0
+        midNightCal[Calendar.MILLISECOND] = 0
 
         val start = midNightCal.timeInMillis
         val end = System.currentTimeMillis()

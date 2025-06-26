@@ -141,25 +141,4 @@ object DateTimeUtils {
         else (totalMinutesAbs / 60).toString() + "h " + totalMinutesAbs % 60 + "m"
         else totalMinutesAbs.toString() + "m"
     }
-
-
-    /**
-     * Formats the total data usage into a human-readable string.
-     * Example: 12.35 GB
-     *
-     * @param totalMBs The total data usage in megabytes (MB).
-     * @return A string representing the formatted data usage.
-     */
-    @Contract(pure = true)
-    fun formatDataMBs(totalMBs: Int): String {
-        val totalMBsAbs = abs(totalMBs)
-
-        if (totalMBsAbs >= 1024) {
-            val GBs = totalMBsAbs / 1024f
-            val formattedGBs = String.format(Locale.getDefault(), "%.2f", GBs)
-            return "$formattedGBs GB"
-        } else {
-            return "$totalMBsAbs MB"
-        }
-    }
 }
