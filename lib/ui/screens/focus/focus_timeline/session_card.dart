@@ -20,7 +20,6 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_duration.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
-import 'package:mindful/core/utils/date_time_utils.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/providers/focus/dated_focus_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
@@ -67,22 +66,28 @@ class SessionCard extends ConsumerWidget {
         margin: const EdgeInsets.symmetric(vertical: 2),
         color: stateColor.withAlpha(20),
         circularRadius: 24,
-        onPressed: () async {
-          final reflection = await showFocusReflectionDialog(
-            context: context,
-            heroTag: HeroTags.sessionReflectionTag(session.id),
-            initialText: session.reflection,
-          );
-
-          if (reflection == null || reflection == session.reflection) return;
-          ref
-              .read(datedFocusProvider(dateToday).notifier)
-              .updateSession(session.copyWith(reflection: reflection));
-        },
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
             DefaultListTile(
+              position: position,
+              margin: EdgeInsets.zero,
+              onPressed: () async {
+                final reflection = await showFocusReflectionDialog(
+                  context: context,
+                  heroTag: HeroTags.sessionReflectionTag(session.id),
+                  initialText: session.reflection,
+                );
+
+                if (reflection == null || reflection == session.reflection) {
+                  return;
+                }
+
+                ref
+                    .read(datedFocusProvider(session.startDateTime.dateOnly)
+                        .notifier)
+                    .updateSession(session.copyWith(reflection: reflection));
+              },
               color: Colors.transparent,
               leadingIcon: sessionTypeIcons[session.type] ??
                   FluentIcons.target_arrow_20_regular,
@@ -124,20 +129,23 @@ class SessionCard extends ConsumerWidget {
                 color: stateColor.withAlpha(20),
                 margin: const EdgeInsets.all(0),
                 alignment: Alignment.topLeft,
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 borderRadius: borderRadius.copyWith(
                   topLeft: Radius.zero,
                   topRight: Radius.zero,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 64),
+                  constraints: const BoxConstraints(maxHeight: 72),
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: StyledText(
                       session.reflection,
                       color: Theme.of(context).hintColor,
                       fontSize: 14,
-                      overflow: TextOverflow.ellipsis,
+                      // overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ),

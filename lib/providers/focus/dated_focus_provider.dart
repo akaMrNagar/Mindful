@@ -41,9 +41,9 @@ class FocusModeNotifier extends StateNotifier<DatedFocusModel> {
   }
 
   /// Refresh the state
-  Future<void> refreshTimeline() async {
+  Future<void> refreshTimeline({DateTime? date}) async {
     // Start of the day
-    final startOfDay = selectedDay.dateOnly;
+    final startOfDay = (date ?? selectedDay).dateOnly;
 
     // End of the day
     final endOfDay = startOfDay.copyWith(
@@ -77,6 +77,6 @@ class FocusModeNotifier extends StateNotifier<DatedFocusModel> {
     await DriftDbService.instance.driftDb.dynamicRecordsDao
         .updateFocusSessionById(session);
 
-    await refreshTimeline();
+    await refreshTimeline(date: session.startDateTime.dateOnly);
   }
 }

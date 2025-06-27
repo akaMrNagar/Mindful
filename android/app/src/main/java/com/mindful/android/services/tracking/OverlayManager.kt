@@ -187,7 +187,7 @@ class OverlayManager(
                 context,
                 USAGE_REMINDERS_CHANNEL_ID
             )
-                .setSmallIcon(R.drawable.ic_mindful)
+                .setSmallIcon(R.drawable.ic_mindful_notification)
                 .setLargeIcon(appIcon.toBitmap())
                 .setContentTitle(appName)
                 .setContentText(msg)

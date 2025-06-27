@@ -46,9 +46,8 @@ class TabAbout extends ConsumerWidget {
           child: RoundedContainer(
             circularRadius: 120,
             color: Theme.of(context).colorScheme.secondaryContainer,
-            padding: const EdgeInsets.all(12),
-            child:
-                const Icon(FluentIcons.weather_sunny_low_20_filled, size: 48),
+            padding: const EdgeInsets.all(8),
+            child: const Icon(FluentIcons.target_arrow_20_regular, size: 64),
           ),
         ).sliver,
 

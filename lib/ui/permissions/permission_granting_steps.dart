@@ -55,7 +55,7 @@ class PermissionGrantingSteps extends StatelessWidget {
               circularRadius: 12,
               color: Colors.white,
               child: Icon(
-                FluentIcons.weather_sunny_low_20_filled,
+                FluentIcons.target_arrow_20_regular,
                 color: Colors.black,
                 size: 40,
               ),
