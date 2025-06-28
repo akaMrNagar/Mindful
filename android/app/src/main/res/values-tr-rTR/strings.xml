@@ -56,4 +56,5 @@
     <string name="focus_session_notification_title">Odaklanma Oturumları</string>
     <string name="focus_session_success_notification_info">Tebrikler! Odaklanma oturumunuzu başarıyla tamamladınız. Hedefe odaklanmayı başardığınız için harika bir iş çıkardınız! Mükemmel çalışmanıza devam edin!</string>
     <string name="focus_session_giveup_notification_info">Vazgeçtin! Endişelenme, bir dahaki sefere daha iyisini yapabilirsin. Her çaba önemli – sadece devam et</string>
+    <string name="notification_schedule_batch_title">Okunmamış bildiriler</string>
 </resources>
