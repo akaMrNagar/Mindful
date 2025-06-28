@@ -91,10 +91,10 @@ class _SineWaveState extends State<SineWave> {
       dotData: const FlDotData(show: false),
       gradient: LinearGradient(
         colors: [
-          color.withOpacity(0),
+          color.withValues(alpha: 0),
           color,
           color,
-          color.withOpacity(0),
+          color.withValues(alpha: 0),
         ],
         stops: const [
           0.05,

@@ -92,7 +92,7 @@ class _ImportExportDbState extends ConsumerState<ImportExportDb> {
       /// Original DB file
       final originalDbFile = File(await getSqliteDbPath());
       final result = await FilePicker.platform.pickFiles(
-        allowCompression: false,
+        compressionQuality: 0,
         type: FileType.any,
       );
 

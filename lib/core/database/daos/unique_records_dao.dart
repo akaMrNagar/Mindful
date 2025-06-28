@@ -35,7 +35,7 @@ part 'unique_records_dao.g.dart';
 )
 class UniqueRecordsDao extends DatabaseAccessor<AppDatabase>
     with _$UniqueRecordsDaoMixin {
-  UniqueRecordsDao(AppDatabase db) : super(db);
+  UniqueRecordsDao(super.db);
 
   /// Saves a single [SharedUniqueData] object to the database.
   Future<void> saveSharedData(SharedUniqueData data) async =>
