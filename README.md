@@ -9,11 +9,13 @@
 
 **Mindful** is a free and open-source app designed to help you regain control over your digital habits, improve your focus, and boost productivity. Whether you're battling social media addiction, struggling to stay focused, or simply looking for a way to better manage your screen time, Mindful is here to assist.
 
-[![Featured](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
+
+[![API](https://img.shields.io/badge/API-🤖-black)](docs/API.md)
 [![Contribute](https://img.shields.io/badge/Build_&_Contribute-🛠️-black)](docs/CONTRIBUTING.md)
-[![Privacy](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
 [![Verify](https://img.shields.io/badge/Verify-🔐-black)](docs/VERIFICATION.md) 
+[![Privacy](https://img.shields.io/badge/Privacy_Policy-📃-black)](https://bemindful.vercel.app/privacy) 
 [![Faqs](https://img.shields.io/badge/FAQs-🙋-black)](docs/FAQS.md) 
+[![Featured](https://img.shields.io/badge/Featured-🎉-black)](docs/FEATURED.md) 
 [![GitHub](https://img.shields.io/github/downloads/akamrnagar/mindful/total?label=Downloads&logo=github&cacheSeconds=3600)](https://github.com/akamrnagar/mindful/releases/latest)
 [![Google Play](https://img.shields.io/endpoint?color=40bb12&label=Downloads&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.mindful.android%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.mindful.android)
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?logo=telegram&logoColor=white)](https://t.me/fossmindful)
