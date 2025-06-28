@@ -49,12 +49,12 @@ class _SliverDistractingAppsListState
   UsageFilterModel _filter = UsageFilterModel.constant();
   bool _isSelectedAll = false;
 
-  _onFilterChanged(UsageFilterModel filter) {
+  void _onFilterChanged(UsageFilterModel filter) {
     if (!mounted) return;
     setState(() => _filter = filter);
   }
 
-  _onSelectDeselectAll(
+  void _onSelectDeselectAll(
     bool select,
     Iterable<String> selected,
     Iterable<String> unselected,
