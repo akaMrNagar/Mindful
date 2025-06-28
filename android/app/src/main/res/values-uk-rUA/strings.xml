@@ -58,7 +58,7 @@
     <string name="app_paused_overlay_button_ten_minutes">10 хвилин</string>
     <string name="app_paused_overlay_button_twenty_minutes">20 хвилин</string>
     <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">Закрити %s</string>
-    <string name="app_screen_time_usage_info" comment="Time as placeholder. ex: 'Used for 2h 15m'" formatted="true">Використовується для %s</string>
+    <string name="app_screen_time_usage_info" comment="Time as placeholder. ex: 'Used for 2h 15m'" formatted="true">Додаток використовувався %s</string>
     <string name="bedtime_upcoming_notification_info">Нічний режим починається через 30 хвилин. Використайте цей час, щоб завершити справи та підготуватися до наступного дня</string>
     <string name="bedtime_started_notification_info">Час засинати. Нічний режим запущено, який допомагає вам розслабитися та підготуватися до спокійного нічного сну.</string>
     <string name="bedtime_ended_notification_info">Прокинься і співай! Нічний режим завершився, приготуйтеся щоб почати день з новими силами та енергією.</string>
