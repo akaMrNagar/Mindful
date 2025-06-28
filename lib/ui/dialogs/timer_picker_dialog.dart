@@ -66,6 +66,29 @@ Future<int?> showShortsTimerPicker({
 /// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
 ///
 /// Returns time in seconds and take initial time in seconds
+Future<int?> showWebTimerPicker({
+  required BuildContext context,
+  required Object heroTag,
+  int initialTime = 5 * 60,
+}) async {
+  return await Navigator.of(context).push<int?>(
+    HeroPageRoute(
+      builder: (context) => _DurationPickerDialog(
+        title: context.locale.focus_session_duration_tile_title,
+        icon: const Icon(FluentIcons.timer_20_regular),
+        heroTag: heroTag,
+        initialTimeInSec: initialTime,
+        info: context.locale.focus_session_duration_dialog_info,
+        positiveButtonLabel: context.locale.dialog_button_set,
+        // actionButtonLabel: context.locale.dialog_button_infinite,
+      ),
+    ),
+  );
+}
+
+/// Animates the hero widget to a alert dialog containing duration picker with the provided configurations
+///
+/// Returns time in seconds and take initial time in seconds
 Future<int?> showFocusTimerPicker({
   required BuildContext context,
   required Object heroTag,

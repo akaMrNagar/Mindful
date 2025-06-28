@@ -38,6 +38,7 @@ import com.mindful.android.models.Wellbeing
 import com.mindful.android.receivers.DeviceAppsChangedReceiver
 import com.mindful.android.utils.ThreadUtils
 import com.mindful.android.utils.executors.Throttler
+import com.mindful.android.receivers.GeneralReceiver
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -49,6 +50,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
         private const val TAG = "Mindful.MindfulAccessibilityService"
 
         const val ACTION_PERFORM_HOME_PRESS = "com.mindful.android.action.performHomePress"
+        const val ACTION_PERFORM_BACK_PRESS = "com.mindful.android.action.performBackPress"
         const val ACTION_MIDNIGHT_ACCESSIBILITY_RESET =
             "com.mindful.android.action.midnightAccessibilityReset"
         const val ACTION_TAMPER_PROTECTION_CHANGED =
@@ -70,6 +72,8 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
     // Fixed thread pool for parallel event processing
     private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
     private val throttler: Throttler = Throttler(250L)
+    private val generalReceiver: GeneralReceiver =
+        GeneralReceiver(goHomeWithToast = this::goHomeToast, goBackWithToast = this::goBackToast)
     private val deviceAppsChangedReceiver: DeviceAppsChangedReceiver =
         DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceConfig() })
 
@@ -104,6 +108,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
         // Register listener for install and uninstall events
         deviceAppsChangedReceiver.register(this)
+        generalReceiver.register(this)
     }
 
 
@@ -148,6 +153,10 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                 executorService.submit {
                     // Broadcast event
                     trackingManager.onNewEvent("${it.packageName}")
+                    val host = browserManager.getHost(eventPackageName, it)
+                    host?.let {
+                      trackingManager.onNewWebEvent(it)
+                    }
 
                     // Only process if any of the content is blocked
                     if (shouldBlockContent()) {
@@ -205,8 +214,6 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
      */
     private fun shouldBlockContent(): Boolean {
         return wellbeing.blockedFeatures.isNotEmpty() ||
-                wellbeing.blockedWebsites.isNotEmpty() ||
-                wellbeing.nsfwWebsites.isNotEmpty() ||
                 wellbeing.blockNsfwSites
     }
 
@@ -229,6 +236,9 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             }
         }
     }
+
+    private fun goBackToast() = goBackWithToast()
+    private fun goHomeToast() = goBackWithToast(GLOBAL_ACTION_HOME)
 
     /**
      * Updates the service info with the latest settings and registered packages.
@@ -327,6 +337,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
             // Unregister prefs listener and receiver
             deviceAppsChangedReceiver.unRegister(this)
+            generalReceiver.unRegister(this)
             SharedPrefsHelper.registerUnregisterListenerToListenablePrefs(this, false, this)
         } catch (e: Exception) {
             // ignored

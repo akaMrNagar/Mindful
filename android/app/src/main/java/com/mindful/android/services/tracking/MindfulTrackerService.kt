@@ -4,12 +4,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import android.content.ContextWrapper
 import androidx.annotation.WorkerThread
 import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.generics.ServiceBinder
 import com.mindful.android.helpers.device.NotificationHelper
 import com.mindful.android.helpers.storage.SharedPrefsHelper
+import com.mindful.android.services.accessibility.MindfulAccessibilityService.Companion.ACTION_PERFORM_HOME_PRESS
+import com.mindful.android.services.accessibility.MindfulAccessibilityService.Companion.ACTION_PERFORM_BACK_PRESS
 
 class MindfulTrackerService : Service() {
     companion object {
@@ -33,6 +36,7 @@ class MindfulTrackerService : Service() {
         restrictionManager = RestrictionManager(this, ::stopIfNoUsage)
         launchTrackingManager = LaunchTrackingManager(
             context = this,
+            onNewWebEvent = ::onNewWebEvent,
             onNewAppLaunched = ::onNewAppLaunch,
             dismissOverlay = { overlayManager.dismissSheetOverlay() },
             cancelReminders = { reminderManager.cancelReminders() },
@@ -75,6 +79,30 @@ class MindfulTrackerService : Service() {
         if (reminderAwaiting) launchTrackingManager.reInvokeLastLaunchEvent()
     }
 
+    @WorkerThread
+    private fun onNewWebEvent(host: String) {
+        try {
+            reminderManager.cancelReminders()
+            overlayManager.dismissSheetOverlay()
+
+            /// check current restrictions
+            val currentOrFutureState = restrictionManager.isWebRestricted(host)
+
+            Log.d(TAG, "onNewWebEvent: $host's evaluated state => $currentOrFutureState")
+
+            currentOrFutureState?.let {
+              if (it.timeLeftMillis <= 0L) {
+                val intent = Intent(ACTION_PERFORM_BACK_PRESS).apply {
+                  setPackage(getPackageName())
+                }
+                this.sendBroadcast(intent)
+              }
+            }
+        } catch (e: Exception) {
+            SharedPrefsHelper.insertCrashLogToPrefs(this, e)
+            Log.e(TAG, "onNewAppLaunch: Failed to process new app launch event", e)
+        }
+    }
 
     @WorkerThread
     private fun onNewAppLaunch(packageName: String) {

@@ -15,3 +15,8 @@ import 'package:mindful/core/services/method_channel_service.dart';
 final appsLaunchCountProvider = FutureProvider.autoDispose<Map<String, int>>(
   (ref) async => await MethodChannelService.instance.getAppsLaunchCount(),
 );
+
+/// Web launch counts mapped to their host
+final webLaunchCountProvider = FutureProvider.autoDispose<Map<String, int>>(
+  (ref) async => await MethodChannelService.instance.getWebLaunchCount(),
+);

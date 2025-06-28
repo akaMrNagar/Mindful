@@ -57,9 +57,17 @@ class HeroTags {
   /// Tag used to identify the emergency tile in app dashboard screen.
   static const emergencyTileTag = "appDashboard.useEmergencyTile";
 
+  /// Generates a tag for an web timer tile based on the provided host.
+  static String webTimerTileTag(String host) =>
+      "webDashboard.timerTile.$host";
+
   /// Generates a tag for an app timer tile based on the provided package name.
   static String appTimerTileTag(String package) =>
       "appDashboard.timerTile.$package";
+
+  /// Generates a tag for an app launch limit tile based on the provided package name.
+  static String webLaunchLimitTileTag(String host) =>
+      "webDashboard.launchLimitTile.$host";
 
   /// Generates a tag for an app launch limit tile based on the provided package name.
   static String appLaunchLimitTileTag(String package) =>

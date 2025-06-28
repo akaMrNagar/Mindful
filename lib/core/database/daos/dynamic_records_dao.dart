@@ -21,6 +21,7 @@ import 'package:mindful/core/database/tables/focus_sessions_table.dart';
 import 'package:mindful/core/database/tables/notifications_table.dart';
 import 'package:mindful/core/database/tables/restriction_groups_table.dart';
 import 'package:mindful/core/database/adapters/time_of_day_adapter.dart';
+import 'package:mindful/core/database/tables/web_restriction_table.dart';
 import 'package:mindful/core/enums/session_state.dart';
 import 'package:mindful/core/enums/session_type.dart';
 import 'package:mindful/core/extensions/ext_date_time.dart';
@@ -32,6 +33,7 @@ part 'dynamic_records_dao.g.dart';
 
 @DriftAccessor(
   tables: [
+    WebRestrictionTable,
     AppRestrictionTable,
     CrashLogsTable,
     FocusSessionsTable,
@@ -151,6 +153,31 @@ class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
   // ==================================================================================================================
   // ===================================== APP RESTRICTIONS =======================================================
   // ==================================================================================================================
+
+  /// Loads List of all [WebRestriction] objects from the database,
+  Future<List<WebRestriction>> fetchWebRestrictions() async =>
+      select(webRestrictionTable).get();
+
+  /// Insert or Update a [WebRestriction] object to/in the database.
+  Future<void> insertWebRestrictionByHost(
+    WebRestriction restriction,
+  ) async =>
+      into(webRestrictionTable).insert(
+        restriction,
+        mode: InsertMode.insertOrReplace,
+      );
+
+  /// Insert or Update list of multiple [WebRestriction] objects to/in the database.
+  Future<void> insertWebRestrictionsByHost(
+    List<WebRestriction> restrictions,
+  ) async =>
+      batch(
+        (batch) => batch.insertAll(
+          webRestrictionTable,
+          restrictions,
+          mode: InsertMode.insertOrReplace,
+        ),
+      );
 
   /// Loads List of all [AppRestriction] objects from the database,
   Future<List<AppRestriction>> fetchAppsRestrictions() async =>

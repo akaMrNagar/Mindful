@@ -12,11 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/config/hero_tags.dart';
-import 'package:mindful/providers/restrictions/wellbeing_provider.dart';
+import 'package:mindful/providers/restrictions/web_restrictions_provider.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/default_slide_to_remove.dart';
 import 'package:mindful/ui/common/rounded_container.dart';
 import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:mindful/config/navigation/app_routes.dart';
 
 class WebsiteTile extends ConsumerWidget {
   const WebsiteTile({
@@ -39,11 +40,19 @@ class WebsiteTile extends ConsumerWidget {
         position: position ?? ItemPosition.none,
         removable: isRemovable,
         onDismiss: () => ref
-            .read(wellBeingProvider.notifier)
-            .insertRemoveBlockedSite(websitehost, false),
+            .read(webRestrictionsProvider.notifier)
+            .removeHost(websitehost),
         child: DefaultListTile(
           position: ItemPosition.fit,
           margin: const EdgeInsets.all(0),
+          onPressed: isRemovable ? () {
+            Navigator.of(context).pushNamed(
+              AppRoutes.webDashboardPath,
+              arguments: {
+                "host": websitehost,
+              },
+            );
+          } : null,
           leading: RoundedContainer(
             width: 14,
             height: 14,
