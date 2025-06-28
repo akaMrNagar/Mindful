@@ -1,7 +1,38 @@
 {
     "@----------------------------- SPLASH SCREEN -----------------------------": {},
+    "mindful_tagline": "Tập trung vào những gì thực sự quan trọng",
+    "unlock_button_label": "Mở khóa",
     "@----------------------------- APP PERMISSIONS -----------------------------": {},
+    "permission_status_allowed": "Được phép",
+    "permission_status_not_allowed": "Không được phép",
+    "permission_button_grant_permission": "Cấp quyền",
+    "permission_button_agree_and_continue": "Đồng ý & Tiếp tục",
+    "permission_button_not_now": "Không phải bây giờ",
+    "permission_button_help": "Cần giúp?",
+    "permission_sheet_privacy_info": "Mindful an toàn 100% và hoạt động ngoại tuyến. Chúng tôi không thu thập hoặc lưu trữ bất kỳ dữ liệu cá nhân nào.",
+    "permission_grant_step_one": "1. Nhấp vào nút {button_label}.",
+    "@permission_grant_step_one": {
+        "placeholders": {
+            "button_label": {
+                "type": "String"
+            }
+        }
+    },
+    "permission_grant_step_two": "2. Chọn Mindful ở màn hình tiếp theo.",
+    "permission_grant_step_three": "3. Nhấp và bật công tắc như bên dưới.",
+    "permission_notification_title": "Gửi thông báo",
+    "permission_alarms_title": "Báo thức & Nhắc nhở",
+    "permission_alarms_info": "Vui lòng cấp quyền cài đặt báo thức và nhắc nhở. Điều này sẽ cho phép Mindful bắt đầu lịch trình đi ngủ đúng giờ và đặt lại bộ hẹn giờ ứng dụng hàng ngày vào lúc nửa đêm và giúp bạn duy trì đúng tiến độ.",
+    "permission_alarms_device_tile_label": "Cho phép cài đặt báo thức và nhắc nhở",
+    "permission_overlay_title": "Lớp phủ hiển thị",
+    "permission_overlay_device_tile_label": "Cho phép hiển thị trên các ứng dụng khác",
+    "permission_accessibility_title": "Khả năng tiếp cận",
+    "permission_accessibility_device_tile_label": "Sử dụng Mindful",
+    "permission_dnd_title": "Đừng làm phiền",
+    "permission_notification_access_device_tile_label": "Cho phép truy cập thông báo",
     "@----------------------------- DATE AND TIME -----------------------------": {},
+    "day_today": "Hôm nay",
+    "day_yesterday": "Hôm qua",
     "@----------------------------- SHARED STRINGS -----------------------------": {},
     "@----------------------------- TIPS -----------------------------": {},
     "@----------------------------- ONBOARDING SCREEN -----------------------------": {},

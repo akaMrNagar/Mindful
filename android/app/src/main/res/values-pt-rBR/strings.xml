@@ -12,10 +12,18 @@
   -->
 <resources>
     <string name="accessibility_description">O aplicativo Mindful usa serviços de acessibilidade para bloquear sites e shorts em aplicativos. Verifica URLs e conteúdo em relação à sua lista de bloqueios e impede o acesso para ajudá-lo a manter o foco. \n\n⚠️Note: Sua privacidade é nossa prioridade. O Mindful é 100% seguro e funciona offline. Não recolhemos nem armazenamos quaisquer dados pessoais. </string>
+    <string name="admin_description">Cuidado não coleta, armazena ou transmite quaisquer dados do usuário. Como Software de Código Aberto e Gratuito (FOSS), você pode revisar e modificar o código-fonte. Privilégios administrativos são necessários exclusivamente para operações essenciais do sistema, garantindo que o aplicativo funcione corretamente sem comprometer sua privacidade.</string>
     <string name="toast_enable_notification">Por favor, habilite as notificações</string>
     <string name="toast_blocked_content">Conteúdo bloqueado! Voltando</string>
     <string name="toast_redirecting">Filtrando resultados de pesquisa</string>
     <string name="service_running_notification_title">Mindful em execução</string>
+    <string name="shortcut_focus_mode_label">Modo foco</string>
+    <string name="shortcut_focus_mode_description">Inicie rapidamente uma sessão de foco com perfis personalizados.</string>
+    <string name="shortcut_upcoming_notifications_label">Notificações em lote</string>
+    <string name="shortcut_upcoming_notifications_description">Verificar as próximas notificações em lote.</string>
+    <string name="shortcut_parental_controls_label">Controles parentais</string>
+    <string name="shortcut_parental_controls_description">Gerenciar controles parentais e configurações de segurança</string>
+    <string name="focus_quick_tile_status_active">Ativo</string>
     <string name="usage_widget_description">Obtenha uma visão diária de sua tela e uso de dados</string>
     <string name="widget_screen_time_label">Tempo de tela</string>
     <string name="widget_mobile_data_label">Uso de dados móveis</string>
@@ -24,6 +32,21 @@
     <string name="app_blocker_running_notification_info">Mindful está agora monitorando o uso de aplicativos para ajudá-lo a se manter focado e gerenciar seus hábitos digitais.</string>
     <string name="overlay_permission_denied_notification_title">Permissão negada</string>
     <string name="overlay_permission_denied_notification_info">Por favor, conceda permissão de sobreposição de tela para Mindful clicando na notificação. Na próxima tela, encontre Mindful na lista de aplicativos e clique em permitir.</string>
+    <string name="app_paused_reason_focus_session">É hora de focar! Este aplicativo está pausado para ajudá-lo a ficar no caminho e tirar o máximo proveito da sua sessão.</string>
+    <string name="app_paused_reason_bedtime">É hora de dormir! Este aplicativo está pausado pela noite para ajudá-lo a relaxar e se preparar para um sono tranquilo.</string>
+    <string name="app_paused_reason_launch_count_out">Você atingiu o número máximo de inicializações para este aplicativo hoje. Está na hora de deixar o aplicativo de lado e focar em suas prioridades.</string>
+    <string name="app_paused_reason_app_timer_left">Você já está usando este aplicativo por um tempo. Vamos mudar as engrenagens, dar um tempo da tela e focar em algo produtivo.</string>
+    <string name="app_paused_reason_app_timer_out">Você atingiu seu limite diário neste aplicativo. Aproveite esta oportunidade para aumentar sua produtividade.</string>
+    <string name="app_paused_restriction_focus_mode">Modo foco</string>
+    <string name="app_paused_restriction_bedtime_mode">Modo hora de dormir</string>
+    <string name="app_paused_restriction_launch_count">Contagem de inicialização</string>
+    <string name="app_paused_overlay_button_emergency">Emergência</string>
+    <string name="app_paused_overlay_label_spent_today">Gasto hoje</string>
+    <string name="app_paused_overlay_ask_need_more_time">Precisa de mais alguns minutos?</string>
+    <string name="app_paused_overlay_button_two_minutes">2 minutos</string>
+    <string name="app_paused_overlay_button_five_minutes">5 minutos</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 minutos</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 minutos</string>
     <string name="bedtime_started_notification_info">É hora de relaxar. A rotina de dormir começou, ajudando você a relaxar e se preparar para uma noite de sono revigorante.</string>
     <string name="bedtime_ended_notification_info">Levante-se e brilhe! A rotina de dormir terminou, prepare-se para começar o dia energizado e renovado.</string>
     <string name="emergency_pause_notification_title">Pausa de emergência</string>

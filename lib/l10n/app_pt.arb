@@ -51,7 +51,7 @@
     "@----------------------------- DATE AND TIME -----------------------------": {},
     "day_today": "Hoje",
     "day_yesterday": "Ontem",
-    "nDays": "{count, plural, =0{0 dias} =1{1 dia} other{{count} dias}}",
+    "nDays": "{count, plural,  =0{0 dias} =1{1 dia} other{{count} dias}}",
     "@nDays": {
         "placeholders": {
             "count": {
