@@ -75,7 +75,6 @@ class _CreateUpdateRestrictionGroupState
 
   @override
   Widget build(BuildContext context) {
-    final isUpdating = widget.group != null;
     final timeSpent = ref
             .watch(todaysAppsUsageProvider.select(
               (v) => v.value?.entries
@@ -105,36 +104,21 @@ class _CreateUpdateRestrictionGroupState
               icon: FluentIcons.tab_desktop_bottom_20_regular,
               filledIcon: FluentIcons.tab_desktop_bottom_20_filled,
               titleText: _group.groupName,
-              fab: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  /// Create OR Update FAB
-                  DefaultFabButton(
-                    heroTag: widget.group == null
-                        ? null
-                        : HeroTags.updateRestrictionGroupTag(_group.id),
-                    icon: widget.group == null
-                        ? FluentIcons.add_20_filled
-                        : FluentIcons.arrow_upload_20_filled,
-                    label: widget.group == null
-                        ? context.locale.create_button
-                        : context.locale.update_button,
-                    onPressed: widget.group == null
-                        ? _createNewGroup
-                        : _updateCurrentGroup,
-                  ),
-                  8.vBox,
 
-                  /// Delete FAB
-                  if (isUpdating)
-                    DefaultFabButton(
-                      heroTag: HeroTags.removeRestrictionGroupTag(_group.id),
-                      icon: FluentIcons.delete_20_filled,
-                      label: context.locale.dialog_button_remove,
-                      onPressed: _deleteCurrentGroup,
-                    ),
-                ],
+              /// Create OR Update FAB
+              fab: DefaultFabButton(
+                heroTag: widget.group == null
+                    ? null
+                    : HeroTags.updateRestrictionGroupTag(_group.id),
+                icon: widget.group == null
+                    ? FluentIcons.add_20_filled
+                    : FluentIcons.arrow_upload_20_filled,
+                label: widget.group == null
+                    ? context.locale.create_button
+                    : context.locale.update_button,
+                onPressed: widget.group == null
+                    ? _createNewGroup
+                    : _updateCurrentGroup,
               ),
               sliverBody: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
@@ -370,43 +354,6 @@ class _CreateUpdateRestrictionGroupState
     );
 
     if (pop) _goBack();
-  }
-
-  void _deleteCurrentGroup() async {
-    /// Return if cannot delete
-    if (!widget.canUpdateTimer || !widget.canUpdateActivePeriod) {
-      context.showSnackAlert(
-        context.locale.invincible_mode_snack_alert,
-      );
-      return;
-    }
-
-    /// Confirm first
-    final confirm = await showConfirmationDialog(
-      context: context,
-      heroTag: HeroTags.removeRestrictionGroupTag(_group.id),
-      title: context.locale.remove_restriction_group_dialog_title,
-      info:
-          context.locale.remove_restriction_group_dialog_info(_group.groupName),
-      icon: FluentIcons.delete_20_filled,
-      positiveLabel: context.locale.dialog_button_remove,
-    );
-
-    if (!confirm) return;
-
-    /// update associated apps and remove group
-    await _updateAssociatedApps(
-      {
-        ..._group.distractingApps,
-
-        /// if user modified the group before removing
-        ...widget.group?.distractingApps ?? [],
-      }.toList(),
-      null,
-    );
-    ref.read(restrictionGroupsProvider.notifier).removeGroup(group: _group);
-
-    _goBack();
   }
 
   bool _checkIfGroupIsValid() {

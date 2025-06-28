@@ -16,6 +16,7 @@ import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
+import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/controllers/tab_controller_provider.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -57,7 +58,10 @@ class _SliverTipsAndTricksState extends State<SliverTipsAndTricks> {
                 FluentIcons.sparkle_20_filled,
                 color: Colors.primaries[index % Colors.primaries.length],
               ),
-              titleText: tip.key,
+              title: StyledText(
+                tip.key,
+                fontSize: 14,
+              ),
             );
           },
         ),
