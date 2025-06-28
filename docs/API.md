@@ -15,7 +15,8 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
 ### Endpoints or Hosts -
 
 ## 1. OPEN
->  [!Tip]  com.mindful.android://open 
+>  [!Tip]
+> ### _com.mindful.android://open_
 > Navigates user to a specific screen with the provided parameters.
           
   * ### `/home`  
@@ -97,7 +98,8 @@ Mindful supports **deep linking** for external apps, browsers, or command-line t
 
 ---
 ## 2. EXECUTE (Under development)
-> [!Tip] com.mindful.android://execute  
+> [!Tip]
+> ### _com.mindful.android://execute_
 > Navigate user to specific screen and perform some action automatically.
 
 ---
