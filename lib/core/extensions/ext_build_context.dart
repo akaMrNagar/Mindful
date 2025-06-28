@@ -85,38 +85,37 @@ extension ExtBuildContext on BuildContext {
   }) {
     try {
       if (mounted) {
-        ScaffoldMessenger.of(this)
-          ..clearSnackBars()
-          ..showSnackBar(
-            SnackBar(
-              key: UniqueKey(),
-              dismissDirection: DismissDirection.horizontal,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-              ),
-              backgroundColor: bgColor,
-              content: Row(
-                children: [
-                  Icon(icon, color: fgColor),
-                  12.hBox,
-                  Expanded(
-                    child: StyledText(
-                      info,
-                      color: fgColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )
-                ],
-              ),
+        ScaffoldMessenger.of(this).clearSnackBars();
+        ScaffoldMessenger.of(this).showSnackBar(
+          SnackBar(
+            key: UniqueKey(),
+            dismissDirection: DismissDirection.horizontal,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
             ),
-            snackBarAnimationStyle: AnimationStyle(
-              curve: Curves.easeOutBack,
-              reverseCurve: Curves.easeOutBack.flipped,
-              duration: 300.ms,
-              reverseDuration: 300.ms,
+            backgroundColor: bgColor,
+            content: Row(
+              children: [
+                Icon(icon, color: fgColor),
+                12.hBox,
+                Expanded(
+                  child: StyledText(
+                    info,
+                    color: fgColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                )
+              ],
             ),
-          );
+          ),
+          snackBarAnimationStyle: AnimationStyle(
+            curve: Curves.easeOutBack,
+            reverseCurve: Curves.easeOutBack.flipped,
+            duration: 300.ms,
+            reverseDuration: 300.ms,
+          ),
+        );
       }
     } catch (e) {
       debugPrint("ExtBuildContext._showSnackBar(): Exception $e");

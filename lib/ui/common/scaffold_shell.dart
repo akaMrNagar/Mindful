@@ -121,7 +121,9 @@ class _ScaffoldShellState extends State<ScaffoldShell>
           (i) => NotificationListener<ScrollNotification>(
             onNotification: (notification) {
               if (notification is ScrollUpdateNotification) {
-                final currentOffset = notification.metrics.pixels;
+                /// Add app bar offset if current scroll offset is from body
+                final currentOffset = notification.metrics.pixels +
+                    (notification.depth == 1 ? _appBarScrollOffSet.value : 0);
 
                 /// Show/Hide bottom bar
                 if (currentOffset >= widget.appBarExpandedHeight &&

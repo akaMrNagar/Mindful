@@ -18,12 +18,12 @@ import android.app.PendingIntent
 import android.app.Service.NOTIFICATION_SERVICE
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import com.mindful.android.R
 import com.mindful.android.enums.DndWakeLock
 import com.mindful.android.helpers.storage.SharedPrefsHelper
@@ -138,7 +138,7 @@ object NotificationHelper {
      */
     fun buildFgServiceNotification(context: Context, content: String?): Notification {
         return NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_mindful)
+            .setSmallIcon(R.drawable.ic_mindful_notification)
             .setOngoing(true)
             .setAutoCancel(true)
             .setContentTitle(context.getString(R.string.service_running_notification_title))
@@ -157,7 +157,7 @@ object NotificationHelper {
             context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val permissionIntent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION)
 
-        permissionIntent.setData(Uri.parse("package:${context.packageName}"))
+        permissionIntent.setData("package:${context.packageName}".toUri())
         val pendingIntent = PendingIntent.getActivity(
             context.applicationContext,
             0,
@@ -172,7 +172,7 @@ object NotificationHelper {
                 context,
                 CRITICAL_CHANNEL_ID
             )
-                .setSmallIcon(R.drawable.ic_mindful)
+                .setSmallIcon(R.drawable.ic_mindful_notification)
                 .setAutoCancel(true)
                 .setContentTitle(context.getString(R.string.overlay_permission_denied_notification_title))
                 .setContentText(msg)

@@ -132,9 +132,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               child: RoundedContainer(
                 circularRadius: 420,
                 color: Theme.of(context).colorScheme.secondaryContainer,
-                padding: const EdgeInsets.all(12),
-                child: const Icon(FluentIcons.weather_sunny_low_20_filled,
-                    size: 64),
+                padding: const EdgeInsets.all(8),
+                child: const Icon(
+                  FluentIcons.target_arrow_20_regular,
+                  size: 64,
+                ),
               ),
             ),
 

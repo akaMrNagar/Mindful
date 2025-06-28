@@ -28,6 +28,7 @@
     <string name="widget_screen_time_label">Screen time</string>
     <string name="widget_mobile_data_label">Mobile</string>
     <string name="widget_wifi_data_label">Wifi</string>
+    <string name="widget_aggregated_usage_label">Aggregated usage</string>
     <string name="internet_blocker_running_notification_info">Mindful is now managing internet access to help you stay focused.</string>
     <string name="app_blocker_running_notification_info">Mindful is now tracking app usage to help you stay focused and manage your digital habits.</string>
     <string name="overlay_permission_denied_notification_title">Permission denied</string>

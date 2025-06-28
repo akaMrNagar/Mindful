@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widgetRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <!--   Base layer     -->
+    <LinearLayout
+        style="@style/Widget.Android.AppWidget.Container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:theme="@style/Theme.Android.AppWidgetContainer">
+
+        <!-- Title and total usage -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_screen_time_label"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/total_screen_time"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:autoSizeMaxTextSize="36sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="2h 30m"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText,UnusedAttribute" />
+
+
+        <!-- Apps list -->
+        <LinearLayout
+            android:id="@+id/top_apps_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- App 1 -->
+            <LinearLayout
+                android:id="@+id/first_app_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:translationZ="4dp">
+
+                <TextView
+                    android:id="@+id/first_app_screen_time"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_circular"
+                    android:backgroundTint="?android:attr/textColorPrimary"
+                    android:gravity="center"
+                    android:text="3h"
+                    android:textColor="?android:attr/colorBackground"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,SmallSp" />
+
+                <TextView
+                    android:id="@+id/first_app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Instagram"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!-- App 2 -->
+            <LinearLayout
+                android:id="@+id/second_app_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+
+                android:translationZ="2dp">
+
+                <TextView
+                    android:id="@+id/second_app_screen_time"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_circular"
+                    android:backgroundTint="?android:attr/textColorSecondary"
+                    android:backgroundTintMode="src_over"
+                    android:gravity="center"
+                    android:text="~1h"
+                    android:textColor="?android:attr/colorBackground"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,SmallSp" />
+
+                <TextView
+                    android:id="@+id/second_app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Youtube"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!-- App 3 -->
+            <LinearLayout
+                android:id="@+id/third_app_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:translationZ="0dp">
+
+                <TextView
+                    android:id="@+id/third_app_screen_time"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/shape_circular"
+                    android:backgroundTint="?android:attr/colorAccent"
+                    android:gravity="center"
+
+                    android:text="58m"
+                    android:textColor="?android:attr/colorBackground"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText,SmallSp" />
+
+                <TextView
+                    android:id="@+id/third_app_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Whatsapp"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <!--    Refresh icon layer  -->
+    <ImageButton
+        android:id="@+id/widgetRefreshButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|end"
+        android:background="@drawable/shape_circular"
+        android:contentDescription="@string/app_name"
+        android:hapticFeedbackEnabled="true"
+        android:src="@drawable/ic_refresh"
+        android:theme="@style/Theme.Android.AppWidgetContainer" />
+
+</FrameLayout>

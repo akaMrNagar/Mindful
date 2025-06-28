@@ -20,32 +20,11 @@ import 'package:mindful/config/navigation/navigation_service.dart';
 import 'package:mindful/l10n/generated/app_localizations.dart';
 import 'package:mindful/providers/system/mindful_settings_provider.dart';
 
-class MindfulApp extends ConsumerStatefulWidget {
+class MindfulApp extends ConsumerWidget {
   const MindfulApp({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _MindfulAppState();
-}
-
-class _MindfulAppState extends ConsumerState<MindfulApp> {
-  @override
-  void initState() {
-    super.initState();
-
-    /// Apply transparent color to system ui background
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(
-          systemNavigationBarContrastEnforced: true,
-          systemNavigationBarDividerColor: Colors.transparent,
-          systemNavigationBarColor: Colors.transparent,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final themeMode =
         ref.watch(mindfulSettingsProvider.select((v) => v.themeMode));
 
@@ -62,40 +41,53 @@ class _MindfulAppState extends ConsumerState<MindfulApp> {
         ref.watch(mindfulSettingsProvider.select((v) => v.useDynamicColors));
 
     return DynamicColorBuilder(
-      builder: (light, dark) => MaterialApp(
-        debugShowCheckedModeBanner: false,
+      builder: (light, dark) {
+        /// Apply transparent color to system ui background
+        WidgetsBinding.instance.addPostFrameCallback(
+          (timeStamp) => SystemChrome.setSystemUIOverlayStyle(
+            const SystemUiOverlayStyle(
+              systemNavigationBarContrastEnforced: true,
+              systemNavigationBarDividerColor: Colors.transparent,
+              systemNavigationBarColor: Colors.transparent,
+            ),
+          ),
+        );
 
-        /// Themes
-        themeAnimationCurve: Curves.ease,
-        themeMode: ThemeMode.values[themeMode.index],
-        darkTheme: AppTheme.darkTheme(
-          isAmoled: useAmoledDark,
-          seedColor: useDynamicColors
-              ? dark?.primary
-              : AppTheme.materialColors[accentColor],
-        ),
-        theme: AppTheme.lightTheme(
-          seedColor: useDynamicColors
-              ? light?.primary
-              : AppTheme.materialColors[accentColor],
-        ),
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
 
-        /// Localization
-        locale: Locale(localeCode),
-        supportedLocales: AppLocalizations.supportedLocales,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
+          /// Themes
+          themeAnimationCurve: Curves.ease,
+          themeMode: ThemeMode.values[themeMode.index],
+          darkTheme: AppTheme.darkTheme(
+            isAmoled: useAmoledDark,
+            seedColor: useDynamicColors
+                ? dark?.primary
+                : AppTheme.materialColors[accentColor],
+          ),
+          theme: AppTheme.lightTheme(
+            seedColor: useDynamicColors
+                ? light?.primary
+                : AppTheme.materialColors[accentColor],
+          ),
 
-        /// Navigation
-        initialRoute: AppRoutes.rootSplashPath,
-        routes: AppRoutes.routes,
-        navigatorKey: NavigationService.navigatorKey,
-        navigatorObservers: [AppRoutesObserver.instance],
-      ),
+          /// Localization
+          locale: Locale(localeCode),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+
+          /// Navigation
+          initialRoute: AppRoutes.rootSplashPath,
+          routes: AppRoutes.routes,
+          navigatorKey: NavigationService.navigatorKey,
+          navigatorObservers: [AppRoutesObserver.instance],
+        );
+      },
     );
   }
 }

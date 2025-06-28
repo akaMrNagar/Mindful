@@ -36,24 +36,4 @@
         <item name="android:background">?android:attr/colorBackground</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
-
-    <style name="Widget.Android.AppWidget.UsageInfo" parent="android:Widget">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="Widget.Android.AppWidget.UsageLabel" parent="android:Widget">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <!-- Transparent dialog style -->
-    <style name="TransparentAlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0.5</item> <!-- Adjust dim amount as desired -->
-    </style>
 </resources>

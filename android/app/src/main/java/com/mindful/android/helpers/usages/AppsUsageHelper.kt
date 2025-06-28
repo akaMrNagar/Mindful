@@ -8,9 +8,26 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import com.mindful.android.AppConstants.REMOVED_PACKAGE
 import com.mindful.android.AppConstants.TETHERING_PACKAGE
-import java.lang.IllegalArgumentException
 
 object AppsUsageHelper {
+    /// Keys for the map
+    const val KEY_PACKAGE_NAME = "packageName"
+    const val KEY_SCREEN_TIME = "screenTime"
+    const val KEY_MOBILE_DATA = "mobileData"
+    const val KEY_WIFI_DATA = "wifiData"
+
+    private fun getAppInfoMap(
+        packageName: String,
+        screenTime: Long,
+        mobileData: Long,
+        wifiData: Long,
+    ): Map<String, Any> = mapOf(
+        KEY_PACKAGE_NAME to packageName,
+        KEY_SCREEN_TIME to screenTime,
+        KEY_MOBILE_DATA to mobileData,
+        KEY_WIFI_DATA to wifiData,
+    )
+
     /**
      * Retrieves a Map of app packages along with their usage statistics.
      *
@@ -125,24 +142,4 @@ object AppsUsageHelper {
             onSuccess(appsUsageMapList)
         }.start()
     }
-
-
-    /// Keys for the map
-    const val KEY_PACKAGE_NAME = "packageName"
-    const val KEY_SCREEN_TIME = "screenTime"
-    const val KEY_MOBILE_DATA = "mobileData"
-    const val KEY_WIFI_DATA = "wifiData"
-
-    private fun getAppInfoMap(
-        packageName: String,
-        screenTime: Long,
-        mobileData: Long,
-        wifiData: Long,
-    ): Map<String, Any> = mapOf(
-        KEY_PACKAGE_NAME to packageName,
-        KEY_SCREEN_TIME to screenTime,
-        KEY_MOBILE_DATA to mobileData,
-        KEY_WIFI_DATA to wifiData,
-    );
-
 }
