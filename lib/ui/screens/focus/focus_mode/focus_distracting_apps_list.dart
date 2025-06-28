@@ -19,14 +19,15 @@ class FocusDistractingAppsList extends ConsumerWidget {
     super.key,
   });
 
-  _onDistractingAppsChanged(
+  void _onDistractingAppsChanged(
     BuildContext context,
     WidgetRef ref,
     String package,
     bool isSelected,
   ) async {
     // User want to remove app from list and session is active
-    if (!isSelected && ref.read(focusModeProvider).activeSession.value != null) {
+    if (!isSelected &&
+        ref.read(focusModeProvider).activeSession.value != null) {
       context.showSnackAlert(
         context.locale.focus_distracting_apps_removal_snack_alert,
       );

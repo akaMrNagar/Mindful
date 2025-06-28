@@ -16,8 +16,8 @@ class AppTheme {
   static const _kSeedColor = Colors.indigo;
 
   static final _kShimmerEffect = ShimmerEffect(
-    highlightColor: Colors.white.withOpacity(0.6),
-    baseColor: Colors.grey.withOpacity(0.3),
+    highlightColor: Colors.white.withValues(alpha: 0.6),
+    baseColor: Colors.grey.withValues(alpha: 0.3),
   );
 
   /// Custom transition for page routes
@@ -47,7 +47,8 @@ class AppTheme {
     'Yellow': Colors.yellow,
   };
 
-  static ThemeData darkTheme({Color? seedColor, required bool isAmoled}) => ThemeData.from(
+  static ThemeData darkTheme({Color? seedColor, required bool isAmoled}) =>
+      ThemeData.from(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: seedColor ?? _kSeedColor,

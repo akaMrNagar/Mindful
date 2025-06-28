@@ -28,7 +28,7 @@ class TimerProgressClock extends StatelessWidget {
       size: Size.square(dimension),
       painter: _TimerClockPainter(
         progress: progress,
-        bgColor: Theme.of(context).colorScheme.primary.withOpacity(0.05),
+        bgColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
         fillColor: Theme.of(context).colorScheme.primary,
         notchColor: Theme.of(context).colorScheme.primary,
         needleColor: Theme.of(context).colorScheme.error,
@@ -63,7 +63,7 @@ class _TimerClockPainter extends CustomPainter {
 
     // Draw the notches around the timer
     Paint smallNotchPaint = Paint()
-      ..color = notchColor.withOpacity(0.4)
+      ..color = notchColor.withValues(alpha: 0.4)
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round
       ..strokeWidth = 2;
@@ -133,7 +133,7 @@ class _TimerClockPainter extends CustomPainter {
       radius * 0.2,
       Paint()
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20)
-        ..color = Colors.black.withOpacity(0.2),
+        ..color = Colors.black.withValues(alpha: 0.2),
     );
 
     /// Draw needle holder foreground cap circle

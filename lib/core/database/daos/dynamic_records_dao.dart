@@ -43,7 +43,7 @@ part 'dynamic_records_dao.g.dart';
 )
 class DynamicRecordsDao extends DatabaseAccessor<AppDatabase>
     with _$DynamicRecordsDaoMixin {
-  DynamicRecordsDao(AppDatabase db) : super(db);
+  DynamicRecordsDao(super.db);
 
   // ==================================================================================================================
   // ===================================== APP USAGE =======================================================
