@@ -111,7 +111,7 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWI-+DGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
 
             <meta-data
