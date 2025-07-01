@@ -276,7 +276,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get exit_without_saving_dialog_info =>
-      'Are you sure you want to exit without saving?';
+      'Kaydetmeden çıkmak istediğinizden emin misiniz?';
 
   @override
   String get development_dialog_info =>
@@ -351,43 +351,43 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get accessibility_tip =>
-      'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
+      'Daha akıllı, daha pil dostu engelleme mi istiyorsunuz? Mindful için Erişilebilirlik iznini etkinleştirin.';
 
   @override
   String get battery_optimization_tip =>
-      'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.';
+      'Mindful çalışmıyor mu? Sorunsuz çalışmasını sağlamak için Ayarlar\'da \'Pil Optimizasyonunu Yoksay\'a izin verin.';
 
   @override
   String get invincible_mode_tip =>
-      'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+      'Yanlışlıkla kısıtlamaları mı kaldırdınız? Bir sonraki güne veya ayar penceresine kadar kilitlemek için Yenilmez Modu kullanın.';
 
   @override
   String get glance_usage_tip =>
-      'Want insights? Check the Glance section to view your usage patterns and screen time.';
+      'İçgörü mü istiyorsunuz? Kullanım kalıplarınızı ve ekran sürenizi görüntülemek için Glance bölümünü kontrol edin.';
 
   @override
   String get tamper_protection_tip =>
-      'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+      'Mindful\'u kaldırıyor musunuz? Önce kurcalama korumasını güvenli bir şekilde devre dışı bırakmak için Kaldırma Penceresini etkinleştirin.';
 
   @override
   String get notification_blocking_tip =>
-      'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+      'Dikkat dağıtıcı unsurları azaltmak mı istiyorsunuz? Seçili uygulamaları susturmak için Bildirim Engelleme özelliğini kullanın.';
 
   @override
   String get usage_history_tip =>
-      'Want to reflect on your habits? Check Usage History to see past patterns.';
+      'Alışkanlıklarınız üzerinde düşünmek ister misiniz? Geçmiş kalıpları görmek için Kullanım Geçmişi\'ni kontrol edin.';
 
   @override
   String get focus_mode_tip =>
-      'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+      'Derin odaklanmaya mı ihtiyacınız var? Görevler sırasında uygulamaları ve bildirimleri engellemek için Odak Modunu açın.';
 
   @override
   String get bedtime_reminder_tip =>
-      'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+      'Uykunuzu iyileştirmek mi istiyorsunuz? Geceleri rahatlamak için bir Yatma Zamanı Hatırlatıcısı ayarlayın.';
 
   @override
   String get custom_blocking_tip =>
-      'Need a custom experience? Create app blocking rules that fit your needs.';
+      'Özel bir deneyime mi ihtiyacınız var? İhtiyaçlarınıza uyan uygulama engelleme kuralları oluşturun.';
 
   @override
   String get session_timeline_tip =>
@@ -427,11 +427,11 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get amoled_dark_theme_tip =>
-      'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
+      'Pil tasarrufu yapmak ister misiniz? OLED ekranlarda güç tüketimini azaltmak için AMOLED Koyu Tema\'yı kullanın.';
 
   @override
   String get customize_usage_history_tip =>
-      'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
+      'Kullanım geçmişini korumak ister misiniz? Kullanım Geçmişinde kaç haftalık verinin saklanacağını özelleştirin.';
 
   @override
   String get grouped_apps_blocking_tip =>
@@ -603,7 +603,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get show_all_apps_tile_title => 'Tüm uygulamaları göster';
 
   @override
-  String get search_apps_hint => 'Search apps...';
+  String get search_apps_hint => 'Uygulama ara...';
 
   @override
   String get notifications_tab_title => 'Bildirimler';
@@ -632,7 +632,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get notification_history_tile_title => 'Notification history';
 
   @override
-  String get store_all_tile_title => 'Store all notifications';
+  String get store_all_tile_title => 'Tüm bildirimleri sakla';
 
   @override
   String get store_all_tile_subtitle => 'Save non-batched notifications too.';
@@ -954,7 +954,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'Odaklanma Oturumu etkinken dikkat dağıtıcı uygulamalar listesinden uygulama kaldırmaya izin verilmez. Ancak, bu süre zarfında listeye ek uygulamalar ekleyebilirsiniz.';
 
   @override
-  String get focus_profile_tile_title => 'Focus profile';
+  String get focus_profile_tile_title => 'Odaklanma profili';
 
   @override
   String get focus_session_duration_tile_title => 'Oturum süresi';
@@ -1216,7 +1216,7 @@ class AppLocalizationsTr extends AppLocalizations {
       'No notifications have been batched for the day.';
 
   @override
-  String get conversations_label => 'Conversations';
+  String get conversations_label => 'Sohbetler';
 
   @override
   String get last_24_hours_heading => 'Son 24 Saat';
@@ -1226,17 +1226,17 @@ class AppLocalizationsTr extends AppLocalizations {
       'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
 
   @override
-  String get monthly_label => 'Monthly';
+  String get monthly_label => 'Aylık';
 
   @override
-  String get daily_label => 'Daily';
+  String get daily_label => 'Günlük';
 
   @override
   String get search_notifications_sheet_info =>
       'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
 
   @override
-  String get search_notifications_hint => 'Search notifications...';
+  String get search_notifications_hint => 'Bildirimleri ara...';
 
   @override
   String get search_notifications_empty_list_hint =>

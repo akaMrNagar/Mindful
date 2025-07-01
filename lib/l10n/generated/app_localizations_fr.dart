@@ -97,7 +97,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get permission_accessibility_required =>
-      'Mindful requires accessibility permission to block short content and websites effectively.';
+      'Mindful a besoin des permissions d\'accessibilité pour mieux bloquer les sites internet et les formats courts.';
 
   @override
   String get permission_accessibility_device_tile_label => 'Utiliser Mindful';
@@ -464,7 +464,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get onboarding_page_one_info =>
-      'Pause distracting apps, block short content, and stay on track with customizable focus sessions. Whether you\'re working, studying, or relaxing, Mindful helps you stay in control.';
+      'Que vous travailliez, étudiiez, ou que vous reposiez, Mindful met en pause les distractions et vous permet de garder le contrôle avec des sessions de concentration personnalisables.';
 
   @override
   String get onboarding_page_two_title => 'Bloquer les distractions.';
@@ -491,7 +491,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dashboard_tab_title => 'Tableau de bord';
 
   @override
-  String get focus_now_fab_button => 'Focus now';
+  String get focus_now_fab_button => 'Se concentrer';
 
   @override
   String get welcome_greetings => 'Bienvenue à nouveau,';
@@ -514,27 +514,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get glance_tile_title => 'Glance';
 
   @override
-  String get glance_tile_subtitle => 'Take a quick glance at your usage.';
+  String get glance_tile_subtitle =>
+      'Jetez un coup d\'œil à vos statistiques d\'utilisation.';
 
   @override
   String get parental_controls_tile_subtitle =>
-      'Invincible mode and tamper protection.';
+      'Mode invincible et protection anti-modification.';
 
   @override
   String get restrictions_heading => 'Restrictions';
 
   @override
-  String get apps_blocking_tile_title => 'Apps blocking';
+  String get apps_blocking_tile_title => 'Blocage des applications';
 
   @override
-  String get apps_blocking_tile_subtitle => 'Limit apps in multiple ways.';
+  String get apps_blocking_tile_subtitle =>
+      'Limitez vos applications de plusieurs façons.';
 
   @override
-  String get grouped_apps_blocking_tile_title => 'Grouped apps blocking';
+  String get grouped_apps_blocking_tile_title => 'Blocage groupé';
 
   @override
   String get grouped_apps_blocking_tile_subtitle =>
-      'Limit group of apps simultaneously.';
+      'Limitez plusieurs groupes simultanément.';
 
   @override
   String get shorts_blocking_tile_subtitle =>
@@ -548,16 +550,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get screen_time_label => 'Temps d\'écran';
 
   @override
-  String get total_data_label => 'Total data';
+  String get total_data_label => 'Total d\'utilisation des données mobiles';
 
   @override
-  String get mobile_data_label => 'Mobile data';
+  String get mobile_data_label => 'Données mobiles';
 
   @override
-  String get wifi_data_label => 'Wifi data';
+  String get wifi_data_label => 'Données Wifi';
 
   @override
-  String get focus_today_label => 'Focus today';
+  String get focus_today_label => 'Se concentrer aujourd\'hui';
 
   @override
   String get focus_weekly_label => 'Focus weekly';

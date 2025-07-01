@@ -491,10 +491,10 @@ class AppLocalizationsUk extends AppLocalizations {
       'Mindful вимагає забезпечення необхідних дозволів для відстежування та управління екранним часом, допомагаючи зменшити відволікання та покращити фокусування.';
 
   @override
-  String get dashboard_tab_title => 'Панель управління';
+  String get dashboard_tab_title => 'Головна';
 
   @override
-  String get focus_now_fab_button => 'Зосередьтесь зараз';
+  String get focus_now_fab_button => 'Зосередитися зараз';
 
   @override
   String get welcome_greetings => 'З поверненням,';
@@ -1124,7 +1124,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get active_session_dialog_button_keep_pushing => 'Продовжуйте';
 
   @override
-  String get active_session_finish_dialog_title => 'Завершений';
+  String get active_session_finish_dialog_title => 'Завершити';
 
   @override
   String get active_session_finish_dialog_info =>
