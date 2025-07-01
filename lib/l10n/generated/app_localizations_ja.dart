@@ -816,20 +816,20 @@ class AppLocalizationsJa extends AppLocalizations {
   String get facebook_features_tile_title => 'Facebook';
 
   @override
-  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+  String get facebook_features_tile_subtitle => 'Facebookのリールを制限します。';
 
   @override
   String get reddit_features_tile_title => 'Reddit';
 
   @override
-  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
+  String get reddit_features_tile_subtitle => 'Redditのショート動画を制限します。';
 
   @override
-  String get websites_blocking_tab_title => 'Websites blocking';
+  String get websites_blocking_tab_title => 'ウェブサイトブロック';
 
   @override
   String get websites_blocking_tab_info =>
-      'Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.';
+      'アダルトウェブサイトや任意のカスタムサイトをブロックして、より安全で集中できるオンライン環境を作成します。ブラウジングを管理し、気が散らないようにしましょう。';
 
   @override
   String get adult_content_heading => 'アダルトコンテンツ';
@@ -864,11 +864,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get add_website_dialog_info => 'ブロックするウェブサイトのURLを入力してください。';
 
   @override
-  String get add_website_dialog_is_nsfw => 'Is nsfw site?';
+  String get add_website_dialog_is_nsfw => 'アダルトサイトですか？';
 
   @override
-  String get add_website_dialog_nsfw_warning =>
-      'Warning: Nsfw sites cannot be removed once added.';
+  String get add_website_dialog_nsfw_warning => '警告：アダルトサイトは一度追加すると削除できません。';
 
   @override
   String get add_website_dialog_button_block => 'ブロック';
@@ -1068,8 +1067,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get active_session_tab_title => '記録';
 
   @override
-  String get active_session_none_warning =>
-      'No active session found. Returning to the home screen.';
+  String get active_session_none_warning => '有効な集中記録が見つかりません。ホーム画面に戻ります。';
 
   @override
   String get active_session_dialog_button_keep_pushing => '諦めずに続けましょう';
@@ -1171,7 +1169,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get conversations_label => 'Conversations';
 
   @override
-  String get last_24_hours_heading => 'Last 24 hours';
+  String get last_24_hours_heading => '過去24時間';
 
   @override
   String get notification_timeline_tab_info =>
@@ -1195,8 +1193,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'No notifications found matching your search.';
 
   @override
-  String get app_info_none_warning =>
-      'Couldn\'t find the app for the given package. Returning to the home screen.';
+  String get app_info_none_warning => '指定されたパッケージのアプリが見つかりませんでした。ホーム画面に戻ります。';
 
   @override
   String get emergency_fab_button => '緊急時の使用';
@@ -1348,22 +1345,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get default_home_tab_tile_title => 'ホームタブ';
 
   @override
-  String get usage_history_tile_title => 'Usage history';
+  String get usage_history_tile_title => '使用履歴';
 
   @override
-  String get usage_history_15_days => '15 days';
+  String get usage_history_15_days => '15日間';
 
   @override
-  String get usage_history_1_month => '1 month';
+  String get usage_history_1_month => '1ヶ月間';
 
   @override
-  String get usage_history_3_month => '3 months';
+  String get usage_history_3_month => '3ヶ月間';
 
   @override
-  String get usage_history_6_month => '6 months';
+  String get usage_history_6_month => '6ヶ月間';
 
   @override
-  String get usage_history_1_year => '1 year';
+  String get usage_history_1_year => '1年間';
 
   @override
   String get service_heading => 'サービス';
@@ -1411,13 +1408,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get crash_logs_export_tile_subtitle => 'エラーレポートをJSONファイルで書き出す';
 
   @override
-  String get crash_logs_view_tile_title => 'View logs';
+  String get crash_logs_view_tile_title => 'ログを表示';
 
   @override
-  String get crash_logs_view_tile_subtitle => 'Explore stored crash logs.';
+  String get crash_logs_view_tile_subtitle => '保存されたクラッシュログを確認します。';
 
   @override
-  String get crash_logs_empty_list_hint => 'No crash logged till now.';
+  String get crash_logs_empty_list_hint => '現在までにクラッシュログはありません。';
 
   @override
   String get crash_logs_clear_tile_title => 'ログを削除';
@@ -1439,10 +1436,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get changelog_tile_title => '変更履歴';
 
   @override
-  String get changelog_tile_subtitle => 'Find out what\'s new.';
+  String get changelog_tile_subtitle => '最新の変更点を確認できます。';
 
   @override
-  String get full_changelog_tile_title => 'Full changelog';
+  String get full_changelog_tile_title => '完全な変更履歴';
 
   @override
   String get redirected_to_github_subtitle => 'GitHubに移動';

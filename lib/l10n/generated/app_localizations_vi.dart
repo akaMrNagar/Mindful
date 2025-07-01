@@ -9,62 +9,62 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
-  String get mindful_tagline => 'Focus on what truly Matters';
+  String get mindful_tagline => 'Tập trung vào những gì thực sự quan trọng';
 
   @override
-  String get unlock_button_label => 'Unlock';
+  String get unlock_button_label => 'Mở khóa';
 
   @override
   String get permission_status_off => 'Off';
 
   @override
-  String get permission_status_allowed => 'Allowed';
+  String get permission_status_allowed => 'Được phép';
 
   @override
-  String get permission_status_not_allowed => 'Not allowed';
+  String get permission_status_not_allowed => 'Không được phép';
 
   @override
-  String get permission_button_grant_permission => 'Grant Permission';
+  String get permission_button_grant_permission => 'Cấp quyền';
 
   @override
-  String get permission_button_agree_and_continue => 'Agree & Continue';
+  String get permission_button_agree_and_continue => 'Đồng ý & Tiếp tục';
 
   @override
-  String get permission_button_not_now => 'Not Now';
+  String get permission_button_not_now => 'Không phải bây giờ';
 
   @override
-  String get permission_button_help => 'Help?';
+  String get permission_button_help => 'Cần giúp?';
 
   @override
   String get permission_sheet_privacy_info =>
-      'Mindful is 100% secure and works offline. We do not collect or store any personal data.';
+      'Mindful an toàn 100% và hoạt động ngoại tuyến. Chúng tôi không thu thập hoặc lưu trữ bất kỳ dữ liệu cá nhân nào.';
 
   @override
   String permission_grant_step_one(String button_label) {
-    return '1. Click on $button_label button.';
+    return '1. Nhấp vào nút $button_label.';
   }
 
   @override
   String get permission_grant_step_two =>
-      '2. Select Mindful in the next screen.';
+      '2. Chọn Mindful ở màn hình tiếp theo.';
 
   @override
   String get permission_grant_step_three =>
-      '3. Click and turn on the switch like below.';
+      '3. Nhấp và bật công tắc như bên dưới.';
 
   @override
-  String get permission_notification_title => 'Send Notifications';
+  String get permission_notification_title => 'Gửi thông báo';
 
   @override
-  String get permission_alarms_title => 'Alarms & Reminders';
+  String get permission_alarms_title => 'Báo thức & Nhắc nhở';
 
   @override
   String get permission_alarms_info =>
-      'Please grant permission for setting alarms and reminders. This will allow Mindful to start your bedtime schedule on time and reset app timers daily at midnight and help you stay on track.';
+      'Vui lòng cấp quyền cài đặt báo thức và nhắc nhở. Điều này sẽ cho phép Mindful bắt đầu lịch trình đi ngủ đúng giờ và đặt lại bộ hẹn giờ ứng dụng hàng ngày vào lúc nửa đêm và giúp bạn duy trì đúng tiến độ.';
 
   @override
   String get permission_alarms_device_tile_label =>
-      'Allow setting alarms and reminders';
+      'Cho phép cài đặt báo thức và nhắc nhở';
 
   @override
   String get permission_usage_title => 'Usage Access';
@@ -77,7 +77,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get permission_usage_device_tile_label => 'Permit usage access';
 
   @override
-  String get permission_overlay_title => 'Display Overlay';
+  String get permission_overlay_title => 'Lớp phủ hiển thị';
 
   @override
   String get permission_overlay_info =>
@@ -85,10 +85,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get permission_overlay_device_tile_label =>
-      'Allow display over other apps';
+      'Cho phép hiển thị trên các ứng dụng khác';
 
   @override
-  String get permission_accessibility_title => 'Accessibility';
+  String get permission_accessibility_title => 'Khả năng tiếp cận';
 
   @override
   String get permission_accessibility_info =>
@@ -99,10 +99,10 @@ class AppLocalizationsVi extends AppLocalizations {
       'Mindful requires accessibility permission to block short content and websites effectively.';
 
   @override
-  String get permission_accessibility_device_tile_label => 'Use Mindful';
+  String get permission_accessibility_device_tile_label => 'Sử dụng Mindful';
 
   @override
-  String get permission_dnd_title => 'Do not disturb';
+  String get permission_dnd_title => 'Đừng làm phiền';
 
   @override
   String get permission_dnd_info =>
@@ -161,13 +161,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get permission_notification_access_device_tile_label =>
-      'Allow notification access';
+      'Cho phép truy cập thông báo';
 
   @override
-  String get day_today => 'Today';
+  String get day_today => 'Hôm nay';
 
   @override
-  String get day_yesterday => 'Yesterday';
+  String get day_yesterday => 'Hôm qua';
 
   @override
   String nDays(num count) {
