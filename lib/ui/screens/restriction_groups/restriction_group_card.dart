@@ -97,7 +97,7 @@ class RestrictionGroupCard extends ConsumerWidget {
                           value: progress > 0 ? progress : 1,
                           color: timeSpent > 0 &&
                                   group.timerSec > 0 &&
-                                  progress <= 0
+                                  progress >= 1
                               ? Theme.of(context).colorScheme.error
                               : null,
                         ),

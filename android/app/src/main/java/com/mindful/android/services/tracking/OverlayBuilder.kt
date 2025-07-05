@@ -224,7 +224,10 @@ object OverlayBuilder {
         return appName to appIcon
     }
 
-    private fun getRestrictionInfo(context: Context, state: RestrictionState): String {
+    private fun getRestrictionInfo(
+        context: Context,
+        state: RestrictionState,
+    ): String {
         val isLimitExhausted = state.screenTimeUsed >= state.screenTimeLimit
 
         return when (state.type) {
@@ -245,11 +248,17 @@ object OverlayBuilder {
                 context.getString(R.string.app_paused_reason_app_active_period_over)
 
             RestrictionType.GROUP_TIMER ->
-                if (isLimitExhausted) context.getString(R.string.app_paused_reason_group_timer_out)
-                else context.getString(R.string.app_paused_reason_group_timer_left)
+                if (isLimitExhausted) context.getString(
+                    R.string.app_paused_reason_group_timer_out,
+                    state.groupName
+                )
+                else context.getString(R.string.app_paused_reason_group_timer_left, state.groupName)
 
             RestrictionType.GROUP_ACTIVE_PERIOD ->
-                context.getString(R.string.app_paused_reason_group_active_period_over)
+                context.getString(
+                    R.string.app_paused_reason_group_active_period_over,
+                    state.groupName
+                )
         }
     }
 }
