@@ -12,30 +12,71 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/config/navigation/app_routes.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
 import 'package:mindful/config/hero_tags.dart';
 import 'package:mindful/providers/focus/focus_mode_provider.dart';
-import 'package:mindful/ui/common/default_fab_button.dart';
+import 'package:mindful/ui/common/rounded_container.dart';
+import 'package:mindful/ui/common/styled_text.dart';
+import 'package:mindful/ui/transitions/default_hero.dart';
+import 'package:slide_action/slide_action.dart';
 
 class StartSessionFAB extends ConsumerWidget {
   const StartSessionFAB({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return DefaultFabButton(
-      heroTag: HeroTags.focusModeFABTag,
-      icon: FluentIcons.target_arrow_20_filled,
-      label: context.locale.focus_session_start_fab_button,
-      onPressed: () => _startFocusSession(context, ref),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        FractionallySizedBox(
+          widthFactor: 0.5,
+          child: DefaultHero(
+            tag: HeroTags.focusModeFABTag,
+            child: SlideAction(
+              trackHeight: 52,
+              actionSnapThreshold: 0.9,
+              trackBuilder: (context, currentState) => RoundedContainer(
+                color: Theme.of(context).colorScheme.primary,
+                circularRadius: 16,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 40),
+                  child: StyledText(
+                    context.locale.focus_session_start_fab_button,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              thumbBuilder: (context, currentState) => RoundedContainer(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                margin: EdgeInsets.all(4),
+                circularRadius: 14,
+                child: Icon(
+                  FluentIcons.chevron_right_20_filled,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              ),
+              action: () => _startFocusSession(context, ref),
+            ).animate().scale(
+                  duration: AppConstants.defaultAnimDuration,
+                  curve: Curves.easeOutBack,
+                  alignment: Alignment.bottomRight,
+                ),
+          ),
+        ),
+      ],
     );
   }
 
   void _startFocusSession(BuildContext context, WidgetRef ref) async {
-    final focusModeModel = ref.read(focusModeProvider);
+    final focusMode = ref.read(focusModeProvider);
 
     /// If another focus session is already active
-    if (focusModeModel.activeSession.value != null) {
+    if (focusMode.activeSession.value != null) {
       context.showSnackAlert(
         context.locale.focus_session_already_active_snack_alert,
       );
@@ -43,7 +84,7 @@ class StartSessionFAB extends ConsumerWidget {
     }
 
     // If no distracting apps selected
-    if (focusModeModel.focusProfile.distractingApps.isEmpty) {
+    if (focusMode.focusProfile.distractingApps.isEmpty) {
       context.showSnackAlert(
         context.locale.focus_session_minimum_apps_snack_alert,
       );

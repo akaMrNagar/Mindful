@@ -37,13 +37,14 @@ class DefaultFabButton extends StatelessWidget {
         style: const ButtonStyle().copyWith(
           padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
           shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           ),
         ),
       ),
     ).animate().scale(
           duration: AppConstants.defaultAnimDuration,
           curve: Curves.easeOutBack,
+          alignment: Alignment.bottomRight,
         );
   }
 }

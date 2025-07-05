@@ -69,7 +69,7 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
 
     // Fixed thread pool for parallel event processing
     private val executorService: ExecutorService = Executors.newFixedThreadPool(4)
-    private val throttler: Throttler = Throttler(250L)
+    private val throttler: Throttler = Throttler(500L)
     private val deviceAppsChangedReceiver: DeviceAppsChangedReceiver =
         DeviceAppsChangedReceiver(onAppsChanged = { refreshServiceConfig() })
 

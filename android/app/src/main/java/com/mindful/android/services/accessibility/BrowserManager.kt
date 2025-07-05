@@ -2,13 +2,13 @@ package com.mindful.android.services.accessibility
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
 import android.provider.Browser
 import android.util.Log
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Toast
+import androidx.core.net.toUri
 import com.mindful.android.R
 import com.mindful.android.models.Wellbeing
 import com.mindful.android.utils.NsfwDomains
@@ -74,7 +74,7 @@ class BrowserManager(
      * @param hostDomain     The resolved host name for the provided url.
      */
     private fun applySafeSearch(browserPackage: String, url: String, hostDomain: String) {
-        val query = runCatching { Uri.parse(url) }.getOrNull()
+        val query = runCatching { url.toUri() }.getOrNull()
             ?.getQueryParameter("q")?.lowercase() ?: url
 
         // Apply safe search if searching maybe nsfw
@@ -116,7 +116,7 @@ class BrowserManager(
 
         // Post to the main thread
         ThreadUtils.runOnMainThread {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(Utils.validateHttpsProtocol(url)))
+            val intent = Intent(Intent.ACTION_VIEW, Utils.validateHttpsProtocol(url).toUri())
                 .apply {
                     putExtra(Browser.EXTRA_APPLICATION_ID, browserPackage)
                     setPackage(browserPackage)

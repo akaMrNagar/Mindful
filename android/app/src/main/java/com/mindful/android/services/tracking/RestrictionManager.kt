@@ -158,7 +158,10 @@ class RestrictionManager(
         /// Check group's active period
         restrictionGroups[restriction.associatedGroupId]?.let {
             if (it.activePeriodStart != it.activePeriodEnd) {
-                val state = RestrictionState(type = RestrictionType.GROUP_ACTIVE_PERIOD)
+                val state = RestrictionState(
+                    type = RestrictionType.GROUP_ACTIVE_PERIOD,
+                    groupName = it.groupName,
+                )
                 /// Outside active period
                 if (DateTimeUtils.isTimeOutsideTODs(it.activePeriodStart, it.activePeriodEnd)) {
                     Log.d(
@@ -235,6 +238,7 @@ class RestrictionManager(
                         screenTimeUsed = groupScreenTimeSec,
                         screenTimeLimit = group.timerSec.toLong(),
                         reminderType = restriction.reminderType,
+                        groupName = group.groupName,
                     )
 
                     alreadyRestrictedGroups[group.id] = state
@@ -249,6 +253,7 @@ class RestrictionManager(
                             screenTimeUsed = groupScreenTimeSec,
                             screenTimeLimit = group.timerSec.toLong(),
                             reminderType = restriction.reminderType,
+                            groupName = group.groupName,
                         )
                     )
                 }

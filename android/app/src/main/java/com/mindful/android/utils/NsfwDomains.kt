@@ -14961,7 +14961,6 @@ object NsfwDomains {
             "nxt-comics.com",
             "nxtcomics.me",
             "nxtcomicsclub.com",
-            "nyaa.si",
             "nyllover.com",
             "nylon-erotic.com",
             "nylon-milf.com",

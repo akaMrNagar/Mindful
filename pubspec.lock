@@ -778,6 +778,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  slide_action:
+    dependency: "direct main"
+    description:
+      name: slide_action
+      sha256: "6eabc637d767eaa71905f01a24dbf037c120dd596157e52b7d5c8af82cedcf1c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   sliver_tools:
     dependency: "direct main"
     description:
