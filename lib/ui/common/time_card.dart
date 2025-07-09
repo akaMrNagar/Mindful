@@ -45,6 +45,9 @@ class TimeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final timeString = initialTime.format(context);
+    final timeParts = timeString.split(' ');
+
     return DefaultHero(
       tag: heroTag,
       child: RoundedContainer(
@@ -94,7 +97,7 @@ class TimeCard extends StatelessWidget {
                     children: [
                       /// Time in hour and minutes
                       StyledText(
-                        initialTime.format(context).split(' ').first,
+                        timeParts.firstOrNull ?? timeString,
                         height: 1,
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -104,7 +107,7 @@ class TimeCard extends StatelessWidget {
 
                       /// Time period AM/PM
                       StyledText(
-                        initialTime.format(context).split(' ').last,
+                        timeParts.elementAtOrNull(1) ?? "",
                         height: 2,
                         isSubtitle: !enabled,
                       ),

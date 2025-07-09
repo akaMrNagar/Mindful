@@ -35,6 +35,7 @@ class DefaultFabButton extends StatelessWidget {
         icon: Icon(icon),
         label: Text(label),
         style: const ButtonStyle().copyWith(
+          elevation: WidgetStatePropertyAll(5),
           padding: const WidgetStatePropertyAll(EdgeInsets.all(16)),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -44,7 +45,6 @@ class DefaultFabButton extends StatelessWidget {
     ).animate().scale(
           duration: AppConstants.defaultAnimDuration,
           curve: Curves.easeOutBack,
-          alignment: Alignment.bottomRight,
         );
   }
 }

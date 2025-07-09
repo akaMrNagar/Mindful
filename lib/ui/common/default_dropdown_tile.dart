@@ -10,8 +10,10 @@
 
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:mindful/config/app_constants.dart';
 import 'package:mindful/core/enums/item_position.dart';
 import 'package:mindful/core/extensions/ext_build_context.dart';
+import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
 import 'package:mindful/ui/common/styled_text.dart';
@@ -88,7 +90,7 @@ class DefaultDropdownTile<T> extends StatelessWidget {
   }
 }
 
-class _DropdownMenuDialog<T> extends StatelessWidget {
+class _DropdownMenuDialog<T> extends StatefulWidget {
   const _DropdownMenuDialog({
     required this.heroTag,
     required this.selected,
@@ -111,6 +113,38 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
   final List<DefaultDropdownItem<T>> items;
 
   @override
+  State<_DropdownMenuDialog<T>> createState() => _DropdownMenuDialogState<T>();
+}
+
+class _DropdownMenuDialogState<T> extends State<_DropdownMenuDialog<T>> {
+  final GlobalKey _selectedItemKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _scrollToSelectedItem(),
+    );
+  }
+
+  void _scrollToSelectedItem() async {
+    final heroDuration =
+        HeroPageRoute(builder: (_) => 0.vBox).transitionDuration;
+
+    await Future.delayed(heroDuration);
+    final context = _selectedItemKey.currentContext;
+
+    if (context != null && context.mounted) {
+      Scrollable.ensureVisible(
+        context,
+        duration: AppConstants.defaultAnimDuration,
+        curve: Curves.easeOutBack,
+        alignment: 0.5,
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
@@ -118,11 +152,11 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
         alignment: Alignment.center,
         child: SingleChildScrollView(
           child: DefaultHero(
-            tag: heroTag,
+            tag: widget.heroTag,
             child: AlertDialog(
               scrollable: true,
-              icon: Icon(iconData ?? FluentIcons.info_20_regular),
-              title: StyledText(label, fontSize: 16),
+              icon: Icon(widget.iconData ?? FluentIcons.info_20_regular),
+              title: StyledText(widget.label, fontSize: 16),
               insetPadding: EdgeInsets.zero,
               contentPadding: const EdgeInsets.all(12),
               actionsPadding:
@@ -138,45 +172,64 @@ class _DropdownMenuDialog<T> extends StatelessWidget {
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.6,
                 ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      /// Info
-                      if (info != null)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 18),
-                          child: StyledText(
-                            info!,
-                          ),
-                        ),
-
-                      /// Options
-                      ...List.generate(
-                        items.length,
-                        (index) => DefaultListTile(
-                          color:
-                              Theme.of(context).colorScheme.surfaceContainerLow,
-                          position: getItemPositionInList(index, items.length),
-                          leading: IgnorePointer(
-                            child: Radio(
-                              value: items[index].value == selected?.value,
-                              groupValue: true,
-                              splashRadius: 0,
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              onChanged: (v) {},
+                child: ClipRRect(
+                  borderRadius: BorderRadiusGeometry.circular(24),
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        /// Info
+                        if (widget.info != null)
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 18),
+                            child: StyledText(
+                              widget.info!,
                             ),
                           ),
-                          title: StyledText(items[index].label, fontSize: 14),
-                          trailing: trailingBuilder?.call(items[index].value),
-                          onPressed: () {
-                            Navigator.of(context).maybePop();
-                            onSelected(items[index].value);
+
+                        /// Options
+                        ...List.generate(
+                          widget.items.length,
+                          growable: false,
+                          (index) {
+                            final item = widget.items[index];
+                            final isSelected =
+                                item.value == widget.selected?.value;
+
+                            return DefaultListTile(
+                              key: isSelected ? _selectedItemKey : null,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerLow,
+                              position: getItemPositionInList(
+                                index,
+                                widget.items.length,
+                              ),
+                              margin: index == 0 ? EdgeInsets.zero : null,
+                              leading: IgnorePointer(
+                                child: Radio(
+                                  value: isSelected,
+                                  groupValue: true,
+                                  splashRadius: 0,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  onChanged: (v) {},
+                                ),
+                              ),
+                              title: StyledText(item.label, fontSize: 14),
+                              trailing:
+                                  widget.trailingBuilder?.call(item.value),
+                              onPressed: () async {
+                                await Navigator.of(context).maybePop();
+                                widget.onSelected(item.value);
+                              },
+                            );
                           },
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

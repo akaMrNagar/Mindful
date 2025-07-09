@@ -64,44 +64,46 @@ class _TabTimelineState extends ConsumerState<TabFocusTimeline> {
           24.vSliverBox,
 
           /// Productivity stats
-
-          Row(
-            children: [
-              /// Total productive time
-              Expanded(
-                child: UsageGlanceCard(
-                  isPrimary: true,
-                  position: ItemPosition.topLeft,
-                  icon: FluentIcons.clock_20_regular,
-                  title: context.locale.focus_monthly_label,
-                  info: monthlyFocus.totalProductiveTime.toTimeShort(context),
-                  onTap: () => context.showSnackAlert(
-                    context.locale.selected_month_productive_time_snack_alert(
-                      monthlyFocus.totalProductiveTime.toTimeFull(context),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                /// Total productive time
+                Expanded(
+                  child: UsageGlanceCard(
+                    isPrimary: true,
+                    position: ItemPosition.topLeft,
+                    icon: FluentIcons.clock_20_regular,
+                    title: context.locale.focus_monthly_label,
+                    info: monthlyFocus.totalProductiveTime.toTimeShort(context),
+                    onTap: () => context.showSnackAlert(
+                      context.locale.selected_month_productive_time_snack_alert(
+                        monthlyFocus.totalProductiveTime.toTimeFull(context),
+                      ),
+                      icon: FluentIcons.clock_20_filled,
                     ),
-                    icon: FluentIcons.clock_20_filled,
                   ),
                 ),
-              ),
-              4.hBox,
+                4.hBox,
 
-              /// Productive days
-              Expanded(
-                child: UsageGlanceCard(
-                  isPrimary: true,
-                  position: ItemPosition.topRight,
-                  icon: FluentIcons.calendar_day_20_regular,
-                  title: context.locale.selected_month_productive_days_label,
-                  info: context.locale.nDays(monthlyFocus.totalProductiveDays),
-                  onTap: () => context.showSnackAlert(
-                    context.locale.selected_month_productive_days_snack_alert(
-                      monthlyFocus.totalProductiveDays,
+                /// Productive days
+                Expanded(
+                  child: UsageGlanceCard(
+                    isPrimary: true,
+                    position: ItemPosition.topRight,
+                    icon: FluentIcons.calendar_day_20_regular,
+                    title: context.locale.selected_month_productive_days_label,
+                    info:
+                        context.locale.nDays(monthlyFocus.totalProductiveDays),
+                    onTap: () => context.showSnackAlert(
+                      context.locale.selected_month_productive_days_snack_alert(
+                        monthlyFocus.totalProductiveDays,
+                      ),
+                      icon: FluentIcons.calendar_day_20_filled,
                     ),
-                    icon: FluentIcons.calendar_day_20_filled,
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ).sliver,
 
           4.vSliverBox,

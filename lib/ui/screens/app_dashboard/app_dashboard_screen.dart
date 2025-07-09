@@ -187,6 +187,21 @@ class _AppDashboardScreenState extends ConsumerState<AppDashboardScreen> {
                 ),
 
                 /// Available app setting or functions
+                Row(
+                  children: [
+                    ContentSectionHeader(
+                      title: context.locale.restrictions_heading,
+                    ),
+
+                    const Spacer(),
+
+                    /// Current day
+                    ContentSectionHeader(
+                      title: _filter.selectedDay.dateString(context),
+                    ),
+                  ],
+                ).sliver,
+
                 isNetworkOnlyApp
                     ? StyledText(
                         context.locale

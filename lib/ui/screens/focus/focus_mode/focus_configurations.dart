@@ -101,7 +101,7 @@ class FocusConfigurations extends ConsumerWidget {
         ),
 
         DefaultExpandableListTile(
-          position: ItemPosition.bottom,
+          position: ItemPosition.mid,
           titleText: context.locale.focus_profile_customization_tile_title,
           subtitleText:
               context.locale.focus_profile_customization_tile_subtitle,
@@ -131,7 +131,7 @@ class FocusConfigurations extends ConsumerWidget {
 
               /// Manage Dnd settings
               const DeviceDndTile(
-                position: ItemPosition.bottom,
+                position: ItemPosition.mid,
               ),
             ],
           ),

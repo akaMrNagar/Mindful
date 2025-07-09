@@ -897,7 +897,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get focus_enforce_tile_subtitle => '防止在计时结束前结束会话。';
 
   @override
-  String get focus_session_start_fab_button => '开始会话';
+  String get focus_session_start_button => 'Swipe to start Session';
 
   @override
   String get focus_session_minimum_apps_snack_alert => '请至少选择一个干扰应用以开始专注会话';

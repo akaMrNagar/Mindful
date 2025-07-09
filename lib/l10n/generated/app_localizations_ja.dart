@@ -935,7 +935,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'Prevents ending a session before time ends.';
 
   @override
-  String get focus_session_start_fab_button => '記録を開始';
+  String get focus_session_start_button => 'Swipe to start Session';
 
   @override
   String get focus_session_minimum_apps_snack_alert =>
