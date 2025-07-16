@@ -170,6 +170,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     bool innerBoxIsScrolled,
   ) {
     final navItem = widget.items[tabIndex];
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return AnimatedBuilder(
       animation: _appBarScrollOffSet,
@@ -220,7 +221,8 @@ class _ScaffoldShellState extends State<ScaffoldShell>
             collapseMode: CollapseMode.parallax,
             titlePadding: EdgeInsets.only(
               bottom: 13,
-              left: widget.bodyPadding.left + leftPadding,
+              left: isRtl ? 0 : widget.bodyPadding.left + leftPadding,
+              right: isRtl ? widget.bodyPadding.right + leftPadding : 0,
             ),
             title: navItem.titleBuilder?.call(1 - percentage) ??
                 AppBarTitle(titleText: navItem.titleText!),

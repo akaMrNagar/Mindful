@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get mindful_tagline => 'التركيز على ما هو مهم حقًا';
+  String get mindful_tagline => 'ركز على ما يهم حقا';
 
   @override
   String get unlock_button_label => 'فتح';
@@ -96,7 +96,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get permission_accessibility_required =>
-      'Mindful requires accessibility permission to block short content and websites effectively.';
+      'يتطلب تطبيق Mindful إذن الوصول لتفعيل حظر المحتوى القصير والمواقع الإلكترونية بفعالية.';
 
   @override
   String get permission_accessibility_device_tile_label => 'استخدم Mindful';
@@ -275,7 +275,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exit_without_saving_dialog_info =>
-      'Are you sure you want to exit without saving?';
+      'هل أنت متأكد أنك تريد الخروج دون حفظ؟';
 
   @override
   String get development_dialog_info =>
@@ -348,107 +348,107 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accessibility_tip =>
-      'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
+      'هل ترغب في حظر أذكى وأكثر توفيرا للطاقة؟ فعل إذن إمكانية الوصول لتطبيق Mindful.';
 
   @override
   String get battery_optimization_tip =>
-      'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.';
+      'هل لا يعمل تطبيق Mindful؟ اسمح بخيار \"تجاهل تحسين البطارية\" من الإعدادات ليعمل بسلاسة.';
 
   @override
   String get invincible_mode_tip =>
-      'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+      'هل أزلت القيود عن طريق الخطأ؟ استخدم وضع الحماية القصوى لقفلها حتى اليوم التالي أو حتى نافذة التعديل.';
 
   @override
   String get glance_usage_tip =>
-      'Want insights? Check the Glance section to view your usage patterns and screen time.';
+      'تريد الحصول على إحصاءات؟ تفقد قسم \"نظرة سريعة\" لعرض أنماط استخدامك ومدة وقت الشاشة.';
 
   @override
   String get tamper_protection_tip =>
-      'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+      'هل تنوي إزالة تطبيق Mindful؟ فعل نافذة إلغاء التثبيت لتعطيل حماية العبث بأمان أولا.';
 
   @override
   String get notification_blocking_tip =>
-      'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+      'تريد تقليل التشتت؟ استخدم ميزة حظر الإشعارات لكتم التطبيقات المحددة.';
 
   @override
   String get usage_history_tip =>
-      'Want to reflect on your habits? Check Usage History to see past patterns.';
+      'تريد التأمل في عاداتك؟ تفقد سجل الاستخدام للاطلاع على الأنماط السابقة.';
 
   @override
   String get focus_mode_tip =>
-      'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+      'تحتاج إلى تركيز عميق؟ فعل وضع التركيز لحظر التطبيقات والإشعارات أثناء المهام.';
 
   @override
   String get bedtime_reminder_tip =>
-      'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+      'تريد تحسين نومك؟ اضبط تذكير موعد النوم للاسترخاء كل ليلة.';
 
   @override
   String get custom_blocking_tip =>
-      'Need a custom experience? Create app blocking rules that fit your needs.';
+      'تحتاج إلى تجربة مخصصة؟ أنشئ قواعد حظر التطبيقات التي تناسب احتياجاتك.';
 
   @override
   String get session_timeline_tip =>
-      'Want to track focus sessions? View timeline to see your focus journey.';
+      'تريد متابعة جلسات التركيز؟ اطلع على الجدول الزمني لرؤية رحلة تركيزك.';
 
   @override
   String get short_content_blocking_tip =>
-      'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.';
+      'تشتت بسبب تطبيقات التواصل الاجتماعي؟ احظر المحتوى القصير على إنستغرام ويوتيوب وغيرها للبقاء مركزا.';
 
   @override
   String get parental_controls_tip =>
-      'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.';
+      'تحتاج إلى رقابة أبوية؟ ضع قيودا على جهاز طفلك لضمان تجربة امنة.';
 
   @override
   String get notification_batching_tip =>
-      'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.';
+      'تريد تقليل التشتت؟ استخدم تجميع الإشعارات لجمعها معا والتحقق منها دفعة واحدة.';
 
   @override
   String get notification_scheduling_tip =>
-      'Need to manage notifications? Schedule when you receive notifications for specific apps.';
+      'تحتاج لإدارة الإشعارات؟ جدولة مواعيد استلام الإشعارات لتطبيقات معينة.';
 
   @override
   String get quick_focus_tile_tip =>
-      'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.';
+      'هل تحتاج إلى وصول سريع للتركيز؟ أضف لوحة تركيز سريعة لتفعيل وضع التركيز على الفور.';
 
   @override
   String get app_shortcuts_tip =>
-      'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.';
+      'تريد وصولا فوريا للتطبيقات؟ أضف اختصارات بالضغط المطول على أيقونة التطبيق للإجراءات السريعة.';
 
   @override
   String get backup_usage_db_tip =>
-      'Want to save your data? Backup your usage database to keep your records safe.';
+      'هل ترغب في حفظ بياناتك؟ قم بعمل نسخة احتياطية لقاعدة بيانات الاستخدام للحفاظ على سجلاتك بأمان.';
 
   @override
   String get dynamic_material_color_tip =>
-      'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.';
+      'تريد ثيم مخصص؟ فعل لون Material You الديناميكي ليتناسب مع ثيم جهازك.';
 
   @override
   String get amoled_dark_theme_tip =>
-      'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
+      'تريد توفير البطارية؟ استخدم الثيم الداكن AMOLED لتقليل استهلاك الطاقة على شاشات OLED.';
 
   @override
   String get customize_usage_history_tip =>
-      'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
+      'تريد الاحتفاظ بسجل الاستخدام؟ خصص عدد الأسابيع التي تريد تخزين بياناتها في سجل الاستخدام.';
 
   @override
   String get grouped_apps_blocking_tip =>
-      'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.';
+      'تريد حظر التطبيقات معا؟ استخدم مجموعات القيود لتجميع حدود التطبيقات وحظر عدة تطبيقات دفعة واحدة.';
 
   @override
   String get websites_blocking_tip =>
-      'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.';
+      'تريد تجربة تصفح أنظف؟ احظر مواقع مخصصة أو مواقع غير مناسبة لمزيد من التركيز أثناء التصفح.';
 
   @override
   String get data_usage_tip =>
-      'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.';
+      'تريد متابعة بياناتك؟ راقب استخدام بيانات الجوال والواي فاي لاستهلاك الإنترنت.';
 
   @override
   String get block_internet_tip =>
-      'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.';
+      'تحتاج لحظر إنترنت تطبيق؟ قم بقطع الإنترنت لتطبيق معين من لوحة التحكم الخاصة به.';
 
   @override
   String get emergency_passes_tip =>
-      'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.';
+      'تحتاج استراحة؟ استخدم 3 تصاريح طوارئ يوميا لفتح التطبيقات مؤقتا لمدة 5 دقائق.';
 
   @override
   String get onboarding_skip_btn_label => 'تخطي';
@@ -488,7 +488,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dashboard_tab_title => 'لوحة التحكم';
 
   @override
-  String get focus_now_fab_button => 'Focus now';
+  String get focus_now_fab_button => 'ركز الان';
 
   @override
   String get welcome_greetings => 'مرحبًا بعودتك،';
@@ -507,1020 +507,1018 @@ class AppLocalizationsAr extends AppLocalizations {
   String get username_dialog_button_apply => 'تطبيق';
 
   @override
-  String get glance_tile_title => 'Glance';
+  String get glance_tile_title => 'نظرة سريعة';
 
   @override
-  String get glance_tile_subtitle => 'Take a quick glance at your usage.';
+  String get glance_tile_subtitle => 'ألق نظرة سريعة على استخدامك.';
 
   @override
   String get parental_controls_tile_subtitle =>
-      'Invincible mode and tamper protection.';
+      'وضع الحماية القصوى وحماية العبث.';
 
   @override
-  String get restrictions_heading => 'Restrictions';
+  String get restrictions_heading => 'القيود';
 
   @override
-  String get apps_blocking_tile_title => 'Apps blocking';
+  String get apps_blocking_tile_title => 'حظر التطبيقات';
 
   @override
-  String get apps_blocking_tile_subtitle => 'Limit apps in multiple ways.';
+  String get apps_blocking_tile_subtitle =>
+      'حدد قيودا على التطبيقات بطرق متعددة.';
 
   @override
-  String get grouped_apps_blocking_tile_title => 'Grouped apps blocking';
+  String get grouped_apps_blocking_tile_title => 'حظر التطبيقات المجمعة';
 
   @override
   String get grouped_apps_blocking_tile_subtitle =>
-      'Limit group of apps simultaneously.';
+      'حدد قيودا على مجموعة تطبيقات في وقت واحد.';
 
   @override
   String get shorts_blocking_tile_subtitle =>
-      'Limit short content on multiple platforms.';
+      'حدد قيودا على المحتوى القصير في عدة منصات.';
 
   @override
   String get websites_blocking_tile_subtitle =>
-      'Limit adult and custom websites.';
+      'حدد قيودا على المواقع الإباحية والمخصصة.';
 
   @override
   String get screen_time_label => 'وقت استخدام الشاشة';
 
   @override
-  String get total_data_label => 'Total data';
+  String get total_data_label => 'إجمالي البيانات';
 
   @override
-  String get mobile_data_label => 'Mobile data';
+  String get mobile_data_label => 'بيانات الجوال';
 
   @override
-  String get wifi_data_label => 'Wifi data';
+  String get wifi_data_label => 'بيانات الواي فاي';
 
   @override
-  String get focus_today_label => 'Focus today';
+  String get focus_today_label => 'تركيز اليوم';
 
   @override
-  String get focus_weekly_label => 'Focus weekly';
+  String get focus_weekly_label => 'تركيز أسبوعي';
 
   @override
-  String get focus_monthly_label => 'Focus monthly';
+  String get focus_monthly_label => 'تركيز شهري';
 
   @override
-  String get focus_lifetime_label => 'Focus lifetime';
+  String get focus_lifetime_label => 'تركيز مدى الحياة';
 
   @override
-  String get longest_streak_label => 'Longest streak';
+  String get longest_streak_label => 'أطول سلسلة';
 
   @override
-  String get current_streak_label => 'Current streak';
+  String get current_streak_label => 'السلسلة الحالية';
 
   @override
-  String get successful_sessions_label => 'Successful sessions';
+  String get successful_sessions_label => 'جلسات ناجحة';
 
   @override
-  String get failed_sessions_label => 'Failed sessions';
+  String get failed_sessions_label => 'الجلسات الفاشلة';
 
   @override
   String get statistics_tab_title => 'إحصائيات';
 
   @override
-  String get screen_segment_label => 'Screen';
+  String get screen_segment_label => 'الشاشة';
 
   @override
-  String get data_segment_label => 'Data';
+  String get data_segment_label => 'بيانات';
 
   @override
-  String get mobile_label => 'Mobile';
+  String get mobile_label => 'الجوال';
 
   @override
-  String get wifi_label => 'Wifi';
+  String get wifi_label => 'الواي فاي';
 
   @override
-  String get most_used_apps_heading => 'Most used apps';
+  String get most_used_apps_heading => 'التطبيقات الأكثر استخداما';
 
   @override
-  String get show_all_apps_tile_title => 'Show all apps';
+  String get show_all_apps_tile_title => 'عرض جميع التطبيقات';
 
   @override
-  String get search_apps_hint => 'Search apps...';
+  String get search_apps_hint => 'ابحث عن التطبيقات...';
 
   @override
-  String get notifications_tab_title => 'Notifications';
+  String get notifications_tab_title => 'الإشعارات';
 
   @override
   String get notifications_tab_info =>
-      'Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.';
+      'جمع الإشعارات من التطبيقات وضبط جداول مثل الصباح، الظهر، المساء، والليل. كن على اطلاع دون انقطاعات مستمرة.';
 
   @override
-  String get batched_apps_tile_title => 'Batched apps';
+  String get batched_apps_tile_title => 'التطبيقات المجمعة';
 
   @override
-  String get batch_recap_dropdown_title => 'Batch recap type';
+  String get batch_recap_dropdown_title => 'نوع ملخص الدفعة';
 
   @override
   String get batch_recap_dropdown_info =>
-      'Choose what to push when a schedule triggers — all notifications or just a summary.';
+      'اختر ما يتم إرساله عند تفعيل الجدول — كل الإشعارات أو ملخص فقط.';
 
   @override
-  String get batch_recap_option_summery_only => 'Summery only';
+  String get batch_recap_option_summery_only => 'الملخص فقط';
 
   @override
-  String get batch_recap_option_all_notifications => 'All notifications';
+  String get batch_recap_option_all_notifications => 'جميع الإشعارات';
 
   @override
-  String get notification_history_tile_title => 'Notification history';
+  String get notification_history_tile_title => 'سجل الإشعارات';
 
   @override
-  String get store_all_tile_title => 'Store all notifications';
+  String get store_all_tile_title => 'تخزين جميع الإشعارات';
 
   @override
-  String get store_all_tile_subtitle => 'Save non-batched notifications too.';
+  String get store_all_tile_subtitle => 'حفظ الإشعارات غير المجمعة أيضا.';
 
   @override
-  String get schedules_heading => 'Schedules';
+  String get schedules_heading => 'الجداول الزمنية';
 
   @override
-  String get new_schedule_fab_button => 'New Schedule';
+  String get new_schedule_fab_button => 'جدول جديد';
 
   @override
   String get new_schedule_dialog_info =>
-      'Enter a name for the notification schedule to help identify it easily.';
+      'أدخل اسما لجدول الإشعارات لتسهيل التعرف عليه.';
 
   @override
-  String get new_schedule_dialog_field_label => 'Schedule name';
+  String get new_schedule_dialog_field_label => 'اسم الجدول';
 
   @override
-  String get bedtime_tab_title => 'Bedtime';
+  String get bedtime_tab_title => 'موعد النوم';
 
   @override
   String get bedtime_tab_info =>
-      'Set your bedtime schedule by selecting a time period and days of the week. Choose distracting apps to block and enable Do Not Disturb (DND) mode for a peaceful night.';
+      'قم بتعيين جدول وقت النوم الخاص بك عن طريق اختيار فترة زمنية وأيام الأسبوع. اختر التطبيقات المشتتة لحظرها وفعّل وضع عدم الإزعاج (DND) لقضاء ليلة هادئة.';
 
   @override
-  String get schedule_tile_title => 'Schedule';
+  String get schedule_tile_title => 'الجدول الزمني';
 
   @override
-  String get schedule_tile_subtitle => 'Enable or disable daily schedule.';
+  String get schedule_tile_subtitle => 'تمكين أو تعطيل الجدول اليومي.';
 
   @override
   String get bedtime_no_days_selected_snack_alert =>
-      'Select at least one day of the week.';
+      'اختر يوما واحدا على الأقل من أيام الأسبوع.';
 
   @override
   String get bedtime_minimum_duration_snack_alert =>
-      'The total bedtime duration must be at least 30 minutes.';
+      'يجب أن تكون مدة وقت النوم الإجمالية 30 دقيقة على الأقل.';
 
   @override
-  String get distracting_apps_tile_title => 'Distracting apps';
+  String get distracting_apps_tile_title => 'التطبيقات المشتتة';
 
   @override
   String get distracting_apps_tile_subtitle =>
-      'Select which apps are distracting you from your bedtime routine.';
+      'حدد التطبيقات التي تشتتك عن روتين وقت النوم.';
 
   @override
   String get bedtime_distracting_apps_modify_snack_alert =>
-      'Modifications to the list of distracting apps is not permitted while the bedtime schedule is active.';
+      'لا يسمح بتعديل قائمة التطبيقات المشتتة أثناء تفعيل جدول وقت النوم.';
 
   @override
-  String get parental_controls_tab_title => 'Parental controls';
+  String get parental_controls_tab_title => 'الرقابة الأبوية';
 
   @override
-  String get invincible_mode_heading => 'Invincible mode';
+  String get invincible_mode_heading => 'وضع غير قابل للهزيمة';
 
   @override
-  String get invincible_mode_tile_title => 'Activate invincible mode';
+  String get invincible_mode_tile_title => 'تفعيل وضع غير قابل للهزيمة';
 
   @override
   String get invincible_mode_info =>
-      'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
+      'عند تفعيل وضع غير قابل للهزيمة، لن تتمكن من تعديل الحدود المختارة بعد الوصول إلى الحصة اليومية. ومع ذلك، يمكنك إجراء تغييرات خلال نافذة غير قابلة للهزيمة مدتها 10 دقائق.';
 
   @override
   String get invincible_mode_snack_alert =>
-      'Due to invincible mode, modifications to restrictions is not allowed.';
+      'نظرا لتفعيل وضع غير قابل للهزيمة، لا يسمح بتعديل القيود.';
 
   @override
   String get invincible_mode_dialog_info =>
-      'Are you absolutely sure you want to enable Invincible Mode? This action is irreversible. Once Invincible Mode is turned on, you cannot turn it off as long as this app is installed on your device.';
+      'هل أنت متأكد تمامًا من رغبتك في تفعيل وضع غير قابل للهزيمة؟ هذا الإجراء لا يمكن التراجع عنه. بمجرد تفعيل وضع غير قابل للهزيمة، لن تتمكن من إيقافه طالما أن هذا التطبيق مثبت على جهازك.';
 
   @override
   String get invincible_mode_turn_off_snack_alert =>
-      'Invincible Mode cannot be turned off as long as this app remains installed on your device.';
+      'لا يمكن إيقاف وضع غير قابل للهزيمة طالما أن هذا التطبيق مثبت على جهازك.';
 
   @override
-  String get invincible_mode_dialog_button_start_anyway => 'Start anyway';
+  String get invincible_mode_dialog_button_start_anyway => 'ابدأ على أي حال';
 
   @override
-  String get invincible_mode_include_timer_tile_title => 'Include timer';
+  String get invincible_mode_include_timer_tile_title => 'تضمين المؤقت';
 
   @override
   String get invincible_mode_include_launch_limit_tile_title =>
-      'Include launch limit';
+      'تضمين حد التشغيل';
 
   @override
   String get invincible_mode_include_active_period_tile_title =>
-      'Include active period';
+      'تضمين الفترة النشطة';
 
   @override
-  String get invincible_mode_app_restrictions_tile_title => 'App restrictions';
+  String get invincible_mode_app_restrictions_tile_title => 'قيود التطبيق';
 
   @override
   String get invincible_mode_app_restrictions_tile_subtitle =>
-      'Prevent changes to the app\'s selected restrictions once the daily limits are exceeded.';
+      'منع تعديل القيود المحددة للتطبيق بمجرد تجاوز الحدود اليومية.';
 
   @override
-  String get invincible_mode_group_restrictions_tile_title =>
-      'Group restrictions';
+  String get invincible_mode_group_restrictions_tile_title => 'قيود المجموعة';
 
   @override
   String get invincible_mode_group_restrictions_tile_subtitle =>
-      'Prevent changes to the group\'s selected restrictions once the daily limits are exceeded.';
+      'منع تعديل القيود المحددة للمجموعة بمجرد تجاوز الحدود اليومية.';
 
   @override
   String get invincible_mode_include_shorts_timer_tile_title =>
-      'Include shorts timer';
+      'تضمين مؤقت الفيديوهات القصيرة';
 
   @override
   String get invincible_mode_include_shorts_timer_tile_subtitle =>
-      'Prevents changes after reaching your daily shorts limit.';
+      'يمنع التعديلات بعد الوصول إلى حد الفيديوهات القصيرة اليومي.';
 
   @override
-  String get invincible_mode_include_bedtime_tile_title => 'Include bedtime';
+  String get invincible_mode_include_bedtime_tile_title => 'تضمين وقت النوم';
 
   @override
   String get invincible_mode_include_bedtime_tile_subtitle =>
-      'Prevents changes during the active bedtime schedule.';
+      'يمنع التعديلات أثناء تفعيل جدول وقت النوم.';
 
   @override
-  String get protected_access_tile_title => 'Protected access';
+  String get protected_access_tile_title => 'وصول محمي';
 
   @override
   String get protected_access_tile_subtitle =>
-      'Protect Mindful with your device lock.';
+      'احمِ تطبيق Mindful بواسطة قفل جهازك.';
 
   @override
   String get protected_access_no_lock_snack_alert =>
-      'Please set up a biometric lock on your device first to enable this feature.';
+      'يرجى إعداد قفل بيومتري على جهازك أولا لتمكين هذه الميزة.';
 
   @override
   String get protected_access_removed_lock_snack_alert =>
-      'Your device lock has been removed. To continue, please set up a new lock.';
+      'تم إزالة قفل جهازك. للمتابعة، يرجى إعداد قفل جديد.';
 
   @override
   String get protected_access_failed_lock_snack_alert =>
-      'Authentication failed. You need to verify your device lock to proceed.';
+      'فشل التحقق. تحتاج إلى تأكيد قفل جهازك للمتابعة.';
 
   @override
-  String get tamper_protection_tile_title => 'Tamper protection';
+  String get tamper_protection_tile_title => 'حماية من التلاعب';
 
   @override
   String get tamper_protection_tile_subtitle =>
-      'Prevent uninstalling and force stopping the app.';
+      'منع إلغاء التثبيت وإيقاف التطبيق قسريا.';
 
   @override
   String get tamper_protection_confirmation_dialog_info =>
-      'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
+      'بمجرد التفعيل، لن تتمكن من إلغاء التثبيت أو إيقاف التطبيق قسريا أو مسح بيانات Mindful، إلا خلال فترة إلغاء التثبيت المحددة. لا توجد حلول بديلة.\n\nتابع على مسؤوليتك الخاصة.';
 
   @override
-  String get uninstall_window_tile_title => 'Uninstall window';
+  String get uninstall_window_tile_title => 'نافذة إلغاء التثبيت';
 
   @override
   String get uninstall_window_tile_subtitle =>
-      'Tamper protection can be disabled within 10 minutes from the selected time.';
+      'يمكن تعطيل حماية التلاعب خلال 10 دقائق من الوقت المحدد.';
 
   @override
-  String get invincible_window_tile_title => 'Invincible window';
+  String get invincible_window_tile_title => 'نافذة الوضع غير القابل للهزيمة';
 
   @override
   String get invincible_window_tile_subtitle =>
-      'Selected limits can be modified within 10 minutes from the selected time.';
+      'يمكن تعديل الحدود المختارة خلال 10 دقائق من الوقت المحدد.';
 
   @override
-  String get shorts_blocking_tab_title => 'Shorts blocking';
+  String get shorts_blocking_tab_title => 'حجب الفيديوهات القصيرة';
 
   @override
   String get shorts_blocking_tab_info =>
-      'Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.';
+      'تحكم في الوقت الذي تقضيه في مشاهدة المحتوى القصير عبر منصات مثل إنستجرام، يوتيوب، سناب شات، وفيسبوك، بما في ذلك مواقعهم الإلكترونية.';
 
   @override
-  String get short_content_heading => 'Short content';
+  String get short_content_heading => 'المحتوى القصير';
 
   @override
   String shorts_time_left_from(String timeShortString) {
-    return 'Left from $timeShortString';
+    return 'المتبقي من $timeShortString';
   }
 
   @override
   String get short_content_timer_picker_dialog_info =>
-      'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.';
+      'حدد حدا زمنيا يوميا للمحتوى القصير. عند الوصول إلى الحد، سيتوقف عرض المحتوى القصير حتى منتصف الليل.';
 
   @override
-  String get instagram_features_tile_title => 'Instagram';
+  String get instagram_features_tile_title => 'إنستجرام';
 
   @override
-  String get instagram_features_tile_subtitle =>
-      'Restrict features on instagram.';
+  String get instagram_features_tile_subtitle => 'تقييد الميزات على إنستجرام.';
 
   @override
-  String get instagram_features_block_reels => 'Restrict reels section.';
+  String get instagram_features_block_reels => 'تقييد قسم الريلز.';
 
   @override
-  String get instagram_features_block_explore => 'Restrict explore section.';
+  String get instagram_features_block_explore => 'تقييد قسم الاستكشاف.';
 
   @override
-  String get snapchat_features_tile_title => 'Snapchat';
+  String get snapchat_features_tile_title => 'سناب شات';
 
   @override
-  String get snapchat_features_tile_subtitle =>
-      'Restrict features on snapchat.';
+  String get snapchat_features_tile_subtitle => 'تقييد الميزات على سناب شات.';
 
   @override
-  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
+  String get snapchat_features_block_spotlight => 'تقييد قسم Spotlight.';
 
   @override
-  String get snapchat_features_block_discover => 'Restrict discover section.';
+  String get snapchat_features_block_discover => 'تقييد قسم Discover.';
 
   @override
-  String get youtube_features_tile_title => 'Youtube';
+  String get youtube_features_tile_title => 'يوتيوب';
 
   @override
-  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+  String get youtube_features_tile_subtitle =>
+      'تقييد الفيديوهات القصيرة على يوتيوب.';
 
   @override
-  String get facebook_features_tile_title => 'Facebook';
+  String get facebook_features_tile_title => 'فيسبوك';
 
   @override
-  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+  String get facebook_features_tile_subtitle => 'تقييد الريلز على فيسبوك.';
 
   @override
-  String get reddit_features_tile_title => 'Reddit';
+  String get reddit_features_tile_title => 'ريديت';
 
   @override
-  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
+  String get reddit_features_tile_subtitle =>
+      'تقييد الفيديوهات القصيرة على ريديت.';
 
   @override
-  String get websites_blocking_tab_title => 'Websites blocking';
+  String get websites_blocking_tab_title => 'حجب المواقع الإلكترونية';
 
   @override
   String get websites_blocking_tab_info =>
-      'Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.';
+      'حظر مواقع البالغين وأي مواقع مخصصة تختارها لخلق تجربة تصفح أكثر أمانًا وتركيزًا. تحكم في تصفحك وابقَ خاليًا من التشتيت.';
 
   @override
-  String get adult_content_heading => 'Adult content';
+  String get adult_content_heading => 'محتوى للبالغين';
 
   @override
-  String get block_nsfw_title => 'Block Nsfw';
+  String get block_nsfw_title => 'حظر المحتوى للبالغين';
 
   @override
   String get block_nsfw_subtitle =>
-      'Restrict browsers from opening adult and porn websites.';
+      'تقييد المتصفحات من فتح المواقع الإباحية والمحتوى غير المناسب.';
 
   @override
   String get block_nsfw_dialog_info =>
-      'Are you sure? This action is irreversible. Once adult sites blocker is turned ON, you cannot turn it OFF as long as this app is installed on your device.';
+      'هل أنت متأكد؟ هذا الإجراء لا يمكن التراجع عنه. بمجرد تفعيل حجب المواقع الإباحية، لن تتمكن من إيقافه طالما أن هذا التطبيق مثبت على جهازك.';
 
   @override
-  String get block_nsfw_dialog_button_block_anyway => 'Block anyway';
+  String get block_nsfw_dialog_button_block_anyway => 'احجب على أي حال';
 
   @override
-  String get blocked_websites_heading => 'Blocked websites';
+  String get blocked_websites_heading => 'المواقع المحجوبة';
 
   @override
   String get blocked_websites_empty_list_hint =>
-      'Click on \'+ Add Website\' button to add distracting websites which you wish to block.';
+      'انقر على زر «+ إضافة موقع» لإضافة المواقع المشتتة التي ترغب في حجبها.';
 
   @override
-  String get add_website_fab_button => 'Add Website';
+  String get add_website_fab_button => 'إضافة موقع';
 
   @override
-  String get add_website_dialog_title => 'Distracting website';
+  String get add_website_dialog_title => 'موقع مشتت';
 
   @override
-  String get add_website_dialog_info =>
-      'Enter url of a website which you want to block.';
+  String get add_website_dialog_info => 'أدخل رابط الموقع الذي تريد حظره.';
 
   @override
-  String get add_website_dialog_is_nsfw => 'Is nsfw site?';
+  String get add_website_dialog_is_nsfw =>
+      'هل الموقع يحتوي على محتوى للبالغين؟';
 
   @override
   String get add_website_dialog_nsfw_warning =>
-      'Warning: Nsfw sites cannot be removed once added.';
+      'تحذير: لا يمكن إزالة مواقع البالغين بعد إضافتها.';
 
   @override
-  String get add_website_dialog_button_block => 'Block';
+  String get add_website_dialog_button_block => 'حظر';
 
   @override
   String get add_website_already_exist_snack_alert =>
-      'The URL has already been added to the list of blocked websites.';
+      'تمت إضافة الرابط مسبقا إلى قائمة المواقع المحظورة.';
 
   @override
   String get add_website_invalid_url_snack_alert =>
-      'Invalid URL! Unable to parse the host name.';
+      'رابط غير صالح! تعذر تحليل اسم المضيف.';
 
   @override
-  String get remove_website_dialog_title => 'Remove website';
+  String get remove_website_dialog_title => 'إزالة الموقع';
 
   @override
   String remove_website_dialog_info(String websitehost) {
-    return 'Are you sure? you want to remove \'$websitehost\' from blocked websites.';
+    return 'هل أنت متأكد أنك تريد إزالة \'$websitehost\' من المواقع المحجوبة.';
   }
 
   @override
-  String get focus_tab_title => 'Focus';
+  String get focus_tab_title => 'التركيز';
 
   @override
   String get focus_tab_info =>
-      'When you need time to focus, start a new session by selecting the type, choosing distracting apps to pause, and enabling Do Not Disturb for uninterrupted concentration.';
+      'عندما تحتاج إلى وقت للتركيز، ابدأ جلسة جديدة باختيار النوع، وتحديد التطبيقات المشتتة لإيقافها مؤقتا، وتفعيل وضع \"عدم الإزعاج\" لتحقيق تركيز دون انقطاع.';
 
   @override
-  String get active_session_card_title => 'Active session';
+  String get active_session_card_title => 'جلسة نشطة';
 
   @override
   String get active_session_card_info =>
-      'You have an active focus session running! Click \'View\' to check your progress and see how much time has elapsed.';
+      'لديك جلسة تركيز نشطة! انقر على \"عرض\" لمتابعة تقدمك ومعرفة الوقت المنقضي.';
 
   @override
-  String get active_session_card_view_button => 'View';
+  String get active_session_card_view_button => 'عرض';
 
   @override
   String get focus_distracting_apps_removal_snack_alert =>
-      'Removal of apps from the distracting apps list is not permitted while a Focus Session is active. However, you may still add additional apps to the list during this time.';
+      'لا يسمح بإزالة التطبيقات من قائمة التطبيقات المشتتة أثناء جلسة التركيز النشطة. ومع ذلك، يمكنك إضافة تطبيقات إضافية إلى القائمة خلال هذه الفترة.';
 
   @override
-  String get focus_profile_tile_title => 'Focus profile';
+  String get focus_profile_tile_title => 'ملف التركيز';
 
   @override
-  String get focus_session_duration_tile_title => 'Session duration';
+  String get focus_session_duration_tile_title => 'مدة الجلسة';
 
   @override
   String get focus_session_duration_tile_subtitle =>
-      'Infinite (unless you stop)';
+      'غير محدودة (ما لم تقم بالإيقاف)';
 
   @override
   String get focus_session_duration_dialog_info =>
-      'Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.';
+      'يرجى اختيار المدة المطلوبة لهذه جلسة التركيز لتحديد الفترة التي ترغب في البقاء خلالها مركزا وخاليا من المشتتات.';
 
   @override
-  String get focus_profile_customization_tile_title => 'Profile customization';
+  String get focus_profile_customization_tile_title => 'تخصيص الملف الشخصي';
 
   @override
   String get focus_profile_customization_tile_subtitle =>
-      'Customize settings for the selected profile.';
+      'خصص الإعدادات للملف الشخصي المحدد.';
 
   @override
-  String get focus_enforce_tile_title => 'Enforce session';
+  String get focus_enforce_tile_title => 'فرض الجلسة';
 
   @override
   String get focus_enforce_tile_subtitle =>
-      'Prevents ending a session before time ends.';
+      'يمنع إنهاء الجلسة قبل انتهاء الوقت المحدد.';
 
   @override
   String get focus_session_start_button => 'Swipe to start Session';
 
   @override
   String get focus_session_minimum_apps_snack_alert =>
-      'Select at least one distracting app to start focus session';
+      'اختر تطبيقا واحدا على الأقل من التطبيقات المشتتة لبدء جلسة التركيز';
 
   @override
   String get focus_session_already_active_snack_alert =>
-      'You already have an active focus session running. Please complete or stop your current session before starting a new one.';
+      'لديك جلسة تركيز نشطة بالفعل. يرجى إكمالها أو إيقافها قبل بدء جلسة جديدة.';
 
   @override
-  String get focus_session_type_study => 'Study';
+  String get focus_session_type_study => 'دراسة';
 
   @override
-  String get focus_session_type_work => 'Work';
+  String get focus_session_type_work => 'عمل';
 
   @override
-  String get focus_session_type_exercise => 'Exercise';
+  String get focus_session_type_exercise => 'تمرين';
 
   @override
-  String get focus_session_type_meditation => 'Meditation';
+  String get focus_session_type_meditation => 'تأمل';
 
   @override
-  String get focus_session_type_creativeWriting => 'Creative Writing';
+  String get focus_session_type_creativeWriting => 'الكتابة الإبداعية';
 
   @override
-  String get focus_session_type_reading => 'Reading';
+  String get focus_session_type_reading => 'قراءة';
 
   @override
-  String get focus_session_type_programming => 'Programming';
+  String get focus_session_type_programming => 'برمجة';
 
   @override
-  String get focus_session_type_chores => 'Chores';
+  String get focus_session_type_chores => 'أعمال منزلية';
 
   @override
-  String get focus_session_type_projectPlanning => 'Project Planning';
+  String get focus_session_type_projectPlanning => 'تخطيط المشروع';
 
   @override
-  String get focus_session_type_artAndDesign => 'Art and Design';
+  String get focus_session_type_artAndDesign => 'الفن والتصميم';
 
   @override
-  String get focus_session_type_languageLearning => 'Language Learning';
+  String get focus_session_type_languageLearning => 'تعلم اللغات';
 
   @override
-  String get focus_session_type_musicPractice => 'Music Practice';
+  String get focus_session_type_musicPractice => 'تمرين الموسيقى';
 
   @override
-  String get focus_session_type_selfCare => 'Self Care';
+  String get focus_session_type_selfCare => 'العناية الذاتية';
 
   @override
-  String get focus_session_type_brainstorming => 'Brainstorming';
+  String get focus_session_type_brainstorming => 'جلسة عصف ذهني';
 
   @override
-  String get focus_session_type_skillDevelopment => 'Skill Development';
+  String get focus_session_type_skillDevelopment => 'تطوير المهارات';
 
   @override
-  String get focus_session_type_research => 'Research';
+  String get focus_session_type_research => 'بحث';
 
   @override
-  String get focus_session_type_networking => 'Networking';
+  String get focus_session_type_networking => 'تواصل اجتماعي';
 
   @override
-  String get focus_session_type_cooking => 'Cooking';
+  String get focus_session_type_cooking => 'طبخ';
 
   @override
-  String get focus_session_type_sportsTraining => 'Sports Training';
+  String get focus_session_type_sportsTraining => 'تدريب رياضي';
 
   @override
-  String get focus_session_type_restAndRelaxation => 'Rest and Relaxation';
+  String get focus_session_type_restAndRelaxation => 'راحة واسترخاء';
 
   @override
-  String get focus_session_type_other => 'Other';
+  String get focus_session_type_other => 'أخرى';
 
   @override
-  String get timeline_tab_title => 'Timeline';
+  String get timeline_tab_title => 'الجدول الزمني';
 
   @override
   String get focus_timeline_tab_info =>
-      'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
+      'استكشف رحلة تركيزك باختيار تاريخ من التقويم. تابع تقدمك، أعد زيارة نجاحاتك، وتعلم من التحديات.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
-    return 'Your total productive time for the selected month is $timeString.';
+    return 'إجمالي وقت إنتاجيتك للشهر المحدد هو $timeString.';
   }
 
   @override
-  String get selected_month_productive_days_label => 'Productive days';
+  String get selected_month_productive_days_label => 'الأيام الإنتاجية';
 
   @override
   String selected_month_productive_days_snack_alert(num daysCount) {
-    return 'You\'ve had a total of $daysCount productive days in the selected month.';
+    return 'لقد حققت إجمالي $daysCount يوما إنتاجيا في الشهر المحدد.';
   }
 
   @override
-  String get selected_day_focused_time_label => 'Focused time';
+  String get selected_day_focused_time_label => 'وقت التركيز';
 
   @override
   String selected_day_focused_time_snack_alert(String timeString) {
-    return 'Your total focused time for the selected day is $timeString.';
+    return 'إجمالي وقت تركيزك لليوم المحدد هو $timeString.';
   }
 
   @override
-  String get calender_heading => 'Calender';
+  String get calender_heading => 'التقويم';
 
   @override
-  String get your_sessions_heading => 'Your sessions';
+  String get your_sessions_heading => 'جلساتك';
 
   @override
   String get your_sessions_empty_list_hint =>
-      'No focus sessions recorded for the selected day.';
+      'لا توجد جلسات تركيز مسجلة لليوم المحدد.';
 
   @override
-  String get focus_session_tile_timestamp_label => 'Timestamp';
+  String get focus_session_tile_timestamp_label => 'الطابع الزمني';
 
   @override
-  String get focus_session_tile_duration_label => 'Duration';
+  String get focus_session_tile_duration_label => 'المدة';
 
   @override
-  String get focus_session_tile_reflection_label => 'Reflection';
+  String get focus_session_tile_reflection_label => 'تأمل';
 
   @override
-  String get focus_session_state_active => 'Active';
+  String get focus_session_state_active => 'نشط';
 
   @override
-  String get focus_session_state_successful => 'Successful';
+  String get focus_session_state_successful => 'ناجح';
 
   @override
-  String get focus_session_state_failed => 'Failed';
+  String get focus_session_state_failed => 'فشل';
 
   @override
-  String get active_session_tab_title => 'Session';
+  String get active_session_tab_title => 'جلسة';
 
   @override
   String get active_session_none_warning =>
-      'No active session found. Returning to the home screen.';
+      'لم يتم العثور على جلسة نشطة. جار العودة إلى الشاشة الرئيسية.';
 
   @override
-  String get active_session_dialog_button_keep_pushing => 'Keep pushing';
+  String get active_session_dialog_button_keep_pushing => 'استمر في التقدم';
 
   @override
-  String get active_session_finish_dialog_title => 'Finish';
+  String get active_session_finish_dialog_title => 'إنهاء';
 
   @override
   String get active_session_finish_dialog_info =>
-      'Stay strong! You\'re building valuable focus. Are you sure you want to end this focus session? Every extra moment counts toward your goals.';
+      'ابق قويا! أنت تبني تركيزا قيما. هل أنت متأكد من رغبتك في إنهاء جلسة التركيز هذه؟ كل لحظة إضافية تساهم في تحقيق أهدافك.';
 
   @override
-  String get active_session_giveup_dialog_title => 'Give up';
+  String get active_session_giveup_dialog_title => 'الاستسلام';
 
   @override
   String get active_session_giveup_dialog_info =>
-      'Hold on! You\'re almost there don\'t give up now! Are you sure you want to end this focus session early? Progress will be lost.';
+      'تمسك! أنت على وشك الانتهاء، لا تستسلم الان! هل أنت متأكد من رغبتك في إنهاء جلسة التركيز مبكرا؟ سيتم فقدان التقدم المحرز.';
 
   @override
-  String get active_session_reflection_dialog_title => 'Session reflection';
+  String get active_session_reflection_dialog_title => 'تأمل الجلسة';
 
   @override
   String get active_session_reflection_dialog_info =>
-      'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
+      'خذ لحظة للتأمل في تقدمك. ما هو هدفك من هذه الجلسة؟ ماذا أنجزت خلال هذه الجلسة؟';
 
   @override
   String get active_session_reflection_dialog_tip =>
-      'Tip: You can always edit this later in the session timeline.';
+      'نصيحة: يمكنك دائما تعديل هذا لاحقا في خط زمني الجلسة.';
 
   @override
   String get active_session_giveup_snack_alert =>
-      'You gave up! Don\'t worry, you can do better next time. Every effort counts - just keep going';
+      'لقد استسلمت! لا تقلق، يمكنك أن تكون أفضل في المرة القادمة. كل جهد يحتسب – فقط واصل المحاولة';
 
   @override
   String get active_session_quote_one =>
-      'Every step counts, stay strong and keep going';
+      'كل خطوة تحتسب، ابق قويا واستمر في المضي قدما';
 
   @override
-  String get active_session_quote_two =>
-      'Stay focused! you\'re making amazing progress';
+  String get active_session_quote_two => 'ابق مركزا! أنت تحقق تقدما مذهلا';
 
   @override
   String get active_session_quote_three =>
-      'You\'re crushing it! Keep the momentum going';
+      'أنت تتألق! حافظ على هذا الزخم واستمر';
 
   @override
-  String get active_session_quote_four =>
-      'Just a little more to go, you\'re doing fantastic';
+  String get active_session_quote_four => 'تبقى القليل فقط، أنت تقوم بعمل رائع';
 
   @override
   String active_session_quote_five(String durationString) {
-    return 'Congratulations 🎉 \n You\'ve completed your focus session of $durationString.\n\nGreat job, keep up the amazing work';
+    return 'تهانينا 🎉\nلقد أتممت جلسة التركيز التي استغرقت $durationString.\n\nعمل رائع، استمر في هذا الأداء المذهل';
   }
 
   @override
-  String get restriction_groups_tab_title => 'Restriction groups';
+  String get restriction_groups_tab_title => 'مجموعات القيود';
 
   @override
   String get restriction_groups_tab_info =>
-      'Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.';
+      'حدد حدا زمنيا مجمعا لاستخدام شاشة مجموعة من التطبيقات. عند الوصول إلى الحد الإجمالي، سيتم إيقاف جميع التطبيقات في المجموعة لمساعدتك على الحفاظ على التركيز والتوازن.';
 
   @override
-  String get restriction_group_time_spent_label => 'Time spent today';
+  String get restriction_group_time_spent_label => 'الوقت المستغرق اليوم';
 
   @override
-  String get restriction_group_time_left_label => 'Time left today';
+  String get restriction_group_time_left_label => 'الوقت المتبقي اليوم';
 
   @override
-  String get restriction_group_name_tile_title => 'Group name';
+  String get restriction_group_name_tile_title => 'اسم المجموعة';
 
   @override
   String get restriction_group_name_picker_dialog_info =>
-      'Enter a name for the restriction group to help identify and manage it easily.';
+      'أدخل اسما لمجموعة القيود لتسهيل التعرف عليها وإدارتها.';
 
   @override
-  String get restriction_group_timer_tile_title => 'Group timer';
+  String get restriction_group_timer_tile_title => 'مؤقت المجموعة';
 
   @override
   String get restriction_group_timer_picker_dialog_info =>
-      'Set a daily time limit for this group. Once your limit is reached, all the apps in this group will be paused until midnight.';
+      'حدد حدا زمنيا يوميا لهذه المجموعة. عند الوصول إلى الحد، سيتم إيقاف جميع التطبيقات في هذه المجموعة حتى منتصف الليل.';
 
   @override
-  String get restriction_group_active_period_tile_title =>
-      'Group active period';
+  String get restriction_group_active_period_tile_title => 'فترة نشاط المجموعة';
 
   @override
-  String get remove_restriction_group_dialog_title => 'Remove group';
+  String get remove_restriction_group_dialog_title => 'حذف المجموعة';
 
   @override
   String remove_restriction_group_dialog_info(String groupName) {
-    return 'Are you sure? you want to remove \'$groupName\' from restriction groups.';
+    return 'هل أنت متأكد من رغبتك في إزالة \'$groupName\' من مجموعات القيود.';
   }
 
   @override
   String get restriction_group_invalid_limits_snack_alert =>
-      'Set either a timer or an active period limit.';
+      'قم بتحديد مؤقت أو حد فترة نشاط.';
 
   @override
   String get notifications_empty_list_hint =>
-      'No notifications have been batched for the day.';
+      'لم يتم تجميع أي إشعارات لهذا اليوم.';
 
   @override
-  String get conversations_label => 'Conversations';
+  String get conversations_label => 'المحادثات';
 
   @override
-  String get last_24_hours_heading => 'Last 24 hours';
+  String get last_24_hours_heading => 'آخر 24 ساعة';
 
   @override
   String get notification_timeline_tab_info =>
-      'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
+      'تصفح سجل إشعاراتك عن طريق اختيار تاريخ من التقويم. راجع التطبيقات التي لفتت انتباهك وتأمل في عاداتك الرقمية.';
 
   @override
-  String get monthly_label => 'Monthly';
+  String get monthly_label => 'شهريا';
 
   @override
-  String get daily_label => 'Daily';
+  String get daily_label => 'يوميا';
 
   @override
   String get search_notifications_sheet_info =>
-      'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+      'ابحث بسهولة في الإشعارات السابقة من خلال العنوان أو المحتوى. يساعدك ذلك على العثور بسرعة على التنبيهات المهمة.';
 
   @override
-  String get search_notifications_hint => 'Search notifications...';
+  String get search_notifications_hint => 'ابحث في الإشعارات...';
 
   @override
   String get search_notifications_empty_list_hint =>
-      'No notifications found matching your search.';
+      'لم يتم العثور على إشعارات تطابق بحثك.';
 
   @override
   String get app_info_none_warning =>
-      'Couldn\'t find the app for the given package. Returning to the home screen.';
+      'تعذر العثور على التطبيق للحزمة المحددة. جار العودة إلى الشاشة الرئيسية.';
 
   @override
-  String get emergency_fab_button => 'Emergency';
+  String get emergency_fab_button => 'طوارئ';
 
   @override
   String emergency_dialog_info(num leftPassesCount) {
-    return 'This action will pause the app blocker for next 5 minutes. You have $leftPassesCount passes left. After using all passes, the app will stay blocked until midnight, or the active focus session ends.\n\nDo you still wish to proceed?';
+    return 'سيؤدي هذا الإجراء إلى إيقاف مؤقت لحاجز التطبيقات لمدة 5 دقائق القادمة. لديك $leftPassesCount فرص متبقية. بعد استخدام كل الفرص، سيظل التطبيق محظورا حتى منتصف الليل أو انتهاء جلسة التركيز النشطة.\n\nهل ترغب في المتابعة؟';
   }
 
   @override
-  String get emergency_dialog_button_use_anyway => 'Use anyway';
+  String get emergency_dialog_button_use_anyway => 'استخدم على أي حال';
 
   @override
   String get emergency_started_snack_alert =>
-      'The app blocker is paused and will resume blocking in 5 minutes.';
+      'تم إيقاف حاجز التطبيقات مؤقتا وسيستأنف الحظر خلال 5 دقائق.';
 
   @override
   String get emergency_already_active_snack_alert =>
-      'The app blocker is currently either paused or inactive. If notifications are enabled, you will receive updates regarding the remaining time.';
+      'مؤقت التطبيق حاليا إما موقوف أو غير نشط. إذا كانت الإشعارات مفعلة، ستتلقى تحديثات حول الوقت المتبقي.';
 
   @override
   String get emergency_no_pass_left_snack_alert =>
-      'You have used all your emergency passes. The blocked apps will stay blocked until midnight, or the active focus session ends.';
+      'لقد استخدمت جميع فرص الطوارئ المتاحة لك. ستظل التطبيقات المحجوبة محظورة حتى منتصف الليل، أو حتى انتهاء جلسة التركيز النشطة.';
 
   @override
-  String get app_limit_status_not_set => 'Not set';
+  String get app_limit_status_not_set => 'غير محدد';
 
   @override
-  String get app_timer_tile_title => 'App timer';
+  String get app_timer_tile_title => 'مؤقت التطبيق';
 
   @override
   String get app_timer_picker_dialog_info =>
-      'Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.';
+      'حدد حدا زمنيا يوميا لهذا التطبيق. عند الوصول إلى الحد، سيتم إيقاف التطبيق حتى منتصف الليل.';
 
   @override
-  String get usage_reminders_tile_title => 'Usage reminders';
+  String get usage_reminders_tile_title => 'تذكيرات الاستخدام';
 
   @override
   String get usage_reminders_tile_subtitle =>
-      'Gentle nudges when using timed apps.';
+      'تنبيهات لطيفة عند استخدام التطبيقات المحددة بالوقت.';
 
   @override
-  String get app_launch_limit_tile_title => 'Launch limit';
+  String get app_launch_limit_tile_title => 'حد الإطلاق';
 
   @override
   String app_launch_limit_tile_subtitle(num count) {
-    return 'Launched $count times today.';
+    return 'تم الإطلاق $count مرة اليوم.';
   }
 
   @override
   String get app_launch_limit_picker_dialog_info =>
-      'Set how many times you can open this app each day. Once the limit is reached, it will be paused until midnight.';
+      'حدد عدد المرات التي يمكنك فيها فتح هذا التطبيق يوميا. بمجرد الوصول إلى الحد، سيتم إيقافه مؤقتا حتى منتصف الليل.';
 
   @override
-  String get app_active_period_tile_title => 'Active period';
+  String get app_active_period_tile_title => 'الفترة النشطة';
 
   @override
   String app_active_period_tile_subtitle(String startTime, String endTime) {
-    return 'From $startTime to $endTime';
+    return 'من $startTime إلى $endTime';
   }
 
   @override
-  String get internet_access_tile_title => 'Internet access';
+  String get internet_access_tile_title => 'الوصول إلى الإنترنت';
 
   @override
   String get internet_access_tile_subtitle =>
-      'Switch off to block app\'s internet.';
+      'قم بإيقاف التشغيل لحظر اتصال التطبيق بالإنترنت.';
 
   @override
   String internet_access_blocked_snack_alert(String appName) {
-    return '$appName\'s internet is blocked.';
+    return 'تم حظر الإنترنت لتطبيق $appName.';
   }
 
   @override
   String internet_access_unblocked_snack_alert(String appName) {
-    return '$appName\'s internet is unblocked.';
+    return 'تم رفع الحظر عن الإنترنت لتطبيق $appName.';
   }
 
   @override
-  String get launch_app_tile_title => 'Launch app';
+  String get launch_app_tile_title => 'فتح التطبيق';
 
   @override
   String launch_app_tile_subtitle(String appName) {
-    return 'Open $appName.';
+    return 'افتح $appName.';
   }
 
   @override
-  String get go_to_app_settings_tile_title => 'Go to app settings';
+  String get go_to_app_settings_tile_title => 'اذهب إلى إعدادات التطبيق';
 
   @override
   String get go_to_app_settings_tile_subtitle =>
-      'Manage app settings like notifications, permissions, storage and more.';
+      'قم بإدارة إعدادات التطبيق مثل الإشعارات، الأذونات، التخزين والمزيد.';
 
   @override
-  String get include_in_stats_tile_title => 'Include in screen usage';
+  String get include_in_stats_tile_title => 'تضمين في استخدام الشاشة';
 
   @override
   String get include_in_stats_tile_subtitle =>
-      'Switch off to exclude this app from total screen usage.';
+      'قم بإيقاف التشغيل لاستبعاد هذا التطبيق من إجمالي استخدام الشاشة.';
 
   @override
   String app_excluded_from_stats_snack_alert(String appName) {
-    return '$appName is excluded from total screen usage.';
+    return 'تم استبعاد $appName من إجمالي استخدام الشاشة.';
   }
 
   @override
   String app_include_to_stats_snack_alert(String appName) {
-    return '$appName is included to total screen usage.';
+    return 'تم تضمين $appName في إجمالي استخدام الشاشة.';
   }
 
   @override
-  String get general_tab_title => 'General';
+  String get general_tab_title => 'عام';
 
   @override
-  String get appearance_heading => 'Appearance';
+  String get appearance_heading => 'المظهر';
 
   @override
-  String get theme_mode_tile_title => 'Theme mode';
+  String get theme_mode_tile_title => 'وضع السمة';
 
   @override
-  String get theme_mode_system_label => 'System';
+  String get theme_mode_system_label => 'النظام';
 
   @override
-  String get theme_mode_light_label => 'Light';
+  String get theme_mode_light_label => 'فاتح';
 
   @override
-  String get theme_mode_dark_label => 'Dark';
+  String get theme_mode_dark_label => 'داكن';
 
   @override
-  String get material_color_tile_title => 'Material color';
+  String get material_color_tile_title => 'لون المواد';
 
   @override
-  String get amoled_dark_tile_title => 'AMOLED dark';
+  String get amoled_dark_tile_title => 'الوضع الداكن AMOLED';
 
   @override
   String get amoled_dark_tile_subtitle =>
-      'Use pure black color for the dark theme.';
+      'استخدم اللون الأسود النقي في وضع السمة الداكنة.';
 
   @override
-  String get dynamic_colors_tile_title => 'Dynamic colors';
+  String get dynamic_colors_tile_title => 'ألوان ديناميكية';
 
   @override
-  String get dynamic_colors_tile_subtitle => 'Use device colors if supported.';
+  String get dynamic_colors_tile_subtitle =>
+      'استخدم ألوان الجهاز إذا كانت مدعومة.';
 
   @override
-  String get defaults_heading => 'Defaults';
+  String get defaults_heading => 'الإعدادات الافتراضية';
 
   @override
-  String get app_language_tile_title => 'App language';
+  String get app_language_tile_title => 'لغة التطبيق';
 
   @override
-  String get default_home_tab_tile_title => 'Home tab';
+  String get default_home_tab_tile_title => 'علامة التبويب الرئيسية';
 
   @override
-  String get usage_history_tile_title => 'Usage history';
+  String get usage_history_tile_title => 'سجل الاستخدام';
 
   @override
-  String get usage_history_15_days => '15 days';
+  String get usage_history_15_days => '15 يوما';
 
   @override
-  String get usage_history_1_month => '1 month';
+  String get usage_history_1_month => 'شهر 1';
 
   @override
-  String get usage_history_3_month => '3 months';
+  String get usage_history_3_month => '3 أشهر';
 
   @override
-  String get usage_history_6_month => '6 months';
+  String get usage_history_6_month => '6 أشهر';
 
   @override
-  String get usage_history_1_year => '1 year';
+  String get usage_history_1_year => 'سنة 1';
 
   @override
-  String get service_heading => 'Service';
+  String get service_heading => 'خدمة';
 
   @override
   String get service_stopping_warning =>
-      'If Mindful stops working unexpectedly, please grant the \'Ignore Battery Optimization\' permission to keep it running in the background. If the issue continues, try whitelisting Mindful for uninterrupted performance.';
+      'إذا توقف تطبيق Mindful عن العمل فجأة، يرجى منح إذن \"تجاهل تحسين البطارية\" ليتمكن من العمل في الخلفية. إذا استمرت المشكلة، حاول إضافة Mindful إلى القائمة البيضاء لضمان أداء مستمر دون انقطاع.';
 
   @override
-  String get whitelist_app_tile_title => 'Whitelist Mindful';
+  String get whitelist_app_tile_title => 'أضف Mindful إلى القائمة البيضاء';
 
   @override
-  String get whitelist_app_tile_subtitle => 'Allow Mindful to auto start.';
+  String get whitelist_app_tile_subtitle =>
+      'اسمح لتطبيق Mindful بالبدء التلقائي.';
 
   @override
   String get whitelist_app_unsupported_snack_alert =>
-      'This device does not support automatic startup management.';
+      'هذا الجهاز لا يدعم إدارة التشغيل التلقائي.';
 
   @override
-  String get database_tab_title => 'Database';
+  String get database_tab_title => 'قاعدة البيانات';
 
   @override
-  String get import_db_tile_title => 'Import database';
+  String get import_db_tile_title => 'استيراد قاعدة البيانات';
 
   @override
-  String get import_db_tile_subtitle => 'Import database from a file.';
+  String get import_db_tile_subtitle => 'استيراد قاعدة البيانات من ملف.';
 
   @override
-  String get export_db_tile_title => 'Export database';
+  String get export_db_tile_title => 'تصدير قاعدة البيانات';
 
   @override
-  String get export_db_tile_subtitle => 'Export database to a file.';
+  String get export_db_tile_subtitle => 'تصدير قاعدة البيانات إلى ملف.';
 
   @override
-  String get crash_logs_heading => 'Crash logs';
+  String get crash_logs_heading => 'سجلات الأعطال';
 
   @override
   String get crash_logs_info =>
-      'If you encounter any issue, you can report it on GitHub along with the log file. The file will include details such as your device\'s manufacturer, model, Android version, SDK version, and crash logs. This information will help us identify and resolve the problem more effectively.';
+      'إذا واجهت أي مشكلة، يمكنك الإبلاغ عنها على GitHub مع ملف السجل. يحتوي الملف على تفاصيل مثل الشركة المصنعة لجهازك، الطراز، إصدار أندرويد، إصدار SDK، وسجلات الأعطال. ستساعدنا هذه المعلومات في تحديد المشكلة وحلها بشكل أفضل.';
 
   @override
-  String get crash_logs_export_tile_title => 'Export crash logs';
+  String get crash_logs_export_tile_title => 'تصدير سجلات الأعطال';
 
   @override
   String get crash_logs_export_tile_subtitle =>
-      'Export crash logs to a json file.';
+      'تصدير سجلات الأعطال إلى ملف JSON.';
 
   @override
-  String get crash_logs_view_tile_title => 'View logs';
+  String get crash_logs_view_tile_title => 'عرض السجلات';
 
   @override
-  String get crash_logs_view_tile_subtitle => 'Explore stored crash logs.';
+  String get crash_logs_view_tile_subtitle => 'استعرض سجلات الأعطال المخزنة.';
 
   @override
-  String get crash_logs_empty_list_hint => 'No crash logged till now.';
+  String get crash_logs_empty_list_hint => 'لم يتم تسجيل أي أعطال حتى الآن.';
 
   @override
-  String get crash_logs_clear_tile_title => 'Clear logs';
+  String get crash_logs_clear_tile_title => 'مسح السجلات';
 
   @override
   String get crash_logs_clear_tile_subtitle =>
-      'Delete all crash logs from database.';
+      'حذف جميع سجلات الأعطال من قاعدة البيانات.';
 
   @override
   String get crash_logs_clear_dialog_info =>
-      'Are you sure you wish to clear all crash logs from the database?';
+      'هل أنت متأكد أنك تريد مسح جميع سجلات الأعطال من قاعدة البيانات؟';
 
   @override
-  String get crash_logs_clear_dialog_button_clear_anyway => 'Clear anyway';
+  String get crash_logs_clear_dialog_button_clear_anyway => 'امسح على أي حال';
 
   @override
-  String get about_tab_title => 'About';
+  String get about_tab_title => 'حول';
 
   @override
-  String get changelog_tile_title => 'Changelog';
+  String get changelog_tile_title => 'سجل التغييرات';
 
   @override
-  String get changelog_tile_subtitle => 'Find out what\'s new.';
+  String get changelog_tile_subtitle => 'اكتشف الجديد.';
 
   @override
-  String get full_changelog_tile_title => 'Full changelog';
+  String get full_changelog_tile_title => 'سجل التغييرات الكامل';
 
   @override
-  String get redirected_to_github_subtitle =>
-      'You will be redirected to GitHub.';
+  String get redirected_to_github_subtitle => 'سيتم توجيهك إلى GitHub.';
 
   @override
-  String get contribute_heading => 'Contribute';
+  String get contribute_heading => 'شارك في التطوير';
 
   @override
   String get github_tile_title => 'GitHub';
 
   @override
-  String get github_tile_subtitle => 'View the source code.';
+  String get github_tile_subtitle => 'عرض كود المصدر.';
 
   @override
-  String get report_issue_tile_title => 'Report an issue';
+  String get report_issue_tile_title => 'الإبلاغ عن مشكلة';
 
   @override
-  String get suggest_idea_tile_title => 'Suggest an idea';
+  String get suggest_idea_tile_title => 'اقترح فكرة';
 
   @override
-  String get write_email_tile_title => 'Write to us via email';
+  String get write_email_tile_title => 'راسلنا عبر البريد الإلكتروني';
 
   @override
   String get write_email_tile_subtitle =>
-      'You will be redirected to Email app.';
+      'سيتم توجيهك إلى تطبيق البريد الإلكتروني.';
 
   @override
-  String get privacy_policy_heading => 'Privacy policy';
+  String get privacy_policy_heading => 'سياسة الخصوصية';
 
   @override
   String get privacy_policy_info =>
-      'Mindful is committed to protecting your privacy. We do not collect, store, or transfer any type of user data. The app operates entirely offline and does not require an internet connection, ensuring that your personal information remains private and secure on your device. As a Free and Open Source Software (FOSS) application, Mindful guarantees complete transparency and user control over their data.';
+      'تلتزم Mindful بحماية خصوصيتك. نحن لا نجمع أو نخزن أو ننقل أي نوع من بيانات المستخدم. يعمل التطبيق بالكامل دون اتصال بالإنترنت، مما يضمن بقاء معلوماتك الشخصية خاصة وآمنة على جهازك. كبرنامج مجاني ومفتوح المصدر (FOSS)، يضمن Mindful شفافية كاملة وتحكم المستخدم الكامل في بياناته.';
 
   @override
-  String get more_details_button => 'More details';
+  String get more_details_button => 'مزيد من التفاصيل';
 }
