@@ -5,7 +5,6 @@ import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.util.Log
-import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.mindful.android.receivers.AccessibilityReceiver
 import com.mindful.android.receivers.DeviceLockUnlockReceiver
@@ -61,7 +60,7 @@ class LaunchTrackingManager(
     }
 
 
-    @MainThread
+    @WorkerThread
     private fun onDeviceUnlocked() {
         // Check if accessibility is already running
         isManualTrackingOn =
@@ -85,7 +84,7 @@ class LaunchTrackingManager(
         executorService.submit { invokeNewAppLaunched(lastLaunchedApp) }
     }
 
-    @MainThread
+    @WorkerThread
     private fun onDeviceLocked() {
         periodicTaskHandle?.cancel(true)
         periodicTaskHandle = null
@@ -122,11 +121,11 @@ class LaunchTrackingManager(
                 val packageName = currentEvent.packageName
                 when (currentEvent.eventType) {
                     UsageEvents.Event.ACTIVITY_RESUMED,
-                    -> activeApps.add(packageName)
+                        -> activeApps.add(packageName)
 
                     UsageEvents.Event.ACTIVITY_PAUSED,
                     UsageEvents.Event.ACTIVITY_STOPPED,
-                    -> activeApps.remove(packageName)
+                        -> activeApps.remove(packageName)
 
                     else -> {}
                 }

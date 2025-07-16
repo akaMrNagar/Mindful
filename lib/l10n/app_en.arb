@@ -333,7 +333,7 @@
     "focus_profile_customization_tile_subtitle": "Customize settings for the selected profile.",
     "focus_enforce_tile_title": "Enforce session",
     "focus_enforce_tile_subtitle": "Prevents ending a session before time ends.",
-    "focus_session_start_fab_button": "Start Session",
+    "focus_session_start_button": "Swipe to start Session",
     "focus_session_minimum_apps_snack_alert": "Select at least one distracting app to start focus session",
     "focus_session_already_active_snack_alert": "You already have an active focus session running. Please complete or stop your current session before starting a new one.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

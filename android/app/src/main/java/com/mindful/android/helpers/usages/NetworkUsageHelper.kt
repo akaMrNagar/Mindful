@@ -99,31 +99,31 @@ object NetworkUsageHelper {
         end: Long,
     ): Map<Int, Long> {
         val usageMap = mutableMapOf<Int, Long>()
-        val networkStats = networkStatsManager.querySummary(networkType, null, start, end)
-
         try {
-            val bucket = NetworkStats.Bucket()
+            val networkStats = networkStatsManager.querySummary(networkType, null, start, end)
 
-            while (networkStats.hasNextBucket()) {
-                networkStats.getNextBucket(bucket)
-                val uid = bucket.uid
-                usageMap[uid] =
-                    usageMap.getOrDefault(uid, 0L) + (bucket.rxBytes + bucket.txBytes)
+            networkStats.use {
+                val bucket = NetworkStats.Bucket()
+
+                while (networkStats.hasNextBucket()) {
+                    networkStats.getNextBucket(bucket)
+                    val uid = bucket.uid
+                    usageMap[uid] =
+                        usageMap.getOrDefault(uid, 0L) + (bucket.rxBytes + bucket.txBytes)
+                }
+
             }
-
         } catch (e: Exception) {
             Log.e(
                 TAG,
                 "fetchNetworkUsageForInterval: Error fetching network usage for type $networkType",
                 e
             )
-        } finally {
-            networkStats.close()
         }
 
         return usageMap
             .mapValues { it.value / 1024 }  // Convert bytes to KBs
-            .filterValues { it > 0L }       // Remove entries with no usage
+            .filterValues { it > 0L }       // Only keep entries with usage
     }
 
 

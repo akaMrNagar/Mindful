@@ -16,7 +16,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.util.Log
-import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.utils.Utils
 
@@ -24,7 +24,7 @@ import com.mindful.android.utils.Utils
  * BroadcastReceiver that monitors device lock/unlock events and tracks app launches while the device is unlocked.
  */
 class DeviceLockUnlockReceiver(
-    @MainThread
+    @WorkerThread
     private val onDeviceLockChanged: (isUnLocked: Boolean) -> Unit,
 ) : BroadcastReceiver() {
     companion object {
@@ -59,16 +59,18 @@ class DeviceLockUnlockReceiver(
 
 
     override fun onReceive(context: Context, intent: Intent) {
-        when (intent.action) {
-            Intent.ACTION_USER_PRESENT -> {
-                Log.d(TAG, "onReceive: User UNLOCKED the device and device is ACTIVE")
-                onDeviceLockChanged.invoke(true)
-            }
+        Thread {
+            when (intent.action) {
+                Intent.ACTION_USER_PRESENT -> {
+                    Log.d(TAG, "onReceive: User UNLOCKED the device and device is ACTIVE")
+                    onDeviceLockChanged.invoke(true)
+                }
 
-            Intent.ACTION_SCREEN_OFF -> {
-                Log.d(TAG, "onReceive: User LOCKED the device and device is INACTIVE")
-                onDeviceLockChanged.invoke(false)
+                Intent.ACTION_SCREEN_OFF -> {
+                    Log.d(TAG, "onReceive: User LOCKED the device and device is INACTIVE")
+                    onDeviceLockChanged.invoke(false)
+                }
             }
-        }
+        }.start()
     }
 }

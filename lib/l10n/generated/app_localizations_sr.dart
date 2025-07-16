@@ -981,7 +981,7 @@ class AppLocalizationsSr extends AppLocalizations {
       'Онемогућава прекид сесије пре него што време истекне.';
 
   @override
-  String get focus_session_start_fab_button => 'Започни сесију';
+  String get focus_session_start_button => 'Swipe to start Session';
 
   @override
   String get focus_session_minimum_apps_snack_alert =>

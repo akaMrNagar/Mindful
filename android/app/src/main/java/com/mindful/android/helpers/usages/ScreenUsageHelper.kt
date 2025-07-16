@@ -37,37 +37,38 @@ object ScreenUsageHelper {
     ): Map<String, Long> {
         val usageMap = mutableMapOf<String, Long>()
         val lastResumedEvents = mutableMapOf<String, UsageEvents.Event>()
+        runCatching {
+            // Load 3 hour earlier events for granularity
+            val usageEvents = usageStatsManager.queryEvents(start - (3 * 60 * 60 * 1000), end)
 
-        // Load 3 hour earlier events for granularity
-        val usageEvents = usageStatsManager.queryEvents(start - (3 * 60 * 60 * 1000), end)
+            while (usageEvents.hasNextEvent()) {
+                // Never move this outside the while loop otherwise the usage will be 0
+                val event = UsageEvents.Event()
+                usageEvents.getNextEvent(event)
 
-        while (usageEvents.hasNextEvent()) {
-            // Never move this outside the while loop otherwise the usage will be 0
-            val event = UsageEvents.Event()
-            usageEvents.getNextEvent(event)
+                val packageName = event.packageName
+                val currentTimeStamp = event.timeStamp
+                val eventKey = packageName + event.className
 
-            val packageName = event.packageName
-            val currentTimeStamp = event.timeStamp
-            val eventKey = packageName + event.className
-
-            when (event.eventType) {
-                UsageEvents.Event.ACTIVITY_RESUMED -> lastResumedEvents[eventKey] = event
-                UsageEvents.Event.ACTIVITY_PAUSED, UsageEvents.Event.ACTIVITY_STOPPED -> {
-                    // If any resume event for the key
-                    lastResumedEvents.remove(eventKey)?.let { lastResumedEvent ->
-                        /// If app is paused or stopped after the start
-                        if (currentTimeStamp > start) {
-                            // MaxOf guarantee that the resume event is after the start
-                            val resumeTimeStamp = maxOf(lastResumedEvent.timeStamp, start)
-                            usageMap[packageName] = usageMap.getOrDefault(
-                                packageName,
-                                0L
-                            ) + (currentTimeStamp - resumeTimeStamp)
+                when (event.eventType) {
+                    UsageEvents.Event.ACTIVITY_RESUMED -> lastResumedEvents[eventKey] = event
+                    UsageEvents.Event.ACTIVITY_PAUSED, UsageEvents.Event.ACTIVITY_STOPPED -> {
+                        // If any resume event for the key
+                        lastResumedEvents.remove(eventKey)?.let { lastResumedEvent ->
+                            /// If app is paused or stopped after the start
+                            if (currentTimeStamp > start) {
+                                // MaxOf guarantee that the resume event is after the start
+                                val resumeTimeStamp = maxOf(lastResumedEvent.timeStamp, start)
+                                usageMap[packageName] = usageMap.getOrDefault(
+                                    packageName,
+                                    0L
+                                ) + (currentTimeStamp - resumeTimeStamp)
+                            }
                         }
                     }
-                }
 
-                else -> {}
+                    else -> {}
+                }
             }
         }
 
@@ -82,7 +83,7 @@ object ScreenUsageHelper {
 
         return usageMap
             .mapValues { it.value / 1000 }  // Convert ms to seconds
-            .filterValues { it > 0L }       // Remove entries with no usage
+            .filterValues { it > 0L }       // Only keep entries with usage
     }
 
     /**

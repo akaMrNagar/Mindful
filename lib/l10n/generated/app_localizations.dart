@@ -1722,11 +1722,11 @@ abstract class AppLocalizations {
   /// **'Prevents ending a session before time ends.'**
   String get focus_enforce_tile_subtitle;
 
-  /// No description provided for @focus_session_start_fab_button.
+  /// No description provided for @focus_session_start_button.
   ///
   /// In en, this message translates to:
-  /// **'Start Session'**
-  String get focus_session_start_fab_button;
+  /// **'Swipe to start Session'**
+  String get focus_session_start_button;
 
   /// No description provided for @focus_session_minimum_apps_snack_alert.
   ///

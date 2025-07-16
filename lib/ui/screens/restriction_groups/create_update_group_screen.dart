@@ -123,35 +123,37 @@ class _CreateUpdateRestrictionGroupState
               sliverBody: CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  Row(
-                    children: [
-                      /// Time spent
-                      Expanded(
-                        child: UsageGlanceCard(
-                          position: ItemPosition.topLeft,
-                          isPrimary: true,
-                          icon: FluentIcons.phone_20_regular,
-                          title:
-                              context.locale.restriction_group_time_spent_label,
-                          info: timeSpent.seconds.toTimeShort(context),
+                  IntrinsicHeight(
+                    child: Row(
+                      children: [
+                        /// Time spent
+                        Expanded(
+                          child: UsageGlanceCard(
+                            position: ItemPosition.topLeft,
+                            isPrimary: true,
+                            icon: FluentIcons.phone_20_regular,
+                            title: context
+                                .locale.restriction_group_time_spent_label,
+                            info: timeSpent.seconds.toTimeShort(context),
+                          ),
                         ),
-                      ),
-                      4.hBox,
+                        4.hBox,
 
-                      /// Time left
-                      Expanded(
-                        child: UsageGlanceCard(
-                          position: ItemPosition.topRight,
-                          isPrimary: true,
-                          icon: FluentIcons.phone_screen_time_20_regular,
-                          title:
-                              context.locale.restriction_group_time_left_label,
-                          info: _group.timerSec > 0
-                              ? timeLeft.seconds.toTimeShort(context)
-                              : context.locale.app_limit_status_not_set,
+                        /// Time left
+                        Expanded(
+                          child: UsageGlanceCard(
+                            position: ItemPosition.topRight,
+                            isPrimary: true,
+                            icon: FluentIcons.phone_screen_time_20_regular,
+                            title: context
+                                .locale.restriction_group_time_left_label,
+                            info: _group.timerSec > 0
+                                ? timeLeft.seconds.toTimeShort(context)
+                                : context.locale.app_limit_status_not_set,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ).sliver,
 
                   /// Group name

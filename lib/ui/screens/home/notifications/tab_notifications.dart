@@ -79,39 +79,41 @@ class _TabNotificationsState extends ConsumerState<TabNotifications> {
           16.vSliverBox,
 
           /// Upcoming notifications and Batched apps
-          Row(
-            children: [
-              /// Upcoming notifications
-              Expanded(
-                child: UsageGlanceCard(
-                  isPrimary: true,
-                  badge: const GoToBadgeIcon(),
-                  position: ItemPosition.topLeft,
-                  icon: FluentIcons.alert_badge_20_regular,
-                  title: context.locale.notifications_tab_title,
-                  info: notificationsCount.toString(),
-                  onTap: () => Navigator.of(context)
-                      .pushNamed(AppRoutes.notificationsPath),
-                ),
-              ),
-              4.hBox,
-
-              /// Batched apps
-              Expanded(
-                child: UsageGlanceCard(
-                  isPrimary: true,
-                  badge: const GoToBadgeIcon(),
-                  position: ItemPosition.topRight,
-                  icon: FluentIcons.app_recent_20_regular,
-                  title: context.locale.batched_apps_tile_title,
-                  info: settings.batchedApps.length.toString(),
-                  onTap: () => showDefaultBottomSheet(
-                    context: context,
-                    sliverBody: const SliverBatchedAppsList(),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                /// Upcoming notifications
+                Expanded(
+                  child: UsageGlanceCard(
+                    isPrimary: true,
+                    badge: const GoToBadgeIcon(),
+                    position: ItemPosition.topLeft,
+                    icon: FluentIcons.alert_badge_20_regular,
+                    title: context.locale.notifications_tab_title,
+                    info: notificationsCount.toString(),
+                    onTap: () => Navigator.of(context)
+                        .pushNamed(AppRoutes.notificationsPath),
                   ),
                 ),
-              ),
-            ],
+                4.hBox,
+
+                /// Batched apps
+                Expanded(
+                  child: UsageGlanceCard(
+                    isPrimary: true,
+                    badge: const GoToBadgeIcon(),
+                    position: ItemPosition.topRight,
+                    icon: FluentIcons.app_recent_20_regular,
+                    title: context.locale.batched_apps_tile_title,
+                    info: settings.batchedApps.length.toString(),
+                    onTap: () => showDefaultBottomSheet(
+                      context: context,
+                      sliverBody: const SliverBatchedAppsList(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ).sliver,
 
           /// Permission card

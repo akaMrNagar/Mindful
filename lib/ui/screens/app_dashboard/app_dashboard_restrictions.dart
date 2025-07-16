@@ -28,7 +28,6 @@ import 'package:mindful/ui/common/active_period_tile_content.dart';
 import 'package:mindful/ui/common/default_dropdown_tile.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/default_list_tile.dart';
-import 'package:mindful/ui/common/content_section_header.dart';
 import 'package:mindful/ui/common/styled_text.dart';
 import 'package:mindful/ui/dialogs/app_launch_limit_dialog.dart';
 import 'package:mindful/ui/screens/app_dashboard/app_internet_tile.dart';
@@ -94,8 +93,6 @@ class AppDashboardRestrictions extends ConsumerWidget {
 
     return MultiSliver(
       children: [
-        ContentSectionHeader(title: context.locale.restrictions_heading).sliver,
-
         /// App Timer tile
         AppTimerTile(
           appInfo: appInfo,

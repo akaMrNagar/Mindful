@@ -78,7 +78,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
             // If from mindful or not clearable or group summery
             val isGroupSummary =
                 sbn.notification.flags and android.app.Notification.FLAG_GROUP_SUMMARY != 0
-            if (packageName == this.packageName || !sbn.isClearable || isGroupSummary) return
+            if (packageName == this.packageName || !sbn.isClearable || isGroupSummary || sbn.isOngoing) return
 
             // Dismiss notification if it is from distracting apps
             val isFromBatchedApp = settings.batchedApps.contains(packageName)
@@ -133,7 +133,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
 
     private fun insertNotificationsToDb() {
         if (pendingNotifications.isEmpty()) return
-        val isSuccess = DriftDbHelper(this).insertNotifications(pendingNotifications)
+        val isSuccess = DriftDbHelper.insertNotifications(this, pendingNotifications)
 
         // Clear list if inserted successfully
         if (isSuccess) pendingNotifications.clear()

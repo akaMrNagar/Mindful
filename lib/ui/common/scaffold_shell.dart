@@ -112,7 +112,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
       floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
       extendBody: true,
       extendBodyBehindAppBar: true,
-      bottomNavigationBar: _haveMultiTabs ? bottomNavBar() : null,
+      bottomNavigationBar: _haveMultiTabs ? _bottomNavBar() : null,
       body: TabBarView(
         controller: _tabController,
         physics: const BouncingScrollPhysics(),
@@ -150,7 +150,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
             child: NestedScrollView(
               physics: const BouncingScrollPhysics(),
               headerSliverBuilder: (_, innerBoxIsScrolled) =>
-                  [sliverAppBar(i, innerBoxIsScrolled)],
+                  [_sliverAppBar(i, innerBoxIsScrolled)],
               body: TabControllerProvider(
                 controller: _tabController,
                 child: Padding(
@@ -165,11 +165,12 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     );
   }
 
-  Widget sliverAppBar(
+  Widget _sliverAppBar(
     int tabIndex,
     bool innerBoxIsScrolled,
   ) {
     final navItem = widget.items[tabIndex];
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
     return AnimatedBuilder(
       animation: _appBarScrollOffSet,
@@ -220,7 +221,8 @@ class _ScaffoldShellState extends State<ScaffoldShell>
             collapseMode: CollapseMode.parallax,
             titlePadding: EdgeInsets.only(
               bottom: 13,
-              left: widget.bodyPadding.left + leftPadding,
+              left: isRtl ? 0 : widget.bodyPadding.left + leftPadding,
+              right: isRtl ? widget.bodyPadding.right + leftPadding : 0,
             ),
             title: navItem.titleBuilder?.call(1 - percentage) ??
                 AppBarTitle(titleText: navItem.titleText!),
@@ -230,7 +232,7 @@ class _ScaffoldShellState extends State<ScaffoldShell>
     );
   }
 
-  Widget bottomNavBar() {
+  Widget _bottomNavBar() {
     return ValueListenableBuilder<bool>(
       valueListenable: _isBottomNavVisible,
       builder: (context, isVisible, child) => AnimatedContainer(
@@ -249,20 +251,22 @@ class _ScaffoldShellState extends State<ScaffoldShell>
           duration: AppConstants.defaultAnimDuration,
           curve: AppConstants.defaultCurve,
         ),
-        destinations: widget.items
-            .map(
-              (e) => NavigationDestination(
-                label: e.titleText!,
-                icon: Icon(e.icon),
-                selectedIcon: Icon(e.filledIcon).animate().scale(
-                      begin: const Offset(0.5, 0.5),
-                      end: const Offset(1.05, 1.05),
-                      curve: Curves.elasticOut,
-                      duration: 1.seconds,
-                    ),
-              ),
-            )
-            .toList(),
+        destinations: widget.items.map((e) {
+          final title = e.titleText!;
+          final trimmedTitle =
+              title.length >= 14 ? "${title.substring(0, 9)}..." : title;
+
+          return NavigationDestination(
+            label: trimmedTitle,
+            icon: Icon(e.icon),
+            selectedIcon: Icon(e.filledIcon).animate().scale(
+                  begin: const Offset(0.5, 0.5),
+                  end: const Offset(1.05, 1.05),
+                  curve: Curves.elasticOut,
+                  duration: 1.seconds,
+                ),
+          );
+        }).toList(),
       ),
     );
   }

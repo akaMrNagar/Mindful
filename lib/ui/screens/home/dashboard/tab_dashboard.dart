@@ -58,15 +58,17 @@ class TabDashboard extends ConsumerWidget {
               Skeletonizer.zone(
                 enabled: isUsageLoading,
                 enableSwitchAnimation: true,
-                child: Row(
-                  children: [
-                    /// Screen time
-                    const Expanded(child: ScreenTimeGlance()),
-                    4.hBox,
+                child: IntrinsicHeight(
+                  child: Row(
+                    children: [
+                      /// Screen time
+                      const Expanded(child: ScreenTimeGlance()),
+                      4.hBox,
 
-                    /// Data usage
-                    const Expanded(child: FocusDailyGlance()),
-                  ],
+                      /// Data usage
+                      const Expanded(child: FocusDailyGlance()),
+                    ],
+                  ),
                 ),
               ),
 

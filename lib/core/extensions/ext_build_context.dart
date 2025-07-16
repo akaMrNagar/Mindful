@@ -89,8 +89,7 @@ extension ExtBuildContext on BuildContext {
           ..clearSnackBars()
           ..showSnackBar(
             SnackBar(
-              key: UniqueKey(),
-              dismissDirection: DismissDirection.horizontal,
+              dismissDirection: DismissDirection.down,
               shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
               ),
@@ -112,7 +111,7 @@ extension ExtBuildContext on BuildContext {
             ),
             snackBarAnimationStyle: AnimationStyle(
               curve: Curves.easeOutBack,
-              reverseCurve: Curves.easeOutBack.flipped,
+              reverseCurve: Curves.easeInBack,
               duration: 300.ms,
               reverseDuration: 300.ms,
             ),

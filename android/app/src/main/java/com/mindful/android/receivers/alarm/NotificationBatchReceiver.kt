@@ -66,7 +66,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                 )
 
                 // Fetch unread notifications
-                val notifications = DriftDbHelper(context).fetchLast24HourUnreadNotifications()
+                val notifications = DriftDbHelper.fetchLast24HourUnreadNotifications(context)
                 if (notifications.isNotEmpty()) {
                     if (settings.recapSummeryOnly) pushSummeryNotification(notifications.size)
                     else pushAllUnreadNotifications(notifications)
@@ -220,7 +220,7 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                 }
 
                 // Mark all notifications as read
-                DriftDbHelper(context).markNotificationsAsRead(notifications.mapNotNull { it.id })
+                DriftDbHelper.markNotificationsAsRead(context, notifications.mapNotNull { it.id })
 
             } catch (e: Exception) {
                 Log.e(

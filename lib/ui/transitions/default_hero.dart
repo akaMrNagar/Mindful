@@ -44,7 +44,7 @@ class _DefaultRectTween extends RectTween {
 
   @override
   Rect lerp(double t) {
-    final elasticCurveValue = Curves.easeOutBack.transform(t);
+    final elasticCurveValue = Curves.easeOutBack.transformInternal(t);
     return Rect.fromLTRB(
       lerpDouble(begin?.left, end?.left, elasticCurveValue) ?? 0,
       lerpDouble(begin?.top, end?.top, elasticCurveValue) ?? 0,

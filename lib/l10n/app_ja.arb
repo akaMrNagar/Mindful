@@ -289,7 +289,6 @@
     "focus_session_duration_tile_title": "集中する時間",
     "focus_session_duration_tile_subtitle": "停止するまでずっと",
     "focus_session_duration_dialog_info": "集中したい時間を選択してください。",
-    "focus_session_start_fab_button": "記録を開始",
     "focus_session_minimum_apps_snack_alert": "集中記録を開始するには、少なくとも1つの集中を妨げるアプリを選択する必要があります。",
     "focus_session_already_active_snack_alert": "集中記録は既に開始されています。新しい記録を開始する前に、現在の記録を終了するか停止してください。",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

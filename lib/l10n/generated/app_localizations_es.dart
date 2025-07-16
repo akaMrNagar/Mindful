@@ -985,7 +985,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Evita terminar una sesión antes de que termine el tiempo.';
 
   @override
-  String get focus_session_start_fab_button => 'Empezar una sesión';
+  String get focus_session_start_button => 'Swipe to start Session';
 
   @override
   String get focus_session_minimum_apps_snack_alert =>

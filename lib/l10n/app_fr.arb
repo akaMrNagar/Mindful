@@ -245,7 +245,6 @@
     "focus_session_duration_tile_title": "Durée de la session",
     "focus_session_duration_tile_subtitle": "Infini (jusqu'à ce que vous l'arrêtiez)",
     "focus_session_duration_dialog_info": "Veuillez sélectionner la durée souhaitée pour cette session de concentration, en déterminant la durée pendant laquelle vous souhaitez rester concentré et sans distraction.",
-    "focus_session_start_fab_button": "Démarrer la session",
     "focus_session_minimum_apps_snack_alert": "Sélectionnez au moins une application qui vous distrait pour démarrer la session de concentration",
     "focus_session_already_active_snack_alert": "Vous avez déjà une session de concentration active en cours d'exécution. Veuillez terminer ou arrêter votre session actuelle avant d'en commencer une nouvelle.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

@@ -8,7 +8,9 @@
  *
  */
 
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mindful/core/database/app_database.dart';
 import 'package:mindful/core/enums/item_position.dart';
@@ -17,6 +19,7 @@ import 'package:mindful/core/extensions/ext_date_time.dart';
 import 'package:mindful/core/extensions/ext_num.dart';
 import 'package:mindful/core/extensions/ext_widget.dart';
 import 'package:mindful/core/services/drift_db_service.dart';
+import 'package:mindful/core/services/method_channel_service.dart';
 import 'package:mindful/core/utils/widget_utils.dart';
 import 'package:mindful/ui/common/default_expandable_list_tile.dart';
 import 'package:mindful/ui/common/empty_list_indicator.dart';
@@ -37,22 +40,26 @@ class SliverCrashLogsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final logs = ref.watch(_crashLogsProvider);
 
-    return logs.hasValue
-        ? logs.value!.isEmpty
-            ? EmptyListIndicator(
-                isHappy: true,
-                info: context.locale.crash_logs_empty_list_hint,
-              ).sliver
-            : SliverList.builder(
-                itemCount: logs.value?.length ?? 0,
-                itemBuilder: (context, index) => DefaultExpandableListTile(
+    return logs.when(
+      loading: () => const SliverShimmerList(includeSubtitle: true),
+      error: (e, st) => const SliverShimmerList(includeSubtitle: true),
+      data: (logs) => logs.isEmpty
+          ? EmptyListIndicator(
+              isHappy: true,
+              info: context.locale.crash_logs_empty_list_hint,
+            ).sliver
+          : SliverList.builder(
+              itemCount: logs.length,
+              itemBuilder: (context, index) {
+                final log = logs[index];
+
+                return DefaultExpandableListTile(
                   position: getItemPositionInList(
                     index,
-                    logs.value?.length ?? 0,
+                    logs.length,
                   ),
-                  titleText:
-                      logs.value?[index].timeStamp.dateTimeString(context),
-                  subtitleText: logs.value?[index].error.trim(),
+                  titleText: log.timeStamp.dateTimeString(context),
+                  subtitleText: log.error.trim(),
                   content: RoundedContainer(
                     borderRadius: getBorderRadiusFromPosition(ItemPosition.mid),
                     margin: const EdgeInsets.only(top: 2),
@@ -60,22 +67,50 @@ class SliverCrashLogsList extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        /// Version label
-                        StatusLabel(
-                          label: logs.value?[index].appVersion ?? "",
+                        /// Version and copy
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            /// Version label
+                            StatusLabel(
+                              label: log.appVersion,
+                            ),
+
+                            /// Copy button
+                            IconButton(
+                              onPressed: () => _copyLogToClipboard(log),
+                              icon: Icon(FluentIcons.copy_20_regular),
+                            ),
+                          ],
                         ),
 
                         12.vBox,
 
                         /// Stacktrace
                         StyledText(
-                          "${logs.value?[index].stackTrace.trim()}",
+                          log.stackTrace.trim(),
                         ),
                       ],
                     ),
                   ),
-                ),
-              )
-        : const SliverShimmerList(includeSubtitle: true);
+                );
+              }),
+    );
+  }
+
+  void _copyLogToClipboard(CrashLog log) async {
+    final deviceInfo = MethodChannelService.instance.deviceInfo;
+
+    final logInfo = {
+      "Manufacturer": deviceInfo.manufacturer,
+      "Model": deviceInfo.model,
+      "Android Version": deviceInfo.androidVersion,
+      "SDK Version": deviceInfo.sdkVersion,
+      "App Version": log.appVersion,
+      "Error": log.error,
+      "StackTrace": log.stackTrace
+    }.entries.map((e) => "${e.key} : ${e.value}").join("\n");
+
+    await Clipboard.setData(ClipboardData(text: logInfo));
   }
 }
