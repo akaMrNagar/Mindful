@@ -332,7 +332,6 @@
     "focus_profile_customization_tile_subtitle": "Прилагоди подешавања за одабрани профил.",
     "focus_enforce_tile_title": "Принудна сесија",
     "focus_enforce_tile_subtitle": "Онемогућава прекид сесије пре него што време истекне.",
-    "focus_session_start_fab_button": "Започни сесију",
     "focus_session_minimum_apps_snack_alert": "Изабери бар једну апликацију која те омета да започнеш фокус сесију.",
     "focus_session_already_active_snack_alert": "Већ имаш активну фокус сесију. Молимо те да завршиш или зауставиш тренутну сесију пре него што започнеш нову.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

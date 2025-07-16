@@ -227,7 +227,6 @@
     "focus_distracting_apps_removal_snack_alert": "Não é permitido remover aplicativos da lista de aplicativos distrativos enquanto uma sessão de foco estiver ativa. No entanto, você ainda pode adicionar aplicativos adicionais à lista durante esse período.",
     "focus_session_duration_tile_title": "Duração de sessão",
     "focus_session_duration_tile_subtitle": "Infinito (A menos que você pare)",
-    "focus_session_start_fab_button": "Iniciar sessão",
     "focus_session_minimum_apps_snack_alert": "Selecione pelo menos um aplicativo de distração para iniciar a sessão de foco",
     "focus_session_already_active_snack_alert": "Você já tem uma sessão de foco ativa em execução. Por favor, complete ou pare a sua sessão atual antes de iniciar uma nova.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

@@ -333,7 +333,6 @@
     "focus_profile_customization_tile_subtitle": "Налаштування параметрів для вибраного профілю.",
     "focus_enforce_tile_title": "Застосувати сеанс",
     "focus_enforce_tile_subtitle": "Запобігає завершенню сесії до закінчення часу.",
-    "focus_session_start_fab_button": "Почати Сеанс",
     "focus_session_minimum_apps_snack_alert": "Виберіть принаймні один додаток, щоб почати сеанс зосередження",
     "focus_session_already_active_snack_alert": "У вас вже є активний сеанс зосередження. Будь ласка, закінчіть або припиніть поточний сеанс перед початком нового.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

@@ -10,4 +10,67 @@
   ~  *
   ~  */
   -->
-<resources></resources>
+<resources>
+    <string name="accessibility_description">تطبيق Mindful يستخدم خدمات إمكانية الوصول لحظر المواقع والمحتوى القصير في التطبيقات. يقوم بفحص الروابط والمحتوى مقابل قائمة الحظر الخاصة بك ويمنع الوصول للمساعدة في الحفاظ على تركيزك.\n\n⚠️ ملاحظة: خصوصيتك هي أولويتنا. تطبيق Mindful آمن 100% ويعمل دون اتصال بالإنترنت. نحن لا نجمع أو نخزن أي بيانات شخصية.</string>
+    <string name="admin_description">تطبيق Mindful لا يجمع أو يخزن أو ينقل أي بيانات مستخدم. كبرنامج مجاني ومفتوح المصدر (FOSS)، يمكنك مراجعة وتعديل كود المصدر. تطلب صلاحيات المسؤول فقط للعمليات النظامية الأساسية، مما يضمن عمل التطبيق بشكل صحيح دون المساس بخصوصيتك.</string>
+    <string name="toast_enable_notification">يرجى تفعيل الإشعارات</string>
+    <string name="toast_blocked_content">تم حظر المحتوى! جاري العودة</string>
+    <string name="toast_redirecting">تصفية نتائج البحث</string>
+    <string name="toast_dnd_utilized_by_feature" comment="Placeholder is the name of feature like Focus mode, Bedtime or more" formatted="true">%s يستخدم وضع عدم الإزعاج حاليا.</string>
+    <string name="service_running_notification_title">تطبيق Mindful يعمل حاليا</string>
+    <string name="shortcut_focus_mode_label">وضع التركيز</string>
+    <string name="shortcut_focus_mode_description">ابدأ جلسة تركيز بسرعة باستخدام ملفات تعريف مخصصة.</string>
+    <string name="shortcut_upcoming_notifications_label">الإشعارات المجمعة</string>
+    <string name="shortcut_upcoming_notifications_description">تحقق من الإشعارات المجمعة القادمة.</string>
+    <string name="shortcut_parental_controls_label">الرقابة الأبوية</string>
+    <string name="shortcut_parental_controls_description">إدارة إعدادات الرقابة الأبوية والأمان</string>
+    <string name="focus_quick_tile_status_active">نشط</string>
+    <string name="usage_widget_description">احصل على عرض يومي لاستخدامك للشاشة والبيانات</string>
+    <string name="widget_screen_time_label">وقت استخدام الشاشة</string>
+    <string name="widget_mobile_data_label">الهاتف المحمول</string>
+    <string name="widget_wifi_data_label">واي فاي</string>
+    <string name="widget_aggregated_usage_label">الاستخدام المجمع</string>
+    <string name="internet_blocker_running_notification_info">يعمل Mindful الان على إدارة الوصول إلى الإنترنت لمساعدتك على البقاء مركزا.</string>
+    <string name="app_blocker_running_notification_info">يعمل Mindful الان على تتبع استخدام التطبيقات لمساعدتك على الحفاظ على تركيزك وإدارة عاداتك الرقمية.</string>
+    <string name="overlay_permission_denied_notification_title">تم رفض الإذن</string>
+    <string name="overlay_permission_denied_notification_info">يرجى منح إذن العرض فوق التطبيقات لتطبيق Mindful بالنقر على الإشعار. في الشاشة التالية، ابحث عن Mindful في قائمة التطبيقات وانقر على السماح.</string>
+    <string name="app_paused_reason_focus_session">حان وقت التركيز! هذا التطبيق موقوف مؤقتا لمساعدتك على البقاء مركزا والاستفادة القصوى من جلستك.</string>
+    <string name="app_paused_reason_bedtime">حان وقت النوم! تم إيقاف هذا التطبيق ليلا لمساعدتك على الاسترخاء والاستعداد لنوم هادئ.</string>
+    <string name="app_paused_reason_launch_count_out">لقد وصلت إلى الحد الأقصى لعدد مرات فتح هذا التطبيق اليوم. حان الوقت للابتعاد وإعادة التركيز على أولوياتك.</string>
+    <string name="app_paused_reason_app_timer_left">كنت تستخدم هذا التطبيق لفترة من الوقت. دعنا نغير الوضع ونأخذ استراحة من الشاشة ونركز على شيء مفيد.</string>
+    <string name="app_paused_reason_app_timer_out">لقد وصلت إلى الحد اليومي لهذا التطبيق. استغل هذه الفرصة لتعزيز إنتاجيتك بشكل كبير.</string>
+    <string name="app_paused_reason_app_active_period_over">الوصول إلى هذا التطبيق موقوف حاليا لأنه خارج ساعات النشاط المحددة. استغل هذا الوقت للتركيز على ما يهمك، وارجع خلال الوقت المسموح.</string>
+    <string name="app_paused_reason_group_timer_left" formatted="true">لقد استخدمت تطبيقات من مجموعة \'%s\' لفترة طويلة الان. حان الوقت للتراجع والتركيز على مهامك، وليس على الشاشة.</string>
+    <string name="app_paused_reason_group_timer_out" comment="Group name as placeholder" formatted="true">لقد وصلت إلى الحد الزمني الإجمالي لمجموعة \'%s\' اليوم. خذ استراحة وأعد شحن تركيزك.</string>
+    <string name="app_paused_reason_group_active_period_over" formatted="true">التطبيقات في مجموعة \'%s\' موقوفة حاليا لأنها خارج ساعات النشاط المحددة. استغل هذه الفرصة للراحة أو التركيز على مهامك، وارجع خلال الوقت المحدد.</string>
+    <string name="app_paused_restriction_focus_mode">وضع التركيز</string>
+    <string name="app_paused_restriction_bedtime_mode">وضع وقت النوم</string>
+    <string name="app_paused_restriction_launch_count">عدد مرات الفتح</string>
+    <string name="app_paused_restriction_app_timer">مؤقت التطبيق</string>
+    <string name="app_paused_restriction_app_active_period">الفترة النشطة للتطبيق</string>
+    <string name="app_paused_restriction_group_timer">عداد وقت المجموعة</string>
+    <string name="app_paused_restriction_group_active_period">فترة نشاط المجموعة</string>
+    <string name="app_paused_overlay_button_emergency">حالة الطوارئ</string>
+    <string name="app_paused_overlay_label_spent_today">المستخدم اليوم</string>
+    <string name="app_paused_overlay_label_left_today">الوقت المتبقي اليوم</string>
+    <string name="app_paused_overlay_ask_need_more_time">هل تحتاج إلى بضع دقائق إضافية؟</string>
+    <string name="app_paused_overlay_button_two_minutes">2 دقيقة</string>
+    <string name="app_paused_overlay_button_five_minutes">5 دقائق</string>
+    <string name="app_paused_overlay_button_ten_minutes">10 دقائق</string>
+    <string name="app_paused_overlay_button_twenty_minutes">20 دقيقه</string>
+    <string name="app_paused_overlay_button_close_app" comment="App name as placeholder. ex: 'Close Instagram'" formatted="true">إغلاق %s</string>
+    <string name="app_screen_time_usage_info" comment="Time as placeholder. ex: 'Used for 2h 15m'" formatted="true">مستخدم لـ %s</string>
+    <string name="bedtime_upcoming_notification_info">وقت النوم سيبدأ خلال 30 دقيقة. استخدم هذا الوقت لإنهاء مهامك والاستعداد لبداية جديدة غدا</string>
+    <string name="bedtime_started_notification_info">حان وقت الاسترخاء. بدأت روتين النوم لمساعدتك على الاسترخاء والاستعداد لنوم هادئ ومريح.</string>
+    <string name="bedtime_ended_notification_info">استيقظ وتألق! انتهى روتين النوم، استعد لبدء يومك بنشاط وحيوية.</string>
+    <string name="emergency_pause_notification_title">إيقاف الطوارئ</string>
+    <string name="emergency_pause_notification_info" comment="Time string as placeholder. ex: 'App blocker will resume after 3m 15s'" formatted="true">سيستأنف حظر التطبيقات بعد %s</string>
+    <string name="emergency_pause_ended_notification_info">انتهت فترة الإيقاف الطارئ، وتم تفعيل حظر التطبيقات مجددا. تم حظر المشتتات الان، فابق مركزا!</string>
+    <string name="focus_session_notification_title">جلسة تركيز</string>
+    <string name="focus_session_notification_info" comment="Time string as placeholder. ex: 'Focus session will end in 33m 15s'" formatted="true">ستنتهي جلسة التركيز خلال %s</string>
+    <string name="focus_session_infinite_notification_info" comment="Time string as placeholder. ex: 'You've been focused for 33m 15s'" formatted="true">لقد ركزت لمدة %s</string>
+    <string name="focus_session_success_notification_info">مبروك! لقد أنهيت جلسة التركيز بنجاح. عمل رائع في الحفاظ على تركيزك! استمر في الأداء المذهل!</string>
+    <string name="focus_session_giveup_notification_info">استسلمت! لا تقلق، يمكنك أن تفعل أفضل في المرة القادمة. كل جهد يحتسب - استمر في المحاولة</string>
+    <string name="notification_schedule_batch_title">الإشعارات غير المقروءة</string>
+    <string name="notification_schedule_batch_summery" comment="Number of notifications as placeholder" formatted="true">لديك %d إشعارات غير مقروءة أثناء غيابك. سيتم تمييزها كمقروءة بعد 24 ساعة.</string>
+</resources>
