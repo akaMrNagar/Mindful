@@ -333,7 +333,6 @@
     "focus_profile_customization_tile_subtitle": "自定义所选择的类型。",
     "focus_enforce_tile_title": "强制会话",
     "focus_enforce_tile_subtitle": "防止在计时结束前结束会话。",
-    "focus_session_start_fab_button": "开始会话",
     "focus_session_minimum_apps_snack_alert": "请至少选择一个干扰应用以开始专注会话",
     "focus_session_already_active_snack_alert": "你已经有一个正在运行的专注会话。请在开始新会话之前完成或停止当前会话。",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

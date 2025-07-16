@@ -308,7 +308,6 @@
     "focus_session_duration_tile_title": "Oturum süresi",
     "focus_session_duration_tile_subtitle": "Sonsuz (durdurana kadar)",
     "focus_session_duration_dialog_info": "Lütfen bu odaklanma oturumu için istediğiniz süreyi seçin, ne kadar süre odaklanmış ve dikkatiniz dağılmadan kalmak istediğinizi belirleyin.",
-    "focus_session_start_fab_button": "Oturumu başlat",
     "focus_session_minimum_apps_snack_alert": "Odaklanma oturumunu başlatmak için en az bir dikkat dağıtıcı uygulama seçin",
     "focus_session_already_active_snack_alert": "Halihazırda aktif bir odaklanma oturumunuz var. Lütfen yeni bir oturum başlatmadan önce mevcut oturumunuzu tamamlayın veya durdurun.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},

@@ -333,7 +333,6 @@
     "focus_profile_customization_tile_subtitle": "Personalizar los ajustes para el perfil seleccionado.",
     "focus_enforce_tile_title": "Forzar sesión",
     "focus_enforce_tile_subtitle": "Evita terminar una sesión antes de que termine el tiempo.",
-    "focus_session_start_fab_button": "Empezar una sesión",
     "focus_session_minimum_apps_snack_alert": "Seleccione al menos una aplicación distractoria para iniciar la sesión de concentración",
     "focus_session_already_active_snack_alert": "Ya tienes una sesión de concentración activa en curso. Por favor, completa o detén tu sesión actual antes de iniciar una nueva.",
     "@----------------------------- FOCUS SESSION TYPES -----------------------------": {},
