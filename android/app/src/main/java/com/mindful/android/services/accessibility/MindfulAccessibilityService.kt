@@ -139,26 +139,27 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
             // If not desired event or executor is shutdown, then just return
             if (!desiredEvents.contains(event.eventType) || executorService.isShutdown) return
 
-            // Determine package and event source node
-            val eventPackageName = event.packageName.toString()
-            val node = if (eventPackageName == REDDIT_PACKAGE) event.source
-            else rootInActiveWindow ?: event.source
+            executorService.submit {
+                // Determine package and event source node
+                val eventPackageName = event.packageName.toString()
+                val node = if (eventPackageName == REDDIT_PACKAGE) event.source
+                else rootInActiveWindow ?: event.source
 
-            node?.let {
-                executorService.submit {
+                node?.let {
                     // Broadcast event
                     trackingManager.onNewEvent("${it.packageName}")
 
                     // Only process if any of the content is blocked
                     if (shouldBlockContent()) {
                         processEventInBackground(
-                            eventPackageName,
-                            it,
-                            wellbeing.copy()
+                            packageName = eventPackageName,
+                            node = it,
+                            wellBeing = wellbeing.copy()
                         )
                     }
                 }
             }
+
         } catch (ignored: Exception) {
         }
     }
@@ -257,12 +258,12 @@ class MindfulAccessibilityService : AccessibilityService(), OnSharedPreferenceCh
                     /// Instagram
                     PlatformFeatures.INSTAGRAM_REELS,
                     PlatformFeatures.INSTAGRAM_EXPLORE,
-                    -> shortsPlatformPackages.add(INSTAGRAM_PACKAGE)
+                        -> shortsPlatformPackages.add(INSTAGRAM_PACKAGE)
 
                     // Snapchat
                     PlatformFeatures.SNAPCHAT_SPOTLIGHT,
                     PlatformFeatures.SNAPCHAT_DISCOVER,
-                    -> shortsPlatformPackages.add(SNAPCHAT_PACKAGE)
+                        -> shortsPlatformPackages.add(SNAPCHAT_PACKAGE)
 
                     // Facebook
                     PlatformFeatures.FACEBOOK_REELS ->

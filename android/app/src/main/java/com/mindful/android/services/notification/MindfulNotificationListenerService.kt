@@ -133,7 +133,7 @@ class MindfulNotificationListenerService : NotificationListenerService() {
 
     private fun insertNotificationsToDb() {
         if (pendingNotifications.isEmpty()) return
-        val isSuccess = DriftDbHelper(this).insertNotifications(pendingNotifications)
+        val isSuccess = DriftDbHelper.insertNotifications(this, pendingNotifications)
 
         // Clear list if inserted successfully
         if (isSuccess) pendingNotifications.clear()

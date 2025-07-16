@@ -51,13 +51,14 @@ class PermissionGrantingSteps extends StatelessWidget {
           ),
           6.vBox,
           DefaultListTile(
-            leading: const RoundedContainer(
-              circularRadius: 12,
-              color: Colors.white,
+            leading: RoundedContainer(
+              circularRadius: 14,
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              padding: EdgeInsets.all(4),
               child: Icon(
-                FluentIcons.target_arrow_20_regular,
-                color: Colors.black,
-                size: 40,
+                FluentIcons.target_arrow_20_filled,
+                color: Theme.of(context).iconTheme.color,
+                size: 32,
               ),
             ),
             titleText: "Mindful",

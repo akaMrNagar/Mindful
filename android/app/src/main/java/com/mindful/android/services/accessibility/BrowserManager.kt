@@ -52,7 +52,7 @@ class BrowserManager(
             wellbeing.blockedWebsites.contains(host)
                     || wellbeing.nsfwWebsites.contains(host)
                     || nsfwDomains[host] ?: false
-            -> {
+                -> {
                 Log.d(TAG, "blockDistraction: Blocked website $host opened in $packageName")
                 blockedContentGoBack.invoke()
             }
@@ -74,8 +74,9 @@ class BrowserManager(
      * @param hostDomain     The resolved host name for the provided url.
      */
     private fun applySafeSearch(browserPackage: String, url: String, hostDomain: String) {
-        val query = runCatching { url.toUri() }.getOrNull()
-            ?.getQueryParameter("q")?.lowercase() ?: url
+        val query = runCatching {
+            url.toUri().getQueryParameter("q")?.lowercase()
+        }.getOrNull() ?: url
 
         // Apply safe search if searching maybe nsfw
         if (NsfwKeywords.keywords.none { query.contains(it) }) return
@@ -84,15 +85,15 @@ class BrowserManager(
             /// Google search
             !url.contains("safe=active")
                     && (url.contains("google.com/search?") || url.contains("bing.com/search?"))
-            -> url.replace("/search?", "/search?safe=active&")
+                -> url.replace("/search?", "/search?safe=active&")
 
             /// Brave search
             !hostDomain.contains("safe.") && hostDomain.contains("search.brave.com")
-            -> url.replace("search.brave.com", "safe.search.brave.com")
+                -> url.replace("search.brave.com", "safe.search.brave.com")
 
             /// DuckDuckGo search
             !hostDomain.contains("safe.") && hostDomain.contains("duckduckgo.com")
-            -> url.replace("duckduckgo.com", "safe.duckduckgo.com")
+                -> url.replace("duckduckgo.com", "safe.duckduckgo.com")
 
             else -> return
         }

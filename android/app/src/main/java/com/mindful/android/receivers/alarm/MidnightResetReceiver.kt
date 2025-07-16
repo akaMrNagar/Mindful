@@ -40,25 +40,28 @@ class MidnightResetReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ACTION_START_MIDNIGHT_RESET) {
-            /// Enqueue midnight worker for services
-            WorkManager.getInstance(context).enqueueUniqueWork(
-                "Mindful.MidnightResetReceiver.Native",
-                ExistingWorkPolicy.KEEP,
-                OneTimeWorkRequest.Builder(MidnightResetWorker::class.java).build()
-            )
+            WorkManager.getInstance(context).let {
 
-            /// Enqueue flutter bg worker to backup apps usage
-            WorkManager.getInstance(context).enqueueUniqueWork(
-                "Mindful.MidnightResetReceiver.FlutterBg",
-                ExistingWorkPolicy.KEEP,
-                OneTimeWorkRequest
-                    .Builder(FlutterBgExecutionWorker::class.java)
-                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                    .setInputData(
-                        Data.Builder().putString(FLUTTER_TASK_ID, "onMidnightReset")
-                            .build()
-                    ).build()
-            )
+                /// Enqueue midnight worker for services
+                it.enqueueUniqueWork(
+                    "Mindful.MidnightResetReceiver.Native",
+                    ExistingWorkPolicy.KEEP,
+                    OneTimeWorkRequest.Builder(MidnightResetWorker::class.java).build()
+                )
+
+                /// Enqueue flutter bg worker to backup apps usage
+                it.enqueueUniqueWork(
+                    "Mindful.MidnightResetReceiver.FlutterBg",
+                    ExistingWorkPolicy.KEEP,
+                    OneTimeWorkRequest
+                        .Builder(FlutterBgExecutionWorker::class.java)
+                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                        .setInputData(
+                            Data.Builder().putString(FLUTTER_TASK_ID, "onMidnightReset")
+                                .build()
+                        ).build()
+                )
+            }
         }
     }
 

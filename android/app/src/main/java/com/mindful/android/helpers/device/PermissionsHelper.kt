@@ -31,11 +31,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
+import com.mindful.android.AppConstants
 import com.mindful.android.R
 import com.mindful.android.helpers.storage.SharedPrefsHelper
 import com.mindful.android.receivers.DeviceAdminReceiver
 import com.mindful.android.services.accessibility.MindfulAccessibilityService
-import com.mindful.android.AppConstants
 import com.mindful.android.utils.Utils
 
 /**
@@ -116,7 +117,7 @@ object PermissionsHelper {
         if (askPermissionToo) {
             try {
                 val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-                    .setData(Uri.parse("package:${context.packageName}"))
+                    .setData("package:${context.packageName}".toUri())
 
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
