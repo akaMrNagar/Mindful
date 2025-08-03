@@ -53,7 +53,7 @@ class AggregatedUsageWidgetProvider : AppWidgetProvider() {
                     -> {
                     val appWidgetManager = AppWidgetManager.getInstance(context)
                     val widgetComponent =
-                        ComponentName(context, ScreenUsageWidgetProvider::class.java)
+                        ComponentName(context, AggregatedUsageWidgetProvider::class.java)
                     val appWidgetIds = appWidgetManager.getAppWidgetIds(widgetComponent)
                     updateWidgetAsync(
                         context = context,
