@@ -124,3 +124,4 @@ A huge thank you to our amazing localization contributors in making Mindful acce
 [*@youquan0914*](https://crowdin.com/profile/youquan0914), 
 [*@e_cllf*](https://crowdin.com/profile/e_cllf).
 [*@cypherzane*](https://crowdin.com/profile/cypherzane).
+[*@none_baiano*](https://crowdin.com/profile/none_baiano).
