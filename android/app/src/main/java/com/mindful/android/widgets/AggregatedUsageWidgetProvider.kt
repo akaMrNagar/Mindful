@@ -9,7 +9,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.RemoteViews
@@ -108,7 +107,6 @@ class AggregatedUsageWidgetProvider : AppWidgetProvider() {
 
                 // Fetch package info of installed apps on device
                 val packageManager = context.packageManager
-                val deviceApps = packageManager.getInstalledPackages(PackageManager.GET_META_DATA)
                 val excludedApps = SharedPrefsHelper.getSetExcludedApps(context, null)
 
 
@@ -116,18 +114,22 @@ class AggregatedUsageWidgetProvider : AppWidgetProvider() {
                 var mobileUsageKbs = 0L
                 var screenTimeSec = 0L
 
-                for (app in deviceApps) {
-                    // Only include apps which are launchable
-                    if (packageManager.getLaunchIntentForPackage(app.packageName) != null) {
-                        val appUid = app.applicationInfo?.uid
-                        mobileUsageKbs += mobileUsageOneDay.getOrDefault(appUid, 0L)
-                        wifiUsageKbs += wifiUsageOneDay.getOrDefault(appUid, 0L)
+                // Fetch set of all launchable apps
+                val launchableApps = packageManager.queryIntentActivities(
+                    Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
+                    0
+                ).forEach { appInfo ->
+                    val appUid = appInfo.activityInfo.applicationInfo?.uid
+                    mobileUsageKbs += mobileUsageOneDay.getOrDefault(appUid, 0L)
+                    wifiUsageKbs += wifiUsageOneDay.getOrDefault(appUid, 0L)
 
-                        // skip excluded apps
-                        if (excludedApps.contains(app.packageName)) continue
-                        screenTimeSec += screenUsageOneDay.getOrDefault(app.packageName, 0L)
+                    // skip excluded apps
+                    val packageName = appInfo.activityInfo.packageName
+                    if (!excludedApps.contains(packageName)) {
+                        screenTimeSec += screenUsageOneDay.getOrDefault(packageName, 0L)
                     }
                 }
+
 
                 // Also include tethering hotspot and removed app's data usage
                 wifiUsageKbs += wifiUsageOneDay.getOrDefault(

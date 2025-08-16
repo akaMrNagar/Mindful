@@ -95,7 +95,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_accessibility_required =>
-      'Mindful requires accessibility permission to block short content and websites effectively.';
+      'Mindful requer permissão de acessibilidade para bloquear conteúdo curto e websites de forma eficaz.';
 
   @override
   String get permission_accessibility_device_tile_label => 'Usar Mindful';
@@ -140,11 +140,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_admin_info =>
-      'Administrative privileges are needed only for essential operations to ensure the app works properly and remains tamper-proof.';
+      'Os privilégios administrativos são necessários apenas para operações essenciais para garantir que o aplicativo funcione de adequadamente e permaneça à prova da proteção contra desinstalação.';
 
   @override
   String get permission_admin_snack_alert =>
-      'Tamper protection can only be disabled during the selected time window.';
+      'A proteção contra desinstalação só pode ser desativada durante a janela de tempo selecionada.';
 
   @override
   String get permission_notification_access_title => 'Acesso às Notificações';
@@ -155,7 +155,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get permission_notification_access_required =>
-      'Mindful requires notification access to batch and schedule notifications.';
+      'Mindful requer acesso a notificações para agrupar e agendar notificações.';
 
   @override
   String get permission_notification_access_device_tile_label =>
@@ -273,7 +273,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get exit_without_saving_dialog_info =>
-      'Are you sure you want to exit without saving?';
+      'Você tem certeza que deseja sair sem salvar?';
 
   @override
   String get development_dialog_info =>
@@ -311,14 +311,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get custom_apps_quick_actions_unavailable_warning =>
-      'Screen usage and restrictions are unavailable for this application. At present, only network usage is accessible';
+      'O uso e restrições da tela estão indisponíveis para este aplicativo. Atualmente, apenas o uso da rede está acessível';
 
   @override
   String get create_group_fab_button => 'Criar Grupo';
 
   @override
   String get active_period_info =>
-      'Set a time period during which access will be allowed. Outside of this time frame, access will be restricted.';
+      'Defina um período durante o qual o acesso será permitido. Fora deste intervalo, o acesso será restrito.';
 
   @override
   String get minimum_distracting_apps_snack_alert =>
@@ -343,111 +343,111 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get app_restart_dialog_info =>
-      'Mindful will automatically restart once the countdown finishes. Please be patient as changes are applied.';
+      'Mindful será reiniciado automaticamente quando a contagem regressiva terminar. Por favor, seja paciente como as mudanças são aplicadas.';
 
   @override
   String get accessibility_tip =>
-      'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
+      'Quer um bloqueio mais inteligente e amigável à bateria? Ative a permissão de acessibilidade para o Mindful.';
 
   @override
   String get battery_optimization_tip =>
-      'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.';
+      'Mindful não está funcionando? Permitir \'Ignorar Otimização da bateria\' nas Configurações para mantê-lo funcionando sem problemas.';
 
   @override
   String get invincible_mode_tip =>
-      'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+      'Restrições removidas acidentalmente? Use o Modo Invencível para bloqueá-los até o dia seguinte ou até o período de ajuste.';
 
   @override
   String get glance_usage_tip =>
-      'Want insights? Check the Glance section to view your usage patterns and screen time.';
+      'Quer ideias? Verifique a seção Resumo rápido para ver seus padrões de uso e tempo de tela.';
 
   @override
   String get tamper_protection_tip =>
-      'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+      'Desinstalar o Mindful? Habilite a Janela de Desinstalação para desativar a proteção de desinstalação com segurança primeiro.';
 
   @override
   String get notification_blocking_tip =>
-      'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+      'Quer reduzir as distrações? Use o Bloqueio de Notificações para silenciar os aplicativos selecionados.';
 
   @override
   String get usage_history_tip =>
-      'Want to reflect on your habits? Check Usage History to see past patterns.';
+      'Quer refletir sobre seus hábitos? Verifique o Histórico de Uso para ver os padrões anteriores.';
 
   @override
   String get focus_mode_tip =>
-      'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+      'Precisa de foco profundo? Ative o Modo Foco para bloquear aplicativos e notificações durante tarefas.';
 
   @override
   String get bedtime_reminder_tip =>
-      'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+      'Quer melhorar seu sono? Defina um Lembrete de Horário de Dormir para relaxar à noite.';
 
   @override
   String get custom_blocking_tip =>
-      'Need a custom experience? Create app blocking rules that fit your needs.';
+      'Precisa de uma experiência personalizada? Crie regras de bloqueio de aplicativos que atendam às suas necessidades.';
 
   @override
   String get session_timeline_tip =>
-      'Want to track focus sessions? View timeline to see your focus journey.';
+      'Quer acompanhar as sessões de foco? Veja o cronograma para ver sua jornada de foco.';
 
   @override
   String get short_content_blocking_tip =>
-      'Distracted by social apps? Block short content on Instagram, YouTube, etc., to stay focused.';
+      'Distraído(a) por aplicativos sociais? Bloqueie conteúdo curto no Instagram, YouTube, etc. para se manter o foco.';
 
   @override
   String get parental_controls_tip =>
-      'Need parental control? Set restrictions for your child\'s device to ensure a safe experience.';
+      'Precisa de controle dos pais? Defina restrições para o dispositivo do seu filho para garantir uma experiência segura.';
 
   @override
   String get notification_batching_tip =>
-      'Want to reduce distractions? Use Notification Batching to group notifications and check them at once.';
+      'Quer reduzir distrações? Use o Agrupamento de Notificações para agrupar notificações e verificá-las de uma vez.';
 
   @override
   String get notification_scheduling_tip =>
-      'Need to manage notifications? Schedule when you receive notifications for specific apps.';
+      'Precisa gerenciar as notificações? Programe quando você receber notificações de aplicativos específicos.';
 
   @override
   String get quick_focus_tile_tip =>
-      'Need quick access to focus? Add a Quick Focus Tile to instantly activate Focus Mode.';
+      'Precisa de acesso rápido ao foco? Adicione um Atalho de Foco Rápido para ativar o Modo de Foco instantaneamente.';
 
   @override
   String get app_shortcuts_tip =>
-      'Want instant app access? Add shortcuts by long-pressing the app icon for quick actions.';
+      'Quer acesso instantâneo ao aplicativo? Adicione atalhos pressionando longamente o ícone do aplicativo para ações rápidas.';
 
   @override
   String get backup_usage_db_tip =>
-      'Want to save your data? Backup your usage database to keep your records safe.';
+      'Quer salvar seus dados? Faça backup do seu banco de dados para manter os seus registros seguros.';
 
   @override
   String get dynamic_material_color_tip =>
-      'Want a custom theme? Enable Dynamic Material You color to match your device\'s theme.';
+      'Quer um tema personalizado? Ative a cor dinâmica do Material You para combinar com o tema do seu dispositivo.';
 
   @override
   String get amoled_dark_theme_tip =>
-      'Want to save battery? Use AMOLED Dark Theme to reduce power consumption on OLED screens.';
+      'Quer economizar bateria? Use o Tema Escuro AMOLED para reduzir o consumo de energia em telas OLED.';
 
   @override
   String get customize_usage_history_tip =>
-      'Want to keep usage history? Customize how many weeks of data to store in Usage History.';
+      'Quer manter o histórico de uso? Personalize quantas semanas de dados serão armazenados no Histórico de Uso.';
 
   @override
   String get grouped_apps_blocking_tip =>
-      'Want to block apps together? Use Restriction Groups to group app limits and block multiple apps at once.';
+      'Quer bloquear aplicativos juntos? Use Grupos de Restrições para agrupar limites de aplicativos e bloquear vários aplicativos de uma só vez.';
 
   @override
   String get websites_blocking_tip =>
-      'Want a cleaner browsing experience? Block custom or NSFW websites for a more focused online time.';
+      'Quer uma experiência de navegação mais limpa? Bloqueie websites personalizados ou NSFW para um tempo on-line mais focado.';
 
   @override
   String get data_usage_tip =>
-      'Want to track your data? Monitor your mobile and Wi-Fi data usage for internet consumption.';
+      'Quer rastrear seus dados? Monitore seu uso de dados móveis e Wi-Fi para consumo na internet.';
 
   @override
   String get block_internet_tip =>
-      'Need to block an app\'s internet? Cut off internet for specific app from app\'s dashboard.';
+      'Precisa bloquear a internet de um aplicativo? Desligue a internet para um aplicativo específico no painel do aplicativo.';
 
   @override
   String get emergency_passes_tip =>
-      'Need a break? Use 3 Emergency Passes daily to temporarily unblock apps for 5 minutes.';
+      'Precisa de uma pausa? Use 3 Passes de Emergência diariamente para desbloquear temporariamente os aplicativos por 5 minutos.';
 
   @override
   String get onboarding_skip_btn_label => 'Pular';
@@ -487,7 +487,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashboard_tab_title => 'Painel de controle';
 
   @override
-  String get focus_now_fab_button => 'Focus now';
+  String get focus_now_fab_button => 'Focar agora';
 
   @override
   String get welcome_greetings => 'Bem-vindo(a) de volta,';
@@ -506,62 +506,64 @@ class AppLocalizationsPt extends AppLocalizations {
   String get username_dialog_button_apply => 'Aplicar';
 
   @override
-  String get glance_tile_title => 'Glance';
+  String get glance_tile_title => 'Resumo rápido';
 
   @override
-  String get glance_tile_subtitle => 'Take a quick glance at your usage.';
+  String get glance_tile_subtitle => 'Dê uma olhada rápida em seu uso.';
 
   @override
   String get parental_controls_tile_subtitle =>
-      'Invincible mode and tamper protection.';
+      'Modo invencível e proteção contra desinstalação.';
 
   @override
   String get restrictions_heading => 'Restrições';
 
   @override
-  String get apps_blocking_tile_title => 'Apps blocking';
+  String get apps_blocking_tile_title => 'Bloqueio de aplicativos';
 
   @override
-  String get apps_blocking_tile_subtitle => 'Limit apps in multiple ways.';
+  String get apps_blocking_tile_subtitle =>
+      'Limite os aplicativos de múltiplas maneiras.';
 
   @override
-  String get grouped_apps_blocking_tile_title => 'Grouped apps blocking';
+  String get grouped_apps_blocking_tile_title =>
+      'Bloqueio de aplicativos agrupados';
 
   @override
   String get grouped_apps_blocking_tile_subtitle =>
-      'Limit group of apps simultaneously.';
+      'Limite grupo de aplicativos simultaneamente.';
 
   @override
   String get shorts_blocking_tile_subtitle =>
-      'Limit short content on multiple platforms.';
+      'Limite conteúdo curto em múltiplas plataformas.';
 
   @override
   String get websites_blocking_tile_subtitle =>
-      'Limit adult and custom websites.';
+      'Limite sites adultos e personalizados.';
 
   @override
   String get screen_time_label => 'Tempo de tela';
 
   @override
-  String get total_data_label => 'Total data';
+  String get total_data_label => 'Dados totais';
 
   @override
-  String get mobile_data_label => 'Mobile data';
+  String get mobile_data_label => 'Dados móveis';
 
   @override
-  String get wifi_data_label => 'Wifi data';
+  String get wifi_data_label => 'Dados Wi-Fi';
 
   @override
-  String get focus_today_label => 'Focus today';
+  String get focus_today_label => 'Foco hoje';
 
   @override
-  String get focus_weekly_label => 'Focus weekly';
+  String get focus_weekly_label => 'Foco semanal';
 
   @override
-  String get focus_monthly_label => 'Focus monthly';
+  String get focus_monthly_label => 'Focar mensal';
 
   @override
-  String get focus_lifetime_label => 'Focus lifetime';
+  String get focus_lifetime_label => 'Foco total';
 
   @override
   String get longest_streak_label => 'Sequência mais longa';
@@ -597,39 +599,40 @@ class AppLocalizationsPt extends AppLocalizations {
   String get show_all_apps_tile_title => 'Mostrar todos os aplicativos';
 
   @override
-  String get search_apps_hint => 'Search apps...';
+  String get search_apps_hint => 'Procurar aplicativos...';
 
   @override
-  String get notifications_tab_title => 'Notifications';
+  String get notifications_tab_title => 'Notificações';
 
   @override
   String get notifications_tab_info =>
-      'Batch notification from apps and set schedules like morning, noon, evening and night. Stay updated without constant interruptions.';
+      'Agrupe notificações de aplicativos e defina horários como manhã, meio-dia e noite. Fique atualizado sem interrupções constantes.';
 
   @override
   String get batched_apps_tile_title => 'Aplicativos em grupo';
 
   @override
-  String get batch_recap_dropdown_title => 'Batch recap type';
+  String get batch_recap_dropdown_title => 'Tipo de resumo agrupado';
 
   @override
   String get batch_recap_dropdown_info =>
-      'Choose what to push when a schedule triggers — all notifications or just a summary.';
+      'Escolha o que enviar quando um agendamento disparar — todas as notificações ou apenas um resumo.';
 
   @override
-  String get batch_recap_option_summery_only => 'Summery only';
+  String get batch_recap_option_summery_only => 'Apenas resumo';
 
   @override
-  String get batch_recap_option_all_notifications => 'All notifications';
+  String get batch_recap_option_all_notifications => 'Todas as notificações';
 
   @override
-  String get notification_history_tile_title => 'Notification history';
+  String get notification_history_tile_title => 'Histórico de notificações';
 
   @override
-  String get store_all_tile_title => 'Store all notifications';
+  String get store_all_tile_title => 'Armazenar todas as notificações';
 
   @override
-  String get store_all_tile_subtitle => 'Save non-batched notifications too.';
+  String get store_all_tile_subtitle =>
+      'Salvar também notificações não agrupadas.';
 
   @override
   String get schedules_heading => 'Agendamentos';
@@ -639,7 +642,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get new_schedule_dialog_info =>
-      'Enter a name for the notification schedule to help identify it easily.';
+      'Digite um nome para o agendamento de notificações para ajudá-lo a identificá-lo facilmente.';
 
   @override
   String get new_schedule_dialog_field_label => 'Nome do agendamento';
@@ -678,7 +681,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Modificações na lista de aplicativos distrativos não são permitidas enquanto o horário de dormir estiver ativo.';
 
   @override
-  String get parental_controls_tab_title => 'Parental controls';
+  String get parental_controls_tab_title => 'Controle de Pais';
 
   @override
   String get invincible_mode_heading => 'Modo Invencível';
@@ -688,11 +691,11 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invincible_mode_info =>
-      'When Invincible Mode is on, you won\'t be able to adjust selected limits after reaching your daily quota. However, you can make changes within a selected 10-minute invincible window.';
+      'Quando o Modo Invencível está ativado, você não poderá ajustar os limites selecionados após atingir sua cota diária. No entanto, você pode fazer alterações dentro de uma janela invencível de 10 minutos.';
 
   @override
   String get invincible_mode_snack_alert =>
-      'Due to invincible mode, modifications to restrictions is not allowed.';
+      'Devido ao Modo Invencível, modificações nas restrições não são permitidas.';
 
   @override
   String get invincible_mode_dialog_info =>
@@ -700,7 +703,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invincible_mode_turn_off_snack_alert =>
-      'Invincible Mode cannot be turned off as long as this app remains installed on your device.';
+      'O Modo Invencível não pode ser desativado enquanto este aplicativo permanecer instalado no seu dispositivo.';
 
   @override
   String get invincible_mode_dialog_button_start_anyway =>
@@ -723,7 +726,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invincible_mode_app_restrictions_tile_subtitle =>
-      'Prevent changes to the app\'s selected restrictions once the daily limits are exceeded.';
+      'Impede alterações nas restrições selecionadas do aplicativo quando os limites diários forem excedidos.';
 
   @override
   String get invincible_mode_group_restrictions_tile_title =>
@@ -731,7 +734,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invincible_mode_group_restrictions_tile_subtitle =>
-      'Prevent changes to the group\'s selected restrictions once the daily limits are exceeded.';
+      'Impede alterações nas restrições selecionadas do grupo quando os limites diários forem excedidos.';
 
   @override
   String get invincible_mode_include_shorts_timer_tile_title =>
@@ -739,7 +742,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invincible_mode_include_shorts_timer_tile_subtitle =>
-      'Prevents changes after reaching your daily shorts limit.';
+      'Impede alterações após atingir seu limite diário de vídeos curtos.';
 
   @override
   String get invincible_mode_include_bedtime_tile_title =>
@@ -747,7 +750,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get invincible_mode_include_bedtime_tile_subtitle =>
-      'Prevents changes during the active bedtime schedule.';
+      'Impede alterações durante a programação do horário de dormir ativa.';
 
   @override
   String get protected_access_tile_title => 'Acesso protegido';
@@ -758,47 +761,47 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get protected_access_no_lock_snack_alert =>
-      'Please set up a biometric lock on your device first to enable this feature.';
+      'Por favor, configure um bloqueio biométrico no seu dispositivo primeiro para ativar esta função.';
 
   @override
   String get protected_access_removed_lock_snack_alert =>
-      'Your device lock has been removed. To continue, please set up a new lock.';
+      'O bloqueio do seu dispositivo foi removido. Para continuar, por favor configure um novo bloqueio.';
 
   @override
   String get protected_access_failed_lock_snack_alert =>
-      'Authentication failed. You need to verify your device lock to proceed.';
+      'Falha na autenticação. Você precisa verificar o bloqueio do seu dispositivo para continuar.';
 
   @override
-  String get tamper_protection_tile_title => 'Tamper protection';
+  String get tamper_protection_tile_title => 'Proteção contra desinstalação';
 
   @override
   String get tamper_protection_tile_subtitle =>
-      'Prevent uninstalling and force stopping the app.';
+      'Impede a desinstalação e força a parada do aplicativo.';
 
   @override
   String get tamper_protection_confirmation_dialog_info =>
-      'Once enabled, you won\'t be able to uninstall, force stop, or clear Mindful\'s data, except during the selected uninstall window. There are no workarounds.\n\nProceed at your own risk.';
+      'Uma vez ativado, você não poderá desinstalar, forçar parada ou limpar os dados do Mindful, exceto durante a janela de desinstalação selecionada. Não há soluções alternativas.\n\nProssiga por sua conta e risco.';
 
   @override
   String get uninstall_window_tile_title => 'Desinstalar uma janela';
 
   @override
   String get uninstall_window_tile_subtitle =>
-      'Tamper protection can be disabled within 10 minutes from the selected time.';
+      'A proteção contra desinstalação pode ser desativada dentro de 10 minutos a partir horário selecionado.';
 
   @override
-  String get invincible_window_tile_title => 'Invincible window';
+  String get invincible_window_tile_title => 'Janela invencível';
 
   @override
   String get invincible_window_tile_subtitle =>
-      'Selected limits can be modified within 10 minutes from the selected time.';
+      'Os limites selecionados podem ser modificados dentro de 10 minutos a partir do horário selecionado.';
 
   @override
-  String get shorts_blocking_tab_title => 'Shorts blocking';
+  String get shorts_blocking_tab_title => 'Bloqueio de vídeos curtos';
 
   @override
   String get shorts_blocking_tab_info =>
-      'Control how much time you spend on short content across platforms like Instagram, YouTube, Snapchat, and Facebook, including their websites.';
+      'Controle quanto tempo você gasta em conteúdo curto em plataformas como Instagram, YouTube, Snapchat e Facebook, incluindo seus sites.';
 
   @override
   String get short_content_heading => 'Conteúdo curto';
@@ -810,58 +813,60 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get short_content_timer_picker_dialog_info =>
-      'Set a daily time limit for short content. Once your limit is reached, the short content will be paused until midnight.';
+      'Defina um tempo diário para conteúdo curto. Quando seu limite for atingido, o conteúdo curto será pausado até a meia-noite.';
 
   @override
   String get instagram_features_tile_title => 'Instagram';
 
   @override
   String get instagram_features_tile_subtitle =>
-      'Restrict features on instagram.';
+      'Restringir recursos no Instagram.';
 
   @override
-  String get instagram_features_block_reels => 'Restrict reels section.';
+  String get instagram_features_block_reels => 'Restringir a seção de reels.';
 
   @override
-  String get instagram_features_block_explore => 'Restrict explore section.';
+  String get instagram_features_block_explore => 'Restringir a seção explorar.';
 
   @override
   String get snapchat_features_tile_title => 'Snapchat';
 
   @override
   String get snapchat_features_tile_subtitle =>
-      'Restrict features on snapchat.';
+      'Restringir recursos no Snapchat.';
 
   @override
-  String get snapchat_features_block_spotlight => 'Restrict spotlight section.';
+  String get snapchat_features_block_spotlight =>
+      'Restringir a seção spotlight.';
 
   @override
-  String get snapchat_features_block_discover => 'Restrict discover section.';
+  String get snapchat_features_block_discover =>
+      'Restringir a seção de descobrir.';
 
   @override
-  String get youtube_features_tile_title => 'Youtube';
+  String get youtube_features_tile_title => 'YouTube';
 
   @override
-  String get youtube_features_tile_subtitle => 'Restrict shorts on youtube.';
+  String get youtube_features_tile_subtitle => 'Restringir shorts no YouTube.';
 
   @override
   String get facebook_features_tile_title => 'Facebook';
 
   @override
-  String get facebook_features_tile_subtitle => 'Restrict reels on facebook.';
+  String get facebook_features_tile_subtitle => 'Restringir reels no Facebook.';
 
   @override
   String get reddit_features_tile_title => 'Reddit';
 
   @override
-  String get reddit_features_tile_subtitle => 'Restrict shorts on reddit.';
+  String get reddit_features_tile_subtitle => 'Restringir shorts no Reddit.';
 
   @override
-  String get websites_blocking_tab_title => 'Websites blocking';
+  String get websites_blocking_tab_title => 'Bloqueio de websites';
 
   @override
   String get websites_blocking_tab_info =>
-      'Block adult websites and any custom sites you choose to create a safer and more focused online experience. Take charge of your browsing and stay distraction-free.';
+      'Bloqueie websites adultos e qualquer site personalizado que escolher para criar uma experiência on-line mais segura e mais focada. Assuma o controle da sua navegação e mantenha-se livre de distrações.';
 
   @override
   String get adult_content_heading => 'Conteúdo adulto';
@@ -898,11 +903,11 @@ class AppLocalizationsPt extends AppLocalizations {
       'Digite o URL de um site que você deseja bloquear.';
 
   @override
-  String get add_website_dialog_is_nsfw => 'Is nsfw site?';
+  String get add_website_dialog_is_nsfw => 'É um website com conteúdo adulto?';
 
   @override
   String get add_website_dialog_nsfw_warning =>
-      'Warning: Nsfw sites cannot be removed once added.';
+      'Aviso: Websites com conteúdo adulto não podem ser removidos uma vez adicionados.';
 
   @override
   String get add_website_dialog_button_block => 'Bloquear';
@@ -945,7 +950,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'Não é permitido remover aplicativos da lista de aplicativos distrativos enquanto uma sessão de foco estiver ativa. No entanto, você ainda pode adicionar aplicativos adicionais à lista durante esse período.';
 
   @override
-  String get focus_profile_tile_title => 'Focus profile';
+  String get focus_profile_tile_title => 'Perfil de foco';
 
   @override
   String get focus_session_duration_tile_title => 'Duração de sessão';
@@ -956,24 +961,25 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get focus_session_duration_dialog_info =>
-      'Please select the desired duration for this focus session, determining how long you wish to remain focused and distraction-free.';
+      'Por favor, selecione a duração desejada para esta sessão de foco, determinando quanto tempo você deseja permanecer focado e livre de distrações.';
 
   @override
-  String get focus_profile_customization_tile_title => 'Profile customization';
+  String get focus_profile_customization_tile_title =>
+      'Personalização do perfil';
 
   @override
   String get focus_profile_customization_tile_subtitle =>
-      'Customize settings for the selected profile.';
+      'Personalize as configurações do perfil selecionado.';
 
   @override
-  String get focus_enforce_tile_title => 'Enforce session';
+  String get focus_enforce_tile_title => 'Forçar sessão';
 
   @override
   String get focus_enforce_tile_subtitle =>
-      'Prevents ending a session before time ends.';
+      'Impede terminar uma sessão antes do tempo terminar.';
 
   @override
-  String get focus_session_start_button => 'Swipe to start Session';
+  String get focus_session_start_button => 'Deslize para iniciar a sessão';
 
   @override
   String get focus_session_minimum_apps_snack_alert =>
@@ -1052,7 +1058,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get focus_timeline_tab_info =>
-      'Explore your focus journey by selecting a date from the calendar. Track your progress, revisit your successes, and learn from the challenges.';
+      'Explore sua jornada de foco selecionando uma data do calendário. Acompanhe seu progresso, revisite seus sucessos e aprenda com os desafios.';
 
   @override
   String selected_month_productive_time_snack_alert(String timeString) {
@@ -1086,13 +1092,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Nenhuma sessão de foco registrada para o dia selecionado.';
 
   @override
-  String get focus_session_tile_timestamp_label => 'Timestamp';
+  String get focus_session_tile_timestamp_label => 'Marcação de data/hora';
 
   @override
   String get focus_session_tile_duration_label => 'Duração';
 
   @override
-  String get focus_session_tile_reflection_label => 'Reflection';
+  String get focus_session_tile_reflection_label => 'Reflexão';
 
   @override
   String get focus_session_state_active => 'Ativo';
@@ -1108,7 +1114,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get active_session_none_warning =>
-      'No active session found. Returning to the home screen.';
+      'Nenhuma sessão ativa encontrada. Retornando à tela inicial.';
 
   @override
   String get active_session_dialog_button_keep_pushing => 'Continue insistindo';
@@ -1128,15 +1134,15 @@ class AppLocalizationsPt extends AppLocalizations {
       'Espere! Você está quase lá não desista agora! Tem certeza que quer terminar esta sessão de foco mais cedo? O progresso será perdido.';
 
   @override
-  String get active_session_reflection_dialog_title => 'Session reflection';
+  String get active_session_reflection_dialog_title => 'Reflexo de sessão';
 
   @override
   String get active_session_reflection_dialog_info =>
-      'Take a moment to reflect on your progress. What\'s your goal for this session? What did you accomplish during this session?';
+      'Dedique um momento para refletir sobre seu progresso. Qual é o seu objetivo para esta sessão? O que você cumpriu durante esta sessão?';
 
   @override
   String get active_session_reflection_dialog_tip =>
-      'Tip: You can always edit this later in the session timeline.';
+      'Dica: Você sempre pode editar isso mais tarde na linha do tempo da sessão.';
 
   @override
   String get active_session_giveup_snack_alert =>
@@ -1168,7 +1174,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get restriction_groups_tab_info =>
-      'Set a combined screen time limit for a group of apps. Once the total usage reaches your limit, all apps in the group will be paused to help maintain focus and balance.';
+      'Defina um limite combinado de tempo de tela para um grupo de aplicativos. Quando o uso total atingir o seu limite, todos os aplicativos no grupo serão pausados para ajudar a manter o foco e o equilíbrio.';
 
   @override
   String get restriction_group_time_spent_label => 'Tempo gasto hoje';
@@ -1192,7 +1198,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get restriction_group_active_period_tile_title =>
-      'Group active period';
+      'Período ativo do grupo';
 
   @override
   String get remove_restriction_group_dialog_title => 'Remover grupo';
@@ -1204,42 +1210,42 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get restriction_group_invalid_limits_snack_alert =>
-      'Set either a timer or an active period limit.';
+      'Defina um temporizador ou um limite de período ativo.';
 
   @override
   String get notifications_empty_list_hint =>
-      'No notifications have been batched for the day.';
+      'Nenhuma notificação foi agrupada no dia.';
 
   @override
-  String get conversations_label => 'Conversations';
+  String get conversations_label => 'Conversas';
 
   @override
-  String get last_24_hours_heading => 'Last 24 hours';
+  String get last_24_hours_heading => 'Últimas 24 horas';
 
   @override
   String get notification_timeline_tab_info =>
-      'Browse your notification history by selecting a date from the calendar. See which apps grabbed your attention and reflect on your digital habits.';
+      'Navegue pelo seu histórico de notificações selecionando uma data do calendário. Veja quais aplicativos pegaram sua atenção e reflita sobre seus hábitos digitais.';
 
   @override
-  String get monthly_label => 'Monthly';
+  String get monthly_label => 'Mensalmente';
 
   @override
-  String get daily_label => 'Daily';
+  String get daily_label => 'Diariamente';
 
   @override
   String get search_notifications_sheet_info =>
-      'Easily find past notifications by searching through their title or content. Helps you quickly locate important alerts.';
+      'Encontre notificações anteriores facilmente procurando pelo título ou conteúdo delas. Isso ajuda você a localizar rapidamente alertas importantes.';
 
   @override
-  String get search_notifications_hint => 'Search notifications...';
+  String get search_notifications_hint => 'Pesquisar notificações...';
 
   @override
   String get search_notifications_empty_list_hint =>
-      'No notifications found matching your search.';
+      'Nenhuma notificação encontrada que corresponde à sua pesquisa.';
 
   @override
   String get app_info_none_warning =>
-      'Couldn\'t find the app for the given package. Returning to the home screen.';
+      'Não foi possível encontrar o aplicativo para o pacote informado. Retornando à tela inicial.';
 
   @override
   String get emergency_fab_button => 'Emergência';
@@ -1272,14 +1278,14 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get app_timer_picker_dialog_info =>
-      'Set a daily time limit for this app. Once your limit is reached, the app will be paused until midnight.';
+      'Defina um limite diário de tempo para este aplicativo. Quando seu limite for atingido, o aplicativo será pausado até a meia-noite.';
 
   @override
-  String get usage_reminders_tile_title => 'Usage reminders';
+  String get usage_reminders_tile_title => 'Lembretes de uso';
 
   @override
   String get usage_reminders_tile_subtitle =>
-      'Gentle nudges when using timed apps.';
+      'Alertas suaves ao usar aplicativos com tempo limitado.';
 
   @override
   String get app_launch_limit_tile_title => 'Limite de inicialização';
@@ -1291,7 +1297,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get app_launch_limit_picker_dialog_info =>
-      'Set how many times you can open this app each day. Once the limit is reached, it will be paused until midnight.';
+      'Defina quantas vezes você pode abrir este aplicativo por dia. Quando o limite for atingido, ele será pausado até a meia-noite.';
 
   @override
   String get app_active_period_tile_title => 'Período ativo';
@@ -1332,23 +1338,23 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get go_to_app_settings_tile_subtitle =>
-      'Manage app settings like notifications, permissions, storage and more.';
+      'Gerencie as configurações do aplicativo como notificações, permissões, armazenamento e mais.';
 
   @override
   String get include_in_stats_tile_title => 'Incluir no uso de tela';
 
   @override
   String get include_in_stats_tile_subtitle =>
-      'Switch off to exclude this app from total screen usage.';
+      'Desative para excluir este aplicativo do uso total de tela.';
 
   @override
   String app_excluded_from_stats_snack_alert(String appName) {
-    return '$appName is excluded from total screen usage.';
+    return '$appName foi excluído do total de uso da tela.';
   }
 
   @override
   String app_include_to_stats_snack_alert(String appName) {
-    return '$appName is included to total screen usage.';
+    return '$appName está incluído no total de uso de tela.';
   }
 
   @override
@@ -1396,39 +1402,41 @@ class AppLocalizationsPt extends AppLocalizations {
   String get default_home_tab_tile_title => 'Aba inicial';
 
   @override
-  String get usage_history_tile_title => 'Usage history';
+  String get usage_history_tile_title => 'Histórico de uso';
 
   @override
-  String get usage_history_15_days => '15 days';
+  String get usage_history_15_days => '15 dias';
 
   @override
-  String get usage_history_1_month => '1 month';
+  String get usage_history_1_month => '1 mês';
 
   @override
-  String get usage_history_3_month => '3 months';
+  String get usage_history_3_month => '3 meses';
 
   @override
-  String get usage_history_6_month => '6 months';
+  String get usage_history_6_month => '6 Meses';
 
   @override
-  String get usage_history_1_year => '1 year';
+  String get usage_history_1_year => '1 ano';
 
   @override
   String get service_heading => 'Serviço';
 
   @override
   String get service_stopping_warning =>
-      'If Mindful stops working unexpectedly, please grant the \'Ignore Battery Optimization\' permission to keep it running in the background. If the issue continues, try whitelisting Mindful for uninterrupted performance.';
+      'Se o Mindful parar de funcionar inesperadamente, por favor, conceda a permissão \'Ignorar Otimização de bateria\' para mantê-lo em execução em segundo plano. Se o problema continuar, tente incluir o Mindful na lista de permissões para um desempenho ininterrupto.';
 
   @override
-  String get whitelist_app_tile_title => 'Whitelist Mindful';
+  String get whitelist_app_tile_title =>
+      'Colocar Mindful na lista de permissões';
 
   @override
-  String get whitelist_app_tile_subtitle => 'Allow Mindful to auto start.';
+  String get whitelist_app_tile_subtitle =>
+      'Permitir que o Mindful inicie automaticamente.';
 
   @override
   String get whitelist_app_unsupported_snack_alert =>
-      'This device does not support automatic startup management.';
+      'Este dispositivo não suporta gerenciamento automático de inicialização.';
 
   @override
   String get database_tab_title => 'Banco de dados';
@@ -1459,16 +1467,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get crash_logs_export_tile_subtitle =>
-      'Export crash logs to a json file.';
+      'Exportar registro de falhas para um arquivo json.';
 
   @override
-  String get crash_logs_view_tile_title => 'View logs';
+  String get crash_logs_view_tile_title => 'Ver registros';
 
   @override
-  String get crash_logs_view_tile_subtitle => 'Explore stored crash logs.';
+  String get crash_logs_view_tile_subtitle =>
+      'Explore os registros de falhas armazenados.';
 
   @override
-  String get crash_logs_empty_list_hint => 'No crash logged till now.';
+  String get crash_logs_empty_list_hint =>
+      'Nenhuma falha registrada até agora.';
 
   @override
   String get crash_logs_clear_tile_title => 'Limpar registros';
@@ -1492,23 +1502,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get changelog_tile_title => 'Histórico de mudanças';
 
   @override
-  String get changelog_tile_subtitle => 'Find out what\'s new.';
+  String get changelog_tile_subtitle => 'Descubra o que há de novo.';
 
   @override
-  String get full_changelog_tile_title => 'Full changelog';
+  String get full_changelog_tile_title => 'Histórico completo de alterações';
 
   @override
   String get redirected_to_github_subtitle =>
       'Você vai ser redirecionado para o GitHub.';
 
   @override
-  String get contribute_heading => 'Contribute';
+  String get contribute_heading => 'Contribuir';
 
   @override
   String get github_tile_title => 'GitHub';
 
   @override
-  String get github_tile_subtitle => 'View the source code.';
+  String get github_tile_subtitle => 'Veja o código-fonte.';
 
   @override
   String get report_issue_tile_title => 'Reportar um problema';
@@ -1517,7 +1527,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get suggest_idea_tile_title => 'Sugerir uma ideia';
 
   @override
-  String get write_email_tile_title => 'Write to us via email';
+  String get write_email_tile_title => 'Escreva-nos via e-mail';
 
   @override
   String get write_email_tile_subtitle =>

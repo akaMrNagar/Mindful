@@ -130,20 +130,22 @@ class NotificationBatchReceiver : BroadcastReceiver() {
                     context,
                     "com.mindful.android://open/notifications"
                 )
+                val packageManager = context.packageManager
                 val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
                 // Group notifications by app package
                 val appGroupedNotifications = notifications.groupBy { it.packageName }
                 for ((packageName, appNotifications) in appGroupedNotifications) {
-                    val appInfo = context.packageManager.getApplicationInfo(packageName, 0)
-                    val appName = context.packageManager.getApplicationLabel(appInfo).toString()
-                    val appIcon = context.packageManager.getApplicationIcon(appInfo).toBitmap()
+
+                    val appInfo = packageManager.getApplicationInfo(packageName, 0)
+                    val appName = packageManager.getApplicationLabel(appInfo).toString()
+                    val appIcon = packageManager.getApplicationIcon(appInfo).toBitmap()
                     val appIntent = runCatching {
                         PendingIntent.getActivity(
                             context,
                             0,
-                            context.packageManager.getLaunchIntentForPackage(packageName),
+                            packageManager.getLaunchIntentForPackage(packageName),
                             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                         )
                     }.getOrNull()

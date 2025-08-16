@@ -5,7 +5,6 @@ import android.app.usage.NetworkStatsManager
 import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import com.mindful.android.AppConstants.REMOVED_PACKAGE
 import com.mindful.android.AppConstants.TETHERING_PACKAGE
 
@@ -77,17 +76,12 @@ object AppsUsageHelper {
             val launchableApps = packageManager.queryIntentActivities(
                 Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
                 0
-            ).map { it.activityInfo.packageName }.toSet()
+            )
 
-            // Fetch package info of installed apps on device
-            val installedApps =
-                packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-
-            val appsUsageMapList: MutableList<Map<String, Any>> = installedApps
-                .filter { launchableApps.contains(it.packageName) }
-                .mapNotNull { appInfo ->
-                    val packageName = appInfo.packageName
-                    val uid = appInfo.uid
+            val appsUsageMapList: MutableList<Map<String, Any>> = launchableApps
+                .mapNotNull { info ->
+                    val packageName = info.activityInfo.packageName
+                    val uid = info.activityInfo.applicationInfo.uid
                     val screenTime = screenUsage.getOrDefault(packageName, 0L)
                     val mobileData = mobileDataUsage.getOrDefault(uid, 0L)
                     val wifiData = wifiDataUsage.getOrDefault(uid, 0L)

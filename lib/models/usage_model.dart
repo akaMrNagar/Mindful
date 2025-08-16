@@ -26,7 +26,7 @@ class UsageModel {
     return UsageModel(
       screenTime: appUsage.screenTime,
       mobileData: appUsage.mobileData,
-      wifiData: appUsage.mobileData,
+      wifiData: appUsage.wifiData,
     );
   }
 

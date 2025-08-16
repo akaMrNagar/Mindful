@@ -73,50 +73,55 @@ class OverlayManager(
         if (overlays.isNotEmpty()) return
 
         ThreadUtils.runOnMainThread {
-            // Notify, stop and return if don't have overlay permission
-            if (!haveOverlayPermission(context)) {
-                return@runOnMainThread
-            }
+            runCatching {
 
-            // Build overlay
-            val sheetOverlay = OverlayBuilder.buildFullScreenOverlay(
-                context = context,
-                packageName = packageName,
-                state = restrictionState,
-                dismissOverlay = ::dismissSheetOverlay,
-                addReminderDelay = addReminderWithDelay,
-            ).apply {
-                // TODO: Fix the deprecated logic
-                // Full screen edge to edge view
-                systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            }
+                // Notify, stop and return if don't have overlay permission
+                if (!haveOverlayPermission(context)) {
+                    return@runOnMainThread
+                }
 
-            Log.d(TAG, "showFullScreenOverlay: Showing full screen overlay for $packageName")
-            sheetOverlay.also {
-                windowManager.addView(it, sheetLayoutParams)
-                overlays.push(it)
-                Utils.vibrateDevice(context, 50L)
+                // Build overlay
+                val sheetOverlay = OverlayBuilder.buildFullScreenOverlay(
+                    context = context,
+                    packageName = packageName,
+                    state = restrictionState,
+                    dismissOverlay = ::dismissSheetOverlay,
+                    addReminderDelay = addReminderWithDelay,
+                ).apply {
+                    // TODO: Fix the deprecated logic
+                    // Full screen edge to edge view
+                    systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                }
 
-                // Get views
-                val bg = sheetOverlay.findViewById<View>(R.id.overlay_background)
-                val quote = sheetOverlay.findViewById<View>(R.id.overlay_sheet_quote_panel)
-                val sheet = sheetOverlay.findViewById<LinearLayout>(R.id.overlay_sheet)
+                Log.d(TAG, "showFullScreenOverlay: Showing full screen overlay for $packageName")
+                sheetOverlay.also {
+                    windowManager.addView(it, sheetLayoutParams)
+                    overlays.push(it)
+                    Utils.vibrateDevice(context, 50L)
 
-                // Set initial
-                bg.alpha = 0f
-                quote.alpha = 0f
-                sheet.translationY = SLIDE_UP_START_Y
+                    // Get views
+                    val bg = sheetOverlay.findViewById<View>(R.id.overlay_background)
+                    val quote = sheetOverlay.findViewById<View>(R.id.overlay_sheet_quote_panel)
+                    val sheet = sheetOverlay.findViewById<LinearLayout>(R.id.overlay_sheet)
 
-                // Animate
-                bg.animate().alpha(1f).setDuration(400).start()
-                quote.animate().alpha(1f).setDuration(400).start()
-                sheet.animate()
-                    .translationY(0f)
-                    .setInterpolator(OvershootInterpolator(1.5f))
-                    .setDuration(500)
-                    .start()
+                    // Set initial
+                    bg.alpha = 0f
+                    quote.alpha = 0f
+                    sheet.translationY = SLIDE_UP_START_Y
+
+                    // Animate
+                    bg.animate().alpha(1f).setDuration(400).start()
+                    quote.animate().alpha(1f).setDuration(400).start()
+                    sheet.animate()
+                        .translationY(0f)
+                        .setInterpolator(OvershootInterpolator(1.5f))
+                        .setDuration(500)
+                        .start()
+                }
+            }.getOrElse {
+                SharedPrefsHelper.insertCrashLogToPrefs(context, it)
             }
         }
     }
@@ -127,27 +132,27 @@ class OverlayManager(
         screenTimeUsedInMins: Int,
     ) {
         ThreadUtils.runOnMainThread {
-            // Notify, stop and return if don't have overlay permission
-            if (!haveOverlayPermission(context)) return@runOnMainThread
-
-            // Build view
-            val toastView = OverlayBuilder.buildToastOverlay(
-                context,
-                packageName,
-                screenTimeUsedInMins
-            )
-
-            Log.d(TAG, "Showing toast overlay for $packageName")
-            windowManager.addView(toastView, toastLayoutParams)
-
-            // Fade-in
-            toastView.animate()
-                .alpha(1f)
-                .setDuration(500)
-                .start()
-
-            // Fade-out and remove after delay
             runCatching {
+                // Notify, stop and return if don't have overlay permission
+                if (!haveOverlayPermission(context)) return@runOnMainThread
+
+                // Build view
+                val toastView = OverlayBuilder.buildToastOverlay(
+                    context,
+                    packageName,
+                    screenTimeUsedInMins
+                )
+
+                Log.d(TAG, "Showing toast overlay for $packageName")
+                windowManager.addView(toastView, toastLayoutParams)
+
+                // Fade-in
+                toastView.animate()
+                    .alpha(1f)
+                    .setDuration(500)
+                    .start()
+
+                // Fade-out and remove after delay
                 Handler(Looper.getMainLooper()).let {
                     it.postDelayed({
                         toastView.animate()

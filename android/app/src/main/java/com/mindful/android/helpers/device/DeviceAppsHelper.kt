@@ -3,7 +3,6 @@ package com.mindful.android.helpers.device
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import com.mindful.android.AppConstants
 import com.mindful.android.AppConstants.REMOVED_APP_NAME
 import com.mindful.android.AppConstants.REMOVED_PACKAGE
@@ -35,21 +34,20 @@ object DeviceAppsHelper {
             val launchableApps = packageManager.queryIntentActivities(
                 Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER),
                 0
-            ).map { it.activityInfo.packageName }.toSet()
-
-            // Fetch package info of installed apps on device
-            val installedApps =
-                packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+            )
 
 
-            val deviceAppsMapList: MutableList<Map<String, Any>> = installedApps
-                .filter { launchableApps.contains(it.packageName) }
-                .map { app ->
+            val deviceAppsMapList: MutableList<Map<String, Any>> = launchableApps
+                .map { appInfo ->
                     getAppInfoMap(
-                        name = app.loadLabel(packageManager).toString(),
-                        packageName = app.packageName,
-                        isImpSysApp = impSystemApps.contains(app.packageName),
-                        appIcon = AppUtils.getEncodedAppIcon(packageManager.getApplicationIcon(app)),
+                        name = appInfo.loadLabel(packageManager).toString(),
+                        packageName = appInfo.activityInfo.packageName,
+                        isImpSysApp = impSystemApps.contains(appInfo.activityInfo.packageName),
+                        appIcon = AppUtils.getEncodedAppIcon(
+                            packageManager.getApplicationIcon(
+                                appInfo.activityInfo.applicationInfo
+                            )
+                        ),
                     )
                 }.toMutableList()
 
