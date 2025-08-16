@@ -278,7 +278,7 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get exit_without_saving_dialog_info =>
-      'Are you sure you want to exit without saving?';
+      'Σίγουρα θες να βγεις χωρίς αποθήκευση;';
 
   @override
   String get development_dialog_info =>
@@ -351,43 +351,43 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get accessibility_tip =>
-      'Want smarter, more battery-friendly blocking? Enable Accessibility permission for Mindful.';
+      'Θέλετε έναν πιο έξυπνο, πιο φιλικό προς την μπαταρία αποκλεισμό; Ενεργοποίησε την άδεια προσβασιμότητας για Mindful.';
 
   @override
   String get battery_optimization_tip =>
-      'Mindful not working? Allow \'Ignore Battery Optimization\' in Settings to keep it running smoothly.';
+      'Το Mindful δεν λειτουργεί; Επιτρέψτε την \'Αγνόηση Βελτιστοποίησης Μπαταρίας\' στις Ρυθμίσεις για να συνεχίσει να λειτουργεί ομαλά.';
 
   @override
   String get invincible_mode_tip =>
-      'Accidentally removed restrictions? Use Invincible Mode to lock them until the next day or adjustment window.';
+      'Περιορισμοί που αφαιρέθηκαν τυχαία; Χρησιμοποιήστε τη Άτρωτη λειτουργία για να τους κλειδώσετε μέχρι την επόμενη μέρα ή το παράθυρο ρύθμισης.';
 
   @override
   String get glance_usage_tip =>
-      'Want insights? Check the Glance section to view your usage patterns and screen time.';
+      'Θέλετε πληροφορίες; Ελέγξτε την ενότητα Ματιά για να δείτε τα μοτίβα χρήσης και την ώρα επί οθόνης.';
 
   @override
   String get tamper_protection_tip =>
-      'Uninstalling Mindful? Enable the Uninstall Window to safely disable tamper protection first.';
+      'Απεγκατάσταση του Mindful; Ενεργοποιήστε το Παράθυρο Απεγκατάστασης για να απενεργοποιήσετε με ασφάλεια την προστασία παραβίασης πρώτα.';
 
   @override
   String get notification_blocking_tip =>
-      'Want to reduce distractions? Use Notification Blocking to silence selected apps.';
+      'Θέλετε να μειώσετε τους περισπασμούς; Χρησιμοποιήστε το Μπλοκάρισμα Ειδοποιήσεων για σίγαση επιλεγμένων εφαρμογών.';
 
   @override
   String get usage_history_tip =>
-      'Want to reflect on your habits? Check Usage History to see past patterns.';
+      'Θέλετε να συλλογιστείτε τις συνήθειές σας; Ελέγξτε το ιστορικό χρήσης για να δείτε τα προηγούμενα μοτίβα.';
 
   @override
   String get focus_mode_tip =>
-      'Need deep focus? Turn on Focus Mode to block apps and notifications during tasks.';
+      'Χρειάζεστε βαθιά συγκέντρωση; Ενεργοποιήστε τη λειτουργία εστίασης για να μπλοκάρετε εφαρμογές και ειδοποιήσεις κατά τη διάρκεια εργασιών.';
 
   @override
   String get bedtime_reminder_tip =>
-      'Want to improve your sleep? Set a Bedtime Reminder to wind down nightly.';
+      'Θέλετε να βελτιώσετε τον ύπνο σας; Ρυθμίστε μια Υπενθύμιση Ύπνου για να χαλαρώσετε.';
 
   @override
   String get custom_blocking_tip =>
-      'Need a custom experience? Create app blocking rules that fit your needs.';
+      'Χρειάζεσαι μια προσαρμοσμένη εμπερία; Δημιούργησε κανόνες αποκλεισμού εφαρμογών που ταιριάζουν στις ανάγκες σου.';
 
   @override
   String get session_timeline_tip =>

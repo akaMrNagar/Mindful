@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get mindful_tagline => 'ركز على ما يهم حقا';
+  String get mindful_tagline => 'Focus on what truly Matters';
 
   @override
   String get unlock_button_label => 'فتح';
