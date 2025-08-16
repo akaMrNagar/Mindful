@@ -218,7 +218,7 @@ object OverlayBuilder {
     ): Pair<String, Drawable> {
         val packageManager = context.packageManager
         val info = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-        val appName = info.loadLabel(packageManager).toString()
+        val appName = packageManager.getApplicationLabel(info).toString()
         val appIcon = packageManager.getApplicationIcon(info)
 
         return appName to appIcon
