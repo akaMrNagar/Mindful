@@ -96,9 +96,7 @@ object AlarmTasksSchedulingHelper {
      */
     fun scheduleBedtimeRoutineTasks(context: Context, jsonBedtimeSettings: String) {
         val bedtimeSchedule = BedtimeSchedule.fromJson(jsonBedtimeSettings)
-        val extraMap = mapOf(
-            EXTRA_BEDTIME_SETTINGS_JSON to jsonBedtimeSettings
-        )
+        val extraMap = mapOf(EXTRA_BEDTIME_SETTINGS_JSON to jsonBedtimeSettings)
 
         val nowInMs = System.currentTimeMillis()
         var alertTimeMs = todToTodayCal(bedtimeSchedule.scheduleStartTime - 30).timeInMillis

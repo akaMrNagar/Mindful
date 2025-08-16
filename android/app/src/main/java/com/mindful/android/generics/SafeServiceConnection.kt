@@ -65,12 +65,12 @@ class SafeServiceConnection<T : Service>(
     /**
      * Binds the service if it is currently running.
      */
-    fun bindService() {
+    fun bindService(): Boolean {
         if (!mIsBound && Utils.isServiceRunning(context, serviceClass)) {
             try {
                 val bindIntent = Intent(context, serviceClass)
                 bindIntent.setAction(ServiceBinder.ACTION_BIND_TO_MINDFUL)
-                context.bindService(bindIntent, this, Context.BIND_WAIVE_PRIORITY)
+                return context.bindService(bindIntent, this, Context.BIND_WAIVE_PRIORITY)
             } catch (e: Exception) {
                 SharedPrefsHelper.insertCrashLogToPrefs(context, e)
                 Log.e(
@@ -80,6 +80,7 @@ class SafeServiceConnection<T : Service>(
                 )
             }
         }
+        return mIsBound && Utils.isServiceRunning(context, serviceClass)
     }
 
     /**
