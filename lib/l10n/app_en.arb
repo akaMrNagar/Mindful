@@ -211,7 +211,7 @@
     "batched_apps_tile_title": "Batched apps",
     "batch_recap_dropdown_title": "Batch recap type",
     "batch_recap_dropdown_info": "Choose what to push when a schedule triggers — all notifications or just a summary.",
-    "batch_recap_option_summery_only": "Summery only",
+    "batch_recap_option_summery_only": "Summary only",
     "batch_recap_option_all_notifications": "All notifications",
     "notification_history_tile_title": "Notification history",
     "store_all_tile_title": "Store all notifications",
