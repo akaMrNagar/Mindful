@@ -618,7 +618,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Choose what to push when a schedule triggers — all notifications or just a summary.';
 
   @override
-  String get batch_recap_option_summery_only => 'Summery only';
+  String get batch_recap_option_summery_only => 'Summary only';
 
   @override
   String get batch_recap_option_all_notifications => 'All notifications';
